@@ -66,7 +66,7 @@ public final class ArtistTablePanel extends EntityTablePanel {
 		Entity artistToKeep = Dialogs.select()
 						.list(selectedArtists)
 						.owner(this)
-						.title(BUNDLE.getString("select_artists_to_keep"))
+						.title(BUNDLE.getString("select_artist_to_keep"))
 						.comparator(Text.collator())
 						.select()
 						.single()

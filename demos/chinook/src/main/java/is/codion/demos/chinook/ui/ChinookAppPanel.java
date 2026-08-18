@@ -95,7 +95,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	private AnalyticsPanel analyticsPanel;
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
-		super(applicationModel, createPanels(applicationModel), createLookupPanelBuilders());
+		super(applicationModel, createPanels(applicationModel), createLookupPanels());
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						new PlaylistPanel((PlaylistModel) applicationModel.models().get(Playlist.TYPE)));
 	}
 
-	private static List<EntityPanel.Builder> createLookupPanelBuilders() {
+	private static List<EntityPanel.Builder> createLookupPanels() {
 		EntityPanel.Builder genrePanelBuilder = EntityPanel.builder()
 						.entityType(Genre.TYPE)
 						.panel(ChinookAppPanel::createGenrePanel);
