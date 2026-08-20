@@ -96,7 +96,7 @@ public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, O
 	 * @return true if a value was removed
 	 * @see Collection#removeAll(Collection)
 	 */
-	boolean removeAll(Collection<T> values);
+	boolean removeAll(Collection<? extends T> values);
 
 	/**
 	 * Returns a {@link Value} instance based on this {@link ValueCollection}.

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.84
+### is.codion.common.reactive
+- ValueCollection.removeAll() wildcard added to mirror addAll().
 
 ## 0.18.83
 ### is.codion
