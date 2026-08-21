@@ -110,7 +110,8 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * Returns an 'in' {@link Condition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link Condition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or an entity provides no value for a
+	 * non-nullable referenced column, as one which has not been inserted does not
 	 */
 	Condition in(Entity... values);
 
@@ -118,7 +119,8 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * Returns a 'notIn' {@link Condition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link Condition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or an entity provides no value for a
+	 * non-nullable referenced column, as one which has not been inserted does not
 	 */
 	Condition notIn(Entity... values);
 
@@ -126,7 +128,8 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * Returns an 'in' {@link Condition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link Condition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or an entity provides no value for a
+	 * non-nullable referenced column, as one which has not been inserted does not
 	 */
 	Condition in(Collection<Entity> values);
 
@@ -134,7 +137,8 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * Returns a 'notIn' condition.
 	 * @param values the values to use in the condition
 	 * @return a {@link Condition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or an entity provides no value for a
+	 * non-nullable referenced column, as one which has not been inserted does not
 	 */
 	Condition notIn(Collection<Entity> values);
 

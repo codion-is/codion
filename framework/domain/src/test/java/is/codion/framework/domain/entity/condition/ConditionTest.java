@@ -359,6 +359,56 @@ public final class ConditionTest {
 		}
 
 		@Test
+		@DisplayName("entities missing a referenced value throw NullPointerException")
+		void missingReferencedValue_throwNullPointerException() {
+			Entity department = entities.entity(Department.TYPE).build();
+			Entity master = entities.entity(Master2.TYPE).build();
+
+			// A single reference
+			assertThrows(NullPointerException.class,
+							() -> Employee.DEPARTMENT_FK.in(department));
+			assertThrows(NullPointerException.class,
+							() -> Employee.DEPARTMENT_FK.notIn(department));
+
+			// A composite reference
+			assertThrows(NullPointerException.class,
+							() -> Detail2.MASTER_FK.in(master));
+			assertThrows(NullPointerException.class,
+							() -> Detail2.MASTER_FK.notIn(master));
+
+			// One good entity does not excuse the other
+			Entity existing = entities.entity(Department.TYPE)
+							.with(Department.ID, 1)
+							.build();
+			assertThrows(NullPointerException.class,
+							() -> Employee.DEPARTMENT_FK.in(existing, department));
+
+			// equalTo still accepts one, an EQUAL condition being able to express a null
+			EntityDefinition employeeDefinition = entities.definition(Employee.TYPE);
+			assertEquals("deptno IS NULL", Employee.DEPARTMENT_FK.equalTo(department).string(employeeDefinition));
+		}
+
+		@Test
+		@DisplayName("a null in a nullable referenced column is a value, not a missing one")
+		void nullableReferencedColumn_isAValue() {
+			// CompositeMaster.COMPOSITE_MASTER_ID is declared nullable, so this key is present
+			Entity master = entities.entity(CompositeMaster.TYPE)
+							.with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
+							.with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)
+							.build();
+			assertTrue(master.primaryKey().present());
+
+			EntityDefinition detailDefinition = entities.definition(CompositeDetail.TYPE);
+			String expected = "(master_id IS NULL AND master_id2 = ? AND master_id3 = ?)";
+
+			// in() expresses it exactly as equalTo() does
+			assertEquals(expected,
+							CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.equalTo(master).string(detailDefinition));
+			assertEquals(expected,
+							CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.in(master).string(detailDefinition));
+		}
+
+		@Test
 		@DisplayName("empty collections throw IllegalArgumentException")
 		void emptyCollections_throwIllegalArgumentException() {
 			assertThrows(IllegalArgumentException.class,
