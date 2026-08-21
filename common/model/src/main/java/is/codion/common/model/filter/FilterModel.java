@@ -315,6 +315,11 @@ public interface FilterModel<T> {
 	}
 
 	/**
+	 * <p>The included items, the ones passing the {@link IncludePredicate}, in their current order.
+	 * <p>Notifications, {@link #observer()} and {@link #added()}, are delivered once a mutation has completed
+	 * and the selection has been restored, so a listener may read the selection while responding to one - it
+	 * never sees the selection a mutation momentarily empties. A mutation notifies once, not once per internal
+	 * step: a refresh, which clears and re-adds the items, notifies a single time.
 	 * @param <T> the item type
 	 */
 	interface IncludedItems<T> extends Observable<List<T>>, IndexedItems<T> {
@@ -452,6 +457,9 @@ public interface FilterModel<T> {
 	}
 
 	/**
+	 * <p>The filtered items, the ones not passing the {@link IncludePredicate}.
+	 * <p>Notifications are delivered once a mutation has completed and the selection has been
+	 * restored, and once per mutation, see {@link IncludedItems}.
 	 * @param <T> the item type
 	 */
 	interface FilteredItems<T> extends Observable<Collection<T>> {

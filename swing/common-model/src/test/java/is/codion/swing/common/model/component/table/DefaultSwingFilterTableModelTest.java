@@ -165,6 +165,26 @@ public final class DefaultSwingFilterTableModelTest {
 	}
 
 	@Test
+	void selectionVisibleToItemsListeners() {
+		JTable table = new JTable(tableModel);
+		table.setSelectionModel(tableModel.selection());
+		tableModel.items().refresh();
+		tableModel.selection().item().set(B);
+
+		// A refresh empties the selection before restoring it by item. The notification must be delivered
+		// once the selection is back, since a listener reading the selection while responding to one would
+		// otherwise see a state the model is never in at rest. See EntityTablePanel's status message.
+		List<Integer> counts = new ArrayList<>();
+		tableModel.items().included().addListener(() -> counts.add(tableModel.selection().count()));
+
+		tableModel.items().refresh();
+
+		assertEquals(B, tableModel.selection().item().get());
+		assertFalse(counts.isEmpty());
+		counts.forEach(count -> assertEquals(1, count));
+	}
+
+	@Test
 	void nonUniqueColumnIdentifiers() {
 		assertThrows(IllegalArgumentException.class, () -> SwingFilterTableModel.builder()
 						.columns(new TableColumns<Object, Object>() {
@@ -408,16 +428,16 @@ public final class DefaultSwingFilterTableModelTest {
 		assertFalse(tableModel.items().filtered().contains(D));
 		assertFalse(tableModel.items().filtered().contains(E));
 		tableModel.filters().get(0).operands().equal().set(null);
-		tableModel.items().refresh();//two events, clear and add
-		assertEquals(8, events.get());
+		tableModel.items().refresh();//one event, the refresh groups its notifications
+		assertEquals(7, events.get());
 		tableModel.items().included().remove(0, 2);
-		assertEquals(9, events.get());//just a single event when removing multiple items
+		assertEquals(8, events.get());//just a single event when removing multiple items
 		tableModel.items().included().remove(0);
-		assertEquals(10, events.get());
+		assertEquals(9, events.get());
 		tableModel.items().refresh();
-		assertEquals(12, events.get());
+		assertEquals(10, events.get());
 		tableModel.items().remove(asList(B, D, E, G));//does not contain G
-		assertEquals(13, events.get());//just a single event when removing multiple items
+		assertEquals(11, events.get());//just a single event when removing multiple items
 		tableModel.items().included().removeListener(listener);
 	}
 
@@ -466,7 +486,7 @@ public final class DefaultSwingFilterTableModelTest {
 
 		events.set(0);
 		tableModel.items().refresh();
-		assertEquals(2, events.get());
+		assertEquals(1, events.get());//one event, the refresh groups its notifications
 
 		tableModel.items().included().removeListener(listener);
 	}
