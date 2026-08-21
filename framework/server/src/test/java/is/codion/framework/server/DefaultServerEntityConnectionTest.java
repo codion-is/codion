@@ -21,7 +21,7 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.client.ConnectionRequest;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -51,38 +51,38 @@ public class DefaultServerEntityConnectionTest {
 
 	@Test
 	void wrongUsername() {
-		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+		RemoteSession session = RemoteSession.builder(ConnectionRequest.builder()
 										.user(User.user("foo", "bar".toCharArray()))
 										.clientType("DefaultServerEntityConnectionTestClient")
 										.build())
 						.build();
-		assertThrows(DatabaseException.class, () -> new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1234));
+		assertThrows(DatabaseException.class, () -> new DefaultServerEntityConnection(DOMAIN, Database.instance(), session, 1234));
 	}
 
 	@Test
 	void wrongPassword() {
-		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+		RemoteSession session = RemoteSession.builder(ConnectionRequest.builder()
 										.user(User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray()))
 										.clientType("DefaultServerEntityConnectionTestClient")
 										.build())
 						.build();
-		assertThrows(DatabaseException.class, () -> new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1235));
+		assertThrows(DatabaseException.class, () -> new DefaultServerEntityConnection(DOMAIN, Database.instance(), session, 1235));
 	}
 
 	@Test
 	void rollbackOnClose() throws Exception {
-		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+		RemoteSession session = RemoteSession.builder(ConnectionRequest.builder()
 										.user(UNIT_TEST_USER)
 										.clientType("DefaultServerEntityConnectionTestClient")
 										.build())
 						.build();
-		DefaultServerEntityConnection connection = new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1238);
+		DefaultServerEntityConnection connection = new DefaultServerEntityConnection(DOMAIN, Database.instance(), session, 1238);
 		Condition condition = Condition.all(Employee.TYPE);
 		connection.startTransaction();
 		connection.delete(condition);
 		assertTrue(connection.select(condition).isEmpty());
 		connection.close();
-		connection = new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1239);
+		connection = new DefaultServerEntityConnection(DOMAIN, Database.instance(), session, 1239);
 		assertFalse(connection.select(condition).isEmpty());
 		connection.close();
 	}
@@ -93,12 +93,12 @@ public class DefaultServerEntityConnectionTest {
 		DefaultServerEntityConnection adapter = null;
 		final String serviceName = "DefaultServerEntityConnectionTest";
 		try {
-			RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+			RemoteSession session = RemoteSession.builder(ConnectionRequest.builder()
 											.user(UNIT_TEST_USER)
 											.clientType("DefaultServerEntityConnectionTestClient")
 											.build())
 							.build();
-			adapter = new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1240);
+			adapter = new DefaultServerEntityConnection(DOMAIN, Database.instance(), session, 1240);
 
 			registry = Server.Locator.registry();
 

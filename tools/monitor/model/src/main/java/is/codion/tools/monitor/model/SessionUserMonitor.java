@@ -23,7 +23,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
@@ -55,11 +55,11 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A ClientUserMonitor for monitoring connected clients and users connected to a server
+ * A SessionUserMonitor for monitoring the sessions and users connected to a server
  */
-public final class ClientUserMonitor {
+public final class SessionUserMonitor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ClientUserMonitor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SessionUserMonitor.class);
 
 	private static final int THOUSAND = 1000;
 	private static final DateTimeFormatter MAINTENANCE_TIME_FORMATTER =
@@ -72,7 +72,7 @@ public final class ClientUserMonitor {
 	private final EntityServerAdmin server;
 	private final ZoneId serverTimeZone;
 	private final Value<Integer> idleConnectionTimeoutValue;
-	private final ClientMonitor clientMonitor;
+	private final SessionMonitor sessionMonitor;
 	private final Value<String> maintenanceTimeFormatted = Value.nonNull("");
 	private final State maintenanceOnTime = State.state(true);
 	private final SwingFilterTableModel<UserInfo, String> userHistoryTableModel =
@@ -84,14 +84,14 @@ public final class ClientUserMonitor {
 	private final TaskScheduler updateScheduler;
 
 	/**
-	 * Instantiates a new {@link ClientUserMonitor}
+	 * Instantiates a new {@link SessionUserMonitor}
 	 * @param server the server
 	 * @param updateRate the initial statistics update rate in seconds
 	 */
-	public ClientUserMonitor(EntityServerAdmin server, ZoneId serverTimeZone, int updateRate) {
+	public SessionUserMonitor(EntityServerAdmin server, ZoneId serverTimeZone, int updateRate) {
 		this.server = requireNonNull(server);
 		this.serverTimeZone = serverTimeZone;
-		this.clientMonitor = new ClientMonitor(server);
+		this.sessionMonitor = new SessionMonitor(server);
 		this.idleConnectionTimeoutValue = Value.builder()
 						.nonNull(0)
 						.value(getIdleConnectionTimeout())
@@ -110,8 +110,8 @@ public final class ClientUserMonitor {
 		updateScheduler.stop();
 	}
 
-	public ClientMonitor clientMonitor() {
-		return clientMonitor;
+	public SessionMonitor sessionMonitor() {
+		return sessionMonitor;
 	}
 
 	/**
@@ -126,8 +126,8 @@ public final class ClientUserMonitor {
 	 * @throws RemoteException in case of an exception
 	 */
 	public void disconnectAll() throws RemoteException {
-		server.disconnectAllClients();
-		clientMonitor.refresh();
+		server.disconnectAllSessions();
+		sessionMonitor.refresh();
 	}
 
 	/**
@@ -135,8 +135,8 @@ public final class ClientUserMonitor {
 	 * @throws RemoteException in case of an exception
 	 */
 	public void disconnectTimedOut() throws RemoteException {
-		server.disconnectTimedOutClients();
-		clientMonitor.refresh();
+		server.disconnectTimedOutSessions();
+		sessionMonitor.refresh();
 	}
 
 	/**
@@ -240,10 +240,10 @@ public final class ClientUserMonitor {
 		public Collection<UserInfo> get() {
 			try {
 				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().included().get());
-				for (RemoteClient client : server.clients()) {
-					UserInfo newUserInfo = new UserInfo(client.request().user(), client.request().clientType(),
-									client.clientHost(), LocalDateTime.now(), client.request().connectionId(),
-									client.request().version().orElse(null), client.request().frameworkVersion());
+				for (RemoteSession session : server.sessions()) {
+					UserInfo newUserInfo = new UserInfo(session.request().user(), session.request().clientType(),
+									session.clientHost(), LocalDateTime.now(), session.id(),
+									session.request().version().orElse(null), session.request().frameworkVersion());
 					int index = items.indexOf(newUserInfo);
 					if (index == -1) {
 						items.add(newUserInfo);
@@ -251,7 +251,7 @@ public final class ClientUserMonitor {
 					else {
 						UserInfo currentUserInfo = items.get(index);
 						currentUserInfo.setLastSeen(newUserInfo.lastSeen());
-						currentUserInfo.addConnectionId(client.request().connectionId());
+						currentUserInfo.addConnectionId(session.id());
 					}
 				}
 

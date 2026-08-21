@@ -21,7 +21,7 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.local.ConnectionHolder;
@@ -61,7 +61,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private static final String ENTITIES = "entities";
 
 	private final Domain domain;
-	private final RemoteClient client;
+	private final RemoteSession session;
 	private final Database database;
 	private final ConnectionPoolWrapper connectionPool;
 	private final String logIdentifier;
@@ -77,14 +77,14 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private volatile long lastAccessTime = creationTime;
 	private volatile boolean closed = false;
 
-	LocalConnectionHandler(Domain domain, RemoteClient client, Database database) {
+	LocalConnectionHandler(Domain domain, RemoteSession session, Database database) {
 		this.domain = domain;
-		this.client = client;
-		String databaseUsername = client.databaseUser().username();
+		this.session = session;
+		String databaseUsername = session.databaseUser().username();
 		this.connectionPool = database.containsConnectionPool(databaseUsername) ? database.connectionPool(databaseUsername) : null;
 		this.database = database;
-		this.logIdentifier = client.request().user().username().toLowerCase() + "@" + client.request().clientType();
-		this.userDescription = "Remote user: " + client.request().user().username() + ", database user: " + databaseUsername;
+		this.logIdentifier = session.request().user().username().toLowerCase() + "@" + session.request().clientType();
+		this.userDescription = "Remote user: " + session.request().user().username() + ", database user: " + databaseUsername;
 		this.entityConnection = initializeConnection();
 		this.connectionHolder = (ConnectionHolder) entityConnection;
 	}
@@ -92,7 +92,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	@Override
 	public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
 		if (closed) {
-			throw new IllegalStateException("Connection closed: " + client);
+			throw new IllegalStateException("Connection closed: " + session);
 		}
 		String methodName = method.getName();
 		if (methodName.equals(ENTITIES)) {
@@ -159,7 +159,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private void logExit(String methodName, Exception exception) {
 		MethodTrace trace = tracer.exit(methodName, exception);
 		if (tracer != MethodTracer.NO_OP && traceToFile) {
-			StringBuilder messageBuilder = new StringBuilder(client.toString()).append("\n");
+			StringBuilder messageBuilder = new StringBuilder(session.toString()).append("\n");
 			trace.appendTo(messageBuilder);
 			TRACER.trace(messageBuilder.toString());
 		}
@@ -192,8 +192,8 @@ final class LocalConnectionHandler implements InvocationHandler {
 		return tracer.entries();
 	}
 
-	RemoteClient client() {
-		return client;
+	RemoteSession session() {
+		return session;
 	}
 
 	long lastAccessTime() {
@@ -224,7 +224,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		DatabaseException exception = null;
 		try {
 			tracer.enter(FETCH_CONNECTION, userDescription);
-			connectionHolder.attach(connectionPool.connection(client.databaseUser()));
+			connectionHolder.attach(connectionPool.connection(session.databaseUser()));
 		}
 		catch (DatabaseException ex) {
 			exception = ex;
@@ -241,7 +241,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			DatabaseException exception = null;
 			try {
 				tracer.enter(CREATE_CONNECTION, userDescription);
-				connectionHolder.attach(database.createConnection(client.databaseUser()));
+				connectionHolder.attach(database.createConnection(session.databaseUser()));
 			}
 			catch (DatabaseException ex) {
 				exception = ex;
@@ -297,20 +297,20 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private void rollbackIfRequired(LocalEntityConnection entityConnection) {
 		if (entityConnection.transactionOpen()) {
-			LOG.info("Rollback open transaction on disconnect: {}", client);
+			LOG.info("Rollback open transaction on disconnect: {}", session);
 			try {
 				entityConnection.rollbackTransaction();
 			}
 			catch (DatabaseException e) {
-				LOG.error("Rollback on disconnect failed: {}", client, e);
+				LOG.error("Rollback on disconnect failed: {}", session, e);
 			}
 		}
 	}
 
 	private LocalEntityConnection initializeConnection() {
 		LocalEntityConnection connection = localEntityConnection(database, domain, connectionPool == null ?
-						database.createConnection(client.databaseUser()) :
-						connectionPool.connection(client.databaseUser()));
+						database.createConnection(session.databaseUser()) :
+						connectionPool.connection(session.databaseUser()));
 		((Traceable) connection).tracer(tracer);
 		if (connectionPool != null) {
 			Connection jdbcConnection = ((ConnectionHolder) connection).detach();

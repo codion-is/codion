@@ -24,10 +24,11 @@ import is.codion.common.utilities.user.User;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultRemoteClient implements RemoteClient, Serializable {
+final class DefaultRemoteSession implements RemoteSession, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -37,30 +38,35 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	private final String clientHost;
 	private final LocalDateTime creationTime;
 
-	DefaultRemoteClient(DefaultBuilder builder) {
+	DefaultRemoteSession(DefaultBuilder builder) {
 		this.connectionRequest = builder.connectionRequest;
 		this.databaseUser = builder.databaseUser;
 		this.clientHost = builder.clientHost;
 		this.creationTime = LocalDateTime.now();
 	}
 
-	DefaultRemoteClient(DefaultRemoteClient client) {
-		this.connectionRequest = client.connectionRequest.copy();
-		this.databaseUser = client.databaseUser.copy();
-		this.clientHost = client.clientHost;
-		this.creationTime = client.creationTime;
+	DefaultRemoteSession(DefaultRemoteSession session) {
+		this.connectionRequest = session.connectionRequest.copy();
+		this.databaseUser = session.databaseUser.copy();
+		this.clientHost = session.clientHost;
+		this.creationTime = session.creationTime;
 	}
 
-	DefaultRemoteClient(DefaultRemoteClient client, User databaseUser) {
-		this.connectionRequest = client.connectionRequest;
+	DefaultRemoteSession(DefaultRemoteSession session, User databaseUser) {
+		this.connectionRequest = session.connectionRequest;
 		this.databaseUser = databaseUser;
-		this.clientHost = client.clientHost;
-		this.creationTime = client.creationTime;
+		this.clientHost = session.clientHost;
+		this.creationTime = session.creationTime;
 	}
 
 	@Override
 	public ConnectionRequest request() {
 		return connectionRequest;
+	}
+
+	@Override
+	public UUID id() {
+		return connectionRequest.connectionId();
 	}
 
 	@Override
@@ -79,13 +85,13 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	}
 
 	@Override
-	public RemoteClient withDatabaseUser(User databaseUser) {
-		return new DefaultRemoteClient(this, requireNonNull(databaseUser));
+	public RemoteSession withDatabaseUser(User databaseUser) {
+		return new DefaultRemoteSession(this, requireNonNull(databaseUser));
 	}
 
 	@Override
-	public RemoteClient copy() {
-		return new DefaultRemoteClient(this);
+	public RemoteSession copy() {
+		return new DefaultRemoteSession(this);
 	}
 
 	@Override
@@ -95,7 +101,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		return this == obj || obj instanceof RemoteClient && connectionRequest.equals(((RemoteClient) obj).request());
+		return this == obj || obj instanceof RemoteSession && connectionRequest.equals(((RemoteSession) obj).request());
 	}
 
 	@Override
@@ -136,8 +142,8 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 		}
 
 		@Override
-		public RemoteClient build() {
-			return new DefaultRemoteClient(this);
+		public RemoteSession build() {
+			return new DefaultRemoteSession(this);
 		}
 	}
 }

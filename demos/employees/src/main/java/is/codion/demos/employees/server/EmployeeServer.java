@@ -19,7 +19,7 @@
 package is.codion.demos.employees.server;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.demos.employees.domain.Employees;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
@@ -45,18 +45,18 @@ public final class EmployeeServer extends EntityServer {
 
 	@Override
 	protected AbstractServerEntityConnection createRemoteConnection(Database database,
-																																	RemoteClient client, int port,
+																																	RemoteSession session, int port,
 																																	RMIClientSocketFactory clientSocketFactory,
 																																	RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		return new DefaultEmployeeService(domain, database, client, port);
+		return new DefaultEmployeeService(domain, database, session, port);
 	}
 
 	static final class DefaultEmployeeService extends AbstractServerEntityConnection implements EmployeeService {
 
-		private DefaultEmployeeService(Domain domain, Database database, RemoteClient client, int port)
+		private DefaultEmployeeService(Domain domain, Database database, RemoteSession session, int port)
 						throws RemoteException {
-			super(domain, database, client, port, null, null);
+			super(domain, database, session, port, null, null);
 		}
 
 		@Override

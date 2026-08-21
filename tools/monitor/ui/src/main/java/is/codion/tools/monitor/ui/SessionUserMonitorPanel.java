@@ -23,7 +23,7 @@ import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.tools.monitor.model.ClientUserMonitor;
+import is.codion.tools.monitor.model.SessionUserMonitor;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -45,25 +45,25 @@ import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
 
 /**
- * A ClientUserMonitorPanel
+ * A SessionUserMonitorPanel
  */
-public final class ClientUserMonitorPanel extends JPanel {
+public final class SessionUserMonitorPanel extends JPanel {
 
 	private static final int SPINNER_COLUMNS = 3;
 	private static final List<Integer> MAINTENANCE_INTERVAL_VALUES = asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000);
 
-	private final ClientUserMonitor model;
+	private final SessionUserMonitor model;
 
-	private final ClientMonitorPanel clientTypeMonitorPanel;
+	private final SessionMonitorPanel sessionMonitorPanel;
 
 	/**
-	 * Instantiates a new ClientUserMonitorPanel
-	 * @param model the ClientUserMonitor to base this panel on
+	 * Instantiates a new SessionUserMonitorPanel
+	 * @param model the SessionUserMonitor to base this panel on
 	 * @throws RemoteException in case of an exception
 	 */
-	public ClientUserMonitorPanel(ClientUserMonitor model) throws RemoteException {
+	public SessionUserMonitorPanel(SessionUserMonitor model) throws RemoteException {
 		this.model = requireNonNull(model);
-		this.clientTypeMonitorPanel = new ClientMonitorPanel(model.clientMonitor());
+		this.sessionMonitorPanel = new SessionMonitorPanel(model.sessionMonitor());
 		initializeUI();
 	}
 
@@ -112,7 +112,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 		return borderLayoutPanel()
 						.north(actionBase)
-						.center(clientTypeMonitorPanel)
+						.center(sessionMonitorPanel)
 						.build();
 	}
 

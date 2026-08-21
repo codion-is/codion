@@ -20,6 +20,7 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.utilities.exceptions.Exceptions;
+import is.codion.common.utilities.user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,21 +45,27 @@ public interface Authenticator {
 	}
 
 	/**
-	 * Performs login validation for the user specified by the remote client
-	 * and returns a remote client with the same connectionId and user but possibly
-	 * a different databaseUser to propagate to further login procedures
-	 * @param client the client
-	 * @return a new client with the same connectionId but not necessarily the same databaseUser
+	 * <p>Performs login validation for the user specified by the remote session
+	 * and returns a remote session with the same connectionId and user but possibly
+	 * a different databaseUser to propagate to further login procedures.
+	 * <p>Called once per session, that is, once per connection: a client holding more than one
+	 * connection logs in once for each and is logged out once for each, so an authenticator keeping
+	 * state per user, a licence seat say, should expect several sessions per user.
+	 * <p>The returned session must be for the same connection as the one received, the server
+	 * rejecting the login otherwise; {@link RemoteSession#withDatabaseUser(User)} guarantees that.
+	 * @param session the session
+	 * @return a new session with the same connectionId but not necessarily the same databaseUser
 	 * @throws LoginException in case the login fails
-	 * @see RemoteClient#databaseUser()
+	 * @see RemoteSession#databaseUser()
+	 * @see RemoteSession#withDatabaseUser(User)
 	 */
-	RemoteClient login(RemoteClient client) throws LoginException;
+	RemoteSession login(RemoteSession session) throws LoginException;
 
 	/**
-	 * Called after the given client has been disconnected
-	 * @param client the remote client
+	 * Called after the given session has been disconnected
+	 * @param session the remote session
 	 */
-	default void logout(RemoteClient client) {}
+	default void logout(RemoteSession session) {}
 
 	/**
 	 * Disposes of all resources used by this authenticator, after a call to this

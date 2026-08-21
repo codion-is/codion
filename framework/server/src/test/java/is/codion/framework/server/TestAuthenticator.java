@@ -19,7 +19,7 @@
 package is.codion.framework.server;
 
 import is.codion.common.rmi.server.Authenticator;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.utilities.user.User;
 
@@ -45,12 +45,12 @@ public final class TestAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public RemoteClient login(RemoteClient client) throws ServerAuthenticationException {
-		authenticateUser(client.request().user());
+	public RemoteSession login(RemoteSession session) throws ServerAuthenticationException {
+		authenticateUser(session.request().user());
 
-		return RemoteClient.builder(client.request())
+		return RemoteSession.builder(session.request())
 						.databaseUser(databaseUser)
-						.clientHost(client.clientHost())
+						.clientHost(session.clientHost())
 						.build();
 	}
 

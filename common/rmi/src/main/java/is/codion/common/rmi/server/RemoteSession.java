@@ -22,12 +22,16 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.utilities.user.User;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
- * Contains basic information about a remote client
+ * <p>Contains basic information about a remote client session, the server's view of a connected client.
+ * <p>A session lasts exactly as long as the connection it serves and is identified by its
+ * {@link ConnectionRequest#connectionId() connectionId}, see {@link #id()}. A client establishing more
+ * than one connection therefore has more than one session.
  * @see #builder(ConnectionRequest)
  */
-public sealed interface RemoteClient permits DefaultRemoteClient {
+public sealed interface RemoteSession permits DefaultRemoteSession {
 
 	/**
 	 * @see #clientHost()
@@ -35,12 +39,19 @@ public sealed interface RemoteClient permits DefaultRemoteClient {
 	String UNKNOWN_CLIENT_HOST = "unknown host";
 
 	/**
-	 * @return the initial connection request this client is based on
+	 * @return the initial connection request this session is based on
 	 */
 	ConnectionRequest request();
 
 	/**
-	 * @return the time when this client connection was created
+	 * <p>The id of the connection this session serves, and thereby the session's own, the two sharing a
+	 * lifetime. This is the id the client knows the connection by, see {@code EntityConnection.id()}.
+	 * @return the id of this session
+	 */
+	UUID id();
+
+	/**
+	 * @return the time when this session was created
 	 */
 	LocalDateTime creationTime();
 
@@ -56,29 +67,29 @@ public sealed interface RemoteClient permits DefaultRemoteClient {
 	String clientHost();
 
 	/**
-	 * Instantiates a new RemoteClient based on this instance
+	 * Instantiates a new {@link RemoteSession} based on this instance
 	 * but with the specified database user
 	 * @param databaseUser the database user to use
-	 * @return a new RemoteClient instance
+	 * @return a new {@link RemoteSession} instance
 	 */
-	RemoteClient withDatabaseUser(User databaseUser);
+	RemoteSession withDatabaseUser(User databaseUser);
 
 	/**
-	 * @return a copy of this remote client with copies of its user instances
+	 * @return a copy of this remote session with copies of its user instances
 	 */
-	RemoteClient copy();
+	RemoteSession copy();
 
 	/**
-	 * Instantiates a new {@link RemoteClient.Builder}.
+	 * Instantiates a new {@link RemoteSession.Builder}.
 	 * @param connectionRequest the connection request
 	 * @return a new builder
 	 */
 	static Builder builder(ConnectionRequest connectionRequest) {
-		return new DefaultRemoteClient.DefaultBuilder(connectionRequest);
+		return new DefaultRemoteSession.DefaultBuilder(connectionRequest);
 	}
 
 	/**
-	 * Builds a {@link RemoteClient}
+	 * Builds a {@link RemoteSession}
 	 */
 	interface Builder {
 
@@ -95,8 +106,8 @@ public sealed interface RemoteClient permits DefaultRemoteClient {
 		Builder databaseUser(User databaseUser);
 
 		/**
-		 * @return a new {@link RemoteClient} instance based on this builder
+		 * @return a new {@link RemoteSession} instance based on this builder
 		 */
-		RemoteClient build();
+		RemoteSession build();
 	}
 }

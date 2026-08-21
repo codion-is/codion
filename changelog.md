@@ -7,6 +7,9 @@ Codion Change Log
 ### is.codion.common.rmi
 - ConnectionRequest.clientId() renamed connectionId(), Builder.clientId() accordingly, it identifies the connection, not the client establishing it. ConnectionRequest is now sealed.
 - Server.disconnect(), ServerAdmin.disconnect() and AbstractServer.connection() parameters renamed connectionId.
+- RemoteClient renamed RemoteSession, Authenticator.login() and logout() parameters renamed accordingly.
+- RemoteSession.id() added, returning the id of the connection the session serves.
+- ServerAdmin.clients() and AbstractServer.clients() renamed sessions(), AbstractServer.ClientConnection renamed SessionConnection, its client() accessor session().
 ### is.codion.common.model
 - DefaultFilterModelItems, the included and filtered notifications of a selection preserving mutation - refresh, filter, sort, add and remove - are now delivered once the selection has been restored, a listener reading the selection while responding to one used to see it momentarily empty. A mutation now notifies once instead of once per internal step, a refresh no longer notifying twice, for the clear and the add.
 - JsonPreferences now prunes the json output to get rid of empty nodes.
@@ -19,6 +22,9 @@ Codion Change Log
 - EntityService, clientId request header renamed connectionId.
 ### is.codion.framework.server
 - EntityServerAdmin method parameters renamed connectionId.
+- EntityServerAdmin.disconnectAllClients() and disconnectTimedOutClients() renamed disconnectAllSessions() and disconnectTimedOutSessions().
+### is.codion.tools.monitor
+- ClientMonitor, ClientInstanceMonitor and ClientUserMonitor renamed SessionMonitor, SessionInstanceMonitor and SessionUserMonitor, along with their panels. ClientMonitor.RemoteClientColumns renamed RemoteSessionColumns, clientInstanceTableModel() renamed sessionTableModel(), ClientInstanceMonitor.client() renamed session(), ClientUserMonitor.clientMonitor() renamed sessionMonitor(), ServerMonitor.clientMonitor() renamed sessionUserMonitor().
 ### is.codion.framework.domain
 - DefaultForeignKeyConditions.valueMap() bug fixed, no longer uses toMap(), due to nulls. Now rejects non-present keys.
 ### is.codion.swing.framework.ui

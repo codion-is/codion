@@ -46,10 +46,10 @@ public interface ServerAdmin extends Remote {
 	Collection<User> users() throws RemoteException;
 
 	/**
-	 * @return all clients connected to the server
+	 * @return all current server sessions
 	 * @throws RemoteException in case of a communication error
 	 */
-	Collection<RemoteClient> clients() throws RemoteException;
+	Collection<RemoteSession> sessions() throws RemoteException;
 
 	/**
 	 * Shuts down the server

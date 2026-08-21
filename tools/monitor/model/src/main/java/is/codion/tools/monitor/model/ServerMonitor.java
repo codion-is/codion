@@ -90,7 +90,7 @@ public final class ServerMonitor {
 	private final TaskScheduler updateScheduler;
 
 	private final DatabaseMonitor databaseMonitor;
-	private final ClientUserMonitor clientMonitor;
+	private final SessionUserMonitor sessionUserMonitor;
 
 	private boolean shutdown = false;
 
@@ -171,7 +171,7 @@ public final class ServerMonitor {
 		this.systemLoadCollection.addSeries(systemLoadSeries);
 		this.systemLoadCollection.addSeries(processLoadSeries);
 		this.databaseMonitor = new DatabaseMonitor(server, updateRate);
-		this.clientMonitor = new ClientUserMonitor(server, serverInformation.timeZone(), updateRate);
+		this.sessionUserMonitor = new SessionUserMonitor(server, serverInformation.timeZone(), updateRate);
 		this.updateScheduler = TaskScheduler.builder()
 						.task(this::updateStatistics)
 						.interval(updateRate, TimeUnit.SECONDS)
@@ -188,7 +188,7 @@ public final class ServerMonitor {
 		shutdown = true;
 		updateScheduler.stop();
 		databaseMonitor.shutdown();
-		clientMonitor.shutdown();
+		sessionUserMonitor.shutdown();
 	}
 
 	/**
@@ -220,7 +220,7 @@ public final class ServerMonitor {
 	}
 
 	/**
-	 * @return the number of connected clients
+	 * @return the number of connections
 	 */
 	public Observable<Integer> connectionCount() {
 		return connectionCountValue;
@@ -229,8 +229,8 @@ public final class ServerMonitor {
 	/**
 	 * @return the client monitor
 	 */
-	public ClientUserMonitor clientMonitor() {
-		return clientMonitor;
+	public SessionUserMonitor sessionUserMonitor() {
+		return sessionUserMonitor;
 	}
 
 	/**

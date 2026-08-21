@@ -19,7 +19,7 @@
 package is.codion.tools.monitor.model;
 
 import is.codion.common.reactive.state.State;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.framework.server.EntityServerAdmin;
 
@@ -29,39 +29,39 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A ClientInstanceMonitor
+ * A SessionInstanceMonitor
  */
-public final class ClientInstanceMonitor {
+public final class SessionInstanceMonitor {
 
-	private final RemoteClient client;
+	private final RemoteSession session;
 	private final EntityServerAdmin server;
 	private final State tracingEnabled;
 	private final State traceToFileEnabled;
 
 	/**
-	 * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
+	 * Instantiates a new {@link SessionInstanceMonitor}, monitoring the given session
 	 * @param server the server being monitored
-	 * @param client the client info
+	 * @param session the session info
 	 * @throws RemoteException in case of an exception
 	 */
-	public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient client) throws RemoteException {
-		this.client = requireNonNull(client);
+	public SessionInstanceMonitor(EntityServerAdmin server, RemoteSession session) throws RemoteException {
+		this.session = requireNonNull(session);
 		this.server = requireNonNull(server);
 		this.tracingEnabled = State.builder()
-						.value(server.tracingEnabled(client.request().connectionId()))
+						.value(server.tracingEnabled(session.id()))
 						.consumer(this::tracingEnabled)
 						.build();
 		this.traceToFileEnabled = State.builder()
-						.value(server.traceToFile(client.request().connectionId()))
+						.value(server.traceToFile(session.id()))
 						.consumer(this::traceToFile)
 						.build();
 	}
 
 	/**
-	 * @return the {@link RemoteClient}
+	 * @return the {@link RemoteSession}
 	 */
-	public RemoteClient client() {
-		return client;
+	public RemoteSession session() {
+		return session;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public final class ClientInstanceMonitor {
 
 	public List<MethodTrace> methodTraces() {
 		try {
-			return server.methodTraces(client.request().connectionId());
+			return server.methodTraces(session.id());
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -89,12 +89,12 @@ public final class ClientInstanceMonitor {
 
 	@Override
 	public String toString() {
-		return client.toString();
+		return session.toString();
 	}
 
 	private void tracingEnabled(boolean status) {
 		try {
-			server.tracingEnabled(client.request().connectionId(), status);
+			server.tracingEnabled(session.id(), status);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -103,7 +103,7 @@ public final class ClientInstanceMonitor {
 
 	private void traceToFile(boolean traceToFile) {
 		try {
-			server.traceToFile(client.request().connectionId(), traceToFile);
+			server.traceToFile(session.id(), traceToFile);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);

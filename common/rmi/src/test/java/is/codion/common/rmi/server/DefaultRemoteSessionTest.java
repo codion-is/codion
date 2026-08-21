@@ -26,37 +26,37 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-public final class DefaultRemoteClientTest {
+public final class DefaultRemoteSessionTest {
 
 	@Test
 	void copy() {
-		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+		RemoteSession session = RemoteSession.builder(ConnectionRequest.builder()
 										.user(User.user("scott"))
-										.clientType("DefaultRemoteClientTest")
+										.clientType("DefaultRemoteSessionTest")
 										.build())
 						.databaseUser(User.user("john"))
 						.build();
-		RemoteClient copy = client.copy();
-		assertNotSame(client.request(), copy.request());
-		assertNotSame(client.request().user(), copy.request().user());
-		assertNotSame(client.databaseUser(), copy.databaseUser());
-		assertSame(client.creationTime(), copy.creationTime());
-		assertSame(client.clientHost(), copy.clientHost());
+		RemoteSession copy = session.copy();
+		assertNotSame(session.request(), copy.request());
+		assertNotSame(session.request().user(), copy.request().user());
+		assertNotSame(session.databaseUser(), copy.databaseUser());
+		assertSame(session.creationTime(), copy.creationTime());
+		assertSame(session.clientHost(), copy.clientHost());
 	}
 
 	@Test
 	void withDatabaseUser() {
-		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+		RemoteSession session = RemoteSession.builder(ConnectionRequest.builder()
 										.user(User.user("scott"))
-										.clientType("DefaultRemoteClientTest")
+										.clientType("DefaultRemoteSessionTest")
 										.build())
 						.databaseUser(User.user("john"))
 						.build();
-		RemoteClient copy = client.withDatabaseUser(User.user("peter"));
-		assertSame(client.request(), copy.request());
-		assertSame(client.request().user(), copy.request().user());
-		assertNotSame(client.databaseUser(), copy.databaseUser());
-		assertSame(client.creationTime(), copy.creationTime());
-		assertSame(client.clientHost(), copy.clientHost());
+		RemoteSession copy = session.withDatabaseUser(User.user("peter"));
+		assertSame(session.request(), copy.request());
+		assertSame(session.request().user(), copy.request().user());
+		assertNotSame(session.databaseUser(), copy.databaseUser());
+		assertSame(session.creationTime(), copy.creationTime());
+		assertSame(session.clientHost(), copy.clientHost());
 	}
 }

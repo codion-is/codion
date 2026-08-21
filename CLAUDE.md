@@ -723,11 +723,11 @@ Implement custom authentication with the domain, used by the EntityServer when e
 // Chinook demo - User authentication
 public final class ChinookAuthenticator implements Authenticator { 
 	@Override
-	public RemoteClient login(RemoteClient client) throws LoginException {
-		authenticateUser(client.request().user());
-		//Create a new RemoteClient based on the one received
+	public RemoteSession login(RemoteSession session) throws LoginException {
+		authenticateUser(session.request().user());
+		//Create a new RemoteSession based on the one received
 		//but with the actual database user
-		return client.withDatabaseUser(databaseUser);
+		return session.withDatabaseUser(databaseUser);
 	}
 
 	private void authenticateUser(User user) throws LoginException {
