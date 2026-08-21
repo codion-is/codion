@@ -100,8 +100,11 @@ public interface Domain {
 	<C, P, R> DatabaseFunction<C, P, R> function(FunctionType<C, P, R> functionType);
 
 	/**
-	 * Configures a database connection for applications using this domain model, for example adding extensions or properties.
-	 * Called each time a new connection based on this domain is created.
+	 * <p>Configures a database connection for applications using this domain model, for example registering
+	 * a driver specific type.
+	 * <p>Called for every connection before this domain uses it, which is not the same as once per
+	 * connection: a pooled connection is configured each time it is checked out, since the pool hands out
+	 * connections this domain has never seen. Implementations must therefore be cheap and idempotent.
 	 * @param connection the connection to configure
 	 * @throws DatabaseException in case of an exception
 	 */

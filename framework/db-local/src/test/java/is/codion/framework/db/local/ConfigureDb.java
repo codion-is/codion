@@ -27,7 +27,9 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 final class ConfigureDb extends DomainModel {
 
@@ -47,6 +49,17 @@ final class ConfigureDb extends DomainModel {
 		return Configured.TYPE.as()
 						.attributes(Configured.ID.as().primaryKey())
 						.build();
+	}
+
+	private final AtomicInteger connectionsConfigured = new AtomicInteger();
+
+	int connectionsConfigured() {
+		return connectionsConfigured.get();
+	}
+
+	@Override
+	public void configure(Connection connection) {
+		connectionsConfigured.incrementAndGet();
 	}
 
 	@Override

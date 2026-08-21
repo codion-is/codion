@@ -16,6 +16,8 @@ Codion Change Log
 ### is.codion.framework.db
 - EntityConnection.clientId() renamed id(), it identifies the connection, not the client using it. Builder.clientId() removed, each connection is now assigned an id of its own when built, two connections built from a single builder no longer end up sharing one server connection.
 - EntityConnection.clientType() added, previously protected on AbstractEntityConnection.
+### is.codion.framework.db.local
+- Domain.configure(Connection) bug fixed, is now called for every connection attached to a LocalEntityConnection, not just the one it was constructed with. A pooled server connection is attached anew on each invocation, so a domain registering a driver specific type used to have that registration only on the first connection, which went straight back to the pool. Implementations must be cheap and idempotent, see the javadoc.
 ### is.codion.framework.db.rmi
 - ServerEntityConnection.clientId() renamed id(), clientType() added, mirroring EntityConnection.
 ### is.codion.framework.servlet

@@ -40,7 +40,8 @@ public interface ConnectionHolder {
 
 	/**
 	 * <p>Attaches the given JDBC connection, which is used 'as is': no validation or transaction checking
-	 * is performed and auto-commit is assumed to be disabled.
+	 * is performed and auto-commit is assumed to be disabled. The domain does get to configure it, see
+	 * {@link is.codion.framework.domain.Domain#configure(Connection)}.
 	 * <p>Note that this does not reset the transaction state; the caller is responsible for ensuring no
 	 * transaction is considered open when swapping the underlying connection.
 	 * @param connection the connection to attach
