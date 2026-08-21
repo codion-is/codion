@@ -187,6 +187,8 @@ public final class JsonPreferences {
 	}
 
 	/**
+	 * <p>Nodes holding no actual values are left out, a node exists in the file only for the values it holds.
+	 * A node created but never written to therefore does not survive a restart, which nothing here relies on.
 	 * @param prettyPrint true if the JSON should be pretty-printed
 	 * @return the whole tree serialized as JSON, or null if it holds no actual values (only node markers / empty nodes)
 	 */
@@ -195,8 +197,11 @@ public final class JsonPreferences {
 			if (isEmpty(data)) {
 				return null;
 			}
+			//prune a copy, the live tree keeps the nodes the application has created
+			JSONObject snapshot = new JSONObject(data.toString());
+			prune(snapshot);
 
-			return data.toString(prettyPrint ? 2 : 0);
+			return snapshot.toString(prettyPrint ? 2 : 0);
 		}
 	}
 
@@ -330,6 +335,23 @@ public final class JsonPreferences {
 
 	private static void clearObject(JSONObject object) {
 		keys(object).forEach(object::remove);
+	}
+
+	/**
+	 * Removes every child holding no actual preference values, depth first, so that a node
+	 * emptied by the removal of its last value-bearing child is removed along with it.
+	 */
+	private static void prune(JSONObject node) {
+		for (String key : keys(node)) {
+			Object value = node.get(key);
+			if (value instanceof JSONObject) {
+				JSONObject child = (JSONObject) value;
+				prune(child);
+				if (isEmpty(child)) {
+					node.remove(key);
+				}
+			}
+		}
 	}
 
 	/**

@@ -59,13 +59,12 @@ public final class EntityTableExportPanelTest {
 		exportPanel.model().treeModel().includeNone();
 		exportPanel.model().treeModel().includeAll();
 
-		// Store preferences - export should be empty JSON since it matches defaults
+		// Store preferences - nothing to store for export since it matches defaults
 		Preferences prefs = jsonPreferences();
 		EntityTablePanelPreferences.store(prefs, tablePanel);
 
-		// Should store empty JSON for export since it matches defaults
-		String exportJson = prefs.get("export", "");
-		assertEquals("{}", exportJson);
+		// Nothing is stored at all, an empty export configuration is not a preference
+		assertEquals("", prefs.get("export", ""));
 	}
 
 	@Test
