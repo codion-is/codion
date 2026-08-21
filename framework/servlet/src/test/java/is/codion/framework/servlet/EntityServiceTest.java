@@ -89,7 +89,7 @@ public class EntityServiceTest {
 	private static String SERVER_BASEURL;
 	private static String SERVER_JSON_BASEURL;
 
-	private static final String CLIENT_ID_STRING = UUID.randomUUID().toString();
+	private static final String CONNECTION_ID_STRING = UUID.randomUUID().toString();
 
 	private static EntityServer server;
 
@@ -439,13 +439,13 @@ public class EntityServiceTest {
 		assertEquals(UNAUTHORIZED, response.statusCode());
 
 		response = HTTP_CLIENT.send(createRequest(SERVER_JSON_BASEURL, "isTransactionOpen",
-						BodyPublishers.noBody(), CLIENT_ID_STRING, Version.version().toString(), "Basic not!base64"),
+						BodyPublishers.noBody(), CONNECTION_ID_STRING, Version.version().toString(), "Basic not!base64"),
 						BodyHandlers.ofByteArray());
 		assertEquals(UNAUTHORIZED, response.statusCode());
 
 		//a malformed optional version header is a bad request, not an authentication failure
 		response = HTTP_CLIENT.send(createRequest(SERVER_JSON_BASEURL, "isTransactionOpen",
-						BodyPublishers.noBody(), CLIENT_ID_STRING, "not a version", createAuthorizationHeader()),
+						BodyPublishers.noBody(), CONNECTION_ID_STRING, "not a version", createAuthorizationHeader()),
 						BodyHandlers.ofByteArray());
 		assertEquals(BAD_REQUEST, response.statusCode());
 	}
@@ -477,7 +477,7 @@ public class EntityServiceTest {
 	void serialErrorsAreStillSerializedExceptions() throws Exception {
 		//the serial channel is a java serialization channel by definition, its error wire format is unchanged
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest(SERVER_BASEURL, "isTransactionOpen",
-						BodyPublishers.noBody(), CLIENT_ID_STRING, Version.version().toString(), "Basic not!base64"),
+						BodyPublishers.noBody(), CONNECTION_ID_STRING, Version.version().toString(), "Basic not!base64"),
 						BodyHandlers.ofByteArray());
 		assertEquals(UNAUTHORIZED, response.statusCode());
 		Object exception = Serializer.deserialize(response.body());
@@ -512,19 +512,19 @@ public class EntityServiceTest {
 	}
 
 	private static HttpRequest createRequest(String baseUrl, String path, BodyPublisher bodyPublisher) {
-		return createRequest(baseUrl, path, bodyPublisher, CLIENT_ID_STRING,
+		return createRequest(baseUrl, path, bodyPublisher, CONNECTION_ID_STRING,
 						Version.version().toString(), createAuthorizationHeader());
 	}
 
 	private static HttpRequest createRequest(String baseUrl, String path, BodyPublisher bodyPublisher,
-																					 String clientId, String clientVersion, String authorization) {
+																					 String connectionId, String clientVersion, String authorization) {
 		return HttpRequest.newBuilder()
 						.uri(URI.create(baseUrl + path))
 						.POST(bodyPublisher)
 						.headers(new String[] {
 										EntityService.DOMAIN_TYPE, TestDomain.DOMAIN.name(),
 										EntityService.CLIENT_TYPE, "EntityJavalinTest",
-										EntityService.CLIENT_ID, clientId,
+										EntityService.CONNECTION_ID, connectionId,
 										EntityService.CLIENT_VERSION, clientVersion,
 										"Authorization", authorization
 						})

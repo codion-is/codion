@@ -42,7 +42,7 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	public JsonHttpEntityConnectionTest() {
-		super(createConnection());
+		super(builder());
 	}
 
 	@Test
@@ -150,18 +150,20 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
 						.clientType("JsonHttpEntityConnectionTest")
-						.clientId(UUID.randomUUID())
+						.connectionId(UUID.randomUUID())
 						.build())
 						.decodeError(new HttpTransport.Response(status, body.getBytes(UTF_8)));
 	}
 
 	private static EntityConnection createConnection() {
+		return builder().build();
+	}
+
+	private static HttpEntityConnection.Builder builder() {
 		return HttpEntityConnection.builder()
 						.json(true)
 						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
-						.clientType("JsonHttpEntityConnectionTest")
-						.clientId(UUID.randomUUID())
-						.build();
+						.clientType("JsonHttpEntityConnectionTest");
 	}
 }

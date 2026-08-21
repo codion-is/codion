@@ -33,11 +33,11 @@ import java.util.UUID;
 public interface ServerAdmin extends Remote {
 
 	/**
-	 * Disconnects the given client from the server
-	 * @param clientId the id of the client to disconnect
+	 * Disconnects the given connection from the server
+	 * @param connectionId the id of the connection to disconnect
 	 * @throws RemoteException in case of a communication error
 	 */
-	void disconnect(UUID clientId) throws RemoteException;
+	void disconnect(UUID connectionId) throws RemoteException;
 
 	/**
 	 * @return the users currently connected to the server

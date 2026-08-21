@@ -38,7 +38,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOf;
@@ -91,7 +90,6 @@ public final class JasperReportsWireTest {
 						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
 						.clientType("JasperReportsWireTest")
-						.clientId(UUID.randomUUID())
 						.build();
 	}
 

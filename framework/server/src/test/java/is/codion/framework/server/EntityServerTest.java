@@ -212,8 +212,8 @@ public class EntityServerTest {
 						.clientType("ClientType")
 						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ServerEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
-		admin.tracingEnabled(connectionRequestTwo.clientId(), true);
-		assertTrue(admin.tracingEnabled(connectionRequestOne.clientId()));
+		admin.tracingEnabled(connectionRequestTwo.connectionId(), true);
+		assertTrue(admin.tracingEnabled(connectionRequestOne.connectionId()));
 		assertThrows(IllegalArgumentException.class, () -> admin.tracingEnabled(UUID.randomUUID()));
 		assertThrows(IllegalArgumentException.class, () -> admin.tracingEnabled(UUID.randomUUID(), true));
 		assertTrue(remoteConnectionTwo.connected());
@@ -231,7 +231,7 @@ public class EntityServerTest {
 
 		admin.databaseStatistics();
 
-		List<MethodTrace> traces = admin.methodTraces(connectionRequestTwo.clientId());
+		List<MethodTrace> traces = admin.methodTraces(connectionRequestTwo.connectionId());
 
 		MethodTrace entry = traces.get(0);
 		assertEquals("select", entry.method());
@@ -239,10 +239,10 @@ public class EntityServerTest {
 
 		admin.disconnectTimedOutClients();
 
-		server.disconnect(connectionRequestOne.clientId());
+		server.disconnect(connectionRequestOne.connectionId());
 		assertEquals(1, admin.connectionCount());
 
-		server.disconnect(connectionRequestTwo.clientId());
+		server.disconnect(connectionRequestTwo.connectionId());
 		assertEquals(0, admin.connectionCount());
 
 		admin.connectionLimit(1);
@@ -258,9 +258,9 @@ public class EntityServerTest {
 		server.connect(connectionRequestTwo);
 		assertEquals(2, admin.connectionCount());
 
-		server.disconnect(connectionRequestOne.clientId());
+		server.disconnect(connectionRequestOne.connectionId());
 		assertEquals(1, admin.connectionCount());
-		server.disconnect(connectionRequestTwo.clientId());
+		server.disconnect(connectionRequestTwo.connectionId());
 		assertEquals(0, admin.connectionCount());
 
 		//testing with the TestAuthenticator
@@ -292,9 +292,9 @@ public class EntityServerTest {
 		for (RemoteClient employeesClient : employeesClients) {
 			assertEquals(UNIT_TEST_USER, employeesClient.databaseUser());
 		}
-		server.disconnect(connectionRequestJohn.clientId());
+		server.disconnect(connectionRequestJohn.connectionId());
 		assertEquals(1, admin.connectionCount());
-		server.disconnect(connectionRequestHelen.clientId());
+		server.disconnect(connectionRequestHelen.connectionId());
 		assertEquals(0, admin.connectionCount());
 	}
 
@@ -346,7 +346,7 @@ public class EntityServerTest {
 		assertTrue(connection.connected());
 
 		//disconnected server side, which connected() reports without healing, it being a question
-		admin.disconnect(connection.clientId());
+		admin.disconnect(connection.id());
 		assertFalse(connection.connected());
 
 		//an operation re-establishes it, through the same instance
@@ -358,6 +358,37 @@ public class EntityServerTest {
 
 		//close is terminal
 		assertThrows(IllegalStateException.class, () -> connection.select(all(Employee.TYPE)));
+	}
+
+	@Test
+	void connectionPerBuild() {
+		//a builder configures a client, each build() is a connection of its own, sharing the
+		//builder must not collapse them into a single connection server side
+		RemoteEntityConnection.Builder builder = RemoteEntityConnection.builder()
+						.hostname("localhost")
+						.port(CONFIGURATION.port())
+						.registryPort(CONFIGURATION.registryPort())
+						.domain(TestDomain.DOMAIN)
+						.clientType("TestClient")
+						.user(UNIT_TEST_USER);
+
+		EntityConnection one = builder.build();
+		EntityConnection two = builder.build();
+		try {
+			assertNotEquals(one.id(), two.id());
+
+			one.startTransaction();
+			assertTrue(one.transactionOpen());
+			assertFalse(two.transactionOpen());
+			one.rollbackTransaction();
+
+			one.close();
+			assertTrue(two.connected());
+		}
+		finally {
+			one.close();
+			two.close();
+		}
 	}
 
 	@Test

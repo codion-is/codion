@@ -139,17 +139,17 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	}
 
 	/**
-	 * @param clientId the client id
-	 * @return the connection associated with the given client
-	 * @throws IllegalArgumentException in case no such client is connected
+	 * @param connectionId the connection id
+	 * @return the connection with the given id
+	 * @throws IllegalArgumentException in case no such connection exists
 	 */
-	public final T connection(UUID clientId) {
-		ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId));
+	public final T connection(UUID connectionId) {
+		ClientConnection<T> clientConnection = connections.get(requireNonNull(connectionId));
 		if (clientConnection != null) {
 			return clientConnection.connection();
 		}
 
-		throw new IllegalArgumentException("Client not connected: " + clientId);
+		throw new IllegalArgumentException("Connection not found: " + connectionId);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		}
 		requireNonNull(connectionRequest);
 		requireNonNull(connectionRequest.user(), "user must be specified");
-		requireNonNull(connectionRequest.clientId(), "clientId must be specified");
+		requireNonNull(connectionRequest.connectionId(), "connectionId must be specified");
 		requireNonNull(connectionRequest.clientType(), "clientType must be specified");
 		synchronized (connections) {
 			//re-check within the monitor, shutdown() snapshots the connections while holding it,
@@ -219,7 +219,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 			if (shuttingDown.get()) {
 				throw new LoginException("Server is shutting down");
 			}
-			ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
+			ClientConnection<T> clientConnection = connections.get(connectionRequest.connectionId());
 			if (clientConnection != null) {
 				validateUserCredentials(connectionRequest.user(), clientConnection.client().request().user());
 				LOG.trace("Active connection exists {}", connectionRequest);
@@ -238,13 +238,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	}
 
 	@Override
-	public final void disconnect(UUID clientId) {
-		requireNonNull(clientId);
+	public final void disconnect(UUID connectionId) {
+		requireNonNull(connectionId);
 		ClientConnection<T> clientConnection;
 		//the removal and the close must be atomic with respect to connect(), which hands out
 		//an existing connection, otherwise a reconnecting client can receive a just-closed one
 		synchronized (connections) {
-			clientConnection = connections.remove(clientId);
+			clientConnection = connections.remove(connectionId);
 			if (clientConnection == null) {
 				return;
 			}
@@ -252,7 +252,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 				disconnect(clientConnection.connection());
 			}
 			catch (Exception e) {
-				LOG.debug("Error while disconnecting a client: {}", clientId, e);
+				LOG.debug("Error while disconnecting a connection: {}", connectionId, e);
 			}
 		}
 		RemoteClient client = clientConnection.client();
@@ -276,13 +276,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		removeShutdownHook();
 		connectionMaintenanceScheduler.stop();
 		unexportSilently(exported ? asList(registry, this, admin) : asList(registry, admin));
-		List<UUID> clientIds;
+		List<UUID> connectionIds;
 		//snapshot within the monitor, a connect() in flight either completed before this
 		//and is included, or observes shuttingDown and is rejected
 		synchronized (connections) {
-			clientIds = new ArrayList<>(connections.keySet());
+			connectionIds = new ArrayList<>(connections.keySet());
 		}
-		clientIds.forEach(this::disconnect);
+		connectionIds.forEach(this::disconnect);
 		sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
 		authenticators.values().forEach(AbstractServer::closeAuthenticator);
 		auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
@@ -445,7 +445,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 			client = clientAuthenticator.login(client);
 		}
 		ClientConnection<T> clientConnection = new ClientConnection<>(client, connect(client));
-		connections.put(client.request().clientId(), clientConnection);
+		connections.put(client.request().connectionId(), clientConnection);
 
 		return clientConnection;
 	}

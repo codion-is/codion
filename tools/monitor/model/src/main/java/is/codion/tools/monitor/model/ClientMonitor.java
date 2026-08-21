@@ -93,13 +93,13 @@ public final class ClientMonitor {
 		public static final String CLIENT_TYPE = "Type";
 		public static final String CLIENT_VERSION = "Version";
 		public static final String CODION_VERSION = "Framework version";
-		public static final String CLIENT_ID = "Id";
+		public static final String CONNECTION_ID = "Id";
 		public static final String LOCALE = "Locale";
 		public static final String TIMEZONE = "Timezone";
 		public static final String CREATION_TIME = "Created";
 
 		private static final List<String> IDENTIFIERS = unmodifiableList(asList(
-						USER, CLIENT_HOST, CLIENT_TYPE, CLIENT_VERSION, CODION_VERSION, CLIENT_ID, LOCALE, TIMEZONE, CREATION_TIME
+						USER, CLIENT_HOST, CLIENT_TYPE, CLIENT_VERSION, CODION_VERSION, CONNECTION_ID, LOCALE, TIMEZONE, CREATION_TIME
 		));
 
 		@Override
@@ -131,8 +131,8 @@ public final class ClientMonitor {
 									.orElse(null);
 				case CODION_VERSION:
 					return row.request().frameworkVersion().toString();
-				case CLIENT_ID:
-					return row.request().clientId().toString();
+				case CONNECTION_ID:
+					return row.request().connectionId().toString();
 				case LOCALE:
 					return row.request().locale().toString();
 				case TIMEZONE:

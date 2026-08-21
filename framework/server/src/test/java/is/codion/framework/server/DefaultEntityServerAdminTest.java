@@ -69,8 +69,8 @@ public final class DefaultEntityServerAdminTest {
 							.build();
 			server.connect(connectionRequest);
 			EntityServerAdmin admin = new DefaultEntityServerAdmin(server, configuration);
-			admin.tracingEnabled(connectionRequest.clientId(), true);
-			assertTrue(admin.tracingEnabled(connectionRequest.clientId()));
+			admin.tracingEnabled(connectionRequest.connectionId(), true);
+			assertTrue(admin.tracingEnabled(connectionRequest.connectionId()));
 			admin.resetConnectionPoolStatistics(SCOTT);
 			admin.collectPoolSnapshotStatistics(SCOTT, true);
 			assertTrue(admin.collectPoolSnapshotStatistics(SCOTT));
@@ -87,7 +87,7 @@ public final class DefaultEntityServerAdminTest {
 			assertEquals(300, admin.maximumPoolCheckOutTime(SCOTT));
 			admin.pooledConnectionIdleTimeout(SCOTT, 1000);
 			assertEquals(1000, admin.pooledConnectionIdleTimeout(SCOTT));
-			admin.methodTraces(connectionRequest.clientId());
+			admin.methodTraces(connectionRequest.connectionId());
 
 			admin.idleConnectionTimeout(30);
 			try {

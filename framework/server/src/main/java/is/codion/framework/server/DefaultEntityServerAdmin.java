@@ -217,30 +217,30 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 	}
 
 	@Override
-	public List<MethodTrace> methodTraces(UUID clientId) {
-		return server.methodTraces(clientId);
+	public List<MethodTrace> methodTraces(UUID connectionId) {
+		return server.methodTraces(connectionId);
 	}
 
 	@Override
-	public boolean traceToFile(UUID clientId) {
-		return server.traceToFile(clientId);
+	public boolean traceToFile(UUID connectionId) {
+		return server.traceToFile(connectionId);
 	}
 
 	@Override
-	public void traceToFile(UUID clientId, boolean traceToFile) {
-		LOG.info("traceToFile({}, {})", clientId, traceToFile);
-		server.traceToFile(clientId, traceToFile);
+	public void traceToFile(UUID connectionId, boolean traceToFile) {
+		LOG.info("traceToFile({}, {})", connectionId, traceToFile);
+		server.traceToFile(connectionId, traceToFile);
 	}
 
 	@Override
-	public boolean tracingEnabled(UUID clientId) {
-		return server.tracingEnabled(clientId);
+	public boolean tracingEnabled(UUID connectionId) {
+		return server.tracingEnabled(connectionId);
 	}
 
 	@Override
-	public void tracingEnabled(UUID clientId, boolean tracingEnabled) {
-		LOG.info("tracingEnabled({}, {})", clientId, tracingEnabled);
-		server.tracingEnabled(clientId, tracingEnabled);
+	public void tracingEnabled(UUID connectionId, boolean tracingEnabled) {
+		LOG.info("tracingEnabled({}, {})", connectionId, tracingEnabled);
+		server.tracingEnabled(connectionId, tracingEnabled);
 	}
 
 	@Override

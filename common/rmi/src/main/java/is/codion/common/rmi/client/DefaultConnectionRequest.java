@@ -44,7 +44,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	private static final long serialVersionUID = 1;
 
 	private final User user;
-	private final UUID clientId;
+	private final UUID connectionId;
 	private final String clientType;
 	private final Locale locale = Locale.getDefault();
 	private final ZoneId timeZone = ZoneId.systemDefault();
@@ -55,7 +55,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	private DefaultConnectionRequest(DefaultBuilder builder) {
 		this.user = builder.user;
 		this.clientType = builder.clientType;
-		this.clientId = builder.clientId == null ? UUID.randomUUID() : builder.clientId;
+		this.connectionId = builder.connectionId == null ? UUID.randomUUID() : builder.connectionId;
 		this.version = builder.version;
 		this.parameters = builder.parameters == null ? null : unmodifiableMap(builder.parameters);
 	}
@@ -66,8 +66,8 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	}
 
 	@Override
-	public UUID clientId() {
-		return clientId;
+	public UUID connectionId() {
+		return connectionId;
 	}
 
 	@Override
@@ -103,7 +103,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	@Override
 	public ConnectionRequest copy() {
 		Builder builder = new DefaultBuilder(user.copy(), clientType)
-						.clientId(clientId)
+						.connectionId(connectionId)
 						.version(version);
 		if (parameters != null) {
 			parameters.forEach(builder::parameter);
@@ -114,17 +114,17 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
 	@Override
 	public boolean equals(Object obj) {
-		return this == obj || obj instanceof ConnectionRequest && clientId.equals(((ConnectionRequest) obj).clientId());
+		return this == obj || obj instanceof ConnectionRequest && connectionId.equals(((ConnectionRequest) obj).connectionId());
 	}
 
 	@Override
 	public int hashCode() {
-		return clientId.hashCode();
+		return connectionId.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return user + " [" + clientType + "] - " + clientId;
+		return user + " [" + clientType + "] - " + connectionId;
 	}
 
 	private static final class DefaultUserStep implements UserStep {
@@ -156,7 +156,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		private final User user;
 		private final String clientType;
 
-		private @Nullable UUID clientId;
+		private @Nullable UUID connectionId;
 		private @Nullable Version version;
 		private @Nullable Map<String, Object> parameters;
 
@@ -166,8 +166,8 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		}
 
 		@Override
-		public Builder clientId(UUID clientId) {
-			this.clientId = requireNonNull(clientId);
+		public Builder connectionId(UUID connectionId) {
+			this.connectionId = requireNonNull(connectionId);
 			return this;
 		}
 

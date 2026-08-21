@@ -282,7 +282,7 @@ server log severity:
 
 [cols="1,3"]
 |===
-|401 |Authentication failure, including a malformed `Authorization` or `clientId` header
+|401 |Authentication failure, including a malformed `Authorization` or `connectionId` header
 |400 |A request the server rejects as malformed
 |404, 409 |Not found, and the conflicts a correctly functioning application produces — optimistic locking, referential integrity, unique constraints
 |503, 504 |No connection available, query timeout

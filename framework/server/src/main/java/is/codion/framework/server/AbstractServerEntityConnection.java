@@ -133,8 +133,19 @@ public abstract class AbstractServerEntityConnection implements Remote {
 		return connectionHandler.client().request().user();
 	}
 
-	public final UUID clientId() {
-		return connectionHandler.client().request().clientId();
+	/**
+	 * @return the id of this connection, the one the client knows it by
+	 * @see is.codion.framework.db.EntityConnection#id()
+	 */
+	public final UUID id() {
+		return connectionHandler.client().request().connectionId();
+	}
+
+	/**
+	 * @return the type of the client this connection serves
+	 */
+	public final String clientType() {
+		return connectionHandler.client().request().clientType();
 	}
 
 	/**

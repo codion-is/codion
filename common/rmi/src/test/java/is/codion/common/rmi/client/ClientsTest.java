@@ -49,16 +49,16 @@ public final class ClientsTest {
 		@DisplayName("Basic builder with required fields creates valid request")
 		void builder_withRequiredFields_createsValidRequest() {
 			User user = User.parse(TEST_USER_SPEC);
-			UUID clientId = UUID.randomUUID();
+			UUID connectionId = UUID.randomUUID();
 
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(user)
 							.clientType(TEST_CLIENT_TYPE)
-							.clientId(clientId)
+							.connectionId(connectionId)
 							.build();
 
 			assertEquals(user, request.user());
-			assertEquals(clientId, request.clientId());
+			assertEquals(connectionId, request.connectionId());
 			assertEquals(TEST_CLIENT_TYPE, request.clientType());
 			assertFalse(request.version().isPresent());
 			assertEquals(Version.version(), request.frameworkVersion());
@@ -68,13 +68,13 @@ public final class ClientsTest {
 		@DisplayName("Builder with version creates request with version")
 		void builder_withVersion_createsRequestWithVersion() {
 			User user = User.parse(TEST_USER_SPEC);
-			UUID clientId = UUID.randomUUID();
+			UUID connectionId = UUID.randomUUID();
 			Version clientVersion = Version.parse("1.2.3");
 
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(user)
 							.clientType(TEST_CLIENT_TYPE)
-							.clientId(clientId)
+							.connectionId(connectionId)
 							.version(clientVersion)
 							.build();
 
@@ -92,13 +92,13 @@ public final class ClientsTest {
 		}
 
 		@Test
-		@DisplayName("Builder with null client ID throws exception")
-		void builder_withNullClientId_throwsException() {
+		@DisplayName("Builder with null connection ID throws exception")
+		void builder_withNullConnectionId_throwsException() {
 			assertThrows(NullPointerException.class, () ->
 							ConnectionRequest.builder()
 											.user(User.parse(TEST_USER_SPEC))
 											.clientType(TEST_CLIENT_TYPE)
-											.clientId(null));
+											.connectionId(null));
 		}
 
 		@Test
@@ -117,12 +117,12 @@ public final class ClientsTest {
 	class ConnectionRequestPropertyTests {
 
 		@Test
-		@DisplayName("Hash code is based on client ID")
-		void hashCode_basedOnClientId() {
-			UUID clientId = UUID.randomUUID();
-			ConnectionRequest request = createTestRequest(clientId);
+		@DisplayName("Hash code is based on connection ID")
+		void hashCode_basedOnConnectionId() {
+			UUID connectionId = UUID.randomUUID();
+			ConnectionRequest request = createTestRequest(connectionId);
 
-			assertEquals(clientId.hashCode(), request.hashCode());
+			assertEquals(connectionId.hashCode(), request.hashCode());
 		}
 
 		@Test
@@ -140,7 +140,7 @@ public final class ClientsTest {
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(user)
 							.clientType(TEST_CLIENT_TYPE)
-							.clientId(UUID.randomUUID())
+							.connectionId(UUID.randomUUID())
 							.build();
 
 			String stringRep = request.toString();
@@ -158,7 +158,7 @@ public final class ClientsTest {
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(User.parse(TEST_USER_SPEC))
 							.clientType(EMPTY_CLIENT_TYPE)
-							.clientId(UUID.randomUUID())
+							.connectionId(UUID.randomUUID())
 							.build();
 
 			assertEquals(EMPTY_CLIENT_TYPE, request.clientType());
@@ -205,18 +205,18 @@ public final class ClientsTest {
 	class ConnectionRequestEqualityTests {
 
 		@Test
-		@DisplayName("Requests with same client ID have same hash code")
-		void requests_withSameClientId_haveSameHashCode() {
-			UUID clientId = UUID.randomUUID();
-			ConnectionRequest request1 = createTestRequest(clientId);
-			ConnectionRequest request2 = createTestRequest(clientId);
+		@DisplayName("Requests with same connection ID have same hash code")
+		void requests_withSameConnectionId_haveSameHashCode() {
+			UUID connectionId = UUID.randomUUID();
+			ConnectionRequest request1 = createTestRequest(connectionId);
+			ConnectionRequest request2 = createTestRequest(connectionId);
 
 			assertEquals(request1.hashCode(), request2.hashCode());
 		}
 
 		@Test
-		@DisplayName("Requests with different client IDs have different hash codes")
-		void requests_withDifferentClientIds_haveDifferentHashCodes() {
+		@DisplayName("Requests with different connection IDs have different hash codes")
+		void requests_withDifferentConnectionIds_haveDifferentHashCodes() {
 			ConnectionRequest request1 = createTestRequest(UUID.randomUUID());
 			ConnectionRequest request2 = createTestRequest(UUID.randomUUID());
 
@@ -227,12 +227,12 @@ public final class ClientsTest {
 		@DisplayName("Request properties are immutable after creation")
 		void request_propertiesAreImmutable() {
 			User user = User.parse(TEST_USER_SPEC);
-			UUID clientId = UUID.randomUUID();
-			ConnectionRequest request = createTestRequest(user, clientId);
+			UUID connectionId = UUID.randomUUID();
+			ConnectionRequest request = createTestRequest(user, connectionId);
 
 			// Properties should be the same objects (immutable)
 			assertSame(user, request.user());
-			assertSame(clientId, request.clientId());
+			assertSame(connectionId, request.connectionId());
 		}
 	}
 
@@ -280,15 +280,15 @@ public final class ClientsTest {
 		return createTestRequest(UUID.randomUUID());
 	}
 
-	private ConnectionRequest createTestRequest(UUID clientId) {
-		return createTestRequest(User.parse(TEST_USER_SPEC), clientId);
+	private ConnectionRequest createTestRequest(UUID connectionId) {
+		return createTestRequest(User.parse(TEST_USER_SPEC), connectionId);
 	}
 
-	private ConnectionRequest createTestRequest(User user, UUID clientId) {
+	private ConnectionRequest createTestRequest(User user, UUID connectionId) {
 		return ConnectionRequest.builder()
 						.user(user)
 						.clientType(TEST_CLIENT_TYPE)
-						.clientId(clientId)
+						.connectionId(connectionId)
 						.build();
 	}
 }

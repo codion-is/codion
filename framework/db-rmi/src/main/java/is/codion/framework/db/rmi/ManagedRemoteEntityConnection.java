@@ -110,7 +110,7 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 											server().connect(ConnectionRequest.builder()
 															.user(user())
 															.clientType(clientType())
-															.clientId(clientId())
+															.connectionId(id())
 															.version(clientVersion().orElse(null))
 															.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
 															.build())));
@@ -123,7 +123,7 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 	@Override
 	protected void close(EntityConnection connection) {
 		try {
-			server.disconnect(clientId());
+			server.disconnect(id());
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -143,17 +143,17 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 			}//just to check the connection
 		}
 		catch (RemoteException e) {
-			LOG.info("{} was unreachable, {} - {} reconnecting...", serverName, user(), clientId());
+			LOG.info("{} was unreachable, {} - {} reconnecting...", serverName, user(), id());
 			unreachable = true;
 		}
 		if (server == null) {
 			connectToServer();
-			LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverName);
+			LOG.info("Connection: {}, {} connected to server: {}", user(), id(), serverName);
 		}
 		else if (unreachable) {
 			//if server is not reachable, try to reconnect once and return
 			reconnectToServer();
-			LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverName);
+			LOG.info("Connection: {}, {} connected to server: {}", user(), id(), serverName);
 		}
 
 		return this.server;

@@ -69,7 +69,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	private final User user;
 	private final DomainType domainType;
 	private final @Nullable Domain domain;
-	private final UUID clientId;
+	private final UUID id = UUID.randomUUID();
 	private final String clientType;
 	private final @Nullable Version clientVersion;
 
@@ -90,7 +90,6 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		this.user = requireNonNull(builder.user, "A user must be specified");
 		this.domainType = requireNonNull(builder.domainType, "A domain must be specified");
 		this.domain = builder.domain;
-		this.clientId = builder.clientId;
 		this.clientType = builder.clientType == null ? domainType.name() : builder.clientType;
 		this.clientVersion = builder.clientVersion;
 	}
@@ -116,8 +115,13 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	}
 
 	@Override
-	public final UUID clientId() {
-		return clientId;
+	public final UUID id() {
+		return id;
+	}
+
+	@Override
+	public final String clientType() {
+		return clientType;
 	}
 
 	@Override
@@ -413,14 +417,6 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	}
 
 	/**
-	 * @return the client type identifying this connection to the server
-	 * @see Builder#clientType(String)
-	 */
-	protected final String clientType() {
-		return clientType;
-	}
-
-	/**
 	 * <p>Returns the underlying connection, establishing it if this is the first use and re-establishing it if
 	 * it has gone bad. Called before each operation, hence {@link EntityConnection#VALIDITY_CHECK_INTERVAL}.
 	 * <p>Note that a connection with an open transaction is returned as is, without validation, so that an
@@ -595,7 +591,6 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		private @Nullable User user;
 		private @Nullable DomainType domainType;
 		private @Nullable Domain domain;
-		private UUID clientId = UUID.randomUUID();
 		private @Nullable String clientType;
 		private @Nullable Version clientVersion;
 
@@ -631,12 +626,6 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		public final B domain(Domain domain) {
 			this.domainType = requireNonNull(domain).type();
 			this.domain = domain;
-			return self();
-		}
-
-		@Override
-		public final B clientId(UUID clientId) {
-			this.clientId = requireNonNull(clientId);
 			return self();
 		}
 

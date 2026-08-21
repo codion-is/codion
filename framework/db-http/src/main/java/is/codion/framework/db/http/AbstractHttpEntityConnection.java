@@ -71,14 +71,15 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	private static final String BASIC = "Basic ";
 	private static final String DOMAIN_TYPE = "domainType";
 	private static final String CLIENT_TYPE = "clientType";
-	private static final String CLIENT_ID = "clientId";
+	private static final String CONNECTION_ID = "connectionId";
 	private static final String CLIENT_VERSION = "clientVersion";
 	private static final String HTTP = "http://";
 	private static final String HTTPS = "https://";
 	private static final int HTTP_STATUS_OK = 200;
 
 	private final User user;
-	private final UUID clientId;
+	private final UUID id;
+	private final String clientType;
 	protected final String baseurl;
 	protected final HttpTransport transport;
 	protected final Entities entities;
@@ -97,7 +98,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		this.baseurl = createBaseUrl(builder, path);
 		this.transport = HttpTransport.instance(builder.connectTimeout, builder.socketTimeout);
 		this.headers = initializeHeaders(builder, user);
-		this.clientId = builder.clientId;
+		this.id = requireNonNull(builder.connectionId, "connectionId must be specified");
+		this.clientType = requireNonNull(builder.clientType, "clientType must be specified");
 		// An injected domain is used directly (built in-process); otherwise the entity definitions are fetched
 		// from the server — the secure default, keeping the domain implementation (table names, queries) off the client.
 		this.entities = builder.domain != null ? builder.domain.entities() : initializeEntities();
@@ -114,8 +116,13 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final UUID clientId() {
-		return clientId;
+	public final UUID id() {
+		return id;
+	}
+
+	@Override
+	public final String clientType() {
+		return clientType;
 	}
 
 	@Override
@@ -433,7 +440,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		List<String> headerList = new ArrayList<>(asList(
 						DOMAIN_TYPE, requireNonNull(builder.domainType, "domainType must be specified").name(),
 						CLIENT_TYPE, requireNonNull(builder.clientType, "clientType must be specified"),
-						CLIENT_ID, requireNonNull(builder.clientId, "clientId must be specified").toString(),
+						CONNECTION_ID, requireNonNull(builder.connectionId, "connectionId must be specified").toString(),
 						AUTHORIZATION, createAuthorizationHeader(user)
 		));
 		if (builder.clientVersion != null) {
@@ -480,7 +487,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		private int connectTimeout = CONNECT_TIMEOUT.getOrThrow();
 		private User user;
 		private String clientType;
-		private UUID clientId;
+		private UUID connectionId;
 		private @Nullable Version clientVersion;
 
 		DefaultBuilder domain(DomainType domainType) {
@@ -538,8 +545,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			return this;
 		}
 
-		DefaultBuilder clientId(UUID clientId) {
-			this.clientId = requireNonNull(clientId);
+		DefaultBuilder connectionId(UUID connectionId) {
+			this.connectionId = requireNonNull(connectionId);
 			return this;
 		}
 

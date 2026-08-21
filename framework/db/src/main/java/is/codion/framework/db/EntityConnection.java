@@ -282,12 +282,6 @@ public interface EntityConnection extends AutoCloseable {
 		B domain(Domain domain);
 
 		/**
-		 * @param clientId the UUID identifying this client connection
-		 * @return this builder instance
-		 */
-		B clientId(UUID clientId);
-
-		/**
 		 * If no client type is specified, {@link DomainType#name()} is used.
 		 * @param clientType a String identifying the client type for this connection
 		 * @return this builder instance
@@ -302,7 +296,10 @@ public interface EntityConnection extends AutoCloseable {
 		B clientVersion(@Nullable Version clientVersion);
 
 		/**
+		 * <p>Each call establishes a connection of its own, with an id of its own, so a builder may be
+		 * reused to give a single client more than one connection.
 		 * @return a new {@link EntityConnection} instance
+		 * @see EntityConnection#id()
 		 */
 		T build();
 	}
@@ -318,9 +315,18 @@ public interface EntityConnection extends AutoCloseable {
 	User user();
 
 	/**
-	 * @return the client id for this connection
+	 * <p>Identifies this connection.
+	 * <p>A new id is assigned to each connection, so building two connections from the same
+	 * {@link Builder} yields two distinct connections, not two handles to one.
+	 * @return the id of this connection
 	 */
-	UUID clientId();
+	UUID id();
+
+	/**
+	 * @return the client type
+	 * @see Builder#clientType(String)
+	 */
+	String clientType();
 
 	/**
 	 * Returns a description of this connection, a database or server name for example.
