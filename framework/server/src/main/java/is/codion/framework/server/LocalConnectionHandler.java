@@ -18,6 +18,7 @@
  */
 package is.codion.framework.server;
 
+import is.codion.common.db.database.ClientInfo;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
@@ -31,6 +32,7 @@ import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -63,6 +65,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private final Domain domain;
 	private final RemoteSession session;
 	private final Database database;
+	private final @Nullable ClientInfo clientInfo;
 	private final ConnectionPoolWrapper connectionPool;
 	private final String logIdentifier;
 	private final String userDescription;
@@ -83,6 +86,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		String databaseUsername = session.databaseUser().username();
 		this.connectionPool = database.containsConnectionPool(databaseUsername) ? database.connectionPool(databaseUsername) : null;
 		this.database = database;
+		this.clientInfo = Database.CLIENT_INFO.getOrThrow() ? clientInfo(session) : null;
 		this.logIdentifier = session.request().user().username().toLowerCase() + "@" + session.request().clientType();
 		this.userDescription = "Remote user: " + session.request().user().username() + ", database user: " + databaseUsername;
 		this.entityConnection = initializeConnection();
@@ -224,7 +228,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		DatabaseException exception = null;
 		try {
 			tracer.enter(FETCH_CONNECTION, userDescription);
-			connectionHolder.attach(connectionPool.connection(session.databaseUser()));
+			connectionHolder.attach(stamped(connectionPool.connection(session.databaseUser())));
 		}
 		catch (DatabaseException ex) {
 			exception = ex;
@@ -241,7 +245,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			DatabaseException exception = null;
 			try {
 				tracer.enter(CREATE_CONNECTION, userDescription);
-				connectionHolder.attach(database.createConnection(session.databaseUser()));
+				connectionHolder.attach(stamped(database.createConnection(session.databaseUser())));
 			}
 			catch (DatabaseException ex) {
 				exception = ex;
@@ -288,11 +292,34 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 	}
 
+	/**
+	 * Stamps the connection with the identity of the client it is about to serve, where the database
+	 * supports it, so that a shared database user does not hide who is actually doing the work.
+	 */
+	private Connection stamped(Connection connection) {
+		if (clientInfo != null) {
+			database.clientInfo(connection, clientInfo);
+		}
+
+		return connection;
+	}
+
 	private static void returnToPool(ConnectionHolder connectionHolder) {
 		Connection connection = connectionHolder.detach();
 		if (connection != null) {
 			closeSilently(connection);
 		}
+	}
+
+	/**
+	 * The client host is unknown often enough to be worth leaving out rather than stamping the connection
+	 * with the string standing in for it.
+	 */
+	private static ClientInfo clientInfo(RemoteSession session) {
+		String clientHost = session.clientHost();
+
+		return new ClientInfo(session.request().user().username(), session.request().clientType(),
+						RemoteSession.UNKNOWN_CLIENT_HOST.equals(clientHost) ? null : clientHost);
 	}
 
 	private void rollbackIfRequired(LocalEntityConnection entityConnection) {

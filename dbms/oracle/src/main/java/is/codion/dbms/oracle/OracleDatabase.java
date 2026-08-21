@@ -19,8 +19,10 @@
 package is.codion.dbms.oracle;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.database.ClientInfo;
 import is.codion.common.utilities.resource.MessageBundle;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +40,8 @@ final class OracleDatabase extends AbstractDatabase {
 					messageBundle(OracleDatabase.class, getBundle(OracleDatabase.class.getName()));
 
 	private static final String JDBC_URL_DRIVER_PREFIX = "jdbc:oracle:thin:";
+	private static final String CLIENT_IDENTIFIER = "OCSID.CLIENTID";
+	private static final String MODULE = "OCSID.MODULE";
 	private static final String JDBC_URL_PREFIX = JDBC_URL_DRIVER_PREFIX + "@";
 	private static final String JDBC_URL_WALLET_PREFIX = JDBC_URL_DRIVER_PREFIX + "/@";
 
@@ -152,6 +156,21 @@ final class OracleDatabase extends AbstractDatabase {
 	@Override
 	public boolean isUniqueConstraintException(SQLException exception) {
 		return requireNonNull(exception).getErrorCode() == UNIQUE_KEY_ERROR;
+	}
+
+	/**
+	 * <p>The client identifier is what auditing reads, via
+	 * {@code SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER')}, and it shows up in {@code V$SESSION.CLIENT_IDENTIFIER}
+	 * along with the module. The host needs no stamping, the driver reporting it as {@code V$SESSION.MACHINE}.
+	 * <p>The driver rejects the standard JDBC property names outright, with {@code ORA-17253}, and declares
+	 * none of its own, so these {@code OCSID} names are the only way in. It sends them with the next
+	 * statement rather than on their own, so the stamp costs no round trip.
+	 * <p>Verified against ojdbc11 23.7.0.25.01 and the {@code gvenzl/oracle-xe} image, 2026-08-22.
+	 */
+	@Override
+	public void clientInfo(Connection connection, ClientInfo clientInfo) {
+		clientInfoProperty(connection, CLIENT_IDENTIFIER, clientInfo.user());
+		clientInfoProperty(connection, MODULE, clientInfo.application());
 	}
 
 	@Override
