@@ -66,6 +66,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private final Sort<R> sort;
 	private final Refresher<R> refresher;
 
+	//true while a mutation is grouping its notifications, see preserveSelection(). Like the selection's
+	//adjusting bracket this assumes mutations happen on a single thread, the UI thread where refresh results
+	//are delivered - the lock protects readers, not concurrent mutators: a second mutator running concurrently
+	//would inherit this flag, restore it in its own finally and skip the flush, losing its notifications
+	private boolean grouping = false;
+
 	private DefaultFilterModelItems(DefaultBuilder<R> builder) {
 		this.sort = builder.sort;
 		this.validator = builder.validator;
@@ -120,22 +126,16 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void set(Collection<R> items) {
 		rejectNulls(items);
-		synchronized (lock) {
-			List<R> selectedItems = selection.items().get();
-			//save and restore, a caller already grouping must not have its group terminated here
-			boolean wasAdjusting = selection.adjusting();
-			selection.adjusting(true);
-			try {
+		preserveSelection(() -> {
+			synchronized (lock) {
 				clear();
 				// a replacement, not an addition: these items are the model's new contents, which included().changed() reports.
 				// Reporting them as added as well would have a listener acting on additions treat every refresh as one.
 				addInternal(0, items, false);
-				selection.items().set(selectedItems);
 			}
-			finally {
-				selection.adjusting(wasAdjusting);
-			}
-		}
+
+			return null;
+		});
 	}
 
 	@Override
@@ -294,17 +294,21 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	@Override
 	public void filter() {
-		List<R> selectedItems = selection.items().get();
-		synchronized (lock) {
-			filterIncremental();
-			if (sort.sorted()) {
-				included.items.sort(sort);
+		preserveSelection(() -> {
+			synchronized (lock) {
+				filterIncremental();
+				if (sort.sorted()) {
+					included.items.sort(sort);
+				}
+				//the ItemsListener notification is not grouped, unlike the two below: it is how a view learns
+				//the rows changed - and how a JTable comes to clear the selection preserveSelection() restores
+				notifyChanged();
+				included.notifyChanges();
+				filtered.notifyChanges();
 			}
-			notifyChanged();
-			included.notifyChanges();
-			filtered.notifyChanges();
-		}
-		selection.items().set(selectedItems);
+
+			return null;
+		});
 	}
 
 	@Override
@@ -330,6 +334,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	 * selected indexes, leaving the selection pointing at the wrong items. Restoring the selection by item is
 	 * idempotent with respect to any view which shifts the indexes on its own, such as a {@code JTable}, and
 	 * items which were removed are dropped from the selection since they no longer have an index.
+	 * <p>The item notifications are grouped along with the selection ones and delivered once the selection has
+	 * been restored, since a listener reading the selection while responding to one would otherwise see the
+	 * momentarily empty selection the mutation leaves behind, a state the model is never actually in at rest.
 	 * @param mutation the mutation to perform
 	 * @return the mutation result
 	 */
@@ -337,7 +344,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		List<R> selectedItems = selection.items().get();
 		//save and restore, a caller already grouping must not have its group terminated here
 		boolean wasAdjusting = selection.adjusting();
+		boolean wasGrouping = grouping;
 		selection.adjusting(true);
+		grouping = true;
 		try {
 			T result = mutation.get();
 			selection.items().set(selectedItems);
@@ -345,7 +354,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			return result;
 		}
 		finally {
+			grouping = wasGrouping;
 			selection.adjusting(wasAdjusting);
+			if (!grouping) {
+				included.notifyPending();
+				filtered.notifyPending();
+			}
 		}
 	}
 
@@ -447,6 +461,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		private final IncludePredicate<R> predicate;
 		private final Event<List<R>> changed = Event.event();
 		private final Event<Collection<R>> added = Event.event();
+
+		private boolean pendingChanges = false;
+		private @Nullable Collection<R> pendingAdded;
 
 		private DefaultIncludedItems(IncludePredicate<R> predicate) {
 			this.predicate = predicate;
@@ -575,24 +592,51 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		@Override
 		public void sort() {
 			if (sort.sorted()) {
-				List<R> selectedItems = selection.items().get();
-				synchronized (lock) {
-					items.sort(sort);
-					if (!items.isEmpty()) {
-						notifyUpdated(0, items.size() - 1);
+				preserveSelection(() -> {
+					synchronized (lock) {
+						items.sort(sort);
+						if (!items.isEmpty()) {
+							notifyUpdated(0, items.size() - 1);
+						}
+						notifyChanges();
 					}
-					notifyChanges();
-				}
-				selection.items().set(selectedItems);
+
+					return null;
+				});
 			}
 		}
 
 		private void notifyAdded(Collection<R> addedItems) {
-			added.accept(addedItems);
+			if (grouping) {
+				if (pendingAdded == null) {
+					pendingAdded = new ArrayList<>();
+				}
+				pendingAdded.addAll(addedItems);
+			}
+			else {
+				added.accept(addedItems);
+			}
 		}
 
 		private void notifyChanges() {
-			changed.accept(get());
+			if (grouping) {
+				pendingChanges = true;
+			}
+			else {
+				changed.accept(get());
+			}
+		}
+
+		private void notifyPending() {
+			if (pendingChanges) {
+				pendingChanges = false;
+				changed.accept(get());
+			}
+			if (pendingAdded != null) {
+				Collection<R> addedItems = pendingAdded;
+				pendingAdded = null;
+				added.accept(addedItems);
+			}
 		}
 	}
 
@@ -600,6 +644,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		private final Event<Collection<R>> changed = Event.event();
 		private final Set<R> items = new LinkedHashSet<>();
+
+		private boolean pendingChanges = false;
 
 		@Override
 		public Collection<R> get() {
@@ -628,7 +674,19 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		private void notifyChanges() {
-			changed.accept(get());
+			if (grouping) {
+				pendingChanges = true;
+			}
+			else {
+				changed.accept(get());
+			}
+		}
+
+		private void notifyPending() {
+			if (pendingChanges) {
+				pendingChanges = false;
+				changed.accept(get());
+			}
 		}
 	}
 

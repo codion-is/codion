@@ -4,8 +4,12 @@ Codion Change Log
 ## 0.18.84
 ### is.codion.common.reactive
 - ValueCollection.removeAll() wildcard added to mirror addAll().
+### is.codion.common.model
+- DefaultFilterModelItems, the included and filtered notifications of a selection preserving mutation - refresh, filter, sort, add and remove - are now delivered once the selection has been restored, a listener reading the selection while responding to one used to see it momentarily empty. A mutation now notifies once instead of once per internal step, a refresh no longer notifying twice, for the clear and the add.
 ### is.codion.framework.domain
 - DefaultForeignKeyConditions.valueMap() bug fixed, no longer uses toMap(), due to nulls. Now rejects non-present keys.
+### is.codion.swing.framework.ui
+- EntityTablePanel bug fixed, the status message no longer loses the selected count, "(y selected)", on refresh. It recomputed while responding to an items notification delivered before the selection had been restored.
 
 ## 0.18.83
 ### is.codion
