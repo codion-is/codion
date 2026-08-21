@@ -211,9 +211,29 @@ final class DefaultForeignKeyConditions implements ForeignKeyConditions {
 						.collect(toMap(Reference::column, Reference::foreign, (column, column2) -> column, LinkedHashMap::new));
 	}
 
-	private static Map<Column<?>, Object> valueMap(Entity entity, List<Column<?>> columns) {
-		return columns.stream()
-						.collect(toMap(identity(), entity::get));
+	private static Map<Column<?>, @Nullable Object> valueMap(Entity entity, List<Column<?>> columns) {
+		//can't use stream and toMap() due to possible null values
+		Map<Column<?>, @Nullable Object> valueMap = new HashMap<>();
+		columns.forEach(column -> valueMap.put(column, value(entity, column)));
+
+		return valueMap;
+	}
+
+	/**
+	 * <p>Returns the entity's value for the given referenced column, rejecting an entity which does not
+	 * provide one for a non-nullable column - one which has not been inserted being the common case.
+	 * <p>The rule mirrors {@link Entity.Key#present()}: a null in a <em>nullable</em> referenced column
+	 * is a legitimate value, and is expressed as IS NULL, which a composite condition can do just as
+	 * {@link #equalTo(Entity)} does. A single reference ends up in {@link ColumnConditions#in(Collection)},
+	 * which rejects the null, an IN condition being unable to express one.
+	 */
+	private static @Nullable Object value(Entity entity, Column<?> column) {
+		Object value = entity.get(column);
+		if (value == null && !entity.definition().columns().definition(column).nullable()) {
+			throw new NullPointerException("IN or NOT_IN condition values must exist: " + column + " is null");
+		}
+
+		return value;
 	}
 
 	private static ColumnCondition<Object> inCondition(Reference<?> reference, Operator operator, List<Object> values) {

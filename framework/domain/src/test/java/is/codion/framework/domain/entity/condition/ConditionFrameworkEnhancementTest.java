@@ -126,8 +126,6 @@ public final class ConditionFrameworkEnhancementTest {
 		ForeignKey LEAD_FK = TYPE.foreignKey("lead_fk", LEAD_ID, Employee.ID);
 
 		ConditionType ACTIVE_PROJECTS = TYPE.conditionType("active_projects");
-		ConditionType OVERDUE_PROJECTS = TYPE.conditionType("overdue_projects");
-		ConditionType BY_STATUS_AND_PRIORITY = TYPE.conditionType("by_status_and_priority");
 	}
 
 	interface Assignment {
@@ -221,10 +219,6 @@ public final class ConditionFrameworkEnhancementTest {
 															.include(Employee.NAME, Employee.EMAIL)
 							).condition(Project.ACTIVE_PROJECTS,
 											(columns, values) -> "status IN ('PLANNING', 'ACTIVE')")
-							.condition(Project.OVERDUE_PROJECTS,
-											(columns, values) -> "status = 'ACTIVE' AND end_date < CURRENT_DATE")
-							.condition(Project.BY_STATUS_AND_PRIORITY,
-											(columns, values) -> "status = ? AND priority >= ?")
 							.build());
 
 			// Assignment entity
