@@ -10,6 +10,8 @@ Codion Change Log
 - RemoteClient renamed RemoteSession, Authenticator.login() and logout() parameters renamed accordingly.
 - RemoteSession.id() added, returning the id of the connection the session serves.
 - ServerAdmin.clients() and AbstractServer.clients() renamed sessions(), AbstractServer.ClientConnection renamed SessionConnection, its client() accessor session().
+### is.codion.common.db
+- ClientInfo added, identifying the client a connection is being used on behalf of, along with Database.clientInfo(), stamping a connection with it where the database supports it. Implemented for Db2, Oracle and PostgreSQL, a no-op otherwise, the SQL Server driver not supporting it. Enabled with Database.CLIENT_INFO, codion.db.clientInfo, true by default.
 ### is.codion.common.model
 - DefaultFilterModelItems, the included and filtered notifications of a selection preserving mutation - refresh, filter, sort, add and remove - are now delivered once the selection has been restored, a listener reading the selection while responding to one used to see it momentarily empty. A mutation now notifies once instead of once per internal step, a refresh no longer notifying twice, for the clear and the add.
 - JsonPreferences now prunes the json output to get rid of empty nodes.
@@ -23,6 +25,7 @@ Codion Change Log
 ### is.codion.framework.servlet
 - EntityService, clientId request header renamed connectionId.
 ### is.codion.framework.server
+- The connection a client uses is now stamped with the client's identity, see Database.clientInfo(), so that a shared database user no longer hides which application user is doing the work. Applied when a connection is checked out, the next client to borrow it overwriting the stamp.
 - EntityServerAdmin method parameters renamed connectionId.
 - EntityServerAdmin.disconnectAllClients() and disconnectTimedOutClients() renamed disconnectAllSessions() and disconnectTimedOutSessions().
 ### is.codion.tools.monitor

@@ -19,8 +19,10 @@
 package is.codion.dbms.postgresql;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.database.ClientInfo;
 import is.codion.common.utilities.resource.MessageBundle;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +51,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	private static final String VALUE_TOO_LARGE_ERROR = "22001";
 	private static final String MISSING_PRIVS_ERROR = "42501";
 
+	private static final String APPLICATION_NAME = "ApplicationName";
 	private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
 	private static final String UNIQUE_KEY_ERROR = "unique_key_error";
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
@@ -122,6 +125,20 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	@Override
 	public boolean isTimeoutException(SQLException exception) {
 		return TIMEOUT_ERROR.equals(requireNonNull(exception).getSQLState());
+	}
+
+	/**
+	 * <p>The driver honours {@code ApplicationName} alone, so the user is folded into it, landing in
+	 * {@code application_name}: visible in {@code pg_stat_activity} and readable from a trigger via
+	 * {@code current_setting('application_name')}.
+	 * <p>Note that this driver issues a {@code SET application_name} of its own, unlike the ones which send
+	 * client info along with the next statement, so the stamp costs a round trip per connection check out.
+	 * It also accepts unknown property names and silently discards them, so a mistake here reports nothing.
+	 * <p>Verified against pgjdbc 42.7.11 and PostgreSQL 18.4, 2026-08-22.
+	 */
+	@Override
+	public void clientInfo(Connection connection, ClientInfo clientInfo) {
+		clientInfoProperty(connection, APPLICATION_NAME, clientInfo.application() + " (" + clientInfo.user() + ")");
 	}
 
 	@Override

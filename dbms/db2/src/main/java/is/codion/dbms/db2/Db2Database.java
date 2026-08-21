@@ -19,7 +19,9 @@
 package is.codion.dbms.db2;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.database.ClientInfo;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import static java.util.Objects.requireNonNull;
@@ -37,6 +39,9 @@ final class Db2Database extends AbstractDatabase {
 	private static final int TIMEOUT_ERROR_1 = -911;
 	private static final int TIMEOUT_ERROR_2 = -913;
 
+	private static final String APPLICATION_NAME = "ApplicationName";
+	private static final String CLIENT_USER = "ClientUser";
+	private static final String CLIENT_HOSTNAME = "ClientHostname";
 	private static final String JDBC_URL_PREFIX = "jdbc:db2:";
 
 	Db2Database(String url) {
@@ -71,6 +76,21 @@ final class Db2Database extends AbstractDatabase {
 	@Override
 	public String limitOffsetClause(Integer limit, Integer offset) {
 		return createLimitOffsetClause(limit, offset);
+	}
+
+	/**
+	 * <p>Db2 carries this better than most, the driver mapping the standard properties onto the client
+	 * special registers - {@code CURRENT CLIENT_USERID}, {@code CURRENT CLIENT_APPLNAME} and
+	 * {@code CURRENT CLIENT_WRKSTNNAME} - which are readable from SQL, so a trigger auditing on behalf of a
+	 * shared database user can name the actual user. The driver sends them with the next request rather
+	 * than on their own, so the stamp costs no round trip.
+	 * <p>Verified against JCC 4.33.31 and the {@code ibmcom/db2} image, 2026-08-22.
+	 */
+	@Override
+	public void clientInfo(Connection connection, ClientInfo clientInfo) {
+		clientInfoProperty(connection, CLIENT_USER, clientInfo.user());
+		clientInfoProperty(connection, APPLICATION_NAME, clientInfo.application());
+		clientInfoProperty(connection, CLIENT_HOSTNAME, clientInfo.host().orElse(""));
 	}
 
 	@Override

@@ -325,6 +325,25 @@ public abstract class AbstractDatabase implements Database {
 	 */
 	protected void closeDatabase() throws SQLException {}
 
+	/**
+	 * <p>Sets a single client info property, swallowing the exception a driver throws for a property it does
+	 * not recognize - a stamp is a nicety, not a precondition for using the connection, see
+	 * {@link Database#clientInfo(Connection, ClientInfo)}. For subclasses implementing that.
+	 * <p>Logged at debug rather than warn: a driver which refuses one property refuses it on every check out,
+	 * and a warning per database call is worse than the missing stamp.
+	 * @param connection the connection
+	 * @param property the client info property name
+	 * @param value the value, an empty String to clear it, null values being rejected by some drivers
+	 */
+	protected static void clientInfoProperty(Connection connection, String property, String value) {
+		try {
+			connection.setClientInfo(requireNonNull(property), requireNonNull(value));
+		}
+		catch (RuntimeException | SQLException e) {
+			LOG.debug("Unable to set client info property '{}'", property, e);
+		}
+	}
+
 	static Database instance() {
 		String databaseUrl = URL.getOrThrow();
 		try {

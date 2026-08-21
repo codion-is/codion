@@ -26,6 +26,7 @@ import is.codion.common.utilities.user.User;
 
 import org.jspecify.annotations.Nullable;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -155,6 +156,20 @@ public interface Database extends ConnectionFactory {
 	 * </ul>
 	 */
 	PropertyValue<Boolean> LEGACY_JDBC = booleanValue("codion.db.legacyJdbc", false);
+
+	/**
+	 * Specifies whether connections are stamped with the identity of the client using them, see
+	 * {@link #clientInfo(Connection, ClientInfo)}. What that costs depends on the database: nothing where
+	 * the dialect does not implement it, nothing on Db2 and Oracle, whose drivers send the values along with
+	 * the next statement, and one round trip per connection check out on PostgreSQL, whose driver issues a
+	 * {@code SET application_name} of its own. Disable it to opt out entirely, whether for the cost or in
+	 * favour of an application specific scheme.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> CLIENT_INFO = booleanValue("codion.db.clientInfo", true);
 
 	/**
 	 * The key used to specify the username in connection properties
@@ -287,6 +302,26 @@ public interface Database extends ConnectionFactory {
 	 * @throws NullPointerException in case {@code exception} is null
 	 */
 	boolean isTimeoutException(SQLException exception);
+
+	/**
+	 * <p>Stamps the given connection with the identity of the client about to use it, so that the database
+	 * can attribute the work to the end user rather than to the database user, which with a shared user is
+	 * the same one for everybody. What that means is dialect specific - a client identifier, an application
+	 * name, or nothing at all where the database has nowhere to put it, which is the default.
+	 * <p>Called for every connection before a client uses it, which with a connection pool means on every
+	 * check out, so implementations should be as cheap as the driver allows. Implementations must not throw:
+	 * a connection which could not be stamped is still a perfectly good connection.
+	 * <p>Public rather than internal, being the dialect portable way to do this, for callers configuring a
+	 * connection themselves.
+	 * <p>There is deliberately no counterpart clearing this again. A stamp is a label, not privilege, and
+	 * the next client to borrow the connection overwrites it, so clearing would buy nothing but an idle
+	 * pooled connection which claims no one - at the price of a second round trip per connection check out
+	 * on the drivers where this costs one at all.
+	 * @param connection the connection to stamp
+	 * @param clientInfo identifies the client the connection is being used on behalf of
+	 * @see #CLIENT_INFO
+	 */
+	default void clientInfo(Connection connection, ClientInfo clientInfo) {}
 
 	/**
 	 * @return the {@link QueryCounter} for collecting query statistics
