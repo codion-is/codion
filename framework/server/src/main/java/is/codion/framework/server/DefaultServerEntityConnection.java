@@ -23,7 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
@@ -53,22 +53,22 @@ final class DefaultServerEntityConnection extends AbstractServerEntityConnection
 	 * Instantiates a new DefaultServerEntityConnection and exports it on the given port number
 	 * @param domain the domain model
 	 * @param database the underlying database
-	 * @param client the client requesting the connection
+	 * @param session the session requesting the connection
 	 * @param port the port to use when exporting this remote connection
 	 * @throws RemoteException in case of an exception
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	DefaultServerEntityConnection(Domain domain, Database database, RemoteClient client,
+	DefaultServerEntityConnection(Domain domain, Database database, RemoteSession session,
 																int port) throws RemoteException {
-		this(domain, database, client, port, null, null);
+		this(domain, database, session, port, null, null);
 	}
 
 	/**
 	 * Instantiates a new DefaultServerEntityConnection and exports it on the given port number
 	 * @param domain the domain model
 	 * @param database the underlying database
-	 * @param client the client requesting the connection
+	 * @param session the session requesting the connection
 	 * @param port the port to use when exporting this remote connection
 	 * @param clientSocketFactory the client socket factory to use, null for default
 	 * @param serverSocketFactory the server socket factory to use, null for default
@@ -76,11 +76,11 @@ final class DefaultServerEntityConnection extends AbstractServerEntityConnection
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	DefaultServerEntityConnection(Domain domain, Database database, RemoteClient client,
+	DefaultServerEntityConnection(Domain domain, Database database, RemoteSession session,
 																int port, RMIClientSocketFactory clientSocketFactory,
 																RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		super(domain, database, client, port, clientSocketFactory, serverSocketFactory);
+		super(domain, database, session, port, clientSocketFactory, serverSocketFactory);
 	}
 
 	@Override

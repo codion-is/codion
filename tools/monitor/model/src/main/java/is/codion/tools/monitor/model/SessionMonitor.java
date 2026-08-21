@@ -19,7 +19,7 @@
 package is.codion.tools.monitor.model;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 
@@ -34,51 +34,51 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A ClientMonitor
+ * A SessionMonitor
  */
-public final class ClientMonitor {
+public final class SessionMonitor {
 
 	private final EntityServerAdmin server;
 
-	private final SwingFilterTableModel<RemoteClient, String> clientInstanceTableModel =
+	private final SwingFilterTableModel<RemoteSession, String> sessionTableModel =
 					SwingFilterTableModel.builder()
-									.columns(new RemoteClientColumns())
-									.items(new RemoteClientItems())
+									.columns(new RemoteSessionColumns())
+									.items(new RemoteSessionItems())
 									.build();
 
 	/**
-	 * Instantiates a new {@link ClientMonitor}
+	 * Instantiates a new {@link SessionMonitor}
 	 * @param server the server being monitored
 	 */
-	public ClientMonitor(EntityServerAdmin server) {
+	public SessionMonitor(EntityServerAdmin server) {
 		this.server = requireNonNull(server);
 		refresh();
 	}
 
 	/**
-	 * Refreshes the client info from the server
+	 * Refreshes the session info from the server
 	 */
 	public void refresh() {
-		clientInstanceTableModel.items().refresh();
+		sessionTableModel.items().refresh();
 	}
 
 	/**
-	 * @return the TableModel for displaying the client instances
+	 * @return the TableModel for displaying the sessions
 	 */
-	public SwingFilterTableModel<RemoteClient, String> clientInstanceTableModel() {
-		return clientInstanceTableModel;
+	public SwingFilterTableModel<RemoteSession, String> sessionTableModel() {
+		return sessionTableModel;
 	}
 
 	public EntityServerAdmin server() {
 		return server;
 	}
 
-	private final class RemoteClientItems implements Supplier<Collection<RemoteClient>> {
+	private final class RemoteSessionItems implements Supplier<Collection<RemoteSession>> {
 
 		@Override
-		public Collection<RemoteClient> get() {
+		public Collection<RemoteSession> get() {
 			try {
-				return server.clients();
+				return server.sessions();
 			}
 			catch (RemoteException e) {
 				throw new RuntimeException(e);
@@ -86,7 +86,7 @@ public final class ClientMonitor {
 		}
 	}
 
-	public static final class RemoteClientColumns implements TableColumns<RemoteClient, String> {
+	public static final class RemoteSessionColumns implements TableColumns<RemoteSession, String> {
 
 		public static final String USER = "User";
 		public static final String CLIENT_HOST = "Host";
@@ -117,7 +117,7 @@ public final class ClientMonitor {
 		}
 
 		@Override
-		public Object value(RemoteClient row, String identifier) {
+		public Object value(RemoteSession row, String identifier) {
 			switch (identifier) {
 				case USER:
 					return row.request().user().username();
@@ -132,7 +132,7 @@ public final class ClientMonitor {
 				case CODION_VERSION:
 					return row.request().frameworkVersion().toString();
 				case CONNECTION_ID:
-					return row.request().connectionId().toString();
+					return row.id().toString();
 				case LOCALE:
 					return row.request().locale().toString();
 				case TIMEZONE:

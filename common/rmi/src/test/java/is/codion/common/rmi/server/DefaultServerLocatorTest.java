@@ -114,7 +114,7 @@ public class DefaultServerLocatorTest {
 		}
 
 		@Override
-		protected Remote connect(RemoteClient client) {
+		protected Remote connect(RemoteSession session) {
 			return null;
 		}
 
@@ -129,7 +129,7 @@ public class DefaultServerLocatorTest {
 		}
 
 		@Override
-		protected void maintainConnections(Collection<ClientConnection<Remote>> connections) throws RemoteException {
+		protected void maintainConnections(Collection<SessionConnection<Remote>> connections) throws RemoteException {
 			// No-op for test
 		}
 	}

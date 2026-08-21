@@ -22,6 +22,7 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.ServerAdmin.ServerStatistics;
 import is.codion.common.rmi.server.ServerAdmin.ThreadStatistics;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.utilities.user.User;
@@ -104,31 +105,31 @@ public class AbstractServerTest {
 		assertNotNull(connection);
 		ServerTest connection2 = server.connect(connectionRequest);
 		assertSame(connection, connection2);
-		Map<RemoteClient, ServerTest> connections = server.connections();
+		Map<RemoteSession, ServerTest> connections = server.connections();
 		assertEquals(1, connections.size());
 		assertSame(connection, server.connection(connectionRequest.connectionId()));
 
 		ServerAdmin admin = server.getAdmin();
-		Collection<RemoteClient> clients = admin.clients();
-		assertFalse(clients.isEmpty());
-		clients.forEach(client -> assertEquals(0, client.request().user().password().length));
-		clients.forEach(client -> assertEquals(0, client.databaseUser().password().length));
+		Collection<RemoteSession> sessions = admin.sessions();
+		assertFalse(sessions.isEmpty());
+		sessions.forEach(session -> assertEquals(0, session.request().user().password().length));
+		sessions.forEach(session -> assertEquals(0, session.databaseUser().password().length));
 		admin.users().forEach(user -> assertEquals(0, user.password().length));
 
-		RemoteClient client = server.clients().iterator().next();
-		client.request();
-		client.clientHost();
-		client.request().version();
-		client.request().frameworkVersion();
-		client.databaseUser();
-		client.toString();
+		RemoteSession session = server.sessions().iterator().next();
+		session.request();
+		session.clientHost();
+		session.request().version();
+		session.request().frameworkVersion();
+		session.databaseUser();
+		session.toString();
 		server.disconnect(connectionRequest.connectionId());
 		assertThrows(IllegalArgumentException.class, () -> server.connection(connectionRequest.connectionId()));
 		ServerTest connection3 = server.connect(connectionRequest);
 		assertNotSame(connection, connection3);
 		assertNotNull(server.information());
-		admin.disconnect(connection3.client().request().connectionId());
-		assertThrows(IllegalArgumentException.class, () -> server.connection(connection3.client().request().connectionId()));
+		admin.disconnect(connection3.session().id());
+		assertThrows(IllegalArgumentException.class, () -> server.connection(connection3.session().id()));
 		assertThrows(NullPointerException.class, () -> server.connect((ConnectionRequest) null));
 	}
 
@@ -141,14 +142,14 @@ public class AbstractServerTest {
 		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		ServerTest connection = server.connect(connectionRequest);
 		assertNotNull(connection);
-		assertEquals(connectionRequest.connectionId(), connection.client().request().connectionId());
+		assertEquals(connectionRequest.connectionId(), connection.session().id());
 
 		server.disconnect(connectionRequest.connectionId());
 
 		connection = server.connect(connectionRequest);
 		assertEquals(2, TestAuthenticator.LOGIN_COUNTER.get());
 		assertNotNull(connection);
-		assertEquals(connectionRequest.connectionId(), connection.client().request().connectionId());
+		assertEquals(connectionRequest.connectionId(), connection.session().id());
 
 		server.disconnect(connectionRequest.connectionId());
 		assertEquals(2, TestAuthenticator.LOGOUT_COUNTER.get());
@@ -156,8 +157,26 @@ public class AbstractServerTest {
 		connection = server.connect(connectionRequest);
 		assertEquals(3, TestAuthenticator.LOGIN_COUNTER.get());
 		assertNotNull(connection);
-		assertEquals(connectionRequest.connectionId(), connection.client().request().connectionId());
+		assertEquals(connectionRequest.connectionId(), connection.session().id());
 
+		server.disconnect(connectionRequest.connectionId());
+	}
+
+	@Test
+	void authenticatorReturningForeignSession() throws RemoteException, ServerException {
+		//the server keys the connection by the id the client knows, so a session for some other
+		//connection, however it came about, is a login failure rather than an unreachable connection
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
+		TestAuthenticator.FOREIGN_SESSION = true;
+		try {
+			assertThrows(LoginException.class, () -> server.connect(connectionRequest));
+			assertEquals(0, server.connectionCount());
+		}
+		finally {
+			TestAuthenticator.FOREIGN_SESSION = false;
+		}
+		server.connect(connectionRequest);
+		assertEquals(1, server.connectionCount());
 		server.disconnect(connectionRequest.connectionId());
 	}
 
@@ -209,7 +228,7 @@ public class AbstractServerTest {
 	@Test
 	void admin() throws RemoteException {
 		ServerAdmin admin = server.getAdmin();
-		admin.clients();
+		admin.sessions();
 		admin.connectionLimit(10);
 		admin.connectionLimit();
 		admin.users();
@@ -277,20 +296,20 @@ public class AbstractServerTest {
 
 	private static class ServerTestImpl implements ServerTest {
 
-		private final RemoteClient client;
+		private final RemoteSession session;
 
-		public ServerTestImpl(RemoteClient client) {
-			this.client = client;
+		public ServerTestImpl(RemoteSession session) {
+			this.session = session;
 		}
 
 		@Override
-		public RemoteClient client() throws RemoteException {
-			return client;
+		public RemoteSession session() throws RemoteException {
+			return session;
 		}
 	}
 
 	private interface ServerTest extends Remote {
-		RemoteClient client() throws RemoteException;
+		RemoteSession session() throws RemoteException;
 	}
 
 	private static ServerConfiguration configuration() {
@@ -316,8 +335,8 @@ public class AbstractServerTest {
 		}
 
 		@Override
-		protected ServerTest connect(RemoteClient client) {
-			return new ServerTestImpl(client);
+		protected ServerTest connect(RemoteSession session) {
+			return new ServerTestImpl(session);
 		}
 
 		@Override
@@ -329,7 +348,7 @@ public class AbstractServerTest {
 		protected void disconnect(ServerTest connection) {}
 
 		@Override
-		protected void maintainConnections(Collection<ClientConnection<ServerTest>> connections) throws RemoteException {}
+		protected void maintainConnections(Collection<SessionConnection<ServerTest>> connections) throws RemoteException {}
 	}
 
 	public static final class TestAuthenticator implements Authenticator {
@@ -337,6 +356,7 @@ public class AbstractServerTest {
 		static final AtomicInteger LOGIN_COUNTER = new AtomicInteger();
 		static final AtomicInteger LOGOUT_COUNTER = new AtomicInteger();
 		static final AtomicInteger CLOSE_COUNTER = new AtomicInteger();
+		static volatile boolean FOREIGN_SESSION = false;
 
 		@Override
 		public Optional<String> clientType() {
@@ -344,13 +364,23 @@ public class AbstractServerTest {
 		}
 
 		@Override
-		public RemoteClient login(RemoteClient client) {
+		public RemoteSession login(RemoteSession session) {
 			LOGIN_COUNTER.incrementAndGet();
-			return client;
+			if (FOREIGN_SESSION) {
+				//a session for some other connection, which the server must refuse
+				return RemoteSession.builder(ConnectionRequest.builder()
+												.user(session.request().user())
+												.clientType(session.request().clientType())
+												.build())
+								.clientHost(session.clientHost())
+								.build();
+			}
+
+			return session;
 		}
 
 		@Override
-		public void logout(RemoteClient client) {
+		public void logout(RemoteSession session) {
 			LOGOUT_COUNTER.incrementAndGet();
 		}
 

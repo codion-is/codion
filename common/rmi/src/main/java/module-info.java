@@ -23,7 +23,7 @@
  * <li>{@link is.codion.common.rmi.server.Server}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration}
  * <li>{@link is.codion.common.rmi.server.Authenticator}
- * <li>{@link is.codion.common.rmi.server.RemoteClient}
+ * <li>{@link is.codion.common.rmi.server.RemoteSession}
  * <li>{@link is.codion.common.rmi.server.ObjectInputFilterFactory}
  * </ul>
  * @uses is.codion.common.rmi.server.AuxiliaryServerFactory

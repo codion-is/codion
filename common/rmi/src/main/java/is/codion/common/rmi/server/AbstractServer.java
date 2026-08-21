@@ -74,7 +74,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-	private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
+	private final Map<UUID, SessionConnection<T>> connections = new ConcurrentHashMap<>();
 	private final Map<String, Authenticator> authenticators = new HashMap<>();
 	private final Collection<Authenticator> sharedAuthenticators = new ArrayList<>();
 	private final List<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
@@ -134,8 +134,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	/**
 	 * @return a map containing the current connections
 	 */
-	public final Map<RemoteClient, T> connections() {
-		return connections.values().stream().collect(toMap(ClientConnection::client, ClientConnection::connection));
+	public final Map<RemoteSession, T> connections() {
+		return connections.values().stream().collect(toMap(SessionConnection::session, SessionConnection::connection));
 	}
 
 	/**
@@ -144,9 +144,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	 * @throws IllegalArgumentException in case no such connection exists
 	 */
 	public final T connection(UUID connectionId) {
-		ClientConnection<T> clientConnection = connections.get(requireNonNull(connectionId));
-		if (clientConnection != null) {
-			return clientConnection.connection();
+		SessionConnection<T> sessionConnection = connections.get(requireNonNull(connectionId));
+		if (sessionConnection != null) {
+			return sessionConnection.connection();
 		}
 
 		throw new IllegalArgumentException("Connection not found: " + connectionId);
@@ -219,12 +219,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 			if (shuttingDown.get()) {
 				throw new LoginException("Server is shutting down");
 			}
-			ClientConnection<T> clientConnection = connections.get(connectionRequest.connectionId());
-			if (clientConnection != null) {
-				validateUserCredentials(connectionRequest.user(), clientConnection.client().request().user());
+			SessionConnection<T> sessionConnection = connections.get(connectionRequest.connectionId());
+			if (sessionConnection != null) {
+				validateUserCredentials(connectionRequest.user(), sessionConnection.session().request().user());
 				LOG.trace("Active connection exists {}", connectionRequest);
 
-				return clientConnection.connection();
+				return sessionConnection.connection();
 			}
 
 			if (maximumNumberOfConnectionsReached()) {
@@ -240,30 +240,30 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	@Override
 	public final void disconnect(UUID connectionId) {
 		requireNonNull(connectionId);
-		ClientConnection<T> clientConnection;
+		SessionConnection<T> sessionConnection;
 		//the removal and the close must be atomic with respect to connect(), which hands out
 		//an existing connection, otherwise a reconnecting client can receive a just-closed one
 		synchronized (connections) {
-			clientConnection = connections.remove(connectionId);
-			if (clientConnection == null) {
+			sessionConnection = connections.remove(connectionId);
+			if (sessionConnection == null) {
 				return;
 			}
 			try {
-				disconnect(clientConnection.connection());
+				disconnect(sessionConnection.connection());
 			}
 			catch (Exception e) {
 				LOG.debug("Error while disconnecting a connection: {}", connectionId, e);
 			}
 		}
-		RemoteClient client = clientConnection.client();
+		RemoteSession session = sessionConnection.session();
 		for (Authenticator authenticator : sharedAuthenticators) {
-			authenticator.logout(client);
+			authenticator.logout(session);
 		}
-		Authenticator authenticator = authenticators.get(client.request().clientType());
+		Authenticator authenticator = authenticators.get(session.request().clientType());
 		if (authenticator != null) {
-			authenticator.logout(client);
+			authenticator.logout(session);
 		}
-		LOG.debug("Client disconnected {}", client);
+		LOG.debug("Session disconnected {}", session);
 	}
 
 	/**
@@ -294,7 +294,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	 */
 	final Collection<User> users() {
 		return connections().keySet().stream()
-						.map(RemoteClient::request)
+						.map(RemoteSession::request)
 						.map(ConnectionRequest::user)
 						.map(User::copy)
 						.map(User::clearPassword)
@@ -302,11 +302,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	}
 
 	/**
-	 * @return info on all connected clients
+	 * @return info on all sessions
 	 */
-	final Collection<RemoteClient> clients() {
+	final Collection<RemoteSession> sessions() {
 		return unmodifiableList(connections().keySet().stream()
-						.map(RemoteClient::copy)
+						.map(RemoteSession::copy)
 						.map(AbstractServer::clearPasswords)
 						.collect(toList()));
 	}
@@ -345,13 +345,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	}
 
 	/**
-	 * Establishes the actual client connection.
-	 * @param client the remote client
-	 * @return a connection for the given client
+	 * Establishes the actual connection.
+	 * @param session the remote session
+	 * @return a connection for the given session
 	 * @throws RemoteException in case of an exception
 	 * @throws LoginException in case of an error during the login
 	 */
-	protected abstract T connect(RemoteClient client) throws RemoteException, LoginException;
+	protected abstract T connect(RemoteSession session) throws RemoteException, LoginException;
 
 	/**
 	 * Disconnects the given connection.
@@ -365,7 +365,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	 * @param connections all current connections
 	 * @throws RemoteException in case of an exception
 	 */
-	protected abstract void maintainConnections(Collection<ClientConnection<T>> connections) throws RemoteException;
+	protected abstract void maintainConnections(Collection<SessionConnection<T>> connections) throws RemoteException;
 
 	/**
 	 * @return the Registry instance
@@ -432,22 +432,26 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		return connectionLimit > -1 && connectionCount() >= connectionLimit;
 	}
 
-	private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
-		RemoteClient client = RemoteClient.builder(connectionRequest)
+	private SessionConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
+		RemoteSession session = RemoteSession.builder(connectionRequest)
 						.clientHost(clientHost((String) connectionRequest.parameters().get(CLIENT_HOST)))
 						.build();
 		for (Authenticator authenticator : sharedAuthenticators) {
-			client = authenticator.login(client);
+			session = authenticator.login(session);
 		}
 		Authenticator clientAuthenticator = authenticators.get(connectionRequest.clientType());
-		LOG.debug("Connecting client {}, authenticator {}", connectionRequest, clientAuthenticator);
+		LOG.debug("Connecting {}, authenticator {}", connectionRequest, clientAuthenticator);
 		if (clientAuthenticator != null) {
-			client = clientAuthenticator.login(client);
+			session = clientAuthenticator.login(session);
 		}
-		ClientConnection<T> clientConnection = new ClientConnection<>(client, connect(client));
-		connections.put(client.request().connectionId(), clientConnection);
+		if (!session.id().equals(connectionRequest.connectionId())) {
+			throw new LoginException("Authenticator returned a session for a different connection: " + session.id() +
+							", expected: " + connectionRequest.connectionId());
+		}
+		SessionConnection<T> sessionConnection = new SessionConnection<>(session, connect(session));
+		connections.put(session.id(), sessionConnection);
 
-		return clientConnection;
+		return sessionConnection;
 	}
 
 	private void startAuxiliaryServers(Collection<String> auxiliaryServerFactories) {
@@ -476,11 +480,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		}
 	}
 
-	private static RemoteClient clearPasswords(RemoteClient client) {
-		client.request().user().clearPassword();
-		client.databaseUser().clearPassword();
+	private static RemoteSession clearPasswords(RemoteSession session) {
+		session.request().user().clearPassword();
+		session.databaseUser().clearPassword();
 
-		return client;
+		return session;
 	}
 
 	private static void configureObjectInputFilter(ServerConfiguration configuration) {
@@ -551,7 +555,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 				return RemoteServer.getClientHost();
 			}
 			catch (ServerNotActiveException ignored) {
-				return RemoteClient.UNKNOWN_CLIENT_HOST;
+				return RemoteSession.UNKNOWN_CLIENT_HOST;
 			}
 		}
 
@@ -626,24 +630,24 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	}
 
 	/**
-	 * Represents a remote client connection.
+	 * Represents a remote session connection.
 	 * @param <T> the connection type
 	 */
-	protected static final class ClientConnection<T> {
+	protected static final class SessionConnection<T> {
 
-		private final RemoteClient client;
+		private final RemoteSession session;
 		private final T connection;
 
-		private ClientConnection(RemoteClient client, T connection) {
-			this.client = client;
+		private SessionConnection(RemoteSession session, T connection) {
+			this.session = session;
 			this.connection = connection;
 		}
 
 		/**
-		 * @return the remote client
+		 * @return the remote session
 		 */
-		public RemoteClient client() {
-			return client;
+		public RemoteSession session() {
+			return session;
 		}
 
 		/**

@@ -26,7 +26,7 @@ import is.codion.common.db.report.Report;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.AbstractServer;
 import is.codion.common.rmi.server.AuxiliaryServer;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.LoginException;
@@ -135,18 +135,18 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	}
 
 	@Override
-	protected final AbstractServerEntityConnection connect(RemoteClient client) throws RemoteException, LoginException {
-		requireNonNull(client);
+	protected final AbstractServerEntityConnection connect(RemoteSession session) throws RemoteException, LoginException {
+		requireNonNull(session);
 		try {
 			//a negative port tells the connection not to export itself; with RMI disabled the connection serves its
 			//HTTP client in-process and needs no RMI stub (a remote connect() is refused before reaching here)
-			AbstractServerEntityConnection connection = createRemoteConnection(database(), client,
+			AbstractServerEntityConnection connection = createRemoteConnection(database(), session,
 							configuration.rmi() ? configuration.port() : -1, configuration.rmiClientSocketFactory().orElse(null),
 							configuration.rmiServerSocketFactory().orElse(null));
 			connection.setTracingEnabled(methodTracing);
 
 			connection.closed().addConsumer(this::removeConnection);
-			LOG.debug("{} connected", client);
+			LOG.debug("{} connected", session);
 
 			return connection;
 		}
@@ -157,7 +157,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 			throw e;
 		}
 		catch (Exception e) {
-			LOG.debug("{} unable to connect", client, e);
+			LOG.debug("{} unable to connect", session, e);
 			throw new LoginException(e.getMessage());
 		}
 	}
@@ -170,7 +170,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	/**
 	 * Creates the remote connection provided by this server
 	 * @param database the underlying database
-	 * @param client the client requesting the connection
+	 * @param session the session the connection serves
 	 * @param port the port to use when exporting this remote connection
 	 * @param clientSocketFactory the client socket factory, null for default
 	 * @param serverSocketFactory the server socket factory, null for default
@@ -180,11 +180,11 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	 * if a wrong username or password is provided
 	 */
 	protected AbstractServerEntityConnection createRemoteConnection(Database database,
-																																	RemoteClient client, int port,
+																																	RemoteSession session, int port,
 																																	RMIClientSocketFactory clientSocketFactory,
 																																	RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		return new DefaultServerEntityConnection(clientDomainModel(client), database, client, port,
+		return new DefaultServerEntityConnection(clientDomainModel(session), database, session, port,
 						clientSocketFactory, serverSocketFactory);
 	}
 
@@ -230,15 +230,15 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	}
 
 	@Override
-	protected final void maintainConnections(Collection<ClientConnection<AbstractServerEntityConnection>> connections) throws RemoteException {
-		for (ClientConnection<AbstractServerEntityConnection> clientConnection : connections) {
-			AbstractServerEntityConnection connection = clientConnection.connection();
+	protected final void maintainConnections(Collection<SessionConnection<AbstractServerEntityConnection>> connections) throws RemoteException {
+		for (SessionConnection<AbstractServerEntityConnection> sessionConnection : connections) {
+			AbstractServerEntityConnection connection = sessionConnection.connection();
 			if (!connection.active()) {
 				boolean connected = connection.connected();
 				boolean timedOut = timedOut(connection);
 				if (!connected || timedOut) {
-					LOG.debug("Removing connection {}, connected: {}, timeout: {}", clientConnection, connected, timedOut);
-					disconnect(clientConnection.client().request().connectionId());
+					LOG.debug("Removing connection {}, connected: {}, timeout: {}", sessionConnection, connected, timedOut);
+					disconnect(sessionConnection.session().id());
 				}
 				else {
 					connection.cleanupIterators();
@@ -343,25 +343,25 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	 * @param timedOutOnly if true only connections that have timed out are culled
 	 * @see #timedOut(AbstractServerEntityConnection)
 	 */
-	final void disconnectClients(boolean timedOutOnly) {
+	final void disconnectSessions(boolean timedOutOnly) {
 		//use the snapshot's connections, a client disconnecting between the snapshot and the
 		//lookup would make connection(connectionId) throw and abort the rest of the sweep
-		for (Map.Entry<RemoteClient, AbstractServerEntityConnection> entry : new ArrayList<>(connections().entrySet())) {
+		for (Map.Entry<RemoteSession, AbstractServerEntityConnection> entry : new ArrayList<>(connections().entrySet())) {
 			AbstractServerEntityConnection connection = entry.getValue();
 			if (timedOutOnly) {
 				boolean active = connection.active();
 				if (!active && timedOut(connection)) {
-					disconnect(entry.getKey().request().connectionId());
+					disconnect(entry.getKey().id());
 				}
 			}
 			else {
-				disconnect(entry.getKey().request().connectionId());
+				disconnect(entry.getKey().id());
 			}
 		}
 	}
 
 	private void removeConnection(AbstractServerEntityConnection connection) {
-		disconnect(connection.client().request().connectionId());
+		disconnect(connection.session().id());
 	}
 
 	/**
@@ -379,7 +379,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	}
 
 	private boolean timedOut(AbstractServerEntityConnection connection) {
-		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.client().request().clientType());
+		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.session().request().clientType());
 		if (timeout == null) {
 			timeout = idleConnectionTimeout;
 		}
@@ -387,8 +387,8 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 		return connection.timedOut(timeout);
 	}
 
-	private Domain clientDomainModel(RemoteClient client) {
-		String domainTypeName = (String) client.request().parameters().get(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE);
+	private Domain clientDomainModel(RemoteSession session) {
+		String domainTypeName = (String) session.request().parameters().get(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE);
 		if (domainTypeName == null) {
 			throw new IllegalArgumentException("'" + ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
 		}

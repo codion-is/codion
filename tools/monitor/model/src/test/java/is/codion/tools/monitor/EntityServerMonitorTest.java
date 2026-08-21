@@ -20,7 +20,7 @@ package is.codion.tools.monitor;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.utilities.user.User;
@@ -29,8 +29,8 @@ import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
-import is.codion.tools.monitor.model.ClientMonitor;
-import is.codion.tools.monitor.model.ClientUserMonitor;
+import is.codion.tools.monitor.model.SessionMonitor;
+import is.codion.tools.monitor.model.SessionUserMonitor;
 import is.codion.tools.monitor.model.EntityServerMonitor;
 import is.codion.tools.monitor.model.HostMonitor;
 import is.codion.tools.monitor.model.ServerMonitor;
@@ -89,18 +89,18 @@ public class EntityServerMonitorTest {
 		hostMonitor.refresh();
 		ServerMonitor serverMonitor = hostMonitor.serverMonitors().iterator().next();
 		assertNotNull(serverMonitor);
-		ClientUserMonitor clientUserMonitor = serverMonitor.clientMonitor();
-		ClientMonitor clientMonitor = clientUserMonitor.clientMonitor();
-		clientMonitor.clientInstanceTableModel().items().refresh();
-		assertEquals(1, clientMonitor.clientInstanceTableModel().items().included().size());
-		RemoteClient client = clientMonitor.clientInstanceTableModel().items().included().get(0);
-		assertEquals(connection.id(), client.request().connectionId());
-		assertEquals(UNIT_TEST_USER, client.request().user());
+		SessionUserMonitor sessionUserMonitor = serverMonitor.sessionUserMonitor();
+		SessionMonitor sessionMonitor = sessionUserMonitor.sessionMonitor();
+		sessionMonitor.sessionTableModel().items().refresh();
+		assertEquals(1, sessionMonitor.sessionTableModel().items().included().size());
+		RemoteSession session = sessionMonitor.sessionTableModel().items().included().get(0);
+		assertEquals(connection.id(), session.id());
+		assertEquals(UNIT_TEST_USER, session.request().user());
 
-		clientMonitor.server().disconnect(client.request().connectionId());//disconnects the client
+		sessionMonitor.server().disconnect(session.id());//disconnects the session
 
-		clientMonitor.refresh();
-		assertEquals(0, clientMonitor.clientInstanceTableModel().items().included().size());
+		sessionMonitor.refresh();
+		assertEquals(0, sessionMonitor.sessionTableModel().items().included().size());
 
 		serverMonitor.shutdown();
 	}

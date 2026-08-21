@@ -22,7 +22,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
@@ -99,7 +99,7 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	 * RMI stub).
 	 * @param domain the domain model
 	 * @param database defines the underlying database
-	 * @param client information about the client requesting the connection
+	 * @param session information about the remote session requesting the connection
 	 * @param port the port to use when exporting this remote connection, negative to not export
 	 * @param clientSocketFactory the client socket factory to use, null for default
 	 * @param serverSocketFactory the server socket factory to use, null for default
@@ -108,11 +108,11 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	 * if a wrong username or password is provided
 	 */
 	protected AbstractServerEntityConnection(Domain domain, Database database,
-																					 RemoteClient client, int port,
+																					 RemoteSession session, int port,
 																					 RMIClientSocketFactory clientSocketFactory,
 																					 RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		this.connectionHandler = new LocalConnectionHandler(domain, client, database);
+		this.connectionHandler = new LocalConnectionHandler(domain, session, database);
 		this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
 						new Class[] {EntityConnection.class}, connectionHandler);
 		this.clientSocketFactory = clientSocketFactory;
@@ -130,7 +130,7 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	 * @return the user this connection is using
 	 */
 	public final User user() {
-		return connectionHandler.client().request().user();
+		return connectionHandler.session().request().user();
 	}
 
 	/**
@@ -138,14 +138,14 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	 * @see is.codion.framework.db.EntityConnection#id()
 	 */
 	public final UUID id() {
-		return connectionHandler.client().request().connectionId();
+		return connectionHandler.session().id();
 	}
 
 	/**
 	 * @return the type of the client this connection serves
 	 */
 	public final String clientType() {
-		return connectionHandler.client().request().clientType();
+		return connectionHandler.session().request().clientType();
 	}
 
 	/**
@@ -180,10 +180,10 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	}
 
 	/**
-	 * @return the remote client using this remote connection
+	 * @return the remote session using this remote connection
 	 */
-	final RemoteClient client() {
-		return connectionHandler.client();
+	final RemoteSession session() {
+		return connectionHandler.session();
 	}
 
 	/**

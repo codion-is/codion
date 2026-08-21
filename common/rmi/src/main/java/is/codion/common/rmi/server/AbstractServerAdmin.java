@@ -103,8 +103,8 @@ public class AbstractServerAdmin extends UnicastRemoteObject implements ServerAd
 	}
 
 	@Override
-	public final Collection<RemoteClient> clients() {
-		return server.clients();
+	public final Collection<RemoteSession> sessions() {
+		return server.sessions();
 	}
 
 	@Override

@@ -92,7 +92,7 @@ public final class EntityServerMonitor {
 				serverMonitor.databaseMonitor().updateInterval().set(interval);
 				serverMonitor.databaseMonitor().connectionPoolMonitor().connectionPoolInstanceMonitors()
 								.forEach(poolMonitor -> poolMonitor.updateInterval().set(interval));
-				serverMonitor.clientMonitor().updateInterval().set(interval);
+				serverMonitor.sessionUserMonitor().updateInterval().set(interval);
 			});
 		}
 	}

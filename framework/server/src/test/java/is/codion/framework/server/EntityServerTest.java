@@ -21,7 +21,7 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
-import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.SerializationFilterFactory;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
@@ -218,7 +218,7 @@ public class EntityServerTest {
 		assertThrows(IllegalArgumentException.class, () -> admin.tracingEnabled(UUID.randomUUID(), true));
 		assertTrue(remoteConnectionTwo.connected());
 		assertEquals(2, admin.connectionCount());
-		assertEquals(2, admin.clients().size());
+		assertEquals(2, admin.sessions().size());
 
 		Collection<User> users = admin.users();
 		assertEquals(1, users.size());
@@ -237,7 +237,7 @@ public class EntityServerTest {
 		assertEquals("select", entry.method());
 		assertTrue(entry.duration() >= 0);
 
-		admin.disconnectTimedOutClients();
+		admin.disconnectTimedOutSessions();
 
 		server.disconnect(connectionRequestOne.connectionId());
 		assertEquals(1, admin.connectionCount());
@@ -287,9 +287,9 @@ public class EntityServerTest {
 			fail("Should not be able to connect with an invalid user");
 		}
 		catch (LoginException ignored) {/*ignored*/}
-		Collection<RemoteClient> employeesClients = admin.clients();
+		Collection<RemoteSession> employeesClients = admin.sessions();
 		assertEquals(2, employeesClients.size());
-		for (RemoteClient employeesClient : employeesClients) {
+		for (RemoteSession employeesClient : employeesClients) {
 			assertEquals(UNIT_TEST_USER, employeesClient.databaseUser());
 		}
 		server.disconnect(connectionRequestJohn.connectionId());

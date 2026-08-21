@@ -161,16 +161,16 @@ public interface EntityServerAdmin extends ServerAdmin {
 	Database.Statistics databaseStatistics() throws RemoteException;
 
 	/**
-	 * Disconnects all timed-out clients.
+	 * Disconnects all timed-out sessions.
 	 * @throws RemoteException in case of an exception
 	 */
-	void disconnectTimedOutClients() throws RemoteException;
+	void disconnectTimedOutSessions() throws RemoteException;
 
 	/**
-	 * Disconnects all connected clients.
+	 * Disconnects all sessions.
 	 * @throws RemoteException in case of an exception
 	 */
-	void disconnectAllClients() throws RemoteException;
+	void disconnectAllSessions() throws RemoteException;
 
 	/**
 	 * Resets the statistics that have been collected so far

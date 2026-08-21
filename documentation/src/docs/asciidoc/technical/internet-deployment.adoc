@@ -104,7 +104,7 @@ firewall remain mandatory. The same applies to the admin port and JMX, if enable
 Implement an {url-javadoc}{common-rmi}/is/codion/common/rmi/server/Authenticator.html[Authenticator]
 that validates the client's credentials against your own user store, then swaps in a database user
 with
-{url-javadoc}{common-rmi}/is/codion/common/rmi/server/RemoteClient.html[RemoteClient.withDatabaseUser()].
+{url-javadoc}{common-rmi}/is/codion/common/rmi/server/RemoteSession.html[RemoteSession.withDatabaseUser()].
 Internet clients then never present database credentials, and a failed login costs no database
 connection attempt.
 

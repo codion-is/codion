@@ -107,15 +107,15 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 	}
 
 	@Override
-	public void disconnectTimedOutClients() throws RemoteException {
-		LOG.info("disconnectTimedOutClients()");
-		server.disconnectClients(true);
+	public void disconnectTimedOutSessions() throws RemoteException {
+		LOG.info("disconnectTimedOutSessions()");
+		server.disconnectSessions(true);
 	}
 
 	@Override
-	public void disconnectAllClients() throws RemoteException {
-		LOG.info("disconnectAllClients()");
-		server.disconnectClients(false);
+	public void disconnectAllSessions() throws RemoteException {
+		LOG.info("disconnectAllSessions()");
+		server.disconnectSessions(false);
 	}
 
 	@Override

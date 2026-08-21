@@ -110,8 +110,8 @@ public final class DefaultEntityServerAdminTest {
 			admin.serializationFilterPatterns();
 			admin.users();
 			admin.statistics(System.currentTimeMillis());
-			admin.disconnectTimedOutClients();
-			admin.disconnectAllClients();
+			admin.disconnectTimedOutSessions();
+			admin.disconnectAllSessions();
 		}
 		finally {
 			server.shutdown();

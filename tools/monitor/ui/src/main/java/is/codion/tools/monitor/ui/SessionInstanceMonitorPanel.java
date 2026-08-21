@@ -22,7 +22,7 @@ import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.user.User;
 import is.codion.swing.common.ui.component.logging.LogViewer;
-import is.codion.tools.monitor.model.ClientInstanceMonitor;
+import is.codion.tools.monitor.model.SessionInstanceMonitor;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -44,9 +44,9 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 /**
- * A ClientInstanceMonitorPanel
+ * A SessionInstanceMonitorPanel
  */
-public final class ClientInstanceMonitorPanel extends JPanel {
+public final class SessionInstanceMonitorPanel extends JPanel {
 
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = LocaleDateTimePattern.builder()
 					.delimiterDash().yearFourDigits().hoursMinutesSeconds()
@@ -54,7 +54,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 	private static final NumberFormat MICROSECOND_FORMAT = NumberFormat.getIntegerInstance();
 
-	private final ClientInstanceMonitor model;
+	private final SessionInstanceMonitor model;
 	private final LogViewer logViewer;
 
 	private final JTextField creationDateField = stringField()
@@ -62,10 +62,10 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 					.build();
 
 	/**
-	 * Instantiates a new ClientInstanceMonitorPanel
+	 * Instantiates a new SessionInstanceMonitorPanel
 	 * @param model the model
 	 */
-	public ClientInstanceMonitorPanel(ClientInstanceMonitor model) {
+	public SessionInstanceMonitorPanel(SessionInstanceMonitor model) {
 		this.model = requireNonNull(model);
 		this.logViewer = logViewer(new FilenameSupplier());
 		initializeUI();
@@ -73,7 +73,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	}
 
 	public void updateView() {
-		creationDateField.setText(DATE_TIME_FORMATTER.format(model.client().creationTime()));
+		creationDateField.setText(DATE_TIME_FORMATTER.format(model.session().creationTime()));
 		refreshLog();
 	}
 
@@ -138,10 +138,10 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 		@Override
 		public String get() {
 			if (creationDateField.getText().isEmpty()) {
-				throw new IllegalStateException("No client selected");
+				throw new IllegalStateException("No session selected");
 			}
 
-			User user = model.client().request().user();
+			User user = model.session().request().user();
 			LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
 
 			return user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate);

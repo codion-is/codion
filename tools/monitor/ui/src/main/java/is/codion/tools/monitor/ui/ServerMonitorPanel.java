@@ -151,7 +151,7 @@ public final class ServerMonitorPanel extends JPanel {
 		JTabbedPane tabbedPane = tabbedPane()
 						.tab("Performance", createPerformancePanel())
 						.tab("Database", new DatabaseMonitorPanel(model.databaseMonitor()))
-						.tab("Clients/Users", new ClientUserMonitorPanel(model.clientMonitor()))
+						.tab("Sessions/Users", new SessionUserMonitorPanel(model.sessionUserMonitor()))
 						.tab("Server", createServerPanel())
 						.build();
 
