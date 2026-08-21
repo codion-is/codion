@@ -238,7 +238,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 				boolean timedOut = timedOut(connection);
 				if (!connected || timedOut) {
 					LOG.debug("Removing connection {}, connected: {}, timeout: {}", clientConnection, connected, timedOut);
-					disconnect(clientConnection.client().request().clientId());
+					disconnect(clientConnection.client().request().connectionId());
 				}
 				else {
 					connection.cleanupIterators();
@@ -300,43 +300,43 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 
 	/**
 	 * Returns the method traces for the connection identified by the given key.
-	 * @param clientId the UUID identifying the client
+	 * @param connectionId the UUID identifying the connection
 	 * @return the method traces for the given connection
 	 */
-	final List<MethodTrace> methodTraces(UUID clientId) {
-		return connection(clientId).methodTraces();
+	final List<MethodTrace> methodTraces(UUID connectionId) {
+		return connection(connectionId).methodTraces();
 	}
 
 	/**
-	 * @param clientId the client id
-	 * @return true if method traces are written to file for the given client
+	 * @param connectionId the connection id
+	 * @return true if method traces are written to file for the given connection
 	 */
-	final boolean traceToFile(UUID clientId) {
-		return connection(clientId).isTraceToFile();
+	final boolean traceToFile(UUID connectionId) {
+		return connection(connectionId).isTraceToFile();
 	}
 
 	/**
-	 * @param clientId the client id
+	 * @param connectionId the connection id
 	 * @param traceToFile true if method traces should be written to file
 	 */
-	final void traceToFile(UUID clientId, boolean traceToFile) {
-		connection(clientId).setTraceToFile(traceToFile);
+	final void traceToFile(UUID connectionId, boolean traceToFile) {
+		connection(connectionId).setTraceToFile(traceToFile);
 	}
 
 	/**
-	 * @param clientId the client id
-	 * @return true if method tracing is enabled for the given client
+	 * @param connectionId the connection id
+	 * @return true if method tracing is enabled for the given connection
 	 */
-	final boolean tracingEnabled(UUID clientId) {
-		return connection(clientId).isTracingEnabled();
+	final boolean tracingEnabled(UUID connectionId) {
+		return connection(connectionId).isTracingEnabled();
 	}
 
 	/**
-	 * @param clientId the client id
+	 * @param connectionId the connection id
 	 * @param tracingEnabled the new tracing status
 	 */
-	final void tracingEnabled(UUID clientId, boolean tracingEnabled) {
-		connection(clientId).setTracingEnabled(tracingEnabled);
+	final void tracingEnabled(UUID connectionId, boolean tracingEnabled) {
+		connection(connectionId).setTracingEnabled(tracingEnabled);
 	}
 
 	/**
@@ -345,23 +345,23 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	 */
 	final void disconnectClients(boolean timedOutOnly) {
 		//use the snapshot's connections, a client disconnecting between the snapshot and the
-		//lookup would make connection(clientId) throw and abort the rest of the sweep
+		//lookup would make connection(connectionId) throw and abort the rest of the sweep
 		for (Map.Entry<RemoteClient, AbstractServerEntityConnection> entry : new ArrayList<>(connections().entrySet())) {
 			AbstractServerEntityConnection connection = entry.getValue();
 			if (timedOutOnly) {
 				boolean active = connection.active();
 				if (!active && timedOut(connection)) {
-					disconnect(entry.getKey().request().clientId());
+					disconnect(entry.getKey().request().connectionId());
 				}
 			}
 			else {
-				disconnect(entry.getKey().request().clientId());
+				disconnect(entry.getKey().request().connectionId());
 			}
 		}
 	}
 
 	private void removeConnection(AbstractServerEntityConnection connection) {
-		disconnect(connection.client().request().clientId());
+		disconnect(connection.client().request().connectionId());
 	}
 
 	/**

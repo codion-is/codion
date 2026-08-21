@@ -160,7 +160,7 @@ public final class ClientMonitorPanel extends JPanel {
 
 	private void disconnect() throws RemoteException {
 		for (RemoteClient client : model.clientInstanceTableModel().selection().items().get()) {
-			model.server().disconnect(client.request().clientId());
+			model.server().disconnect(client.request().connectionId());
 			model.clientInstanceTableModel().items().remove(client);
 		}
 	}

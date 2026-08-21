@@ -45,10 +45,10 @@ public interface Authenticator {
 
 	/**
 	 * Performs login validation for the user specified by the remote client
-	 * and returns a remote client with the same clientId and user but possibly
+	 * and returns a remote client with the same connectionId and user but possibly
 	 * a different databaseUser to propagate to further login procedures
 	 * @param client the client
-	 * @return a new client with the same clientId but not necessarily the same databaseUser
+	 * @return a new client with the same connectionId but not necessarily the same databaseUser
 	 * @throws LoginException in case the login fails
 	 * @see RemoteClient#databaseUser()
 	 */

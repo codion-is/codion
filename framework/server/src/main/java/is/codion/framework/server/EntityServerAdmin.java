@@ -55,41 +55,41 @@ public interface EntityServerAdmin extends ServerAdmin {
 	void maintenanceInterval(int interval) throws RemoteException;
 
 	/**
-	 * @param clientId the id of the client for which to retrieve the log
+	 * @param connectionId the id of the connection for which to retrieve the log
 	 * @return the method trace log for the given connection
 	 * @throws RemoteException in case of a communication error
 	 */
-	List<MethodTrace> methodTraces(UUID clientId) throws RemoteException;
+	List<MethodTrace> methodTraces(UUID connectionId) throws RemoteException;
 
 	/**
-	 * @param clientId the client id
-	 * @return true if method traces are written to file for the given client
+	 * @param connectionId the connection id
+	 * @return true if method traces are written to file for the given connection
 	 * @throws RemoteException in case of a communication error
 	 */
-	boolean traceToFile(UUID clientId) throws RemoteException;
+	boolean traceToFile(UUID connectionId) throws RemoteException;
 
 	/**
-	 * @param clientId the client id
+	 * @param connectionId the connection id
 	 * @param traceToFile true if method traces should be written to file
 	 * @throws RemoteException in case of a communication error
 	 */
-	void traceToFile(UUID clientId, boolean traceToFile) throws RemoteException;
+	void traceToFile(UUID connectionId, boolean traceToFile) throws RemoteException;
 
 	/**
 	 * Returns true if logging is enabled for the given connection
-	 * @param clientId the id of the client
+	 * @param connectionId the id of the connection
 	 * @return true if method tracing is enabled for the given connection
 	 * @throws RemoteException in case of a communication error
 	 */
-	boolean tracingEnabled(UUID clientId) throws RemoteException;
+	boolean tracingEnabled(UUID connectionId) throws RemoteException;
 
 	/**
 	 * Sets the method tracing status for the given connection
-	 * @param clientId the id of the client
+	 * @param connectionId the id of the connection
 	 * @param tracingEnabled the new tracing status
 	 * @throws RemoteException in case of a communication error
 	 */
-	void tracingEnabled(UUID clientId, boolean tracingEnabled) throws RemoteException;
+	void tracingEnabled(UUID connectionId, boolean tracingEnabled) throws RemoteException;
 
 	/**
 	 * @param logger the logger

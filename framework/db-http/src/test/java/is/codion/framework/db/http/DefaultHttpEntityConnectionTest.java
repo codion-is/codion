@@ -20,7 +20,6 @@ package is.codion.framework.db.http;
 
 import is.codion.common.utilities.user.User;
 
-import java.util.UUID;
 
 public final class DefaultHttpEntityConnectionTest extends AbstractHttpEntityConnectionTest {
 
@@ -32,8 +31,6 @@ public final class DefaultHttpEntityConnectionTest extends AbstractHttpEntityCon
 						.json(false)
 						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
-						.clientType("DefaultHttpEntityConnectionTest")
-						.clientId(UUID.randomUUID())
-						.build());
+						.clientType("DefaultHttpEntityConnectionTest"));
 	}
 }

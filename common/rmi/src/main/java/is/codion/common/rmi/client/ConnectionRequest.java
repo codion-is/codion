@@ -33,7 +33,7 @@ import java.util.UUID;
 /**
  * Encapsulates information about a client required by a server for establishing a connection
  */
-public interface ConnectionRequest {
+public sealed interface ConnectionRequest permits DefaultConnectionRequest {
 
 	/**
 	 * @return the user
@@ -41,9 +41,10 @@ public interface ConnectionRequest {
 	User user();
 
 	/**
-	 * @return the client id
+	 * <p>Identifies the connection this request establishes.
+	 * @return the connection id
 	 */
-	UUID clientId();
+	UUID connectionId();
 
 	/**
 	 * @return the client type
@@ -117,10 +118,10 @@ public interface ConnectionRequest {
 		}
 
 		/**
-		 * @param clientId the client id, a random {@link UUID} by default
+		 * @param connectionId the connection id, a random {@link UUID} by default
 		 * @return this Builder instance
 		 */
-		Builder clientId(UUID clientId);
+		Builder connectionId(UUID connectionId);
 
 		/**
 		 * @param version the client version

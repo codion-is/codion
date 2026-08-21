@@ -108,9 +108,9 @@ public class AbstractServerAdmin extends UnicastRemoteObject implements ServerAd
 	}
 
 	@Override
-	public final void disconnect(UUID clientId) throws RemoteException {
-		LOG.info("disconnect({})", clientId);
-		server.disconnect(clientId);
+	public final void disconnect(UUID connectionId) throws RemoteException {
+		LOG.info("disconnect({})", connectionId);
+		server.disconnect(connectionId);
 	}
 
 	@Override

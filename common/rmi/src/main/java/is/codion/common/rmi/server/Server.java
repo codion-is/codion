@@ -44,7 +44,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 
 	/**
 	 * Establishes a connection to this Server.
-	 * <p>If a connection already exists for the request's {@link ConnectionRequest#clientId() clientId},
+	 * <p>If a connection already exists for the request's {@link ConnectionRequest#connectionId() connectionId},
 	 * that existing connection is returned after re-validating the supplied credentials (username
 	 * case-insensitively, password exactly), rather than establishing a new one.
 	 * @param connectionRequest the information required for establishing a connection
@@ -52,7 +52,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	 * @throws RemoteException in case of a communication error
 	 * @throws ConnectionNotAvailableException in case the server isn't accepting more connections
 	 * @throws LoginException in case the login fails, or if the server is shutting down
-	 * @throws NullPointerException in case the request, or its user, clientId or clientType, is null
+	 * @throws NullPointerException in case the request, or its user, connectionId or clientType, is null
 	 */
 	C connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException, LoginException;
 
@@ -67,10 +67,10 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 
 	/**
 	 * Disconnects the connection identified by the given id.
-	 * @param clientId the UUID identifying the client that should be disconnected
+	 * @param connectionId the UUID identifying the connection that should be disconnected
 	 * @throws RemoteException in case of a communication error
 	 */
-	void disconnect(UUID clientId) throws RemoteException;
+	void disconnect(UUID connectionId) throws RemoteException;
 
 	/**
 	 * @return static information about this server

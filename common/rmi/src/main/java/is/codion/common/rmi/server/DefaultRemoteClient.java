@@ -106,7 +106,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 		}
 		builder.append("@").append(clientHost).append(" [").append(connectionRequest.clientType())
 						.append(connectionRequest.version().map(version -> "-" + version).orElse(""))
-						.append("] - ").append(connectionRequest.clientId());
+						.append("] - ").append(connectionRequest.connectionId());
 
 		return builder.toString();
 	}

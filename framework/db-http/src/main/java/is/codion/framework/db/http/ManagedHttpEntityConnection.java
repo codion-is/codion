@@ -76,7 +76,7 @@ final class ManagedHttpEntityConnection extends AbstractEntityConnection
 							.securePort(securePort)
 							.user(user())
 							.clientType(clientType())
-							.clientId(clientId())
+							.connectionId(id())
 							.clientVersion(clientVersion().orElse(null))
 							.json(json)
 							.https(https)

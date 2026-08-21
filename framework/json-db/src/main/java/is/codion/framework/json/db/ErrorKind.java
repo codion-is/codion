@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 public enum ErrorKind {
 
 	/**
-	 * Authentication failed, or the credentials, client id or client type headers are missing or malformed.
+	 * Authentication failed, or the credentials, connection id or client type headers are missing or malformed.
 	 */
 	AUTHENTICATION(401, Severity.DEBUG),
 	/**

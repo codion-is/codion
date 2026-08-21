@@ -140,7 +140,7 @@ public class EntityServiceSecureTest {
 						.headers(new String[] {
 										EntityService.DOMAIN_TYPE, TestDomain.DOMAIN.name(),
 										EntityService.CLIENT_TYPE, "EntityServiceSecureTest",
-										EntityService.CLIENT_ID, UUID.randomUUID().toString(),
+										EntityService.CONNECTION_ID, UUID.randomUUID().toString(),
 										EntityService.CLIENT_VERSION, Version.version().toString(),
 										"Authorization", "Basic " + Base64.getEncoder().encodeToString((UNIT_TEST_USER.username()
 														+ ":" + String.valueOf(UNIT_TEST_USER.password())).getBytes())

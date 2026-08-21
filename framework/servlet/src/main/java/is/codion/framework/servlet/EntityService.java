@@ -204,7 +204,7 @@ public final class EntityService implements AuxiliaryServer {
 
 	static final String DOMAIN_TYPE = "domainType";
 	static final String CLIENT_TYPE = "clientType";
-	static final String CLIENT_ID = "clientId";
+	static final String CONNECTION_ID = "connectionId";
 	static final String CLIENT_VERSION = "clientVersion";
 
 	private static final String AUTHORIZATION = "Authorization";
@@ -889,14 +889,14 @@ public final class EntityService implements AuxiliaryServer {
 
 		String domainTypeName = domainTypeName(context);
 		String clientType = clientType(context);
-		UUID clientId = clientId(context);
+		UUID connectionId = connectionId(context);
 		User user = user(context);
 		Version version = clientVersion(context);
 
 		return server.connect(ConnectionRequest.builder()
 						.user(user)
 						.clientType(clientType)
-						.clientId(clientId)
+						.connectionId(connectionId)
 						.version(version)
 						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
 						.parameter(Server.CLIENT_HOST, remoteHost(context.req()))
@@ -1025,33 +1025,33 @@ public final class EntityService implements AuxiliaryServer {
 		return checkHeaderParameter(context.header(CLIENT_TYPE), CLIENT_TYPE);
 	}
 
-	private static UUID clientId(Context context) throws ServerAuthenticationException {
-		UUID headerClientId = clientId(checkHeaderParameter(context.header(CLIENT_ID), CLIENT_ID));
+	private static UUID connectionId(Context context) throws ServerAuthenticationException {
+		UUID headerConnectionId = connectionId(checkHeaderParameter(context.header(CONNECTION_ID), CONNECTION_ID));
 		HttpSession session = context.req().getSession();
 		if (session.isNew()) {
-			session.setAttribute(CLIENT_ID, headerClientId);
+			session.setAttribute(CONNECTION_ID, headerConnectionId);
 		}
 		else {
-			UUID sessionClientId = (UUID) session.getAttribute(CLIENT_ID);
-			if (sessionClientId == null || !sessionClientId.equals(headerClientId)) {
+			UUID sessionConnectionId = (UUID) session.getAttribute(CONNECTION_ID);
+			if (sessionConnectionId == null || !sessionConnectionId.equals(headerConnectionId)) {
 				session.invalidate();
 
-				throw new ServerAuthenticationException("Invalid client id");
+				throw new ServerAuthenticationException("Invalid connection id");
 			}
 		}
 
-		return headerClientId;
+		return headerConnectionId;
 	}
 
 	/**
-	 * A malformed client id is an authentication failure, not a server fault, as is a missing one.
+	 * A malformed connection id is an authentication failure, not a server fault, as is a missing one.
 	 */
-	private static UUID clientId(String clientId) throws ServerAuthenticationException {
+	private static UUID connectionId(String connectionId) throws ServerAuthenticationException {
 		try {
-			return UUID.fromString(clientId);
+			return UUID.fromString(connectionId);
 		}
 		catch (IllegalArgumentException e) {
-			throw new ServerAuthenticationException("Invalid " + CLIENT_ID + " header parameter");
+			throw new ServerAuthenticationException("Invalid " + CONNECTION_ID + " header parameter");
 		}
 	}
 

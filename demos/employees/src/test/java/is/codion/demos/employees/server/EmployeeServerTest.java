@@ -69,17 +69,17 @@ public final class EmployeeServerTest {
 						.port(SERVER_PORT)
 						.locate();
 
-		UUID clientId = UUID.randomUUID();
+		UUID connectionId = UUID.randomUUID();
 		EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
 						.user(User.parse("scott:tiger"))
 						.clientType("EmployeeServerTest")
-						.clientId(clientId)
+						.connectionId(connectionId)
 						.build());
 
 		Collection<Entity> employees = employeeService.employees();
 		assertEquals(16, employees.size());
 
-		employeeServer.disconnect(clientId);
+		employeeServer.disconnect(connectionId);
 
 		employeeServer.shutdown();
 	}

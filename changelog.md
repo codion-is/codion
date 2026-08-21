@@ -4,9 +4,21 @@ Codion Change Log
 ## 0.18.84
 ### is.codion.common.reactive
 - ValueCollection.removeAll() wildcard added to mirror addAll().
+### is.codion.common.rmi
+- ConnectionRequest.clientId() renamed connectionId(), Builder.clientId() accordingly, it identifies the connection, not the client establishing it. ConnectionRequest is now sealed.
+- Server.disconnect(), ServerAdmin.disconnect() and AbstractServer.connection() parameters renamed connectionId.
 ### is.codion.common.model
 - DefaultFilterModelItems, the included and filtered notifications of a selection preserving mutation - refresh, filter, sort, add and remove - are now delivered once the selection has been restored, a listener reading the selection while responding to one used to see it momentarily empty. A mutation now notifies once instead of once per internal step, a refresh no longer notifying twice, for the clear and the add.
 - JsonPreferences now prunes the json output to get rid of empty nodes.
+### is.codion.framework.db
+- EntityConnection.clientId() renamed id(), it identifies the connection, not the client using it. Builder.clientId() removed, each connection is now assigned an id of its own when built, two connections built from a single builder no longer end up sharing one server connection.
+- EntityConnection.clientType() added, previously protected on AbstractEntityConnection.
+### is.codion.framework.db.rmi
+- ServerEntityConnection.clientId() renamed id(), clientType() added, mirroring EntityConnection.
+### is.codion.framework.servlet
+- EntityService, clientId request header renamed connectionId.
+### is.codion.framework.server
+- EntityServerAdmin method parameters renamed connectionId.
 ### is.codion.framework.domain
 - DefaultForeignKeyConditions.valueMap() bug fixed, no longer uses toMap(), due to nulls. Now rejects non-present keys.
 ### is.codion.swing.framework.ui

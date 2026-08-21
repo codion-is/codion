@@ -80,11 +80,18 @@ public interface ServerEntityConnection extends Remote, AutoCloseable {
 	User user() throws RemoteException;
 
 	/**
-	 * @return the client id for this connection
+	 * @return the id of this connection
 	 * @throws RemoteException in case of an exception
-	 * @see EntityConnection#clientId()
+	 * @see EntityConnection#id()
 	 */
-	UUID clientId() throws RemoteException;
+	UUID id() throws RemoteException;
+
+	/**
+	 * @return the client type
+	 * @throws RemoteException in case of an exception
+	 * @see EntityConnection#clientType()
+	 */
+	String clientType() throws RemoteException;
 
 	/**
 	 * Returns a description of this connection, a database or server name for example.

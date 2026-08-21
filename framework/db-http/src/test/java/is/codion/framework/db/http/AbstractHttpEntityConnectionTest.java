@@ -62,10 +62,12 @@ abstract class AbstractHttpEntityConnectionTest {
 
 	private static EntityServer server;
 
+	private final HttpEntityConnection.Builder builder;
 	private final EntityConnection connection;
 
-	protected AbstractHttpEntityConnectionTest(EntityConnection connection) {
-		this.connection = connection;
+	protected AbstractHttpEntityConnectionTest(HttpEntityConnection.Builder builder) {
+		this.builder = builder;
+		this.connection = builder.build();
 	}
 
 	@BeforeAll
@@ -392,6 +394,30 @@ abstract class AbstractHttpEntityConnectionTest {
 	void close() {
 		connection.close();
 		assertFalse(connection.connected());
+	}
+
+	@Test
+	void connectionPerBuild() {
+		//each build() is a connection of its own, with a session of its own: the servlet binds the
+		//connection id to the http session, so two connections from one JVM need two cookie jars
+		EntityConnection one = builder.build();
+		EntityConnection two = builder.build();
+		try {
+			assertNotEquals(one.id(), two.id());
+
+			one.startTransaction();
+			assertTrue(one.transactionOpen());
+			assertFalse(two.transactionOpen());
+			one.rollbackTransaction();
+
+			one.close();
+			assertTrue(two.connected());
+			assertFalse(two.select(Condition.all(Department.TYPE)).isEmpty());
+		}
+		finally {
+			one.close();
+			two.close();
+		}
 	}
 
 	@Test

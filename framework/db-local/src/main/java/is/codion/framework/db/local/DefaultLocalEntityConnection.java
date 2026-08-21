@@ -138,7 +138,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	private @Nullable DefaultQueryCache queryCache;
 	private @Nullable Connection connection;
-	private @Nullable UUID clientId;
+	private @Nullable UUID id;
 	private boolean transactionOpen = false;
 
 	/**
@@ -182,15 +182,29 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		return user;
 	}
 
+	/**
+	 * A raw connection has no server to be known by, so this id identifies nothing beyond the instance;
+	 * a self-managing connection carries its own and never asks. Assigned on first use, so that a
+	 * connection which is never asked never pays for one.
+	 */
 	@Override
-	public UUID clientId() {
+	public UUID id() {
 		synchronized (lock) {
-			if (clientId == null) {
-				clientId = UUID.randomUUID();
+			if (id == null) {
+				id = UUID.randomUUID();
 			}
 
-			return clientId;
+			return id;
 		}
+	}
+
+	/**
+	 * Likewise, a raw connection knows nothing of how it was configured, so it reports the domain name,
+	 * which is what a self-managing connection defaults to when no client type is specified.
+	 */
+	@Override
+	public String clientType() {
+		return domain.type().name();
 	}
 
 	@Override

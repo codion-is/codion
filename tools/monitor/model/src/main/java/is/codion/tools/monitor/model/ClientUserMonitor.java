@@ -242,7 +242,7 @@ public final class ClientUserMonitor {
 				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().included().get());
 				for (RemoteClient client : server.clients()) {
 					UserInfo newUserInfo = new UserInfo(client.request().user(), client.request().clientType(),
-									client.clientHost(), LocalDateTime.now(), client.request().clientId(),
+									client.clientHost(), LocalDateTime.now(), client.request().connectionId(),
 									client.request().version().orElse(null), client.request().frameworkVersion());
 					int index = items.indexOf(newUserInfo);
 					if (index == -1) {
@@ -251,7 +251,7 @@ public final class ClientUserMonitor {
 					else {
 						UserInfo currentUserInfo = items.get(index);
 						currentUserInfo.setLastSeen(newUserInfo.lastSeen());
-						currentUserInfo.addClientId(client.request().clientId());
+						currentUserInfo.addConnectionId(client.request().connectionId());
 					}
 				}
 
@@ -334,16 +334,16 @@ public final class ClientUserMonitor {
 		private final String clientHost;
 		private final Version clientVersion;
 		private final Version frameworkVersion;
-		private final Set<UUID> clientIds = new HashSet<>();
+		private final Set<UUID> connectionIds = new HashSet<>();
 		private LocalDateTime lastSeen;
 
 		private UserInfo(User user, String clientType, String clientHost, LocalDateTime lastSeen,
-										 UUID clientId, Version clientVersion, Version frameworkVersion) {
+										 UUID connectionId, Version clientVersion, Version frameworkVersion) {
 			this.user = user;
 			this.clientType = clientType;
 			this.clientHost = clientHost;
 			this.lastSeen = lastSeen;
-			this.clientIds.add(clientId);
+			this.connectionIds.add(connectionId);
 			this.clientVersion = clientVersion;
 			this.frameworkVersion = frameworkVersion;
 		}
@@ -373,15 +373,15 @@ public final class ClientUserMonitor {
 		}
 
 		public int connectionCount() {
-			return clientIds.size();
+			return connectionIds.size();
 		}
 
 		public void setLastSeen(LocalDateTime lastSeen) {
 			this.lastSeen = lastSeen;
 		}
 
-		public void addClientId(UUID clientId) {
-			this.clientIds.add(clientId);
+		public void addConnectionId(UUID connectionId) {
+			this.connectionIds.add(connectionId);
 		}
 
 		@Override
