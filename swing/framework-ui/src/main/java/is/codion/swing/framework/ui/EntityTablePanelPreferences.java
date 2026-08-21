@@ -73,7 +73,10 @@ final class EntityTablePanelPreferences {
 			LOG.error("Error while storing column preferences", e);
 		}
 		try {
-			preferences.put(EXPORT_KEY, new ExportPreferences(tablePanel.exportModel()).preferences().toString());
+			String exportPreferences = new ExportPreferences(tablePanel.exportModel()).preferences().toString();
+			if (!EMPTY_JSON_OBJECT.equals(exportPreferences)) {
+				preferences.put(EXPORT_KEY, exportPreferences);
+			}
 		}
 		catch (Exception e) {
 			LOG.error("Error while storing export preferences", e);

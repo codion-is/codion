@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class FilePreferencesHierarchyTest {
@@ -41,6 +42,25 @@ public final class FilePreferencesHierarchyTest {
 		JsonPreferencesStore store = new JsonPreferencesStore(testFile);
 
 		return new FilePreferences(store);
+	}
+
+	@Test
+	void emptyNodesNotWritten() throws Exception {
+		Path testFile = tempDir.resolve("empty-nodes-" + System.nanoTime() + ".json");
+		Preferences root = new FilePreferences(new JsonPreferencesStore(testFile));
+
+		root.node("entity").node("model").put("sort", "name");
+		//a node created but never written to, and an empty JSON object value
+		root.node("entity").node("view").node("table").node("export");
+		root.node("entity").node("view").node("table").put("empty", "{}");
+		root.flush();
+
+		String json = new String(Files.readAllBytes(testFile), UTF_8);
+		assertTrue(json.contains("sort"));
+		assertFalse(json.contains("export"), json);
+		assertFalse(json.contains("empty"), json);
+		//the values are still there for this session, only the file leaves the empty nodes out
+		assertEquals("name", root.node("entity").node("model").get("sort", null));
 	}
 
 	@Test
