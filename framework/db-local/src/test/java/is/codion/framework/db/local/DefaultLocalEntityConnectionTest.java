@@ -118,6 +118,26 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void configureConnection() throws Exception {
+		//the server runs a client's connection on one borrowed from a pool, attaching a different one per
+		//invocation, so a domain only ever configuring the connection the constructor received would
+		//configure exactly one, and that one goes straight back to the pool
+		ConfigureDb configureDb = new ConfigureDb();
+		Database database = Database.instance();
+		try (LocalEntityConnection connection =
+						 localEntityConnection(database, configureDb, database.createConnection(UNIT_TEST_USER))) {
+			assertEquals(1, configureDb.connectionsConfigured());
+
+			Connection replaced = ((ConnectionHolder) connection).detach();
+			((ConnectionHolder) connection).attach(database.createConnection(UNIT_TEST_USER));
+			assertEquals(2, configureDb.connectionsConfigured());
+
+			connection.select(all(Configured.TYPE));
+			replaced.close();
+		}
+	}
+
+	@Test
 	void batchCopy() {
 		try (EntityConnection sourceConnection = new DefaultLocalEntityConnection(Database.instance(), DOMAIN, UNIT_TEST_USER);
 				 EntityConnection destinationConnection = createDestinationConnection()) {

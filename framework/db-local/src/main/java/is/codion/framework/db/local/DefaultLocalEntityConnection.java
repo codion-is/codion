@@ -865,6 +865,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	public void attach(Connection connection) {
 		requireNonNull(connection);
 		synchronized (lock) {
+			//a connection this domain has not configured is not one it can be used with, and with a pool
+			//attaching is where a connection first arrives, the constructor having seen only the first one
+			domain.configure(connection);
 			this.connection = connection;
 		}
 	}
