@@ -138,7 +138,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	 */
 	@Override
 	public void clientInfo(Connection connection, ClientInfo clientInfo) {
-		clientInfoProperty(connection, APPLICATION_NAME, clientInfo.application() + " (" + clientInfo.user() + ")");
+		clientInfoProperty(connection, APPLICATION_NAME, clientInfo.clientType() + " (" + clientInfo.user() + ")");
 	}
 
 	@Override

@@ -38,6 +38,7 @@ import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.local.ConfigureDb.Configured;
+import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -135,6 +136,28 @@ public class DefaultLocalEntityConnectionTest {
 			connection.select(all(Configured.TYPE));
 			replaced.close();
 		}
+	}
+
+	@Test
+	void tracedFailuresRecordTheException() throws Exception {
+		LocalEntityConnection connection = createConnection();
+		MethodTracer tracer = MethodTracer.methodTracer(10);
+		((MethodTracer.Traceable) connection).tracer(tracer);
+		//a closed connection fails inside prepareStatement, after its trace entry has been made
+		Connection jdbcConnection = ((ConnectionHolder) connection).detach();
+		jdbcConnection.close();
+		((ConnectionHolder) connection).attach(jdbcConnection);
+
+		assertThrows(DatabaseException.class, () -> connection.select(all(Department.TYPE)));
+
+		//the entry used to exit without the exception, leaving a failure invisible in the trace
+		StringBuilder builder = new StringBuilder();
+		tracer.entries().forEach(entry -> entry.appendTo(builder));
+		String trace = builder.toString();
+		assertTrue(trace.contains("prepareStatement"), trace);
+		assertTrue(trace.contains("Connection is closed"), trace);
+
+		connection.close();
 	}
 
 	@Test

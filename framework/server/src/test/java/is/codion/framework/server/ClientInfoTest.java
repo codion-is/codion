@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static is.codion.framework.domain.entity.condition.Condition.all;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.synchronizedList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,10 +69,43 @@ public final class ClientInfoTest {
 			assertEquals(1, database.applied.size());
 			ClientInfo clientInfo = database.applied.get(0);
 			assertEquals(UNIT_TEST_USER.username(), clientInfo.user());
-			assertEquals("ClientInfoTest", clientInfo.application());
+			assertEquals("ClientInfoTest", clientInfo.clientType());
 			assertTrue(clientInfo.host().isPresent());
 			//pooled, so stamped once per invocation, the next borrower overwriting rather than
 			//the connection being cleared on its way back
+			connection.select(all(TestDomain.Employee.TYPE));
+			assertEquals(2, database.applied.size());
+
+			connection.close();
+		}
+		finally {
+			server.shutdown();
+		}
+	}
+
+	@Test
+	void clientInfoDedicatedConnection() throws Exception {
+		RecordingDatabase database = new RecordingDatabase();
+		EntityServer server = EntityServer.startServer(configure(database.database(), false));
+		try {
+			EntityConnection connection = RemoteEntityConnection.builder()
+							.hostname("localhost")
+							.port(3523)
+							.registryPort(3521)
+							.domain(TestDomain.DOMAIN)
+							.clientType("ClientInfoTest")
+							.user(UNIT_TEST_USER)
+							.build();
+			assertTrue(database.applied.isEmpty());
+
+			//no pool, so the connection is this client's alone and is stamped once, on first use
+			connection.select(all(TestDomain.Employee.TYPE));
+			connection.select(all(TestDomain.Employee.TYPE));
+			assertEquals(1, database.applied.size());
+			assertEquals(UNIT_TEST_USER.username(), database.applied.get(0).user());
+
+			//and again when it has been replaced
+			SessionContextTest.kill(server, connection);
 			connection.select(all(TestDomain.Employee.TYPE));
 			assertEquals(2, database.applied.size());
 
@@ -141,6 +175,10 @@ public final class ClientInfoTest {
 	}
 
 	private static EntityServerConfiguration configure(Database database) {
+		return configure(database, true);
+	}
+
+	private static EntityServerConfiguration configure(Database database, boolean pooled) {
 		Clients.SERVER_HOSTNAME.set("localhost");
 		Clients.TRUSTSTORE.set("src/main/config/truststore.jks");
 		Clients.resolveTrustStore();
@@ -152,7 +190,7 @@ public final class ClientInfoTest {
 						.port(3523)
 						.registryPort(3521)
 						.database(database)
-						.connectionPoolUsers(singletonList(UNIT_TEST_USER))
+						.connectionPoolUsers(pooled ? singletonList(UNIT_TEST_USER) : emptyList())
 						.domainClasses(singletonList("is.codion.framework.server.TestDomain"))
 						//the serial filter is JVM wide and set once, another test class in this JVM owns it
 						.objectInputFilterFactoryRequired(false)

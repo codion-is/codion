@@ -100,6 +100,8 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 			this.methodTracing = configuration.methodTracing();
 			this.domainModels = loadDomainModels(configuration.domainClasses());
 			configureDatabase(domainModels.values(), database);
+			//loaded here so that a context which can not be loaded fails the server start, not the first connect
+			SessionContexts.contexts();
 			EntityServerAdmin serverAdmin = createServerAdmin(configuration);
 			if (serverAdmin != null) {
 				setAdmin(serverAdmin);

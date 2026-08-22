@@ -32,4 +32,6 @@ module is.codion.framework.server {
 	requires is.codion.framework.db.rmi;
 
 	exports is.codion.framework.server;
+
+	uses is.codion.common.db.database.SessionContext;
 }

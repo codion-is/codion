@@ -89,7 +89,7 @@ final class Db2Database extends AbstractDatabase {
 	@Override
 	public void clientInfo(Connection connection, ClientInfo clientInfo) {
 		clientInfoProperty(connection, CLIENT_USER, clientInfo.user());
-		clientInfoProperty(connection, APPLICATION_NAME, clientInfo.application());
+		clientInfoProperty(connection, APPLICATION_NAME, clientInfo.clientType());
 		clientInfoProperty(connection, CLIENT_HOSTNAME, clientInfo.host().orElse(""));
 	}
 

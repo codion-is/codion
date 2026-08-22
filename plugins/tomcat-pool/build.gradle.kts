@@ -6,6 +6,7 @@ dependencies {
     api(project(":codion-common-db"))
 
     implementation(libs.tomcat.jdbc)
+    implementation(libs.slf4j.api)
 
     testImplementation(project(":codion-dbms-h2"))
     testRuntimeOnly(libs.h2)

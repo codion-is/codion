@@ -26,6 +26,7 @@ import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.utilities.user.User;
+import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainModel;
@@ -81,7 +82,7 @@ public final class ChinookAuthenticator implements Authenticator {
 	 */
 	@Override
 	public Optional<String> clientType() {
-		return Optional.of("Chinook");
+		return Optional.of(Chinook.DOMAIN.name());
 	}
 
 	@Override

@@ -32,6 +32,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A HikariCP connection pool based {@link ConnectionPoolFactory} implementation
  */
@@ -74,6 +76,11 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 								return new HikariPool(config);
 							});
 			this.config = config;
+		}
+
+		@Override
+		public void evict(Connection connection) {
+			connectionPool().evictConnection(requireNonNull(connection));
 		}
 
 		@Override

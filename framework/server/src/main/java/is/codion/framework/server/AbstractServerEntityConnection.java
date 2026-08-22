@@ -187,6 +187,13 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	}
 
 	/**
+	 * @return the handler running this connection's invocations
+	 */
+	final LocalConnectionHandler connectionHandler() {
+		return connectionHandler;
+	}
+
+	/**
 	 * @return method traces
 	 */
 	final List<MethodTrace> methodTraces() {
