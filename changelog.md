@@ -12,6 +12,9 @@ Codion Change Log
 - ServerAdmin.clients() and AbstractServer.clients() renamed sessions(), AbstractServer.ClientConnection renamed SessionConnection, its client() accessor session().
 ### is.codion.common.db
 - ClientInfo added, identifying the client a connection is being used on behalf of, along with Database.clientInfo(), stamping a connection with it where the database supports it. Implemented for Db2, Oracle and PostgreSQL, a no-op otherwise, the SQL Server driver not supporting it. Enabled with Database.CLIENT_INFO, codion.db.clientInfo, true by default.
+- SessionContext added, a ServiceLoader based extension point for applying session state to the connection a client is about to use, and removing it again afterwards, for what Database.clientInfo() can not express - an audit context, a row level security variable. Applied by the server on every connection check out and removed on the way back, in reverse. A failure while applying fails the client's operation, a failure while removing discards the connection. SessionContext.clientType() specifies the client type a context applies to, shared contexts being applied before client type specific ones.
+- ClientInfo.application() renamed clientType().
+- ConnectionPoolWrapper.evict() added, discarding a connection instead of reusing it, for one the pool can not be trusted to have been left in a usable state, implemented for the Hikari and Tomcat pools. Does nothing by default.
 ### is.codion.common.model
 - DefaultFilterModelItems, the included and filtered notifications of a selection preserving mutation - refresh, filter, sort, add and remove - are now delivered once the selection has been restored, a listener reading the selection while responding to one used to see it momentarily empty. A mutation now notifies once instead of once per internal step, a refresh no longer notifying twice, for the clear and the add.
 - JsonPreferences now prunes the json output to get rid of empty nodes.
@@ -20,6 +23,8 @@ Codion Change Log
 - EntityConnection.clientType() added, previously protected on AbstractEntityConnection.
 ### is.codion.framework.db.local
 - Domain.configure(Connection) bug fixed, is now called for every connection attached to a LocalEntityConnection, not just the one it was constructed with. A pooled server connection is attached anew on each invocation, so a domain registering a driver specific type used to have that registration only on the first connection, which went straight back to the pool. Implementations must be cheap and idempotent, see the javadoc.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection, the prepareStatement and populateForeignKeys method traces now record the exception, a failure in either used to leave no trace of itself. The populateForeignKeys trace entry is also made before the try rather than within it, so a failure to enter is no longer paired with an exit.
 ### is.codion.framework.db.rmi
 - ServerEntityConnection.clientId() renamed id(), clientType() added, mirroring EntityConnection.
 ### is.codion.framework.servlet

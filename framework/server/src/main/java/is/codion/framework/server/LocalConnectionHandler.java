@@ -32,7 +32,6 @@ import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -44,6 +43,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import static is.codion.framework.db.local.LocalEntityConnection.TRACES;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
@@ -58,6 +58,8 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
 	private static final String FETCH_CONNECTION = "fetchConnection";
+	private static final String PREPARE_CONNECTION = "prepareConnection";
+	private static final String RELEASE_CONNECTION = "releaseConnection";
 	private static final String RETURN_CONNECTION = "returnConnection";
 	private static final String CREATE_CONNECTION = "createConnection";
 	private static final String ENTITIES = "entities";
@@ -65,10 +67,13 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private final Domain domain;
 	private final RemoteSession session;
 	private final Database database;
-	private final @Nullable ClientInfo clientInfo;
+	private final ClientInfo clientInfo;
+	private final boolean stampClientInfo;
+	private final SessionContexts sessionContexts;
 	private final ConnectionPoolWrapper connectionPool;
 	private final String logIdentifier;
 	private final String userDescription;
+	private final String clientDescription;
 	private final long creationTime = currentTimeMillis();
 	private final AtomicBoolean active = new AtomicBoolean(false);
 	private final LocalEntityConnection entityConnection;
@@ -77,6 +82,11 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private MethodTracer tracer = MethodTracer.NO_OP;
 	private boolean traceToFile = false;
 	private int openIterators = 0;
+	/**
+	 * Whether the dedicated connection has been stamped and had the contexts applied, there being no
+	 * check out to do that on: once, on first use, and again after the connection has been replaced.
+	 */
+	private boolean prepared = false;
 	private volatile long lastAccessTime = creationTime;
 	private volatile boolean closed = false;
 
@@ -86,9 +96,12 @@ final class LocalConnectionHandler implements InvocationHandler {
 		String databaseUsername = session.databaseUser().username();
 		this.connectionPool = database.containsConnectionPool(databaseUsername) ? database.connectionPool(databaseUsername) : null;
 		this.database = database;
-		this.clientInfo = Database.CLIENT_INFO.getOrThrow() ? clientInfo(session) : null;
+		this.clientInfo = clientInfo(session);
+		this.stampClientInfo = Database.CLIENT_INFO.getOrThrow();
+		this.sessionContexts = new SessionContexts(clientInfo, SessionContexts.contexts(clientInfo.clientType()));
 		this.logIdentifier = session.request().user().username().toLowerCase() + "@" + session.request().clientType();
 		this.userDescription = "Remote user: " + session.request().user().username() + ", database user: " + databaseUsername;
+		this.clientDescription = clientInfo.toString();
 		this.entityConnection = initializeConnection();
 		this.connectionHolder = (ConnectionHolder) entityConnection;
 	}
@@ -122,7 +135,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
 		}
 		catch (Exception e) {
-			LOG.error(e.getMessage(), e);
+			//a failed prepare has already been logged, along with the context it failed in
 			exception = e;
 			throw exception;
 		}
@@ -185,10 +198,10 @@ final class LocalConnectionHandler implements InvocationHandler {
 		closed = true;
 		rollbackIfRequired(entityConnection);
 		if (connectionPool != null) {
-			returnToPool(connectionHolder);
+			returnToPool();
 		}
 		else {
-			entityConnection.close();
+			closeConnection();
 		}
 	}
 
@@ -198,6 +211,10 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	RemoteSession session() {
 		return session;
+	}
+
+	ConnectionHolder connectionHolder() {
+		return connectionHolder;
 	}
 
 	long lastAccessTime() {
@@ -225,36 +242,48 @@ final class LocalConnectionHandler implements InvocationHandler {
 		if (entityConnection.transactionOpen()) {
 			return;
 		}
-		DatabaseException exception = null;
+		Connection connection = traced(FETCH_CONNECTION, userDescription,
+						() -> connectionPool.connection(session.databaseUser()));
+		traced(PREPARE_CONNECTION, clientDescription, () -> preparePooled(connection));
+	}
+
+	private void preparePooled(Connection connection) {
 		try {
-			tracer.enter(FETCH_CONNECTION, userDescription);
-			connectionHolder.attach(stamped(connectionPool.connection(session.databaseUser())));
+			stamp(connection);
+			connectionHolder.attach(connection);
 		}
-		catch (DatabaseException ex) {
-			exception = ex;
-			throw ex;
+		catch (RuntimeException e) {
+			//not yet held by the holder, so invoke() can not return it, the pool would be one short
+			closeSilently(connection);
+			throw e;
 		}
-		finally {
-			tracer.exit(FETCH_CONNECTION, exception);
-		}
+		//attached, so a failure here leaves the connection for invoke() to return in the usual way
+		sessionContexts.prepare(connection);
 	}
 
 	private void prepareLocalConnection() {
 		if (!entityConnection.connected()) {
+			//the state applied to the old connection died with it, as does the count of it
+			sessionContexts.reset();
+			prepared = false;
 			entityConnection.close();//just in case
-			DatabaseException exception = null;
-			try {
-				tracer.enter(CREATE_CONNECTION, userDescription);
-				connectionHolder.attach(stamped(database.createConnection(session.databaseUser())));
-			}
-			catch (DatabaseException ex) {
-				exception = ex;
-				throw ex;
-			}
-			finally {
-				tracer.exit(CREATE_CONNECTION, exception);
-			}
+			traced(CREATE_CONNECTION, userDescription,
+							() -> connectionHolder.attach(database.createConnection(session.databaseUser())));
 		}
+		if (!prepared) {
+			traced(PREPARE_CONNECTION, clientDescription, this::prepareLocal);
+		}
+	}
+
+	/**
+	 * Once per connection rather than per invocation, the connection being this client's alone, and only
+	 * once it has succeeded, so that a failed prepare is retried rather than skipped.
+	 */
+	private void prepareLocal() {
+		Connection connection = entityConnection.connection();
+		stamp(connection);
+		sessionContexts.prepare(connection);
+		prepared = true;
 	}
 
 	/**
@@ -278,17 +307,58 @@ final class LocalConnectionHandler implements InvocationHandler {
 		if (connectionPool == null || entityConnection.transactionOpen() || openIterators > 0) {
 			return;
 		}
-		Exception exception = null;
 		try {
-			tracer.enter(RETURN_CONNECTION, userDescription);
-			returnToPool(connectionHolder);
+			returnToPool();
 		}
 		catch (Exception e) {
-			exception = e;
+			//swallowed, this runs in invoke()'s finally where throwing would mask the client's own failure
 			LOG.info("Exception while returning connection to pool", e);
 		}
+	}
+
+	/**
+	 * Runs the given operation between a matching {@link MethodTracer} enter and exit, the exit carrying the
+	 * exception should it throw. Every traced region in here is this same eight line bracket, and nesting
+	 * two of them by hand is what made this class hard to read.
+	 * @param method the method name to trace
+	 * @param argument the argument to record with the entry
+	 * @param operation the operation to run
+	 */
+	private void traced(String method, String argument, Runnable operation) {
+		tracer.enter(method, argument);
+		RuntimeException exception = null;
+		try {
+			operation.run();
+		}
+		catch (RuntimeException e) {
+			exception = e;
+			throw e;
+		}
 		finally {
-			tracer.exit(RETURN_CONNECTION, exception);
+			tracer.exit(method, exception);
+		}
+	}
+
+	/**
+	 * @param method the method name to trace
+	 * @param argument the argument to record with the entry
+	 * @param operation the operation to run
+	 * @param <T> the operation result type
+	 * @return the operation result
+	 * @see #traced(String, String, Runnable)
+	 */
+	private <T> T traced(String method, String argument, Supplier<T> operation) {
+		tracer.enter(method, argument);
+		RuntimeException exception = null;
+		try {
+			return operation.get();
+		}
+		catch (RuntimeException e) {
+			exception = e;
+			throw e;
+		}
+		finally {
+			tracer.exit(method, exception);
 		}
 	}
 
@@ -296,18 +366,60 @@ final class LocalConnectionHandler implements InvocationHandler {
 	 * Stamps the connection with the identity of the client it is about to serve, where the database
 	 * supports it, so that a shared database user does not hide who is actually doing the work.
 	 */
-	private Connection stamped(Connection connection) {
-		if (clientInfo != null) {
+	private void stamp(Connection connection) {
+		if (stampClientInfo) {
 			database.clientInfo(connection, clientInfo);
 		}
-
-		return connection;
 	}
 
-	private static void returnToPool(ConnectionHolder connectionHolder) {
+	/**
+	 * Removing the session state and handing the connection back are traced apart, being separate costs:
+	 * the first is whatever the application's contexts do, the second is the pool.
+	 */
+	private void returnToPool() {
 		Connection connection = connectionHolder.detach();
 		if (connection != null) {
-			closeSilently(connection);
+			traced(RELEASE_CONNECTION, clientDescription, () -> release(connection));
+			traced(RETURN_CONNECTION, userDescription, () -> closeSilently(connection));
+		}
+	}
+
+	private void release(Connection connection) {
+		if (!sessionContexts.release(connection)) {
+			discard(connection);
+		}
+	}
+
+	/**
+	 * The dedicated connection is released when the client goes, there being no check in to do it on. What
+	 * the release leaves behind does not matter, the connection going with it, so its verdict is ignored.
+	 */
+	private void closeConnection() {
+		try {
+			if (!sessionContexts.empty()) {
+				Connection connection = connectionHolder.detach();
+				if (connection != null) {
+					traced(RELEASE_CONNECTION, clientDescription, () -> sessionContexts.release(connection));
+					closeSilently(connection);
+				}
+			}
+		}
+		finally {
+			entityConnection.close();
+		}
+	}
+
+	/**
+	 * Has the pool discard a connection whose session state could not be removed, rather than hand it, and
+	 * whatever is still set on it, to the next client. Marked here and destroyed by the pool as it is
+	 * returned, the close which follows handing it back for the pool to destroy rather than pool.
+	 */
+	private void discard(Connection connection) {
+		try {
+			connectionPool.evict(connection);
+		}
+		catch (Exception e) {
+			LOG.error("Unable to discard a connection whose session state could not be removed", e);
 		}
 	}
 

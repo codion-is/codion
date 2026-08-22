@@ -170,7 +170,7 @@ final class OracleDatabase extends AbstractDatabase {
 	@Override
 	public void clientInfo(Connection connection, ClientInfo clientInfo) {
 		clientInfoProperty(connection, CLIENT_IDENTIFIER, clientInfo.user());
-		clientInfoProperty(connection, MODULE, clientInfo.application());
+		clientInfoProperty(connection, MODULE, clientInfo.clientType());
 	}
 
 	@Override

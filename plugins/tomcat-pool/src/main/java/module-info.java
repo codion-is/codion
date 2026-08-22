@@ -21,6 +21,7 @@
  */
 module is.codion.plugin.tomcat.pool {
 	requires java.management;
+	requires org.slf4j;
 	requires tomcat.jdbc;
 	requires is.codion.common.db;
 

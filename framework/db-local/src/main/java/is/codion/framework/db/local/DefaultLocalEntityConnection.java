@@ -1138,8 +1138,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			int referenceDepthLimit = referenceDepthLimit(foreignKeyDefinition, select);
 			if (withinReferenceDepthLimit(referenceDepth, referenceDepthLimit)
 							&& containsReferencedColumns(entities.get(0), foreignKey.references())) {
+				tracer.enter("populateForeignKeys", foreignKeyDefinition);
+				Exception exception = null;
 				try {
-					tracer.enter("populateForeignKeys", foreignKeyDefinition);
 					Collection<Key> referencedKeys = Entity.keys(foreignKey, entities);
 					if (referencedKeys.isEmpty()) {
 						entities.forEach(entity -> entity.set(foreignKey, null));
@@ -1152,8 +1153,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 										entity(entity.key(foreignKey), referencedEntitiesMappedByKey)));
 					}
 				}
+				catch (Exception e) {
+					exception = e;
+					throw e;
+				}
 				finally {
-					tracer.exit("populateForeignKeys");
+					tracer.exit("populateForeignKeys", exception);
 				}
 			}
 		}
@@ -1374,6 +1379,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	private PreparedStatement prepareStatement(String query, boolean generatedKeys, int queryTimeout) throws SQLException {
 		tracer.enter("prepareStatement", query);
+		SQLException exception = null;
 		try {
 			PreparedStatement statement = generatedKeys ?
 							verifyOpenConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
@@ -1382,8 +1388,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 			return statement;
 		}
+		catch (SQLException e) {
+			exception = e;
+			throw e;
+		}
 		finally {
-			tracer.exit("prepareStatement");
+			tracer.exit("prepareStatement", exception);
 		}
 	}
 

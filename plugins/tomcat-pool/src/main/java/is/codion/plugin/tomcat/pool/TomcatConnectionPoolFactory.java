@@ -26,10 +26,15 @@ import is.codion.common.utilities.user.User;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.apache.tomcat.jdbc.pool.PooledConnection;
 import org.apache.tomcat.jdbc.pool.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Tomcat connection pool based {@link ConnectionPoolFactory} implementation
@@ -66,6 +71,8 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 
 	private static final class DataSourceWrapper extends AbstractConnectionPoolWrapper<DataSource> {
 
+		private static final Logger LOG = LoggerFactory.getLogger(DataSourceWrapper.class);
+
 		private DataSourceWrapper(ConnectionFactory connectionFactory, User user, DataSource dataSource) {
 			super(connectionFactory, user, dataSource,
 							dataSourceProxy -> {
@@ -73,6 +80,23 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 
 								return dataSource;
 							});
+		}
+
+		/**
+		 * The pool offers no eviction of its own, only a wholesale purge, so the connection is marked
+		 * discarded and destroyed rather than pooled when it is returned.
+		 */
+		@Override
+		public void evict(Connection connection) {
+			try {
+				PooledConnection pooledConnection = requireNonNull(connection).unwrap(PooledConnection.class);
+				if (pooledConnection != null) {
+					pooledConnection.setDiscarded(true);
+				}
+			}
+			catch (SQLException e) {
+				LOG.error("Unable to discard a pooled connection", e);
+			}
 		}
 
 		@Override

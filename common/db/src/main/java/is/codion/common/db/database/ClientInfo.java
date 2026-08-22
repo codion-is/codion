@@ -35,17 +35,17 @@ import static java.util.Objects.requireNonNull;
 public final class ClientInfo {
 
 	private final String user;
-	private final String application;
+	private final String clientType;
 	private final @Nullable String host;
 
 	/**
 	 * @param user the application user the connection is being used on behalf of
-	 * @param application the application, typically a client type
+	 * @param clientType the client type
 	 * @param host the host the client is running on, null if unknown
 	 */
-	public ClientInfo(String user, String application, @Nullable String host) {
+	public ClientInfo(String user, String clientType, @Nullable String host) {
 		this.user = requireNonNull(user);
-		this.application = requireNonNull(application);
+		this.clientType = requireNonNull(clientType);
 		this.host = host;
 	}
 
@@ -57,10 +57,10 @@ public final class ClientInfo {
 	}
 
 	/**
-	 * @return the application
+	 * @return the client type
 	 */
-	public String application() {
-		return application;
+	public String clientType() {
+		return clientType;
 	}
 
 	/**
@@ -80,16 +80,16 @@ public final class ClientInfo {
 		}
 		ClientInfo that = (ClientInfo) object;
 
-		return user.equals(that.user) && application.equals(that.application) && Objects.equals(host, that.host);
+		return user.equals(that.user) && clientType.equals(that.clientType) && Objects.equals(host, that.host);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(user, application, host);
+		return Objects.hash(user, clientType, host);
 	}
 
 	@Override
 	public String toString() {
-		return application + " (" + user + (host == null ? "" : "@" + host) + ")";
+		return clientType + " (" + user + (host == null ? "" : "@" + host) + ")";
 	}
 }

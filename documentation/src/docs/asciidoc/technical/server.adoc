@@ -32,6 +32,46 @@ An authentication layer can be added by implementing an {url-javadoc}{common-rmi
 
 <<{dir-tutorials}/chinook/chinook.adoc#_authenticator, ChinookAuthenticator>>
 
+[#_client_identity]
+=== Client identity
+
+An {url-javadoc}{common-rmi}/is/codion/common/rmi/server/Authenticator.html[Authenticator] swapping in a shared
+database user leaves the database seeing that one user doing everyone's work. Anything relying on who the work
+is really for — an audit trigger, a row level security policy, a DBA looking at which session is running a slow
+query — then has nothing to go on.
+
+The server addresses the reporting half of that on its own: each connection is stamped with the identity of the
+client about to use it, via
+{url-javadoc}{common-db}/is/codion/common/db/database/Database.html#clientInfo(java.sql.Connection,is.codion.common.db.database.ClientInfo)[Database.clientInfo()],
+which carries the user, the client type and the client host as far as the database allows. What that means, and
+what it costs, is dialect specific — Db2 and Oracle put the values in session registers readable from SQL and
+send them along with the next statement, PostgreSQL has room for only an application name and sets it with a
+statement of its own, and other databases have nowhere to put them at all, in which case nothing happens.
+Disable it with `codion.db.clientInfo=false`.
+
+[#_session_context]
+==== SessionContext
+
+Anything beyond identity — the value an audit trigger reads, the variable a row level security policy consults —
+needs a {url-javadoc}{common-db}/is/codion/common/db/database/SessionContext.html[SessionContext], registered
+with the ServiceLoader. The server applies the registered contexts to a connection before the client uses it and
+removes them again afterwards, which with a connection pool means on every connection check out, so an
+implementation is worth keeping cheap.
+
+* Shared contexts are applied before ones naming a client type, and removed in reverse, so a client type specific
+context sits on top of the general setup and comes off before it.
+* Failing to apply a context fails the client's operation, rather than letting a query run against a connection
+whose session state is not what the application expects.
+* Failing to remove one discards the connection rather than handing it, and whatever is still set on it, to the
+next client.
+
+The interface lives in the `codion-common-db` module rather than with the server, so that implementing one costs
+an application nothing it does not already have.
+
+===== SessionContext examples
+
+<<{dir-tutorials}/chinook/chinook.adoc#_session_context, ChinookSessionContext>>
+
 === RMI SSL encryption
 
 To enable SSL encryption between client and server, create a keystore and truststore pair and set the following system properties.

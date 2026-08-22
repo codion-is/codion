@@ -100,6 +100,17 @@ public interface ConnectionPoolWrapper {
 	User user();
 
 	/**
+	 * <p>Discards the given connection instead of reusing it, for one whose state the pool can not be
+	 * trusted to have been left in - a {@link is.codion.common.db.database.SessionContext} which failed to
+	 * remove what it applied, say. Called before the connection is returned, the pool destroying it rather
+	 * than handing it to the next borrower.
+	 * <p>Does nothing by default, a pool with no way of evicting a single connection being free to say so by
+	 * leaving this alone - at the price of the next borrower inheriting whatever was left behind.
+	 * @param connection the connection to discard
+	 */
+	default void evict(Connection connection) {}
+
+	/**
 	 * Closes this connection pool, connections subsequently checked in are disconnected
 	 */
 	void close();
