@@ -30,7 +30,7 @@ import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
-import is.codion.swing.common.ui.component.indicator.ValidIndicator;
+import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
@@ -456,7 +456,7 @@ public final class ApplicationPanel extends JPanel {
 		findLookAndFeel(Dracula.class)
 						.ifPresent(LookAndFeelEnabler::enable);
 
-		ValidIndicator.INDICATOR_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidIndicator");
+		ValidationIndicator.INDICATOR_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidationIndicator");
 
 		ApplicationModel applicationModel = new ApplicationModel();
 

@@ -25,8 +25,8 @@ module is.codion.plugin.flatlaf {
 
 	exports is.codion.plugin.flatlaf.indicator;
 
-	provides is.codion.swing.common.ui.component.indicator.ValidIndicator
-					with is.codion.plugin.flatlaf.indicator.FlatLafValidIndicator;
+	provides is.codion.swing.common.ui.component.indicator.ValidationIndicator
+					with is.codion.plugin.flatlaf.indicator.FlatLafValidationIndicator;
 	provides is.codion.swing.common.ui.scaler.Scaler
 					with is.codion.plugin.flatlaf.scaler.UIScaler;
 }

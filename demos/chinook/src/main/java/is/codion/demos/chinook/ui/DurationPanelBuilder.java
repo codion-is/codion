@@ -23,7 +23,7 @@ import is.codion.demos.chinook.ui.DurationPanelBuilder.DurationPanel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
-import is.codion.swing.common.ui.component.indicator.ValidIndicator;
+import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
@@ -76,10 +76,10 @@ final class DurationPanelBuilder extends AbstractComponentValueBuilder<DurationP
 	}
 
 	@Override
-	protected void enable(ValidIndicator validIndicator, DurationPanel component, ObservableState valid) {
-		validIndicator.enable(component.minutesField, valid);
-		validIndicator.enable(component.secondsField, valid);
-		validIndicator.enable(component.millisecondsField, valid);
+	protected void enable(ValidationIndicator validationIndicator, DurationPanel component, ObservableState valid, ObservableState warned) {
+		validationIndicator.enable(component.minutesField, valid, warned);
+		validationIndicator.enable(component.secondsField, valid, warned);
+		validationIndicator.enable(component.millisecondsField, valid, warned);
 	}
 
 	@Override

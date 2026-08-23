@@ -85,6 +85,7 @@ import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -379,6 +380,7 @@ public final class EditorComponents {
 		private final Value<Integer> textFieldColumns = Value.nonNull(12);
 		private final State modifiedIndicator = State.state(true);
 		private final State validIndicator = State.state(true);
+		private final State warningIndicator = State.state(true);
 		private final State transferFocusOnEnter = State.state(true);
 
 		private ComponentSettings() {}
@@ -405,6 +407,15 @@ public final class EditorComponents {
 		 */
 		public State validIndicator() {
 			return validIndicator;
+		}
+
+		/**
+		 * Note that changing this has no effect on previously created components
+		 * @return a State controlling whether created components indicate a warning — the soft validation severity
+		 * @see is.codion.framework.domain.entity.EntityValidator#warning
+		 */
+		public State warningIndicator() {
+			return warningIndicator;
 		}
 
 		/**
@@ -490,6 +501,7 @@ public final class EditorComponents {
 											.displayedMnemonic(attributeDefinition.mnemonic()))
 							.transferFocusOnEnter(settings.transferFocusOnEnter().is())
 							.valid(settings.validIndicator().is() ? value.valid() : null)
+							.warned(settings.warningIndicator().is() ? value.warned() : null)
 							.modified(settings.modifiedIndicator().is() ? value.modified() : null)
 							.onBuild(this::setComponent));
 			if (attributeDefinition.derived()) {
@@ -559,21 +571,26 @@ public final class EditorComponents {
 		private static Observable<String> toolTip(EditorValue<?> value, AttributeDefinition<?> definition) {
 			String description = definition.description().orElse(null);
 			Observable<String> error = value.error();
-			Value<String> toolTip = Value.nullable(toolTip(description, error.get()));
-			error.addConsumer(message -> toolTip.set(toolTip(description, message)));
+			Observable<String> warning = value.warning();
+			Value<String> toolTip = Value.nullable(toolTip(description, error.get(), warning.get()));
+			error.addConsumer(message -> toolTip.set(toolTip(description, message, warning.get())));
+			warning.addConsumer(message -> toolTip.set(toolTip(description, error.get(), message)));
 
 			return toolTip.observable();
 		}
 
-		private static @Nullable String toolTip(@Nullable String description, @Nullable String error) {
-			if (nullOrEmpty(error)) {
-				return description;
+		private static @Nullable String toolTip(@Nullable String description, @Nullable String error, @Nullable String warning) {
+			List<String> lines = Stream.of(error, warning, description)
+							.filter(line -> !nullOrEmpty(line))
+							.collect(toList());
+			if (lines.isEmpty()) {
+				return null;
 			}
-			if (nullOrEmpty(description)) {
-				return error;
+			if (lines.size() == 1) {
+				return lines.get(0);
 			}
 
-			return "<html>" + error + "<br>" + description + "</html>";
+			return lines.stream().collect(joining("<br>", "<html>", "</html>"));
 		}
 
 		private void setComponent(JComponent comp) {

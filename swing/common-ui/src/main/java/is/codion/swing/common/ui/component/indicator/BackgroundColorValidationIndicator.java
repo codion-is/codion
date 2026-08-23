@@ -30,11 +30,11 @@ import java.awt.Color;
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static java.util.Objects.requireNonNull;
 
-public final class BackgroundColorValidIndicator implements ValidIndicator {
+public final class BackgroundColorValidationIndicator implements ValidationIndicator {
 
 	@Override
-	public void enable(JComponent component, ObservableState valid) {
-		new Indicator(requireNonNull(component), requireNonNull(valid));
+	public void enable(JComponent component, ObservableState valid, ObservableState warned) {
+		new Indicator(requireNonNull(component), requireNonNull(valid), requireNonNull(warned));
 	}
 
 	private static final class Indicator {
@@ -45,35 +45,47 @@ public final class BackgroundColorValidIndicator implements ValidIndicator {
 		private @Nullable Color backgroundColor;
 		private @Nullable Color inactiveBackgroundColor;
 		private @Nullable Color invalidBackgroundColor;
+		private @Nullable Color warnedBackgroundColor;
 
-		private Indicator(JComponent component, ObservableState valid) {
-			requireNonNull(valid);
+		private final ObservableState valid;
+		private final ObservableState warned;
+
+		private Indicator(JComponent component, ObservableState valid, ObservableState warned) {
 			this.component = requireNonNull(component);
+			this.valid = valid;
+			this.warned = warned;
 			this.uiComponentKey = initializeUiComponentKey();
 			if (componentSupported(uiComponentKey)) {
-				component.addPropertyChangeListener("UI", event -> configureColors(valid.is()));
-				valid.addConsumer(this::update);
-				update(valid.is());
+				component.addPropertyChangeListener("UI", event -> configureColors());
+				valid.addConsumer(state -> update());
+				warned.addConsumer(state -> update());
+				update();
 			}
 		}
 
-		private void update(boolean valid) {
+		private void update() {
 			boolean enabled = component.isEnabled();
+			boolean invalid = !valid.is();
+			boolean warning = warned.is();
 			SwingUtilities.invokeLater(() -> {
-				if (valid) {
-					component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
+				if (invalid) {
+					component.setBackground(invalidBackgroundColor);
+				}
+				else if (warning) {
+					component.setBackground(warnedBackgroundColor);
 				}
 				else {
-					component.setBackground(invalidBackgroundColor);
+					component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
 				}
 			});
 		}
 
-		private void configureColors(boolean valid) {
+		private void configureColors() {
 			this.backgroundColor = UIManager.getColor(uiComponentKey + ".background");
 			this.inactiveBackgroundColor = UIManager.getColor(uiComponentKey + ".inactiveBackground");
 			this.invalidBackgroundColor = darker(backgroundColor);
-			update(valid);
+			this.warnedBackgroundColor = darker(backgroundColor, 0.95);
+			update();
 		}
 
 		private String initializeUiComponentKey() {

@@ -23,7 +23,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
-import is.codion.swing.common.ui.component.indicator.ValidIndicator;
+import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -77,20 +77,30 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	B modified(@Nullable ObservableState modified);
 
 	/**
-	 * @param validIndicator the {@link ValidIndicator} to use, null for none
+	 * @param validationIndicator the {@link ValidationIndicator} to use, null for none
 	 * @return this builder instance
 	 */
-	B validIndicator(@Nullable ValidIndicator validIndicator);
+	B validationIndicator(@Nullable ValidationIndicator validationIndicator);
 
 	/**
 	 * Enables a valid indicator based on the given valid state.
 	 * Takes precedence over {@link #valid(Predicate)}.
 	 * @param valid the valid state
 	 * @return this builder instance
-	 * @see #validIndicator(ValidIndicator)
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
+	 * @see #validationIndicator(ValidationIndicator)
+	 * @see is.codion.swing.common.ui.component.indicator.ValidationIndicator
 	 */
 	B valid(@Nullable ObservableState valid);
+
+	/**
+	 * Enables a warning indicator based on the given warned state — the soft severity, for a value that is permitted
+	 * but implausible. Independent of {@link #valid(ObservableState)}; where both are set, invalid takes precedence.
+	 * @param warned the warned state
+	 * @return this builder instance
+	 * @see #validationIndicator(ValidationIndicator)
+	 * @see is.codion.swing.common.ui.component.indicator.ValidationIndicator
+	 */
+	B warned(@Nullable ObservableState warned);
 
 	/**
 	 * <p>Enables a valid indicator based on the given validator. Note that this
@@ -99,8 +109,8 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * should return true as long as the value is valid.
 	 * @param valid called each time the component value changes
 	 * @return this builder instance
-	 * @see #validIndicator(ValidIndicator)
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
+	 * @see #validationIndicator(ValidationIndicator)
+	 * @see is.codion.swing.common.ui.component.indicator.ValidationIndicator
 	 */
 	B valid(@Nullable Predicate<T> valid);
 

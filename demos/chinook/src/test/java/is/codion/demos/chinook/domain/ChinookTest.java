@@ -20,17 +20,21 @@ package is.codion.demos.chinook.domain;
 
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static is.codion.demos.chinook.domain.api.Chinook.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 // tag::domainTest[]
 public class ChinookTest extends DomainTest {
@@ -125,6 +129,26 @@ public class ChinookTest extends DomainTest {
 	// end::functionTest[]
 
 	// tag::entityFactory[]
+	@Test
+	void largeQuantityWarnsWithoutRejecting() {
+		Entities entities = new ChinookImpl().entities();
+		EntityDefinition definition = entities.definition(InvoiceLine.TYPE);
+		EntityValidator validator = definition.validator();
+
+		Entity invoiceLine = entities.entity(InvoiceLine.TYPE)
+						.with(InvoiceLine.INVOICE_ID, 1L)
+						.with(InvoiceLine.TRACK_ID, 1L)
+						.with(InvoiceLine.UNITPRICE, BigDecimal.ONE)
+						.with(InvoiceLine.QUANTITY, 2)
+						.build();
+		assertFalse(validator.warning(invoiceLine, InvoiceLine.QUANTITY).isPresent());
+
+		invoiceLine.set(InvoiceLine.QUANTITY, 50);
+		assertTrue(validator.warning(invoiceLine, InvoiceLine.QUANTITY).isPresent());
+		// Soft: 50 is an odd quantity, not a forbidden one, so validation still passes.
+		assertDoesNotThrow(() -> validator.validate(invoiceLine));
+	}
+
 	private static final class ChinookEntityFactory extends DefaultEntityFactory {
 
 		private ChinookEntityFactory(EntityConnection connection) {

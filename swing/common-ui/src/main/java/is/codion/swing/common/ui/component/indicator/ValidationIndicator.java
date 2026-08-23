@@ -30,29 +30,35 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 
 /**
- * Provides a validity indicator for a component.
+ * <p>Provides a validation indicator for a component, over the two severities validation has: a value that is
+ * <em>invalid</em> and may not be saved, and one that is merely <em>warned</em> about — permitted, but implausible
+ * enough to be worth a second look.
+ * <p>Both severities go through one indicator rather than two, because they share a visual channel and the precedence
+ * between them (invalid wins) has to be decided in one place.
  */
-public interface ValidIndicator {
+public interface ValidationIndicator {
 
 	/**
-	 * Specified the {@link ValidIndicator} to use.
-	 * <p>Default {@link BackgroundColorValidIndicator}
+	 * Specified the {@link ValidationIndicator} to use.
+	 * <p>Default {@link BackgroundColorValidationIndicator}
 	 */
 	PropertyValue<String> INDICATOR_CLASS =
-					stringValue(ValidIndicator.class.getName() + ".implementation", BackgroundColorValidIndicator.class.getName());
+					stringValue(ValidationIndicator.class.getName() + ".implementation", BackgroundColorValidationIndicator.class.getName());
 
 	/**
-	 * Enables the valid indicator for the given component, based on the given valid state
+	 * Enables the validation indicator for the given component
 	 * @param component the component
-	 * @param valid the valid state observer
+	 * @param valid the valid state observer, false while the value may not be saved
+	 * @param warned the warned state observer, true while the value carries a warning. Independent of [valid] — a value
+	 * can be both, in which case the invalid presentation wins
 	 */
-	void enable(JComponent component, ObservableState valid);
+	void enable(JComponent component, ObservableState valid, ObservableState warned);
 
 	/**
 	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #INDICATOR_CLASS}
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
-	static Optional<ValidIndicator> instance() {
+	static Optional<ValidationIndicator> instance() {
 		return instance(INDICATOR_CLASS.getOrThrow());
 	}
 
@@ -60,10 +66,10 @@ public interface ValidIndicator {
 	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@code indicatorClassName}
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
-	static Optional<ValidIndicator> instance(String indicatorClassName) {
+	static Optional<ValidationIndicator> instance(String indicatorClassName) {
 		requireNonNull(indicatorClassName);
 
-		return stream(ServiceLoader.load(ValidIndicator.class).spliterator(), false)
+		return stream(ServiceLoader.load(ValidationIndicator.class).spliterator(), false)
 						.filter(factory -> factory.getClass().getName().equals(indicatorClassName))
 						.findFirst();
 	}

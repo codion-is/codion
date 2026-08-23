@@ -18,7 +18,7 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.plugin.flatlaf.indicator.FlatLafValidIndicator;
+import is.codion.plugin.flatlaf.indicator.FlatLafValidationIndicator;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
@@ -90,7 +90,7 @@ public final class SessionUserMonitorPanel extends JPanel {
 						.add(label("Last maintenance"))
 						.add(stringField()
 										.columns(11)
-										.validIndicator(new FlatLafValidIndicator())
+										.validationIndicator(new FlatLafValidationIndicator())
 										// causes a red border when maintenance is delayed
 										.valid(model.maintenanceOnTime())
 										.link(model.maintenanceTimeFormatted())

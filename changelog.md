@@ -33,16 +33,24 @@ Codion Change Log
 - The connection a client uses is now stamped with the client's identity, see Database.clientInfo(), so that a shared database user no longer hides which application user is doing the work. Applied when a connection is checked out, the next client to borrow it overwriting the stamp.
 - EntityServerAdmin method parameters renamed connectionId.
 - EntityServerAdmin.disconnectAllClients() and disconnectTimedOutClients() renamed disconnectAllSessions() and disconnectTimedOutSessions().
+### is.codion.swing.common.ui
+- ValidIndicator renamed ValidationIndicator and now covers both validation severities, enable() taking a warned state beside the valid one. BackgroundColorValidIndicator renamed BackgroundColorValidationIndicator accordingly, painting a warned value a lighter shade of the invalid one.
+- ComponentValueBuilder.warned() added beside valid(), and validIndicator() renamed validationIndicator(). AbstractComponentBuilder.enable() takes the warned state, as do the composite component overrides of it.
+### is.codion.plugin.flatlaf
+- FlatLafValidIndicator renamed FlatLafValidationIndicator and now sets FlatClientProperties.OUTLINE_WARNING for a warned value, beside the OUTLINE_ERROR it already set for an invalid one.
 ### is.codion.tools.monitor
 - ClientMonitor, ClientInstanceMonitor and ClientUserMonitor renamed SessionMonitor, SessionInstanceMonitor and SessionUserMonitor, along with their panels. ClientMonitor.RemoteClientColumns renamed RemoteSessionColumns, clientInstanceTableModel() renamed sessionTableModel(), ClientInstanceMonitor.client() renamed session(), ClientUserMonitor.clientMonitor() renamed sessionMonitor(), ServerMonitor.clientMonitor() renamed sessionUserMonitor().
 ### is.codion.framework.domain
 - DefaultForeignKeyConditions.valueMap() bug fixed, no longer uses toMap(), due to nulls. Now rejects non-present keys.
+- EntityValidator.warning() added, a soft constraint: a value the entity may carry but probably should not, implausible, out of the ordinary, worth a second look. Where validate() rejects, this reports and blocks nothing, insert and update proceed and valid() stays true.
 ### is.codion.framework.model
 - EntityEditor.EditorValue.message() renamed error() and now holds the validation message alone.
+- EntityEditor.EditorValue.warned() and warning() added, the soft counterparts to valid() and error(). Refreshed whenever the entity is revalidated, and wholesale rather than per changed attribute, a warning frequently depending on more than the value carrying it.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, the status message no longer loses the selected count, "(y selected)", on refresh. It recomputed while responding to an items notification delivered before the selection had been restored.
 - EditorComponents now composes the component tooltip from the attribute description and EditorValue.error(), the html included, following the split of EditorValue.message().
 - EditorInspector's Message column renamed Error, and EntityEditorInspector's "message" state key likewise, following the same split.
+- EntityEditPanel.Config.warningIndicator() added along with WARNING_INDICATOR, specifying whether components indicate the soft validation severity, as validIndicator() does the hard one. On by default.
 
 ## 0.18.83
 ### is.codion
