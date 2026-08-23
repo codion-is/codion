@@ -24,7 +24,7 @@ include::{dir-source}/is/codion/manual/swing/framework/model/EntityEditorDemo.ja
 == Editing values
 
 {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html[EditorValue] is a full {url-javadoc}{common-reactive}/is/codion/common/reactive/value/Value.html[Value] implementation for a single attribute, so anything that can be linked to a *Value* — an input component, another value — can be linked to an attribute of the entity being edited.
-Each editor value also exposes the state the UI needs: *valid()* and *modified()* observable states, a validation *message()*, the *original()* value and *revert()*.
+Each editor value also exposes the state the UI needs: *valid()* and *modified()* observable states, the validation *error()*, the *original()* value and *revert()*.
 
 Two observers notify of changes, with an important distinction:
 
@@ -59,7 +59,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceEditModel.jav
 == Inserting, updating and deleting
 
 {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#insert()[insert()], {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#update()[update()] and {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#delete()[delete()] operate on the entity being edited and return the resulting entity (or entities, for the collection variants).
-The entity is validated before insert and update, using the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#validator()[validator()], and an invalid entity fails with an *EntityValidationException* — the same validation continuously reflected by the *valid()* states and *message()* of each editor value.
+The entity is validated before insert and update, using the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#validator()[validator()], and an invalid entity fails with an *EntityValidationException* — the same validation continuously reflected by the *valid()* states and *error()* of each editor value.
 
 NOTE: These methods perform the operation on the calling thread. UI code, such as {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], uses {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#tasks()[tasks()] to prepare an operation for background execution, keeping the UI responsive.
 

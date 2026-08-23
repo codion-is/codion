@@ -216,7 +216,7 @@ final class EditorInspector extends JPanel {
 									.toolTip(Objects::toString)
 									.build());
 					break;
-				case MESSAGE:
+				case ERROR:
 					column.cellRenderer(FilterTableCellRenderer.builder()
 									.columnClass(String.class)
 									.toolTip(Objects::toString)
@@ -228,7 +228,7 @@ final class EditorInspector extends JPanel {
 		}
 
 		private enum AttributeColumn {
-			ATTRIBUTE, PRESENT, VALID, MODIFIED, PERSISTS, COMPONENT, VALUE, ORIGINAL, DEFAULT, MESSAGE
+			ATTRIBUTE, PRESENT, VALID, MODIFIED, PERSISTS, COMPONENT, VALUE, ORIGINAL, DEFAULT, ERROR
 		}
 
 		private static final class AttributeItems implements Supplier<Collection<AttributeRow>> {
@@ -248,7 +248,7 @@ final class EditorInspector extends JPanel {
 									return new AttributeRow(attribute.caption(), value.present().is(), value.valid().is(), value.modified().is(),
 													value.persist().is(), components.component(attribute.attribute()).optional().isPresent(),
 													String.valueOf(value.get()), value.modified().is() ? String.valueOf(value.original()) : "",
-													String.valueOf(value.defaultValue().get().get()), value.message().get());
+													String.valueOf(value.defaultValue().get().get()), value.error().get());
 								})
 								.collect(toList());
 			}
@@ -270,7 +270,7 @@ final class EditorInspector extends JPanel {
 					case VALUE:
 					case ORIGINAL:
 					case DEFAULT:
-					case MESSAGE:
+					case ERROR:
 						return String.class;
 					default:
 						return Boolean.class;
@@ -296,8 +296,8 @@ final class EditorInspector extends JPanel {
 						return "Original";
 					case DEFAULT:
 						return "Default";
-					case MESSAGE:
-						return "Message";
+					case ERROR:
+						return "Error";
 					case COMPONENT:
 						return "Component";
 					default:
@@ -324,8 +324,8 @@ final class EditorInspector extends JPanel {
 						return row.original;
 					case DEFAULT:
 						return row.defaultValue;
-					case MESSAGE:
-						return row.message;
+					case ERROR:
+						return row.error;
 					case COMPONENT:
 						return row.component;
 					default:
@@ -345,11 +345,11 @@ final class EditorInspector extends JPanel {
 			private final @Nullable String value;
 			private final @Nullable String original;
 			private final @Nullable String defaultValue;
-			private final @Nullable String message;
+			private final @Nullable String error;
 
 			private AttributeRow(String attribute, boolean present, boolean valid, boolean modified,
 													 boolean persists, boolean component, @Nullable String value,
-													 @Nullable String original, @Nullable String defaultValue, @Nullable String message) {
+													 @Nullable String original, @Nullable String defaultValue, @Nullable String error) {
 				this.attribute = attribute;
 				this.present = present;
 				this.valid = valid;
@@ -359,7 +359,7 @@ final class EditorInspector extends JPanel {
 				this.value = value;
 				this.original = original;
 				this.defaultValue = defaultValue;
-				this.message = message;
+				this.error = error;
 			}
 
 			@Override

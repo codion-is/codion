@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.framework.domain.entity.Entity;
@@ -80,6 +81,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -482,7 +484,7 @@ public final class EditorComponents {
 			componentBuilders.put(value.attribute(), componentBuilder
 							.link(value)
 							.name(value.attribute().toString())
-							.toolTipText(value.message())
+							.toolTipText(toolTip(value, attributeDefinition))
 							.label(label -> label
 											.text(attributeDefinition.caption())
 											.displayedMnemonic(attributeDefinition.mnemonic()))
@@ -552,6 +554,26 @@ public final class EditorComponents {
 
 		private boolean present() {
 			return component != null;
+		}
+
+		private static Observable<String> toolTip(EditorValue<?> value, AttributeDefinition<?> definition) {
+			String description = definition.description().orElse(null);
+			Observable<String> error = value.error();
+			Value<String> toolTip = Value.nullable(toolTip(description, error.get()));
+			error.addConsumer(message -> toolTip.set(toolTip(description, message)));
+
+			return toolTip.observable();
+		}
+
+		private static @Nullable String toolTip(@Nullable String description, @Nullable String error) {
+			if (nullOrEmpty(error)) {
+				return description;
+			}
+			if (nullOrEmpty(description)) {
+				return error;
+			}
+
+			return "<html>" + error + "<br>" + description + "</html>";
 		}
 
 		private void setComponent(JComponent comp) {
