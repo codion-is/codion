@@ -124,6 +124,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeEditable = new HashMap<>();
 	private final Map<Attribute<?>, Value<String>> errors = new HashMap<>();
+	private final Map<Attribute<?>, Value<String>> warnings = new HashMap<>();
+	private final Map<Attribute<?>, State> attributeWarned = new HashMap<>();
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
@@ -440,6 +442,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	}
 
 	private Map<Attribute<?>, String> updateStates() {
+		updateWarnings();
 		Entity instance = entity.get();
 		entity.exists.update(instance);
 		entity.present.update(instance);
@@ -488,9 +491,35 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	}
 
 	private void updateValidStates() {
+		updateWarnings();
 		Map<Attribute<?>, String> invalid = updateEntityValidState();
 		attributeValid.forEach((attribute, state) -> state.set(!invalid.containsKey(attribute)));
 		errors.forEach((attribute, value) -> value.set(invalid.get(attribute)));
+	}
+
+	/**
+	 * Recomputes every warning anyone has asked for. Unlike the error states, which the caller refreshes per changed
+	 * attribute, warnings are refreshed wholesale on each revalidation — a warning frequently depends on more than the
+	 * value carrying it (a weight is odd <em>for this species</em>), so refreshing only the attribute that moved would
+	 * leave the others stale. Only attributes some caller holds a warning for are visited, and the entity is being
+	 * validated in full alongside this anyway, so the added cost is of the same order.
+	 */
+	private void updateWarnings() {
+		if (!warnings.isEmpty()) {
+			Entity instance = entity.get();
+			warnings.forEach((attribute, warning) -> warning.set(warning(instance, attribute)));
+		}
+	}
+
+	/**
+	 * The warning for one attribute, or null.
+	 * <p>Deliberately not gated on {@link EntityValidator#validated(Entity, AttributeDefinition)} the way validation is.
+	 * That rule exists so loading an existing record does not spray errors about fields nobody has touched — but a
+	 * warning on load is the whole point of the tier: "this record you just opened holds an odd value" is exactly the
+	 * review case. So a warning applies to an unmodified value of an existing entity, where an error would not.
+	 */
+	private @Nullable String warning(Entity instance, Attribute<?> attribute) {
+		return validator.getOrThrow().warning(instance, attribute).orElse(null);
 	}
 
 	private void configurePersistentForeignKeys() {
@@ -2406,6 +2435,29 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public Observable<String> error() {
 			return errors.computeIfAbsent(attribute,
 							k -> Value.nullable(validationString())).observable();
+		}
+
+		@Override
+		public ObservableState warned() {
+			// Derived from the warning itself rather than held alongside it, so the two can not disagree and only one
+			// of them has to be refreshed.
+			return attributeWarned.computeIfAbsent(attribute, k -> {
+				Value<String> warning = warningValue();
+				State warned = State.state(warning.get() != null);
+				warning.addConsumer(message -> warned.set(message != null));
+
+				return warned;
+			}).observable();
+		}
+
+		@Override
+		public Observable<String> warning() {
+			return warningValue().observable();
+		}
+
+		private Value<String> warningValue() {
+			return warnings.computeIfAbsent(attribute,
+							k -> Value.nullable(AbstractEntityEditor.this.warning(entity.get(), attribute)));
 		}
 
 		@Override

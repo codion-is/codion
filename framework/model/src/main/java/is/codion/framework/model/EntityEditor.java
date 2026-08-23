@@ -1014,6 +1014,24 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		Observable<String> error();
 
 		/**
+		 * <p>Returns an {@link ObservableState} indicating whether this value carries a warning — a soft constraint
+		 * ({@link is.codion.framework.domain.entity.EntityValidator#warning(Entity, Attribute)}).
+		 * <p>Independent of {@link #valid()}: a warned value is a permitted one. Nothing is blocked by this being true.
+		 * @return an {@link ObservableState} indicating whether this value carries a warning
+		 * @see #warning()
+		 */
+		ObservableState warned();
+
+		/**
+		 * <p>Returns the warning for this value, present only while it carries one.
+		 * <p>The soft counterpart to {@link #error()}: where an error says the value may not be saved, a warning says it
+		 * may be, and that someone should look at it first.
+		 * @return an {@link Observable} holding the warning for this value, empty when there is none
+		 * @see #warned()
+		 */
+		Observable<String> warning();
+
+		/**
 		 * <p>Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified,
 		 * that is, if the current value differs from its default value, in case of a new entity, or the original
 		 * value, in case of an existing entity.

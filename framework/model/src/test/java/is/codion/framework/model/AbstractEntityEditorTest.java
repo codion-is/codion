@@ -27,6 +27,7 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.AbstractEntityEditor.DefaultDetailEditors;
 import is.codion.framework.model.AbstractEntityEditor.DetailForeignKeyValidator;
@@ -40,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
@@ -62,6 +64,86 @@ public final class AbstractEntityEditorTest {
 
 	private static final Predicate<Entity> EMPLOYEE_PRESENT = employee ->
 					employee.present(Employee.SALARY) && employee.present(Employee.NAME);
+
+	@Test
+	void warningsAreSoft() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		EditorValue<Double> salary = editor.value(Employee.SALARY);
+		// Asked for before the validator that warns is installed, so this also covers the refresh a new validator triggers.
+		assertFalse(salary.warned().is());
+		assertNull(salary.warning().get());
+
+		editor.validator().set(new SalaryValidator());
+
+		salary.set(2_500d);
+		assertFalse(salary.warned().is());
+
+		salary.set(8_000d);
+		assertTrue(salary.warned().is());
+		assertEquals("Unusually high", salary.warning().get());
+
+		// Soft means soft. 8000 is within the attribute's own 2000-10000 range, so the hard tier has nothing to say and
+		// says nothing: the value stays valid and validation passes, warned or not.
+		assertTrue(salary.valid().is());
+		assertNull(salary.error().get());
+		assertDoesNotThrow(() -> editor.validate(Employee.SALARY));
+
+		salary.set(2_500d);
+		assertFalse(salary.warned().is());
+		assertNull(salary.warning().get());
+	}
+
+	@Test
+	void aWarningFollowsTheValuesItDependsOn() {
+		// The reason warnings are refreshed wholesale rather than per changed attribute: this one is about the manager,
+		// but what makes it odd is the salary. Moving the salary has to move the manager's warning, untouched though it is.
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.validator().set(new SalaryValidator());
+		EditorValue<Integer> manager = editor.value(Employee.MANAGER_ID);
+
+		editor.value(Employee.SALARY).set(2_500d);
+		assertFalse(manager.warned().is());
+
+		editor.value(Employee.SALARY).set(8_000d);
+		assertTrue(manager.warned().is());
+		assertEquals("A salary this high usually reports to someone", manager.warning().get());
+
+		manager.set(8);
+		assertFalse(manager.warned().is());
+	}
+
+	@Test
+	void warningsApplyToAnUnmodifiedValueOfAnExistingEntity() {
+		// Errors do not - validation skips unmodified values when updating, so that opening a record does not spray
+		// complaints about fields nobody has touched. A warning is the opposite: flagging an odd value on the record you
+		// just opened is the review case the tier exists for. KING earns 5000 and reports to nobody, both untouched here.
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.validator().set(new SalaryValidator());
+		editor.entity().set(CONNECTION.selectSingle(Employee.NAME.equalTo("KING")));
+
+		EditorValue<Double> salary = editor.value(Employee.SALARY);
+		assertTrue(editor.entity().exists().is());
+		assertFalse(salary.modified().is());
+		assertTrue(salary.warned().is());
+		assertTrue(editor.value(Employee.MANAGER_ID).warned().is());
+	}
+
+	private static final class SalaryValidator implements EntityValidator {
+
+		@Override
+		public Optional<String> warning(Entity employee, Attribute<?> attribute) {
+			Double salary = employee.get(Employee.SALARY);
+			if (attribute.equals(Employee.SALARY) && salary != null && salary > 3_000d) {
+				return Optional.of("Unusually high");
+			}
+			if (attribute.equals(Employee.MANAGER_ID) && salary != null && salary > 3_000d
+							&& !employee.present(Employee.MANAGER_ID)) {
+				return Optional.of("A salary this high usually reports to someone");
+			}
+
+			return Optional.empty();
+		}
+	}
 
 	@Test
 	void clearSetsNull() {

@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -356,6 +357,32 @@ public interface Chinook {
 		@Override
 		public Object parseObject(String source, ParsePosition pos) {
 			throw new UnsupportedOperationException();
+		}
+	}
+
+	/**
+	 * A soft constraint: a quantity this large is legal, and occasionally real, so it is not rejected — it is flagged.
+	 * The hard tier on this attribute is its {@code minimum(1)}, which no order can be below; there is no ceiling an
+	 * order can not be above, only one worth asking about. See {@link EntityValidator#warning(Entity, Attribute)}.
+	 */
+	final class QuantityValidator implements EntityValidator, Serializable {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		private static final String QUANTITY_WARNING = getBundle(Chinook.class.getName()).getString("large_quantity");
+		private static final int LARGE_QUANTITY = 20;
+
+		@Override
+		public Optional<String> warning(Entity invoiceLine, Attribute<?> attribute) {
+			if (attribute.equals(InvoiceLine.QUANTITY)) {
+				Integer quantity = invoiceLine.get(InvoiceLine.QUANTITY);
+				if (quantity != null && quantity > LARGE_QUANTITY) {
+					return Optional.of(QUANTITY_WARNING);
+				}
+			}
+
+			return Optional.empty();
 		}
 	}
 

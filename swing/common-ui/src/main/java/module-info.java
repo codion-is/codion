@@ -82,7 +82,7 @@ module is.codion.swing.common.ui {
 
 	uses is.codion.swing.common.ui.laf.LookAndFeelProvider;
 	uses is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
-	uses is.codion.swing.common.ui.component.indicator.ValidIndicator;
+	uses is.codion.swing.common.ui.component.indicator.ValidationIndicator;
 	uses is.codion.swing.common.ui.scaler.Scaler;
 	uses is.codion.swing.common.ui.inspect.UiInspector;
 
@@ -91,8 +91,8 @@ module is.codion.swing.common.ui {
 	provides is.codion.swing.common.ui.component.indicator.ModifiedIndicator
 					with is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicator,
 									is.codion.swing.common.ui.component.indicator.SwapColorsModifiedIndicator;
-	provides is.codion.swing.common.ui.component.indicator.ValidIndicator
-					with is.codion.swing.common.ui.component.indicator.BackgroundColorValidIndicator;
+	provides is.codion.swing.common.ui.component.indicator.ValidationIndicator
+					with is.codion.swing.common.ui.component.indicator.BackgroundColorValidationIndicator;
 	provides is.codion.swing.common.ui.scaler.Scaler
 					with is.codion.swing.common.ui.scaler.FontSizeScaler;
 }

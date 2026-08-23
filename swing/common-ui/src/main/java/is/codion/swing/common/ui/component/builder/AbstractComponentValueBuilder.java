@@ -24,7 +24,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
-import is.codion.swing.common.ui.component.indicator.ValidIndicator;
+import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -46,10 +46,11 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	private final List<Value.Validator<T>> validators = new ArrayList<>();
 	private final ValueListeners<T> listeners = new ValueListeners<>();
 
-	private @Nullable ValidIndicator validIndicator = ValidIndicator.instance().orElse(null);
+	private @Nullable ValidationIndicator validationIndicator = ValidationIndicator.instance().orElse(null);
 	private @Nullable ModifiedIndicator modifiedIndicator = ModifiedIndicator.instance().orElse(null);
 	private @Nullable ObservableState modifiedObservable;
 	private @Nullable ObservableState validObservable;
+	private @Nullable ObservableState warnedObservable;
 	private @Nullable Predicate<T> validPredicate;
 	private @Nullable T value;
 	private boolean valueSet = false;
@@ -57,14 +58,20 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	protected AbstractComponentValueBuilder() {}
 
 	@Override
-	public final B validIndicator(@Nullable ValidIndicator validIndicator) {
-		this.validIndicator = validIndicator;
+	public final B validationIndicator(@Nullable ValidationIndicator validationIndicator) {
+		this.validationIndicator = validationIndicator;
 		return self();
 	}
 
 	@Override
 	public final B valid(@Nullable ObservableState valid) {
 		this.validObservable = valid;
+		return self();
+	}
+
+	@Override
+	public final B warned(@Nullable ObservableState warned) {
+		this.warnedObservable = warned;
 		return self();
 	}
 
@@ -236,19 +243,25 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 		linkedValues.forEach(componentValue::link);
 		linkedObservables.forEach(componentValue::link);
 		listeners.addListeners(componentValue);
-		configureValidIndicator(componentValue);
+		configureValidationIndicator(componentValue);
 		configureModifiedIndicator(component);
 	}
 
-	private void configureValidIndicator(ComponentValue<C, T> componentValue) {
-		if (validIndicator == null) {
+	private void configureValidationIndicator(ComponentValue<C, T> componentValue) {
+		if (validationIndicator == null) {
 			return;
 		}
+		// One indicator over both severities, so a component with only a warning still gets one, and a never-warned
+		// state stands in where the caller set no warning, rather than the indicator having to cope with its absence.
+		ObservableState warned = warnedObservable == null ? State.state().observable() : warnedObservable;
 		if (validObservable != null) {
-			enable(validIndicator, componentValue.component(), validObservable);
+			enable(validationIndicator, componentValue.component(), validObservable, warned);
 		}
 		else if (validPredicate != null) {
-			enable(validIndicator, componentValue.component(), createValidState(componentValue, validPredicate));
+			enable(validationIndicator, componentValue.component(), createValidState(componentValue, validPredicate), warned);
+		}
+		else if (warnedObservable != null) {
+			enable(validationIndicator, componentValue.component(), State.state(true).observable(), warned);
 		}
 	}
 

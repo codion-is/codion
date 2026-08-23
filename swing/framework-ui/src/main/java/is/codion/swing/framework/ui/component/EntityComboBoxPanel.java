@@ -22,7 +22,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
-import is.codion.swing.common.ui.component.indicator.ValidIndicator;
+import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
@@ -274,8 +274,8 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
-		protected void enable(ValidIndicator validIndicator, EntityComboBoxPanel component, ObservableState valid) {
-			validIndicator.enable(component.comboBox, valid);
+		protected void enable(ValidationIndicator validationIndicator, EntityComboBoxPanel component, ObservableState valid, ObservableState warned) {
+			validationIndicator.enable(component.comboBox, valid, warned);
 		}
 
 		@Override

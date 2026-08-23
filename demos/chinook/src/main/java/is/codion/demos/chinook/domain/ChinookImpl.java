@@ -502,6 +502,7 @@ public final class ChinookImpl extends DomainModel {
 														.hidden(true),
 										InvoiceLine.INSERT_USER.as(INSERT_USER)
 														.hidden(true))
+						.validator(new QuantityValidator())
 						.build();
 	}
 

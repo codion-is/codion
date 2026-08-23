@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.exception.EntityValidationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -228,6 +229,43 @@ public interface EntityValidator {
 		else if (definition instanceof ForeignKeyDefinition) {
 			((ForeignKeyDefinition) definition).validate(entity, nullable(entity, attribute));
 		}
+	}
+
+	/**
+	 * <p>Returns a warning for the value associated with the given attribute — a soft constraint.
+	 * <p>Where {@link #validate(Entity, Attribute)} rejects a value the entity may not carry, this reports one it may
+	 * carry but probably should not: implausible, out of the ordinary, worth a second look. A warning blocks nothing.
+	 * Insert and update proceed, {@link #valid(Entity)} stays true, and the only thing that happens is that whoever is
+	 * looking at the value gets told.
+	 * <p>This is the tier for a value that is frequently odd <em>and</em> correct — the unusually large measurement, the
+	 * out-of-season record, the count that reads like a typo and is not. Rejecting those either blocks a true record or
+	 * teaches the user to enter a plausible lie; warning captures the doubt at the one moment the evidence is at hand.
+	 * <p>Called whenever the entity is revalidated, which is on every value change, so keep implementations cheap.
+	 * {@snippet :
+	 * public class TrackValidator implements EntityValidator {
+	 *
+	 *     @Override
+	 *     public Optional<String> warning(Entity track, Attribute<?> attribute) {
+	 *         if (attribute.equals(Track.MILLISECONDS)) {
+	 *             Integer milliseconds = track.get(Track.MILLISECONDS);
+	 *             if (milliseconds != null && milliseconds > HOUR_MS) {
+	 *                 return Optional.of("Unusually long for a track - is this a whole album?");
+	 *             }
+	 *         }
+	 *
+	 *         return EntityValidator.super.warning(track, attribute);
+	 *     }
+	 * }
+	 *}
+	 * @param entity the entity being validated
+	 * @param attribute the attribute
+	 * @return a warning for the value, or an empty {@link Optional} if there is nothing to say
+	 */
+	default Optional<String> warning(Entity entity, Attribute<?> attribute) {
+		requireNonNull(entity);
+		requireNonNull(attribute);
+
+		return Optional.empty();
 	}
 
 	/**

@@ -927,6 +927,7 @@ public abstract class EntityEditPanel extends JPanel {
 	private EditorComponents createEditorComponents(SwingEntityEditor editor) {
 		EditorComponents editorComponents = EditorComponents.editorComponents(editor);
 		editorComponents.settings().validIndicator().set(configuration.validIndicator);
+		editorComponents.settings().warningIndicator().set(configuration.warningIndicator);
 		editorComponents.settings().modifiedIndicator().set(configuration.modifiedIndicator);
 		editorComponents.settings().transferFocusOnEnter().set(configuration.transferFocusOnEnter);
 		editorComponents.settings().textFieldColumns().set(configuration.textFieldColumns);
@@ -1046,10 +1047,23 @@ public abstract class EntityEditPanel extends JPanel {
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
 		 * </ul>
-		 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
+		 * @see is.codion.swing.common.ui.component.indicator.ValidationIndicator
 		 */
 		public static final PropertyValue<Boolean> VALID_INDICATOR =
 						booleanValue(EntityEditPanel.class.getName() + ".validIndicator", true);
+
+		/**
+		 * Specifies whether components should indicate that the value carries a warning — the soft validation severity,
+		 * for a value that is permitted but implausible
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 * @see is.codion.swing.common.ui.component.indicator.ValidationIndicator
+		 * @see is.codion.framework.domain.entity.EntityValidator#warning
+		 */
+		public static final PropertyValue<Boolean> WARNING_INDICATOR =
+						booleanValue(EntityEditPanel.class.getName() + ".warningIndicator", true);
 
 		/**
 		 * Specifies whether components should indicate that the value is modified
@@ -1102,6 +1116,7 @@ public abstract class EntityEditPanel extends JPanel {
 		private Set<Attribute<?>> excludeFromSelection = emptySet();
 		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
 		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
+		private boolean warningIndicator = WARNING_INDICATOR.getOrThrow();
 		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
 		private int textFieldColumns = TEXT_FIELD_COLUMNS.getOrThrow();
 		private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.getOrThrow();
@@ -1133,6 +1148,7 @@ public abstract class EntityEditPanel extends JPanel {
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 			this.modifiedWarning = config.modifiedWarning;
 			this.validIndicator = config.validIndicator;
+			this.warningIndicator = config.warningIndicator;
 			this.modifiedIndicator = config.modifiedIndicator;
 			this.textFieldColumns = config.textFieldColumns;
 			this.transferFocusOnEnter = config.transferFocusOnEnter;
@@ -1301,10 +1317,25 @@ public abstract class EntityEditPanel extends JPanel {
 		 * @param validIndicator specifies whether components should indicate validity
 		 * @return this Config instance
 		 * @see #VALID_INDICATOR
-		 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
+		 * @see is.codion.swing.common.ui.component.indicator.ValidationIndicator
 		 */
 		public Config validIndicator(boolean validIndicator) {
 			this.validIndicator = validIndicator;
+			return this;
+		}
+
+		/**
+		 * If set to true then components will indicate whether the current value carries a warning — the soft validation
+		 * severity, for a value that is permitted but implausible. Independent of {@link #validIndicator(boolean)}; where
+		 * a value is both invalid and warned, the invalid presentation wins.
+		 * @param warningIndicator specifies whether components should indicate a warning
+		 * @return this Config instance
+		 * @see #WARNING_INDICATOR
+		 * @see is.codion.swing.common.ui.component.indicator.ValidationIndicator
+		 * @see is.codion.framework.domain.entity.EntityValidator#warning
+		 */
+		public Config warningIndicator(boolean warningIndicator) {
+			this.warningIndicator = warningIndicator;
 			return this;
 		}
 
