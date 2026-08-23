@@ -76,7 +76,7 @@ public final class EntityEditorInspector implements UiInspector {
 			state.put("original", String.valueOf(value.original()));
 		}
 		if (!value.valid().is()) {
-			state.put("message", value.message().get());
+			state.put("error", value.error().get());
 		}
 
 		return state;

@@ -37,8 +37,12 @@ Codion Change Log
 - ClientMonitor, ClientInstanceMonitor and ClientUserMonitor renamed SessionMonitor, SessionInstanceMonitor and SessionUserMonitor, along with their panels. ClientMonitor.RemoteClientColumns renamed RemoteSessionColumns, clientInstanceTableModel() renamed sessionTableModel(), ClientInstanceMonitor.client() renamed session(), ClientUserMonitor.clientMonitor() renamed sessionMonitor(), ServerMonitor.clientMonitor() renamed sessionUserMonitor().
 ### is.codion.framework.domain
 - DefaultForeignKeyConditions.valueMap() bug fixed, no longer uses toMap(), due to nulls. Now rejects non-present keys.
+### is.codion.framework.model
+- EntityEditor.EditorValue.message() renamed error() and now holds the validation message alone.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, the status message no longer loses the selected count, "(y selected)", on refresh. It recomputed while responding to an items notification delivered before the selection had been restored.
+- EditorComponents now composes the component tooltip from the attribute description and EditorValue.error(), the html included, following the split of EditorValue.message().
+- EditorInspector's Message column renamed Error, and EntityEditorInspector's "message" state key likewise, following the same split.
 
 ## 0.18.83
 ### is.codion

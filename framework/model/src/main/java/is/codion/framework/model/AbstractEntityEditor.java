@@ -76,7 +76,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Text.nullOrEmpty;
@@ -124,7 +123,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final Map<Attribute<?>, State> attributePresent = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeEditable = new HashMap<>();
-	private final Map<Attribute<?>, Value<String>> messages = new HashMap<>();
+	private final Map<Attribute<?>, Value<String>> errors = new HashMap<>();
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
@@ -463,23 +462,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		if (modifiedState != null) {
 			modifiedState.set(entity.instance.modified(attribute));
 		}
-		Value<String> message = messages.get(attribute);
-		if (message != null) {
-			message.set(createMessage(attribute, invalid.get(attribute)));
+		Value<String> error = errors.get(attribute);
+		if (error != null) {
+			error.set(invalid.get(attribute));
 		}
-	}
-
-	private @Nullable String createMessage(Attribute<?> attribute, @Nullable String validationMessage) {
-		String description = entityDefinition.attributes().definition(attribute).description().orElse(null);
-		if (nullOrEmpty(validationMessage)) {
-			return description;
-		}
-		else if (nullOrEmpty(description)) {
-			return validationMessage;
-		}
-
-		return Stream.of(validationMessage, description)
-						.collect(joining("<br>", "<html>", "</html>"));
 	}
 
 	private Map<Attribute<?>, String> updateEntityValidState() {
@@ -504,7 +490,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private void updateValidStates() {
 		Map<Attribute<?>, String> invalid = updateEntityValidState();
 		attributeValid.forEach((attribute, state) -> state.set(!invalid.containsKey(attribute)));
-		messages.forEach((attribute, value) -> value.set(invalid.get(attribute)));
+		errors.forEach((attribute, value) -> value.set(invalid.get(attribute)));
 	}
 
 	private void configurePersistentForeignKeys() {
@@ -2417,9 +2403,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
-		public Observable<String> message() {
-			return messages.computeIfAbsent(attribute,
-							k -> createMessage()).observable();
+		public Observable<String> error() {
+			return errors.computeIfAbsent(attribute,
+							k -> Value.nullable(validationString())).observable();
 		}
 
 		@Override
@@ -2562,10 +2548,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			catch (AttributeValidationException e) {
 				return false;
 			}
-		}
-
-		private Value<String> createMessage() {
-			return Value.nullable(AbstractEntityEditor.this.createMessage(attribute, validationString()));
 		}
 
 		private @Nullable String validationString() {

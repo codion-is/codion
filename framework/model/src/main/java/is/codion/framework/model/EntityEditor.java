@@ -1007,9 +1007,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		ObservableState present();
 
 		/**
-		 * @return the validation message in case the value is invalid, otherwise the attribute description
+		 * <p>Returns the validation message for this value, present only while the value is invalid.
+		 * @return an {@link Observable} holding the validation message while this value is invalid, empty otherwise
+		 * @see #valid()
 		 */
-		Observable<String> message();
+		Observable<String> error();
 
 		/**
 		 * <p>Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified,
