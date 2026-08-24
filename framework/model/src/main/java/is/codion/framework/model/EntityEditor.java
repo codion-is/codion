@@ -1051,9 +1051,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		Observer<T> edited();
 
 		/**
-		 * <p>Returns an {@link ObservableState} instance controlling whether the value of the given attribute is editable.
+		 * <p>Returns a {@link State} instance controlling whether the value of the given attribute is editable.
 		 * Non-editable values throw an exception on {@link EditorValue#set(Object)}
-		 * @return an {@link ObservableState} controlling the editable state of the value of the given attribute
+		 * @return a {@link State} controlling the editable state of the value of the given attribute
 		 * @see EditorEntity#modified()
 		 */
 		State editable();
