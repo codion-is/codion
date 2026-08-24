@@ -333,8 +333,6 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 			this.nullable = nullable;
 			maximumLength = -1;
 			trim = TRIM_STRINGS.getOrThrow();
-			minimum = defaultMinimum();
-			maximum = defaultMaximum();
 			defaultValue = (DefaultValue<T>) NULL;
 		}
 
@@ -422,44 +420,6 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 			}
 
 			return unmodifiableList(new ArrayList<>(items));
-		}
-
-		private @Nullable Number defaultMinimum() {
-			if (attribute().type().isNumeric()) {
-				if (attribute().type().isShort()) {
-					return Short.MIN_VALUE;
-				}
-				if (attribute().type().isInteger()) {
-					return Integer.MIN_VALUE;
-				}
-				if (attribute().type().isLong()) {
-					return Long.MIN_VALUE;
-				}
-				if (attribute().type().isDouble()) {
-					return -Double.MAX_VALUE;
-				}
-			}
-
-			return null;
-		}
-
-		private @Nullable Number defaultMaximum() {
-			if (attribute().type().isNumeric()) {
-				if (attribute().type().isShort()) {
-					return Short.MAX_VALUE;
-				}
-				if (attribute().type().isInteger()) {
-					return Integer.MAX_VALUE;
-				}
-				if (attribute().type().isLong()) {
-					return Long.MAX_VALUE;
-				}
-				if (attribute().type().isDouble()) {
-					return Double.MAX_VALUE;
-				}
-			}
-
-			return null;
 		}
 
 		private <T> DefaultValue<T> defaultValue() {

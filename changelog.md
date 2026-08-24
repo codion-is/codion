@@ -43,6 +43,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - DefaultForeignKeyConditions.valueMap() bug fixed, no longer uses toMap(), due to nulls. Now rejects non-present keys.
 - EntityValidator.warning() added, a soft constraint: a value the entity may carry but probably should not, implausible, out of the ordinary, worth a second look. Where validate() rejects, this reports and blocks nothing, insert and update proceed and valid() stays true.
+- AbstractValueAttributeDefinitionBuilder no longer sets default numerical minimum and maximum values according to the datatype.
 ### is.codion.framework.model
 - EntityEditor.EditorValue.message() renamed error() and now holds the validation message alone.
 - EntityEditor.EditorValue.warned() and warning() added, the soft counterparts to valid() and error(). Refreshed whenever the entity is revalidated, and wholesale rather than per changed attribute, a warning frequently depending on more than the value carrying it.

@@ -170,7 +170,7 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a numerical attribute
 		 */
-		B range(Number minimum, Number maximum);
+		B range(@Nullable Number minimum, @Nullable Number maximum);
 
 		/**
 		 * Sets the maximum length of this attribute value, this applies to String (varchar) based attributes
