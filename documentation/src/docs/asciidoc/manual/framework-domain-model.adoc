@@ -225,6 +225,10 @@ An *Attribute* can be configured three ways, as transient, derived or denormaliz
 
 Transient attributes are nullable by default and behave like regular fields, but do not map to any underlying column. Transient attributes are always initialized with a null value. Changing the value of a transient attribute renders the Entity instance modified by default, but can be configured to not do so.
 
+Behaving like regular fields means they are editable ones: wherever the framework builds a component from an attribute definition it builds one for a transient attribute too, so a transient attribute is how an entity carries a value with no column behind it -- a flag a validator reads, a value the edit model computes, an answer the user gives about the record that is not persisted. This is unlike a *derived* attribute, whose value is computed from others and is presented read-only.
+
+The distinction worth drawing is whose value it is. A transient attribute belongs to the *record* -- something being answered about this row, that the domain or the edit model reads back. State belonging to the *view*, on the other hand -- a selector narrowing another field's choices, a scratch value one screen needs -- is better held in the UI than added to a domain that every client and the server share.
+
 === Denormalized
 
 An entity can include a read-only attribute value from an entity referenced via foreign key, by defining a denormalized attribute.
