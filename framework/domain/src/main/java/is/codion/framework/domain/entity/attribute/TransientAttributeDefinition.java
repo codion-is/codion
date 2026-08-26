@@ -33,7 +33,9 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  * a transient value marks the entity as modified, but trying to update an entity
  * with only transient values modified will result in an error.
  * <p>
- * Transient attributes are useful for UI state, temporary calculations, and derived values:
+ * Transient attributes are useful for UI state, temporary calculations and values the record carries without
+ * storing. They are editable fields wherever the framework builds components from attribute definitions, which is
+ * what makes them the way a form holds something the table does not store:
  * {@snippet :
  * public class Store extends DomainModel {
  *
@@ -66,7 +68,8 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *                 Customer.EMAIL.as()
  *                     .column(),
  *
- *                 // Derived transient attribute (computed from other attributes)
+ *                 // A derived attribute - NOT a transient one: computed from other attributes,
+ *                 // and presented read-only. Shown here for contrast; see DerivedAttributeDefinition.
  *                 Customer.FULL_NAME.as()
  *                     .derived()
  * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
@@ -124,7 +127,6 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *}
  * @param <T> the attribute value type
  * @see #modifies()
- * @see DerivedAttributeDefinition
  */
 public sealed interface TransientAttributeDefinition<T> extends ValueAttributeDefinition<T> permits DefaultTransientAttributeDefinition {
 
