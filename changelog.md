@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.85
+### is.codion.common.reactive
+- BaseValue.DefaultLocked now synchronized.
+- DefaultStateCombination.StateCombinationConsumer, oldValue assignment now inside synchronized block.
 ### is.codion.common.utilities
 - PropertyStore.enumValue(), the property value is now upper cased under Locale.ROOT before Enum.valueOf(), an enum constant being an identifier rather than something a person reads. A value written in lower case used to fail to parse on a Turkish machine, where i upper cases to İ, taking every enum valued configuration property with it.
 - Operator, the description resource key is now derived under Locale.ROOT. IN, NOT_IN, BETWEEN_EXCLUSIVE and NOT_BETWEEN_EXCLUSIVE all contain an I, so on a Turkish machine they looked up a key that does not exist and lost their description.
