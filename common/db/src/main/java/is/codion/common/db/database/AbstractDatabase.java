@@ -40,6 +40,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -416,7 +417,7 @@ public abstract class AbstractDatabase implements Database {
 	protected static String removeUrlPrefixOptionsAndParameters(String url, String... prefixes) {
 		String result = url;
 		for (String prefix : prefixes) {
-			if (url.toLowerCase().startsWith(prefix.toLowerCase())) {
+			if (url.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT))) {
 				result = url.substring(prefix.length());
 				break;
 			}

@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -256,7 +257,7 @@ public final class PropertyStore {
 	public <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass) {
 		requireNonNull(enumClass);
 
-		return value(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase()), Objects::toString);
+		return value(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase(Locale.ROOT)), Objects::toString);
 	}
 
 	/**
@@ -271,7 +272,7 @@ public final class PropertyStore {
 	public <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass, @Nullable T defaultValue) {
 		requireNonNull(enumClass);
 
-		return value(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase()), Objects::toString, defaultValue);
+		return value(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase(Locale.ROOT)), Objects::toString, defaultValue);
 	}
 
 	/**

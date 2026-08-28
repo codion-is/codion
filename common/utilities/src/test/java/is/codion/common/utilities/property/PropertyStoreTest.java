@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Properties;
@@ -55,6 +56,29 @@ public final class PropertyStoreTest {
 	private static final int INT_VALUE_1 = 42;
 	private static final int INT_VALUE_2 = 44;
 	private static final double DOUBLE_VALUE = 3.14;
+
+	@Test
+	@DisplayName("An enum property parses on a Turkish machine")
+	void enumValue_turkishLocale_shouldParse() {
+		// Turkish maps i to a dotted capital, so "display" upper-cases to "DİSPLAY" under the default locale and
+		// Enum.valueOf throws. Every enum-valued configuration property in the framework goes through here, so the
+		// conversion has to be Locale.ROOT: an enum constant is an identifier, not something a person reads.
+		Locale locale = Locale.getDefault();
+		try {
+			Locale.setDefault(Locale.forLanguageTag("tr"));
+			System.setProperty("codion.test.locale.enum", "in_progress");
+			assertEquals(Status.IN_PROGRESS,
+							propertyStore().enumValue("codion.test.locale.enum", Status.class).getOrThrow());
+		}
+		finally {
+			System.clearProperty("codion.test.locale.enum");
+			Locale.setDefault(locale);
+		}
+	}
+
+	private enum Status {
+		IN_PROGRESS
+	}
 
 	@Test
 	@DisplayName("PropertyStore operations with file backing")

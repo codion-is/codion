@@ -18,6 +18,8 @@
  */
 package is.codion.common.utilities;
 
+import java.util.Locale;
+
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
@@ -78,7 +80,7 @@ public enum Operator {
 	private final String description;
 
 	Operator() {
-		this.description = messageBundle(Operator.class, getBundle(Operator.class.getName())).getString(name().toLowerCase());
+		this.description = messageBundle(Operator.class, getBundle(Operator.class.getName())).getString(name().toLowerCase(Locale.ROOT));
 	}
 
 	/**

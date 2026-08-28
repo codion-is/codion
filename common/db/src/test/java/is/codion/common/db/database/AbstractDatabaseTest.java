@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,6 +114,28 @@ public final class AbstractDatabaseTest {
 			// Cleanup
 			originalConnection.close();
 			newConnection.close();
+		}
+	}
+
+	@Nested
+	@DisplayName("Url prefix tests")
+	class UrlPrefixTests {
+
+		@Test
+		@DisplayName("An upper case url matches its prefix on a Turkish machine")
+		void removeUrlPrefix_upperCaseUrlTurkishLocale_shouldMatch() {
+			// Both sides are lower-cased, which looks symmetric and is not: the prefix is a lower case literal
+			// already, so only the url is transformed. Under Turkish "THIN" becomes "thın" and no longer starts with
+			// "thin", leaving the dbms unrecognised for anyone who writes their url in upper case.
+			Locale locale = Locale.getDefault();
+			try {
+				Locale.setDefault(Locale.forLanguageTag("tr"));
+				assertEquals("host:1521/db", AbstractDatabase.removeUrlPrefixOptionsAndParameters(
+								"JDBC:ORACLE:THIN:@host:1521/db", "jdbc:oracle:thin:@"));
+			}
+			finally {
+				Locale.setDefault(locale);
+			}
 		}
 	}
 

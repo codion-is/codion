@@ -2,6 +2,17 @@ Codion Change Log
 =================
 
 ## 0.18.85
+### is.codion.common.utilities
+- PropertyStore.enumValue(), the property value is now upper cased under Locale.ROOT before Enum.valueOf(), an enum constant being an identifier rather than something a person reads. A value written in lower case used to fail to parse on a Turkish machine, where i upper cases to İ, taking every enum valued configuration property with it.
+- Operator, the description resource key is now derived under Locale.ROOT. IN, NOT_IN, BETWEEN_EXCLUSIVE and NOT_BETWEEN_EXCLUSIVE all contain an I, so on a Turkish machine they looked up a key that does not exist and lost their description.
+### is.codion.common.db
+- AbstractDatabase.removeUrlPrefixOptionsAndParameters() now compares under Locale.ROOT. Both sides were lower cased, which looks symmetric but is not, the prefix being a lower case literal already - an upper case url used to stop matching on a Turkish machine, where THIN lower cases to thın, leaving the dbms unrecognised.
+### is.codion.common.model
+- PreferencesPath now identifies the operating system under Locale.ROOT, Windows used to go undetected on a Turkish machine, where Windows lower cases to wındows, landing preferences in the wrong directory.
+### is.codion.framework.db.local
+- DefaultEntityQueries now formats numbers under Locale.ROOT. The decimal separator was being set on a copy of the format's symbols, DecimalFormat.getDecimalFormatSymbols() returning one, and never applied - so the query string, which exists to be pasted into a database client, rendered a decimal comma on any machine whose locale uses one.
+### is.codion.swing.common.ui
+- DefaultLoginDialogBuilder now identifies the operating system under Locale.ROOT, as PreferencesPath does.
 
 ## 0.18.84
 ### is.codion.common.reactive
