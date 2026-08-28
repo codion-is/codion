@@ -31,6 +31,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -103,7 +104,7 @@ final class H2Database extends AbstractDatabase {
 		super(url);
 		this.nowait = nowait;
 		synchronized (INITIALIZED_DATABASES) {
-			if (!INITIALIZED_DATABASES.contains(url.toLowerCase())) {
+			if (!INITIALIZED_DATABASES.contains(url.toLowerCase(Locale.ROOT))) {
 				initializeEmbeddedDatabase(scriptPaths);
 			}
 		}
@@ -239,7 +240,7 @@ final class H2Database extends AbstractDatabase {
 				}
 			}
 		}
-		INITIALIZED_DATABASES.add(url().toLowerCase());
+		INITIALIZED_DATABASES.add(url().toLowerCase(Locale.ROOT));
 	}
 
 	private String databasePath() {

@@ -62,6 +62,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
@@ -410,7 +411,7 @@ public final class ImagePane extends JPanel {
 	 * @throws IOException in case of an exception
 	 */
 	public static BufferedImage readImage(String imagePath) throws IOException {
-		if (imagePath.toLowerCase().startsWith("http")) {
+		if (imagePath.toLowerCase(Locale.ROOT).startsWith("http")) {
 			return ImageIO.read(URI.create(imagePath).toURL());
 		}
 		else {

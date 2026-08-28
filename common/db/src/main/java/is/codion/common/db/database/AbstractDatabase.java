@@ -160,7 +160,7 @@ public abstract class AbstractDatabase implements Database {
 																													User poolUser) {
 		requireNonNull(connectionPoolFactory, "connectionPoolFactory");
 		requireNonNull(poolUser, "poolUser");
-		String usernameKey = poolUser.username().toLowerCase();
+		String usernameKey = poolUser.username().toLowerCase(Locale.ROOT);
 		if (connectionPools.containsKey(usernameKey)) {
 			throw new IllegalStateException("Connection pool for user '" + poolUser.username() +
 							"' already exists. Use connectionPool(String) to retrieve existing pool.");
@@ -173,13 +173,13 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final boolean containsConnectionPool(String username) {
-		return connectionPools.containsKey(requireNonNull(username, USERNAME).toLowerCase());
+		return connectionPools.containsKey(requireNonNull(username, USERNAME).toLowerCase(Locale.ROOT));
 	}
 
 	@Override
 	public final ConnectionPoolWrapper connectionPool(String username) {
 		requireNonNull(username, USERNAME);
-		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.get(username.toLowerCase());
+		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.get(username.toLowerCase(Locale.ROOT));
 		if (connectionPoolWrapper == null) {
 			throw new IllegalArgumentException("No connection pool found for user '" + username +
 							"'. Available pools: " + connectionPools.keySet());
@@ -191,7 +191,7 @@ public abstract class AbstractDatabase implements Database {
 	@Override
 	public final void closeConnectionPool(String username) {
 		requireNonNull(username, USERNAME);
-		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(username.toLowerCase());
+		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(username.toLowerCase(Locale.ROOT));
 		if (connectionPoolWrapper != null) {
 			connectionPoolWrapper.close();
 		}

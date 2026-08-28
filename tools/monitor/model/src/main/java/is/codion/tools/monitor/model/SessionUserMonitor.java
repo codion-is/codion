@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -401,7 +402,7 @@ public final class SessionUserMonitor {
 
 		@Override
 		public int hashCode() {
-			int result = user.username().toLowerCase().hashCode();
+			int result = user.username().toLowerCase(Locale.ROOT).hashCode();
 			result = 31 * result + clientType.hashCode();
 			result = 31 * result + clientHost.hashCode();
 

@@ -25,6 +25,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Locale;
 
 final class FileJRReport extends AbstractJRReport {
 
@@ -36,7 +37,7 @@ final class FileJRReport extends AbstractJRReport {
 	public JasperReport load() {
 		String fullReportPath = fullReportPath();
 		try {
-			if (fullReportPath.toLowerCase().startsWith("http")) {
+			if (fullReportPath.toLowerCase(Locale.ROOT).startsWith("http")) {
 				return (JasperReport) JRLoader.loadObject(URI.create(fullReportPath).toURL());
 			}
 			File reportFile = new File(fullReportPath);

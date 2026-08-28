@@ -30,6 +30,7 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -211,7 +212,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 				}
 
 				return serverNamePrefix + " " +
-								Version.versionString() + "@" + database.name().toUpperCase();
+								Version.versionString() + "@" + database.name().toUpperCase(Locale.ROOT);
 			});
 			// Seed the remaining defaults from the corresponding system properties (the database is resolved
 			// explicitly, typically at server startup, see EntityServer)

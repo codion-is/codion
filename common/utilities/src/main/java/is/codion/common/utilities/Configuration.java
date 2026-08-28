@@ -30,6 +30,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -276,7 +277,7 @@ public final class Configuration {
 		// Validate configuration file path for security
 		validateConfigurationPath(configurationFilePath);
 
-		if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
+		if (configurationFilePath.toLowerCase(Locale.ROOT).startsWith(CLASSPATH_PREFIX)) {
 			return loadFromClasspath(configurationFilePath, configurationFileRequired);
 		}
 
@@ -339,7 +340,7 @@ public final class Configuration {
 		}
 
 		// Normalize path for consistent validation
-		String normalizedPath = filePath.trim().toLowerCase();
+		String normalizedPath = filePath.trim().toLowerCase(Locale.ROOT);
 		// Check for path traversal attempts
 		if (normalizedPath.contains("../") || normalizedPath.contains("..\\") ||
 						normalizedPath.contains("%2e%2e") || normalizedPath.contains("..%2f") ||
@@ -348,7 +349,7 @@ public final class Configuration {
 		}
 
 		// For classpath files, additional validation is handled in classpathFilepath()
-		if (!normalizedPath.startsWith(CLASSPATH_PREFIX.toLowerCase()) &&
+		if (!normalizedPath.startsWith(CLASSPATH_PREFIX.toLowerCase(Locale.ROOT)) &&
 						(normalizedPath.startsWith("/etc/") || normalizedPath.startsWith("c:\\windows\\") ||
 										normalizedPath.contains("/proc/") || normalizedPath.contains("/sys/"))) {
 			throw new SecurityException("Configuration file path accesses restricted system directories: " + filePath);
@@ -381,7 +382,7 @@ public final class Configuration {
 	public static final class ConfigurationFileNotFoundException extends RuntimeException {
 
 		private ConfigurationFileNotFoundException(String filePath) {
-			super(filePath.toLowerCase().startsWith(CLASSPATH_PREFIX)
+			super(filePath.toLowerCase(Locale.ROOT).startsWith(CLASSPATH_PREFIX)
 							? "Required configuration file not found on classpath: " + filePath
 							: "Required configuration file not found: " + filePath);
 		}
