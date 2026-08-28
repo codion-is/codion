@@ -43,6 +43,7 @@ Codion Change Log
 - DefaultFileSelectionDialogBuilder, the file extension comparison is now made under Locale.ROOT.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel, the file name suffix comparison is now made under Locale.ROOT.
+- EditorInspector, value warning columns added.
 ### is.codion.tools.monitor
 - SessionUserMonitor, the user hash is now derived under Locale.ROOT.
 ### is.codion.tools.generator
