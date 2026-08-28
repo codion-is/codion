@@ -9,10 +9,16 @@ Codion Change Log
 - AbstractDatabase.removeUrlPrefixOptionsAndParameters() now compares under Locale.ROOT. Both sides were lower cased, which looks symmetric but is not, the prefix being a lower case literal already - an upper case url used to stop matching on a Turkish machine, where THIN lower cases to thın, leaving the dbms unrecognised.
 ### is.codion.common.model
 - PreferencesPath now identifies the operating system under Locale.ROOT, Windows used to go undetected on a Turkish machine, where Windows lower cases to wındows, landing preferences in the wrong directory.
+### is.codion.framework.domain
+- DefaultEntitySelectQuery, the guards rejecting a query fragment that repeats its own keyword now compare under Locale.ROOT. HAVING and WITH contain an I, so on a Turkish machine those two guards silently stopped firing and a malformed query was built instead of a clear error - the other four keywords contain none and were unaffected, which is the kind of partial failure that makes this hard to spot.
+### is.codion.framework.domain.db
+- SchemaDomain now converts database identifiers under Locale.ROOT throughout. On a Turkish machine a table name containing an I came out misspelled in the entity type, views went undetected (VIEW lower cases to vıew) and audit columns went unmatched (INSERT_USER to ınsert_user), leaving them visible and writable in the generated domain.
 ### is.codion.framework.db.local
 - DefaultEntityQueries now formats numbers under Locale.ROOT. The decimal separator was being set on a copy of the format's symbols, DecimalFormat.getDecimalFormatSymbols() returning one, and never applied - so the query string, which exists to be pasted into a database client, rendered a decimal comma on any machine whose locale uses one.
 ### is.codion.swing.common.ui
 - DefaultLoginDialogBuilder now identifies the operating system under Locale.ROOT, as PreferencesPath does.
+### is.codion.tools.generator
+- DomainSource now converts table and column names under Locale.ROOT. Those names become Java identifiers, class names and captions, so on a Turkish machine the generator emitted names containing ı and İ - wrong, and in some positions not valid Java.
 
 ## 0.18.84
 ### is.codion.common.reactive
