@@ -8,12 +8,15 @@ Codion Change Log
 - Configuration, the classpath prefix comparisons on a configuration file path are now made under Locale.ROOT.
 - Text.COLLATOR_LANGUAGE renamed COLLATOR_LOCALE, codion.collator.language renamed codion.collator.locale, and the value is now an IETF BCP 47 language tag parsed with Locale.forLanguageTag() rather than a language handed to the Locale constructor.
 - Text.collator() javadoc now says the locale is resolved when the class is loaded, and points at collator(Locale) for a collator in a locale of your choosing.
+- Version.versionString() no longer lower cases the version string before looking for the metadata separator.
 ### is.codion.common.db
 - AbstractDatabase.removeUrlPrefixOptionsAndParameters() now compares under Locale.ROOT. Both sides were lower cased, which looks symmetric but is not, the prefix being a lower case literal already - an upper case url used to stop matching on a Turkish machine, where THIN lower cases to thın, leaving the dbms unrecognised.
 - AbstractDatabase, the connection pool is now keyed by a username normalised under Locale.ROOT rather than the default locale.
 ### is.codion.common.model
 - PreferencesPath now identifies the operating system under Locale.ROOT, Windows used to go undetected on a Turkish machine, where Windows lower cases to wındows, landing preferences in the wrong directory.
 - PreferencesPath, the preferences directory name is now derived under Locale.ROOT. Not a fix - "Codion" carries no upper case I, so it lower cases the same in every locale - but the idiom, so that a rename can not quietly make it one.
+- FilterTableModel.TableColumns.comparator() now collates String columns according to Text.COLLATOR_LOCALE instead of comparing them by code point.
+- DefaultConditionModel, the case folding behind accepts() is documented as deliberately locale sensitive.
 ### is.codion.common.rmi
 - SerializationFilterDryRun, the classpath prefix comparison on the pattern file path is now made under Locale.ROOT.
 ### is.codion.framework.domain

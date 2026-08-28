@@ -145,6 +145,32 @@ public class DefaultFilterTableSortTest {
 	}
 
 	@Test
+	void stringColumnClass_shouldCollate() {
+		DefaultFilterTableSort<String, Integer> sortModel = new DefaultFilterTableSort<>(new TableColumns<String, Integer>() {
+			@Override
+			public List<Integer> identifiers() {
+				return Collections.singletonList(0);
+			}
+
+			@Override
+			public Class<?> columnClass(Integer identifier) {
+				return String.class;
+			}
+
+			@Override
+			public Object value(String row, Integer identifier) {
+				return row;
+			}
+		});
+		// Code point order would give Ba, Bl, ap, ba, \u00e1s - every upper case letter before every lower case one and
+		// every accented character after Z. Collated, they read as a person would expect to find them in a list.
+		List<String> strings = new ArrayList<>(asList("Bl", "ba", "Ba", "ap", "\u00e1s"));
+		sortModel.ascending(0);
+		strings.sort(sortModel);
+		assertEquals(asList("ap", "\u00e1s", "ba", "Ba", "Bl"), strings);
+	}
+
+	@Test
 	void nonComparableColumnClass() {
 		DefaultFilterTableSort<ArrayList<Object>, Integer> sortModel = new DefaultFilterTableSort<>(new TableColumns<ArrayList<Object>, Integer>() {
 			@Override

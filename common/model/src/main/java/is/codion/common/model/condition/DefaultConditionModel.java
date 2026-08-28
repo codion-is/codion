@@ -475,6 +475,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	/**
 	 * Converts String or Character values to lowercase, leaving other types unchanged.
+	 * <p> The default locale rather than {@link java.util.Locale#ROOT}, deliberately. This folds the operand only for
+	 * {@link #accepts(Comparable)}, which compares it against the formatted display value of an item, and folding
+	 * display text by the rules of the locale it is displayed in is what a user filtering their own language expects.
 	 * @param value the value to potentially convert to lowercase
 	 * @param <V> the value type
 	 * @return the value converted to lowercase if it's a String or Character, otherwise unchanged
