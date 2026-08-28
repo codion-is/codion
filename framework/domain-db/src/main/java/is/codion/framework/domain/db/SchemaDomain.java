@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
@@ -62,7 +63,7 @@ public final class SchemaDomain extends DomainModel {
 	private final SchemaSettings settings;
 
 	private SchemaDomain(DatabaseMetaData metaData, String schemaName, SchemaSettings settings) throws SQLException {
-		super(domainType(settings.lowerCaseIdentifiers() ? schemaName.toLowerCase() : schemaName));
+		super(domainType(settings.lowerCaseIdentifiers() ? schemaName.toLowerCase(Locale.ROOT) : schemaName));
 		this.settings = settings;
 		validateForeignKeys(false);
 		new MetaDataModel(metaData, schemaName)
@@ -110,7 +111,7 @@ public final class SchemaDomain extends DomainModel {
 
 	private void defineEntity(MetaDataTable table) {
 		if (!tableEntityTypes.containsKey(table)) {
-			boolean view = table.tableType().toLowerCase().contains("view");
+			boolean view = table.tableType().toLowerCase(Locale.ROOT).contains("view");
 			String tableName = table.tableName();
 			// For views, create a clean name for caption by removing prefix/suffix
 			String captionName = tableName;
@@ -121,11 +122,11 @@ public final class SchemaDomain extends DomainModel {
 			// Apply lowercase to actual table name if configured
 			String entityTypeName = tableName;
 			if (settings.lowerCaseIdentifiers()) {
-				entityTypeName = entityTypeName.toLowerCase();
+				entityTypeName = entityTypeName.toLowerCase(Locale.ROOT);
 			}
 			String schemaName = table.schema().name();
 			if (schemaName != null && settings.lowerCaseIdentifiers()) {
-				schemaName = schemaName.toLowerCase();
+				schemaName = schemaName.toLowerCase(Locale.ROOT);
 			}
 			EntityType entityType = type().entityType(table.schema().none() ? entityTypeName : schemaName + "." + entityTypeName);
 			tableEntityTypes.put(table, entityType);
@@ -156,7 +157,7 @@ public final class SchemaDomain extends DomainModel {
 		List<AttributeDefinition.Builder<?, ?>> auditColumnBuilders = new ArrayList<>();
 		table.columns().forEach(column -> {
 			ColumnDefinition.Builder<?, ?> columnDefinitionBuilder = columnDefinitionBuilder(column, entityType);
-			if (settings.auditColumnNames().contains(column.columnName().toLowerCase())) {
+			if (settings.auditColumnNames().contains(column.columnName().toLowerCase(Locale.ROOT))) {
 				columnDefinitionBuilder.readOnly(true);
 				if (settings.hideAuditColumns()) {
 					columnDefinitionBuilder.hidden(true);
@@ -188,14 +189,14 @@ public final class SchemaDomain extends DomainModel {
 		EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
 		String name = createForeignKeyName(foreignKeyConstraint) + "_FK";
 		if (settings.lowerCaseIdentifiers()) {
-			name = name.toLowerCase();
+			name = name.toLowerCase(Locale.ROOT);
 		}
 		ForeignKey foreignKey = entityType.foreignKey(name,
 						foreignKeyConstraint.references().entrySet().stream()
 										.map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
 										.collect(toList()));
 
-		return foreignKey.as().foreignKey().caption(caption(referencedTable.tableName().toLowerCase()));
+		return foreignKey.as().foreignKey().caption(caption(referencedTable.tableName().toLowerCase(Locale.ROOT)));
 	}
 
 	private ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
@@ -232,13 +233,13 @@ public final class SchemaDomain extends DomainModel {
 
 	private <T> Column<T> column(EntityType entityType, MetaDataColumn column) {
 		return (Column<T>) entityType.column(settings.lowerCaseIdentifiers() ?
-						column.columnName().toLowerCase() : column.columnName(), column.columnClass());
+						column.columnName().toLowerCase(Locale.ROOT) : column.columnName(), column.columnClass());
 	}
 
 	private static String caption(String name) {
-		String caption = name.toLowerCase().replace("_", " ");
+		String caption = name.toLowerCase(Locale.ROOT).replace("_", " ");
 
-		return caption.substring(0, 1).toUpperCase() + caption.substring(1);
+		return caption.substring(0, 1).toUpperCase(Locale.ROOT) + caption.substring(1);
 	}
 
 	private static boolean lastKeyColumn(MetaDataForeignKeyConstraint foreignKeyConstraint, MetaDataColumn column) {
@@ -261,12 +262,12 @@ public final class SchemaDomain extends DomainModel {
 	}
 
 	private static String removeSuffix(String name, String suffix) {
-		return name.toLowerCase().endsWith(suffix.toLowerCase()) ?
+		return name.toLowerCase(Locale.ROOT).endsWith(suffix.toLowerCase(Locale.ROOT)) ?
 						name.substring(0, name.length() - suffix.length()) : name;
 	}
 
 	private static String removePrefix(String name, String prefix) {
-		return name.toLowerCase().startsWith(prefix.toLowerCase()) ?
+		return name.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT)) ?
 						name.substring(prefix.length()) : name;
 	}
 

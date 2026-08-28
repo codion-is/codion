@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
@@ -89,6 +90,39 @@ public final class SchemaDomainTest {
 					domainTest.test(entityDefinition.type());
 				}
 			}
+		}
+	}
+
+	@Test
+	void turkishLocale() throws Exception {
+		// A table or column name is an identifier, not prose. Under Turkish "ITEM" lower cases to "ıtem" and
+		// "INSERT_USER" to "ınsert_user", so the entity type came out misspelled and no longer matched the configured
+		// audit column names - leaving the audit columns visible and writable on a Turkish developer's machine.
+		Locale locale = Locale.getDefault();
+		try {
+			Locale.setDefault(Locale.forLanguageTag("tr"));
+			try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
+				SchemaDomain petstore = SchemaDomain.schemaDomain(connection.getMetaData(), "PETSTORE", SchemaSettings.builder()
+								.primaryKeyColumnSuffix("_id")
+								.auditColumnNames("insert_user", "insert_time", "update_user", "update_time")
+								.hideAuditColumns(true)
+								.build());
+				EntityDefinition item = petstore.entities().definitions().stream()
+								.filter(definition -> definition.type().name().equals("petstore.item"))
+								.findFirst()
+								.orElseThrow(() -> new AssertionError("No petstore.item entity, type names: " +
+												petstore.entities().definitions().stream()
+																.map(definition -> definition.type().name())
+																.collect(toList())));
+				List<AttributeDefinition<?>> attributeDefinitions = new ArrayList<>(item.attributes().definitions());
+				List<AttributeDefinition<?>> auditColumns = attributeDefinitions.subList(attributeDefinitions.size() - 4, attributeDefinitions.size());
+				for (AttributeDefinition<?> auditColumn : auditColumns) {
+					assertTrue(auditColumn.hidden(), auditColumn.attribute().name() + " should be hidden");
+				}
+			}
+		}
+		finally {
+			Locale.setDefault(locale);
 		}
 	}
 

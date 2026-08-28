@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.query;
 import org.jspecify.annotations.Nullable;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Collections.emptyMap;
@@ -108,7 +109,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 		@Override
 		public Builder columns(String columns) {
-			if (requireNonNull(columns).trim().toLowerCase().startsWith("select")) {
+			if (requireNonNull(columns).trim().toLowerCase(Locale.ROOT).startsWith("select")) {
 				throw new IllegalArgumentException("columns clause should not include the 'SELECT' keyword");
 			}
 			this.columns = columns;
@@ -117,7 +118,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 		@Override
 		public Builder from(String from) {
-			if (requireNonNull(from).trim().toLowerCase().startsWith("from")) {
+			if (requireNonNull(from).trim().toLowerCase(Locale.ROOT).startsWith("from")) {
 				throw new IllegalArgumentException("from clause should not include the 'FROM' keyword");
 			}
 			this.from = from;
@@ -126,7 +127,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 		@Override
 		public Builder where(String where) {
-			if (requireNonNull(where).trim().toLowerCase().startsWith("where")) {
+			if (requireNonNull(where).trim().toLowerCase(Locale.ROOT).startsWith("where")) {
 				throw new IllegalArgumentException("where clause should not include the 'WHERE' keyword");
 			}
 			this.where = where;
@@ -136,7 +137,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 		@Override
 		public Builder groupBy(String groupBy) {
-			if (requireNonNull(groupBy).trim().toLowerCase().startsWith("group by")) {
+			if (requireNonNull(groupBy).trim().toLowerCase(Locale.ROOT).startsWith("group by")) {
 				throw new IllegalArgumentException("group by clause should not include the 'GROUP BY' keywords");
 			}
 			this.groupBy = groupBy;
@@ -146,7 +147,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 		@Override
 		public Builder having(String having) {
-			if (requireNonNull(having).trim().toLowerCase().startsWith("having")) {
+			if (requireNonNull(having).trim().toLowerCase(Locale.ROOT).startsWith("having")) {
 				throw new IllegalArgumentException("having clause should not include the 'HAVING' keywords");
 			}
 			this.having = having;
@@ -156,7 +157,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 		@Override
 		public Builder orderBy(String orderBy) {
-			if (requireNonNull(orderBy).trim().toLowerCase().startsWith("order by")) {
+			if (requireNonNull(orderBy).trim().toLowerCase(Locale.ROOT).startsWith("order by")) {
 				throw new IllegalArgumentException("orderBy clause should not include the 'ORDER BY' keywords");
 			}
 			this.orderBy = orderBy;
@@ -174,7 +175,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 			@Override
 			public WithRecursiveStep as(String query) {
-				if (requireNonNull(query).trim().toLowerCase().startsWith("with")) {
+				if (requireNonNull(query).trim().toLowerCase(Locale.ROOT).startsWith("with")) {
 					throw new IllegalArgumentException("with clause should not include the 'WITH' keyword");
 				}
 
