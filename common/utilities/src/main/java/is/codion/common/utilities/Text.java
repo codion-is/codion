@@ -41,20 +41,28 @@ import static java.util.Objects.requireNonNull;
 public final class Text {
 
 	/**
-	 * Specifies the default collator locale language.
+	 * Specifies the default collator locale, as an IETF BCP 47 language tag - {@code is}, {@code zh-TW},
+	 * {@code pt-BR}. A bare language is a valid tag, so the values this accepted when it took only a language
+	 * still do.
+	 * <p>Note that the default is resolved when this class is loaded, so an application setting
+	 * {@link Locale#setDefault(Locale)} must do so before anything touches {@link Text}.
 	 * <ul>
 	 * <li>Value type: String
-	 * <li>Default value: {@code Locale.getDefault().getLanguage()}.
+	 * <li>Default value: {@code Locale.getDefault().toLanguageTag()}.
 	 * </ul>
 	 * @see #collator()
 	 * @see #collate(List)
-	 * @see Locale#getLanguage()
+	 * @see Locale#forLanguageTag(String)
 	 */
-	public static final PropertyValue<String> COLLATOR_LANGUAGE =
-					stringValue("codion.collator.language", Locale.getDefault().getLanguage());
+	public static final PropertyValue<String> COLLATOR_LOCALE =
+					stringValue("codion.collator.locale", Locale.getDefault().toLanguageTag());
 
 	private static final class SpaceAwareComparatorHolder {
-		private static final Comparator<String> INSTANCE = new SpaceAwareComparator<>(new Locale(COLLATOR_LANGUAGE.getOrThrow()));
+		// forLanguageTag rather than the Locale constructor, which takes a language alone and so drops the country -
+		// and zh-TW collates by stroke where zh-CN collates by pinyin. It also predates the constructor's deprecation
+		// by a long way, being available since Java 7, which the jdk8 branch still needs.
+		private static final Comparator<String> INSTANCE =
+						new SpaceAwareComparator<>(Locale.forLanguageTag(COLLATOR_LOCALE.getOrThrow()));
 	}
 
 	private Text() {}
@@ -74,12 +82,12 @@ public final class Text {
 
 	/**
 	 * Returns a Comparator which compares the string representations of the objects
-	 * using the Collator for the {@link #COLLATOR_LANGUAGE} language, taking spaces into account.
-	 * <p>Note that the collator language is captured on first use; changing {@link #COLLATOR_LANGUAGE}
-	 * afterwards has no effect.
+	 * using the Collator for the {@link #COLLATOR_LOCALE} locale, taking spaces into account.
+	 * <p>Note that the locale is captured on first use; changing {@link #COLLATOR_LOCALE} afterwards has no effect.
+	 * Use {@link #collator(Locale)} for a collator in a locale of your choosing.
 	 * @param <T> the type of the objects to compare
 	 * @return a space aware collator
-	 * @see #COLLATOR_LANGUAGE
+	 * @see #COLLATOR_LOCALE
 	 */
 	public static <T> Comparator<T> collator() {
 		return (Comparator<T>) SpaceAwareComparatorHolder.INSTANCE;

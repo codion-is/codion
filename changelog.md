@@ -6,6 +6,8 @@ Codion Change Log
 - PropertyStore.enumValue(), the property value is now upper cased under Locale.ROOT before Enum.valueOf(), an enum constant being an identifier rather than something a person reads. A value written in lower case used to fail to parse on a Turkish machine, where i upper cases to İ, taking every enum valued configuration property with it.
 - Operator, the description resource key is now derived under Locale.ROOT. IN, NOT_IN, BETWEEN_EXCLUSIVE and NOT_BETWEEN_EXCLUSIVE all contain an I, so on a Turkish machine they looked up a key that does not exist and lost their description.
 - Configuration, the classpath prefix comparisons on a configuration file path are now made under Locale.ROOT.
+- Text.COLLATOR_LANGUAGE renamed COLLATOR_LOCALE, codion.collator.language renamed codion.collator.locale, and the value is now an IETF BCP 47 language tag parsed with Locale.forLanguageTag() rather than a language handed to the Locale constructor.
+- Text.collator() javadoc now says the locale is resolved when the class is loaded, and points at collator(Locale) for a collator in a locale of your choosing.
 ### is.codion.common.db
 - AbstractDatabase.removeUrlPrefixOptionsAndParameters() now compares under Locale.ROOT. Both sides were lower cased, which looks symmetric but is not, the prefix being a lower case literal already - an upper case url used to stop matching on a Turkish machine, where THIN lower cases to thın, leaving the dbms unrecognised.
 - AbstractDatabase, the connection pool is now keyed by a username normalised under Locale.ROOT rather than the default locale.
@@ -16,6 +18,7 @@ Codion Change Log
 - SerializationFilterDryRun, the classpath prefix comparison on the pattern file path is now made under Locale.ROOT.
 ### is.codion.framework.domain
 - DefaultEntitySelectQuery, the guards rejecting a query fragment that repeats its own keyword now compare under Locale.ROOT. HAVING and WITH contain an I, so on a Turkish machine those two guards silently stopped firing and a malformed query was built instead of a clear error - the other four keywords contain none and were unaffected, which is the kind of partial failure that makes this hard to spot.
+- AttributeDefinition.GROUPING_SEPARATOR and DECIMAL_SEPARATOR javadoc now says their defaults are resolved when the interface is loaded, so an application setting Locale.setDefault() must do so first.
 ### is.codion.framework.domain.db
 - SchemaDomain now converts database identifiers under Locale.ROOT throughout. On a Turkish machine a table name containing an I came out misspelled in the entity type, views went undetected (VIEW lower cases to vıew) and audit columns went unmatched (INSERT_USER to ınsert_user), leaving them visible and writable in the generated domain.
 ### is.codion.framework.db.local
