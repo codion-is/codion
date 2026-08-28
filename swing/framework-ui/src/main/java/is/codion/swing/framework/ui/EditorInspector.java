@@ -217,6 +217,7 @@ final class EditorInspector extends JPanel {
 									.build());
 					break;
 				case ERROR:
+				case WARNING:
 					column.cellRenderer(FilterTableCellRenderer.builder()
 									.columnClass(String.class)
 									.toolTip(Objects::toString)
@@ -228,7 +229,7 @@ final class EditorInspector extends JPanel {
 		}
 
 		private enum AttributeColumn {
-			ATTRIBUTE, PRESENT, VALID, MODIFIED, PERSISTS, COMPONENT, VALUE, ORIGINAL, DEFAULT, ERROR
+			ATTRIBUTE, PRESENT, VALID, WARNED, WARNING, MODIFIED, PERSISTS, COMPONENT, VALUE, ORIGINAL, DEFAULT, ERROR
 		}
 
 		private static final class AttributeItems implements Supplier<Collection<AttributeRow>> {
@@ -245,10 +246,13 @@ final class EditorInspector extends JPanel {
 								.map(attribute -> {
 									EditorValue<?> value = components.editor().value(attribute.attribute());
 
-									return new AttributeRow(attribute.caption(), value.present().is(), value.valid().is(), value.modified().is(),
-													value.persist().is(), components.component(attribute.attribute()).optional().isPresent(),
-													String.valueOf(value.get()), value.modified().is() ? String.valueOf(value.original()) : "",
-													String.valueOf(value.defaultValue().get().get()), value.error().get());
+									return new AttributeRow(attribute.caption(), value.present().is(), value.valid().is(), value.warned().is(),
+													value.modified().is(), value.persist().is(),
+													components.component(attribute.attribute()).optional().isPresent(), String.valueOf(value.get()),
+													value.modified().is() ? String.valueOf(value.original()) : "", String.valueOf(value.defaultValue()
+													.getOrThrow()
+													.get()),
+													value.error().get(), value.warning().get());
 								})
 								.collect(toList());
 			}
@@ -271,6 +275,7 @@ final class EditorInspector extends JPanel {
 					case ORIGINAL:
 					case DEFAULT:
 					case ERROR:
+					case WARNING:
 						return String.class;
 					default:
 						return Boolean.class;
@@ -286,6 +291,10 @@ final class EditorInspector extends JPanel {
 						return "Present";
 					case VALID:
 						return "Valid";
+					case WARNED:
+						return "Warned";
+					case WARNING:
+						return "Warning";
 					case MODIFIED:
 						return "Modified";
 					case PERSISTS:
@@ -314,6 +323,10 @@ final class EditorInspector extends JPanel {
 						return row.present;
 					case VALID:
 						return row.valid;
+					case WARNED:
+						return row.warned;
+					case WARNING:
+						return row.warning;
 					case MODIFIED:
 						return row.modified;
 					case PERSISTS:
@@ -339,6 +352,7 @@ final class EditorInspector extends JPanel {
 			private final String attribute;
 			private final boolean present;
 			private final boolean valid;
+			private final boolean warned;
 			private final boolean modified;
 			private final boolean persists;
 			private final boolean component;
@@ -346,13 +360,15 @@ final class EditorInspector extends JPanel {
 			private final @Nullable String original;
 			private final @Nullable String defaultValue;
 			private final @Nullable String error;
+			private final @Nullable String warning;
 
-			private AttributeRow(String attribute, boolean present, boolean valid, boolean modified,
+			private AttributeRow(String attribute, boolean present, boolean valid, boolean warned, boolean modified,
 													 boolean persists, boolean component, @Nullable String value,
-													 @Nullable String original, @Nullable String defaultValue, @Nullable String error) {
+													 @Nullable String original, @Nullable String defaultValue, @Nullable String error, @Nullable String warning) {
 				this.attribute = attribute;
 				this.present = present;
 				this.valid = valid;
+				this.warned = warned;
 				this.modified = modified;
 				this.persists = persists;
 				this.component = component;
@@ -360,6 +376,7 @@ final class EditorInspector extends JPanel {
 				this.original = original;
 				this.defaultValue = defaultValue;
 				this.error = error;
+				this.warning = warning;
 			}
 
 			@Override
