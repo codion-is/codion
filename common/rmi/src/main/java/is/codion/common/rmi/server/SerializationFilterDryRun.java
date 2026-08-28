@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +54,7 @@ final class SerializationFilterDryRun implements ObjectInputFilter {
 	}
 
 	SerializationFilterDryRun(String patternFile, boolean writeOnShutdown, int flushInterval) {
-		if (requireNonNull(patternFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
+		if (requireNonNull(patternFile).toLowerCase(Locale.ROOT).startsWith(CLASSPATH_PREFIX)) {
 			throw new IllegalArgumentException("Filter dry run can not be performed with a classpath result file: " + patternFile);
 		}
 		if (flushInterval < 0) {

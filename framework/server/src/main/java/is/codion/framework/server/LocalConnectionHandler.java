@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
@@ -99,7 +100,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		this.clientInfo = clientInfo(session);
 		this.stampClientInfo = Database.CLIENT_INFO.getOrThrow();
 		this.sessionContexts = new SessionContexts(clientInfo, SessionContexts.contexts(clientInfo.clientType()));
-		this.logIdentifier = session.request().user().username().toLowerCase() + "@" + session.request().clientType();
+		this.logIdentifier = session.request().user().username().toLowerCase(Locale.ROOT) + "@" + session.request().clientType();
 		this.userDescription = "Remote user: " + session.request().user().username() + ", database user: " + databaseUsername;
 		this.clientDescription = clientInfo.toString();
 		this.entityConnection = initializeConnection();

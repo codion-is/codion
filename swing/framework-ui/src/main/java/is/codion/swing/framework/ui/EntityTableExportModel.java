@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -425,7 +426,7 @@ final class EntityTableExportModel {
 			String name = file.getName();
 			String suffix = "." + JSON;
 
-			return name.toLowerCase().endsWith(suffix) ? name.substring(0, name.length() - suffix.length()) : name;
+			return name.toLowerCase(Locale.ROOT).endsWith(suffix) ? name.substring(0, name.length() - suffix.length()) : name;
 		}
 
 		@Override

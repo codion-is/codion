@@ -34,6 +34,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
@@ -197,7 +198,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 	private static File addFileExtension(File selectedFile, FileFilter fileFilter) {
 		if (fileFilter instanceof FileNameExtensionFilter) {
 			String extension = ((FileNameExtensionFilter) fileFilter).getExtensions()[0];
-			if (!selectedFile.getName().toLowerCase().endsWith("." + extension.toLowerCase())) {
+			if (!selectedFile.getName().toLowerCase(Locale.ROOT).endsWith("." + extension.toLowerCase(Locale.ROOT))) {
 				return new File(selectedFile.getAbsolutePath() + "." + extension);
 			}
 		}

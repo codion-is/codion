@@ -5,18 +5,36 @@ Codion Change Log
 ### is.codion.common.utilities
 - PropertyStore.enumValue(), the property value is now upper cased under Locale.ROOT before Enum.valueOf(), an enum constant being an identifier rather than something a person reads. A value written in lower case used to fail to parse on a Turkish machine, where i upper cases to İ, taking every enum valued configuration property with it.
 - Operator, the description resource key is now derived under Locale.ROOT. IN, NOT_IN, BETWEEN_EXCLUSIVE and NOT_BETWEEN_EXCLUSIVE all contain an I, so on a Turkish machine they looked up a key that does not exist and lost their description.
+- Configuration, the classpath prefix comparisons on a configuration file path are now made under Locale.ROOT.
 ### is.codion.common.db
 - AbstractDatabase.removeUrlPrefixOptionsAndParameters() now compares under Locale.ROOT. Both sides were lower cased, which looks symmetric but is not, the prefix being a lower case literal already - an upper case url used to stop matching on a Turkish machine, where THIN lower cases to thın, leaving the dbms unrecognised.
+- AbstractDatabase, the connection pool is now keyed by a username normalised under Locale.ROOT rather than the default locale.
 ### is.codion.common.model
 - PreferencesPath now identifies the operating system under Locale.ROOT, Windows used to go undetected on a Turkish machine, where Windows lower cases to wındows, landing preferences in the wrong directory.
+- PreferencesPath, the preferences directory name is now derived under Locale.ROOT. Not a fix - "Codion" carries no upper case I, so it lower cases the same in every locale - but the idiom, so that a rename can not quietly make it one.
+### is.codion.common.rmi
+- SerializationFilterDryRun, the classpath prefix comparison on the pattern file path is now made under Locale.ROOT.
 ### is.codion.framework.domain
 - DefaultEntitySelectQuery, the guards rejecting a query fragment that repeats its own keyword now compare under Locale.ROOT. HAVING and WITH contain an I, so on a Turkish machine those two guards silently stopped firing and a malformed query was built instead of a clear error - the other four keywords contain none and were unaffected, which is the kind of partial failure that makes this hard to spot.
 ### is.codion.framework.domain.db
 - SchemaDomain now converts database identifiers under Locale.ROOT throughout. On a Turkish machine a table name containing an I came out misspelled in the entity type, views went undetected (VIEW lower cases to vıew) and audit columns went unmatched (INSERT_USER to ınsert_user), leaving them visible and writable in the generated domain.
 ### is.codion.framework.db.local
 - DefaultEntityQueries now formats numbers under Locale.ROOT. The decimal separator was being set on a copy of the format's symbols, DecimalFormat.getDecimalFormatSymbols() returning one, and never applied - so the query string, which exists to be pasted into a database client, rendered a decimal comma on any machine whose locale uses one.
+### is.codion.framework.server
+- DefaultEntityServerConfiguration, the server name is now built with the database name upper cased under Locale.ROOT. The name is what the server binds under and the client looks up, so a server and client on different locales used to be unable to find each other where the database name contained an i.
+- LocalConnectionHandler, the log identifier is now derived under Locale.ROOT.
+### is.codion.dbms.h2
+- H2Database, the set of initialised databases is now keyed by a url normalised under Locale.ROOT.
+### is.codion.plugin.jasperreports
+- FileJRReport, the http prefix comparison on the report path is now made under Locale.ROOT.
 ### is.codion.swing.common.ui
 - DefaultLoginDialogBuilder now identifies the operating system under Locale.ROOT, as PreferencesPath does.
+- ImagePane, the http prefix comparison on the image path is now made under Locale.ROOT.
+- DefaultFileSelectionDialogBuilder, the file extension comparison is now made under Locale.ROOT.
+### is.codion.swing.framework.ui
+- EntityTableExportModel, the file name suffix comparison is now made under Locale.ROOT.
+### is.codion.tools.monitor
+- SessionUserMonitor, the user hash is now derived under Locale.ROOT.
 ### is.codion.tools.generator
 - DomainSource now converts table and column names under Locale.ROOT. Those names become Java identifiers, class names and captions, so on a Turkish machine the generator emitted names containing ı and İ - wrong, and in some positions not valid Java.
 
