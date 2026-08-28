@@ -29,6 +29,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+import java.util.Locale;
+
 import static java.util.Objects.requireNonNull;
 
 final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogBuilder> implements LoginDialogBuilder {
@@ -120,7 +122,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	}
 
 	private static boolean isWindows() {
-		return System.getProperty("os.name").toLowerCase().contains("win");
+		return System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("win");
 	}
 
 	private static final class NoLoginValidation implements LoginValidator {

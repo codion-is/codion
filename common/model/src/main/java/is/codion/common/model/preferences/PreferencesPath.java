@@ -23,6 +23,8 @@ import org.jspecify.annotations.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import java.util.Locale;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -57,7 +59,7 @@ final class PreferencesPath {
 		if (PreferencesLocationHolder.LOCATION != null) {
 			return Paths.get(PreferencesLocationHolder.LOCATION, filename + JSON);
 		}
-		String osName = System.getProperty("os.name", "").toLowerCase();
+		String osName = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
 		if (osName.contains("win")) {
 			return windowsPath(filename + JSON);
 		}

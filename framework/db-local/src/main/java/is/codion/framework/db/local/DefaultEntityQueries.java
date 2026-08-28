@@ -29,12 +29,12 @@ import is.codion.framework.domain.entity.condition.Condition;
 import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static is.codion.framework.db.local.Queries.*;
@@ -45,14 +45,15 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityQueries implements EntityQueries {
 
-	private static final DecimalFormat NUMBER_FORMAT = (DecimalFormat) NumberFormat.getInstance();
+	// Locale.ROOT rather than the default locale, which is what decides the decimal separator. This renders values
+	// into a SQL string meant to be pasted into a database client, where a decimal comma is not a formatting
+	// preference but a syntax error - 1,5 is either malformed or two arguments.
+	private static final DecimalFormat NUMBER_FORMAT = (DecimalFormat) NumberFormat.getInstance(Locale.ROOT);
 
 	private static final String PLACEHOLDER = "?";
 
 	static {
 		NUMBER_FORMAT.setGroupingUsed(false);
-		DecimalFormatSymbols symbols = NUMBER_FORMAT.getDecimalFormatSymbols();
-		symbols.setDecimalSeparator('.');
 	}
 
 	private final Entities entities;
