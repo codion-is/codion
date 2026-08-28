@@ -19,7 +19,7 @@
 /**
  * Configuration values:
  * <ul>
- * <li>{@link is.codion.common.utilities.Text#COLLATOR_LANGUAGE}
+ * <li>{@link is.codion.common.utilities.Text#COLLATOR_LOCALE}
  * </ul>
  * @uses is.codion.common.utilities.dispatch.Dispatcher
  * @uses is.codion.common.utilities.logging.LoggerProxy

@@ -161,6 +161,8 @@ public sealed interface AttributeDefinition<T>
 
 	/**
 	 * Specifies the default number grouping separator
+	 * <p>Note that the default is resolved when this interface is loaded, so an application setting
+	 * {@link java.util.Locale#setDefault(java.util.Locale)} must do so before anything touches the domain.
 	 * <ul>
 	 * <li>Value type: Character
 	 * <li>Default value: The grouping separator for the default locale
@@ -171,6 +173,8 @@ public sealed interface AttributeDefinition<T>
 
 	/**
 	 * Specifies the default number decimal separator.
+	 * <p>Note that the default is resolved when this interface is loaded, so an application setting
+	 * {@link java.util.Locale#setDefault(java.util.Locale)} must do so before anything touches the domain.
 	 * <ul>
 	 * <li>Value type: Character
 	 * <li>Default value: The decimal separator for the default locale
