@@ -493,7 +493,7 @@ public final class PropertyStore {
 	 * @param formatter for specific property formatting or exclusions
 	 * @return a String containing all system properties, one per line
 	 */
-	static String systemProperties(PropertyFormatter formatter) {
+	public static String systemProperties(PropertyFormatter formatter) {
 		requireNonNull(formatter);
 		Properties properties = System.getProperties();
 

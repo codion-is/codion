@@ -12,6 +12,7 @@ Codion Change Log
 - Text.COLLATOR_LANGUAGE renamed COLLATOR_LOCALE, codion.collator.language renamed codion.collator.locale, and the value is now an IETF BCP 47 language tag parsed with Locale.forLanguageTag() rather than a language handed to the Locale constructor.
 - Text.collator() javadoc now says the locale is resolved when the class is loaded, and points at collator(Locale) for a collator in a locale of your choosing.
 - Version.versionString() no longer lower cases the version string before looking for the metadata separator.
+- PropertyStore.systemProperties(formatter) now public.
 ### is.codion.common.db
 - AbstractDatabase.removeUrlPrefixOptionsAndParameters() now compares under Locale.ROOT. Both sides were lower cased, which looks symmetric but is not, the prefix being a lower case literal already - an upper case url used to stop matching on a Turkish machine, where THIN lower cases to thın, leaving the dbms unrecognised.
 - AbstractDatabase, the connection pool is now keyed by a username normalised under Locale.ROOT rather than the default locale.
