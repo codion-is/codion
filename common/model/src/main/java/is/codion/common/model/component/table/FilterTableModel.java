@@ -23,6 +23,7 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
+import is.codion.common.utilities.Text;
 
 import org.jspecify.annotations.Nullable;
 
@@ -36,8 +37,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.model.component.table.DefaultFilterTableModel.COMPARABLE_COMPARATOR;
-import static is.codion.common.model.component.table.DefaultFilterTableModel.STRING_COMPARATOR;
+import static is.codion.common.model.component.table.DefaultFilterTableModel.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -335,11 +335,20 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		}
 
 		/**
-		 * Returns the comparator to use when comparing the values of the given column
+		 * Returns the comparator to use when comparing the values of the given column.
+		 * <p>String columns are collated according to {@link Text#COLLATOR_LOCALE}, so that a column of names sorts the
+		 * way the locale says names sort - {@link String#compareTo(String)} orders by code point, which puts every
+		 * accented character after Z and every lower case letter after every upper case one. Other {@link Comparable}
+		 * columns compare naturally, the rest by their string representation.
+		 * <p>Override to compare a column some other way, code point order included.
 		 * @param identifier the column identifier
 		 * @return a Comparator for the given column
+		 * @see Text#collator()
 		 */
 		default Comparator<?> comparator(C identifier) {
+			if (String.class.equals(columnClass(identifier))) {
+				return LEXICAL_COMPARATOR;
+			}
 			if (Comparable.class.isAssignableFrom(columnClass(identifier))) {
 				return COMPARABLE_COMPARATOR;
 			}

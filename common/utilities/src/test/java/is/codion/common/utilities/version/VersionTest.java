@@ -78,6 +78,14 @@ public final class VersionTest {
 	}
 
 	@Test
+	void versionString() {
+		// The framework version carries no metadata today, so this asserts the substring arithmetic rather than the
+		// stripping - it starts covering the strip the moment a version is tagged -SNAPSHOT or -RC1.
+		Version version = Version.version();
+		assertEquals(version.major() + "." + version.minor() + "." + version.patch(), Version.versionString());
+	}
+
+	@Test
 	void constructor() {
 		Version version = Version.builder().major(1).build();
 		assertEquals(1, version.major());

@@ -116,12 +116,10 @@ public interface Version extends Comparable<Version> {
 	 * @return a string containing the framework version number, without any version metadata (e.g. build no.)
 	 */
 	static String versionString() {
-		String versionString = versionAndMetadataString();
-		if (versionString.toLowerCase().contains("-")) {
-			return versionString.substring(0, versionString.toLowerCase().indexOf('-'));
-		}
+		String versionAndMetadata = versionAndMetadataString();
+		int metadataIndex = versionAndMetadata.indexOf('-');
 
-		return versionString;
+		return metadataIndex == -1 ? versionAndMetadata : versionAndMetadata.substring(0, metadataIndex);
 	}
 
 	/**

@@ -23,6 +23,7 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.value.AbstractValue;
+import is.codion.common.utilities.Text;
 
 import org.jspecify.annotations.Nullable;
 
@@ -50,6 +51,11 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
+
+	/**
+	 * A Comparator collating Strings according to the {@link Text#COLLATOR_LOCALE} locale.
+	 */
+	static final Comparator<String> LEXICAL_COMPARATOR = Text.collator();
 
 	/**
 	 * A Comparator for comparing {@link Comparable} instances.
