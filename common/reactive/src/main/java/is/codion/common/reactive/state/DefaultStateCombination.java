@@ -106,10 +106,10 @@ final class DefaultStateCombination implements ObservableState {
 
 		@Override
 		public void run() {
-			boolean oldValue = value;
 			boolean newValue = calculateValue();
-			if (oldValue != newValue) {
-				synchronized (updateLock) {
+			synchronized (updateLock) {
+				boolean oldValue = value;
+				if (oldValue != newValue) {
 					value = newValue;
 				}
 				observableState.notifyObservers(newValue, oldValue);

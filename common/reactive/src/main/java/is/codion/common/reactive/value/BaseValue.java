@@ -311,12 +311,12 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		private boolean locked = false;
 
 		@Override
-		public boolean is() {
+		public synchronized boolean is() {
 			return locked;
 		}
 
 		@Override
-		public void set(boolean locked) {
+		public synchronized void set(boolean locked) {
 			this.locked = locked;
 		}
 	}
