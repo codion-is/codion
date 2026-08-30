@@ -1078,8 +1078,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * instances, triggering edit events. When setting values in an entity, derived values are
 		 * set directly on the entity via {@link Entity#set(Attribute, Object)}.
 		 * <p>Propagation is transitive, a value derived for a target attribute in turn applies that attribute's
-		 * own propagators. Cycles terminate; when editing via the editor propagation stops as soon as a derived
-		 * value equals the current one, when setting values in an entity each attribute is propagated to once.
+		 * own propagators. Cycles terminate either way, but not identically. When editing via the editor,
+		 * propagation stops as soon as a derived value equals the current one, and an attribute already
+		 * propagating in the current cascade is given its derived value but propagates no further - so a pair
+		 * deriving from each other settles after one lap whether or not it ever reaches a fixpoint. When setting
+		 * values in an entity, each attribute is propagated to once, the assignment included.
 		 * {@snippet :
 		 * // Populate billing address fields when customer changes
 		 * editor().value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
