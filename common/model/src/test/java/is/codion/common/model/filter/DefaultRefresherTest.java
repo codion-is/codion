@@ -22,12 +22,55 @@ import is.codion.common.model.filter.FilterModel.Refresher;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultRefresherTest {
+
+	@Test
+	void delayDefaultsToTheConfiguredValue() {
+		assertEquals(0, Refresher.builder().items(Collections::emptyList).build().delay().getOrThrow());
+
+		FilterModel.REFRESH_DELAY.set(250);
+		try {
+			assertEquals(250, Refresher.builder().items(Collections::emptyList).build().delay().getOrThrow());
+		}
+		finally {
+			FilterModel.REFRESH_DELAY.set(0);
+		}
+	}
+
+	@Test
+	void delayRejectsNegative() {
+		Refresher<String> refresher = Refresher.<String>builder().items(Collections::emptyList).build();
+		assertThrows(IllegalArgumentException.class, () -> refresher.delay().set(-1));
+		assertEquals(0, refresher.delay().getOrThrow());
+		//null reverts to no delay rather than failing
+		refresher.delay().clear();
+		assertEquals(0, refresher.delay().getOrThrow());
+	}
+
+	@Test
+	void syncRefreshIgnoresTheDelay() {
+		//a synchronous refresh exists to be immediate and predictable, so it does not wait
+		AtomicInteger supplierCalls = new AtomicInteger();
+		Refresher<String> refresher = Refresher.<String>builder()
+						.items(() -> {
+							supplierCalls.incrementAndGet();
+
+							return asList("a", "b");
+						})
+						.build();
+		refresher.async().set(false);
+		refresher.delay().set(60_000);
+
+		refresher.refresh(null);
+		assertEquals(1, supplierCalls.get());
+		assertFalse(refresher.active().is());
+	}
 
 	@Test
 	void syncRefreshResultConsumerExceptionPropagatesNotRoutedToOnException() {

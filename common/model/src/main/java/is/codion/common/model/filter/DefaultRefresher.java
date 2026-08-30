@@ -25,6 +25,7 @@ import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.dispatch.Dispatcher;
 import is.codion.common.utilities.exceptions.Exceptions;
 
@@ -32,8 +33,14 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * The default {@link Refresher} implementation, performing an async refresh via {@link ProgressWorker} when
@@ -43,19 +50,37 @@ import java.util.function.Supplier;
  */
 final class DefaultRefresher<T> implements Refresher<T> {
 
+	//One thread for the whole JVM, it only hands the start back to a dispatch context, never blocking.
+	//Its thread starts on the first delayed refresh, not here - an application leaving delay() at zero,
+	//which is the default, never starts it, so do not prestart the core thread.
+	private static final ScheduledExecutorService SCHEDULER =
+					Executors.newSingleThreadScheduledExecutor(runnable -> {
+						Thread thread = new Thread(runnable, "RefreshScheduler");
+						thread.setDaemon(true);
+
+						return thread;
+					});
+
 	private final Event<Collection<T>> event = Event.event();
 	private final State active = State.state();
 	private final @Nullable Supplier<Collection<T>> items;
 	private final State async;
+	private final Value<Integer> delay;
 	private final @Nullable Consumer<Collection<T>> onResult;
 	private final Consumer<Exception> onException;
 
 	private @Nullable ProgressWorker<Collection<T>, ?> worker;
 	private @Nullable RefreshTask currentTask;
+	private @Nullable ScheduledRefresh scheduledRefresh;
 
 	private DefaultRefresher(DefaultBuilder<T> builder) {
 		this.items = builder.items;
 		this.async = State.state(FilterModel.ASYNC.getOrThrow());
+		this.delay = Value.builder()
+						.nonNull(0)
+						.value(FilterModel.REFRESH_DELAY.getOrThrow())
+						.validator(new DelayValidator())
+						.build();
 		this.onResult = builder.onResult;
 		this.onException = builder.onException == null ? new RethrowExceptionHandler() : builder.onException;
 	}
@@ -63,6 +88,11 @@ final class DefaultRefresher<T> implements Refresher<T> {
 	@Override
 	public State async() {
 		return async;
+	}
+
+	@Override
+	public Value<Integer> delay() {
+		return delay;
 	}
 
 	@Override
@@ -88,15 +118,33 @@ final class DefaultRefresher<T> implements Refresher<T> {
 	private void refreshAsync(@Nullable Consumer<Collection<T>> onResult) {
 		items().ifPresent(items -> {
 			cancelCurrentRefresh();
-			currentTask = new RefreshTask(items, onResult);
-			worker = ProgressWorker.builder()
-							.task(currentTask)
-							.execute();
+			int delayMillis = delay.getOrThrow();
+			if (delayMillis == 0) {
+				startRefresh(items, onResult);
+			}
+			else {
+				//the executor is resolved here, on the dispatch context this was called from, so that an
+				//implementation binding one per request or session resolves the right one
+				scheduledRefresh = new ScheduledRefresh(items, onResult, Dispatcher.instance().executor());
+				//a refresh is under way from the moment it is asked for, waiting is part of it
+				active.set(true);
+				scheduledRefresh.schedule(delayMillis);
+			}
 		});
+	}
+
+	private void startRefresh(Supplier<Collection<T>> items, @Nullable Consumer<Collection<T>> onResult) {
+		currentTask = new RefreshTask(items, onResult);
+		worker = ProgressWorker.builder()
+						.task(currentTask)
+						.execute();
 	}
 
 	private void refreshSync(@Nullable Consumer<Collection<T>> onResult) {
 		items().ifPresent(items -> {
+			//a synchronous refresh supersedes like any other: a fetch in flight or one waiting out
+			//delay() is cancelled rather than left to fetch and deliver after this one has
+			cancelCurrentRefresh();
 			active.set(true);
 			Collection<T> result;
 			try {
@@ -133,11 +181,63 @@ final class DefaultRefresher<T> implements Refresher<T> {
 	}
 
 	private void cancelCurrentRefresh() {
+		ScheduledRefresh scheduled = scheduledRefresh;
+		if (scheduled != null) {
+			scheduledRefresh = null;
+			scheduled.cancel();
+		}
 		ProgressWorker<?, ?> progressWorker = worker;
 		if (progressWorker != null) {
 			worker = null;
 			currentTask = null;
 			progressWorker.cancel(true);
+		}
+	}
+
+	/**
+	 * A refresh waiting out {@link #delay()}, replaced by each one arriving while it waits, so that a burst
+	 * results in a single fetch once they stop.
+	 */
+	private final class ScheduledRefresh implements Runnable {
+
+		private final Supplier<Collection<T>> items;
+		private final @Nullable Consumer<Collection<T>> onResult;
+		private final Executor executor;
+
+		private @Nullable ScheduledFuture<?> future;
+
+		private ScheduledRefresh(Supplier<Collection<T>> items, @Nullable Consumer<Collection<T>> onResult,
+														 Executor executor) {
+			this.items = items;
+			this.onResult = onResult;
+			this.executor = executor;
+		}
+
+		@Override
+		public void run() {
+			//on the scheduler thread, which hands the start back to the dispatch context, where
+			//ProgressWorker.execute() requires to be called
+			executor.execute(this::start);
+		}
+
+		private void schedule(int delayMillis) {
+			future = SCHEDULER.schedule(this, delayMillis, MILLISECONDS);
+		}
+
+		private void cancel() {
+			ScheduledFuture<?> scheduledFuture = future;
+			if (scheduledFuture != null) {
+				scheduledFuture.cancel(false);
+			}
+		}
+
+		private void start() {
+			//cancel() may have arrived too late to stop this one, so the identity check has the final
+			//say, as it does for a superseded RefreshTask
+			if (scheduledRefresh == this) {
+				scheduledRefresh = null;
+				startRefresh(items, onResult);
+			}
 		}
 	}
 
@@ -178,6 +278,16 @@ final class DefaultRefresher<T> implements Refresher<T> {
 				currentTask = null;
 				worker = null;
 				onRefreshException(exception);
+			}
+		}
+	}
+
+	private static final class DelayValidator implements Value.Validator<Integer> {
+
+		@Override
+		public void validate(@Nullable Integer delay) {
+			if (delay != null && delay < 0) {
+				throw new IllegalArgumentException("Refresh delay can not be negative: " + delay);
 			}
 		}
 	}

@@ -18,6 +18,11 @@
  */
 /**
  * <p>Filter model related classes.
+ * <p>Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.common.model.filter.FilterModel#ASYNC}
+ * <li>{@link is.codion.common.model.filter.FilterModel#REFRESH_DELAY}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.common.model.filter;
