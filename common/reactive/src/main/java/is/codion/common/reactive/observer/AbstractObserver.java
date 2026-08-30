@@ -117,6 +117,25 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 	}
 
 	/**
+	 * Called when this observer gains a listener while it had none, before the add returns.
+	 * <p>The hooks exist for derived observers whose subscription to their source should follow their own
+	 * listeners rather than their lifetime, {@link Conditional} being the one that does.
+	 * <p>Called while holding this observer's monitor, so that an add and the attach it triggers can not be
+	 * interleaved with a remove. The lock a hook goes on to take is always its source's, never a listener's,
+	 * so the ordering runs one way, from derived observer to source.
+	 * <p>May fire again without an intervening {@link #onLastListener()}: an add that finds nothing but
+	 * dead weak references prunes them and counts as the first. An implementation must tolerate the repeat,
+	 * as {@link Conditional}'s does, its subscription deduplicated by the source.
+	 */
+	void onFirstListener() {}
+
+	/**
+	 * Called when this observer loses its last listener, before the remove returns.
+	 * @see #onFirstListener()
+	 */
+	void onLastListener() {}
+
+	/**
 	 * Notifies all consumers and listeners
 	 * @param data the data to propagate to consumers
 	 */
@@ -138,12 +157,17 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 		if (contains(listener)) {
 			return false;
 		}
+		//contains() prunes dead weak references, so the list can be non-null and empty
+		boolean first = listeners == null || listeners.isEmpty();
 		if (listeners == null) {
 			listeners = new ArrayList<>(1);
 		}
 
 		listeners.add(listener);
 		listeners.trimToSize();
+		if (first) {
+			onFirstListener();
+		}
 
 		return true;
 	}
@@ -153,18 +177,17 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 		if (listeners == null) {
 			return false;
 		}
-		if (remove(listener, listeners.listIterator())) {
-			if (listeners.isEmpty()) {
-				listeners = null;
-			}
-			else {
-				listeners.trimToSize();
-			}
-
-			return true;
+		boolean removed = remove(listener, listeners.listIterator());
+		//emptied either by the removal or by the dead weak references it pruned along the way
+		if (listeners.isEmpty()) {
+			listeners = null;
+			onLastListener();
+		}
+		else {
+			listeners.trimToSize();
 		}
 
-		return false;
+		return removed;
 	}
 
 	private static boolean remove(Object listenerToRemove, ListIterator<Listener<?>> iterator) {

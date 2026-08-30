@@ -140,8 +140,10 @@ public interface Observer<T> {
 
 	/**
 	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with the given value
-	 * <p>Note that each call registers a new conditional observer on this observer with no removal path, so avoid
-	 * calling this repeatedly (for example per row or per component) on a long-lived observer.
+	 * <p>The conditional observer subscribes to this one only while it has listeners of its own, attaching on the
+	 * first and detaching on the last, so one that is never listened to - or whose listeners are all removed again -
+	 * leaves nothing behind on this observer. Removing the last listener is therefore how a conditional observer is
+	 * disposed of; there is nothing else to release.
 	 * @param value the value on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
@@ -152,6 +154,7 @@ public interface Observer<T> {
 	/**
 	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with a value satisfying the given predicate.
 	 * <p>The predicate is tested with each triggering value, including null, and must tolerate null input.
+	 * <p>Subscribes to this observer only while it has listeners of its own, see {@link #when(Object)}.
 	 * @param predicate the predicate on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
