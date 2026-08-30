@@ -141,6 +141,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final DefaultDetailEditors detail = new DefaultDetailEditors();
 	private final EditorPersistence persistence;
 
+	/**
+	 * True while this editor is registered as the detail editor of a master editor. Registration borrows
+	 * the editor's present predicate, validator and foreign key persistence, so it takes part in one
+	 * registration at a time — see {@link DefaultDetailEditors#add(EditorLink)}.
+	 */
+	private boolean linked;
+
 	final DefaultEditorEntity entity;
 
 	/**
@@ -1444,6 +1451,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			if (editors.containsKey(key)) {
 				throw new IllegalArgumentException("Detail editor already exists for " + key);
 			}
+			if (link.editor.linked) {
+				throw new IllegalArgumentException("Detail editor " + link.editor.entityDefinition.type() +
+								" is already registered with a master editor; a detail editor takes part in one registration");
+			}
 			editors.put(key, new DetailEditor(link, key));
 		}
 
@@ -1459,12 +1470,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void remove(ForeignKey foreignKey) {
-			editors.remove(findByForeignKey(foreignKey).key);
+			editors.remove(findByForeignKey(foreignKey).key).unlink();
 		}
 
 		@Override
 		public void remove(String name) {
-			editors.remove(findByName(name).key);
+			editors.remove(findByName(name).key).unlink();
 		}
 
 		@Override
@@ -1591,6 +1602,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	static sealed class DefaultEditorLink implements EditorLink {
 
+		private final PreventPresentModification preventPresentModification = new PreventPresentModification();
+
 		private final AbstractEntityEditor<?> editor;
 		private final String name;
 		private final String caption;
@@ -1598,6 +1611,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final DetailEntity entity;
 		private final BeforeInsert beforeInsert;
 		private final boolean clearEmpty;
+
+		private @Nullable Predicate<Entity> previousPresent;
 
 		private DefaultEditorLink(DefaultEditorLinkBuilder builder) {
 			this.editor = builder.editor;
@@ -1613,18 +1628,33 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 * Claims the detail editor's present predicate, preventing further modification.
 		 * <p>Called from {@link DetailEditors#add(EditorLink)}, not from the constructor, a link
 		 * which is built but never added must not leave the editor's predicate locked.
+		 * <p>The predicate in place at registration time is remembered, {@link #releasePresent()}
+		 * puts it back.
 		 */
 		private void claimPresent() {
-			editor.entity().present().predicate().set(present);
-			editor.entity().present().predicate().addValidator(new PreventPresentModification());
+			Value<Predicate<Entity>> predicate = editor.entity().present().predicate();
+			previousPresent = predicate.get();
+			predicate.set(present);
+			predicate.addValidator(preventPresentModification);
+		}
+
+		/**
+		 * Unlocks the detail editor's present predicate and restores the one in place before
+		 * {@link #claimPresent()}, leaving the editor as it was found.
+		 */
+		private void releasePresent() {
+			Value<Predicate<Entity>> predicate = editor.entity().present().predicate();
+			predicate.removeValidator(preventPresentModification);
+			predicate.set(previousPresent);
+			previousPresent = null;
 		}
 
 		private class PreventPresentModification implements Validator<Predicate<Entity>> {
 
 			@Override
-			public void validate(Predicate<Entity> value) {
+			public void validate(@Nullable Predicate<Entity> value) {
 				if (value != present) {
-					throw new IllegalStateException("Detail editor present predicate cannot be replaced after registration; " +
+					throw new IllegalArgumentException("Detail editor present predicate can not be replaced after registration; " +
 									"supply it via EditorLink.Builder.present() before calling DetailEditors.add()");
 				}
 			}
@@ -1883,24 +1913,81 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final R editor;
 		private final DefaultEditorLink link;
 		private final Updatable updatable = new Updatable();
+		private final Runnable refreshStates = this::refreshStates;
 		private final LinkKey key;
+
+		private final PreventValidatorModification preventValidatorModification = new PreventValidatorModification();
+		private final PreventPersistModification preventPersistModification = new PreventPersistModification();
+
+		private @Nullable EntityValidator previousValidator;
+		private boolean previousPersist;
 
 		@SuppressWarnings("unchecked")
 		private DetailEditor(DefaultEditorLink link, LinkKey key) {
 			this.editor = (R) link.editor;
 			this.link = link;
 			this.key = key;
-			link.claimPresent();
+			link();
+		}
+
+		/**
+		 * Applies the framework-managed declarations to the detail editor, remembering what each replaces,
+		 * so {@link #unlink()} can hand the editor back in the state it was in when it was registered.
+		 * <p>The claims write to values the application can have put validators on, so any of them can
+		 * throw; what was claimed by then is released again, a registration that could not complete
+		 * leaves the editor as it was found and registrable elsewhere.
+		 */
+		private void link() {
+			if (link instanceof ForeignKeyEditorLink) {
+				//captured before anything is written, so a failure below hands back exactly what was found
+				previousValidator = editor.validator().getOrThrow();
+				previousPersist = editor.value(((DefaultForeignKeyEditorLink) link).foreignKey()).persist().is();
+			}
+			link.editor.linked = true;
+			try {
+				link.claimPresent();
+				if (link instanceof ForeignKeyEditorLink) {
+					ForeignKey foreignKey = ((DefaultForeignKeyEditorLink) link).foreignKey();
+					editor.validator().set(new DetailForeignKeyValidator(editor.validator().getOrThrow(),
+									foreignKey, editor.entity().present()));
+					editor.validator().addValidator(preventValidatorModification);
+					State persist = editor.value(foreignKey).persist();
+					persist.set(false);
+					persist.addValidator(preventPersistModification);
+				}
+				editor.values().changed().addListener(refreshStates);
+				editor.entity().replaced().addListener(refreshStates);
+				editor.entity().modified().addListener(refreshStates);
+				entity().modified().additional().add(updatable);
+			}
+			catch (RuntimeException e) {
+				//unlink() tolerates the parts never reached, releasing a claim is a no-op where
+				//the claim was never made
+				unlink();
+				throw e;
+			}
+		}
+
+		/**
+		 * Reverses {@link #link()}, detaching the listeners and putting back the present predicate,
+		 * validator and foreign key persistence in place when the detail editor was registered.
+		 */
+		private void unlink() {
+			link.editor.linked = false;
+			link.releasePresent();
 			if (link instanceof ForeignKeyEditorLink) {
 				ForeignKey foreignKey = ((DefaultForeignKeyEditorLink) link).foreignKey();
-				editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey, editor.entity().present()));
-				editor.validator().addValidator(new PreventValidatorModification());
-				editor.value(foreignKey).persist().set(false);
+				editor.validator().removeValidator(preventValidatorModification);
+				editor.validator().set(previousValidator);
+				previousValidator = null;
+				State persist = editor.value(foreignKey).persist();
+				persist.removeValidator(preventPersistModification);
+				persist.set(previousPersist);
 			}
-			editor.values().changed().addListener(this::refreshStates);
-			editor.entity().replaced().addListener(this::refreshStates);
-			editor.entity().modified().addListener(this::refreshStates);
-			entity().modified().additional().add(updatable);
+			editor.values().changed().removeListener(refreshStates);
+			editor.entity().replaced().removeListener(refreshStates);
+			editor.entity().modified().removeListener(refreshStates);
+			entity().modified().additional().remove(updatable);
 		}
 
 		private void refreshStates() {
@@ -1957,12 +2044,23 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
+	private static final class PreventPersistModification implements Validator<Boolean> {
+
+		@Override
+		public void validate(@Nullable Boolean persist) {
+			if (Boolean.TRUE.equals(persist)) {
+				throw new IllegalArgumentException("A detail editor's master foreign key is framework-managed and can not be made persistent; " +
+								"it is populated from the master during persistence");
+			}
+		}
+	}
+
 	private static final class PreventValidatorModification implements Validator<EntityValidator> {
 
 		@Override
 		public void validate(@Nullable EntityValidator validator) {
 			if (!(validator instanceof DetailForeignKeyValidator)) {
-				throw new IllegalArgumentException("Detail editor validator cannot be replaced after registration; " +
+				throw new IllegalArgumentException("Detail editor validator can not be replaced after registration; " +
 								"set a custom validator before calling DetailEditors.add()");
 			}
 		}

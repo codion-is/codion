@@ -19,6 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
@@ -308,7 +310,11 @@ public final class AbstractEntityEditorTest {
 		assertNull(employeeEditor.value(Employee.SALARY).get());
 		// Master's modified().additional() contains the detail's updatable state
 		assertFalse(departmentEditor.entity().modified().additional().get().isEmpty());
+		// The three framework-managed declarations are locked, all three rejecting with the
+		// IllegalArgumentException a Value validator is contracted to throw
 		assertThrows(IllegalArgumentException.class, () -> employeeEditor.validator().set(new EntityValidator() {}));
+		assertThrows(IllegalArgumentException.class, () -> employeeEditor.entity().present().predicate().set(entity -> true));
+		assertThrows(IllegalArgumentException.class, () -> employeeEditor.value(Employee.DEPARTMENT_FK).persist().set(true));
 	}
 
 	@Test
@@ -1581,6 +1587,146 @@ public final class AbstractEntityEditorTest {
 		Predicate<Entity> present = employee -> employee.present(Employee.SALARY);
 		employeeEditor.entity().present().predicate().set(present);
 		assertSame(present, employeeEditor.entity().present().predicate().get());
+	}
+
+	@Test
+	void detailEditorRemovalUnlinks() {
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+
+		// The configuration the editor carries before registration, all three of which registration replaces
+		Predicate<Entity> present = employee -> employee.present(Employee.NAME);
+		employeeEditor.entity().present().predicate().set(present);
+		EntityValidator validator = new SalaryValidator();
+		employeeEditor.validator().set(validator);
+		assertTrue(employeeEditor.value(Employee.DEPARTMENT_FK).persist().is());
+
+		departmentEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build());
+
+		assertSame(EMPLOYEE_PRESENT, employeeEditor.entity().present().predicate().get());
+		assertInstanceOf(DetailForeignKeyValidator.class, employeeEditor.validator().get());
+		assertFalse(employeeEditor.value(Employee.DEPARTMENT_FK).persist().is());
+		assertFalse(departmentEditor.entity().modified().additional().get().isEmpty());
+		// The master foreign key is framework-managed while registered, its persistence is locked false
+		assertThrows(IllegalArgumentException.class, () -> employeeEditor.value(Employee.DEPARTMENT_FK).persist().set(true));
+		assertDoesNotThrow(() -> employeeEditor.value(Employee.DEPARTMENT_FK).persist().set(false));
+
+		departmentEditor.detail().remove(Employee.DEPARTMENT_FK);
+
+		assertThrows(IllegalArgumentException.class, () -> departmentEditor.detail().get(Employee.DEPARTMENT_FK));
+		// Restored, not merely dropped — the pre-registration configuration is back
+		assertSame(present, employeeEditor.entity().present().predicate().get());
+		assertSame(validator, employeeEditor.validator().get());
+		assertTrue(employeeEditor.value(Employee.DEPARTMENT_FK).persist().is());
+		assertTrue(departmentEditor.entity().modified().additional().get().isEmpty());
+
+		// and unlocked, all three locks released
+		Predicate<Entity> replacement = employee -> employee.present(Employee.SALARY);
+		employeeEditor.entity().present().predicate().set(replacement);
+		assertSame(replacement, employeeEditor.entity().present().predicate().get());
+		EntityValidator replacementValidator = new EntityValidator() {};
+		employeeEditor.validator().set(replacementValidator);
+		assertSame(replacementValidator, employeeEditor.validator().get());
+		employeeEditor.value(Employee.DEPARTMENT_FK).persist().set(true);
+		assertTrue(employeeEditor.value(Employee.DEPARTMENT_FK).persist().is());
+
+		// The listeners are detached, the master no longer hears the detail
+		employeeEditor.value(Employee.NAME).set("Name");
+		assertFalse(departmentEditor.entity().modified().attributes().get().contains(Employee.NAME));
+
+		// and the editor can be registered again
+		departmentEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build());
+		assertSame(EMPLOYEE_PRESENT, employeeEditor.entity().present().predicate().get());
+		assertInstanceOf(DetailForeignKeyValidator.class, employeeEditor.validator().get());
+		assertFalse(employeeEditor.value(Employee.DEPARTMENT_FK).persist().is());
+	}
+
+	@Test
+	void failedRegistrationLeavesNothingBehind() {
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		Predicate<Entity> present = employee -> employee.present(Employee.NAME);
+		employeeEditor.entity().present().predicate().set(present);
+		EntityValidator validator = new SalaryValidator();
+		employeeEditor.validator().set(validator);
+		State persist = employeeEditor.value(Employee.DEPARTMENT_FK).persist();
+		assertTrue(persist.is());
+		//an application validator on a framework-managed value makes the registration fail halfway,
+		//after the present predicate has been claimed and the validator wrapped
+		Value.Validator<Boolean> rejectFalse = value -> {
+			if (Boolean.FALSE.equals(value)) {
+				throw new IllegalArgumentException("no false");
+			}
+		};
+		persist.addValidator(rejectFalse);
+
+		assertThrows(IllegalArgumentException.class, () -> departmentEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build()));
+
+		//the failed registration left nothing behind - not registered, nothing claimed, nothing locked
+		assertThrows(IllegalArgumentException.class, () -> departmentEditor.detail().get(Employee.DEPARTMENT_FK));
+		assertSame(present, employeeEditor.entity().present().predicate().get());
+		assertSame(validator, employeeEditor.validator().get());
+		assertTrue(persist.is());
+		assertTrue(departmentEditor.entity().modified().additional().get().isEmpty());
+
+		//and the editor is registrable once the obstacle is gone
+		persist.removeValidator(rejectFalse);
+		assertDoesNotThrow(() -> departmentEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build()));
+	}
+
+	@Test
+	void editorLinkRegistersOnce() {
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor otherDepartmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		EditorLink link = EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build();
+		departmentEditor.detail().add(link);
+
+		// Registering the same link with the same master collides on the link key, the more specific error
+		assertTrue(assertThrows(IllegalArgumentException.class, () -> departmentEditor.detail().add(link))
+						.getMessage().contains("already exists"));
+
+		// Registering it with a second master of the same type would otherwise silently share one detail
+		// editor between two masters, each claiming its present predicate and validator
+		assertTrue(assertThrows(IllegalArgumentException.class, () -> otherDepartmentEditor.detail().add(link))
+						.getMessage().contains("already registered"));
+		// The rejected registration left nothing behind
+		assertTrue(otherDepartmentEditor.entity().modified().additional().get().isEmpty());
+		assertSame(EMPLOYEE_PRESENT, employeeEditor.entity().present().predicate().get());
+
+		// A distinct link wrapping the same detail editor is rejected too — the present lock alone
+		// would not catch it, it compares predicate instances and these two share one
+		EditorLink second = EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build();
+		assertTrue(assertThrows(IllegalArgumentException.class, () -> otherDepartmentEditor.detail().add(second))
+						.getMessage().contains("already registered"));
+
+		// Released by removal, the link is registrable again
+		departmentEditor.detail().remove(Employee.DEPARTMENT_FK);
+		assertDoesNotThrow(() -> otherDepartmentEditor.detail().add(link));
 	}
 
 	private static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {

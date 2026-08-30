@@ -990,6 +990,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * <p>Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.
+		 * <p>For the master foreign key of a detail editor registered via
+		 * {@link DetailEditors#add(EditorLink)} this state is framework-managed: it is held false and
+		 * locked for as long as the editor is registered.
 		 * @return a {@link State} controlling whether the given attribute value should persist when defaults are set
 		 * @see EditorEntity#defaults()
 		 * @see EntityEditor#PERSIST_FOREIGN_KEYS
@@ -1169,8 +1172,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * <p>When the link is a {@link ForeignKeyEditorLink}, the foreign key to the master is
 	 * declared <em>framework-managed</em> via three coordinated configurations on the detail editor:
 	 * <ul>
-	 * <li>The foreign key value is not reset by defaults — its {@link EditorValue#persist()} is set to false,
-	 *     so it survives {@link EditorEntity#defaults()}.
+	 * <li>The foreign key value is not reset by defaults — its {@link EditorValue#persist()} is set to false
+	 *     and locked, so it survives {@link EditorEntity#defaults()}.
 	 * <li>The detail editor's validator is wrapped so a null foreign key is silently accepted during validation.
 	 *     This applies both to the reactive {@link EditorEntity#valid()} state (for UI binding) and to the validation gate
 	 *     in {@link EditorTasks#insert(java.util.function.Consumer)} (which must throw synchronously, before
@@ -1207,6 +1210,13 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * at registration time via {@link EditorLink.Builder#present(Predicate)}. A detail that is present but
 	 * does not yet exist triggers an insert. A detail that exists but is no longer present triggers a
 	 * delete. A detail that exists, is present, and is modified triggers an update.
+	 *
+	 * <h2>Removal</h2>
+	 * <p>Registration reaches into the detail editor, so {@link #remove(ForeignKey)} and {@link #remove(String)}
+	 * reach back in and undo it: the listeners are detached and the present predicate, the validator and the
+	 * foreign key's {@link EditorValue#persist() persistence} are restored to what they were at registration
+	 * time, all three unlocked again. A removed detail editor is left as it was found and can be used standalone
+	 * or registered elsewhere. Its entity is <em>not</em> reset — removal restores configuration, not content.
 	 * @param <R> {@link EntityEditor} type
 	 * @see #detail()
 	 * @see EditorLink
@@ -1220,10 +1230,12 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * condition-based links no automatic FK management is applied — the user-supplied
 		 * {@link EditorLink.DetailCondition load condition} and
 		 * {@link EditorLink.BeforeInsert beforeInsert} drive the relationship.
+		 * <p>A link describes a single registration and can not be reused — build one per registration.
 		 * @param link the detail editor link
 		 * @throws IllegalArgumentException if a detail editor with the same name is already registered,
-		 * or, for an FK-based link, if the foreign key's referenced or owning entity types
-		 * don't match the master and detail editors respectively
+		 * if the link is already registered with a master editor, or, for an FK-based link, if the
+		 * foreign key's referenced or owning entity types don't match the master and detail editors
+		 * respectively
 		 * @see EditorLink#builder()
 		 */
 		void add(EditorLink link);
@@ -1250,7 +1262,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		R get(String name);
 
 		/**
-		 * Removes the detail editor associated with the given foreign key from this {@link EntityEditor} instance
+		 * <p>Removes the detail editor associated with the given foreign key from this {@link EntityEditor} instance,
+		 * leaving it in the state it was in when it was registered, see the class javadoc.
 		 * @param foreignKey the foreign key
 		 * @throws IllegalArgumentException in case no detail editor is associated with the given foreign key
 		 * @throws IllegalStateException if multiple detail editors are registered for it
@@ -1258,7 +1271,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		void remove(ForeignKey foreignKey);
 
 		/**
-		 * Removes the detail editor associated with the given name from this {@link EntityEditor} instance
+		 * <p>Removes the detail editor associated with the given name from this {@link EntityEditor} instance,
+		 * leaving it in the state it was in when it was registered, see the class javadoc.
 		 * @param name the name
 		 * @throws IllegalArgumentException in case no detail editor is associated with the given name
 		 * @throws IllegalStateException if multiple detail editors share the name

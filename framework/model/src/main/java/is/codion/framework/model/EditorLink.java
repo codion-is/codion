@@ -36,7 +36,8 @@ import java.util.function.Predicate;
  * one-to-one entity composition.
  *
  * <p>An {@link EditorLink} is constructed via the {@link #builder()} factory and registered with
- * a master editor through {@link EntityEditor.DetailEditors#add(EditorLink)}.
+ * a master editor through {@link EntityEditor.DetailEditors#add(EditorLink)}. A link describes a
+ * single registration — registering the same instance twice is rejected, build one per registration.
  *
  * <p>Two flavors are supported:
  * <ul>
