@@ -38,6 +38,8 @@ Codion Change Log
 - EntityEditor.EditorValue.persist() is now locked false for the master foreign key of a registered detail editor.
 - EntityEditor.DetailEditors.add() now rejects a detail editor already registered with a master editor.
 - AbstractEntityEditor.PreventPresentModification now throws IllegalArgumentException rather than IllegalStateException.
+- AbstractEntityEditor.DetailForeignKeyValidator now delegates EntityValidator.warning(), which it overrode by omission, dropping a registered detail editor's warnings, and suppresses warnings while the detail is not present.
+- AbstractEntityEditor.updateStates() now recomputes warnings after updating present() rather than before, so a detail editor's warnings no longer lag an edit by one.
 ### is.codion.dbms.h2
 - H2Database, the set of initialised databases is now keyed by a url normalised under Locale.ROOT.
 ### is.codion.plugin.jasperreports

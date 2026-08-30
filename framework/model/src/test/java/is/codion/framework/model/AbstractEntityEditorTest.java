@@ -1650,6 +1650,50 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void detailEditorWarnings() {
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		employeeEditor.validator().set(new SalaryValidator());
+		EditorValue<Double> salary = employeeEditor.value(Employee.SALARY);
+		employeeEditor.value(Employee.NAME).set("Name");
+		salary.set(4_000d);
+		assertTrue(salary.warned().is());
+		assertEquals("Unusually high", salary.warning().get());
+
+		departmentEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build());
+
+		// Registration wraps the validator, which used to drop its warnings on the floor, the wrapper
+		// implementing EntityValidator without delegating warning()
+		salary.set(4_100d);
+		assertTrue(employeeEditor.entity().present().is());
+		assertTrue(salary.warned().is());
+		assertEquals("Unusually high", salary.warning().get());
+
+		// Absent, the detail row is not going to exist, so there is nothing to warn about. Cleared in
+		// the same edit that made it absent, warnings being recomputed after present()
+		employeeEditor.value(Employee.NAME).set(null);
+		assertFalse(employeeEditor.entity().present().is());
+		assertFalse(salary.warned().is());
+		assertNull(salary.warning().get());
+
+		// and back, in the edit that makes it present again
+		employeeEditor.value(Employee.NAME).set("Name");
+		assertTrue(employeeEditor.entity().present().is());
+		assertTrue(salary.warned().is());
+		assertEquals("Unusually high", salary.warning().get());
+
+		// Removal hands the validator back, warnings with it
+		departmentEditor.detail().remove(Employee.DEPARTMENT_FK);
+		salary.set(4_200d);
+		assertTrue(salary.warned().is());
+		assertEquals("Unusually high", salary.warning().get());
+	}
+
+	@Test
 	void failedRegistrationLeavesNothingBehind() {
 		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
 		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
