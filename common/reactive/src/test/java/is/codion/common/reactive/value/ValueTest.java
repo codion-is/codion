@@ -20,11 +20,14 @@ package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value.Notify;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,6 +36,7 @@ import java.util.function.UnaryOperator;
 
 import static is.codion.common.reactive.observer.Change.change;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueTest {
@@ -404,6 +408,205 @@ public class ValueTest {
 		assertEquals(7, value3.get());
 		//a genuine transitive cycle is still detected
 		assertThrows(IllegalStateException.class, () -> value2.link(value3));
+	}
+
+	@Test
+	void linkValidationDoesNotCompound() {
+		//one set validates both ends twice each, and that is the design: the bridge runs the far end's
+		//validators before anything is written, so a value one end rejects moves neither, and the write
+		//then propagates as a real set, which validates the far end again on its own terms.
+		//A validator may carry side effects, so the bridge skips the partner bridge that would walk
+		//straight back into the validators the set is already running - without that it would be three
+		Value<Integer> linked = Value.nullable();
+		Value<Integer> original = Value.nullable();
+		AtomicInteger linkedValidations = new AtomicInteger();
+		AtomicInteger originalValidations = new AtomicInteger();
+		linked.addValidator(value -> linkedValidations.incrementAndGet());
+		original.addValidator(value -> originalValidations.incrementAndGet());
+		linked.link(original);
+		linkedValidations.set(0);
+		originalValidations.set(0);
+
+		linked.set(1);
+		assertEquals(2, linkedValidations.get());
+		assertEquals(2, originalValidations.get());
+
+		original.set(2);
+		assertEquals(4, linkedValidations.get());
+		assertEquals(4, originalValidations.get());
+	}
+
+	@Test
+	void linkDiamond() {
+		//a diamond: d mirrors both b and c, which both mirror a. Two shapes meet here that a chain does not
+		//reach - the cycle walk arrives at a by two paths, and so does the validator bridge, which used to
+		//recurse between the two until the stack gave out
+		Value<Integer> a = Value.nullable();
+		Value<Integer> b = Value.nullable();
+		Value<Integer> c = Value.nullable();
+		Value<Integer> d = Value.nullable();
+		b.link(a);
+		c.link(a);
+		d.link(b);
+		assertDoesNotThrow(() -> d.link(c));
+
+		Value<Integer> e = Value.nullable();
+		assertDoesNotThrow(() -> e.link(d));
+		a.set(7);
+		assertEquals(7, e.get());
+
+		//every validator in the graph still runs, from either end
+		a.addValidator(value -> {
+			if (value != null && value == 13) {
+				throw new IllegalArgumentException("no 13");
+			}
+		});
+		assertThrows(IllegalArgumentException.class, () -> e.set(13));
+		assertThrows(IllegalArgumentException.class, () -> a.set(13));
+		assertEquals(7, a.get());
+		assertEquals(7, e.get());
+
+		//and a genuine cycle back into the diamond is still caught
+		assertThrows(IllegalStateException.class, () -> a.link(e));
+	}
+
+	@Test
+	void collectionValuesAreLinkedLikeAnyOther() {
+		//ValueList and ValueSet extend BaseValue without going through AbstractValue, and the link guards
+		//used to test for AbstractValue - so collection values got neither cycle detection nor validator
+		//bridging, and a rejected write left the pair diverged
+		ValueSet<String> original = ValueSet.valueSet();
+		ValueSet<String> linked = ValueSet.valueSet();
+		original.addValidator(values -> {
+			if (values != null && values.contains("x")) {
+				throw new IllegalArgumentException("no x");
+			}
+		});
+		linked.link(original);
+
+		//the far end's validator refuses before either end is written
+		assertThrows(IllegalArgumentException.class, () -> linked.set(singleton("x")));
+		assertTrue(linked.get().isEmpty());
+		assertTrue(original.get().isEmpty());
+		assertEquals(linked.get(), original.get());
+
+		//and they still behave as one value
+		linked.add("a");
+		assertEquals(singleton("a"), original.get());
+		original.add("b");
+		assertEquals(new HashSet<>(asList("a", "b")), linked.get());
+
+		//cycles are detected here too
+		ValueSet<String> one = ValueSet.valueSet();
+		ValueSet<String> two = ValueSet.valueSet();
+		two.link(one);
+		assertThrows(IllegalStateException.class, () -> one.link(two));
+	}
+
+	@Test
+	void linkForeignValue() {
+		//a Value implemented outside the framework keeps its validators to itself, so the bridge goes
+		//through the public validate() gate rather than reaching in - the invariant it exists for holds
+		//either way: neither end is written when the other refuses
+		ForeignValue<String> foreign = new ForeignValue<>();
+		foreign.addValidator(value -> {
+			if ("x".equals(value)) {
+				throw new IllegalArgumentException("no x");
+			}
+		});
+		Value<String> value = Value.nullable();
+		assertDoesNotThrow(() -> value.link(foreign));
+
+		//they behave as one value
+		value.set("a");
+		assertEquals("a", foreign.get());
+		foreign.set("b");
+		assertEquals("b", value.get());
+
+		//and the far end refuses before either moves
+		assertThrows(IllegalArgumentException.class, () -> value.set("x"));
+		assertEquals("b", value.get());
+		assertEquals("b", foreign.get());
+	}
+
+	/**
+	 * A {@link Value} from outside the framework: it implements the interface without extending
+	 * {@link AbstractValue}, so none of the link machinery can reach into it. Delegation rather than a
+	 * from-scratch implementation, so it behaves like a real one.
+	 */
+	private static final class ForeignValue<T> implements Value<T> {
+
+		private final Value<T> delegate = Value.nullable();
+
+		@Override
+		public @Nullable T get() {
+			return delegate.get();
+		}
+
+		@Override
+		public boolean isNullable() {
+			return delegate.isNullable();
+		}
+
+		@Override
+		public Observer<T> observer() {
+			return delegate.observer();
+		}
+
+		@Override
+		public void set(@Nullable T value) {
+			delegate.set(value);
+		}
+
+		@Override
+		public void clear() {
+			delegate.clear();
+		}
+
+		@Override
+		public Observable<T> observable() {
+			return delegate.observable();
+		}
+
+		@Override
+		public Locked locked() {
+			return delegate.locked();
+		}
+
+		@Override
+		public void link(Value<T> originalValue) {
+			delegate.link(originalValue);
+		}
+
+		@Override
+		public void unlink(Value<T> originalValue) {
+			delegate.unlink(originalValue);
+		}
+
+		@Override
+		public void link(Observable<T> observable) {
+			delegate.link(observable);
+		}
+
+		@Override
+		public void unlink(Observable<T> observable) {
+			delegate.unlink(observable);
+		}
+
+		@Override
+		public boolean addValidator(Validator<? super T> validator) {
+			return delegate.addValidator(validator);
+		}
+
+		@Override
+		public boolean removeValidator(Validator<? super T> validator) {
+			return delegate.removeValidator(validator);
+		}
+
+		@Override
+		public void validate(@Nullable T value) {
+			delegate.validate(value);
+		}
 	}
 
 	@Test
