@@ -1489,6 +1489,7 @@ public final class AbstractEntityEditorTest {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		EditorValue<Double> salary = editor.value(Employee.SALARY);
 		EditorValue<Integer> manager = editor.value(Employee.MANAGER_ID);
+		//a cycle that converges, the second lap derives the value already there and stops on the equality check
 		salary.propagate(Employee.MANAGER_ID, value -> value == null ? null : value.intValue());
 		manager.propagate(Employee.SALARY, value -> value == null ? null : value.doubleValue());
 
@@ -1497,6 +1498,38 @@ public final class AbstractEntityEditorTest {
 
 		manager.set(20);
 		assertEquals(20d, salary.get());
+	}
+
+	@Test
+	void propagateDivergentCycle() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		EditorValue<Double> salary = editor.value(Employee.SALARY);
+		EditorValue<Integer> manager = editor.value(Employee.MANAGER_ID);
+		//a cycle that does not converge, every lap moves both values, so the equality check propagateCycle()
+		//rests on never fires and only the re-entrancy guard ends this
+		salary.propagate(Employee.MANAGER_ID, value -> value == null ? null : value.intValue() + 1);
+		manager.propagate(Employee.SALARY, value -> value == null ? null : value.doubleValue() + 1);
+
+		//one lap: 10 derives a manager of 11, which derives a salary of 12, which goes no further
+		salary.set(10d);
+		assertEquals(11, manager.get());
+		assertEquals(12d, salary.get());
+
+		//and one lap from the other end
+		manager.set(20);
+		assertEquals(21d, salary.get());
+		assertEquals(22, manager.get());
+	}
+
+	@Test
+	void propagateDivergentSelf() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		EditorValue<String> name = editor.value(Employee.NAME);
+		//the smallest cycle there is, and unlike propagateSelf() not idempotent
+		name.propagate(Employee.NAME, value -> value == null ? null : value + "!");
+
+		name.set("John");
+		assertEquals("John!", name.get());
 	}
 
 	@Test

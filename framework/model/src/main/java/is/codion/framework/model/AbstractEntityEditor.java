@@ -342,6 +342,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 * <p>Disabling makes detail loading synchronous as well, so the full detail subtree is in place before
 	 * the operation returns. This is useful in tests, or when subsequent logic must observe the loaded
 	 * detail subtree immediately rather than after {@link EditorEntity#observer() changed} fires.
+	 * <p>The window this opens belongs to the detail editors. Until the load lands they still hold the
+	 * outgoing master's detail, and whatever they hold is replaced when it does — an edit made in a detail
+	 * editor while its master's load is in flight is overwritten, not merged. The master's own values are
+	 * not re-applied, so an edit made there survives.
 	 * @return the {@link State} controlling whether detail editors are loaded asynchronously
 	 * @see #ASYNC
 	 */
@@ -2495,6 +2499,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final Value<Supplier<@Nullable T>> defaultValue;
 		private final Map<Attribute<?>, Function<@Nullable T, ?>> propagators = new HashMap<>();
 
+		private boolean propagating;
+
 		private DefaultEditorValue(Attribute<T> attribute) {
 			super(nullValue(entityDefinition.attributes().definition(attribute)));
 			this.attribute = attribute;
@@ -2628,7 +2634,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			T previousValue = entity.instance.set(attribute, value);
 			if (!Objects.deepEquals(value, previousValue)) {
 				notifyValueEdit(attribute, value, dependingValues);
-				//propagating an unchanged value is a no-op, and propagators forming a cycle never terminate
+				//an unchanged value is not propagated, which settles a cycle that converges;
+				//one that does not is stopped by propagate() itself
 				propagate();
 			}
 		}
@@ -2647,9 +2654,25 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			propagate();
 		}
 
+		/**
+		 * Applies this value's propagators, transitively, guarding against a cycle that never reaches a fixpoint.
+		 * <p>Re-entering an attribute already propagating further up the cascade returns without propagating
+		 * again. The derived value it was just given stands - it is a real value, derived by a real propagator -
+		 * it simply goes no further. A pair deriving from each other therefore settles after one lap rather than
+		 * recursing until the stack gives out.
+		 */
 		private void propagate() {
-			propagators.forEach((attr, deriver) ->
-							value((Attribute<Object>) attr).set(deriver.apply(entity.instance.get(attribute))));
+			if (propagating) {
+				return;
+			}
+			propagating = true;
+			try {
+				propagators.forEach((attr, deriver) ->
+								value((Attribute<Object>) attr).set(deriver.apply(entity.instance.get(attribute))));
+			}
+			finally {
+				propagating = false;
+			}
 		}
 
 		private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
