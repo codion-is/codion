@@ -31,6 +31,7 @@ import java.util.function.UnaryOperator;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
+import static java.util.Objects.deepEquals;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseValue<C> implements ValueCollection<T, C> {
@@ -189,9 +190,29 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	@Override
 	public final synchronized void sort(Comparator<? super T> comparator) {
 		requireNonNull(comparator);
-		List<T> list = new ArrayList<>(getOrThrow());
-		list.sort(comparator);
-		set(list);
+		C previous = getOrThrow();
+		List<T> sorted = new ArrayList<>(previous);
+		sorted.sort(comparator);
+		set(sorted);
+		C current = getOrThrow();
+		//set() notifies on a change, and equality can miss a reorder entirely - Set equality ignores
+		//item order. Sorting is the one mutation whose whole purpose is a change equality may not see,
+		//so where it is missed the sort announces itself.
+		if (deepEquals(previous, current) && !sameOrder(previous, current)) {
+			notifyObserver();
+		}
+	}
+
+	private static boolean sameOrder(Collection<?> previous, Collection<?> current) {
+		Iterator<?> previousItems = previous.iterator();
+		Iterator<?> currentItems = current.iterator();
+		while (previousItems.hasNext() && currentItems.hasNext()) {
+			if (!deepEquals(previousItems.next(), currentItems.next())) {
+				return false;
+			}
+		}
+
+		return !previousItems.hasNext() && !currentItems.hasNext();
 	}
 
 	@Override
@@ -209,10 +230,30 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 		return (ObservableValueCollection<T, C>) super.observable();
 	}
 
+	/**
+	 * The {@link ValueCollection#value()} projection: the first item, or null when empty.
+	 * <p>A no-notify {@link AbstractValue}, so the collection listener below is its only notification
+	 * source, and the last notified item is remembered so that the projection notifies when it moves
+	 * rather than whenever the collection changes underneath it.
+	 */
 	private final class SingleValue extends AbstractValue<T> {
 
+		private @Nullable T notified;
+
 		private SingleValue() {
-			AbstractValueCollection.this.addListener(this::notifyObserver);
+			notified = getValue();
+			AbstractValueCollection.this.addListener(this::onCollectionChanged);
+		}
+
+		private void onCollectionChanged() {
+			synchronized (AbstractValueCollection.this) {
+				T current = getValue();
+				if (deepEquals(notified, current)) {
+					return;
+				}
+				notified = current;
+			}
+			notifyObserver();
 		}
 
 		@Override

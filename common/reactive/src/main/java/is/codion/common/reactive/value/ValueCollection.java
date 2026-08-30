@@ -122,7 +122,8 @@ public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, O
 	ObservableValueCollection<T, C> observable();
 
 	/**
-	 * Note that the underlying collection may not preserve the item order.
+	 * <p>Sorts the items according to the given comparator, notifying observers if the order changed.
+	 * <p>Note that the underlying collection may not preserve the item order.
 	 * Refer to the implementation javadocs for details.
 	 * @param comparator the comparator to use to sort
 	 */

@@ -146,6 +146,61 @@ public class ValueListTest {
 	}
 
 	@Test
+	void valueProjectionNotifiesOnMove() {
+		ValueList<Integer> list = ValueList.valueList();
+		Value<Integer> value = list.value();
+		AtomicInteger counter = new AtomicInteger();
+		value.addListener(counter::incrementAndGet);
+
+		//the projection is the first item, so appending past it moves nothing
+		list.add(1);
+		assertEquals(1, value.get());
+		assertEquals(1, counter.get());
+		list.add(2);
+		list.add(3);
+		assertEquals(1, value.get());
+		assertEquals(1, counter.get());
+
+		//removing something else still moves nothing
+		assertTrue(list.remove(2));
+		assertEquals(1, value.get());
+		assertEquals(1, counter.get());
+
+		//removing the first item does
+		assertTrue(list.remove(1));
+		assertEquals(3, value.get());
+		assertEquals(2, counter.get());
+
+		//as does a reorder that puts something else in front
+		list.sort(comparing(Integer::intValue).reversed());
+		assertEquals(3, value.get());
+		assertEquals(2, counter.get());
+		list.add(9);
+		list.sort(comparing(Integer::intValue).reversed());
+		assertEquals(9, value.get());
+		assertEquals(3, counter.get());
+
+		//and emptying it
+		list.clear();
+		assertNull(value.get());
+		assertEquals(4, counter.get());
+	}
+
+	@Test
+	void valueProjectionStartsFromTheCurrentItem() {
+		//value() is created lazily, so the projection must start out holding what it already projects,
+		//or the first mutation that leaves the item alone would look like a move
+		ValueList<Integer> list = ValueList.valueList();
+		list.addAll(1, 2);
+		AtomicInteger counter = new AtomicInteger();
+		list.value().addListener(counter::incrementAndGet);
+
+		list.add(3);
+		assertEquals(1, list.value().get());
+		assertEquals(0, counter.get());
+	}
+
+	@Test
 	void sort() {
 		AtomicInteger counter = new AtomicInteger();
 		Runnable listener = counter::incrementAndGet;
