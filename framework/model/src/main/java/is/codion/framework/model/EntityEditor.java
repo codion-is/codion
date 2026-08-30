@@ -1177,7 +1177,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * <li>The detail editor's validator is wrapped so a null foreign key is silently accepted during validation.
 	 *     This applies both to the reactive {@link EditorEntity#valid()} state (for UI binding) and to the validation gate
 	 *     in {@link EditorTasks#insert(java.util.function.Consumer)} (which must throw synchronously, before
-	 *     the framework has populated the foreign key). The wrapped validator is locked to prevent replacement.
+	 *     the framework has populated the foreign key). The wrapper also silences validation and
+	 *     {@link EntityValidator#warning(Entity, Attribute) warnings}
+	 *     entirely while the detail is not {@link EditorEntity#present() present}, there being nothing to say about a
+	 *     row that is not going to exist. The wrapped validator is locked to prevent replacement.
 	 * <li>The framework sets the foreign key on the detail entity during persistence, linking it to the
 	 *     freshly-inserted master (via the link's {@link EditorLink.BeforeInsert beforeInsert} action).
 	 * </ul>

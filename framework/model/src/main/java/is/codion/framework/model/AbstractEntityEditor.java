@@ -71,6 +71,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -449,12 +450,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	}
 
 	private Map<Attribute<?>, String> updateStates() {
-		updateWarnings();
 		Entity instance = entity.get();
 		entity.exists.update(instance);
 		entity.present.update(instance);
 		entity.modified.update();
 		entity.primaryKeyPresent.set(entity.instance.primaryKey().present());
+		updateWarnings();
 
 		return updateEntityValidState(instance);
 	}
@@ -2069,12 +2070,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	/**
 	 * Wraps a detail editor's validator with two detail-specific exemptions:
 	 * <ul>
-	 * <li>A detail that is not {@link EditorEntity#present() present} will not be created, so it is not validated at all —
-	 * an absent detail's empty required fields are not errors (its {@code present()} predicate typically keys on exactly
-	 * such a field). Validation resumes as normal once it becomes present.
+	 * <li>A detail that is not {@link EditorEntity#present() present} will not be created, so it is neither validated nor
+	 * warned about — an absent detail's empty required fields are not errors (its {@code present()} predicate typically
+	 * keys on exactly such a field), and there is nothing to say about the values of a row that is not going to exist.
+	 * Both resume as normal once it becomes present.
 	 * <li>While present, a {@link NullValueException} on the master {@link ForeignKey} (and its reference columns) is still
 	 * exempt — it is null during editing and populated from the master at insert.
 	 * </ul>
+	 * <p>The second exemption has no warning counterpart. It excludes one flavour of error, a complaint about a null the
+	 * framework fills in, and lets every other error on the foreign key through; a warning carries no such flavour, so
+	 * warnings on the foreign key are delegated like any other.
 	 */
 	static final class DetailForeignKeyValidator implements EntityValidator {
 
@@ -2127,6 +2132,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 					throw new EntityValidationException(filtered);
 				}
 			}
+		}
+
+		@Override
+		public Optional<String> warning(Entity entity, Attribute<?> attribute) {
+			if (!present.is()) {
+				return Optional.empty();
+			}
+
+			return validator.warning(entity, attribute);
 		}
 
 		@Override
