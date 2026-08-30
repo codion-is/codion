@@ -28,6 +28,7 @@
  * <li>{@link is.codion.common.model.preferences.UserPreferences}
  * <li>{@link is.codion.common.model.summary.SummaryModel}
  * <li>{@link is.codion.common.model.summary.TableSummaryModel}
+ * <li>{@link is.codion.common.model.worker.ProgressWorker}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

@@ -173,7 +173,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 																 ComponentModels componentModels, Function<AbstractEntityEditor<R>, ComboBoxModels> comboBoxModels) {
 		this.entityDefinition = requireNonNull(connection).entities().definition(entityType);
 		this.connection = requireNonNull(connection);
-		this.settings = new DefaultSettings(entityDefinition.readOnly());
+		this.settings = new DefaultSettings(entityDefinition);
 		this.componentModels = requireNonNull(componentModels);
 		this.comboBoxModels = requireNonNull(comboBoxModels).apply(this);
 		this.persistence = new DefaultEditorPersistence();
@@ -364,6 +364,11 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 * Executes the given task, asynchronously via a {@link ProgressWorker} when {@link #async()} is enabled and
 	 * a dispatch context is bound, the UI thread on UI platforms (see {@link Dispatcher#bound()}), otherwise
 	 * synchronously on the calling thread.
+	 * <p>An in-flight task is superseded when a new one is executed, its result dropped unhandled. The task must
+	 * therefore commit nothing, and the framework passes only the detail loads behind
+	 * {@link EditorEntity#set(Entity)}, {@link EditorEntity#replace(Entity)} and {@link EditorEntity#refresh()},
+	 * where dropping a result discards a stale load and nothing else. A persisting task superseded here would
+	 * leave the work done and nothing notified, see {@link EditorTask}.
 	 * @param task the task to execute
 	 */
 	protected void execute(EditorTask<Entity> task) {
@@ -415,6 +420,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void onResult(Result<Entity> result) {
+			//a superseded task's result is dropped unhandled, which execute() explains is safe here
 			if (currentTask == task) {
 				currentTask = null;
 				result.handle();
@@ -2928,6 +2934,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	private static final class DefaultSettings implements Settings {
 
+		private final EntityType entityType;
 		private final State readOnly;
 		private final State insertEnabled = State.state(true);
 		private final State updateEnabled = State.state(true);
@@ -2935,8 +2942,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final State deleteEnabled = State.state(true);
 		private final State publishPersistenceEvents = State.state(PUBLISH_PERSISTENCE_EVENTS.getOrThrow());
 
-		private DefaultSettings(boolean readOnly) {
-			this.readOnly = State.state(readOnly);
+		private DefaultSettings(EntityDefinition definition) {
+			this.entityType = definition.type();
+			this.readOnly = State.state(definition.readOnly());
 		}
 
 		@Override
@@ -2969,33 +2977,37 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			return publishPersistenceEvents;
 		}
 
+		/**
+		 * The entity type is in each message because a master editor's persist runs these guards on every
+		 * present detail editor too, so the exception can come from an editor the caller never touched.
+		 */
 		private void verifyInsertEnabled() {
 			verifyNotReadOnly();
 			if (!insertEnabled.is()) {
-				throw new IllegalStateException("Inserting is not enabled!");
+				throw new IllegalStateException("Inserting is not enabled for " + entityType);
 			}
 		}
 
 		private void verifyUpdateEnabled(int entityCount) {
 			verifyNotReadOnly();
 			if (!updateEnabled.is()) {
-				throw new IllegalStateException("Updating is not enabled!");
+				throw new IllegalStateException("Updating is not enabled for " + entityType);
 			}
 			if (entityCount > 1 && !updateMultipleEnabled.is()) {
-				throw new IllegalStateException("Updating multiple entities is not enabled");
+				throw new IllegalStateException("Updating multiple entities is not enabled for " + entityType);
 			}
 		}
 
 		private void verifyDeleteEnabled() {
 			verifyNotReadOnly();
 			if (!deleteEnabled.is()) {
-				throw new IllegalStateException("Deleting is not enabled!");
+				throw new IllegalStateException("Deleting is not enabled for " + entityType);
 			}
 		}
 
 		private void verifyNotReadOnly() {
 			if (readOnly.is()) {
-				throw new IllegalStateException("Edit model is read-only!");
+				throw new IllegalStateException("The " + entityType + " editor is read-only");
 			}
 		}
 	}

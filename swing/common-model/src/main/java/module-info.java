@@ -22,7 +22,6 @@
  * <li>{@link is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel}
  * <li>{@link is.codion.swing.common.model.component.list.FilterListSelection}
  * <li>{@link is.codion.swing.common.model.component.table.SwingFilterTableModel}
- * <li>{@link is.codion.common.model.worker.ProgressWorker}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

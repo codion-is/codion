@@ -1457,6 +1457,41 @@ public final class AbstractEntityEditorTest {
 		}
 	}
 
+	@Test
+	void detailEditorGatesMasterPersist() throws EntityValidationException {
+		CONNECTION.startTransaction();
+		try {
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+			departmentEditor.detail().add(EditorLink.builder()
+							.editor(employeeEditor)
+							.foreignKey(Employee.DEPARTMENT_FK)
+							.present(EMPLOYEE_PRESENT)
+							.build());
+			departmentEditor.value(Department.ID).set(42);
+			departmentEditor.value(Department.NAME).set("Test");
+			employeeEditor.settings().insertEnabled().set(false);
+
+			// A present detail that may not be inserted fails the master's insert, and the message says
+			// which editor refused, the operation having been started on the master
+			employeeEditor.value(Employee.NAME).set("Name");
+			employeeEditor.value(Employee.SALARY).set(2_000d);
+			assertTrue(employeeEditor.entity().present().is());
+			assertTrue(assertThrows(IllegalStateException.class, () -> insert(departmentEditor))
+							.getMessage().contains(Employee.TYPE.name()));
+
+			// Absent, it is not persisted, so it gates nothing
+			employeeEditor.value(Employee.NAME).set(null);
+			assertFalse(employeeEditor.entity().present().is());
+			insert(departmentEditor);
+			assertTrue(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
 	private static void insert(TestEntityEditor editor) throws EntityValidationException {
 		editor.tasks(editor.connection()).insert().perform().handle();
 	}

@@ -315,6 +315,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 *   // Must be called on the UI thread, fires "after" events
 	 *   Entity insertedEntity = result.handle();
 	 *}
+	 * <p>The split is not a transaction boundary. {@link #perform()} does the work and commits it where the task
+	 * persists; {@link Result#handle()} only announces it. A result that is never handled therefore leaves the work
+	 * done and nothing notified - no "after" event, no {@link PersistenceEvents} publication, no editor state
+	 * refreshed. Handle every result you perform.
 	 * @param <T> the result type
 	 * @see EditorTasks
 	 */
@@ -548,6 +552,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * another in that case, an in-flight load is abandoned when a new one begins and only the last
 		 * fires {@link #changed()}, so it does not necessarily fire once per call. Otherwise the operation
 		 * is fully synchronous.
+		 * <p>The entity the event carries is the one that was set, captured before the load began. It is not
+		 * re-read when the event fires, so it does not reflect an edit made while the load was in flight;
+		 * {@link #get()} does. The values of a detail editor edited in that window do not survive the load,
+		 * see {@link AbstractEntityEditor#async()}.
 		 * <p>For master editors with registered detail editors the events are ordered bottom-up:
 		 * {@link #changing()} fires before the detail subtree is touched; each detail editor is then set
 		 * (firing {@link #changed()}, never {@link #changing()}); finally {@link #changed()}
@@ -1212,6 +1220,12 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * <li><b>Update</b>: Depending on the detail's presence and existence, the detail is inserted, updated, or deleted.
 	 * <li><b>Delete</b>: An existing detail entity is deleted before the master.
 	 * </ul>
+	 * <p>Each detail editor is the authority on its own mutability, and the master's persist runs through it:
+	 * a present detail's {@link Settings#readOnly() readOnly}, {@link Settings#insertEnabled() insertEnabled},
+	 * {@link Settings#updateEnabled() updateEnabled} and {@link Settings#deleteEnabled() deleteEnabled} gate the
+	 * master operation, so a present detail that may not be persisted fails the master's persist. Absent details
+	 * are not persisted and so do not gate anything. The exception names the entity type it came from, the
+	 * operation having been started on the master.
 	 * <p>Presence is determined by the detail editor's {@link EditorEntity#present()} state, configured
 	 * at registration time via {@link EditorLink.Builder#present(Predicate)}. A detail that is present but
 	 * does not yet exist triggers an insert. A detail that exists but is no longer present triggers a
