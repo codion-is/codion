@@ -42,6 +42,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * Specifies a data model that can be filtered to exclude some or all of the items it contains.
@@ -58,6 +59,17 @@ public interface FilterModel<T> {
 	 * @see Refresher#async()
 	 */
 	PropertyValue<Boolean> ASYNC = booleanValue(FilterModel.class.getName() + ".async", true);
+
+	/**
+	 * Specifies the number of milliseconds an asynchronous refresh waits before it starts, during which a
+	 * further refresh replaces it, so that a burst of them results in a single fetch once they stop.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 0
+	 * </ul>
+	 * @see Refresher#delay()
+	 */
+	PropertyValue<Integer> REFRESH_DELAY = integerValue(FilterModel.class.getName() + ".refreshDelay", 0);
 
 	/**
 	 * @return the model items
@@ -502,8 +514,23 @@ public interface FilterModel<T> {
 		State async();
 
 		/**
+		 * <p>Controls how long an asynchronous refresh waits before it starts, in milliseconds, zero by default.
+		 * <p>A refresh arriving during the wait replaces the one waiting, so a burst of them results in a single
+		 * fetch, once they stop. Without it each one cancels the fetch already running and starts another, which
+		 * is correct - only the last result is delivered either way - but against a remote backend it is a burst
+		 * of requests whose results are all discarded but one.
+		 * <p>Read when the refresh is requested, so changing it leaves one already waiting alone. Ignored by a
+		 * synchronous refresh, which exists to be immediate and predictable.
+		 * @return the {@link Value} controlling the refresh delay in milliseconds
+		 * @see #REFRESH_DELAY
+		 */
+		Value<Integer> delay();
+
+		/**
 		 * <p>Changes to this state are triggered on the UI thread when refreshed asynchronously,
 		 * otherwise on the calling thread (see {@link #refresh(Consumer)}).
+		 * <p>Active from the moment a refresh is requested, so it covers the {@link #delay()} wait as well as
+		 * the fetch, and stays active across a burst rather than flickering between them.
 		 * @return an observable indicating that a refresh is in progress
 		 */
 		ObservableState active();
@@ -518,7 +545,9 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called
 		 * where a dispatch context is bound, the UI thread on UI platforms.
-		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks.
+		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks, whether it was
+		 * already fetching or still waiting out {@link #delay()}, and whichever path the refresh that
+		 * superseded it took - a synchronous refresh cancels an asynchronous one in flight.
 		 * @param onResult called with the result after a successful refresh, may be null (on the UI thread when refreshed asynchronously)
 		 * @see #active()
 		 * @see #result()

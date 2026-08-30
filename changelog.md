@@ -28,6 +28,9 @@ Codion Change Log
 - PreferencesPath, the preferences directory name is now derived under Locale.ROOT. Not a fix - "Codion" carries no upper case I, so it lower cases the same in every locale - but the idiom, so that a rename can not quietly make it one.
 - FilterTableModel.TableColumns.comparator() now collates String columns according to Text.COLLATOR_LOCALE instead of comparing them by code point.
 - DefaultConditionModel, the case folding behind accepts() is documented as deliberately locale sensitive.
+- FilterModel.Refresher.delay() added along with FilterModel.REFRESH_DELAY, controlling how long an asynchronous refresh waits before it starts, zero by default. A refresh arriving during the wait replaces the one waiting, so a burst results in a single fetch once they stop, instead of one cancelled fetch each.
+- FilterModel.Refresher.active() is now active while an asynchronous refresh waits out delay(), not only once it starts fetching.
+- DefaultRefresher, a synchronous refresh now supersedes an asynchronous one in flight, cancelling a fetch under way or one waiting out delay(), instead of leaving it to fetch and deliver its result after the synchronous one has.
 ### is.codion.common.rmi
 - SerializationFilterDryRun, the classpath prefix comparison on the pattern file path is now made under Locale.ROOT.
 ### is.codion.framework.domain
