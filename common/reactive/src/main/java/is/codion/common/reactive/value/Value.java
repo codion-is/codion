@@ -136,9 +136,16 @@ public interface Value<T> extends Observable<T> {
 	Locked locked();
 
 	/**
-	 * Creates a bidirectional link between this and the given original value,
+	 * <p>Creates a bidirectional link between this and the given original value,
 	 * so that changes in one are reflected in the other.
-	 * Note that after a call to this method this value is the same as {@code originalValue}.
+	 * <p>Note that after a call to this method this value is the same as {@code originalValue}.
+	 * <p>The two behave as one logical value: either end validates against both ends' validators, before
+	 * either is written, so the pair can not diverge or come to hold a value one end rejects. This holds
+	 * for any {@link Value}, {@link #validate(Object)} being the gate.
+	 * <p>Cycle detection reaches as far as the framework's own link bookkeeping, which means every value
+	 * extending {@link AbstractValue}. A {@link Value} implemented from scratch keeps its own links, if it
+	 * has any, so a cycle running through one is not detected - the reciprocal update guard still keeps a
+	 * single link from cycling back on itself.
 	 * @param originalValue the original value to link this value to
 	 * @throws IllegalStateException in case the values are already linked or if a cycle is detected
 	 * @throws IllegalArgumentException in case the original value is not valid according to this value's validators

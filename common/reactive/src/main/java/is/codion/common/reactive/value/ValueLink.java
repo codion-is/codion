@@ -20,14 +20,20 @@ package is.codion.common.reactive.value;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.IdentityHashMap;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import static java.util.Collections.newSetFromMap;
 
 /**
  * A class for linking two values.
  * <p>The reciprocal update flags prevent a single-threaded update from cycling back on itself; linking, like
  * value modification in general, is single-thread by design (typically an application UI thread) and is not
  * safe under concurrent updates from multiple threads.
+ * <p>The guard flags are volatile for cross-thread visibility alone - an application updating from one
+ * thread at a time, but not always the same one, sees the guards where it sees the values. It buys no
+ * atomicity and does not soften the contract above.
  * @param <T> the type of the value
  */
 final class ValueLink<T> {
@@ -75,14 +81,25 @@ final class ValueLink<T> {
 		if (originalValue == linkedValue) {
 			throw new IllegalArgumentException("A Value can not be linked to itself");
 		}
-		if (originalValue instanceof AbstractValue) {
-			Set<Value<T>> linkedValues = ((AbstractValue<T>) originalValue).linkedValues();
-			if (linkedValues.contains(linkedValue)) {
-				throw new IllegalStateException("Cyclical value link detected");
-			}
-			//walk up the origin chain, keeping the candidate linkedValue fixed, to detect a transitive cycle
-			linkedValues.forEach(value -> preventLinkCycle(linkedValue, value));
+		preventLinkCycle(linkedValue, originalValue, newSetFromMap(new IdentityHashMap<>()));
+	}
+
+	private static <T> void preventLinkCycle(Value<T> linkedValue, Value<T> originalValue, Set<Value<T>> visited) {
+		if (!visited.add(originalValue)) {
+			//already walked, a diamond in the link graph reaches the same value by more than one path
+			return;
 		}
+		if (!(originalValue instanceof BaseValue)) {
+			//a Value implemented outside the framework keeps its own links, if it has any, so the chain
+			//ends here - see the note on Value.link(Value)
+			return;
+		}
+		Set<Value<T>> linkedValues = ((BaseValue<T>) originalValue).linkedValues();
+		if (linkedValues.contains(linkedValue)) {
+			throw new IllegalStateException("Cyclical value link detected");
+		}
+		//walk up the origin chain, keeping the candidate linkedValue fixed, to detect a transitive cycle
+		linkedValues.forEach(value -> preventLinkCycle(linkedValue, value, visited));
 	}
 
 	private void updateLinkedValue(T value) {
@@ -109,11 +126,24 @@ final class ValueLink<T> {
 		}
 	}
 
+	/**
+	 * Runs the far end's validators, so that either end of a link validates against both and the pair can
+	 * not come to hold a value one of them rejects.
+	 * <p>The far end's validators include the bridges of its own links, so validating walks the whole
+	 * connected graph. {@link #excluded} skips the immediate partner, which is enough to unwind a chain,
+	 * but not a value linked to two others that share an origin - there the walk arrives back by the other
+	 * path. The re-entrancy flag ends it: a bridge already validating further up the walk has run, or is
+	 * running, its validators, and returns rather than running them again.
+	 * <p>A {@link Value} implemented outside the framework keeps its validators to itself, so that one goes
+	 * through the public gate instead. Same guarantee, one more pass over each end's validators - the gate
+	 * runs the partner bridge as well, which the flag then stops.
+	 */
 	private static final class LinkedValidator<T> implements Value.Validator<T> {
 
 		private final Value<T> linkedValue;
 
 		private Value.@Nullable Validator<T> excluded;
+		private volatile boolean validating = false;
 
 		private LinkedValidator(Value<T> linkedValue) {
 			this.linkedValue = linkedValue;
@@ -121,11 +151,23 @@ final class ValueLink<T> {
 
 		@Override
 		public void validate(@Nullable T value) {
-			if (linkedValue instanceof AbstractValue) {
-				((AbstractValue<T>) linkedValue).validators()
-								.stream()
-								.filter(validator -> validator != excluded)
-								.forEach(validator -> validator.validate(value));
+			if (validating) {
+				return;
+			}
+			validating = true;
+			try {
+				if (linkedValue instanceof BaseValue) {
+					((BaseValue<T>) linkedValue).validators()
+									.stream()
+									.filter(validator -> validator != excluded)
+									.forEach(validator -> validator.validate(value));
+				}
+				else {
+					linkedValue.validate(value);
+				}
+			}
+			finally {
+				validating = false;
 			}
 		}
 	}
