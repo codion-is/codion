@@ -18,18 +18,19 @@
  */
 package is.codion.common.reactive.observer;
 
+import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class ObserverTest {
 
@@ -70,6 +71,148 @@ public final class ObserverTest {
 		value.set(1);
 		value.set(1);
 		assertEquals(2, oneCounter.get());
+	}
+
+	@Test
+	void conditionalSubscribesWithItsListeners() {
+		Event<Integer> event = Event.event();
+		AtomicInteger counter = new AtomicInteger();
+		Runnable listener = counter::incrementAndGet;
+
+		//an unlistened conditional leaves nothing on the observer it filters
+		Observer<Integer> conditional = event.when(1);
+		event.accept(1);
+		assertEquals(0, counter.get());
+
+		conditional.addListener(listener);
+		event.accept(1);
+		event.accept(2);
+		assertEquals(1, counter.get());
+
+		//removing the last listener detaches it again
+		assertTrue(conditional.removeListener(listener));
+		event.accept(1);
+		assertEquals(1, counter.get());
+
+		//and adding one re-attaches, the same conditional serving again
+		conditional.addListener(listener);
+		event.accept(1);
+		assertEquals(2, counter.get());
+
+		//a second listener does not attach twice, nor does removing one of two detach
+		AtomicInteger second = new AtomicInteger();
+		Runnable secondListener = second::incrementAndGet;
+		conditional.addListener(secondListener);
+		event.accept(1);
+		assertEquals(3, counter.get());
+		assertEquals(1, second.get());
+		conditional.removeListener(secondListener);
+		event.accept(1);
+		assertEquals(4, counter.get());
+	}
+
+	@Test
+	void conditionalChainsAttachTransitively() {
+		Event<Integer> event = Event.event();
+		Observer<Integer> even = event.when(value -> value != null && value % 2 == 0);
+		Observer<Integer> evenTens = even.when(value -> value != null && value % 10 == 0);
+		AtomicInteger counter = new AtomicInteger();
+		Runnable listener = counter::incrementAndGet;
+
+		//nothing listened to, nothing attached at any level
+		event.accept(20);
+		assertEquals(0, counter.get());
+
+		//one listener at the end of the chain attaches every level, source-ward
+		evenTens.addListener(listener);
+		event.accept(20);
+		assertEquals(1, counter.get());
+		event.accept(4);//even, not tens
+		event.accept(5);//neither
+		assertEquals(1, counter.get());
+
+		//and removing it detaches every level again
+		evenTens.removeListener(listener);
+		event.accept(20);
+		assertEquals(1, counter.get());
+	}
+
+	@Test
+	void listenerHooksFireOnTheEdgesOnly() {
+		//Conditional, the one implementation, attaches idempotently, so a hook firing on every add would
+		//go unnoticed through it - the edge semantics are asserted here against the contract itself
+		Counting observer = new Counting();
+		Runnable one = () -> {};
+		Runnable two = () -> {};
+
+		observer.addListener(one);
+		assertEquals(1, observer.first);
+		observer.addListener(two);
+		assertEquals(1, observer.first);
+
+		observer.removeListener(one);
+		assertEquals(0, observer.last);
+		observer.removeListener(two);
+		assertEquals(1, observer.last);
+
+		//and again, from empty
+		observer.addListener(one);
+		assertEquals(2, observer.first);
+		observer.removeListener(one);
+		assertEquals(2, observer.last);
+	}
+
+	@Test
+	void lastListenerFiresWhenWeakListenersAreCollected() {
+		//emptied by pruning rather than by the removal, the documented removeWeak*(no-op) cleanup idiom
+		Counting observer = new Counting();
+		AtomicInteger counter = new AtomicInteger();
+		Runnable listener = counter::incrementAndGet;
+		observer.addWeakListener(listener);
+		assertEquals(1, observer.first);
+
+		WeakReference<Runnable> reference = new WeakReference<>(listener);
+		listener = null;
+		for (int i = 0; i < 20 && reference.get() != null; i++) {
+			System.gc();
+		}
+		assertNull(reference.get());
+
+		observer.removeWeakListener(counter::incrementAndGet);
+		assertEquals(1, observer.last);
+	}
+
+	private static final class Counting extends AbstractObserver<String> {
+
+		private int first;
+		private int last;
+
+		@Override
+		void onFirstListener() {
+			first++;
+		}
+
+		@Override
+		void onLastListener() {
+			last++;
+		}
+	}
+
+	@Test
+	void conditionalIsCollectableOnceUnlistened() {
+		Event<Integer> event = Event.event();
+		Runnable listener = () -> {};
+		Observer<Integer> conditional = event.when(1);
+		conditional.addListener(listener);
+		WeakReference<Observer<Integer>> reference = new WeakReference<>(conditional);
+
+		//while listened to, the event holds it through the consumer it subscribed with
+		conditional.removeListener(listener);
+		conditional = null;
+		for (int i = 0; i < 20 && reference.get() != null; i++) {
+			System.gc();
+		}
+		assertNull(reference.get());
 	}
 
 	@Test

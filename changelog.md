@@ -7,6 +7,7 @@ Codion Change Log
 - DefaultStateCombination.StateCombinationConsumer, oldValue assignment now inside synchronized block.
 - ValueCollection.value() now notifies when the item it projects moves, instead of on every collection change. Adding to the end of a non-empty list used to notify every observer of value(), the projection being unchanged.
 - ValueCollection.sort() now notifies when it changes the item order but leaves the collection equal, which is every sort of a ValueSet, item ordering not factoring into Set equality.
+- Observer.when(), the conditional observer now subscribes to the observer it filters only while it has listeners of its own, attaching on the first and detaching on the last, instead of subscribing at creation and never letting go.
 ### is.codion.common.utilities
 - PropertyStore.enumValue(), the property value is now upper cased under Locale.ROOT before Enum.valueOf(), an enum constant being an identifier rather than something a person reads. A value written in lower case used to fail to parse on a Turkish machine, where i upper cases to İ, taking every enum valued configuration property with it.
 - Operator, the description resource key is now derived under Locale.ROOT. IN, NOT_IN, BETWEEN_EXCLUSIVE and NOT_BETWEEN_EXCLUSIVE all contain an I, so on a Turkish machine they looked up a key that does not exist and lost their description.
