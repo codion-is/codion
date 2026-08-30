@@ -157,15 +157,23 @@ public class ValueSetTest {
 		assertEquals(1, counter.get());
 		Comparator<Integer> comparator = comparing(Integer::intValue);
 
+		// Already in this order, nothing moved, nothing to announce
 		set.sort(comparator);
-		// No change events when sorting
 		assertEquals(1, counter.get());
+
+		// A reorder is invisible to Set equality, so set() does not notify and the sort does
 		set.sort(comparator.reversed());
 		assertEquals(asList(4, 3, 2, 1), new ArrayList<>(set.get()));
-		assertEquals(1, counter.get());
+		assertEquals(2, counter.get());
 		set.sort(comparator);
 		assertEquals(asList(1, 2, 3, 4), new ArrayList<>(set.get()));
-		assertEquals(1, counter.get());
+		assertEquals(3, counter.get());
+
+		// and an empty set has no order to change
+		set.clear();
+		assertEquals(4, counter.get());
+		set.sort(comparator);
+		assertEquals(4, counter.get());
 	}
 
 	private static void assertUnmodifiable(ObservableValueCollection<Integer, Set<Integer>> observer) {

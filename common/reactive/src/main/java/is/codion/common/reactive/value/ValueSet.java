@@ -30,9 +30,12 @@ import static java.util.Objects.requireNonNull;
  * <p>An observable wrapper for an ordered Set of values.
  * <p>A factory for {@link ValueSet} instances.
  * <p>All implementations are thread-safe and support concurrent access.
- * <p>This set maintains item ordering and can be sorted via {@link #sort(Comparator)},
- * but note that sorting does not trigger change events, since item
- * ordering does not factor into Set equality.</p>
+ * <p>This set maintains item ordering and can be sorted via {@link #sort(Comparator)}, which notifies
+ * when it changes the order. Note that a reorder is not a change as far as {@link Notify#CHANGED} is
+ * concerned, item ordering not factoring into Set equality, so the notification comes from the sort
+ * itself rather than from the assignment behind it. For the same reason it does not cross a
+ * {@link Value#link(Value) link}: the far end is assigned the sorted collection and holds it from then
+ * on, but equality hides the reorder there as well, so its own observers are not notified.</p>
  * @param <T> the value type
  */
 public interface ValueSet<T> extends ValueCollection<T, Set<T>> {
