@@ -33,6 +33,11 @@ Codion Change Log
 ### is.codion.framework.server
 - DefaultEntityServerConfiguration, the server name is now built with the database name upper cased under Locale.ROOT. The name is what the server binds under and the client looks up, so a server and client on different locales used to be unable to find each other where the database name contained an i.
 - LocalConnectionHandler, the log identifier is now derived under Locale.ROOT.
+### is.codion.framework.model
+- EntityEditor.DetailEditors.remove() now unlinks the detail editor instead of merely dropping it.
+- EntityEditor.EditorValue.persist() is now locked false for the master foreign key of a registered detail editor.
+- EntityEditor.DetailEditors.add() now rejects a detail editor already registered with a master editor.
+- AbstractEntityEditor.PreventPresentModification now throws IllegalArgumentException rather than IllegalStateException.
 ### is.codion.dbms.h2
 - H2Database, the set of initialised databases is now keyed by a url normalised under Locale.ROOT.
 ### is.codion.plugin.jasperreports
