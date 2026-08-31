@@ -171,7 +171,7 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 		 * @param item receives the selected item, possibly null
 		 * @return this builder
 		 */
-		Builder<T> onItemSelected(Consumer<@Nullable T> item);
+		Builder<T> onSelectedItem(Consumer<@Nullable T> item);
 
 		/**
 		 * @param onRefreshException the refresh exception handler

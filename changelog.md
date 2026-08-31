@@ -32,6 +32,7 @@ Codion Change Log
 - FilterModel.Refresher.delay() added along with FilterModel.REFRESH_DELAY, controlling how long an asynchronous refresh waits before it starts, zero by default. A refresh arriving during the wait replaces the one waiting, so a burst results in a single fetch once they stop, instead of one cancelled fetch each.
 - FilterModel.Refresher.active() is now active while an asynchronous refresh waits out delay(), not only once it starts fetching.
 - DefaultRefresher, a synchronous refresh now supersedes an asynchronous one in flight, cancelling a fetch under way or one waiting out delay(), instead of leaving it to fetch and deliver its result after the synchronous one has.
+- FilterTableModel, FilterComboBoxModel and FilterListModel, Builder selection listener methods renamed from onItemSelected() to onSelectedItem(), onIndexSelected() to onSelectedIndex() etc.
 ### is.codion.common.rmi
 - SerializationFilterDryRun, the classpath prefix comparison on the pattern file path is now made under Locale.ROOT.
 ### is.codion.framework.domain

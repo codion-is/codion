@@ -156,26 +156,26 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 		}
 
 		@Override
-		public Builder<T> onItemSelected(Consumer<T> item) {
-			builder.onItemSelected(item);
+		public Builder<T> onSelectedItem(Consumer<T> item) {
+			builder.onSelectedItem(item);
 			return this;
 		}
 
 		@Override
-		public Builder<T> onItemsSelected(Consumer<List<T>> items) {
-			builder.onItemsSelected(items);
+		public Builder<T> onSelectedItems(Consumer<List<T>> items) {
+			builder.onSelectedItems(items);
 			return this;
 		}
 
 		@Override
-		public Builder<T> onIndexSelected(Consumer<Integer> index) {
-			builder.onIndexSelected(index);
+		public Builder<T> onSelectedIndex(Consumer<Integer> index) {
+			builder.onSelectedIndex(index);
 			return this;
 		}
 
 		@Override
-		public Builder<T> onIndexesSelected(Consumer<List<Integer>> indexes) {
-			builder.onIndexesSelected(indexes);
+		public Builder<T> onSelectedIndexes(Consumer<List<Integer>> indexes) {
+			builder.onSelectedIndexes(indexes);
 			return this;
 		}
 

@@ -329,25 +329,25 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 
 		@Override
-		public Builder<R, C> onItemSelected(Consumer<R> item) {
+		public Builder<R, C> onSelectedItem(Consumer<R> item) {
 			itemSelectedListeners.add(requireNonNull(item));
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> onItemsSelected(Consumer<List<R>> items) {
+		public Builder<R, C> onSelectedItems(Consumer<List<R>> items) {
 			itemsSelectedListeners.add(requireNonNull(items));
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> onIndexSelected(Consumer<Integer> index) {
+		public Builder<R, C> onSelectedIndex(Consumer<Integer> index) {
 			indexSelectedListeners.add(requireNonNull(index));
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> onIndexesSelected(Consumer<List<Integer>> indexes) {
+		public Builder<R, C> onSelectedIndexes(Consumer<List<Integer>> indexes) {
 			indexesSelectedListeners.add(requireNonNull(indexes));
 			return this;
 		}

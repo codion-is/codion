@@ -116,25 +116,25 @@ public interface SwingFilterListModel<T> extends FilterListModel<T>, ListModel<T
 		 * @param item receives the selected item
 		 * @return this builder instance
 		 */
-		Builder<T> onItemSelected(Consumer<T> item);
+		Builder<T> onSelectedItem(Consumer<T> item);
 
 		/**
 		 * @param items receives the selected items
 		 * @return this builder instance
 		 */
-		Builder<T> onItemsSelected(Consumer<List<T>> items);
+		Builder<T> onSelectedItems(Consumer<List<T>> items);
 
 		/**
 		 * @param index receives the selected index
 		 * @return this builder instance
 		 */
-		Builder<T> onIndexSelected(Consumer<Integer> index);
+		Builder<T> onSelectedIndex(Consumer<Integer> index);
 
 		/**
 		 * @param indexes receives the selected indexes
 		 * @return this builder instance
 		 */
-		Builder<T> onIndexesSelected(Consumer<List<Integer>> indexes);
+		Builder<T> onSelectedIndexes(Consumer<List<Integer>> indexes);
 
 		/**
 		 * @return a new {@link SwingFilterListModel} instance

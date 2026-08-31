@@ -219,8 +219,8 @@ final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel 
 		}
 
 		@Override
-		public Builder onItemSelected(Consumer<@Nullable Entity> item) {
-			builder.onItemSelected(item);
+		public Builder onSelectedItem(Consumer<@Nullable Entity> item) {
+			builder.onSelectedItem(item);
 			return this;
 		}
 

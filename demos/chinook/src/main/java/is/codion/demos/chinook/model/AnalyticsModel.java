@@ -127,7 +127,7 @@ public final class AnalyticsModel {
 			this.genreComboBoxModel = SwingEntityComboBoxModel.builder()
 							.entityType(Chinook.Genre.TYPE)
 							.connection(connection)
-							.onItemSelected(this::refresh)
+							.onSelectedItem(this::refresh)
 							.nullCaption(BUNDLE.getString("all_genres"))
 							.refresh(true)
 							.build();

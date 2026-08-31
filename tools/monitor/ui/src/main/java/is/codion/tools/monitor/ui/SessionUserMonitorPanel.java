@@ -156,7 +156,7 @@ public final class SessionUserMonitorPanel extends JPanel {
 						.model(SwingFilterComboBoxModel.builder()
 										.items(MAINTENANCE_INTERVAL_VALUES)
 										.select(model.maintenanceInterval())
-										.onItemSelected(this::setMaintenanceInterval)
+										.onSelectedItem(this::setMaintenanceInterval)
 										.build())
 						.build();
 	}

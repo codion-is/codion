@@ -285,26 +285,26 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 		}
 
 		@Override
-		public Builder<R, C> onItemSelected(Consumer<R> item) {
-			builder.onItemSelected(item);
+		public Builder<R, C> onSelectedItem(Consumer<R> item) {
+			builder.onSelectedItem(item);
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> onItemsSelected(Consumer<List<R>> items) {
-			builder.onItemsSelected(items);
+		public Builder<R, C> onSelectedItems(Consumer<List<R>> items) {
+			builder.onSelectedItems(items);
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> onIndexSelected(Consumer<Integer> index) {
-			builder.onIndexSelected(index);
+		public Builder<R, C> onSelectedIndex(Consumer<Integer> index) {
+			builder.onSelectedIndex(index);
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> onIndexesSelected(Consumer<List<Integer>> indexes) {
-			builder.onIndexesSelected(indexes);
+		public Builder<R, C> onSelectedIndexes(Consumer<List<Integer>> indexes) {
+			builder.onSelectedIndexes(indexes);
 			return this;
 		}
 
