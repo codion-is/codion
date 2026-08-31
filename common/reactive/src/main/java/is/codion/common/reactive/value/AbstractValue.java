@@ -23,7 +23,15 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.UnaryOperator;
 
 /**
- * <p>An abstract {@link Value} implementation handling everything except the value itself.
+ * <p>An abstract {@link Value} implementation handling everything except the value itself: supply
+ * {@link #getValue()} and {@link #setValue(Object)} and the rest is inherited. This is the extension point -
+ * implement {@link Value} from scratch and none of the machinery below is there.
+ * <p>{@link #get()}, {@link #set(Object)}, {@link #clear()} and {@link #update(java.util.function.UnaryOperator)}
+ * are final here, delegating to the package private base class that implements them. That is not ceremony: it
+ * is what guarantees every value reaches the one ordering that makes the core tame - equality, then the lock,
+ * then the validators, then the write, then the notification - since a subclass overriding {@link #set(Object)}
+ * could otherwise put a step of its own in front of any of them. The framework's own collection values, which
+ * do need to widen that path, extend the base class directly instead.
  * <p>The constructor parameter {@code notify} specifies whether this {@link AbstractValue} instance should call
  * {@link #notifyObserver()} each time the value is set ({@link Notify#SET}) or only when it changes
  * ({@link Notify#CHANGED}), which is determined using {@link java.util.Objects#deepEquals(Object, Object)}.

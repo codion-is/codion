@@ -62,6 +62,8 @@ final class DefaultState implements State {
 
 	@Override
 	public void set(boolean value) {
+		//a pure delegation, and must stay one: value() is public, so a step taken here and not on the
+		//value is a step a caller writing through the value silently skips
 		synchronized (this.value) {
 			this.value.set(value);
 		}

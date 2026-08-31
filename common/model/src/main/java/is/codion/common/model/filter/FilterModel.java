@@ -116,7 +116,9 @@ public interface FilterModel<T> {
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
 		 * <br><br>
 		 * Retains the selection and filtering. Sorts the refreshed data.
-		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks.
+		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks, and that a model
+		 * built from a fixed collection rather than an items supplier has nothing to refresh from, so this
+		 * does nothing at all, see {@link Refresher#refresh(Consumer)}.
 		 * @param onResult called after a successful refresh (on the UI thread when refreshed asynchronously)
 		 * @see Refresher#active()
 		 * @see Refresher#result()
@@ -548,6 +550,10 @@ public interface FilterModel<T> {
 		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks, whether it was
 		 * already fetching or still waiting out {@link #delay()}, and whichever path the refresh that
 		 * superseded it took - a synchronous refresh cancels an asynchronous one in flight.
+		 * <p>A {@link Refresher} without an items supplier does nothing here: no fetch, no callbacks, no
+		 * {@link #result()} event, and {@link #active()} never activates. That is an ordinary model rather
+		 * than a mis-built one - a {@link is.codion.common.model.component.combobox.FilterComboBoxModel}
+		 * built from a fixed collection has nothing to refresh from.
 		 * @param onResult called with the result after a successful refresh, may be null (on the UI thread when refreshed asynchronously)
 		 * @see #active()
 		 * @see #result()
@@ -570,6 +576,13 @@ public interface FilterModel<T> {
 		interface Builder<T> {
 
 			/**
+			 * <p>The supplier is called on a background thread when refreshing asynchronously, and a refresh
+			 * superseded by another one is cancelled with an interrupt.
+			 * <p>Cancellation therefore guarantees only that the result is discarded, not that the work stops.
+			 * A supplier that does not respond to interruption runs to completion, and so does whatever it is
+			 * waiting on - a query, a request to a remote backend. Where that matters, either make the supplier
+			 * interruptible or give the refresher a {@link Refresher#delay()}, so that superseded refreshes
+			 * never start in the first place.
 			 * @param items supplies the items during refresh, null for a {@link Refresher} which does nothing
 			 * @return this builder instance
 			 */

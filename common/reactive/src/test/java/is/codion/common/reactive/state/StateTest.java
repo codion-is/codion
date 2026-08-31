@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,6 +41,78 @@ public class StateTest {
 
 	private static final String CONJUNCTION_AND_PATTERN = "Combination and false, false, false, false";
 	private static final String CONJUNCTION_OR_PATTERN = "Combination or false, false, false, false";
+
+	@Test
+	void writingThroughTheValue() {
+		//State is a view over its Value, so writing through the value must be equivalent to set(boolean) -
+		//everything State does, it does through the value, and set(boolean) must stay a pure delegation
+		AtomicInteger validations = new AtomicInteger();
+		State validated = State.builder()
+						.validator(value -> {
+							validations.incrementAndGet();
+							if (Boolean.TRUE.equals(value)) {
+								throw new IllegalArgumentException("no true");
+							}
+						})
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> validated.set(true));
+		assertThrows(IllegalArgumentException.class, () -> validated.value().set(true));
+		assertFalse(validated.is());
+
+		//the lock is the value's, so it holds either way
+		State locked = State.state();
+		locked.value().locked().set(true);
+		assertThrows(IllegalStateException.class, () -> locked.set(true));
+		assertThrows(IllegalStateException.class, () -> locked.value().set(true));
+
+		//so is the notification, and with it not() and group membership
+		State one = State.state(true);
+		State two = State.state();
+		State.group(one, two);
+		AtomicInteger notifications = new AtomicInteger();
+		two.addListener(notifications::incrementAndGet);
+		AtomicInteger negated = new AtomicInteger();
+		two.not().addListener(negated::incrementAndGet);
+
+		two.value().set(true);
+		assertTrue(two.is());
+		assertFalse(two.not().is());
+		assertEquals(1, notifications.get());
+		assertEquals(1, negated.get());
+		assertFalse(one.is());//the group deactivated it, having heard the notification
+
+		//and the link, which is between the two values
+		State linked = State.state();
+		State origin = State.state();
+		linked.link(origin);
+		origin.value().set(true);
+		assertTrue(linked.is());
+
+		//what the value adds is the nullable surface, landing on the false substitute
+		State nullable = State.state(true);
+		nullable.value().set(null);
+		assertFalse(nullable.is());
+		nullable.value().clear();
+		assertFalse(nullable.is());
+	}
+
+	@Test
+	void emptyCombination() {
+		//safe to call with a list that came out empty, rather than throwing on it - and false rather than
+		//the true of vacuous truth, so an AND assembled from nothing gates nothing open
+		assertFalse(State.and().is());
+		assertFalse(State.or().is());
+		assertFalse(State.and(emptyList()).is());
+		assertFalse(State.or(emptyList()).is());
+
+		//with no members there is nothing that could ever change it
+		ObservableState empty = State.and(emptyList());
+		assertTrue(empty.not().is());
+		AtomicInteger changes = new AtomicInteger();
+		empty.addListener(changes::incrementAndGet);
+		assertFalse(empty.is());
+		assertEquals(0, changes.get());
+	}
 
 	@Test
 	void state_addRemoveListeners_shouldNotifyOnChange() {

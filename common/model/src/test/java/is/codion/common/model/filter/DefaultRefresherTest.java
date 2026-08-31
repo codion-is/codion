@@ -31,6 +31,31 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class DefaultRefresherTest {
 
 	@Test
+	void withoutAnItemsSupplierNothingHappens() {
+		//an ordinary configuration rather than a mis-built one, a combo box model built from a fixed
+		//collection has no supplier - so a refresh is silent, not a failure
+		AtomicInteger results = new AtomicInteger();
+		AtomicInteger callbacks = new AtomicInteger();
+		AtomicInteger exceptions = new AtomicInteger();
+		Refresher<String> refresher = Refresher.<String>builder()
+						.onResult(items -> results.incrementAndGet())
+						.onException(exception -> exceptions.incrementAndGet())
+						.build();
+		refresher.result().addListener(results::incrementAndGet);
+
+		assertDoesNotThrow(() -> refresher.refresh(items -> callbacks.incrementAndGet()));
+		assertEquals(0, results.get());
+		assertEquals(0, callbacks.get());
+		assertEquals(0, exceptions.get());
+		assertFalse(refresher.active().is());
+
+		//and the same asynchronously, where it does not even reach the delay
+		refresher.delay().set(60_000);
+		assertDoesNotThrow(() -> refresher.refresh(null));
+		assertFalse(refresher.active().is());
+	}
+
+	@Test
 	void delayDefaultsToTheConfiguredValue() {
 		assertEquals(0, Refresher.builder().items(Collections::emptyList).build().delay().getOrThrow());
 

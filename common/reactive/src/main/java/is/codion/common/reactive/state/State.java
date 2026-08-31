@@ -77,7 +77,14 @@ public interface State extends ObservableState {
 	ObservableState observable();
 
 	/**
-	 * @return a {@link Value} instance representing this state
+	 * <p>Returns the {@link Value} this state is a view over.
+	 * <p>Writing through it is equivalent to {@link #set(boolean)}: the validators, the {@link Value#locked()}
+	 * state, the notification and any {@link Group} this state belongs to all live on the value, so nothing is
+	 * stepped around. What it adds is the nullable {@link Boolean} surface, where null lands on the {@code false}
+	 * substitute, and the {@link Value} operations a {@link State} has no equivalent for.
+	 * <p>It is exposed because a {@link State} is built on a {@link Value} rather than beside one - {@link #link(State)}
+	 * links the two values, and the validators and the lock are the value's throughout.
+	 * @return the {@link Value} instance this state is a view over
 	 */
 	Value<Boolean> value();
 
@@ -245,7 +252,11 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using AND.
-	 * <p>Note that an empty combination evaluates to {@code false} (not vacuous-truth {@code true}).
+	 * <p>An empty combination is {@code false}, rather than the {@code true} of vacuous truth. These states
+	 * typically gate something, and one assembled from a list that came out empty should leave whatever it
+	 * gates alone, not enable something whose conditions were never checked.
+	 * <p>Empty is never an error - an empty combination assembled from data is a quiet "nothing to require
+	 * yet", not a reason to fail - which does mean an empty AND and an empty OR are alike {@code false}.
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
@@ -255,7 +266,11 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using AND.
-	 * <p>Note that an empty combination evaluates to {@code false} (not vacuous-truth {@code true}).
+	 * <p>An empty combination is {@code false}, rather than the {@code true} of vacuous truth. These states
+	 * typically gate something, and one assembled from a list that came out empty should leave whatever it
+	 * gates alone, not enable something whose conditions were never checked.
+	 * <p>Empty is never an error - an empty combination assembled from data is a quiet "nothing to require
+	 * yet", not a reason to fail - which does mean an empty AND and an empty OR are alike {@code false}.
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
@@ -265,6 +280,8 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using OR.
+	 * <p>An empty combination is {@code false}. Empty is never an error, so an empty OR and an empty AND
+	 * are alike {@code false}, see {@link #and(ObservableState...)}.
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
@@ -274,6 +291,8 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using OR.
+	 * <p>An empty combination is {@code false}. Empty is never an error, so an empty OR and an empty AND
+	 * are alike {@code false}, see {@link #and(ObservableState...)}.
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */

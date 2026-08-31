@@ -24,14 +24,14 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueCollectionTest {
@@ -171,6 +171,34 @@ public class ValueCollectionTest {
 		set.clear();
 		assertTrue(observer.containsOnly(emptyList()));
 		assertTrue(observer.containsNone(asList(1, 2, 3)));
+	}
+
+	@Test
+	void setTheCollectionTypeItself() {
+		//Value.set(C) is the more specific overload whenever the declared type is passed, so valueSet.set(aSet)
+		//lands there rather than on ValueCollection.set(Collection) - it used to store the caller's collection
+		//as it stood, leaving the value's contents mutable from the outside and able to change behind its back
+		ValueSet<String> valueSet = ValueSet.valueSet();
+		Set<String> mutableSet = new LinkedHashSet<>(singletonList("a"));
+		valueSet.set(mutableSet);
+		assertThrows(UnsupportedOperationException.class, () -> valueSet.get().add("b"));
+		mutableSet.add("c");
+		assertEquals(singleton("a"), valueSet.get());
+
+		ValueList<String> valueList = ValueList.valueList();
+		List<String> mutableList = new ArrayList<>(singletonList("a"));
+		valueList.set(mutableList);
+		assertThrows(UnsupportedOperationException.class, () -> valueList.get().add("b"));
+		mutableList.add("c");
+		assertEquals(singletonList("a"), valueList.get());
+
+		//and it notifies like any other set
+		AtomicInteger notifications = new AtomicInteger();
+		valueSet.addListener(notifications::incrementAndGet);
+		valueSet.set(new LinkedHashSet<>(asList("a", "b")));
+		assertEquals(1, notifications.get());
+		valueSet.set(new LinkedHashSet<>(asList("a", "b")));
+		assertEquals(1, notifications.get());
 	}
 
 	@Test
