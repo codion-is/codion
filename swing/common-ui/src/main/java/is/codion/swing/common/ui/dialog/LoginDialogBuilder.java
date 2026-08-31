@@ -49,6 +49,16 @@ public interface LoginDialogBuilder extends DialogBuilder<LoginDialogBuilder> {
 					integerValue(LoginDialogBuilder.class.getName() + ".inputFieldColumns", 8);
 
 	/**
+	 * Specifies the number of milliseconds to delay showing the login validation progress bar.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 350
+	 * </ul>
+	 */
+	PropertyValue<Integer> VALIDATION_PROGRESS_BAR_DELAY =
+					integerValue(LoginDialogBuilder.class.getName() + ".validationProgressBarDelay", 350);
+
+	/**
 	 * <p>Specifies whether login dialogs are resizable by default.
 	 * <p>When resizable, the dialog can not be made smaller than its packed size.
 	 * <ul>
@@ -95,6 +105,14 @@ public interface LoginDialogBuilder extends DialogBuilder<LoginDialogBuilder> {
 	 * @see #RESIZABLE
 	 */
 	LoginDialogBuilder resizable(boolean resizable);
+
+	/**
+	 * Specifies the login validation progress bar delay
+	 * @param validationProgressDelay the delay, in ms
+	 * @return this builder instance
+	 * @see #VALIDATION_PROGRESS_BAR_DELAY
+	 */
+	LoginDialogBuilder validationProgressDelay(int validationProgressDelay);
 
 	/**
 	 * @return the logged-in user
