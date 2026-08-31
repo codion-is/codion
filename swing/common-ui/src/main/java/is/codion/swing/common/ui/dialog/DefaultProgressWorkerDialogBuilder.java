@@ -218,30 +218,38 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 						.build();
 	}
 
+	/**
+	 * Shows the dialog once {@link #SHOW_DELAY} has passed, so a task that finishes before then never
+	 * shows one, and keeps it up for {@link #HIDE_DELAY} once it has, so one that appears does not
+	 * flash past. Both run on the dispatch thread, {@link ProgressWorker} calling this from
+	 * {@code onStarted} and {@code onDone}.
+	 */
 	private final class DisplayDialog {
 
 		private final ProgressDialog progressDialog;
 
 		private @Nullable DelayedAction show;
-		private long startTime;
+		private long shownAt;//when the dialog went up, zero until it does, which is what tells hide() it never did
 
 		private DisplayDialog(ProgressDialog progressDialog) {
 			this.progressDialog = progressDialog;
 		}
 
 		private void show() {
-			startTime = currentTimeMillis();
-			show = delayedAction(() -> progressDialog.setVisible(true), showDelay);
+			show = delayedAction(() -> {
+				progressDialog.setVisible(true);
+				shownAt = currentTimeMillis();
+			}, showDelay);
 		}
 
 		private void hide() {
 			cancel();
-			long elapsed = currentTimeMillis() - startTime;
-			long remainingDelay = hideDelay - elapsed;
+			//measured from when it went up rather than from when it was asked for, so the dialog is shown the full hideDelay
+			long remaining = shownAt == 0 ? 0 : hideDelay - (currentTimeMillis() - shownAt);
 			delayedAction(() -> {
 				progressDialog.setVisible(false);
 				progressDialog.dispose();
-			}, (int) Math.max(0, remainingDelay));
+			}, (int) Math.max(0, remaining));
 		}
 
 		private void cancel() {

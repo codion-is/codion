@@ -62,6 +62,7 @@ Codion Change Log
 - DefaultLoginDialogBuilder now identifies the operating system under Locale.ROOT, as PreferencesPath does.
 - ImagePane, the http prefix comparison on the image path is now made under Locale.ROOT.
 - DefaultFileSelectionDialogBuilder, the file extension comparison is now made under Locale.ROOT.
+- ProgressWorkerDialogBuilder, HIDE_DELAY is now measured from when the dialog went up rather than from when it was asked for, so a dialog that appears is held the full delay instead of that less the SHOW_DELAY it spent waiting to appear. A task finishing before it appeared now disposes it right away rather than after the remainder.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel, the file name suffix comparison is now made under Locale.ROOT.
 - EditorInspector, value warning columns added.
