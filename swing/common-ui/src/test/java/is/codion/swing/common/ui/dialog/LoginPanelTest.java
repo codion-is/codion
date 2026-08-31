@@ -28,6 +28,6 @@ public final class LoginPanelTest {
 
 	@Test
 	void test() {
-		new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, null, new JLabel(), 1);
+		new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, null, new JLabel(), 1, 10);
 	}
 }

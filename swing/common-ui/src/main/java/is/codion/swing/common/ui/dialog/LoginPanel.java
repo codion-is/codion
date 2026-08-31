@@ -24,6 +24,7 @@ import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
+import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
@@ -45,8 +46,10 @@ import javax.swing.JTextField;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.function.Consumer;
 
 import static is.codion.common.reactive.state.State.present;
+import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.BorderLayout.WEST;
@@ -75,9 +78,16 @@ final class LoginPanel extends JPanel {
 	private final @Nullable ImageIcon icon;
 	private final Control okControl;
 	private final Control cancelControl;
-	private final State validating = State.state();
+	private final State validating = State.builder()
+					.consumer(new ValidationProgressBar())
+					.build();
+	private final CardLayout passwordProgressLayout = new CardLayout();
+	private final JPanel passwordProgressPanel;
+	private final int validationProgressDelay;
 
-	LoginPanel(@Nullable User defaultUser, LoginValidator loginValidator, @Nullable ImageIcon icon, @Nullable JComponent southComponent, int inputFieldColumns) {
+	LoginPanel(@Nullable User defaultUser, LoginValidator loginValidator, @Nullable ImageIcon icon, @Nullable JComponent southComponent,
+						 int inputFieldColumns, int validationProgressDelay) {
+		this.validationProgressDelay = validationProgressDelay;
 		Value<String> username = Value.nullable(defaultUser == null ? null : defaultUser.username());
 		this.usernameField = TextFieldBuilder.builder()
 						.valueClass(String.class)
@@ -91,6 +101,13 @@ final class LoginPanel extends JPanel {
 						.columns(inputFieldColumns)
 						.selectAllOnFocusGained(true)
 						.build();
+		this.passwordProgressPanel = PanelBuilder.builder()
+							.layout(passwordProgressLayout)
+							.add(passwordField, PASSWORD_CARD)
+							.add(ProgressBarBuilder.builder()
+											.preferredSize(passwordField.getPreferredSize())
+											.build(), PROGRESS_CARD)
+							.build();
 		this.icon = icon;
 		this.okControl = Control.builder()
 						.command(this::onOkPressed)
@@ -136,7 +153,7 @@ final class LoginPanel extends JPanel {
 										.add(new JLabel(Messages.password(), LEADING)))
 						.center(gridLayoutPanel(2, 1)
 										.add(usernameField)
-										.add(createPasswordProgressPanel()));
+										.add(passwordProgressPanel));
 		if (southComponent != null) {
 			credentialsPanel.south(southComponent);
 		}
@@ -151,25 +168,41 @@ final class LoginPanel extends JPanel {
 						.build(), CENTER);
 	}
 
-	private JPanel createPasswordProgressPanel() {
-		CardLayout passwordProgressLayout = new CardLayout();
-		JPanel passwordProgressPanel = PanelBuilder.builder()
-						.layout(passwordProgressLayout)
-						.add(passwordField, PASSWORD_CARD)
-						.add(ProgressBarBuilder.builder()
-										.preferredSize(passwordField.getPreferredSize())
-										.build(), PROGRESS_CARD)
-						.build();
-		validating.addConsumer(isValidating ->
-						passwordProgressLayout.show(passwordProgressPanel, isValidating ? PROGRESS_CARD : PASSWORD_CARD));
-
-		return passwordProgressPanel;
-	}
-
 	private void onOkPressed() {
 		ProgressWorker.builder()
 						.task(new LoginTask())
 						.execute();
+	}
+
+	private final class ValidationProgressBar implements Consumer<Boolean> {
+
+		private @Nullable DelayedAction showProgressBarAction;
+
+		@Override
+		public void accept(Boolean validating) {
+			if (validating) {
+				showProgressBarDelayed();
+			}
+			else {
+				hideProgressBar();
+			}
+		}
+
+		private void showProgressBarDelayed() {
+			showProgressBarAction = delayedAction(() -> passwordProgressLayout.show(passwordProgressPanel, PROGRESS_CARD), validationProgressDelay);
+		}
+
+		private void hideProgressBar() {
+			cancelShowProgressBar();
+			passwordProgressLayout.show(passwordProgressPanel, PASSWORD_CARD);
+		}
+
+		private void cancelShowProgressBar() {
+			if (showProgressBarAction != null) {
+				showProgressBarAction.cancel();
+				showProgressBarAction = null;
+			}
+		}
 	}
 
 	private final class LoginTask implements ResultTaskHandler<User> {

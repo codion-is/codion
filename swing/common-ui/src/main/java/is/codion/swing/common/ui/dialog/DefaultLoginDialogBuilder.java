@@ -40,6 +40,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	private @Nullable JComponent southComponent;
 	private int inputFieldColumns = INPUT_FIELD_COLUMNS.getOrThrow();
 	private boolean resizable = RESIZABLE.getOrThrow();
+	private int validationProgressDelay = VALIDATION_PROGRESS_BAR_DELAY.getOrThrow();
 
 	DefaultLoginDialogBuilder() {
 		title(Value.nullable(Messages.login()));
@@ -76,12 +77,18 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	}
 
 	@Override
+	public LoginDialogBuilder validationProgressDelay(int validationProgressDelay) {
+		this.validationProgressDelay = validationProgressDelay;
+		return this;
+	}
+
+	@Override
 	public User show() {
 		JFrame dummyFrame = null;
 		if (owner == null && isWindows()) {
 			owner = dummyFrame = createDummyFrame(title == null ? null : title.get(), icon);
 		}
-		LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent, inputFieldColumns);
+		LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent, inputFieldColumns, validationProgressDelay);
 		OkCancelDialogBuilder dialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
 						.component(loginPanel)
 						.owner(owner)
