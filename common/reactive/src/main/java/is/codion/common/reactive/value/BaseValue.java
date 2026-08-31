@@ -40,6 +40,19 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * <p>Holds the {@link Value} machinery: the validators, the links, the lock, the notify policy and the
+ * equality short-circuit behind it, all of which meet in {@link #set(Object)}.
+ * <p>Package private, and open where {@link AbstractValue} is sealed - {@link #get()} and {@link #set(Object)}
+ * are overridable here and final there. That is the whole reason the two are separate classes: a subclass
+ * inside this package can widen the mutation path, as {@link AbstractValueCollection} does by synchronizing
+ * it and normalising every write into an immutable snapshot, while a subclass outside it can not, and so
+ * can not break the ordering {@link #set(Object)} enforces.
+ * <p>Java has no "final to external subclasses only", so this is how it is spelled: put the machinery in a
+ * package private class and re-declare the entry points final in the public one.
+ * @param <T> the value type
+ * @see AbstractValue
+ */
 abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 
 	private final @Nullable T nullValue;

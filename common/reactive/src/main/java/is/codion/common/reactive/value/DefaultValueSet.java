@@ -18,6 +18,9 @@
  */
 package is.codion.common.reactive.value;
 
+import org.jspecify.annotations.Nullable;
+
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -28,6 +31,21 @@ final class DefaultValueSet<T> extends AbstractValueCollection<T, Set<T>> implem
 
 	private DefaultValueSet(DefaultBuilder<T> builder) {
 		super(builder);
+	}
+
+	/**
+	 * <p>{@link Value#set(Object)}, typed to the set itself, which overload resolution prefers whenever a caller
+	 * passes the declared type - {@code valueSet.set(aSet)} lands here rather than on
+	 * {@link ValueCollection#set(Collection)}.
+	 * <p>It must therefore take the same snapshot. Storing the caller's collection would leave the value's
+	 * contents mutable from the outside and able to change behind its back, with no validation and no
+	 * notification, and hand observers a snapshot that is not one.
+	 * <p>Declared here rather than on {@link AbstractValueCollection}, where it would erase to the same
+	 * signature as {@link ValueCollection#set(Collection)}.
+	 */
+	@Override
+	public synchronized void set(@Nullable Set<T> values) {
+		set((Collection<T>) values);
 	}
 
 	@Override

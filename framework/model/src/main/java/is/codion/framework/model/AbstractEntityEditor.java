@@ -2640,7 +2640,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			T previousValue = entity.instance.set(attribute, value);
 			if (!Objects.deepEquals(value, previousValue)) {
 				notifyValueEdit(attribute, value, dependingValues);
-				//an unchanged value is not propagated, which settles a cycle that converges;
+				//an unchanged value is not propagated, which settles a cycle that converges
 				//one that does not is stopped by propagate() itself
 				propagate();
 			}
