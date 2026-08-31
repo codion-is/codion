@@ -210,25 +210,25 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		}
 
 		@Override
-		public Builder<T> onItemSelected(Consumer<T> item) {
+		public Builder<T> onSelectedItem(Consumer<T> item) {
 			itemSelectedListeners.add(requireNonNull(item));
 			return this;
 		}
 
 		@Override
-		public Builder<T> onItemsSelected(Consumer<List<T>> items) {
+		public Builder<T> onSelectedItems(Consumer<List<T>> items) {
 			itemsSelectedListeners.add(requireNonNull(items));
 			return this;
 		}
 
 		@Override
-		public Builder<T> onIndexSelected(Consumer<Integer> index) {
+		public Builder<T> onSelectedIndex(Consumer<Integer> index) {
 			indexSelectedListeners.add(requireNonNull(index));
 			return this;
 		}
 
 		@Override
-		public Builder<T> onIndexesSelected(Consumer<List<Integer>> indexes) {
+		public Builder<T> onSelectedIndexes(Consumer<List<Integer>> indexes) {
 			indexesSelectedListeners.add(requireNonNull(indexes));
 			return this;
 		}

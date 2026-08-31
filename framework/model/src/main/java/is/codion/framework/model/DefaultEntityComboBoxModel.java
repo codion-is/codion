@@ -82,8 +82,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.select(builder.selectEntity)
 						.nullItem(builder.nullItem)
 						.refresh(builder.refresh);
-		if (builder.onItemSelected != null) {
-			modelBuilder.onItemSelected(builder.onItemSelected);
+		if (builder.onSelectedItem != null) {
+			modelBuilder.onSelectedItem(builder.onSelectedItem);
 		}
 		this.comboBoxModel = modelBuilder.build();
 		this.filter = new DefaultFilter();
@@ -489,7 +489,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private boolean filterSelected = false;
 		private @Nullable Entity selectEntity;
 		private @Nullable Entity nullItem;
-		private @Nullable Consumer<@Nullable Entity> onItemSelected;
+		private @Nullable Consumer<@Nullable Entity> onSelectedItem;
 		private boolean refresh = false;
 
 		private DefaultBuilder(EntityType entityType, @Nullable ForeignKey foreignKey, EntityConnection connection) {
@@ -570,8 +570,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public Builder onItemSelected(Consumer<@Nullable Entity> item) {
-			this.onItemSelected = requireNonNull(item);
+		public Builder onSelectedItem(Consumer<@Nullable Entity> item) {
+			this.onSelectedItem = requireNonNull(item);
 			return this;
 		}
 

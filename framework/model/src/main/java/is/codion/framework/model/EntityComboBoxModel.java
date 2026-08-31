@@ -238,7 +238,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param item receives the selected item, note that this item may be null
 		 * @return this builder instance
 		 */
-		Builder onItemSelected(Consumer<@Nullable Entity> item);
+		Builder onSelectedItem(Consumer<@Nullable Entity> item);
 
 		/**
 		 * Default false.

@@ -83,7 +83,7 @@ final class EntityTableExportModel {
 		this.configurationFiles = SwingFilterComboBoxModel.builder()
 						.items(this::refreshConfigurationFiles)
 						.nullItem(NULL_CONFIGURATION_FILE)
-						.onItemSelected(this::configurationFileSelected)
+						.onSelectedItem(this::configurationFileSelected)
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
 		this.all = State.state(!selected.is());

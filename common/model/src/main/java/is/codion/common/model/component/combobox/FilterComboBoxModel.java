@@ -163,7 +163,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @param item receives the selected item, note that this item may be null
 		 * @return this builder instance
 		 */
-		Builder<T> onItemSelected(Consumer<@Nullable T> item);
+		Builder<T> onSelectedItem(Consumer<@Nullable T> item);
 
 		/**
 		 * By default, exceptions during refresh are rethrown,

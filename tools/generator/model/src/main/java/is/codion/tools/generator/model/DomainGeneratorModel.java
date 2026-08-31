@@ -119,7 +119,7 @@ public final class DomainGeneratorModel {
 					SwingFilterTableModel.builder()
 									.columns(new EntityColumns())
 									.items(new EntityItems())
-									.onItemSelected(this::search)
+									.onSelectedItem(this::search)
 									.rowEditor(EntityEditor::new)
 									.build();
 	private final Database database;

@@ -205,8 +205,8 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 		}
 
 		@Override
-		public Builder<T> onItemSelected(Consumer<@Nullable T> item) {
-			builder.onItemSelected(item);
+		public Builder<T> onSelectedItem(Consumer<@Nullable T> item) {
+			builder.onSelectedItem(item);
 			return this;
 		}
 

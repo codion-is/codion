@@ -60,7 +60,7 @@ final class ScenarioPanel<T> extends JPanel {
 						.columns(new ScenarioColumns())
 						.rowEditor(ScenarioEditor::new)
 						.items(() -> scenarioRows)
-						.onItemsSelected(this::onScenariosSelected)
+						.onSelectedItems(this::onScenariosSelected)
 						.refresh(true)
 						.build();
 		FilterTable<RandomItem<Scenario<T>>, String> table = FilterTable.builder()

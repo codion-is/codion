@@ -203,25 +203,25 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		 * @param item receives the selected item
 		 * @return this builder instance
 		 */
-		Builder<R, C> onItemSelected(Consumer<R> item);
+		Builder<R, C> onSelectedItem(Consumer<R> item);
 
 		/**
 		 * @param items receives the selected items
 		 * @return this builder instance
 		 */
-		Builder<R, C> onItemsSelected(Consumer<List<R>> items);
+		Builder<R, C> onSelectedItems(Consumer<List<R>> items);
 
 		/**
 		 * @param index receives the selected index
 		 * @return this builder instance
 		 */
-		Builder<R, C> onIndexSelected(Consumer<Integer> index);
+		Builder<R, C> onSelectedIndex(Consumer<Integer> index);
 
 		/**
 		 * @param indexes receives the selected indexes
 		 * @return this builder instance
 		 */
-		Builder<R, C> onIndexesSelected(Consumer<List<Integer>> indexes);
+		Builder<R, C> onSelectedIndexes(Consumer<List<Integer>> indexes);
 
 		/**
 		 * Provides the {@link MultiSelection} for this model, given its {@link IncludedItems}.
