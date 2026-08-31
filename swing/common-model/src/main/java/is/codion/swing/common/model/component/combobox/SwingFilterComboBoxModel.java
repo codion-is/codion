@@ -61,7 +61,7 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 	 * @return a new {@link SwingFilterComboBoxModel} delegating to the given model
 	 */
 	static <T> SwingFilterComboBoxModel<T> model(FilterComboBoxModel<T> model) {
-		return DefaultSwingFilterComboBoxModel.model(model);
+		return DefaultSwingFilterComboBoxModel.model(requireNonNull(model));
 	}
 
 	/**
