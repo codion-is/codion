@@ -280,7 +280,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR.set(true);
 		ValidationIndicator.INDICATOR_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidationIndicator");
 		CalendarPanel.WEEK_NUMBERS.set(true);
-		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
+		ReferentialIntegrityErrorHandling.HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		// Include all the standard flat look and feels
 		FlatLookAndFeelThemes.addAll();

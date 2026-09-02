@@ -151,7 +151,7 @@ import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDialogs.*;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
-import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING;
+import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.HANDLING;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -2179,7 +2179,7 @@ public class EntityTablePanel extends JPanel {
 		private SelectionMode columnSelection = COLUMN_SELECTION.getOrThrow();
 		private SelectionMode autoResizeModeSelection = AUTO_RESIZE_MODE_SELECTION.getOrThrow();
 		private SelectionMode editAttributeSelection = EDIT_ATTRIBUTE_SELECTION.getOrThrow();
-		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = REFERENTIAL_INTEGRITY_ERROR_HANDLING.getOrThrow();
+		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = HANDLING.getOrThrow();
 		private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.getOrThrow();
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
 		private boolean refreshProgressBar = REFRESH_PROGRESS_BAR.getOrThrow();
