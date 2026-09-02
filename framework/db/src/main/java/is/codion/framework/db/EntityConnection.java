@@ -108,6 +108,22 @@ import static java.util.stream.StreamSupport.stream;
  * </ul>
  * <p>{@link #iterator(Select)} is a further exception, driving a live result set outside the monitor.
  *
+ * <p>Entity Ownership</p>
+ * Entities returned by a connection are fresh instances, owned by the caller. A select creates new instances on
+ * every call, a connection keeps no identity map and returns no instance twice, so modifying a returned entity
+ * affects nothing but that instance. Returned entities are mutable, with one exception: results served from an
+ * active query cache are shared between callers and therefore {@link Entity#immutable() immutable}, see
+ * {@link #cacheQueries()}.
+ * <p>The referenced entities a select populates, the values of the foreign keys, are shared as well: entities
+ * referencing the same key hold the same instance, selected once per referenced entity type rather than once per
+ * row, and that instance is therefore {@link Entity#immutable() immutable}, along with everything it references
+ * in turn. A referenced entity not found, deleted or filtered out of a view, is represented by an immutable
+ * empty entity wrapping its key. A referenced entity set by the caller is stored as given.
+ * <p>Entities passed to a connection are read, not modified, with one exception: inserting writes generated key
+ * values into the given entity, via its column {@link is.codion.framework.domain.entity.attribute.Column.Generator
+ * generators}. Updating leaves the given entity as it was, its modified state included. {@link #insertSelect(Entity)}
+ * and {@link #updateSelect(Entity)} return freshly selected instances rather than the ones given.
+ *
  * <p>Basic Usage</p>
  * {@snippet :
  * EntityConnection connection = EntityConnection.builder()
