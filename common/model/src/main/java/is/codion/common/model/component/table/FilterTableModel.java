@@ -21,7 +21,6 @@ package is.codion.common.model.component.table;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
-import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.utilities.Text;
 
@@ -33,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -136,8 +134,10 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 	 * A builder for a {@link FilterTableModel}.
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
+	 * @param <B> the builder type
+	 * @see AbstractFilterTableModelBuilder
 	 */
-	interface Builder<R, C> {
+	interface Builder<R, C, B extends Builder<R, C, B>> {
 
 		/**
 		 * Provides a {@link Builder} instance
@@ -151,27 +151,27 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 			 * @return a {@link Builder} based on the given columns
 			 * @throws NullPointerException in case {@code columns} is null
 			 */
-			<R, C> Builder<R, C> columns(TableColumns<R, C> columns);
+			<R, C> Builder<R, C, ?> columns(TableColumns<R, C> columns);
 		}
 
 		/**
 		 * @param filters the column filter model factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> filters(Supplier<Map<C, ConditionModel<?>>> filters);
+		B filters(Supplier<Map<C, ConditionModel<?>>> filters);
 
 		/**
 		 * @param items supplies the items
 		 * @return this builder instance
 		 */
-		Builder<R, C> items(Supplier<Collection<R>> items);
+		B items(Supplier<Collection<R>> items);
 
 		/**
 		 * Items failing validation can not be added to the model.
 		 * @param validator the item validator
 		 * @return this builder instance
 		 */
-		Builder<R, C> validator(Predicate<R> validator);
+		B validator(Predicate<R> validator);
 
 		/**
 		 * By default, exceptions during refresh are rethrown,
@@ -179,66 +179,49 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		 * @param onRefreshException the exception handler to use during refresh
 		 * @return this builder instance
 		 */
-		Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException);
+		B onRefreshException(Consumer<Exception> onRefreshException);
 
 		/**
 		 * @param included the {@link Predicate} controlling which items should be included
 		 * @return this builder instance
 		 */
-		Builder<R, C> included(Predicate<R> included);
+		B included(Predicate<R> included);
 
 		/**
 		 * @param refresh true if the model items should be refreshed on initialization, false by default
 		 * @return this builder instance
 		 */
-		Builder<R, C> refresh(boolean refresh);
+		B refresh(boolean refresh);
 
 		/**
 		 * @param listener the selection listener
 		 * @return this builder instance
 		 */
-		Builder<R, C> onSelectionChanged(Runnable listener);
+		B onSelectionChanged(Runnable listener);
 
 		/**
 		 * @param item receives the selected item
 		 * @return this builder instance
 		 */
-		Builder<R, C> onSelectedItem(Consumer<R> item);
+		B onSelectedItem(Consumer<R> item);
 
 		/**
 		 * @param items receives the selected items
 		 * @return this builder instance
 		 */
-		Builder<R, C> onSelectedItems(Consumer<List<R>> items);
+		B onSelectedItems(Consumer<List<R>> items);
 
 		/**
 		 * @param index receives the selected index
 		 * @return this builder instance
 		 */
-		Builder<R, C> onSelectedIndex(Consumer<Integer> index);
+		B onSelectedIndex(Consumer<Integer> index);
 
 		/**
 		 * @param indexes receives the selected indexes
 		 * @return this builder instance
 		 */
-		Builder<R, C> onSelectedIndexes(Consumer<List<Integer>> indexes);
-
-		/**
-		 * Provides the {@link MultiSelection} for this model, given its {@link IncludedItems}.
-		 * The default is the pure-Java {@link MultiSelection#multiSelection(MultiSelection.IndexedItems)};
-		 * the Swing layer plugs a {@code javax.swing.ListSelectionModel} based one.
-		 * @param selection the selection factory
-		 * @return this builder instance
-		 */
-		Builder<R, C> selection(Function<IncludedItems<R>, MultiSelection<R>> selection);
-
-		/**
-		 * Adds an {@link ItemsListener} notified of fine-grained changes to the included items, allowing
-		 * toolkit layers to bridge to their table change notifications (e.g. {@code TableModelEvent}s).
-		 * @param itemsListener the {@link ItemsListener} to add
-		 * @return this builder instance
-		 */
-		Builder<R, C> listener(ItemsListener itemsListener);
+		B onSelectedIndexes(Consumer<List<Integer>> indexes);
 
 		/**
 		 * @return a new {@link FilterTableModel} instance.

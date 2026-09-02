@@ -25,7 +25,6 @@ import is.codion.common.reactive.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityDefinition.ForeignKeys;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -36,9 +35,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -71,10 +68,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
-	DefaultEntityComboBoxModel(DefaultBuilder builder) {
+	DefaultEntityComboBoxModel(AbstractEntityComboBoxModelBuilder<?> builder) {
 		//a fresh copy per build() so that reusing the builder yields independent models
 		this.entityItems = new EntityItems(builder.items);
-		FilterComboBoxModel.Builder<Entity> modelBuilder = FilterComboBoxModel.builder()
+		FilterComboBoxModel.Builder<Entity, ?> modelBuilder = FilterComboBoxModel.builder()
 						.items(entityItems)
 						// otherwise the sorting overrides the order by
 						.comparator(entityItems.orderBy == null ? builder.comparator : null)
@@ -358,16 +355,16 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	private static final class EntityItems implements Supplier<Collection<Entity>> {
+	static final class EntityItems implements Supplier<Collection<Entity>> {
 
-		private final EntityDefinition entityDefinition;
-		private final EntityConnection connection;
-		private final Value<Supplier<Condition>> condition;
+		final EntityDefinition entityDefinition;
+		final EntityConnection connection;
+		final Value<Supplier<Condition>> condition;
 
-		private @Nullable OrderBy orderBy;
-		private Collection<Attribute<?>> attributes = emptyList();
+		@Nullable OrderBy orderBy;
+		Collection<Attribute<?>> attributes = emptyList();
 
-		private EntityItems(EntityDefinition entityDefinition, EntityConnection connection) {
+		EntityItems(EntityDefinition entityDefinition, EntityConnection connection) {
 			this.entityDefinition = entityDefinition;
 			this.connection = connection;
 			this.condition = Value.nonNull(new DefaultConditionSupplier(entityDefinition.type()));
@@ -402,7 +399,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	private static void validateLink(ForeignKey foreignKey, EntityComboBoxModel filterModel) {
+	static void validateLink(ForeignKey foreignKey, EntityComboBoxModel filterModel) {
 		if (!foreignKey.referencedType().equals(requireNonNull(filterModel).entityDefinition().type())) {
 			throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityDefinition().type()
 							+ ", should be: " + foreignKey.referencedType());
@@ -442,152 +439,45 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	static class DefaultEntityTypeStep implements Builder.EntityTypeStep {
+	private static final class DefaultEntityTypeStep implements Builder.EntityTypeStep {
 
 		@Override
 		public Builder.ConnectionStep entityType(EntityType entityType) {
-			return new DefaultConnectionStep(requireNonNull(entityType));
+			return new DefaultConnectionStep(requireNonNull(entityType), null);
 		}
 
 		@Override
 		public Builder.ConnectionStep foreignKey(ForeignKey foreignKey) {
-			return new DefaultConnectionStep(requireNonNull(foreignKey));
+			return new DefaultConnectionStep(requireNonNull(foreignKey).referencedType(), foreignKey);
 		}
 	}
 
-	private static class DefaultConnectionStep implements Builder.ConnectionStep {
+	private static final class DefaultConnectionStep implements Builder.ConnectionStep {
 
 		private final EntityType entityType;
 		private final @Nullable ForeignKey foreignKey;
 
-		private DefaultConnectionStep(ForeignKey foreignKey) {
-			this.entityType = foreignKey.referencedType();
+		private DefaultConnectionStep(EntityType entityType, @Nullable ForeignKey foreignKey) {
+			this.entityType = entityType;
 			this.foreignKey = foreignKey;
 		}
 
-		private DefaultConnectionStep(EntityType entityType) {
-			this.entityType = entityType;
-			this.foreignKey = null;
-		}
-
 		@Override
-		public Builder connection(EntityConnection connection) {
-			return new DefaultBuilder(entityType, foreignKey, connection);
+		public Builder<?> connection(EntityConnection connection) {
+			return foreignKey == null ? new DefaultBuilder(entityType, connection) : new DefaultBuilder(foreignKey, connection);
 		}
 	}
 
-	static final class DefaultBuilder implements Builder {
+	static final class DefaultBuilder extends AbstractEntityComboBoxModelBuilder<DefaultBuilder> {
 
 		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
-		private final EntityItems items;
-		private final EntityDefinition entityDefinition;
-		private final Map<ForeignKey, EntityComboBoxModel> filterLinks = new HashMap<>();
-
-		private @Nullable Comparator<Entity> comparator;
-		private boolean persistenceAware = PERSISTENCE_AWARE.getOrThrow();
-		private boolean filterSelected = false;
-		private @Nullable Entity selectEntity;
-		private @Nullable Entity nullItem;
-		private @Nullable Consumer<@Nullable Entity> onSelectedItem;
-		private boolean refresh = false;
-
-		private DefaultBuilder(EntityType entityType, @Nullable ForeignKey foreignKey, EntityConnection connection) {
-			this.entityDefinition = requireNonNull(connection).entities().definition(entityType);
-			this.items = new EntityItems(entityDefinition, connection);
-			this.comparator = connection.entities().definition(entityType).comparator();
-			if (foreignKey != null) {
-				ForeignKeys foreignKeys = connection.entities().definition(foreignKey.entityType()).foreignKeys();
-				includeNull(foreignKeys.nullable(foreignKey));
-				attributes(foreignKeys.definition(foreignKey).attributes());
-			}
+		private DefaultBuilder(EntityType entityType, EntityConnection connection) {
+			super(entityType, connection);
 		}
 
-		@Override
-		public Builder orderBy(@Nullable OrderBy orderBy) {
-			items.orderBy = orderBy;
-			return this;
-		}
-
-		@Override
-		public Builder comparator(@Nullable Comparator<Entity> comparator) {
-			this.comparator = comparator;
-			return this;
-		}
-
-		@Override
-		public Builder condition(@Nullable Supplier<Condition> condition) {
-			items.condition.set(condition);
-			return this;
-		}
-
-		@Override
-		public Builder attributes(Collection<Attribute<?>> attributes) {
-			for (Attribute<?> attribute : requireNonNull(attributes)) {
-				if (!attribute.entityType().equals(items.entityDefinition.type())) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + items.entityDefinition.type());
-				}
-			}
-			items.attributes = new ArrayList<>(attributes);
-			return this;
-		}
-
-		@Override
-		public Builder includeNull(boolean includeNull) {
-			return nullCaption(includeNull ? FilterComboBoxModel.NULL_CAPTION.getOrThrow() : null);
-		}
-
-		@Override
-		public Builder nullCaption(@Nullable String nullCaption) {
-			this.nullItem = createNullItem(nullCaption, items.entityDefinition);
-			return this;
-		}
-
-		@Override
-		public Builder select(@Nullable Entity entity) {
-			this.selectEntity = entity;
-			return this;
-		}
-
-		@Override
-		public Builder persistenceAware(boolean persistenceAware) {
-			this.persistenceAware = persistenceAware;
-			return this;
-		}
-
-		@Override
-		public Builder filterSelected(boolean filterSelected) {
-			this.filterSelected = filterSelected;
-			return this;
-		}
-
-		@Override
-		public Builder filter(ForeignKey foreignKey, EntityComboBoxModel filterModel) {
-			entityDefinition.foreignKeys().definition(foreignKey);
-			validateLink(foreignKey, filterModel);
-			filterLinks.put(foreignKey, filterModel);
-			return this;
-		}
-
-		@Override
-		public Builder onSelectedItem(Consumer<@Nullable Entity> item) {
-			this.onSelectedItem = requireNonNull(item);
-			return this;
-		}
-
-		@Override
-		public Builder refresh(boolean refresh) {
-			this.refresh = refresh;
-			return this;
-		}
-
-		@Override
-		public EntityComboBoxModel build() {
-			return new DefaultEntityComboBoxModel(this);
-		}
-
-		private static @Nullable Entity createNullItem(@Nullable String nullCaption, EntityDefinition entityDefinition) {
-			return nullCaption == null ? null : entityDefinition.entity(nullCaption);
+		private DefaultBuilder(ForeignKey foreignKey, EntityConnection connection) {
+			super(foreignKey, connection);
 		}
 	}
 }

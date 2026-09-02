@@ -19,7 +19,6 @@
 package is.codion.common.model.component.list;
 
 import is.codion.common.model.filter.FilterModel;
-import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 
 import org.jspecify.annotations.Nullable;
@@ -28,7 +27,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -57,8 +55,10 @@ public interface FilterListModel<T> extends FilterModel<T> {
 	/**
 	 * Builds a {@link FilterListModel}
 	 * @param <T> the item type
+	 * @param <B> the builder type
+	 * @see AbstractFilterListModelBuilder
 	 */
-	interface Builder<T> {
+	interface Builder<T, B extends Builder<T, B>> {
 
 		/**
 		 * Provides a {@link Builder}
@@ -69,28 +69,28 @@ public interface FilterListModel<T> extends FilterModel<T> {
 			 * @param <T> the item type
 			 * @return a new {@link Builder} instance
 			 */
-			<T> FilterListModel.Builder<T> items();
+			<T> Builder<T, ?> items();
 
 			/**
 			 * @param <T> the item type
 			 * @param items the items to add to the model
 			 * @return a new {@link Builder} instance
 			 */
-			<T> FilterListModel.Builder<T> items(Collection<T> items);
+			<T> Builder<T, ?> items(Collection<T> items);
 
 			/**
 			 * @param <T> the item type
 			 * @param items the item supplier
-			 * @return a new {@link FilterListModel.Builder} instance
+			 * @return a new {@link Builder} instance
 			 */
-			<T> FilterListModel.Builder<T> items(Supplier<Collection<T>> items);
+			<T> Builder<T, ?> items(Supplier<Collection<T>> items);
 		}
 
 		/**
 		 * @param comparator the comparator to use when sorting
 		 * @return this builder instance
 		 */
-		Builder<T> comparator(@Nullable Comparator<T> comparator);
+		B comparator(@Nullable Comparator<T> comparator);
 
 		/**
 		 * By default, exceptions during refresh are rethrown,
@@ -98,61 +98,43 @@ public interface FilterListModel<T> extends FilterModel<T> {
 		 * @param onRefreshException the exception handler to use during refresh
 		 * @return this builder instance
 		 */
-		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
+		B onRefreshException(Consumer<Exception> onRefreshException);
 
 		/**
 		 * @param included the {@link Predicate} controlling which items should be included
 		 * @return this builder instance
 		 */
-		Builder<T> included(Predicate<T> included);
+		B included(Predicate<T> included);
 
 		/**
 		 * @param listener the selection listener
 		 * @return this builder instance
 		 */
-		Builder<T> onSelectionChanged(Runnable listener);
+		B onSelectionChanged(Runnable listener);
 
 		/**
 		 * @param item receives the selected item
 		 * @return this builder instance
 		 */
-		Builder<T> onSelectedItem(Consumer<T> item);
+		B onSelectedItem(Consumer<T> item);
 
 		/**
 		 * @param items receives the selected items
 		 * @return this builder instance
 		 */
-		Builder<T> onSelectedItems(Consumer<List<T>> items);
+		B onSelectedItems(Consumer<List<T>> items);
 
 		/**
 		 * @param index receives the selected index
 		 * @return this builder instance
 		 */
-		Builder<T> onSelectedIndex(Consumer<Integer> index);
+		B onSelectedIndex(Consumer<Integer> index);
 
 		/**
 		 * @param indexes receives the selected indexes
 		 * @return this builder instance
 		 */
-		Builder<T> onSelectedIndexes(Consumer<List<Integer>> indexes);
-
-		/**
-		 * Provides the {@link MultiSelection} for this model, given its {@link IncludedItems}.
-		 * The default is the pure-Java {@link MultiSelection#multiSelection(MultiSelection.IndexedItems)};
-		 * the Swing layer plugs a {@code javax.swing.ListSelectionModel} based one — mirroring
-		 * {@link FilterModel.Items.Builder.SelectionStep}.
-		 * @param selection the selection factory
-		 * @return this builder instance
-		 */
-		Builder<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection);
-
-		/**
-		 * Adds an {@link ItemsListener} notified of fine-grained changes to the included items, allowing
-		 * toolkit layers to bridge to their list change notifications (e.g. {@code ListDataEvent}s).
-		 * @param itemsListener the {@link ItemsListener} to add
-		 * @return this builder instance
-		 */
-		Builder<T> listener(ItemsListener itemsListener);
+		B onSelectedIndexes(Consumer<List<Integer>> indexes);
 
 		/**
 		 * @return a new {@link FilterListModel} instance

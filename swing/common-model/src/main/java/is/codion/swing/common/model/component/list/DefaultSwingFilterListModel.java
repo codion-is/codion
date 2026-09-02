@@ -18,19 +18,17 @@
  */
 package is.codion.swing.common.model.component.list;
 
+import is.codion.common.model.component.list.AbstractFilterListModelBuilder;
 import is.codion.common.model.component.list.FilterListModel;
 import is.codion.common.model.component.list.FilterListSort;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 
-import org.jspecify.annotations.Nullable;
 
 import javax.swing.AbstractListModel;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A Swing {@link javax.swing.ListModel} coat over the UI-agnostic
@@ -45,10 +43,7 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 	private final FilterListSelection<T> selection;
 
 	private DefaultSwingFilterListModel(DefaultBuilder<T> builder) {
-		this.model = builder.builder
-						.selection(DefaultListSelection::new)
-						.listener(new ListModelAdapter())
-						.build();
+		this.model = builder.model(new ListModelAdapter());
 		this.selection = (FilterListSelection<T>) model.selection();
 	}
 
@@ -107,81 +102,39 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 
 		@Override
 		public <T> Builder<T> items() {
-			return new DefaultBuilder<>(FilterListModel.builder().items());
+			return new DefaultBuilder<>(emptyList());
 		}
 
 		@Override
 		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultBuilder<>(FilterListModel.builder().items(items));
+			return new DefaultBuilder<>(items);
 		}
 
 		@Override
 		public <T> Builder<T> items(Supplier<Collection<T>> items) {
-			return new DefaultBuilder<>(FilterListModel.builder().items(items));
+			return new DefaultBuilder<>(items);
 		}
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<T> extends AbstractFilterListModelBuilder<T, Builder<T>> implements Builder<T> {
 
 		static final Builder.ItemsStep ITEMS = new DefaultItemsStep();
 
-		private final FilterListModel.Builder<T> builder;
-
-		private DefaultBuilder(FilterListModel.Builder<T> builder) {
-			this.builder = builder;
+		private DefaultBuilder(Collection<T> items) {
+			super(items);
 		}
 
-		@Override
-		public Builder<T> comparator(@Nullable Comparator<T> comparator) {
-			builder.comparator(comparator);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
-			builder.onRefreshException(onRefreshException);
-			return this;
-		}
-
-		@Override
-		public Builder<T> included(Predicate<T> included) {
-			builder.included(included);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectionChanged(Runnable listener) {
-			builder.onSelectionChanged(listener);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedItem(Consumer<T> item) {
-			builder.onSelectedItem(item);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedItems(Consumer<List<T>> items) {
-			builder.onSelectedItems(items);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedIndex(Consumer<Integer> index) {
-			builder.onSelectedIndex(index);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedIndexes(Consumer<List<Integer>> indexes) {
-			builder.onSelectedIndexes(indexes);
-			return this;
+		private DefaultBuilder(Supplier<Collection<T>> supplier) {
+			super(supplier);
 		}
 
 		@Override
 		public SwingFilterListModel<T> build() {
 			return new DefaultSwingFilterListModel<>(this);
+		}
+
+		FilterListModel<T> model(ItemsListener adapter) {
+			return build(DefaultListSelection::new, adapter);
 		}
 	}
 }

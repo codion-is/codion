@@ -26,17 +26,12 @@ import is.codion.common.reactive.value.Value;
 
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterListModel<T> implements FilterListModel<T> {
 
@@ -44,11 +39,9 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 	private final MultiSelection<T> selection;
 	private final FilterListSort<T> sort;
 
-	DefaultFilterListModel(DefaultBuilder<T> builder) {
+	DefaultFilterListModel(AbstractFilterListModelBuilder<T, ?> builder,
+												 Function<IncludedItems<T>, MultiSelection<T>> selectionFactory, @Nullable ItemsListener listener) {
 		this.sort = new DefaultListSort(builder.comparator);
-		Function<IncludedItems<T>, MultiSelection<T>> selectionFactory = builder.selectionFactory != null
-						? builder.selectionFactory
-						: MultiSelection::multiSelection;
 		Items.Builder<T> itemsBuilder = Items.builder()
 						.selection(selectionFactory)
 						.sort(sort);
@@ -58,7 +51,9 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		if (builder.onRefreshException != null) {
 			itemsBuilder.onRefreshException(builder.onRefreshException);
 		}
-		builder.itemsListeners.forEach(itemsBuilder::listener);
+		if (listener != null) {
+			itemsBuilder.listener(listener);
+		}
 		this.items = itemsBuilder.build();
 		this.items.included().predicate().set(builder.included);
 		this.selection = (MultiSelection<T>) items.included().selection();
@@ -147,107 +142,31 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 	private static final class DefaultItemsStep implements Builder.ItemsStep {
 
 		@Override
-		public <T> Builder<T> items() {
-			return new DefaultBuilder<>(emptyList(), null);
+		public <T> Builder<T, ?> items() {
+			return new DefaultBuilder<>(emptyList());
 		}
 
 		@Override
-		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultBuilder<>(requireNonNull(items), null);
+		public <T> Builder<T, ?> items(Collection<T> items) {
+			return new DefaultBuilder<>(items);
 		}
 
 		@Override
-		public <T> Builder<T> items(Supplier<Collection<T>> items) {
-			return new DefaultBuilder<>(emptyList(), requireNonNull(items));
+		public <T> Builder<T, ?> items(Supplier<Collection<T>> items) {
+			return new DefaultBuilder<>(items);
 		}
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<T> extends AbstractFilterListModelBuilder<T, DefaultBuilder<T>> {
 
 		static final Builder.ItemsStep ITEMS = new DefaultItemsStep();
 
-		private final Collection<T> items;
-		private final @Nullable Supplier<Collection<T>> supplier;
-		private final List<Runnable> selectionListeners = new ArrayList<>();
-		private final List<Consumer<T>> itemSelectedListeners = new ArrayList<>();
-		private final List<Consumer<List<T>>> itemsSelectedListeners = new ArrayList<>();
-		private final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
-		private final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
-		private final List<ItemsListener> itemsListeners = new ArrayList<>();
-
-		private @Nullable Comparator<T> comparator;
-		private @Nullable Consumer<Exception> onRefreshException;
-		private @Nullable Predicate<T> included;
-		private @Nullable Function<IncludedItems<T>, MultiSelection<T>> selectionFactory;
-
-		private DefaultBuilder(Collection<T> items, @Nullable Supplier<Collection<T>> supplier) {
-			this.items = items;
-			this.supplier = supplier;
+		private DefaultBuilder(Collection<T> items) {
+			super(items);
 		}
 
-		@Override
-		public Builder<T> comparator(@Nullable Comparator<T> comparator) {
-			this.comparator = comparator;
-			return this;
-		}
-
-		@Override
-		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
-			this.onRefreshException = requireNonNull(onRefreshException);
-			return this;
-		}
-
-		@Override
-		public Builder<T> included(Predicate<T> included) {
-			this.included = requireNonNull(included);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectionChanged(Runnable listener) {
-			selectionListeners.add(requireNonNull(listener));
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedItem(Consumer<T> item) {
-			itemSelectedListeners.add(requireNonNull(item));
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedItems(Consumer<List<T>> items) {
-			itemsSelectedListeners.add(requireNonNull(items));
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedIndex(Consumer<Integer> index) {
-			indexSelectedListeners.add(requireNonNull(index));
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedIndexes(Consumer<List<Integer>> indexes) {
-			indexesSelectedListeners.add(requireNonNull(indexes));
-			return this;
-		}
-
-		@Override
-		public Builder<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection) {
-			this.selectionFactory = requireNonNull(selection);
-			return this;
-		}
-
-		@Override
-		public Builder<T> listener(ItemsListener itemsListener) {
-			itemsListeners.add(requireNonNull(itemsListener));
-			return this;
-		}
-
-		@Override
-		public FilterListModel<T> build() {
-			return new DefaultFilterListModel<>(this);
+		private DefaultBuilder(Supplier<Collection<T>> supplier) {
+			super(supplier);
 		}
 	}
 }
