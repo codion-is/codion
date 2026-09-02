@@ -361,9 +361,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private <T> @Nullable T preserveSelection(Supplier<@Nullable T> mutation, UnaryOperator<List<R>> replacements) {
 		List<R> selectedItems = selection.items().get();
 		//save and restore, a caller already grouping must not have its group terminated here
-		boolean wasAdjusting = selection.adjusting();
+		boolean selectionGrouping = selection.grouping();
 		boolean wasGrouping = grouping;
-		selection.adjusting(true);
+		selection.grouping(true);
 		grouping = true;
 		try {
 			T result = mutation.get();
@@ -373,7 +373,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 		finally {
 			grouping = wasGrouping;
-			selection.adjusting(wasAdjusting);
+			selection.grouping(selectionGrouping);
 			if (!grouping) {
 				included.notifyPending();
 				filtered.notifyPending();

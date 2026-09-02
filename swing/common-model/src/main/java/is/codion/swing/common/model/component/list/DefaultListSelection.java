@@ -109,12 +109,12 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
-	public void adjusting(boolean adjusting) {
-		setValueIsAdjusting(adjusting);
+	public void grouping(boolean grouping) {
+		setValueIsAdjusting(grouping);
 	}
 
 	@Override
-	public boolean adjusting() {
+	public boolean grouping() {
 		return getValueIsAdjusting();
 	}
 
@@ -228,6 +228,11 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		@Override
+		public int size() {
+			return DefaultListSelection.this.getSelectedItemsCount();
+		}
+
+		@Override
 		public boolean contains(int index) {
 			return isSelectedIndex(index);
 		}
@@ -238,13 +243,13 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		@Override
-		public boolean adjusting() {
+		public boolean grouping() {
 			return getValueIsAdjusting();
 		}
 
 		@Override
-		public void adjusting(boolean adjusting) {
-			setValueIsAdjusting(adjusting);
+		public void grouping(boolean grouping) {
+			setValueIsAdjusting(grouping);
 		}
 
 		@Override

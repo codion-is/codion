@@ -104,28 +104,28 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	/**
 	 * Indicates whether the subsequent selection events
 	 * should be grouped and not triggered individually
-	 * <p>Note that grouping is not reentrant, {@code adjusting(false)} ends the group whether or not it
+	 * <p>Note that grouping is not reentrant, {@code grouping(false)} ends the group whether or not it
 	 * opened one. Code which may run inside a group of its caller's making saves and restores the state:
 	 * {@snippet :
-	 * boolean wasAdjusting = selection.adjusting();
-	 * selection.adjusting(true);
+	 * boolean wasGrouping = selection.grouping();
+	 * selection.grouping(true);
 	 * try {
 	 *   // mutate the selection
 	 * }
 	 * finally {
-	 *   selection.adjusting(wasAdjusting);
+	 *   selection.grouping(wasGrouping);
 	 * }
 	 *}
-	 * @param adjusting true if subsequent selection events should be grouped
-	 * @see #adjusting()
+	 * @param grouping true if subsequent selection events should be grouped
+	 * @see #grouping()
 	 */
-	void adjusting(boolean adjusting);
+	void grouping(boolean grouping);
 
 	/**
 	 * @return true if the subsequent selection events are being grouped
-	 * @see #adjusting(boolean)
+	 * @see #grouping(boolean)
 	 */
-	boolean adjusting();
+	boolean grouping();
 
 	/**
 	 * @param items the indexed items
@@ -300,11 +300,16 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 
 		/**
 		 * <p>Replaces the selected indexes. A no-op if they are unchanged, otherwise {@link #changing()} is notified
-		 * before and {@link #changed()} after, the latter at the end of the adjustment while {@link #adjusting()}.
+		 * before and {@link #changed()} after, the latter at the end of the adjustment while {@link #grouping()}.
 		 * <p>Under {@link #singleSelection()} only the highest of the given indexes is selected.
 		 * @param indexes the indexes to select
 		 */
 		void set(Collection<Integer> indexes);
+
+		/**
+		 * @return the number of stored indexes
+		 */
+		int size();
 
 		/**
 		 * @param index the index
@@ -320,12 +325,12 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		/**
 		 * @return true while a group of changes is in progress
 		 */
-		boolean adjusting();
+		boolean grouping();
 
 		/**
-		 * @param adjusting true to start a group of changes, false to end it, notifying {@link #changed()}
+		 * @param grouping true to start a group of changes, false to end it, notifying {@link #changed()}
 		 */
-		void adjusting(boolean adjusting);
+		void grouping(boolean grouping);
 
 		/**
 		 * @return an observer notified before the selected indexes change

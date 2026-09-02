@@ -123,8 +123,8 @@ public final class DefaultMultiSelectionTest {
 
 		//ending an adjustment which changed nothing must not notify, adjusting(false) bypasses
 		//the no-op guard in applyTarget() and drives the facades directly
-		selection.adjusting(true);
-		selection.adjusting(false);
+		selection.grouping(true);
+		selection.grouping(false);
 		assertEquals(0, indexNotified.get());
 		assertEquals(0, indexesNotified.get());
 		assertEquals(0, itemNotified.get());
@@ -133,9 +133,9 @@ public final class DefaultMultiSelectionTest {
 		//an item inserted before the selection shifts its index, the selected item is unchanged,
 		//so the index facades notify and the item facades do not
 		items.insert(0, "x");
-		selection.adjusting(true);
+		selection.grouping(true);
 		selection.indexes().set(singletonList(2));
-		selection.adjusting(false);
+		selection.grouping(false);
 
 		assertEquals("b", selection.item().get());
 		assertEquals(2, selection.index().get());
