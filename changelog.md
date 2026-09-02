@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.86
+
 ## 0.18.85
 ### is.codion.common.reactive
 - BaseValue.DefaultLocked now synchronized.
