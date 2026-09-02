@@ -72,6 +72,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	private static final String JONES = "JONES";
 	private static final String SYNCED = "synced";
 	private static final String REPLACED = "replaced";
+	private static final String REFRESHED = "refreshed";
 
 	private final EntityConnection connection;
 
@@ -340,6 +341,77 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		assertTrue(empModel.query().condition().modified().is());
 		empModel.items().refresh();
 		assertFalse(empModel.query().condition().modified().is());
+	}
+
+	@Test
+	public void editorRefreshedOnRefreshWhenUnmodified() {
+		// A refresh replaces the selected entity with a fresher instance, the selection notifies with it and an
+		// editor with nothing to lose takes the refreshed values (AbstractEntityTableModel.onSelectionChanged).
+		T tableModel = createTableModel(Employee.TYPE, connection());
+		tableModel.items().refresh();
+		E editModel = tableModel.editModel();
+		tableModel.selection().index().set(0);
+		Entity selected = tableModel.selection().item().get();
+
+		EntityConnection connection = tableModel.connection();
+		connection.startTransaction();
+		try {
+			// Update the selected row behind the model's back
+			Entity changed = selected.copy().mutable();
+			changed.set(Employee.NAME, REFRESHED);
+			connection.update(changed);
+			AtomicInteger notified = new AtomicInteger();
+			tableModel.selection().item().addListener(notified::incrementAndGet);
+			tableModel.items().refresh();
+			assertEquals(1, notified.get());
+			assertEquals(REFRESHED, tableModel.selection().item().get().get(Employee.NAME));
+			assertEquals(REFRESHED, editModel.editor().value(Employee.NAME).get());
+			assertFalse(editModel.editor().entity().modified().is());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	public void editorKeptOnRefreshWhenModified() {
+		// A refresh must not clobber an edit in progress, the modified editor keeps its values.
+		T tableModel = createTableModel(Employee.TYPE, connection());
+		tableModel.items().refresh();
+		E editModel = tableModel.editModel();
+		tableModel.selection().index().set(0);
+		editModel.editor().value(Employee.NAME).set("dirty");
+
+		tableModel.items().refresh();
+		assertEquals("dirty", editModel.editor().value(Employee.NAME).get());
+		assertTrue(editModel.editor().entity().modified().is());
+	}
+
+	@Test
+	public void selectionFollowsPrimaryKeyUpdate() throws EntityValidationException {
+		// The updated entity replaces the selected one under a new key, the selection follows it.
+		T tableModel = createTableModel(Department.TYPE, connection());
+		E editModel = tableModel.editModel();
+		EntityConnection connection = tableModel.connection();
+		connection.startTransaction();
+		try {
+			editModel.editor().value(Department.ID).set(98);
+			editModel.editor().value(Department.NAME).set("Name");
+			editModel.editor().value(Department.LOCATION).set("Location");
+			editModel.editor().insert();
+			tableModel.items().refresh();
+			tableModel.select(singleton(tableModel.entities().primaryKey(Department.TYPE, 98)));
+			assertEquals(1, tableModel.selection().count());
+
+			editModel.editor().value(Department.ID).set(99);
+			editModel.editor().update();
+			assertEquals(1, tableModel.selection().count());
+			assertEquals(99, tableModel.selection().item().get().get(Department.ID));
+			assertEquals(99, editModel.editor().value(Department.ID).get());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
 	}
 
 	protected final EntityConnection connection() {

@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
@@ -543,6 +544,26 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		model.editor().delete(asList(dept, emp));
 
 		assertFalse(model.tableModel().items().contains(dept));
+	}
+
+	@Test
+	public void masterRefreshDoesNotRefreshDetail() {
+		// The master selection notifies with the refreshed instances, the detail condition is unchanged, no detail refresh
+		M departmentModel = createDepartmentModel();
+		if (!departmentModel.containsTableModel()) {
+			return;
+		}
+		M employeeModel = departmentModel.detail().get(Employee.TYPE);
+		departmentModel.tableModel().items().refresh();
+		departmentModel.tableModel().selection().index().set(0);
+		AtomicInteger detailRefreshes = new AtomicInteger();
+		employeeModel.tableModel().items().refresher().result().addListener(detailRefreshes::incrementAndGet);
+		AtomicInteger masterNotified = new AtomicInteger();
+		departmentModel.tableModel().selection().items().addListener(masterNotified::incrementAndGet);
+
+		departmentModel.tableModel().items().refresh();
+		assertEquals(1, masterNotified.get());
+		assertEquals(0, detailRefreshes.get());
 	}
 
 	protected final EntityConnection connection() {

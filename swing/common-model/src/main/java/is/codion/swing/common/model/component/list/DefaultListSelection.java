@@ -181,16 +181,31 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
+	public void setValueIsAdjusting(boolean isAdjusting) {
+		boolean wasAdjusting = getValueIsAdjusting();
+		super.setValueIsAdjusting(isAdjusting);
+		if (wasAdjusting && !isAdjusting) {
+			//DefaultListSelectionModel fires at the end of an adjustment only if an index changed during it, the facades
+			//are consulted regardless, the instances the selected indexes refer to may have been replaced meanwhile
+			onChanged();
+		}
+	}
+
+	@Override
 	protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
 		super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
 		if (!isAdjusting) {
-			empty.set(super.isSelectionEmpty());
-			single.set(count() == 1);
-			selectedIndex.onChanged();
-			selectedItem.onChanged();
-			selectedIndexes.onChanged();
-			selectedItems.onChanged();
+			onChanged();
 		}
+	}
+
+	private void onChanged() {
+		empty.set(super.isSelectionEmpty());
+		single.set(count() == 1);
+		selectedIndex.onChanged();
+		selectedItem.onChanged();
+		selectedIndexes.onChanged();
+		selectedItems.onChanged();
 	}
 
 	private void bindEvents() {
@@ -413,8 +428,10 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void onChanged() {
+			//by identity rather than equals(): the items model owns the instances and replaces them on refresh and
+			//replace(), a replacement being the same item by equals() but a new value of this facade
 			R current = getValue();
-			if (!Objects.equals(lastNotified, current)) {
+			if (lastNotified != current) {
 				lastNotified = current;
 				notifyObserver();
 			}
@@ -528,8 +545,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void onChanged() {
+			//by identity, see DefaultItem
 			List<R> current = getValue();
-			if (!lastNotified.equals(current)) {
+			if (!sameInstances(lastNotified, current)) {
 				lastNotified = current;
 				notifyObserver();
 			}
@@ -542,5 +560,18 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 			return items;
 		}
+	}
+
+	private static <T> boolean sameInstances(List<T> first, List<T> second) {
+		if (first.size() != second.size()) {
+			return false;
+		}
+		for (int i = 0; i < first.size(); i++) {
+			if (first.get(i) != second.get(i)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

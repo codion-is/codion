@@ -45,6 +45,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
@@ -224,45 +225,52 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		// Both implementations handle item replacement with filtering but have different collection types
 		// and threading requirements, making extraction to a common utility non-trivial.
 		requireNonNull(items).values().forEach(this::validate);
-		synchronized (lock) {
-			Map<R, R> toReplace = new HashMap<>(items);
-			for (R itemToReplace : items.keySet()) {
-				if (filtered.items.remove(itemToReplace)) {
-					R replacement = toReplace.remove(itemToReplace);
-					if (included.predicate.test(replacement)) {
-						included.items.add(replacement);
-						int index = included.items.size() - 1;
-						notifyInserted(index, index);
-					}
-					else {
-						filtered.items.add(replacement);
-					}
-				}
-			}
-			ListIterator<R> iterator = included.items.listIterator();
-			while (!toReplace.isEmpty() && iterator.hasNext()) {
-				R item = iterator.next();
-				R replacement = toReplace.remove(item);
-				if (replacement != null) {
-					int index = iterator.previousIndex();
-					if (included.predicate.test(replacement)) {
-						iterator.set(replacement);
-						notifyUpdated(index, index);
-					}
-					else {
-						//the replacement no longer passes the include predicate, move it to filtered.
-						//notify per-item as we go: previousIndex() tracks the live shrinking list, so
-						//each deleted(index, index) is valid at fire time (as in remove(Collection))
-						iterator.remove();
-						filtered.items.add(replacement);
-						notifyDeleted(index, index);
+		//a selected item being replaced stays selected as its replacement, a replacement no longer included is dropped
+		preserveSelection(() -> {
+			synchronized (lock) {
+				Map<R, R> toReplace = new HashMap<>(items);
+				for (R itemToReplace : items.keySet()) {
+					if (filtered.items.remove(itemToReplace)) {
+						R replacement = toReplace.remove(itemToReplace);
+						if (included.predicate.test(replacement)) {
+							included.items.add(replacement);
+							int index = included.items.size() - 1;
+							notifyInserted(index, index);
+						}
+						else {
+							filtered.items.add(replacement);
+						}
 					}
 				}
+				ListIterator<R> iterator = included.items.listIterator();
+				while (!toReplace.isEmpty() && iterator.hasNext()) {
+					R item = iterator.next();
+					R replacement = toReplace.remove(item);
+					if (replacement != null) {
+						int index = iterator.previousIndex();
+						if (included.predicate.test(replacement)) {
+							iterator.set(replacement);
+							notifyUpdated(index, index);
+						}
+						else {
+							//the replacement no longer passes the include predicate, move it to filtered.
+							//notify per-item as we go: previousIndex() tracks the live shrinking list, so
+							//each deleted(index, index) is valid at fire time (as in remove(Collection))
+							iterator.remove();
+							filtered.items.add(replacement);
+							notifyDeleted(index, index);
+						}
+					}
+				}
+				filtered.notifyChanges();
+				included.notifyChanges();
+				included.sort();
 			}
-			filtered.notifyChanges();
-			included.notifyChanges();
-			included.sort();
-		}
+
+			return null;
+		}, selectedItems -> selectedItems.stream()
+						.map(selectedItem -> items.getOrDefault(selectedItem, selectedItem))
+						.collect(toList()));
 	}
 
 	@Override
@@ -341,6 +349,16 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	 * @return the mutation result
 	 */
 	private <T> @Nullable T preserveSelection(Supplier<@Nullable T> mutation) {
+		return preserveSelection(mutation, UnaryOperator.identity());
+	}
+
+	/**
+	 * @param mutation the mutation to perform
+	 * @param replacements maps the selected items to the ones to restore, for a mutation replacing items
+	 * @return the mutation result
+	 * @see #preserveSelection(Supplier)
+	 */
+	private <T> @Nullable T preserveSelection(Supplier<@Nullable T> mutation, UnaryOperator<List<R>> replacements) {
 		List<R> selectedItems = selection.items().get();
 		//save and restore, a caller already grouping must not have its group terminated here
 		boolean wasAdjusting = selection.adjusting();
@@ -349,7 +367,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		grouping = true;
 		try {
 			T result = mutation.get();
-			selection.items().set(selectedItems);
+			selection.items().set(replacements.apply(selectedItems));
 
 			return result;
 		}

@@ -37,6 +37,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
+import is.codion.framework.model.EntityEditor.EditorEntity;
 
 import org.jspecify.annotations.Nullable;
 
@@ -339,23 +340,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 										.builder()
 										.originalPrimaryKey()
 										.build(), Map.Entry::getValue)));
-		syncEditor(updatedEntities);
-	}
-
-	// Syncs the editor's active entity when the currently selected row is among those updated, so the edit form
-	// reflects a value changed via the table (bulk or inline editing). A modified editor is left
-	// untouched so unsaved edits are never overwritten.
-	private void syncEditor(Map<Entity, Entity> updatedEntities) {
-		EntityEditor.EditorEntity editorEntity = editModel.editor().entity();
-		if (editorEntity.modified().is()) {
-			return;
-		}
-		Entity selected = selection().item().get();
-		if (selected != null && updatedEntities.values().stream()
-						.anyMatch(updated -> updated.primaryKey().equals(selected.primaryKey()))
-						&& !editorEntity.get().equalValues(selected)) {
-			editorEntity.replace(selected);
-		}
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
@@ -371,18 +355,26 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	}
 
 	/**
-	 * <p>Note that the editor keeps its entity across a refresh. The selection notifies only when it actually
-	 * changes, and a refreshed row is the same row by {@link Entity#equals(Object)}, so the fresher instance
-	 * is not pushed into the editor. This is deliberate: a refresh must not clobber an edit in progress, and
-	 * a write based on a stale instance is caught by optimistic locking.
+	 * <p>Syncs the editor with the selection. A selected entity other than the one the editor holds is set as the
+	 * editor entity. The selection also notifies when the instance it refers to is replaced, as a refresh or an
+	 * update does, the replacement being the same entity by {@link Entity#equals(Object)}; an unmodified editor then
+	 * takes the fresher values, while an edit in progress is kept, a refresh must not clobber it. A write based on
+	 * the stale instance is caught by optimistic locking.
 	 * @param selected the selected entity, null if the selection was cleared
 	 */
 	private void onSelectionChanged(@Nullable Entity selected) {
+		EditorEntity editorEntity = editModel.editor().entity();
 		if (selected == null) {
-			editModel.editor().entity().defaults();
+			editorEntity.defaults();
+		}
+		else if (selected.equals(editorEntity.get())) {
+			//the same entity, a fresher instance, the editor takes its values unless an edit is in progress
+			if (!editorEntity.modified().is() && !editorEntity.get().equalValues(selected)) {
+				editorEntity.replace(selected);
+			}
 		}
 		else {
-			editModel.editor().entity().set(selected);
+			editorEntity.set(selected);
 		}
 	}
 
