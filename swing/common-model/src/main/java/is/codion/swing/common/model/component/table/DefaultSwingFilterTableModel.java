@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.model.component.table.AbstractFilterTableModelBuilder;
 import is.codion.common.model.component.table.FilterTableModel;
 import is.codion.common.model.component.table.FilterTableSort;
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -31,13 +31,7 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -59,15 +53,9 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 
 	private DefaultSwingFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.rowEditorFactory = builder.rowEditorFactory;
-		this.model = builder.builder
-						.selection(FilterListSelection::filterListSelection)
-						.listener(new TableModelAdapter())
-						.build();
+		this.model = builder.model(new TableModelAdapter());
 		this.selection = (FilterListSelection<R>) model.selection();
 		this.removeSelectionListener = new RemoveSelectionListener();
-		if (builder.refresh) {
-			model.items().refresh();
-		}
 		addTableModelListener(removeSelectionListener);
 	}
 
@@ -219,45 +207,18 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 
 		@Override
 		public <R, C> Builder<R, C> columns(TableColumns<R, C> columns) {
-			return new DefaultBuilder<>(FilterTableModel.builder().columns(columns));
+			return new DefaultBuilder<>(columns);
 		}
 	}
 
-	static final class DefaultBuilder<R, C> implements Builder<R, C> {
+	static final class DefaultBuilder<R, C> extends AbstractFilterTableModelBuilder<R, C, Builder<R, C>> implements Builder<R, C> {
 
 		static final Builder.ColumnsStep COLUMNS = new DefaultColumnsStep();
 
-		private final FilterTableModel.Builder<R, C> builder;
-
 		private Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
-		private boolean refresh = false;
 
-		private DefaultBuilder(FilterTableModel.Builder<R, C> builder) {
-			this.builder = builder;
-		}
-
-		@Override
-		public Builder<R, C> filters(Supplier<Map<C, ConditionModel<?>>> filters) {
-			builder.filters(filters);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> items(Supplier<Collection<R>> items) {
-			builder.items(requireNonNull(items));
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> validator(Predicate<R> validator) {
-			builder.validator(validator);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException) {
-			builder.onRefreshException(onRefreshException);
-			return this;
+		private DefaultBuilder(TableColumns<R, C> columns) {
+			super(columns);
 		}
 
 		@Override
@@ -267,50 +228,17 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 		}
 
 		@Override
-		public Builder<R, C> included(Predicate<R> included) {
-			builder.included(included);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> refresh(boolean refresh) {
-			this.refresh = refresh;
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectionChanged(Runnable listener) {
-			builder.onSelectionChanged(listener);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectedItem(Consumer<R> item) {
-			builder.onSelectedItem(item);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectedItems(Consumer<List<R>> items) {
-			builder.onSelectedItems(items);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectedIndex(Consumer<Integer> index) {
-			builder.onSelectedIndex(index);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectedIndexes(Consumer<List<Integer>> indexes) {
-			builder.onSelectedIndexes(indexes);
-			return this;
-		}
-
-		@Override
 		public SwingFilterTableModel<R, C> build() {
-			return new DefaultSwingFilterTableModel<>(this);
+			SwingFilterTableModel<R, C> model = new DefaultSwingFilterTableModel<>(this);
+			if (refresh()) {
+				model.items().refresh();
+			}
+
+			return model;
+		}
+
+		FilterTableModel<R, C> model(ItemsListener adapter) {
+			return build(FilterListSelection::filterListSelection, adapter);
 		}
 	}
 }

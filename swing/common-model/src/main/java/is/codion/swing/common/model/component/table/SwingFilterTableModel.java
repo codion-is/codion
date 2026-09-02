@@ -19,19 +19,12 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.component.table.FilterTableModel;
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.table.TableModel;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * A Swing {@link TableModel} based on the UI-agnostic
@@ -79,56 +72,21 @@ public interface SwingFilterTableModel<R, C> extends FilterTableModel<R, C>, Tab
 	}
 
 	/**
-	 * Builds a {@link SwingFilterTableModel} — the same options as the common
-	 * {@link is.codion.common.model.component.table.FilterTableModel.Builder} (the selection being a
-	 * {@code javax.swing.ListSelectionModel} based one), adding {@link #rowEditor(Function)}, with the
-	 * chain staying Swing-typed so {@code build()} yields a {@link TableModel}.
+	 * Builds a {@link SwingFilterTableModel}, the {@link FilterTableModel.Builder} options with the selection based
+	 * on a {@code javax.swing.ListSelectionModel}, adding {@link #rowEditor(Function)}.
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
-	interface Builder<R, C> {
+	interface Builder<R, C> extends FilterTableModel.Builder<R, C, Builder<R, C>> {
 
 		/**
 		 * Provides a {@link Builder} instance
 		 */
-		interface ColumnsStep {
+		interface ColumnsStep extends FilterTableModel.Builder.ColumnsStep {
 
-			/**
-			 * @param <R> the type representing rows
-			 * @param <C> the type used to identify columns
-			 * @param columns the columns
-			 * @return a {@link Builder} based on the given columns
-			 * @throws NullPointerException in case {@code columns} is null
-			 */
+			@Override
 			<R, C> Builder<R, C> columns(TableColumns<R, C> columns);
 		}
-
-		/**
-		 * @param filters the column filter model factory
-		 * @return this builder instance
-		 */
-		Builder<R, C> filters(Supplier<Map<C, ConditionModel<?>>> filters);
-
-		/**
-		 * @param items supplies the items
-		 * @return this builder instance
-		 */
-		Builder<R, C> items(Supplier<Collection<R>> items);
-
-		/**
-		 * Items failing validation can not be added to the model.
-		 * @param validator the item validator
-		 * @return this builder instance
-		 */
-		Builder<R, C> validator(Predicate<R> validator);
-
-		/**
-		 * By default, exceptions during refresh are rethrown,
-		 * use this method to handle async exceptions differently
-		 * @param onRefreshException the exception handler to use during refresh
-		 * @return this builder instance
-		 */
-		Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException);
 
 		/**
 		 * @param rowEditor supplies the row editor
@@ -136,52 +94,7 @@ public interface SwingFilterTableModel<R, C> extends FilterTableModel<R, C>, Tab
 		 */
 		Builder<R, C> rowEditor(Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> rowEditor);
 
-		/**
-		 * @param included the {@link Predicate} controlling which items should be included
-		 * @return this builder instance
-		 */
-		Builder<R, C> included(Predicate<R> included);
-
-		/**
-		 * Default false.
-		 * @param refresh true if the model items should be refreshed on init
-		 * @return this builder instance
-		 */
-		Builder<R, C> refresh(boolean refresh);
-
-		/**
-		 * @param listener the selection listener
-		 * @return this builder instance
-		 */
-		Builder<R, C> onSelectionChanged(Runnable listener);
-
-		/**
-		 * @param item receives the selected item
-		 * @return this builder instance
-		 */
-		Builder<R, C> onSelectedItem(Consumer<R> item);
-
-		/**
-		 * @param items receives the selected items
-		 * @return this builder instance
-		 */
-		Builder<R, C> onSelectedItems(Consumer<List<R>> items);
-
-		/**
-		 * @param index receives the selected index
-		 * @return this builder instance
-		 */
-		Builder<R, C> onSelectedIndex(Consumer<Integer> index);
-
-		/**
-		 * @param indexes receives the selected indexes
-		 * @return this builder instance
-		 */
-		Builder<R, C> onSelectedIndexes(Consumer<List<Integer>> indexes);
-
-		/**
-		 * @return a new {@link SwingFilterTableModel} instance.
-		 */
+		@Override
 		SwingFilterTableModel<R, C> build();
 	}
 

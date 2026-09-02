@@ -20,14 +20,9 @@ package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.component.list.FilterListModel;
 
-import org.jspecify.annotations.Nullable;
 
 import javax.swing.ListModel;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -52,93 +47,28 @@ public interface SwingFilterListModel<T> extends FilterListModel<T>, ListModel<T
 	}
 
 	/**
-	 * Builds a {@link SwingFilterListModel} — the same options as the common
-	 * {@link is.codion.common.model.component.list.FilterListModel.Builder} (the selection is a
-	 * {@code javax.swing.ListSelectionModel} based one and the refresher a {@code ProgressWorker} based one),
-	 * but the chain stays Swing-typed so {@code build()} yields a {@link ListModel}.
+	 * Builds a {@link SwingFilterListModel}, the {@link FilterListModel.Builder} options with the selection based
+	 * on a {@code javax.swing.ListSelectionModel}.
 	 * @param <T> the item type
 	 */
-	interface Builder<T> {
+	interface Builder<T> extends FilterListModel.Builder<T, Builder<T>> {
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ItemsStep {
+		interface ItemsStep extends FilterListModel.Builder.ItemsStep {
 
-			/**
-			 * @param <T> the item type
-			 * @return a new {@link Builder} instance
-			 */
+			@Override
 			<T> Builder<T> items();
 
-			/**
-			 * @param <T> the item type
-			 * @param items the items to add to the model
-			 * @return a new {@link Builder} instance
-			 */
+			@Override
 			<T> Builder<T> items(Collection<T> items);
 
-			/**
-			 * @param <T> the item type
-			 * @param items the item supplier
-			 * @return a new {@link Builder} instance
-			 */
+			@Override
 			<T> Builder<T> items(Supplier<Collection<T>> items);
 		}
 
-		/**
-		 * @param comparator the comparator to use when sorting
-		 * @return this builder instance
-		 */
-		Builder<T> comparator(@Nullable Comparator<T> comparator);
-
-		/**
-		 * By default, exceptions during refresh are rethrown,
-		 * use this method to handle async exceptions differently
-		 * @param onRefreshException the exception handler to use during refresh
-		 * @return this builder instance
-		 */
-		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
-
-		/**
-		 * @param included the {@link Predicate} controlling which items should be included
-		 * @return this builder instance
-		 */
-		Builder<T> included(Predicate<T> included);
-
-		/**
-		 * @param listener the selection listener
-		 * @return this builder instance
-		 */
-		Builder<T> onSelectionChanged(Runnable listener);
-
-		/**
-		 * @param item receives the selected item
-		 * @return this builder instance
-		 */
-		Builder<T> onSelectedItem(Consumer<T> item);
-
-		/**
-		 * @param items receives the selected items
-		 * @return this builder instance
-		 */
-		Builder<T> onSelectedItems(Consumer<List<T>> items);
-
-		/**
-		 * @param index receives the selected index
-		 * @return this builder instance
-		 */
-		Builder<T> onSelectedIndex(Consumer<Integer> index);
-
-		/**
-		 * @param indexes receives the selected indexes
-		 * @return this builder instance
-		 */
-		Builder<T> onSelectedIndexes(Consumer<List<Integer>> indexes);
-
-		/**
-		 * @return a new {@link SwingFilterListModel} instance
-		 */
+		@Override
 		SwingFilterListModel<T> build();
 	}
 }

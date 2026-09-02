@@ -107,8 +107,10 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 	/**
 	 * Builds a {@link EntityComboBoxModel}.
+	 * @param <B> the builder type
+	 * @see AbstractEntityComboBoxModelBuilder
 	 */
-	interface Builder {
+	interface Builder<B extends Builder<B>> {
 
 		/**
 		 * Specifies the entity type, either directly or derived from a {@link ForeignKey}.
@@ -145,7 +147,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 			 * @param connection an EntityConnection instance
 			 * @return a new {@link EntityComboBoxModel.Builder} instance
 			 */
-			Builder connection(EntityConnection connection);
+			Builder<?> connection(EntityConnection connection);
 		}
 
 		/**
@@ -156,14 +158,14 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param orderBy the {@link OrderBy} to use when selecting
 		 * @return this builder instance
 		 */
-		Builder orderBy(@Nullable OrderBy orderBy);
+		B orderBy(@Nullable OrderBy orderBy);
 
 		/**
 		 * Note that this comparator is not used if {@link #orderBy(OrderBy)} has been specified.
 		 * @param comparator the comparator to use, null for unsorted
 		 * @return this builder instance
 		 */
-		Builder comparator(@Nullable Comparator<Entity> comparator);
+		B comparator(@Nullable Comparator<Entity> comparator);
 
 		/**
 		 * <p>If {@code condition} is null, the default condition, specifying all underlying entities is used.
@@ -171,7 +173,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param condition the condition supplier to use when querying data, may not return null
 		 * @return this builder instance
 		 */
-		Builder condition(@Nullable Supplier<Condition> condition);
+		B condition(@Nullable Supplier<Condition> condition);
 
 		/**
 		 * Specifies the attributes to include when selecting the entities to populate this model with.
@@ -180,27 +182,27 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param attributes the attributes to select, an empty Collection for all
 		 * @return this builder instance
 		 */
-		Builder attributes(Collection<Attribute<?>> attributes);
+		B attributes(Collection<Attribute<?>> attributes);
 
 		/**
 		 * @param includeNull if true then the null item is enabled using the default null item caption ({@link FilterComboBoxModel#NULL_CAPTION})
 		 * @return this builder instance
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 */
-		Builder includeNull(boolean includeNull);
+		B includeNull(boolean includeNull);
 
 		/**
 		 * Enables the null item and sets the null item caption.
 		 * @param nullCaption the null item caption
 		 * @return this builder instance
 		 */
-		Builder nullCaption(@Nullable String nullCaption);
+		B nullCaption(@Nullable String nullCaption);
 
 		/**
 		 * @param entity the entity to select initially
 		 * @return this builder
 		 */
-		Builder select(@Nullable Entity entity);
+		B select(@Nullable Entity entity);
 
 		/**
 		 * @param persistenceAware controls whether this combo box model should respond to entity persistence events, by adding inserted items,
@@ -209,7 +211,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @see #PERSISTENCE_AWARE
 		 * @see PersistenceEvents
 		 */
-		Builder persistenceAware(boolean persistenceAware);
+		B persistenceAware(boolean persistenceAware);
 
 		/**
 		 * Specifies whether filtering the model affects the currently selected item.
@@ -221,7 +223,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @return this builder instance
 		 * @see IncludedItems#predicate()
 		 */
-		Builder filterSelected(boolean filterSelected);
+		B filterSelected(boolean filterSelected);
 
 		/**
 		 * Links the given combo box model representing foreign key entities to this combo box model
@@ -232,20 +234,19 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @return this builder instance
 		 * @see ForeignKeyFilter#link(EntityComboBoxModel)
 		 */
-		Builder filter(ForeignKey foreignKey, EntityComboBoxModel filterModel);
+		B filter(ForeignKey foreignKey, EntityComboBoxModel filterModel);
 
 		/**
 		 * @param item receives the selected item, note that this item may be null
 		 * @return this builder instance
 		 */
-		Builder onSelectedItem(Consumer<@Nullable Entity> item);
+		B onSelectedItem(Consumer<@Nullable Entity> item);
 
 		/**
-		 * Default false.
-		 * @param refresh true if the model items should be refreshed on initialization
+		 * @param refresh true if the model items should be refreshed on initialization, false by default
 		 * @return this builder instance
 		 */
-		Builder refresh(boolean refresh);
+		B refresh(boolean refresh);
 
 		/**
 		 * @return a new {@link EntityComboBoxModel} instance

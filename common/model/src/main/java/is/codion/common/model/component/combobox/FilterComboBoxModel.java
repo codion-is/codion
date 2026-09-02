@@ -84,8 +84,10 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 	/**
 	 * Builds a {@link FilterComboBoxModel}
 	 * @param <T> the item type
+	 * @param <B> the builder type
+	 * @see AbstractFilterComboBoxModelBuilder
 	 */
-	interface Builder<T> {
+	interface Builder<T, B extends Builder<T, B>> {
 
 		/**
 		 * Provides a {@link Builder}
@@ -95,16 +97,16 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 			/**
 			 * @param <T> the item type
 			 * @param items the items to add to the model
-			 * @return a new {@link FilterComboBoxModel.Builder} instance
+			 * @return a new {@link Builder} instance
 			 */
-			<T> FilterComboBoxModel.Builder<T> items(Collection<T> items);
+			<T> Builder<T, ?> items(Collection<T> items);
 
 			/**
 			 * @param <T> the item type
 			 * @param items the item supplier
-			 * @return a new {@link FilterComboBoxModel.Builder} instance
+			 * @return a new {@link Builder} instance
 			 */
-			<T> FilterComboBoxModel.Builder<T> items(Supplier<Collection<T>> items);
+			<T> Builder<T, ?> items(Supplier<Collection<T>> items);
 
 			/**
 			 * Returns a {@link ItemComboBoxModelBuilder}, by default unsorted.
@@ -112,33 +114,33 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 			 * @param <T> the item type
 			 * @return a new {@link ItemComboBoxModelBuilder}
 			 */
-			<T> ItemComboBoxModelBuilder<T> items(List<Item<T>> items);
+			<T> ItemComboBoxModelBuilder<T, ?> items(List<Item<T>> items);
 		}
 
 		/**
 		 * @param comparator the comparator, null for unsorted
 		 * @return this builder
 		 */
-		Builder<T> comparator(@Nullable Comparator<T> comparator);
+		B comparator(@Nullable Comparator<T> comparator);
 
 		/**
 		 * @param includeNull true if a null item should be included
 		 * @return this builder
 		 */
-		Builder<T> includeNull(boolean includeNull);
+		B includeNull(boolean includeNull);
 
 		/**
 		 * Sets {@link #includeNull(boolean)} to true if {@code nullItem} is non-null, false otherwise.
 		 * @param nullItem the item representing null
 		 * @return this builder
 		 */
-		Builder<T> nullItem(@Nullable T nullItem);
+		B nullItem(@Nullable T nullItem);
 
 		/**
 		 * @param item the item to select initially
 		 * @return this builder
 		 */
-		Builder<T> select(@Nullable T item);
+		B select(@Nullable T item);
 
 		/**
 		 * Provides a way for a combo box model to translate an item received via {@link SingleSelection#item()} to an actual item to select,
@@ -146,7 +148,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @param translator the selected item translator
 		 * @return this builder
 		 */
-		Builder<T> translator(Function<Object, T> translator);
+		B translator(Function<Object, T> translator);
 
 		/**
 		 * <p>Specifies whether filtering the model affects the currently selected item.
@@ -157,13 +159,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @return this builder instance
 		 * @see IncludedItems#predicate()
 		 */
-		Builder<T> filterSelected(boolean filterSelected);
+		B filterSelected(boolean filterSelected);
 
 		/**
 		 * @param item receives the selected item, note that this item may be null
 		 * @return this builder instance
 		 */
-		Builder<T> onSelectedItem(Consumer<@Nullable T> item);
+		B onSelectedItem(Consumer<@Nullable T> item);
 
 		/**
 		 * By default, exceptions during refresh are rethrown,
@@ -171,13 +173,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @param onRefreshException the exception handler to use during refresh
 		 * @return this builder instance
 		 */
-		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
+		B onRefreshException(Consumer<Exception> onRefreshException);
 
 		/**
 		 * @param refresh true if the model items should be refreshed on initialization, false by default
 		 * @return this builder instance
 		 */
-		Builder<T> refresh(boolean refresh);
+		B refresh(boolean refresh);
 
 		/**
 		 * @return a new {@link FilterComboBoxModel} instance
@@ -190,20 +192,22 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 	 * <p>Note that item combo box models are unsorted by default, the provided items are assumed to be ordered.
 	 * <p>Use {@link #sorted(boolean)} or {@link #sorted(Comparator)} for a sorted combo box model.
 	 * @param <T> the item type
+	 * @param <B> the builder type
+	 * @see AbstractItemComboBoxModelBuilder
 	 */
-	interface ItemComboBoxModelBuilder<T> {
+	interface ItemComboBoxModelBuilder<T, B extends ItemComboBoxModelBuilder<T, B>> {
 
 		/**
 		 * @param sorted true if the items should be sorted, false by default
 		 * @return this builder instance
 		 */
-		ItemComboBoxModelBuilder<T> sorted(boolean sorted);
+		B sorted(boolean sorted);
 
 		/**
 		 * @param comparator the comparator to sort by
 		 * @return this builder instance
 		 */
-		ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator);
+		B sorted(Comparator<Item<T>> comparator);
 
 		/**
 		 * Sets the initially selected item
@@ -211,7 +215,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the model does not contain the given item
 		 */
-		ItemComboBoxModelBuilder<T> selected(@Nullable T selected);
+		B selected(@Nullable T selected);
 
 		/**
 		 * Sets the initially selected item
@@ -219,7 +223,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the model does not contain the given item
 		 */
-		ItemComboBoxModelBuilder<T> selected(Item<T> selected);
+		B selected(Item<T> selected);
 
 		/**
 		 * @return a new {@link FilterComboBoxModel}

@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.model.component.combobox;
 
+import is.codion.common.model.component.combobox.AbstractFilterComboBoxModelBuilder;
+import is.codion.common.model.component.combobox.AbstractItemComboBoxModelBuilder;
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.value.Value;
@@ -28,11 +30,8 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -144,125 +143,48 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 
 		@Override
 		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultBuilder<>(FilterComboBoxModel.builder().items(items));
+			return new DefaultBuilder<>(items);
 		}
 
 		@Override
 		public <T> Builder<T> items(Supplier<Collection<T>> items) {
-			return new DefaultBuilder<>(FilterComboBoxModel.builder().items(items));
+			return new DefaultBuilder<>(items);
 		}
 
 		@Override
 		public <T> SwingItemComboBoxModelBuilder<T> items(List<Item<T>> items) {
-			return new DefaultItemComboBoxModelBuilder<>(FilterComboBoxModel.builder().items(items));
+			return new DefaultItemComboBoxModelBuilder<>(items);
 		}
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<T> extends AbstractFilterComboBoxModelBuilder<T, Builder<T>> implements Builder<T> {
 
 		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
 
-		private final FilterComboBoxModel.Builder<T> builder;
-
-		private DefaultBuilder(FilterComboBoxModel.Builder<T> builder) {
-			this.builder = builder;
+		private DefaultBuilder(Collection<T> items) {
+			super(items);
 		}
 
-		@Override
-		public Builder<T> comparator(@Nullable Comparator<T> comparator) {
-			builder.comparator(comparator);
-			return this;
-		}
-
-		@Override
-		public Builder<T> includeNull(boolean includeNull) {
-			builder.includeNull(includeNull);
-			return this;
-		}
-
-		@Override
-		public Builder<T> nullItem(@Nullable T nullItem) {
-			builder.nullItem(nullItem);
-			return this;
-		}
-
-		@Override
-		public Builder<T> select(@Nullable T item) {
-			builder.select(item);
-			return this;
-		}
-
-		@Override
-		public Builder<T> translator(Function<Object, T> translator) {
-			builder.translator(translator);
-			return this;
-		}
-
-		@Override
-		public Builder<T> filterSelected(boolean filterSelected) {
-			builder.filterSelected(filterSelected);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedItem(Consumer<@Nullable T> item) {
-			builder.onSelectedItem(item);
-			return this;
-		}
-
-		@Override
-		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
-			builder.onRefreshException(requireNonNull(onRefreshException));
-			return this;
-		}
-
-		@Override
-		public Builder<T> refresh(boolean refresh) {
-			builder.refresh(refresh);
-			return this;
+		private DefaultBuilder(Supplier<Collection<T>> supplier) {
+			super(supplier);
 		}
 
 		@Override
 		public SwingFilterComboBoxModel<T> build() {
-			return new DefaultSwingFilterComboBoxModel<>(builder.build());
+			return new DefaultSwingFilterComboBoxModel<>(super.build());
 		}
 	}
 
-	static final class DefaultItemComboBoxModelBuilder<T> implements SwingItemComboBoxModelBuilder<T> {
+	static final class DefaultItemComboBoxModelBuilder<T> extends AbstractItemComboBoxModelBuilder<T, SwingItemComboBoxModelBuilder<T>>
+					implements SwingItemComboBoxModelBuilder<T> {
 
-		private final ItemComboBoxModelBuilder<T> builder;
-
-		private DefaultItemComboBoxModelBuilder(ItemComboBoxModelBuilder<T> builder) {
-			this.builder = builder;
-		}
-
-		@Override
-		public SwingItemComboBoxModelBuilder<T> sorted(boolean sorted) {
-			builder.sorted(sorted);
-			return this;
-		}
-
-		@Override
-		public SwingItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator) {
-			builder.sorted(comparator);
-			return this;
-		}
-
-		@Override
-		public SwingItemComboBoxModelBuilder<T> selected(@Nullable T selected) {
-			builder.selected(selected);
-			return this;
-		}
-
-		@Override
-		public SwingItemComboBoxModelBuilder<T> selected(Item<T> selected) {
-			builder.selected(selected);
-			return this;
+		private DefaultItemComboBoxModelBuilder(List<Item<T>> items) {
+			super(items);
 		}
 
 		@Override
 		public SwingFilterComboBoxModel<Item<T>> build() {
-			return new DefaultSwingFilterComboBoxModel<>(builder.build());
+			return new DefaultSwingFilterComboBoxModel<>(super.build());
 		}
 	}
 }

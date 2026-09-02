@@ -28,13 +28,10 @@ import is.codion.common.utilities.Text;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -74,13 +71,11 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 	private final DefaultFilterTableSort<R, C> sort;
 	private final DefaultColumnValues columnValues = new DefaultColumnValues();
 
-	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
+	DefaultFilterTableModel(AbstractFilterTableModelBuilder<R, C, ?> builder,
+													Function<IncludedItems<R>, MultiSelection<R>> selectionFactory, @Nullable ItemsListener listener) {
 		this.columns = builder.columns;
 		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
-		Function<IncludedItems<R>, MultiSelection<R>> selectionFactory = builder.selectionFactory != null
-						? builder.selectionFactory
-						: MultiSelection::multiSelection;
 		Items.Builder<R> itemsBuilder = Items.builder()
 						.selection(selectionFactory)
 						.sort(sort)
@@ -92,7 +87,9 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		if (builder.onRefreshException != null) {
 			itemsBuilder.onRefreshException(builder.onRefreshException);
 		}
-		builder.itemsListeners.forEach(itemsBuilder::listener);
+		if (listener != null) {
+			itemsBuilder.listener(listener);
+		}
 		this.items = itemsBuilder.build();
 		this.items.included().predicate().set(builder.included);
 		this.selection = (MultiSelection<R>) items.included().selection();
@@ -101,9 +98,6 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		builder.itemsSelectedListeners.forEach(selection.items()::addConsumer);
 		builder.indexSelectedListeners.forEach(selection.index()::addConsumer);
 		builder.indexesSelectedListeners.forEach(selection.indexes()::addConsumer);
-		if (builder.refresh) {
-			items.refresh();
-		}
 	}
 
 	@Override
@@ -177,11 +171,11 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 	}
 
-	private static final class DefaultColumnFilterFactory<C> implements Supplier<Map<C, ConditionModel<?>>> {
+	static final class DefaultColumnFilterFactory<C> implements Supplier<Map<C, ConditionModel<?>>> {
 
 		private final TableColumns<?, C> columns;
 
-		private DefaultColumnFilterFactory(TableColumns<?, C> columns) {
+		DefaultColumnFilterFactory(TableColumns<?, C> columns) {
 			this.columns = columns;
 		}
 
@@ -251,138 +245,17 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 	static final class DefaultColumnsStep implements Builder.ColumnsStep {
 
 		@Override
-		public <R, C> Builder<R, C> columns(TableColumns<R, C> columns) {
+		public <R, C> Builder<R, C, ?> columns(TableColumns<R, C> columns) {
 			return new DefaultBuilder<>(columns);
 		}
 	}
 
-	static final class DefaultBuilder<R, C> implements Builder<R, C> {
+	static final class DefaultBuilder<R, C> extends AbstractFilterTableModelBuilder<R, C, DefaultBuilder<R, C>> {
 
 		static final Builder.ColumnsStep COLUMNS = new DefaultColumnsStep();
 
-		private static final ValidPredicate<Object> DEFAULT_VALID_PREDICATE = new ValidPredicate<>();
-
-		private final TableColumns<R, C> columns;
-		private final List<Runnable> selectionListeners = new ArrayList<>();
-		private final List<Consumer<R>> itemSelectedListeners = new ArrayList<>();
-		private final List<Consumer<List<R>>> itemsSelectedListeners = new ArrayList<>();
-		private final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
-		private final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
-		private final List<ItemsListener> itemsListeners = new ArrayList<>();
-
-		private @Nullable Supplier<Collection<R>> supplier;
-		private Predicate<R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
-		private Supplier<Map<C, ConditionModel<?>>> filters;
-		private @Nullable Consumer<Exception> onRefreshException;
-		private @Nullable Predicate<R> included;
-		private boolean refresh = false;
-		private @Nullable Function<IncludedItems<R>, MultiSelection<R>> selectionFactory;
-
 		private DefaultBuilder(TableColumns<R, C> columns) {
-			if (requireNonNull(columns).identifiers().isEmpty()) {
-				throw new IllegalArgumentException("TableColumns does not specify any column identifiers");
-			}
-			this.columns = validateIdentifiers(columns);
-			this.filters = new DefaultColumnFilterFactory<>(columns);
-		}
-
-		@Override
-		public Builder<R, C> filters(Supplier<Map<C, ConditionModel<?>>> filters) {
-			this.filters = requireNonNull(filters);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> items(Supplier<Collection<R>> items) {
-			this.supplier = requireNonNull(items);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> validator(Predicate<R> validator) {
-			this.validator = requireNonNull(validator);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException) {
-			this.onRefreshException = requireNonNull(onRefreshException);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> included(Predicate<R> included) {
-			this.included = requireNonNull(included);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> refresh(boolean refresh) {
-			this.refresh = refresh;
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectionChanged(Runnable listener) {
-			selectionListeners.add(requireNonNull(listener));
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectedItem(Consumer<R> item) {
-			itemSelectedListeners.add(requireNonNull(item));
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectedItems(Consumer<List<R>> items) {
-			itemsSelectedListeners.add(requireNonNull(items));
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectedIndex(Consumer<Integer> index) {
-			indexSelectedListeners.add(requireNonNull(index));
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> onSelectedIndexes(Consumer<List<Integer>> indexes) {
-			indexesSelectedListeners.add(requireNonNull(indexes));
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> selection(Function<IncludedItems<R>, MultiSelection<R>> selection) {
-			this.selectionFactory = requireNonNull(selection);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> listener(ItemsListener itemsListener) {
-			itemsListeners.add(requireNonNull(itemsListener));
-			return this;
-		}
-
-		@Override
-		public FilterTableModel<R, C> build() {
-			return new DefaultFilterTableModel<>(this);
-		}
-
-		private TableColumns<R, C> validateIdentifiers(TableColumns<R, C> columns) {
-			if (new HashSet<>(columns.identifiers()).size() != columns.identifiers().size()) {
-				throw new IllegalArgumentException("Column identifiers are not unique");
-			}
-
-			return columns;
-		}
-
-		private static final class ValidPredicate<R> implements Predicate<R> {
-
-			@Override
-			public boolean test(R r) {
-				return true;
-			}
+			super(columns);
 		}
 	}
 

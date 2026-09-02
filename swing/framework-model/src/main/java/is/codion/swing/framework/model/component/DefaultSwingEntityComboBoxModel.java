@@ -24,20 +24,19 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.model.AbstractEntityComboBoxModelBuilder;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.event.ListDataListener;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * The Swing {@code ComboBoxModel} coat over a {@link EntityComboBoxModel}: the entity logic lives in the wrapped
@@ -148,91 +147,21 @@ final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel 
 		coat.removeListDataListener(listener);
 	}
 
-	static final class DefaultBuilder implements Builder {
+	static final class DefaultBuilder extends AbstractEntityComboBoxModelBuilder<Builder> implements Builder {
 
 		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
-		private final EntityComboBoxModel.Builder builder;
-
-		private DefaultBuilder(EntityComboBoxModel.Builder builder) {
-			this.builder = builder;
+		private DefaultBuilder(EntityType entityType, EntityConnection connection) {
+			super(entityType, connection);
 		}
 
-		@Override
-		public Builder orderBy(@Nullable OrderBy orderBy) {
-			builder.orderBy(orderBy);
-			return this;
-		}
-
-		@Override
-		public Builder comparator(@Nullable Comparator<Entity> comparator) {
-			builder.comparator(comparator);
-			return this;
-		}
-
-		@Override
-		public Builder condition(@Nullable Supplier<Condition> condition) {
-			builder.condition(condition);
-			return this;
-		}
-
-		@Override
-		public Builder attributes(Collection<Attribute<?>> attributes) {
-			builder.attributes(attributes);
-			return this;
-		}
-
-		@Override
-		public Builder includeNull(boolean includeNull) {
-			builder.includeNull(includeNull);
-			return this;
-		}
-
-		@Override
-		public Builder nullCaption(@Nullable String nullCaption) {
-			builder.nullCaption(nullCaption);
-			return this;
-		}
-
-		@Override
-		public Builder select(@Nullable Entity entity) {
-			builder.select(entity);
-			return this;
-		}
-
-		@Override
-		public Builder persistenceAware(boolean persistenceAware) {
-			builder.persistenceAware(persistenceAware);
-			return this;
-		}
-
-		@Override
-		public Builder filterSelected(boolean filterSelected) {
-			builder.filterSelected(filterSelected);
-			return this;
-		}
-
-		@Override
-		public Builder filter(ForeignKey foreignKey, SwingEntityComboBoxModel filterModel) {
-			builder.filter(foreignKey, filterModel);
-			return this;
-		}
-
-		@Override
-		public Builder onSelectedItem(Consumer<@Nullable Entity> item) {
-			builder.onSelectedItem(item);
-			return this;
-		}
-
-		@Override
-		public Builder refresh(boolean refresh) {
-			builder.refresh(refresh);
-			return this;
+		private DefaultBuilder(ForeignKey foreignKey, EntityConnection connection) {
+			super(foreignKey, connection);
 		}
 
 		@Override
 		public SwingEntityComboBoxModel build() {
-			return new DefaultSwingEntityComboBoxModel(builder.build());
+			return new DefaultSwingEntityComboBoxModel(super.build());
 		}
 	}
 
@@ -240,26 +169,28 @@ final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel 
 
 		@Override
 		public Builder.ConnectionStep entityType(EntityType entityType) {
-			return new DefaultConnectionStep(EntityComboBoxModel.builder().entityType(entityType));
+			return new DefaultConnectionStep(requireNonNull(entityType), null);
 		}
 
 		@Override
 		public Builder.ConnectionStep foreignKey(ForeignKey foreignKey) {
-			return new DefaultConnectionStep(EntityComboBoxModel.builder().foreignKey(foreignKey));
+			return new DefaultConnectionStep(requireNonNull(foreignKey).referencedType(), foreignKey);
 		}
 	}
 
 	private static final class DefaultConnectionStep implements Builder.ConnectionStep {
 
-		private final EntityComboBoxModel.Builder.ConnectionStep step;
+		private final EntityType entityType;
+		private final @Nullable ForeignKey foreignKey;
 
-		private DefaultConnectionStep(EntityComboBoxModel.Builder.ConnectionStep step) {
-			this.step = step;
+		private DefaultConnectionStep(EntityType entityType, @Nullable ForeignKey foreignKey) {
+			this.entityType = entityType;
+			this.foreignKey = foreignKey;
 		}
 
 		@Override
 		public Builder connection(EntityConnection connection) {
-			return new DefaultBuilder(step.connection(connection));
+			return foreignKey == null ? new DefaultBuilder(entityType, connection) : new DefaultBuilder(foreignKey, connection);
 		}
 	}
 }

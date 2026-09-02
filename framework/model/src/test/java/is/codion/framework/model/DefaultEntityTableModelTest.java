@@ -150,7 +150,7 @@ public final class DefaultEntityTableModelTest extends
 
 		private static FilterTableModel<Entity, Attribute<?>> filterModel(TestEntityEditModel editModel,
 		                                                                  Supplier<Collection<Entity>> items) {
-			FilterTableModel.Builder<Entity, Attribute<?>> builder = FilterTableModel.<Entity, Attribute<?>>builder()
+			FilterTableModel.Builder<Entity, Attribute<?>, ?> builder = FilterTableModel.<Entity, Attribute<?>>builder()
 							.columns(tableColumns(editModel.entityDefinition()))
 							.filters(filterConditions(editModel.entityDefinition()))
 							.validator(itemValidator(editModel.entityDefinition().type()));

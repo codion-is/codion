@@ -55,14 +55,14 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
-	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
-	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
-	private static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
+	static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
+	static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
+	static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
 
 	private final DefaultComboBoxSelection selection;
 	private final DefaultComboBoxItems modelItems;
 
-	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
+	DefaultFilterComboBoxModel(AbstractFilterComboBoxModelBuilder<T, ?> builder) {
 		selection = new DefaultComboBoxSelection(builder.translator);
 		builder.onSelectedItem.forEach(selection.item()::addConsumer);
 		modelItems = new DefaultComboBoxItems(builder, new DefaultComboBoxSort<>(builder.comparator));
@@ -101,172 +101,47 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final class DefaultItemsStep implements Builder.ItemsStep {
 
 		@Override
-		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultFilterComboBoxModel.DefaultBuilder<>(requireNonNull(items), null);
+		public <T> Builder<T, ?> items(Collection<T> items) {
+			return new DefaultBuilder<>(items);
 		}
 
 		@Override
-		public <T> Builder<T> items(Supplier<Collection<T>> items) {
-			return new DefaultFilterComboBoxModel.DefaultBuilder<>(null, requireNonNull(items));
+		public <T> Builder<T, ?> items(Supplier<Collection<T>> items) {
+			return new DefaultBuilder<>(items);
 		}
 
 		@Override
-		public <T> ItemComboBoxModelBuilder<T> items(List<Item<T>> items) {
-			return new DefaultFilterComboBoxModel.DefaultItemComboBoxModelBuilder<>(items);
+		public <T> ItemComboBoxModelBuilder<T, ?> items(List<Item<T>> items) {
+			return new DefaultItemComboBoxModelBuilder<>(items);
 		}
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	/**
+	 * @param items the items
+	 * @param <T> the item type
+	 * @return a builder for the given items, the {@link Item} based overload notwithstanding
+	 */
+	static <T> Builder<T, ?> builder(Collection<T> items) {
+		return new DefaultBuilder<>(items);
+	}
+
+	static final class DefaultBuilder<T> extends AbstractFilterComboBoxModelBuilder<T, DefaultBuilder<T>> {
 
 		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
 
-		private final @Nullable Collection<T> items;
-		private final @Nullable Supplier<Collection<T>> supplier;
-		private final Collection<Consumer<T>> onSelectedItem = new ArrayList<>(1);
-
-		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
-		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
-		private @Nullable Consumer<Exception> onRefreshException;
-		private boolean filterSelected;
-		private boolean includeNull;
-		private @Nullable T nullItem;
-		private @Nullable T selectItem;
-		private boolean refresh = false;
-
-		private DefaultBuilder(@Nullable Collection<T> items, @Nullable Supplier<Collection<T>> supplier) {
-			this.items = items;
-			this.supplier = supplier;
+		private DefaultBuilder(Collection<T> items) {
+			super(items);
 		}
 
-		@Override
-		public Builder<T> comparator(@Nullable Comparator<T> comparator) {
-			this.comparator = comparator == null ? (Comparator<T>) NULL_COMPARATOR : comparator;
-			return this;
-		}
-
-		@Override
-		public Builder<T> includeNull(boolean includeNull) {
-			this.includeNull = includeNull;
-			if (!includeNull) {
-				//keep the two settings consistent, a null item is meaningless without includeNull
-				this.nullItem = null;
-			}
-			return this;
-		}
-
-		@Override
-		public Builder<T> nullItem(@Nullable T nullItem) {
-			this.nullItem = nullItem;
-
-			return includeNull(nullItem != null);
-		}
-
-		@Override
-		public Builder<T> select(@Nullable T item) {
-			this.selectItem = item;
-			return this;
-		}
-
-		@Override
-		public Builder<T> translator(Function<Object, T> translator) {
-			this.translator = requireNonNull(translator);
-			return this;
-		}
-
-		@Override
-		public Builder<T> filterSelected(boolean filterSelected) {
-			this.filterSelected = filterSelected;
-			return this;
-		}
-
-		@Override
-		public Builder<T> onSelectedItem(Consumer<@Nullable T> item) {
-			this.onSelectedItem.add(requireNonNull(item));
-			return this;
-		}
-
-		@Override
-		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
-			this.onRefreshException = requireNonNull(onRefreshException);
-			return this;
-		}
-
-		@Override
-		public Builder<T> refresh(boolean refresh) {
-			this.refresh = refresh;
-			return this;
-		}
-
-		@Override
-		public FilterComboBoxModel<T> build() {
-			return new DefaultFilterComboBoxModel<>(this);
+		private DefaultBuilder(Supplier<Collection<T>> supplier) {
+			super(supplier);
 		}
 	}
 
-	static final class DefaultItemComboBoxModelBuilder<T> implements ItemComboBoxModelBuilder<T> {
+	static final class DefaultItemComboBoxModelBuilder<T> extends AbstractItemComboBoxModelBuilder<T, DefaultItemComboBoxModelBuilder<T>> {
 
-		private final List<Item<T>> items;
-		private final @Nullable Item<T> nullItem;
-
-		private boolean sorted = false;
-		private @Nullable Comparator<Item<T>> comparator;
-		private @Nullable Item<T> selected;
-
-		DefaultItemComboBoxModelBuilder(List<Item<T>> modelItems) {
-			items = new ArrayList<>(requireNonNull(modelItems));
-			int indexOfNullItem = items.indexOf(Item.item(null));
-			nullItem = indexOfNullItem >= 0 ? items.remove(indexOfNullItem) : null;
-		}
-
-		@Override
-		public ItemComboBoxModelBuilder<T> sorted(boolean sorted) {
-			this.sorted = sorted;
-			if (!sorted) {
-				this.comparator = null;
-			}
-			return this;
-		}
-
-		@Override
-		public ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator) {
-			this.sorted = true;
-			this.comparator = requireNonNull(comparator);
-			return this;
-		}
-
-		@Override
-		public ItemComboBoxModelBuilder<T> selected(@Nullable T selected) {
-			return selected(Item.item(selected));
-		}
-
-		@Override
-		public ItemComboBoxModelBuilder<T> selected(Item<T> selected) {
-			requireNonNull(selected);
-			//the null item is extracted into nullItem, so it is a valid selection even though items no longer contains it
-			if (!items.contains(selected) && !Objects.equals(selected, nullItem)) {
-				throw new IllegalArgumentException("Model does not contain item: " + selected);
-			}
-			this.selected = selected;
-			return this;
-		}
-
-		@Override
-		public FilterComboBoxModel<Item<T>> build() {
-			FilterComboBoxModel.Builder<Item<T>> builder = new DefaultBuilder<>(items, null)
-							.translator(new SelectedItemTranslator<>(items))
-							.nullItem(nullItem);
-			if (!sorted) {
-				builder.comparator(null);
-			}
-			if (comparator != null) {
-				builder.comparator(comparator);
-			}
-			FilterComboBoxModel<Item<T>> comboBoxModel = builder.build();
-			if (selected != null) {
-				comboBoxModel.selection().item().set(selected);
-			}
-
-			return comboBoxModel;
+		private DefaultItemComboBoxModelBuilder(List<Item<T>> items) {
+			super(items);
 		}
 	}
 
@@ -311,7 +186,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private boolean cleared = true;
 
-		private DefaultComboBoxItems(DefaultBuilder<T> builder, Sort<T> sort) {
+		private DefaultComboBoxItems(AbstractFilterComboBoxModelBuilder<T, ?> builder, Sort<T> sort) {
 			this.includeNull = builder.includeNull;
 			this.nullItem = builder.nullItem;
 			this.filterSelected = builder.filterSelected;
@@ -908,11 +783,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private static final class SelectedItemTranslator<T> implements Function<Object, Item<T>> {
+	static final class SelectedItemTranslator<T> implements Function<Object, Item<T>> {
 
 		private final Map<T, Item<T>> itemMap;
 
-		private SelectedItemTranslator(List<Item<T>> items) {
+		SelectedItemTranslator(List<Item<T>> items) {
 			itemMap = items.stream()
 							.collect(toMap(Item::get, Function.identity()));
 		}
