@@ -2,6 +2,13 @@ Codion Change Log
 =================
 
 ## 0.18.86
+### is.codion.common.model
+- DefaultMultiSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, as a refresh does, index() and indexes() still only when the indexes change. A refresh returning the same rows by equals() with changed contents used to notify nothing, leaving anything derived from the selected item stale.
+- DefaultFilterModelItems.replace() now preserves the selection by item, a selected item staying selected as its replacement. A selected item replaced by one the include predicate rejects used to leave the selection pointing at the row after it.
+### is.codion.framework.model
+- AbstractEntityTableModel, an unmodified editor now takes the refreshed instance of the selected entity on refresh, an edit in progress is kept. The editor used to show the stale values until the row was reselected.
+### is.codion.swing.common.model
+- DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
 
 ## 0.18.85
 ### is.codion.common.reactive

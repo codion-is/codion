@@ -399,8 +399,10 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private void onChanged() {
+			//by identity rather than equals(): the items model owns the instances and replaces them on refresh and
+			//replace(), a replacement being the same item by equals() but a new value of this facade
 			R current = getValue();
-			if (!Objects.equals(lastNotified, current)) {
+			if (lastNotified != current) {
 				lastNotified = current;
 				notifyObserver();
 			}
@@ -507,8 +509,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private void onChanged() {
+			//by identity, see SelectedItem
 			List<R> current = getValue();
-			if (!lastNotified.equals(current)) {
+			if (!sameInstances(lastNotified, current)) {
 				lastNotified = current;
 				notifyObserver();
 			}
@@ -519,5 +522,18 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		for (T item : requireNonNull(items)) {
 			requireNonNull(item);
 		}
+	}
+
+	private static <T> boolean sameInstances(List<T> first, List<T> second) {
+		if (first.size() != second.size()) {
+			return false;
+		}
+		for (int i = 0; i < first.size(); i++) {
+			if (first.get(i) != second.get(i)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

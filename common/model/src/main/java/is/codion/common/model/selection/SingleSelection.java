@@ -45,7 +45,11 @@ public interface SingleSelection<T> {
 	Observer<?> changing();
 
 	/**
-	 * @return the selected item
+	 * <p>Returns the {@link Value} controlling the selected item.
+	 * <p>Notifies when the selected item changes, and when the instance the selection refers to is replaced, as
+	 * happens when the items are refreshed or replaced, the replacement being the same item by {@code equals()}
+	 * but not the same object.
+	 * @return the {@link Value} controlling the selected item
 	 */
 	Value<T> item();
 

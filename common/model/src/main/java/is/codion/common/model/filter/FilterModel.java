@@ -106,6 +106,10 @@ public interface FilterModel<T> {
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
 		 * <br><br>
 		 * Retains the selection and filtering. Sorts the refreshed data.
+		 * <p>A selected item still present in the refreshed data stays selected, at whichever index it lands on, and the
+		 * selection's item observers are notified with the refreshed instance, the same item by {@code equals()} but not
+		 * the same object, while its index observers are notified only if the indexes changed. Selected items no longer
+		 * present are dropped from the selection.
 		 * @see Refresher#active()
 		 * @see Refresher#result()
 		 * @see Refresher#async()
@@ -180,6 +184,8 @@ public interface FilterModel<T> {
 		 * <p>Note that this method respects the include predicate, so a
 		 * currently filtered item may be replaced with an included item and vice versa.
 		 * <p>If the included items change they are sorted if sorting is enabled.
+		 * <p>A selected item being replaced stays selected as its replacement, the selection's item observers being
+		 * notified with it, unless the replacement is no longer included, in which case it is dropped from the selection.
 		 * @param item the item to replace
 		 * @param replacement the replacement item
 		 * @see IncludedItems#predicate()
@@ -191,6 +197,7 @@ public interface FilterModel<T> {
 		 * <p>Note that this method respects the include predicate, so a
 		 * currently filtered item may be replaced with an included item and vice versa.
 		 * <p>If the included items change they are sorted if sorting is enabled.
+		 * <p>Selected items being replaced stay selected as their replacements, see {@link #replace(Object, Object)}.
 		 * @param replacements the items to replace mapped to their replacements
 		 */
 		void replace(Map<T, T> replacements);

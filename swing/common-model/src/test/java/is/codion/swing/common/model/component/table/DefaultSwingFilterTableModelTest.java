@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -809,6 +810,88 @@ public final class DefaultSwingFilterTableModelTest {
 	}
 
 	@Test
+	void refreshNotifiesReplacedSelectedInstancesWithoutJTable() {
+		refreshNotifiesReplacedSelectedInstances(false);
+	}
+
+	@Test
+	void refreshNotifiesReplacedSelectedInstancesWithJTable() {
+		refreshNotifiesReplacedSelectedInstances(true);
+	}
+
+	@Test
+	void replaceNotifiesSelectedItem() {
+		SwingFilterTableModel<Versioned, Integer> model = SwingFilterTableModel.builder()
+						.columns(new VersionedColumns())
+						.items(() -> asList(new Versioned("a", 0), new Versioned("b", 0), new Versioned("c", 0)))
+						.build();
+		model.items().refresh();
+		model.selection().item().set(new Versioned("b", 0));
+		AtomicInteger item = new AtomicInteger();
+		AtomicInteger index = new AtomicInteger();
+		model.selection().item().addListener(item::incrementAndGet);
+		model.selection().index().addListener(index::incrementAndGet);
+
+		Versioned replacement = new Versioned("b", 1);
+		model.items().replace(new Versioned("b", 0), replacement);
+		// the same item by equals(), a new instance: item() notifies, index() does not, the replacement is selected
+		assertEquals(1, item.get());
+		assertEquals(0, index.get());
+		assertSame(replacement, model.selection().item().get());
+		assertEquals(1, model.selection().index().get());
+	}
+
+	private static void refreshNotifiesReplacedSelectedInstances(boolean attachTable) {
+		// rows equal by key only, as entities are, refreshed into fresher instances with new contents
+		AtomicInteger version = new AtomicInteger();
+		AtomicBoolean fresh = new AtomicBoolean(true);
+		List<Versioned> fixed = asList(new Versioned("a", 0), new Versioned("b", 0), new Versioned("c", 0));
+		SwingFilterTableModel<Versioned, Integer> model = SwingFilterTableModel.builder()
+						.columns(new VersionedColumns())
+						.items(() -> fresh.get() ? asList(new Versioned("a", version.get()),
+										new Versioned("b", version.get()), new Versioned("c", version.get())) : fixed)
+						.build();
+		if (attachTable) {
+			new JTable(model).setSelectionModel(model.selection());
+		}
+		model.items().refresh();
+		model.selection().items().set(asList(new Versioned("b", 0), new Versioned("c", 0)));
+		AtomicInteger item = new AtomicInteger();
+		AtomicInteger items = new AtomicInteger();
+		AtomicInteger index = new AtomicInteger();
+		AtomicInteger indexes = new AtomicInteger();
+		AtomicInteger empty = new AtomicInteger();
+		model.selection().item().addListener(item::incrementAndGet);
+		model.selection().items().addListener(items::incrementAndGet);
+		model.selection().index().addListener(index::incrementAndGet);
+		model.selection().indexes().addListener(indexes::incrementAndGet);
+		model.selection().empty().addListener(empty::incrementAndGet);
+
+		version.set(1);
+		model.items().refresh();
+		// the same rows, fresher instances: item()/items() notify once, index()/indexes()/empty() not at all
+		assertEquals(1, item.get());
+		assertEquals(1, items.get());
+		assertEquals(0, index.get());
+		assertEquals(0, indexes.get());
+		assertEquals(0, empty.get());
+		assertEquals(1, model.selection().item().get().version);
+		assertEquals(asList(1, 2), model.selection().indexes().get());
+
+		// the same instances again: nothing changed, nothing notifies
+		fresh.set(false);
+		model.items().refresh();
+		item.set(0);
+		items.set(0);
+		model.items().refresh();
+		assertEquals(0, item.get());
+		assertEquals(0, items.get());
+		assertEquals(0, index.get());
+		assertEquals(0, indexes.get());
+		assertEquals(0, empty.get());
+	}
+
+	@Test
 	void replace() {
 		tableModel.sort().ascending(0);
 		tableModel.items().refresh();
@@ -972,5 +1055,45 @@ public final class DefaultSwingFilterTableModelTest {
 		}
 
 		return true;
+	}
+
+	// equal by key only, the shape of a row a refresh replaces with a fresher instance
+	private static final class Versioned {
+
+		private final String key;
+		private final int version;
+
+		private Versioned(String key, int version) {
+			this.key = key;
+			this.version = version;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			return object instanceof Versioned && ((Versioned) object).key.equals(key);
+		}
+
+		@Override
+		public int hashCode() {
+			return key.hashCode();
+		}
+	}
+
+	private static final class VersionedColumns implements TableColumns<Versioned, Integer> {
+
+		@Override
+		public List<Integer> identifiers() {
+			return singletonList(0);
+		}
+
+		@Override
+		public Class<?> columnClass(Integer identifier) {
+			return String.class;
+		}
+
+		@Override
+		public Object value(Versioned row, Integer identifier) {
+			return row.key;
+		}
 	}
 }

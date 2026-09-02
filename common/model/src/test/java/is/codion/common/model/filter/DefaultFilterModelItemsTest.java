@@ -45,11 +45,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -727,6 +731,145 @@ public class DefaultFilterModelItemsTest {
 		//removing the selected item drops it from the selection, it no longer has an index
 		model.remove("c");
 		assertTrue(selection.empty().is());
+	}
+
+	@Test
+	void selectionNotifiesReplacedInstancesOnRefresh() {
+		// rows equal by key only, as entities are, refreshed into fresher instances with new contents
+		AtomicInteger version = new AtomicInteger();
+		AtomicBoolean fresh = new AtomicBoolean(true);
+		List<Versioned> fixed = asList(new Versioned("a", 0), new Versioned("b", 0), new Versioned("c", 0));
+		AtomicReference<MultiSelection<Versioned>> selection = new AtomicReference<>();
+		Items<Versioned> items = Items.builder()
+						.<Versioned>selection(included -> selection.updateAndGet(current -> MultiSelection.multiSelection(included)))
+						.sort(new VersionedSort())
+						.items(() -> fresh.get() ? asList(new Versioned("a", version.get()),
+										new Versioned("b", version.get()), new Versioned("c", version.get())) : fixed)
+						.build();
+		items.refresh();
+		selection.get().items().set(asList(new Versioned("b", 0), new Versioned("c", 0)));
+		AtomicInteger item = new AtomicInteger();
+		AtomicInteger selectedItems = new AtomicInteger();
+		AtomicInteger index = new AtomicInteger();
+		AtomicInteger indexes = new AtomicInteger();
+		AtomicInteger empty = new AtomicInteger();
+		selection.get().item().addListener(item::incrementAndGet);
+		selection.get().items().addListener(selectedItems::incrementAndGet);
+		selection.get().index().addListener(index::incrementAndGet);
+		selection.get().indexes().addListener(indexes::incrementAndGet);
+		selection.get().empty().addListener(empty::incrementAndGet);
+
+		version.set(1);
+		items.refresh();
+		// the same rows, fresher instances: item()/items() notify once, index()/indexes()/empty() not at all
+		assertEquals(1, item.get());
+		assertEquals(1, selectedItems.get());
+		assertEquals(0, index.get());
+		assertEquals(0, indexes.get());
+		assertEquals(0, empty.get());
+		assertEquals(1, selection.get().item().get().version);
+		assertEquals(asList(1, 2), selection.get().indexes().get());
+
+		// the same instances again: nothing changed, nothing notifies
+		fresh.set(false);
+		items.refresh();
+		item.set(0);
+		selectedItems.set(0);
+		items.refresh();
+		assertEquals(0, item.get());
+		assertEquals(0, selectedItems.get());
+		assertEquals(0, index.get());
+		assertEquals(0, indexes.get());
+		assertEquals(0, empty.get());
+	}
+
+	@Test
+	void replaceKeepsSelectedItemSelectedAsReplacement() {
+		AtomicReference<MultiSelection<Versioned>> selection = new AtomicReference<>();
+		Items<Versioned> items = Items.builder()
+						.<Versioned>selection(included -> selection.updateAndGet(current -> MultiSelection.multiSelection(included)))
+						.sort(new VersionedSort())
+						.build();
+		Versioned b = new Versioned("b", 0);
+		items.add(asList(new Versioned("a", 0), b, new Versioned("c", 0)));
+		selection.get().item().set(b);
+		AtomicInteger item = new AtomicInteger();
+		AtomicInteger index = new AtomicInteger();
+		selection.get().item().addListener(item::incrementAndGet);
+		selection.get().index().addListener(index::incrementAndGet);
+
+		// the same item by equals(), a new instance: item() notifies, index() does not, the replacement is selected
+		Versioned fresher = new Versioned("b", 1);
+		items.replace(b, fresher);
+		assertEquals(1, item.get());
+		assertEquals(0, index.get());
+		assertSame(fresher, selection.get().item().get());
+		assertEquals(singletonList(1), selection.get().indexes().get());
+
+		// a replacement under another key, as an updated primary key: the selection follows it, here past c by the sort
+		Versioned renamed = new Versioned("d", 1);
+		items.replace(fresher, renamed);
+		assertSame(renamed, selection.get().item().get());
+		assertEquals(singletonList(2), selection.get().indexes().get());
+	}
+
+	@Test
+	void replaceIntoFilteredDropsFromSelection() {
+		AtomicReference<MultiSelection<Versioned>> selection = new AtomicReference<>();
+		Items<Versioned> items = Items.builder()
+						.<Versioned>selection(included -> selection.updateAndGet(current -> MultiSelection.multiSelection(included)))
+						.sort(new VersionedSort())
+						.build();
+		items.included().predicate().set(row -> row.version == 0);
+		Versioned b = new Versioned("b", 0);
+		items.add(asList(new Versioned("a", 0), b, new Versioned("c", 0)));
+		selection.get().item().set(b);
+
+		// the replacement is filtered out: the selection is dropped, not left pointing at the row after it
+		items.replace(b, new Versioned("b", 1));
+		assertEquals(asList(new Versioned("a", 0), new Versioned("c", 0)), items.included().get());
+		assertTrue(selection.get().empty().is());
+		assertTrue(selection.get().indexes().get().isEmpty());
+	}
+
+	// equal by key only, the shape of a row a refresh replaces with a fresher instance
+	private static final class Versioned {
+
+		private final String key;
+		private final int version;
+
+		private Versioned(String key, int version) {
+			this.key = key;
+			this.version = version;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			return object instanceof Versioned && ((Versioned) object).key.equals(key);
+		}
+
+		@Override
+		public int hashCode() {
+			return key.hashCode();
+		}
+	}
+
+	private static final class VersionedSort implements Sort<Versioned> {
+
+		@Override
+		public int compare(Versioned first, Versioned second) {
+			return first.key.compareTo(second.key);
+		}
+
+		@Override
+		public boolean sorted() {
+			return true;
+		}
+
+		@Override
+		public Observer<Boolean> observer() {
+			return Event.event();
+		}
 	}
 
 	private static class TestInclude implements IncludePredicate<String> {
