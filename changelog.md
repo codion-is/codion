@@ -5,10 +5,12 @@ Codion Change Log
 ### is.codion.common.model
 - DefaultMultiSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, as a refresh does, index() and indexes() still only when the indexes change. A refresh returning the same rows by equals() with changed contents used to notify nothing, leaving anything derived from the selected item stale.
 - DefaultFilterModelItems.replace() now preserves the selection by item, a selected item staying selected as its replacement. A selected item replaced by one the include predicate rejects used to leave the selection pointing at the row after it.
+- MultiSelection.IndexStore added, the selected indexes a MultiSelection is a view over, the one part of a selection differing per toolkit, along with MultiSelection.multiSelection(IndexedItems, IndexStore). DefaultMultiSelection is now built on an IndexStore, its index and item facades shared with the Swing selection instead of duplicated there.
 ### is.codion.framework.model
 - AbstractEntityTableModel, an unmodified editor now takes the refreshed instance of the selected entity on refresh, an edit in progress is kept. The editor used to show the stale values until the row was reselected.
 ### is.codion.swing.common.model
 - DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
+- DefaultListSelection is now a DefaultListSelectionModel serving as the MultiSelection.IndexStore of a common DefaultMultiSelection, forwarding to its facades, rather than a copy of it with the store swapped. The JTable and JList keyboard actions moving the lead are enabled only for a DefaultListSelectionModel, hence the extension stays.
 
 ## 0.18.85
 ### is.codion.common.reactive

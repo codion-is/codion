@@ -19,56 +19,38 @@
 package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.filter.FilterModel.IncludedItems;
+import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
-import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
 
-import org.jspecify.annotations.Nullable;
-
 import javax.swing.DefaultListSelectionModel;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.IntStream;
+import java.util.TreeSet;
 
-import static java.util.Collections.*;
+import static is.codion.common.model.selection.MultiSelection.multiSelection;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
+/**
+ * A {@link DefaultListSelectionModel} serving as the {@link IndexStore} of a common {@link MultiSelection}, whose index
+ * and item facades it forwards to. The keyboard actions moving the lead without changing the selection are enabled
+ * only for a {@link DefaultListSelectionModel} (BasicTableUI and BasicListUI), hence the extension.
+ */
 final class DefaultListSelection<R> extends DefaultListSelectionModel implements FilterListSelection<R> {
 
-	private final SelectedIndex selectedIndex = new SelectedIndex();
-	private final SelectedIndexes selectedIndexes = new SelectedIndexes();
-	private final DefaultItem selectedItem = new DefaultItem();
-	private final DefaultItems selectedItems = new DefaultItems();
 	private final Event<?> changing = Event.event();
+	private final Event<?> changed = Event.event();
 	private final State singleSelection = State.state(false);
-	private final State empty = State.state(true);
-	private final State single = State.state(false);
-	private final ObservableState multiple = State.and(empty.not(), single.not());
-
-	private final IncludedItems<R> items;
+	private final MultiSelection<R> selection;
 
 	DefaultListSelection(IncludedItems<R> items) {
-		this.items = requireNonNull(items);
-		bindEvents();
-	}
-
-	@Override
-	public void setSelectionMode(int selectionMode) {
-		if (getSelectionMode() != selectionMode) {
-			super.clearSelection();
-			super.setSelectionMode(selectionMode);
-			singleSelection.set(selectionMode == SINGLE_SELECTION);
-		}
+		this.selection = multiSelection(requireNonNull(items), new ListStore());
+		singleSelection.addConsumer(singleSelectionMode ->
+						setSelectionMode(singleSelectionMode ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
 	}
 
 	@Override
@@ -77,13 +59,53 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
-	public int count() {
-		if (isSelectionEmpty()) {
-			return 0;
-		}
+	public ObservableState multiple() {
+		return selection.multiple();
+	}
 
-		return (int) IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
-						.filter(this::isSelectedIndex).count();
+	@Override
+	public ObservableState single() {
+		return selection.single();
+	}
+
+	@Override
+	public ObservableState empty() {
+		return selection.empty();
+	}
+
+	@Override
+	public Observer<?> changing() {
+		return changing.observer();
+	}
+
+	@Override
+	public Value<Integer> index() {
+		return selection.index();
+	}
+
+	@Override
+	public Indexes indexes() {
+		return selection.indexes();
+	}
+
+	@Override
+	public Value<R> item() {
+		return selection.item();
+	}
+
+	@Override
+	public Items<R> items() {
+		return selection.items();
+	}
+
+	@Override
+	public int count() {
+		return selection.count();
+	}
+
+	@Override
+	public void selectAll() {
+		selection.selectAll();
 	}
 
 	@Override
@@ -97,30 +119,17 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
-	public Indexes indexes() {
-		return selectedIndexes;
+	public void clear() {
+		clearSelection();
 	}
 
 	@Override
-	public Value<Integer> index() {
-		return selectedIndex;
-	}
-
-	@Override
-	public void selectAll() {
-		if (items.size() > 0) {
-			setSelectionInterval(0, items.size() - 1);
+	public void setSelectionMode(int selectionMode) {
+		if (getSelectionMode() != selectionMode) {
+			super.clearSelection();
+			super.setSelectionMode(selectionMode);
+			singleSelection.set(selectionMode == SINGLE_SELECTION);
 		}
-	}
-
-	@Override
-	public Value<R> item() {
-		return selectedItem;
-	}
-
-	@Override
-	public Items<R> items() {
-		return selectedItems;
 	}
 
 	@Override
@@ -150,31 +159,6 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
-	public Observer<?> changing() {
-		return changing.observer();
-	}
-
-	@Override
-	public ObservableState multiple() {
-		return multiple;
-	}
-
-	@Override
-	public ObservableState single() {
-		return single.observable();
-	}
-
-	@Override
-	public ObservableState empty() {
-		return empty.observable();
-	}
-
-	@Override
-	public void clear() {
-		clearSelection();
-	}
-
-	@Override
 	public void clearSelection() {
 		changing.run();
 		super.clearSelection();
@@ -187,7 +171,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		if (wasAdjusting && !isAdjusting) {
 			//DefaultListSelectionModel fires at the end of an adjustment only if an index changed during it, the facades
 			//are consulted regardless, the instances the selected indexes refer to may have been replaced meanwhile
-			onChanged();
+			changed.run();
 		}
 	}
 
@@ -195,148 +179,50 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
 		super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
 		if (!isAdjusting) {
-			onChanged();
+			changed.run();
 		}
 	}
 
-	private void onChanged() {
-		empty.set(super.isSelectionEmpty());
-		single.set(count() == 1);
-		selectedIndex.onChanged();
-		selectedItem.onChanged();
-		selectedIndexes.onChanged();
-		selectedItems.onChanged();
-	}
-
-	private void bindEvents() {
-		singleSelection.addConsumer(singleSelectionMode ->
-						setSelectionMode(singleSelectionMode ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
-	}
-
-	private static void checkIndex(int index, int size) {
-		if (index < 0 || index > size - 1) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
-		}
-	}
-
-	private final class SelectedIndex extends AbstractValue<Integer> {
-
-		private @Nullable Integer lastNotified;
+	/**
+	 * The {@link DefaultListSelectionModel} as a {@link IndexStore}. Structural changes made by a JTable or JList,
+	 * insertIndexInterval() and removeIndexInterval(), reach {@link #changed()} via fireValueChanged() without
+	 * passing {@link #changing()}, they re-index the selection rather than change it.
+	 */
+	private final class ListStore implements IndexStore {
 
 		@Override
-		protected @Nullable Integer getValue() {
-			int index = getMinSelectionIndex();
+		public Set<Integer> get() {
+			Set<Integer> selected = new TreeSet<>();
+			if (!isSelectionEmpty()) {
+				for (int index = getMinSelectionIndex(); index <= getMaxSelectionIndex(); index++) {
+					if (isSelectedIndex(index)) {
+						selected.add(index);
+					}
+				}
+			}
 
-			return index == -1 ? null : index;
+			return unmodifiableSet(selected);
 		}
 
 		@Override
-		protected void setValue(@Nullable Integer index) {
-			if (index == null) {
-				clearSelection();
-			}
-			else {
-				checkIndex(index, items.size());
-				setSelectionInterval(index, index);
-			}
-		}
-
-		private void onChanged() {
-			//only notify when this facade's value actually changed, honoring the Notify.CHANGED contract
-			Integer current = getValue();
-			if (!Objects.equals(lastNotified, current)) {
-				lastNotified = current;
-				notifyObserver();
-			}
-		}
-	}
-
-	private final class SelectedIndexes extends AbstractValue<List<Integer>> implements Indexes {
-
-		private List<Integer> lastNotified = emptyList();
-
-		private SelectedIndexes() {
-			super(emptyList());
-		}
-
-		@Override
-		protected List<Integer> getValue() {
-			if (isSelectionEmpty()) {
-				return emptyList();
-			}
-
-			return unmodifiableList(IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
-							.filter(DefaultListSelection.this::isSelectedIndex)
-							.boxed()
-							.collect(toList()));
-		}
-
-		@Override
-		protected void setValue(List<Integer> indexes) {
-			checkIndexes(indexes);
-
-			Set<Integer> currentIndexes = new HashSet<>(getValue());
-			if (currentIndexes.isEmpty() && indexes.isEmpty()) {
+		public void set(Collection<Integer> indexes) {
+			Set<Integer> current = get();
+			Set<Integer> toRemove = new TreeSet<>(current);
+			toRemove.removeAll(indexes);
+			Set<Integer> toAdd = new TreeSet<>(indexes);
+			toAdd.removeAll(current);
+			if (toRemove.isEmpty() && toAdd.isEmpty()) {
 				return;
 			}
-			if (indexes.isEmpty()) {
-				clearSelection();
-				return;
-			}
-
-			Set<Integer> indexesToSelect = new HashSet<>(indexes);
-			Set<Integer> indexesToRemove = new HashSet<>(currentIndexes);
-			indexesToRemove.removeAll(indexesToSelect);
-
-			Set<Integer> indexesToAdd = new HashSet<>(indexesToSelect);
-			indexesToAdd.removeAll(currentIndexes);
-			if (indexesToRemove.isEmpty() && indexesToAdd.isEmpty()) {
-				return;
-			}
-
 			changing.run();
 			//save/restore so a caller already grouping (adjusting == true) is not terminated early
 			boolean wasAdjusting = getValueIsAdjusting();
 			setValueIsAdjusting(true);
-			for (Integer index : indexesToRemove) {
+			for (Integer index : toRemove) {
 				DefaultListSelection.super.removeSelectionInterval(index, index);
 			}
-			for (Integer index : indexesToAdd) {
+			for (Integer index : toAdd) {
 				DefaultListSelection.super.addSelectionInterval(index, index);
-			}
-			setValueIsAdjusting(wasAdjusting);
-		}
-
-		@Override
-		public void add(int index) {
-			checkIndex(index, items.size());
-			addSelectionInterval(index, index);
-		}
-
-		@Override
-		public void remove(int index) {
-			checkIndex(index, items.size());
-			removeSelectionInterval(index, index);
-		}
-
-		@Override
-		public void remove(Collection<Integer> indexes) {
-			indexes.forEach(index -> {
-				checkIndex(index, items.size());
-				removeSelectionInterval(index, index);
-			});
-		}
-
-		@Override
-		public void add(Collection<Integer> indexes) {
-			if (requireNonNull(indexes).isEmpty()) {
-				return;
-			}
-			checkIndexes(indexes);
-			boolean wasAdjusting = getValueIsAdjusting();
-			setValueIsAdjusting(true);
-			for (Integer index : indexes) {
-				addSelectionInterval(index, index);
 			}
 			setValueIsAdjusting(wasAdjusting);
 		}
@@ -347,231 +233,28 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		@Override
-		public void decrement() {
-			int includedSize = items.size();
-			if (includedSize > 0) {
-				int lastIndex = includedSize - 1;
-				if (isSelectionEmpty()) {
-					setSelectionInterval(lastIndex, lastIndex);
-				}
-				else {
-					selectedIndexes.set(selectedIndexes.getOrThrow().stream()
-									.map(index -> index == 0 ? lastIndex : index - 1)
-									.collect(toList()));
-				}
-			}
+		public State singleSelection() {
+			return singleSelection;
 		}
 
 		@Override
-		public void increment() {
-			int includedSize = items.size();
-			if (includedSize > 0) {
-				if (isSelectionEmpty()) {
-					setSelectionInterval(0, 0);
-				}
-				else {
-					selectedIndexes.set(selectedIndexes.getOrThrow().stream()
-									.map(index -> index == includedSize - 1 ? 0 : index + 1)
-									.collect(toList()));
-				}
-			}
+		public boolean adjusting() {
+			return getValueIsAdjusting();
 		}
 
 		@Override
-		public Optional<List<Integer>> optional() {
-			List<Integer> indexes = getOrThrow();
-			if (indexes.isEmpty()) {
-				return Optional.empty();
-			}
-
-			return Optional.of(indexes);
-		}
-
-		private void checkIndexes(Collection<Integer> indexes) {
-			int size = items.size();
-			for (Integer index : indexes) {
-				checkIndex(index, size);
-			}
-		}
-
-		void onChanged() {
-			List<Integer> current = getValue();
-			if (!lastNotified.equals(current)) {
-				lastNotified = current;
-				notifyObserver();
-			}
-		}
-	}
-
-	private final class DefaultItem extends AbstractValue<R> {
-
-		private @Nullable R lastNotified;
-
-		@Override
-		protected @Nullable R getValue() {
-			Integer index = selectedIndex.get();
-			if (index != null && index < items.size()) {
-				return items.get(index);
-			}
-
-			return null;
+		public void adjusting(boolean adjusting) {
+			setValueIsAdjusting(adjusting);
 		}
 
 		@Override
-		protected void setValue(@Nullable R item) {
-			if (item == null) {
-				clearSelection();
-			}
-			else {
-				selectedItems.set(singletonList(item));
-			}
-		}
-
-		private void onChanged() {
-			//by identity rather than equals(): the items model owns the instances and replaces them on refresh and
-			//replace(), a replacement being the same item by equals() but a new value of this facade
-			R current = getValue();
-			if (lastNotified != current) {
-				lastNotified = current;
-				notifyObserver();
-			}
-		}
-	}
-
-	private final class DefaultItems extends AbstractValue<List<R>> implements Items<R> {
-
-		private List<R> lastNotified = emptyList();
-
-		private DefaultItems() {
-			super(emptyList());
+		public Observer<?> changing() {
+			return changing.observer();
 		}
 
 		@Override
-		protected List<R> getValue() {
-			return unmodifiableList(selectedIndexes.getOrThrow().stream()
-							.mapToInt(Integer::intValue)
-							.filter(index -> index < items.size())
-							.mapToObj(items::get)
-							.collect(toList()));
+		public Observer<?> changed() {
+			return changed.observer();
 		}
-
-		@Override
-		public void set(Collection<R> items) {
-			//route through Value.set (the List overload) so locked() and validators are enforced,
-			//consistent with the set(List) convenience overload
-			set(new ArrayList<>(requireNonNull(items)));
-		}
-
-		@Override
-		protected void setValue(List<R> items) {
-			rejectNulls(items);
-			selectedIndexes.set(items.stream()
-							.mapToInt(DefaultListSelection.this.items::indexOf)
-							.filter(index -> index >= 0)
-							.boxed()
-							.collect(toList()));
-		}
-
-		@Override
-		public void set(Predicate<R> predicate) {
-			selectedIndexes.set(indexesToSelect(requireNonNull(predicate)));
-		}
-
-		@Override
-		public void add(Predicate<R> predicate) {
-			selectedIndexes.add(indexesToSelect(requireNonNull(predicate)));
-		}
-
-		@Override
-		public void add(R item) {
-			addInternal(singletonList(requireNonNull(item)));
-		}
-
-		@Override
-		public void add(Collection<R> items) {
-			rejectNulls(items);
-			addInternal(items);
-		}
-
-		@Override
-		public void remove(R item) {
-			remove(singletonList(requireNonNull(item)));
-		}
-
-		@Override
-		public void remove(Collection<R> itemsToRemove) {
-			//filter out items not currently included (indexOf == -1), removing an absent item is a no-op
-			selectedIndexes.remove(rejectNulls(itemsToRemove).stream()
-							.mapToInt(items::indexOf)
-							.filter(index -> index >= 0)
-							.boxed()
-							.collect(toList()));
-		}
-
-		@Override
-		public boolean contains(R item) {
-			return isSelectedIndex(items.indexOf(requireNonNull(item)));
-		}
-
-		@Override
-		public Optional<List<R>> optional() {
-			List<R> selected = getOrThrow();
-			if (selected.isEmpty()) {
-				return Optional.empty();
-			}
-
-			return Optional.of(selected);
-		}
-
-		private void addInternal(Collection<R> itemsToAdd) {
-			selectedIndexes.add(itemsToAdd.stream()
-							.mapToInt(items::indexOf)
-							.filter(index -> index >= 0)
-							.boxed()
-							.collect(toList()));
-		}
-
-		private List<Integer> indexesToSelect(Predicate<R> predicate) {
-			List<Integer> indexes = new ArrayList<>();
-			List<R> includedItems = items.get();
-			for (int i = 0; i < includedItems.size(); i++) {
-				R item = includedItems.get(i);
-				if (predicate.test(item)) {
-					indexes.add(i);
-				}
-			}
-
-			return indexes;
-		}
-
-		private void onChanged() {
-			//by identity, see DefaultItem
-			List<R> current = getValue();
-			if (!sameInstances(lastNotified, current)) {
-				lastNotified = current;
-				notifyObserver();
-			}
-		}
-
-		private <T> Collection<T> rejectNulls(Collection<T> items) {
-			for (T item : requireNonNull(items)) {
-				requireNonNull(item);
-			}
-
-			return items;
-		}
-	}
-
-	private static <T> boolean sameInstances(List<T> first, List<T> second) {
-		if (first.size() != second.size()) {
-			return false;
-		}
-		for (int i = 0; i < first.size(); i++) {
-			if (first.get(i) != second.get(i)) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 }
