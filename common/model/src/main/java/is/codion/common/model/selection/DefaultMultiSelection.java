@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
@@ -41,9 +42,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A pure-Java {@link MultiSelection} implementation backed by a {@link NavigableSet} of selected
- * indexes — the AWT/Swing-free counterpart to {@code DefaultListSelection}, which borrows
- * {@code javax.swing.DefaultListSelectionModel} as its engine.
+ * The default {@link MultiSelection} implementation, its index and item facades a view over a {@link IndexStore}, by
+ * default {@link DefaultIndexStore}, a {@link NavigableSet} of selected indexes, or a toolkit's own, such as the
+ * {@code javax.swing.DefaultListSelectionModel} the Swing selection keeps for its {@code JTable}.
  *
  * <p>Note that the {@link #index()}, {@link #indexes()}, {@link #item()} and {@link #items()} facades
  * use the non-notifying {@link is.codion.common.reactive.value.AbstractValue} constructors; notification
@@ -54,28 +55,29 @@ import static java.util.stream.Collectors.toList;
 final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	private final IndexedItems<R> items;
-	private final NavigableSet<Integer> selected = new TreeSet<>();
+	private final IndexStore store;
 
 	private final SelectedIndex selectedIndex = new SelectedIndex();
 	private final SelectedIndexes selectedIndexes = new SelectedIndexes();
 	private final SelectedItem selectedItem = new SelectedItem();
 	private final SelectedItems selectedItems = new SelectedItems();
-	private final Event<?> changing = Event.event();
-	private final State singleSelection = State.state(false);
 	private final State empty = State.state(true);
 	private final State single = State.state(false);
 	private final ObservableState multiple = State.and(empty.not(), single.not());
 
-	private boolean adjusting = false;
-
 	DefaultMultiSelection(IndexedItems<R> items) {
-		this.items = items;
-		this.singleSelection.addConsumer(this::onSingleSelectionChanged);
+		this(items, new DefaultIndexStore());
+	}
+
+	DefaultMultiSelection(IndexedItems<R> items, IndexStore store) {
+		this.items = requireNonNull(items);
+		this.store = requireNonNull(store);
+		this.store.changed().addListener(this::onChanged);
 	}
 
 	@Override
 	public State singleSelection() {
-		return singleSelection;
+		return store.singleSelection();
 	}
 
 	@Override
@@ -95,7 +97,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	@Override
 	public Observer<?> changing() {
-		return changing.observer();
+		return store.changing();
 	}
 
 	@Override
@@ -120,7 +122,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	@Override
 	public int count() {
-		return selected.size();
+		return store.get().size();
 	}
 
 	@Override
@@ -132,12 +134,12 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	@Override
 	public void adjusting(boolean adjusting) {
-		setAdjusting(adjusting);
+		store.adjusting(adjusting);
 	}
 
 	@Override
 	public boolean adjusting() {
-		return adjusting;
+		return store.adjusting();
 	}
 
 	@Override
@@ -146,31 +148,11 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	}
 
 	private void setSelectionInterval(int fromIndex, int toIndex) {
-		applyTarget(range(fromIndex, toIndex));
+		store.set(range(fromIndex, toIndex));
 	}
 
 	private void clearSelection() {
-		applyTarget(new TreeSet<>());
-	}
-
-	/**
-	 * Applies the target selection: enforces single-selection mode, and — crucially — skips the
-	 * change notification entirely when the selection does not actually change. Selection models
-	 * must stay silent on no-ops; the framework's selection↔editor linking loops infinitely otherwise.
-	 */
-	private void applyTarget(NavigableSet<Integer> target) {
-		if (singleSelection.is() && target.size() > 1) {
-			int keep = target.last();
-			target.clear();
-			target.add(keep);
-		}
-		if (target.equals(selected)) {
-			return;
-		}
-		changing.run();
-		selected.clear();
-		selected.addAll(target);
-		changed();
+		store.set(emptySet());
 	}
 
 	private static NavigableSet<Integer> range(int fromIndex, int toIndex) {
@@ -182,30 +164,18 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		return range;
 	}
 
-	private void setAdjusting(boolean adjusting) {
-		this.adjusting = adjusting;
-		if (!adjusting) {
-			changed();
-		}
-	}
-
-	private void changed() {
-		if (!adjusting) {
-			empty.set(selected.isEmpty());
-			single.set(selected.size() == 1);
-			selectedIndex.onChanged();
-			selectedItem.onChanged();
-			selectedIndexes.onChanged();
-			selectedItems.onChanged();
-		}
-	}
-
-	private void onSingleSelectionChanged(boolean singleSelectionMode) {
-		clearSelection(); // mirror Swing: changing selection mode clears the selection
+	private void onChanged() {
+		Set<Integer> selected = store.get();
+		empty.set(selected.isEmpty());
+		single.set(selected.size() == 1);
+		selectedIndex.onChanged();
+		selectedItem.onChanged();
+		selectedIndexes.onChanged();
+		selectedItems.onChanged();
 	}
 
 	private boolean isSelectedIndex(int index) {
-		return selected.contains(index);
+		return store.contains(index);
 	}
 
 	private static void checkIndex(int index, int size) {
@@ -237,7 +207,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private int minSelectionIndex() {
-			return selected.isEmpty() ? -1 : selected.first();
+			Set<Integer> selected = store.get();
+
+			return selected.isEmpty() ? -1 : selected.iterator().next();
 		}
 
 		private void onChanged() {
@@ -260,13 +232,13 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		protected List<Integer> getValue() {
-			return unmodifiableList(new ArrayList<>(selected));
+			return unmodifiableList(new ArrayList<>(store.get()));
 		}
 
 		@Override
 		protected void setValue(List<Integer> indexes) {
 			checkIndexes(indexes);
-			applyTarget(new TreeSet<>(indexes));
+			store.set(indexes);
 		}
 
 		@Override
@@ -287,9 +259,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 				return;
 			}
 			checkIndexes(indexes);
-			NavigableSet<Integer> target = new TreeSet<>(selected);
+			NavigableSet<Integer> target = new TreeSet<>(store.get());
 			target.addAll(indexes);
-			applyTarget(target);
+			store.set(target);
 		}
 
 		@Override
@@ -298,9 +270,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 				return;
 			}
 			checkIndexes(indexes);
-			NavigableSet<Integer> target = new TreeSet<>(selected);
+			NavigableSet<Integer> target = new TreeSet<>(store.get());
 			target.removeAll(indexes);
-			applyTarget(target);
+			store.set(target);
 		}
 
 		@Override
@@ -312,7 +284,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		public void increment() {
 			int size = items.size();
 			if (size > 0) {
-				if (selected.isEmpty()) {
+				if (store.get().isEmpty()) {
 					setSelectionInterval(0, 0);
 				}
 				else {
@@ -328,7 +300,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			int size = items.size();
 			if (size > 0) {
 				int lastIndex = size - 1;
-				if (selected.isEmpty()) {
+				if (store.get().isEmpty()) {
 					setSelectionInterval(lastIndex, lastIndex);
 				}
 				else {
@@ -347,15 +319,15 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private void addSelectionInterval(int fromIndex, int toIndex) {
-			NavigableSet<Integer> target = new TreeSet<>(selected);
+			NavigableSet<Integer> target = new TreeSet<>(store.get());
 			target.addAll(range(fromIndex, toIndex));
-			applyTarget(target);
+			store.set(target);
 		}
 
 		private void removeSelectionInterval(int fromIndex, int toIndex) {
-			NavigableSet<Integer> target = new TreeSet<>(selected);
+			NavigableSet<Integer> target = new TreeSet<>(store.get());
 			target.removeAll(range(fromIndex, toIndex));
-			applyTarget(target);
+			store.set(target);
 		}
 
 		private void checkIndexes(Collection<Integer> indexes) {
@@ -419,7 +391,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		protected List<R> getValue() {
-			return unmodifiableList(selected.stream()
+			return unmodifiableList(store.get().stream()
 							.filter(index -> index < items.size())
 							.map(items::get)
 							.collect(toList()));
@@ -521,6 +493,81 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	private static <T> void rejectNulls(Collection<T> items) {
 		for (T item : requireNonNull(items)) {
 			requireNonNull(item);
+		}
+	}
+
+	/**
+	 * The default {@link IndexStore}, the selected indexes in a {@link TreeSet}.
+	 */
+	private static final class DefaultIndexStore implements IndexStore {
+
+		private final NavigableSet<Integer> selected = new TreeSet<>();
+		private final Event<?> changing = Event.event();
+		private final Event<?> changed = Event.event();
+		private final State singleSelection = State.state(false);
+
+		private boolean adjusting = false;
+
+		private DefaultIndexStore() {
+			singleSelection.addListener(() -> set(new TreeSet<>())); // mirror Swing: changing selection mode clears the selection
+		}
+
+		@Override
+		public Set<Integer> get() {
+			return unmodifiableSet(new TreeSet<>(selected));
+		}
+
+		@Override
+		public void set(Collection<Integer> indexes) {
+			NavigableSet<Integer> target = new TreeSet<>(indexes);
+			if (singleSelection.is() && target.size() > 1) {
+				Integer keep = target.last();
+				target.clear();
+				target.add(keep);
+			}
+			if (target.equals(selected)) {
+				//silent on a no-op, the framework's selection to editor linking loops infinitely otherwise
+				return;
+			}
+			changing.run();
+			selected.clear();
+			selected.addAll(target);
+			if (!adjusting) {
+				changed.run();
+			}
+		}
+
+		@Override
+		public boolean contains(int index) {
+			return selected.contains(index);
+		}
+
+		@Override
+		public State singleSelection() {
+			return singleSelection;
+		}
+
+		@Override
+		public boolean adjusting() {
+			return adjusting;
+		}
+
+		@Override
+		public void adjusting(boolean adjusting) {
+			this.adjusting = adjusting;
+			if (!adjusting) {
+				changed.run();
+			}
+		}
+
+		@Override
+		public Observer<?> changing() {
+			return changing.observer();
+		}
+
+		@Override
+		public Observer<?> changed() {
+			return changed.observer();
 		}
 	}
 

@@ -18,6 +18,7 @@
  */
 package is.codion.common.model.selection;
 
+import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -26,6 +27,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
@@ -132,6 +134,17 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	 */
 	static <T> MultiSelection<T> multiSelection(IndexedItems<T> items) {
 		return new DefaultMultiSelection<>(requireNonNull(items));
+	}
+
+	/**
+	 * @param items the indexed items
+	 * @param store the store keeping the selected indexes
+	 * @return a default {@link MultiSelection} implementation over the given store
+	 * @param <T> the item type
+	 * @see IndexStore
+	 */
+	static <T> MultiSelection<T> multiSelection(IndexedItems<T> items, IndexStore store) {
+		return new DefaultMultiSelection<>(requireNonNull(items), requireNonNull(store));
 	}
 
 	/**
@@ -270,5 +283,58 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * @return an unmodifiable view of the items
 		 */
 		List<R> get();
+	}
+
+	/**
+	 * <p>The selected indexes a {@link MultiSelection} is a view over, the one part of a selection that differs per toolkit.
+	 * <p>A store notifies {@link #changing()} before and {@link #changed()} after its indexes change, whoever
+	 * changed them, the selection deriving its index and item values from {@link #get()} on each {@link #changed()}.
+	 * @see #multiSelection(IndexedItems, IndexStore)
+	 */
+	interface IndexStore {
+
+		/**
+		 * @return an unmodifiable snapshot of the selected indexes, iterated in ascending order
+		 */
+		Set<Integer> get();
+
+		/**
+		 * <p>Replaces the selected indexes. A no-op if they are unchanged, otherwise {@link #changing()} is notified
+		 * before and {@link #changed()} after, the latter at the end of the adjustment while {@link #adjusting()}.
+		 * <p>Under {@link #singleSelection()} only the highest of the given indexes is selected.
+		 * @param indexes the indexes to select
+		 */
+		void set(Collection<Integer> indexes);
+
+		/**
+		 * @param index the index
+		 * @return true if the given index is selected
+		 */
+		boolean contains(int index);
+
+		/**
+		 * @return the {@link State} controlling single selection mode, the selection is cleared when it changes
+		 */
+		State singleSelection();
+
+		/**
+		 * @return true while a group of changes is in progress
+		 */
+		boolean adjusting();
+
+		/**
+		 * @param adjusting true to start a group of changes, false to end it, notifying {@link #changed()}
+		 */
+		void adjusting(boolean adjusting);
+
+		/**
+		 * @return an observer notified before the selected indexes change
+		 */
+		Observer<?> changing();
+
+		/**
+		 * @return an observer notified after the selected indexes changed, by whoever changed them
+		 */
+		Observer<?> changed();
 	}
 }
