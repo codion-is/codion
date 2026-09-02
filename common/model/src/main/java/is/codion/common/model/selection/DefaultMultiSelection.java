@@ -122,7 +122,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	@Override
 	public int count() {
-		return store.get().size();
+		return store.size();
 	}
 
 	@Override
@@ -133,13 +133,13 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	}
 
 	@Override
-	public void adjusting(boolean adjusting) {
-		store.adjusting(adjusting);
+	public void grouping(boolean grouping) {
+		store.grouping(grouping);
 	}
 
 	@Override
-	public boolean adjusting() {
-		return store.adjusting();
+	public boolean grouping() {
+		return store.grouping();
 	}
 
 	@Override
@@ -190,9 +190,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		protected @Nullable Integer getValue() {
-			int index = minSelectionIndex();
-
-			return index == -1 ? null : index;
+			return store.size() == 0 ? null : store.get().iterator().next();
 		}
 
 		@Override
@@ -204,12 +202,6 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 				checkIndex(index, items.size());
 				setSelectionInterval(index, index);
 			}
-		}
-
-		private int minSelectionIndex() {
-			Set<Integer> selected = store.get();
-
-			return selected.isEmpty() ? -1 : selected.iterator().next();
 		}
 
 		private void onChanged() {
@@ -284,12 +276,13 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		public void increment() {
 			int size = items.size();
 			if (size > 0) {
-				if (store.get().isEmpty()) {
+				if (store.size() == 0) {
 					setSelectionInterval(0, 0);
 				}
 				else {
-					set(get().stream()
-									.map(index -> index == size - 1 ? 0 : index + 1)
+					int lastIndex = size - 1;
+					set(getOrThrow().stream()
+									.map(index -> index == lastIndex ? 0 : index + 1)
 									.collect(toList()));
 				}
 			}
@@ -300,11 +293,11 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			int size = items.size();
 			if (size > 0) {
 				int lastIndex = size - 1;
-				if (store.get().isEmpty()) {
+				if (store.size() == 0) {
 					setSelectionInterval(lastIndex, lastIndex);
 				}
 				else {
-					set(get().stream()
+					set(getOrThrow().stream()
 									.map(index -> index == 0 ? lastIndex : index - 1)
 									.collect(toList()));
 				}
@@ -313,7 +306,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		public Optional<List<Integer>> optional() {
-			List<Integer> indexes = get();
+			List<Integer> indexes = getOrThrow();
 
 			return indexes.isEmpty() ? Optional.empty() : Optional.of(indexes);
 		}
@@ -455,7 +448,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		public Optional<List<R>> optional() {
-			List<R> selectedItemList = get();
+			List<R> selectedItemList = getOrThrow();
 
 			return selectedItemList.isEmpty() ? Optional.empty() : Optional.of(selectedItemList);
 		}
@@ -506,10 +499,10 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		private final Event<?> changed = Event.event();
 		private final State singleSelection = State.state(false);
 
-		private boolean adjusting = false;
+		private boolean grouping = false;
 
 		private DefaultIndexStore() {
-			singleSelection.addListener(() -> set(new TreeSet<>())); // mirror Swing: changing selection mode clears the selection
+			singleSelection.addListener(() -> set(emptySet())); // mirror Swing: changing selection mode clears the selection
 		}
 
 		@Override
@@ -532,9 +525,14 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			changing.run();
 			selected.clear();
 			selected.addAll(target);
-			if (!adjusting) {
+			if (!grouping) {
 				changed.run();
 			}
+		}
+
+		@Override
+		public int size() {
+			return selected.size();
 		}
 
 		@Override
@@ -548,14 +546,14 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
-		public boolean adjusting() {
-			return adjusting;
+		public boolean grouping() {
+			return grouping;
 		}
 
 		@Override
-		public void adjusting(boolean adjusting) {
-			this.adjusting = adjusting;
-			if (!adjusting) {
+		public void grouping(boolean grouping) {
+			this.grouping = grouping;
+			if (!grouping) {
 				changed.run();
 			}
 		}
