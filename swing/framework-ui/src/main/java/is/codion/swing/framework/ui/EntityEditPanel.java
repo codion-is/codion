@@ -1106,7 +1106,7 @@ public abstract class EntityEditPanel extends JPanel {
 		private boolean includeEntityViewer = INCLUDE_ENTITY_VIEWER.getOrThrow();
 		private boolean includeInspector = INCLUDE_INSPECTOR.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
-						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.getOrThrow();
+						ReferentialIntegrityErrorHandling.HANDLING.getOrThrow();
 		private boolean confirmInsert = CONFIRM_INSERT.getOrThrow();
 		private boolean confirmUpdate = CONFIRM_UPDATE.getOrThrow();
 		private boolean confirmDelete = CONFIRM_DELETE.getOrThrow();

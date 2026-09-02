@@ -42,7 +42,7 @@ public enum ReferentialIntegrityErrorHandling {
 	 * <li>Default value: {@link ReferentialIntegrityErrorHandling#DISPLAY_ERROR}
 	 * </ul>
 	 */
-	public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING =
+	public static final PropertyValue<ReferentialIntegrityErrorHandling> HANDLING =
 					enumValue(ReferentialIntegrityErrorHandling.class.getName() + ".handling",
 									ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.DISPLAY_ERROR);
 }

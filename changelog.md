@@ -16,6 +16,8 @@ Codion Change Log
 - SwingFilterTableModel.Builder, SwingFilterListModel.Builder, SwingFilterComboBoxModel.Builder and SwingItemComboBoxModelBuilder now extend their common counterparts.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
+### is.codion.swing.framework.ui
+- ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING renamed HANDLING.
 
 ## 0.18.85
 ### is.codion.common.reactive
