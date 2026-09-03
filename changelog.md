@@ -8,6 +8,7 @@ Codion Change Log
 - MultiSelection.IndexStore added, the selected indexes a MultiSelection is a view over, the one part of a selection differing per toolkit, along with MultiSelection.multiSelection(IndexedItems, IndexStore). DefaultMultiSelection is now built on an IndexStore, its index and item facades shared with the Swing selection instead of duplicated there.
 - FilterTableModel.Builder, FilterListModel.Builder, FilterComboBoxModel.Builder and ItemComboBoxModelBuilder now self-typed, Builder<R, C, B extends Builder<R, C, B>>, abstract base builders added.
 - MultiSelection.IndexStore.size() added, adjusting() renamed grouping().
+- MultiSelection.Grouping added along with grouping(), for controlling the selection change grouping.
 ### is.codion.framework.model
 - AbstractEntityTableModel, an unmodified editor now takes the refreshed instance of the selected entity on refresh, an edit in progress is kept. The editor used to show the stale values until the row was reselected.
 - EntityComboBoxModel.Builder now self-typed, Builder<B extends Builder<B>>, abstract base builder added.

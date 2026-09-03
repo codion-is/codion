@@ -45,6 +45,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	private final Event<?> changing = Event.event();
 	private final Event<?> changed = Event.event();
 	private final State singleSelection = State.state(false);
+	private final Grouping grouping = new DefaultGrouping();
 	private final MultiSelection<R> selection;
 
 	DefaultListSelection(IncludedItems<R> items) {
@@ -109,13 +110,8 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
-	public void grouping(boolean grouping) {
-		setValueIsAdjusting(grouping);
-	}
-
-	@Override
-	public boolean grouping() {
-		return getValueIsAdjusting();
+	public Grouping grouping() {
+		return grouping;
 	}
 
 	@Override
@@ -183,6 +179,19 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 	}
 
+	private final class DefaultGrouping implements Grouping {
+
+		@Override
+		public void set(boolean grouping) {
+			setValueIsAdjusting(grouping);
+		}
+
+		@Override
+		public boolean is() {
+			return getValueIsAdjusting();
+		}
+	}
+
 	/**
 	 * The {@link DefaultListSelectionModel} as a {@link IndexStore}. Structural changes made by a JTable or JList,
 	 * insertIndexInterval() and removeIndexInterval(), reach {@link #changed()} via fireValueChanged() without
@@ -243,13 +252,8 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		@Override
-		public boolean grouping() {
-			return getValueIsAdjusting();
-		}
-
-		@Override
-		public void grouping(boolean grouping) {
-			setValueIsAdjusting(grouping);
+		public Grouping grouping() {
+			return grouping;
 		}
 
 		@Override

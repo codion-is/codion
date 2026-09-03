@@ -684,11 +684,11 @@ public class DefaultFilterModelItemsTest {
 		selection.item().addConsumer(notifiedItems::add);
 
 		//a caller grouping around an items mutation, the mutation groups internally as well
-		selection.grouping(true);
+		selection.grouping().set(true);
 		model.included().add(0, "z");
-		assertTrue(selection.grouping(), "the caller's group was terminated by the mutation");
+		assertTrue(selection.grouping().is(), "the caller's group was terminated by the mutation");
 		assertTrue(notifiedItems.isEmpty(), "the group notified while still open");
-		selection.grouping(false);
+		selection.grouping().set(false);
 
 		assertEquals("b", selection.item().get());
 	}
@@ -1042,8 +1042,7 @@ public class DefaultFilterModelItemsTest {
 	private static class TestMultiSelection implements MultiSelection<String> {
 		private final Value<List<String>> selectedItems = Value.nonNull(new ArrayList<String>());
 		private final State singleSelection = State.state();
-
-		private boolean grouping;
+		private final Grouping grouping = new DefaultGrouping();
 
 		@Override
 		public ObservableState empty() {
@@ -1105,13 +1104,23 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public void grouping(boolean grouping) {
-			this.grouping = grouping;
+		public Grouping grouping() {
+			return grouping;
 		}
 
-		@Override
-		public boolean grouping() {
-			return grouping;
+		private static final class DefaultGrouping implements Grouping {
+
+			private boolean grouping = false;
+
+			@Override
+			public void set(boolean grouping) {
+				this.grouping = grouping;
+			}
+
+			@Override
+			public boolean is() {
+				return grouping;
+			}
 		}
 
 		private static class TestIndexes implements Indexes {
