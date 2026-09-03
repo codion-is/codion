@@ -298,60 +298,48 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	boolean exists();
 
 	/**
-	 * Compares the values of all attributes in the given entity to the values in this entity instance.
-	 * Returns true if all attribute values available in this entity are available and equal in the comparison entity
+	 * <p>Returns true if this entity and the given one contain the same attributes with equal values, every
+	 * attribute of the entity definition being compared. Symmetric, unlike {@code equals()}, which compares
+	 * the primary keys only.
+	 * <p>A non-derived attribute must be present in both entities or in neither, so one present in only one of
+	 * them, a lazily loaded column for example, makes the entities unequal. A derived attribute is compared by
+	 * value alone, whether it has been computed and cached on either side being immaterial.
 	 * {@snippet :
 	 * Entity customer1 = entities.entity(Customer.TYPE)
 	 *     .with(Customer.ID, 42)
 	 *     .with(Customer.NAME, "John Doe")
-	 *     .with(Customer.EMAIL, "john@example.com")
 	 *     .build();
 	 *
 	 * Entity customer2 = entities.entity(Customer.TYPE)
 	 *     .with(Customer.ID, 42)
 	 *     .with(Customer.NAME, "John Doe")
-	 *     .with(Customer.EMAIL, "john@example.com")
-	 *     .with(Customer.PHONE, "555-1234") // Extra attribute
+	 *     .with(Customer.EMAIL, "john@example.com") // present in customer2 only
 	 *     .build();
 	 *
-	 * customer1.equalValues(customer2); // true - all values in customer1 exist and are equal in customer2
-	 * customer2.equalValues(customer1); // false - customer2 has PHONE which customer1 doesn't have
+	 * customer1.equals(customer2);      // true, the primary keys are equal
+	 * customer1.valuesEqual(customer2); // false, EMAIL is present in customer2 only
+	 * customer2.valuesEqual(customer1); // false, symmetric
 	 *}
 	 * @param entity the entity to compare to
-	 * @return true if all values in this entity instance are present and equal to the values in the given entity
+	 * @return true if the two entities contain the same attributes with equal values
 	 * @throws IllegalArgumentException in case the entity is not of the same type
+	 * @see #valuesEqual(Entity, Collection)
 	 */
-	boolean equalValues(Entity entity);
+	boolean valuesEqual(Entity entity);
 
 	/**
-	 * Compares the values of the given attributes in the given entity to the values in this entity instance.
-	 * Returns true if these two entities contain values for the given attributes and all the values are equal.
+	 * <p>Returns true if this entity and the given one contain the given attributes with equal values, each
+	 * attribute compared as by {@link #valuesEqual(Entity)}.
 	 * {@snippet :
-	 * Entity customer1 = entities.entity(Customer.TYPE)
-	 *     .with(Customer.ID, 42)
-	 *     .with(Customer.NAME, "John Doe")
-	 *     .with(Customer.EMAIL, "john@example.com")
-	 *     .build();
-	 *
-	 * Entity customer2 = entities.entity(Customer.TYPE)
-	 *     .with(Customer.ID, 42)
-	 *     .with(Customer.NAME, "John Doe")
-	 *     .with(Customer.EMAIL, "different@example.com")
-	 *     .build();
-	 *
-	 * // Compare only specific attributes
-	 * Set<Attribute<?>> nameAttributes = Set.of(Customer.ID, Customer.NAME);
-	 * customer1.equalValues(customer2, nameAttributes); // true - ID and NAME are equal
-	 *
-	 * Set<Attribute<?>> allAttributes = Set.of(Customer.ID, Customer.NAME, Customer.EMAIL);
-	 * customer1.equalValues(customer2, allAttributes); // false - EMAIL differs
+	 * customer1.valuesEqual(customer2, List.of(Customer.ID, Customer.NAME));  // true, ID and NAME are equal
+	 * customer1.valuesEqual(customer2, List.of(Customer.ID, Customer.EMAIL)); // false, EMAIL is present in customer2 only
 	 *}
 	 * @param entity the entity to compare to
 	 * @param attributes the attributes to compare
-	 * @return true if all the given values in this entity instance are present and equal to the values in the given entity
+	 * @return true if the two entities contain the given attributes with equal values
 	 * @throws IllegalArgumentException in case the entity is not of the same type
 	 */
-	boolean equalValues(Entity entity, Collection<? extends Attribute<?>> attributes);
+	boolean valuesEqual(Entity entity, Collection<? extends Attribute<?>> attributes);
 
 	/**
 	 * After a call to this method this Entity contains the same values and original values as the source entity.

@@ -274,7 +274,7 @@ public final class DefaultEntityEditModelTest {
 		assertTrue(primaryKeyPresentState.is());
 		assertTrue(entityExistsState.is());
 
-		assertTrue(editor.entity().get().equalValues(employee), "Active entity is not equal to the entity just set");
+		assertTrue(editor.entity().get().valuesEqual(employee), "Active entity is not equal to the entity just set");
 		assertTrue(editor.entity().exists().is(), "Active entity exists after an entity is set");
 		assertFalse(editor.entity().modified().is());
 		editor.entity().defaults();

@@ -638,8 +638,8 @@ public final class EntitiesTest {
 			assertNotSame(dept2Copy, dept2);
 
 			// But have same values
-			assertTrue(dept1Copy.equalValues(dept1));
-			assertTrue(dept2Copy.equalValues(dept2));
+			assertTrue(dept1Copy.valuesEqual(dept1));
+			assertTrue(dept2Copy.valuesEqual(dept2));
 		}
 
 		@Test
@@ -659,7 +659,7 @@ public final class EntitiesTest {
 
 			// Mutable copy shares references
 			Entity copy = emp1.copy().mutable();
-			assertTrue(emp1.equalValues(copy));
+			assertTrue(emp1.valuesEqual(copy));
 			assertSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
 			assertFalse(emp1.modified());
 		}
@@ -682,7 +682,7 @@ public final class EntitiesTest {
 			// Immutable copy creates deep copies
 			Entity copy = emp1.immutable();
 			assertFalse(copy.mutable());
-			assertTrue(emp1.equalValues(copy));
+			assertTrue(emp1.valuesEqual(copy));
 			assertNotSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
 			assertFalse(emp1.modified());
 		}

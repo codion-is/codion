@@ -275,12 +275,12 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	@Override
-	public final boolean equalValues(Entity entity) {
-		return equalValues(entity, definition.attributes().get());
+	public final boolean valuesEqual(Entity entity) {
+		return valuesEqual(entity, definition.attributes().get());
 	}
 
 	@Override
-	public final boolean equalValues(Entity entity, Collection<? extends Attribute<?>> attributes) {
+	public final boolean valuesEqual(Entity entity, Collection<? extends Attribute<?>> attributes) {
 		if (!definition.type().equals(requireNonNull(entity).type())) {
 			throw new IllegalArgumentException("Entity of type: " + definition.type() + " expected, got: " + entity.type());
 		}
@@ -292,6 +292,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	/**
 	 * @param obj the object to compare with
 	 * @return true if the given object is an Entity and its primary key is equal to this ones
+	 * @see #valuesEqual(Entity)
 	 */
 	@Override
 	public final boolean equals(Object obj) {
@@ -866,7 +867,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 			}
 			if (value instanceof BigDecimal) {
 				//strip trailing zeros to match ColumnValues (common/db), which strips them on load; BigDecimal equality
-				//is scale-sensitive, so both the set and load paths must normalize identically for equalValues to work.
+				//is scale-sensitive, so both the set and load paths must normalize identically for valuesEqual() to work.
 				//Note that the JSON/HTTP tier deserializes BigDecimals through neither path.
 				return (T) ((BigDecimal) value).setScale(valueAttrDef.fractionDigits(),
 												valueAttrDef.roundingMode())

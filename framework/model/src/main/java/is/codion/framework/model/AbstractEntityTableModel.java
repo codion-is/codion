@@ -369,7 +369,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		}
 		else if (selected.equals(editorEntity.get())) {
 			//the same entity, a fresher instance, the editor takes its values unless an edit is in progress
-			if (!editorEntity.modified().is() && !editorEntity.get().equalValues(selected)) {
+			if (!editorEntity.modified().is() && !editorEntity.get().valuesEqual(selected)) {
 				editorEntity.replace(selected);
 			}
 		}

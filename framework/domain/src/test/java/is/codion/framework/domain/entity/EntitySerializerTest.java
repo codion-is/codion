@@ -102,13 +102,13 @@ public final class EntitySerializerTest {
 		DefaultEntity deserializedEntity = (DefaultEntity) ENTITIES.entity(Employee.TYPE).build();
 		serializeDeserialize(serializer, entity, deserializedEntity);
 		assertTrue(deserializedEntity.modified(Employee.NAME));
-		assertTrue(entity.equalValues(deserializedEntity));
-		assertTrue(entity.entity(Employee.DEPARTMENT_FK).equalValues(deserializedEntity.entity(Employee.DEPARTMENT_FK)));
+		assertTrue(entity.valuesEqual(deserializedEntity));
+		assertTrue(entity.entity(Employee.DEPARTMENT_FK).valuesEqual(deserializedEntity.entity(Employee.DEPARTMENT_FK)));
 		assertFalse(deserializedEntity.get(Employee.DEPARTMENT_FK).mutable());
 		Entity manager = entity.entity(Employee.MANAGER_FK);
 		Entity deserializedManager = deserializedEntity.entity(Employee.MANAGER_FK);
-		assertTrue(manager.equalValues(deserializedManager));
-		assertTrue(manager.entity(Employee.DEPARTMENT_FK).equalValues(deserializedManager.entity(Employee.DEPARTMENT_FK)));
+		assertTrue(manager.valuesEqual(deserializedManager));
+		assertTrue(manager.entity(Employee.DEPARTMENT_FK).valuesEqual(deserializedManager.entity(Employee.DEPARTMENT_FK)));
 
 		CompositeColumnKey key = createTestKey();
 		CompositeColumnKey deserializedKey = (CompositeColumnKey) ENTITIES.key(CompositeMaster.TYPE).build();
