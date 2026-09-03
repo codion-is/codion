@@ -44,9 +44,12 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 	private final Event<?> changing = Event.event();
 	private final Event<?> changed = Event.event();
+	private final Event<?> adjusting = Event.event();
 	private final State singleSelection = State.state(false);
 	private final Grouping grouping = new DefaultGrouping();
 	private final MultiSelection<R> selection;
+
+	private boolean endingGroup = false;
 
 	DefaultListSelection(IncludedItems<R> items) {
 		this.selection = multiSelection(requireNonNull(items), new ListStore());
@@ -115,6 +118,11 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
+	public Observer<?> adjusting() {
+		return adjusting.observer();
+	}
+
+	@Override
 	public void clear() {
 		clearSelection();
 	}
@@ -163,7 +171,13 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	@Override
 	public void setValueIsAdjusting(boolean isAdjusting) {
 		boolean wasAdjusting = getValueIsAdjusting();
-		super.setValueIsAdjusting(isAdjusting);
+		endingGroup = wasAdjusting && !isAdjusting;
+		try {
+			super.setValueIsAdjusting(isAdjusting);
+		}
+		finally {
+			endingGroup = false;
+		}
 		if (wasAdjusting && !isAdjusting) {
 			//DefaultListSelectionModel fires at the end of an adjustment only if an index changed during it, the facades
 			//are consulted regardless, the instances the selected indexes refer to may have been replaced meanwhile
@@ -174,6 +188,10 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	@Override
 	protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
 		super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
+		if (!endingGroup) {
+			//the summary event ending a group repeats changes delivered as they happened, one notification per change
+			adjusting.run();
+		}
 		if (!isAdjusting) {
 			changed.run();
 		}
@@ -264,6 +282,11 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		@Override
 		public Observer<?> changed() {
 			return changed.observer();
+		}
+
+		@Override
+		public Observer<?> adjusting() {
+			return adjusting.observer();
 		}
 	}
 }

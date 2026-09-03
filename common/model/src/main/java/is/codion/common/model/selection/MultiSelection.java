@@ -121,6 +121,17 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	Grouping grouping();
 
 	/**
+	 * <p>Returns an observer notified on every change to the selected indexes, grouped or not, the raw stream of
+	 * changes a {@code javax.swing.event.ListSelectionListener} would see. {@link #index()}, {@link #indexes()},
+	 * {@link #item()} and {@link #items()} notify once a group of changes has ended, this observer notifies as
+	 * the changes happen, so a listener may observe intermediate states, such as the momentarily empty selection
+	 * while a refresh restores it. Suited to a live status display, not to anything acting on the selection.
+	 * @return an observer notified each time the selected indexes change, grouped or not
+	 * @see #grouping()
+	 */
+	Observer<?> adjusting();
+
+	/**
 	 * @param items the indexed items
 	 * @return a default {@link MultiSelection} implementation
 	 * @param <T> the item type
@@ -345,5 +356,11 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * @return an observer notified after the selected indexes changed, by whoever changed them
 		 */
 		Observer<?> changed();
+
+		/**
+		 * @return an observer notified on every change to the selected indexes, grouped or not, as the changes happen
+		 * @see #changed()
+		 */
+		Observer<?> adjusting();
 	}
 }

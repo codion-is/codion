@@ -1041,6 +1041,7 @@ public class DefaultFilterModelItemsTest {
 
 	private static class TestMultiSelection implements MultiSelection<String> {
 		private final Value<List<String>> selectedItems = Value.nonNull(new ArrayList<String>());
+		private final Observer<?> adjusting = Event.event();
 		private final State singleSelection = State.state();
 		private final Grouping grouping = new DefaultGrouping();
 
@@ -1052,6 +1053,11 @@ public class DefaultFilterModelItemsTest {
 		@Override
 		public Observer<?> changing() {
 			return selectedItems.observer();
+		}
+
+		@Override
+		public Observer<?> adjusting() {
+			return adjusting.observer();
 		}
 
 		@Override
