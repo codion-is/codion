@@ -182,7 +182,7 @@ public class DefaultEntityTest {
 
 			// Verify entity properties preserved
 			assertEquals(Detail.TYPE, deserializedEntity.type(), "Entity type should be preserved");
-			assertTrue(entity.equalValues(deserializedEntity), "Values should be equal");
+			assertTrue(entity.valuesEqual(deserializedEntity), "Values should be equal");
 			assertTrue(deserializedEntity.modified(), "Modified state should be preserved");
 			assertTrue(deserializedEntity.modified(Detail.STRING), "Attribute modified state should be preserved");
 			assertEquals(TEST_ORIGINAL_STRING_VALUE, deserializedEntity.original(Detail.STRING),
@@ -247,7 +247,7 @@ public class DefaultEntityTest {
 			target.set(source);
 
 			assertEquals(source, target, "Entities should be equal after set()");
-			assertTrue(target.equalValues(source), "Values should be equal after set()");
+			assertTrue(target.valuesEqual(source), "Values should be equal after set()");
 		}
 
 		@Test
@@ -325,7 +325,7 @@ public class DefaultEntityTest {
 			Map<Attribute<?>, Object> affected = original.set(entity);
 
 			assertEquals(0, affected.size(), "No attributes should be affected");
-			assertTrue(original.equalValues(entity), "Values should be equal");
+			assertTrue(original.valuesEqual(entity), "Values should be equal");
 		}
 
 		@Test
@@ -344,7 +344,7 @@ public class DefaultEntityTest {
 			Map<Attribute<?>, Object> affected = original.set(entity);
 
 			assertEquals(1, affected.size(), "One attribute should be affected");
-			assertTrue(original.equalValues(entity), "Values should be equal after set");
+			assertTrue(original.valuesEqual(entity), "Values should be equal after set");
 		}
 
 		@Test
@@ -364,7 +364,7 @@ public class DefaultEntityTest {
 			Map<Attribute<?>, Object> affected = original.set(entity);
 
 			assertEquals(2, affected.size(), "Should include INT and INT_DERIVED");
-			assertTrue(original.equalValues(entity), "Values should be equal");
+			assertTrue(original.valuesEqual(entity), "Values should be equal");
 			assertTrue(original.modified(), "Original should be modified");
 			assertTrue(entity.modified(), "Entity should remain modified");
 		}
@@ -387,7 +387,7 @@ public class DefaultEntityTest {
 			Map<Attribute<?>, Object> affected = original.set(entity);
 
 			assertEquals(2, affected.size(), "Two attributes should be affected");
-			assertTrue(original.equalValues(entity), "Values should be equal");
+			assertTrue(original.valuesEqual(entity), "Values should be equal");
 		}
 
 		@Test
@@ -404,7 +404,7 @@ public class DefaultEntityTest {
 
 			entity.remove(Detail.STRING);
 
-			assertFalse(entity.equalValues(original),
+			assertFalse(entity.valuesEqual(original),
 							"Entities should not be equal after removing attribute");
 		}
 	}
@@ -794,7 +794,7 @@ public class DefaultEntityTest {
 			Entity test2 = testEntity.immutable().copy().mutable();
 			assertNotSame(test2, testEntity, "Entity copy should not be == the original");
 			assertEquals(test2, testEntity, "Entities should be equal after copy()");
-			assertTrue(test2.equalValues(testEntity), "Entity attribute values should be equal after deepCopy()");
+			assertTrue(test2.valuesEqual(testEntity), "Entity attribute values should be equal after deepCopy()");
 			assertNotSame(testEntity.entity(Detail.MASTER_FK), test2.entity(Detail.MASTER_FK),
 							"This should be a deep copy");
 		}
@@ -809,8 +809,8 @@ public class DefaultEntityTest {
 							.with(Department.ACTIVE, true)
 							.build();
 
-			assertTrue(dept.equalValues(dept.copy().builder().build()));
-			assertFalse(dept.equalValues(dept.copy().builder().with(Department.NAME, "new name").build()));
+			assertTrue(dept.valuesEqual(dept.copy().builder().build()));
+			assertFalse(dept.valuesEqual(dept.copy().builder().with(Department.NAME, "new name").build()));
 
 			dept.set(Department.NAME, "New name");
 			assertTrue(dept.copy().builder().build().modified());
@@ -977,20 +977,20 @@ public class DefaultEntityTest {
 		}
 
 		@Test
-		@DisplayName("equalValues handles different value types")
-		void equalValues_handlesDifferentTypes() {
+		@DisplayName("valuesEqual handles different value types")
+		void valuesEqual_handlesDifferentTypes() {
 			Entity testEntityOne = detailEntity(TEST_DETAIL_ID, TEST_DETAIL_INT, TEST_DETAIL_DOUBLE,
 							TEST_DETAIL_STRING, testDetailDate, testDetailTimestamp, TEST_DETAIL_BOOLEAN, null);
 			Entity testEntityTwo = detailEntity(TEST_DETAIL_ID, TEST_DETAIL_INT, TEST_DETAIL_DOUBLE,
 							TEST_DETAIL_STRING, testDetailDate, testDetailTimestamp, TEST_DETAIL_BOOLEAN, null);
 
-			assertTrue(testEntityOne.equalValues(testEntityTwo));
+			assertTrue(testEntityOne.valuesEqual(testEntityTwo));
 
 			testEntityTwo.set(Detail.INT, 42);
-			assertFalse(testEntityOne.equalValues(testEntityTwo));
+			assertFalse(testEntityOne.valuesEqual(testEntityTwo));
 
 			testEntityOne.set(Detail.INT, 42);
-			assertTrue(testEntityOne.equalValues(testEntityTwo));
+			assertTrue(testEntityOne.valuesEqual(testEntityTwo));
 
 			// Test with byte arrays
 			Random random = new Random();
@@ -998,13 +998,13 @@ public class DefaultEntityTest {
 			random.nextBytes(bytes);
 
 			testEntityOne.set(Detail.BYTES, bytes);
-			assertFalse(testEntityOne.equalValues(testEntityTwo));
+			assertFalse(testEntityOne.valuesEqual(testEntityTwo));
 
 			testEntityTwo.set(Detail.BYTES, bytes);
-			assertTrue(testEntityOne.equalValues(testEntityTwo));
+			assertTrue(testEntityOne.valuesEqual(testEntityTwo));
 
 			assertThrows(IllegalArgumentException.class,
-							() -> testEntityOne.equalValues(ENTITIES.entity(Master.TYPE).build()),
+							() -> testEntityOne.valuesEqual(ENTITIES.entity(Master.TYPE).build()),
 							"Should not compare different entity types");
 		}
 
@@ -1330,14 +1330,14 @@ public class DefaultEntityTest {
 	class EntityCoreAuditRegressions {
 
 		@Test
-		void equalValuesStableAcrossDerivedRead() {
+		void valuesEqualStableAcrossDerivedRead() {
 			Entity detail1 = ENTITIES.entity(Detail.TYPE).with(Detail.INT, 5).build();
 			Entity detail2 = ENTITIES.entity(Detail.TYPE).with(Detail.INT, 5).build();
 			//read the cached derived value on one entity only
 			assertEquals(50, detail1.get(Detail.INT_DERIVED));
-			//equalValues must not flip just because a derived value has been read (cached) on one side
-			assertTrue(detail1.equalValues(detail2));
-			assertTrue(detail2.equalValues(detail1));
+			//valuesEqual must not flip just because a derived value has been read (cached) on one side
+			assertTrue(detail1.valuesEqual(detail2));
+			assertTrue(detail2.valuesEqual(detail1));
 		}
 
 		@Test

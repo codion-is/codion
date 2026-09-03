@@ -1129,8 +1129,8 @@ public class DefaultLocalEntityConnectionTest {
 				Collection<Column<?>> columns = e.columns();
 				assertEquals(1, columns.size());
 				assertTrue(columns.contains(Department.LOC));
-				assertTrue(e.modified().orElseThrow(IllegalStateException::new).equalValues(updatedDepartment));
-				assertTrue(e.entity().equalValues(department));
+				assertTrue(e.modified().orElseThrow(IllegalStateException::new).valuesEqual(updatedDepartment));
+				assertTrue(e.entity().valuesEqual(department));
 			}
 		}
 		finally {
@@ -1207,8 +1207,8 @@ public class DefaultLocalEntityConnectionTest {
 				assertTrue(modified.contains(Employee.DATA));
 				//use columns here since the modified row entity contains no foreign key values
 				Collection<Column<?>> columns = updatedEmployee.definition().columns().get();
-				assertTrue(e.modified().orElseThrow(IllegalStateException::new).equalValues(updatedEmployee, columns));
-				assertTrue(e.entity().equalValues(employee, columns));
+				assertTrue(e.modified().orElseThrow(IllegalStateException::new).valuesEqual(updatedEmployee, columns));
+				assertTrue(e.entity().valuesEqual(employee, columns));
 			}
 		}
 		finally {
@@ -1247,8 +1247,8 @@ public class DefaultLocalEntityConnectionTest {
 				assertTrue(modified.contains(Employee.DATA_LAZY));
 				//use columns here since the modified row entity contains no foreign key values
 				Collection<Column<?>> columns = updatedEmployee.definition().columns().get();
-				assertTrue(e.modified().orElseThrow(IllegalStateException::new).equalValues(updatedEmployee, columns));
-				assertTrue(e.entity().equalValues(employee, columns));
+				assertTrue(e.modified().orElseThrow(IllegalStateException::new).valuesEqual(updatedEmployee, columns));
+				assertTrue(e.entity().valuesEqual(employee, columns));
 			}
 		}
 		finally {

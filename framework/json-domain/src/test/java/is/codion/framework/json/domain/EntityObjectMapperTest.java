@@ -70,7 +70,7 @@ public final class EntityObjectMapperTest {
 
 		String jsonString = mapper.writeValueAsString(dept);
 		Entity readDept = mapper.readValue(jsonString, Entity.class);
-		assertTrue(dept.equalValues(readDept));
+		assertTrue(dept.valuesEqual(readDept));
 
 		Entity entity = entities.entity(TestEntity.TYPE)
 						.with(TestEntity.DECIMAL, BigDecimal.valueOf(1234L))
@@ -85,7 +85,7 @@ public final class EntityObjectMapperTest {
 
 		jsonString = mapper.writeValueAsString(entity);
 
-		assertTrue(entity.equalValues(mapper.readValue(jsonString, Entity.class)));
+		assertTrue(entity.valuesEqual(mapper.readValue(jsonString, Entity.class)));
 
 		entity.set(TestEntity.BOOLEAN, false);
 		jsonString = mapper.writeValueAsString(entity);
@@ -143,10 +143,10 @@ public final class EntityObjectMapperTest {
 
 		String jsonString = mapper.writeValueAsString(emp);
 		Entity readEmp = mapper.readValue(jsonString, Entity.class);
-		assertTrue(emp.equalValues(readEmp));
+		assertTrue(emp.valuesEqual(readEmp));
 
 		Entity readDept = readEmp.entity(Employee.DEPARTMENT_FK);
-		assertTrue(dept.equalValues(readDept));
+		assertTrue(dept.valuesEqual(readDept));
 	}
 
 	@Test
@@ -197,7 +197,7 @@ public final class EntityObjectMapperTest {
 						.build();
 
 		String jsonString = mapper.writeValueAsString(singletonList(dept10));
-		assertTrue(dept10.equalValues(mapper.deserializeEntities(jsonString).get(0)));
+		assertTrue(dept10.valuesEqual(mapper.deserializeEntities(jsonString).get(0)));
 
 		Entity dept20 = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, -20)
@@ -206,7 +206,7 @@ public final class EntityObjectMapperTest {
 						.build();
 
 		jsonString = mapper.writeValueAsString(singletonList(dept20));
-		assertTrue(dept20.equalValues(mapper.deserializeEntities(jsonString).get(0)));
+		assertTrue(dept20.valuesEqual(mapper.deserializeEntities(jsonString).get(0)));
 
 		String twoDepts = mapper.writeValueAsString(asList(dept10, dept20));
 		mapper.deserializeEntities(twoDepts);
@@ -243,15 +243,15 @@ public final class EntityObjectMapperTest {
 						.build();
 
 		jsonString = mapper.writeValueAsString(singletonList(emp1));
-		assertTrue(emp1.equalValues(mapper.deserializeEntities(jsonString).get(0)));
+		assertTrue(emp1.valuesEqual(mapper.deserializeEntities(jsonString).get(0)));
 
 		mapper.includeForeignKeyValues(true);
 
 		jsonString = mapper.writeValueAsString(singletonList(emp1));
 		Entity emp1Deserialized = mapper.deserializeEntities(jsonString).get(0);
-		assertTrue(emp1.equalValues(emp1Deserialized));
-		assertTrue(emp1.entity(Employee.DEPARTMENT_FK).equalValues(emp1Deserialized.entity(Employee.DEPARTMENT_FK)));
-		assertTrue(emp1.entity(Employee.MGR_FK).equalValues(emp1Deserialized.entity(Employee.MGR_FK)));
+		assertTrue(emp1.valuesEqual(emp1Deserialized));
+		assertTrue(emp1.entity(Employee.DEPARTMENT_FK).valuesEqual(emp1Deserialized.entity(Employee.DEPARTMENT_FK)));
+		assertTrue(emp1.entity(Employee.MGR_FK).valuesEqual(emp1Deserialized.entity(Employee.MGR_FK)));
 
 		LocalDate newHiredate = LocalDate.parse("2002-11-21", format);
 		emp1.set(Employee.COMMISSION, 550.55);
@@ -264,7 +264,7 @@ public final class EntityObjectMapperTest {
 
 		jsonString = mapper.writeValueAsString(singletonList(emp1));
 		emp1Deserialized = mapper.deserializeEntities(jsonString).get(0);
-		assertTrue(emp1.equalValues(emp1Deserialized));
+		assertTrue(emp1.valuesEqual(emp1Deserialized));
 
 		assertEquals(500.5, emp1Deserialized.original(Employee.COMMISSION));
 		assertEquals(dept10, emp1Deserialized.original(Employee.DEPARTMENT_FK));
@@ -274,8 +274,8 @@ public final class EntityObjectMapperTest {
 		assertEquals("A NAME", emp1Deserialized.original(Employee.NAME));
 		assertEquals(BigDecimal.valueOf(2500.55), emp1Deserialized.original(Employee.SALARY));
 
-		assertTrue(emp1Deserialized.original(Employee.DEPARTMENT_FK).equalValues(dept10));
-		assertTrue(emp1Deserialized.original(Employee.MGR_FK).equalValues(mgr30));
+		assertTrue(emp1Deserialized.original(Employee.DEPARTMENT_FK).valuesEqual(dept10));
+		assertTrue(emp1Deserialized.original(Employee.MGR_FK).valuesEqual(mgr30));
 
 		Entity emp2 = entities.entity(Employee.TYPE)
 						.with(Employee.COMMISSION, 300.5)
@@ -295,13 +295,13 @@ public final class EntityObjectMapperTest {
 		List<Entity> parsedEntities = mapper.deserializeEntities(jsonString);
 		for (Entity entity : entityList) {
 			Entity parsed = parsedEntities.get(parsedEntities.indexOf(entity));
-			assertTrue(parsed.equalValues(entity));
+			assertTrue(parsed.valuesEqual(entity));
 		}
 
 		List<Entity> readEntities = mapper.deserializeEntities(mapper.writeValueAsString(singletonList(emp1)));
 		assertEquals(1, readEntities.size());
 		Entity parsedEntity = readEntities.iterator().next();
-		assertTrue(emp1.equalValues(parsedEntity));
+		assertTrue(emp1.valuesEqual(parsedEntity));
 		assertTrue(parsedEntity.modified());
 		assertTrue(parsedEntity.modified(Employee.COMMISSION));
 		assertTrue(parsedEntity.modified(Employee.DEPARTMENT));
