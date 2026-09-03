@@ -138,6 +138,11 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	}
 
 	@Override
+	public Observer<?> adjusting() {
+		return store.adjusting();
+	}
+
+	@Override
 	public void clear() {
 		clearSelection();
 	}
@@ -492,6 +497,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		private final NavigableSet<Integer> selected = new TreeSet<>();
 		private final Event<?> changing = Event.event();
 		private final Event<?> changed = Event.event();
+		private final Event<?> adjusting = Event.event();
 		private final State singleSelection = State.state(false);
 		private final DefaultGrouping grouping = new DefaultGrouping();
 
@@ -519,6 +525,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			changing.run();
 			selected.clear();
 			selected.addAll(target);
+			adjusting.run();
 			if (!grouping.is()) {
 				changed.run();
 			}
@@ -554,14 +561,20 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			return changed.observer();
 		}
 
+		@Override
+		public Observer<?> adjusting() {
+			return adjusting;
+		}
+
 		private final class DefaultGrouping implements Grouping {
 
 			private boolean grouping = false;
 
 			@Override
 			public void set(boolean grouping) {
+				boolean ended = this.grouping && !grouping;
 				this.grouping = grouping;
-				if (!grouping) {
+				if (ended) {
 					changed.run();
 				}
 			}

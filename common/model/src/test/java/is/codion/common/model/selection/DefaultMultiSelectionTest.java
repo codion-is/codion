@@ -145,6 +145,36 @@ public final class DefaultMultiSelectionTest {
 		assertEquals(0, itemsNotified.get());
 	}
 
+	@Test
+	void adjustingNotifiesOnEveryChange() {
+		// adjusting() is the raw stream, notified whether or not the change is grouped, where the index and item
+		// values notify once a group has ended
+		MultiSelection<String> selection = new DefaultMultiSelection<>(new TestItems(asList("a", "b", "c", "d")));
+		AtomicInteger adjusting = new AtomicInteger();
+		AtomicInteger indexes = new AtomicInteger();
+		selection.adjusting().addListener(adjusting::incrementAndGet);
+		selection.indexes().addListener(indexes::incrementAndGet);
+
+		selection.index().set(1);
+		assertEquals(1, adjusting.get());
+		assertEquals(1, indexes.get());
+
+		adjusting.set(0);
+		indexes.set(0);
+		selection.grouping().set(true);
+		selection.indexes().add(2);
+		selection.indexes().add(3);
+		assertEquals(2, adjusting.get());
+		assertEquals(0, indexes.get());
+		selection.grouping().set(false);
+		assertEquals(2, adjusting.get());
+		assertEquals(1, indexes.get());
+
+		// ending a group that was never started is a no-op
+		selection.grouping().set(false);
+		assertEquals(1, indexes.get());
+	}
+
 	/**
 	 * Minimal {@link IncludedItems} over a fixed list; observable surface delegated to a {@link Value}.
 	 * Only the index/item lookups {@link DefaultMultiSelection} actually uses are implemented.

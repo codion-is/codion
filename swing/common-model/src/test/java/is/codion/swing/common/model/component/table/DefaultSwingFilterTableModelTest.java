@@ -186,6 +186,39 @@ public final class DefaultSwingFilterTableModelTest {
 	}
 
 	@Test
+	void adjustingNotifiesOnEveryChange() {
+		// adjusting() is the raw stream, notified whether or not the change is grouped, where the index and item
+		// values notify once a group has ended. A keyboard driven selection change goes through changeSelection()
+		// with no grouping at all, a mouse drag is grouped by BasicTableUI via setValueIsAdjusting().
+		JTable table = new JTable(tableModel);
+		table.setSelectionModel(tableModel.selection());
+		tableModel.items().refresh();
+		AtomicInteger adjusting = new AtomicInteger();
+		AtomicInteger indexes = new AtomicInteger();
+		tableModel.selection().adjusting().addListener(adjusting::incrementAndGet);
+		tableModel.selection().indexes().addListener(indexes::incrementAndGet);
+
+		// keyboard, as BasicTableUI does for an arrow key: no group
+		table.changeSelection(1, 0, false, false);
+		assertEquals(1, adjusting.get());
+		assertEquals(1, indexes.get());
+
+		// mouse drag, as BasicTableUI does: press starts a group, each drag step extends, release ends it
+		adjusting.set(0);
+		indexes.set(0);
+		tableModel.selection().grouping().set(true);
+		table.changeSelection(0, 0, false, false);
+		table.changeSelection(2, 0, false, true);
+		table.changeSelection(3, 0, false, true);
+		assertEquals(3, adjusting.get());
+		assertEquals(0, indexes.get());
+		tableModel.selection().grouping().set(false);
+		assertEquals(3, adjusting.get());
+		assertEquals(1, indexes.get());
+		assertEquals(asList(0, 1, 2, 3), tableModel.selection().indexes().get());
+	}
+
+	@Test
 	void nonUniqueColumnIdentifiers() {
 		assertThrows(IllegalArgumentException.class, () -> SwingFilterTableModel.builder()
 						.columns(new TableColumns<Object, Object>() {

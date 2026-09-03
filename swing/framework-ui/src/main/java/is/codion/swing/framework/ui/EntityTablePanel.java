@@ -3142,7 +3142,7 @@ public class EntityTablePanel extends JPanel {
 			super(new BorderLayout());
 			add(label, BorderLayout.CENTER);
 			model.items().refresher().active().addConsumer(this::refresherActive);
-			model.selection().indexes().addListener(this::updateStatusMessage);
+			model.selection().adjusting().addListener(this::updateStatusMessage);
 			model.items().included().addListener(this::updateStatusMessage);
 			model.items().filtered().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
