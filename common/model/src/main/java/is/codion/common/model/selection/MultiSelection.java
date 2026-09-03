@@ -102,30 +102,23 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	int count();
 
 	/**
-	 * Indicates whether the subsequent selection events
+	 * {@link Grouping} controls whether the subsequent selection events
 	 * should be grouped and not triggered individually
-	 * <p>Note that grouping is not reentrant, {@code grouping(false)} ends the group whether or not it
+	 * <p>Note that grouping is not reentrant, {@code grouping().set(false)} ends the group whether or not it
 	 * opened one. Code which may run inside a group of its caller's making saves and restores the state:
 	 * {@snippet :
-	 * boolean wasGrouping = selection.grouping();
-	 * selection.grouping(true);
+	 * boolean wasGrouping = selection.grouping().is();
+	 * selection.grouping().set(true);
 	 * try {
 	 *   // mutate the selection
 	 * }
 	 * finally {
-	 *   selection.grouping(wasGrouping);
+	 *   selection.grouping().set(wasGrouping);
 	 * }
 	 *}
-	 * @param grouping true if subsequent selection events should be grouped
-	 * @see #grouping()
+	 * @return the {@link Grouping} instance
 	 */
-	void grouping(boolean grouping);
-
-	/**
-	 * @return true if the subsequent selection events are being grouped
-	 * @see #grouping(boolean)
-	 */
-	boolean grouping();
+	Grouping grouping();
 
 	/**
 	 * @param items the indexed items
@@ -286,6 +279,22 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	}
 
 	/**
+	 * Controls whether selection change grouping is enabled
+	 */
+	interface Grouping {
+
+		/**
+		 * @param grouping the grouping value
+		 */
+		void set(boolean grouping);
+
+		/**
+		 * @return true if grouping is enabled
+		 */
+		boolean is();
+	}
+
+	/**
 	 * <p>The selected indexes a {@link MultiSelection} is a view over, the one part of a selection that differs per toolkit.
 	 * <p>A store notifies {@link #changing()} before and {@link #changed()} after its indexes change, whoever
 	 * changed them, the selection deriving its index and item values from {@link #get()} on each {@link #changed()}.
@@ -323,14 +332,9 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		State singleSelection();
 
 		/**
-		 * @return true while a group of changes is in progress
+		 * @return the {@link Grouping} instance
 		 */
-		boolean grouping();
-
-		/**
-		 * @param grouping true to start a group of changes, false to end it, notifying {@link #changed()}
-		 */
-		void grouping(boolean grouping);
+		Grouping grouping();
 
 		/**
 		 * @return an observer notified before the selected indexes change

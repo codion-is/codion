@@ -133,12 +133,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	}
 
 	@Override
-	public void grouping(boolean grouping) {
-		store.grouping(grouping);
-	}
-
-	@Override
-	public boolean grouping() {
+	public Grouping grouping() {
 		return store.grouping();
 	}
 
@@ -498,8 +493,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		private final Event<?> changing = Event.event();
 		private final Event<?> changed = Event.event();
 		private final State singleSelection = State.state(false);
-
-		private boolean grouping = false;
+		private final DefaultGrouping grouping = new DefaultGrouping();
 
 		private DefaultIndexStore() {
 			singleSelection.addListener(() -> set(emptySet())); // mirror Swing: changing selection mode clears the selection
@@ -525,7 +519,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			changing.run();
 			selected.clear();
 			selected.addAll(target);
-			if (!grouping) {
+			if (!grouping.is()) {
 				changed.run();
 			}
 		}
@@ -546,16 +540,8 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
-		public boolean grouping() {
+		public Grouping grouping() {
 			return grouping;
-		}
-
-		@Override
-		public void grouping(boolean grouping) {
-			this.grouping = grouping;
-			if (!grouping) {
-				changed.run();
-			}
 		}
 
 		@Override
@@ -566,6 +552,24 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		@Override
 		public Observer<?> changed() {
 			return changed.observer();
+		}
+
+		private final class DefaultGrouping implements Grouping {
+
+			private boolean grouping = false;
+
+			@Override
+			public void set(boolean grouping) {
+				this.grouping = grouping;
+				if (!grouping) {
+					changed.run();
+				}
+			}
+
+			@Override
+			public boolean is() {
+				return grouping;
+			}
 		}
 	}
 

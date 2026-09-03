@@ -247,7 +247,7 @@ public class FilterListSelectionTest {
 		// Test adjusting flag
 		assertFalse(testModel.getValueIsAdjusting());
 
-		testModel.grouping(true);
+		testModel.grouping().set(true);
 		assertTrue(testModel.getValueIsAdjusting());
 
 		// Test that selection interval changes with adjusting true still update values
@@ -260,12 +260,12 @@ public class FilterListSelectionTest {
 		});
 
 		// Change selection while adjusting
-		testModel.grouping(true);
+		testModel.grouping().set(true);
 		testModel.setSelectionInterval(0, 0);
 		assertEquals(0, selectionEventCounter.get()); // No final event while adjusting
 
 		// Setting adjusting to false fires a value changed event with the current selection
-		testModel.grouping(false);
+		testModel.grouping().set(false);
 		assertEquals(1, selectionEventCounter.get()); // Final event fired when adjusting set to false
 
 		// Another selection change while not adjusting
