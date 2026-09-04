@@ -259,6 +259,7 @@ public class EntityPanel extends JPanel {
 	private @Nullable Window editWindow;
 
 	private boolean initialized = false;
+	private boolean initializing = false;
 	private boolean defaultPanelInitialized = false;
 
 	/**
@@ -392,11 +393,13 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Initializes this EntityPanel, in case of some specific initialization code you can override the
-	 * {@link #initializeUI()} method and add your code there. Calling this method a second time has no effect.
+	 * {@link #initializeUI()} method and add your code there. Calling this method a second time has no effect,
+	 * nor has a call made while the initialization is in progress.
 	 * @return this EntityPanel instance
 	 */
 	public final EntityPanel initialize() {
-		if (!initialized) {
+		if (!initialized && !initializing) {
+			initializing = true;
 			LOG.debug("{} - initializing", this);
 			try {
 				setupControls();
@@ -408,6 +411,7 @@ public class EntityPanel extends JPanel {
 				setupKeyboardActions();
 			}
 			finally {
+				initializing = false;
 				initialized = true;
 			}
 		}

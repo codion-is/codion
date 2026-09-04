@@ -241,6 +241,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private boolean saveDefaultUsername = true;
 	private boolean initialized = false;
+	private boolean initializing = false;
 
 	/**
 	 * Instantiates a new {@link EntityApplicationPanel} based on the given application model,
@@ -419,11 +420,13 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * Initializes this panel and marks is as initialized, subsequent calls have no effect.
+	 * Initializes this panel and marks it as initialized, subsequent calls have no effect, nor has a call
+	 * made while the initialization is in progress.
 	 * @return this application panel
 	 */
 	public final EntityApplicationPanel<M> initialize() {
-		if (!initialized) {
+		if (!initialized && !initializing) {
+			initializing = true;
 			LOG.debug("{} - initializing", this);
 			try {
 				restorePreferences();
@@ -433,6 +436,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 				initializedEvent.accept(this);
 			}
 			finally {
+				initializing = false;
 				initialized = true;
 			}
 		}

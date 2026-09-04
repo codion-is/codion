@@ -22,6 +22,7 @@ import is.codion.common.model.filter.SortOrder;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
@@ -129,6 +131,26 @@ public class EntityApplicationPanelTest {
 
 		private static List<EntityPanel> createPanels(TestApplicationModel applicationModel) {
 			return singletonList(new EntityPanel(applicationModel.models().get(Employee.TYPE)));
+		}
+	}
+
+	@Test
+	void initializeReentrant() {
+		boolean userPreferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow();
+		EntityApplicationModel.USER_PREFERENCES.set(false);
+		try {
+			TestApplicationPanel panel = new TestApplicationPanel(new TestApplicationModel(CONNECTION));
+			AtomicInteger initializations = new AtomicInteger();
+			panel.initialized().addListener(() -> {
+				initializations.incrementAndGet();
+				//as a nested event loop pumped during the initialization might
+				panel.initialize();
+			});
+			panel.initialize();
+			assertEquals(1, initializations.get());
+		}
+		finally {
+			EntityApplicationModel.USER_PREFERENCES.set(userPreferences);
 		}
 	}
 }

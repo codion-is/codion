@@ -484,6 +484,7 @@ public class EntityTablePanel extends JPanel {
 	final Config configuration;
 
 	private boolean initialized = false;
+	private boolean initializing = false;
 
 	/**
 	 * Instantiates a new EntityTablePanel instance
@@ -715,12 +716,13 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Initializes the UI, while presenting a wait cursor to the user.
-	 * Note that calling this method more than once has no effect.
+	 * Initializes the UI. Calling this method more than once has no effect, nor has a call made
+	 * while the initialization is in progress.
 	 * @return this EntityTablePanel instance
 	 */
 	public final EntityTablePanel initialize() {
-		if (!initialized) {
+		if (!initialized && !initializing) {
+			initializing = true;
 			LOG.debug("{} - initializing", this);
 			try {
 				setupComponents();
@@ -735,6 +737,7 @@ public class EntityTablePanel extends JPanel {
 				updateComponentTreeUI(this);
 			}
 			finally {
+				initializing = false;
 				initialized = true;
 			}
 		}

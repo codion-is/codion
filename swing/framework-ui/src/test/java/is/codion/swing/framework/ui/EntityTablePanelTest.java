@@ -23,12 +23,19 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.control.CommandControl;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityTablePanelTest {
@@ -117,5 +124,40 @@ public class EntityTablePanelTest {
 			assertFalse(attributes.contains(Detail.MASTER_CODE));
 			assertFalse(attributes.contains(Detail.INT_DERIVED));
 		}));
+	}
+
+	@Test
+	void initializeReentrant() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
+		AtomicInteger layouts = new AtomicInteger();
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
+			@Override
+			protected void setupControls() {
+				//as a nested event loop pumped during the initialization might
+				initialize();
+			}
+
+			@Override
+			protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
+				layouts.incrementAndGet();
+				super.layoutPanel(tableComponent, southPanel);
+			}
+		};
+		tablePanel.initialize();
+		assertEquals(1, layouts.get());
+	}
+
+	@Test
+	void controlSetInSetupControls() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
+		CommandControl print = Control.builder().command(() -> {}).build();
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
+			@Override
+			protected void setupControls() {
+				control(PRINT).set(print);
+			}
+		};
+		tablePanel.initialize();
+		assertSame(print, tablePanel.control(PRINT).get());
 	}
 }

@@ -28,6 +28,8 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityPanelTest {
@@ -143,5 +145,22 @@ public final class EntityPanelTest {
 
 		// the matching panels are accepted
 		assertNotNull(new EntityPanel(empModel, empEditPanel, empTablePanel));
+	}
+
+	@Test
+	void initializeReentrant() {
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION);
+		AtomicInteger initializations = new AtomicInteger();
+		EntityPanel deptPanel = new EntityPanel(deptModel) {
+			@Override
+			protected void initializeUI() {
+				initializations.incrementAndGet();
+				//as a nested event loop pumped during the initialization might
+				initialize();
+				super.initializeUI();
+			}
+		};
+		deptPanel.initialize();
+		assertEquals(1, initializations.get());
 	}
 }
