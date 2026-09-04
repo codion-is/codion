@@ -29,6 +29,7 @@ Codion Change Log
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 ### is.codion.swing.framework.ui
 - ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING renamed HANDLING.
+- EntityApplicationPanel, EntityPanel, EntityEditPanel and EntityTablePanel.initialize() now ignore a call made while the initialization is in progress.
 
 ## 0.18.85
 ### is.codion.common.reactive

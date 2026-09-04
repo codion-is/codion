@@ -228,6 +228,7 @@ public abstract class EntityEditPanel extends JPanel {
 	final Config configuration;
 
 	private boolean initialized = false;
+	private boolean initializing = false;
 
 	/**
 	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
@@ -329,17 +330,19 @@ public abstract class EntityEditPanel extends JPanel {
 	/**
 	 * Initializes this EntityEditPanel.
 	 * This method marks this panel as initialized which prevents it from running again,
-	 * whether an exception occurs or not.
+	 * whether an exception occurs or not. A call made while the initialization is in progress is ignored.
 	 * @return this EntityEditPanel instance
 	 */
 	public final EntityEditPanel initialize() {
-		if (!initialized) {
+		if (!initialized && !initializing) {
+			initializing = true;
 			LOG.debug("{} - initializing", this);
 			try {
 				setupControls();
 				initializeUI();
 			}
 			finally {
+				initializing = false;
 				initialized = true;
 			}
 		}

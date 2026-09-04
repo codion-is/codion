@@ -22,12 +22,16 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.control.CommandControl;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
 import static java.util.Collections.singletonList;
@@ -115,5 +119,40 @@ public final class EntityEditPanelTest {
 
 			addInputPanel(Employee.HIREDATE);
 		}
+	}
+
+	@Test
+	void initializeReentrant() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		AtomicInteger initializations = new AtomicInteger();
+		EntityEditPanel editPanel = new EntityEditPanel(editModel) {
+			@Override
+			protected void initializeUI() {
+				initializations.incrementAndGet();
+				//as a nested event loop pumped during the initialization might
+				initialize();
+				assertFalse(initialized());
+			}
+		};
+		editPanel.initialize();
+		assertEquals(1, initializations.get());
+		assertTrue(editPanel.initialized());
+	}
+
+	@Test
+	void controlSetInSetupControls() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		CommandControl insert = Control.builder().command(() -> {}).build();
+		EntityEditPanel editPanel = new EntityEditPanel(editModel) {
+			@Override
+			protected void setupControls() {
+				control(INSERT).set(insert);
+			}
+
+			@Override
+			protected void initializeUI() {}
+		};
+		editPanel.initialize();
+		assertSame(insert, editPanel.control(INSERT).get());
 	}
 }
