@@ -185,9 +185,9 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private void displayCityLocations() {
 		if (mapKit.isShowing()) {
-			Collection<Entity> entities = model().selection().empty().is() ?
-							model().items().included().get() :
-							model().selection().items().get();
+			Collection<Entity> entities = model().selection().present().is() ?
+							model().selection().items().get() :
+							model().items().included().get();
 			Maps.paintWaypoints(entities.stream()
 							.map(entity -> entity.optional(Lookup.CITY_LOCATION))
 							.flatMap(Optional::stream)
@@ -255,9 +255,9 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void exportJSON(File file) throws IOException {
-		Collection<Entity> entities = model().selection().empty().is() ?
-						model().items().get() :
-						model().selection().items().get();
+		Collection<Entity> entities = model().selection().present().is() ?
+						model().selection().items().get() :
+						model().items().get();
 		Files.writeString(file.toPath(), objectMapper.writeValueAsString(entities));
 	}
 

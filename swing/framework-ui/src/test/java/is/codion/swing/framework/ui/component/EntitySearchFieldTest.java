@@ -79,7 +79,7 @@ public class EntitySearchFieldTest {
 		Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
 
 		singleSelectionValue.clear();
-		assertTrue(singleSelectionSearchModel.selection().empty().is());
+		assertFalse(singleSelectionSearchModel.selection().present().is());
 		assertNull(singleSelectionValue.get());
 
 		EntitySearchModel multiSelectionSearchModel = EntitySearchModel.builder()

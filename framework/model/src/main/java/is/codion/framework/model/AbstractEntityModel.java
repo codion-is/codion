@@ -396,7 +396,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 		}
 
 		private List<Entity> activeEntities() {
-			if (tableModel != null && tableModel.selection().empty().not().is()) {
+			if (tableModel != null && tableModel.selection().present().is()) {
 				return tableModel.selection().items().get();
 			}
 			else if (editModel.editor().entity().exists().not().is()) {

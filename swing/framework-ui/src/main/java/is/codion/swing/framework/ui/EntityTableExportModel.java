@@ -85,10 +85,10 @@ final class EntityTableExportModel {
 						.nullItem(NULL_CONFIGURATION_FILE)
 						.onSelectedItem(this::configurationFileSelected)
 						.build();
-		this.selected = State.state(!tableModel.selection().empty().is());
+		this.selected = State.state(tableModel.selection().present().is());
 		this.all = State.state(!selected.is());
 		State.group(selected, all).fallback(all);
-		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
+		this.tableModel.selection().present().addConsumer(selected::set);
 		this.treeModel.includeNone();
 		this.treeModel.includeAll();
 	}

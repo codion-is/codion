@@ -148,7 +148,7 @@ public final class SessionMonitorPanel extends JPanel {
 										.control(Control.builder()
 														.command(this::disconnect)
 														.caption("Disconnect")
-														.enabled(model.sessionTableModel().selection().empty().not()))
+														.enabled(model.sessionTableModel().selection().present()))
 										.separator()
 										.control(Controls.builder()
 														.caption("Columns")

@@ -150,9 +150,9 @@ public interface EntitySearchModel {
 		ValueSet<Entity> entities();
 
 		/**
-		 * @return an {@link ObservableState} indicating whether the selection is empty
+		 * @return an {@link ObservableState} indicating whether a selection is present
 		 */
-		ObservableState empty();
+		ObservableState present();
 
 		/**
 		 * @return an {@link ObservableState} indicating whether a single entity is selected

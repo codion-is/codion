@@ -52,7 +52,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 						.command(this::viewEmployeeReport)
 						.caption("Employee Report")
 						.icon(FrameworkIcons.instance().print())
-						.enabled(model().selection().empty().not())
+						.enabled(model().selection().present())
 						.build());
 	}
 	// end::setupControls[]

@@ -444,7 +444,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		private final ValueList<C> identifiers = ValueList.valueList();
 		private final DefaultColumnIndex anchor = new DefaultColumnIndex();
 		private final DefaultColumnIndex lead = new DefaultColumnIndex();
-		private final ObservableState empty = State.present(indexes).not();
+		private final ObservableState present = State.present(indexes);
 
 		@Override
 		public ObservableValueList<Integer> indexes() {
@@ -457,8 +457,8 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		}
 
 		@Override
-		public ObservableState empty() {
-			return empty;
+		public ObservableState present() {
+			return present;
 		}
 
 		@Override

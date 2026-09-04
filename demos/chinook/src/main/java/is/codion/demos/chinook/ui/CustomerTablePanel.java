@@ -59,7 +59,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 						.command(this::viewCustomerReport)
 						.caption(BUNDLE.getString("customer_report"))
 						.icon(FrameworkIcons.instance().print())
-						.enabled(model().selection().empty().not())
+						.enabled(model().selection().present())
 						.build());
 	}
 	// end::setupControls[]

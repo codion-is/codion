@@ -263,16 +263,18 @@ final class DefaultFilterListModelTest {
 		FilterListModel<String> model = FilterListModel.builder()
 						.items(items).build();
 
-		// Select and remove
-		model.selection().item().set(TWO);
-		assertEquals(TWO, model.selection().item().get());
+		model.selection().items().set(asList(ONE, TWO));
+		assertEquals(ONE, model.selection().item().get());
 
+		// removing one of the selected items leaves the other selected
 		model.items().remove(TWO);
-		// Selection might move to another item or be cleared
 		assertEquals(2, model.items().included().size());
-		// If selection moved, it should be to a remaining item
-		if (!model.selection().empty().is()) {
-			assertTrue(model.items().included().contains(model.selection().item().get()));
-		}
+		assertTrue(model.selection().present().is());
+		assertEquals(asList(ONE), model.selection().items().get());
+
+		// removing the last selected item clears the selection
+		model.items().remove(ONE);
+		assertFalse(model.selection().present().is());
+		assertTrue(model.selection().items().get().isEmpty());
 	}
 }

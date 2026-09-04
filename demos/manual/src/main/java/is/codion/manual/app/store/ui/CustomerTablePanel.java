@@ -44,12 +44,12 @@ public class CustomerTablePanel extends EntityTablePanel {
 		super(tableModel);
 		// associate a custom Control with the PRINT control key,
 		// which calls the viewCustomerReport method in this class,
-		// enabled only when the selection is not empty
+		// enabled only when a selection is present
 		control(PRINT).set(Control.builder()
 						.command(this::viewCustomerReport)
 						.caption("Customer report")
 						.icon(FrameworkIcons.instance().print())
-						.enabled(model().selection().empty().not())
+						.enabled(model().selection().present())
 						.build());
 	}
 

@@ -150,7 +150,7 @@ public final class DefaultSwingFilterTableModelTest {
 		assertEquals(0, tableModel.selection().index().get());
 
 		tableModel.items().remove(B);
-		assertTrue(tableModel.selection().empty().is());
+		assertFalse(tableModel.selection().present().is());
 	}
 
 	private static SwingFilterTableModel<TestRow, Integer> createTestModel() {
@@ -322,7 +322,7 @@ public final class DefaultSwingFilterTableModelTest {
 
 	@Test
 	void refreshWithClearStrategyPreservesSelectionWhenItemsRemain() {
-		AtomicInteger emptySelectionEvents = new AtomicInteger();
+		AtomicInteger selectionPresentEvents = new AtomicInteger();
 		AtomicInteger selectionChangeEvents = new AtomicInteger();
 
 		List<TestRow> items = new ArrayList<>(ITEMS);
@@ -332,9 +332,9 @@ public final class DefaultSwingFilterTableModelTest {
 										.items(() -> items)
 										.build();
 
-		testModel.selection().empty()
-						.when(true)
-						.addListener(emptySelectionEvents::incrementAndGet);
+		testModel.selection().present()
+						.when(false)
+						.addListener(selectionPresentEvents::incrementAndGet);
 
 		testModel.selection().indexes().addListener(selectionChangeEvents::incrementAndGet);
 
@@ -342,16 +342,16 @@ public final class DefaultSwingFilterTableModelTest {
 		testModel.selection().items().set(asList(B, D));
 
 		assertEquals(1, selectionChangeEvents.get());
-		assertEquals(0, emptySelectionEvents.get());
+		assertEquals(0, selectionPresentEvents.get());
 		assertEquals(asList(B, D), testModel.selection().items().get());
 
-		// Test 1: Refresh with same data - should preserve selection without empty event
+		// Test 1: Refresh with same data - should preserve selection without present event
 		testModel.items().refresh();
 
 		assertEquals(asList(B, D), testModel.selection().items().get());
-		assertEquals(0, emptySelectionEvents.get()); // No empty selection event!
+		assertEquals(0, selectionPresentEvents.get()); // No selection present event!
 		// Note: We may get an extra selection event due to the surgical update process,
-		// but the important thing is that selection is preserved without empty events
+		// but the important thing is that selection is preserved without present events
 		assertTrue(selectionChangeEvents.get() <= 2);
 
 		// Test 2: Refresh with partial data - only D remains, selection should update but not go empty
@@ -360,7 +360,7 @@ public final class DefaultSwingFilterTableModelTest {
 		testModel.items().refresh();
 
 		assertEquals(asList(D), testModel.selection().items().get());
-		assertEquals(0, emptySelectionEvents.get()); // Still no empty event!
+		assertEquals(0, selectionPresentEvents.get()); // Still no present event!
 		assertTrue(selectionChangeEvents.get() >= 2); // Selection changed from [B,D] to [D]
 
 		// Test 3: Refresh removing all selected items - should trigger empty selection
@@ -369,13 +369,13 @@ public final class DefaultSwingFilterTableModelTest {
 		items.addAll(asList(A, B, C)); // D is removed
 		testModel.items().refresh();
 
-		assertTrue(testModel.selection().empty().is());
-		assertEquals(1, emptySelectionEvents.get()); // Now we get empty event
+		assertFalse(testModel.selection().present().is());
+		assertEquals(1, selectionPresentEvents.get()); // Now we get present event
 		assertTrue(selectionChangeEvents.get() > changeEventsBefore); // Selection cleared
 
 		// Test 4: Select multiple items and refresh with reordered data
 		testModel.selection().items().set(asList(A, C));
-		assertEquals(1, emptySelectionEvents.get()); // Still just one
+		assertEquals(1, selectionPresentEvents.get()); // Still just one
 
 		items.clear();
 		items.addAll(asList(C, B, A)); // Same items, different order
@@ -385,7 +385,7 @@ public final class DefaultSwingFilterTableModelTest {
 		assertEquals(2, testModel.selection().items().get().size());
 		assertTrue(testModel.selection().items().get().contains(A));
 		assertTrue(testModel.selection().items().get().contains(C));
-		assertEquals(1, emptySelectionEvents.get()); // No new empty event
+		assertEquals(1, selectionPresentEvents.get()); // No new present event
 
 		// Test 5: With sorting enabled
 		testModel.sort().ascending(0);
@@ -397,7 +397,7 @@ public final class DefaultSwingFilterTableModelTest {
 
 		// After sort, A and B should still be selected
 		assertEquals(asList(A, B), testModel.selection().items().get());
-		assertEquals(1, emptySelectionEvents.get()); // Still no new empty event
+		assertEquals(1, selectionPresentEvents.get()); // Still no new present event
 	}
 
 	@Test
@@ -563,14 +563,14 @@ public final class DefaultSwingFilterTableModelTest {
 		selection.items().addConsumer(consumer);
 
 		assertFalse(selection.single().is());
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 		assertFalse(selection.multiple().is());
 
 		tableModel.items().refresh();
 		selection.index().set(2);
 		assertEquals(4, events.get());
 		assertTrue(selection.single().is());
-		assertFalse(selection.empty().is());
+		assertTrue(selection.present().is());
 		assertFalse(selection.multiple().is());
 		assertEquals(2, selection.index().get());
 		selection.indexes().increment();
@@ -605,7 +605,7 @@ public final class DefaultSwingFilterTableModelTest {
 		assertEquals(5, selection.items().get().size());
 		selection.clearSelection();
 		assertFalse(selection.single().is());
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 		assertFalse(selection.multiple().is());
 		assertEquals(0, selection.items().get().size());
 
@@ -681,7 +681,7 @@ public final class DefaultSwingFilterTableModelTest {
 		assertEquals(0, selection.getMinSelectionIndex());
 
 		tableModel.items().clear();
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 		assertNull(selection.item().get());
 
 		selection.clearSelection();
@@ -893,21 +893,21 @@ public final class DefaultSwingFilterTableModelTest {
 		AtomicInteger items = new AtomicInteger();
 		AtomicInteger index = new AtomicInteger();
 		AtomicInteger indexes = new AtomicInteger();
-		AtomicInteger empty = new AtomicInteger();
+		AtomicInteger present = new AtomicInteger();
 		model.selection().item().addListener(item::incrementAndGet);
 		model.selection().items().addListener(items::incrementAndGet);
 		model.selection().index().addListener(index::incrementAndGet);
 		model.selection().indexes().addListener(indexes::incrementAndGet);
-		model.selection().empty().addListener(empty::incrementAndGet);
+		model.selection().present().addListener(present::incrementAndGet);
 
 		version.set(1);
 		model.items().refresh();
-		// the same rows, fresher instances: item()/items() notify once, index()/indexes()/empty() not at all
+		// the same rows, fresher instances: item()/items() notify once, index()/indexes()/present() not at all
 		assertEquals(1, item.get());
 		assertEquals(1, items.get());
 		assertEquals(0, index.get());
 		assertEquals(0, indexes.get());
-		assertEquals(0, empty.get());
+		assertEquals(0, present.get());
 		assertEquals(1, model.selection().item().get().version);
 		assertEquals(asList(1, 2), model.selection().indexes().get());
 
@@ -921,7 +921,7 @@ public final class DefaultSwingFilterTableModelTest {
 		assertEquals(0, items.get());
 		assertEquals(0, index.get());
 		assertEquals(0, indexes.get());
-		assertEquals(0, empty.get());
+		assertEquals(0, present.get());
 	}
 
 	@Test

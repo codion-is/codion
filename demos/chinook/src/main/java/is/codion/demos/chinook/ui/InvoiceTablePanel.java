@@ -70,7 +70,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 						.command(this::viewInvoices)
 						.caption(BUNDLE.getString("invoice"))
 						.icon(FrameworkIcons.instance().print())
-						.enabled(model().selection().empty().not())
+						.enabled(model().selection().present())
 						.build());
 	}
 

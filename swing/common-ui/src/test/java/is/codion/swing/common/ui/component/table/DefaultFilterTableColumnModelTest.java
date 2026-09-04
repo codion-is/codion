@@ -208,12 +208,12 @@ public class DefaultFilterTableColumnModelTest {
 						new DefaultFilterTableColumnBuilder<>("1", 1).build(),
 						new DefaultFilterTableColumnBuilder<>("2", 2).build()));
 		ColumnSelection<String> selection = columnModel.selection();
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 		assertFalse(selection.anchor().present().is());
 		assertFalse(selection.lead().present().is());
 
 		selection.setSelectionInterval(1, 2);
-		assertFalse(selection.empty().is());
+		assertTrue(selection.present().is());
 		assertTrue(selection.anchor().present().is());
 		assertTrue(selection.lead().present().is());
 		assertEquals(1, selection.anchor().get());
@@ -232,7 +232,7 @@ public class DefaultFilterTableColumnModelTest {
 		assertEquals(asList(0, 2), selection.indexes().get());
 		assertEquals(asList("0", "2"), selection.identifiers().get());
 		selection.clearSelection();
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 	}
 
 	@Test

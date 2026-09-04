@@ -94,20 +94,20 @@ public class FilterListSelectionTest {
 
 	@Test
 	void events() {
-		AtomicInteger emptyCounter = new AtomicInteger();
-		testModel.empty().addListener(emptyCounter::incrementAndGet);
+		AtomicInteger presentCounter = new AtomicInteger();
+		testModel.present().addListener(presentCounter::incrementAndGet);
 		testModel.index().set(0);
-		assertEquals(1, emptyCounter.get());
+		assertEquals(1, presentCounter.get());
 		testModel.indexes().add(1);
-		assertEquals(1, emptyCounter.get());
+		assertEquals(1, presentCounter.get());
 		testModel.indexes().set(asList(1, 2));
-		assertEquals(1, emptyCounter.get());
+		assertEquals(1, presentCounter.get());
 		testModel.addSelectionInterval(0, 1);
-		assertEquals(1, emptyCounter.get());
+		assertEquals(1, presentCounter.get());
 		testModel.indexes().increment();
-		assertEquals(1, emptyCounter.get());
+		assertEquals(1, presentCounter.get());
 		testModel.clearSelection();
-		assertEquals(2, emptyCounter.get());
+		assertEquals(2, presentCounter.get());
 	}
 
 	@Test
@@ -143,7 +143,7 @@ public class FilterListSelectionTest {
 		assertFalse(testModel.index().optional().isPresent());
 		assertFalse(testModel.indexes().optional().isPresent());
 		assertFalse(testModel.items().optional().isPresent());
-		assertTrue(testModel.empty().is());
+		assertFalse(testModel.present().is());
 	}
 
 	@Test
@@ -167,7 +167,7 @@ public class FilterListSelectionTest {
 		assertEquals(asList(0, 2), testModel.indexes().get());
 
 		testModel.items().remove(asList("A", "C"));
-		assertTrue(testModel.empty().is());
+		assertFalse(testModel.present().is());
 	}
 
 	@Test
@@ -233,7 +233,7 @@ public class FilterListSelectionTest {
 
 		// Change to single selection - should clear selection
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.empty().is());
+		assertFalse(testModel.present().is());
 
 		// In single selection mode, adding multiple should only keep last
 		testModel.index().set(0);
@@ -277,7 +277,7 @@ public class FilterListSelectionTest {
 	void nullHandling() {
 		// Test null item selection
 		testModel.item().set(null);
-		assertTrue(testModel.empty().is());
+		assertFalse(testModel.present().is());
 
 		// Test null in collections
 		assertThrows(NullPointerException.class, () -> testModel.items().add((String) null));
@@ -302,9 +302,9 @@ public class FilterListSelectionTest {
 	@Test
 	void stateObservables() {
 		// Test empty state
-		assertTrue(testModel.empty().is());
+		assertFalse(testModel.present().is());
 		testModel.index().set(0);
-		assertFalse(testModel.empty().is());
+		assertTrue(testModel.present().is());
 
 		// Test single state
 		assertTrue(testModel.single().is());
@@ -364,12 +364,12 @@ public class FilterListSelectionTest {
 	@Test
 	void surgicalSelectionUpdate() {
 		// Test that setting the same selection doesn't trigger unnecessary events
-		AtomicInteger emptyEventCount = new AtomicInteger();
+		AtomicInteger presentEventCount = new AtomicInteger();
 		AtomicInteger changeEventCount = new AtomicInteger();
 
-		testModel.empty()
-						.when(true)
-						.addListener(emptyEventCount::incrementAndGet);
+		testModel.present()
+						.when(false)
+						.addListener(presentEventCount::incrementAndGet);
 
 		testModel.addListSelectionListener(e -> {
 			if (!e.getValueIsAdjusting()) {
@@ -380,32 +380,32 @@ public class FilterListSelectionTest {
 		// Set initial selection
 		testModel.indexes().set(asList(0, 1, 2));
 		assertEquals(1, changeEventCount.get());
-		assertEquals(0, emptyEventCount.get());
+		assertEquals(0, presentEventCount.get());
 
 		// Set same selection - should not trigger any events
 		testModel.indexes().set(asList(0, 1, 2));
 		assertEquals(1, changeEventCount.get());
-		assertEquals(0, emptyEventCount.get());
+		assertEquals(0, presentEventCount.get());
 
 		// Set overlapping selection - should only trigger change, not empty
 		testModel.indexes().set(asList(1, 2));
 		assertEquals(2, changeEventCount.get());
-		assertEquals(0, emptyEventCount.get());
+		assertEquals(0, presentEventCount.get());
 
 		// Set different selection - should only trigger change, not empty
 		testModel.indexes().set(asList(0));
 		assertEquals(3, changeEventCount.get());
-		assertEquals(0, emptyEventCount.get());
+		assertEquals(0, presentEventCount.get());
 
 		// Clear selection - should trigger both change and empty
 		testModel.indexes().set(emptyList());
 		assertEquals(4, changeEventCount.get());
-		assertEquals(1, emptyEventCount.get());
+		assertEquals(1, presentEventCount.get());
 
 		// Clear already empty selection - should not trigger any events
 		testModel.indexes().set(emptyList());
 		assertEquals(4, changeEventCount.get());
-		assertEquals(1, emptyEventCount.get());
+		assertEquals(1, presentEventCount.get());
 
 		// Test with items as well
 		testModel.items().set(asList("A", "B"));
@@ -418,6 +418,6 @@ public class FilterListSelectionTest {
 		// Set overlapping items
 		testModel.items().set(asList("B", "C"));
 		assertEquals(6, changeEventCount.get());
-		assertEquals(1, emptyEventCount.get()); // Still 1, no new empty event
+		assertEquals(1, presentEventCount.get()); // Still 1, no new empty event
 	}
 }

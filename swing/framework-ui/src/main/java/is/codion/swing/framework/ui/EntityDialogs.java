@@ -386,7 +386,7 @@ public final class EntityDialogs {
 							.command(this::ok)
 							.caption(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
-							.enabled(tablePanel.model().selection().empty().not())
+							.enabled(tablePanel.model().selection().present())
 							.build();
 			configureTable(tablePanel.table(), okControl, singleSelection);
 			ActionDialogBuilder<?> builder = Dialogs.action()

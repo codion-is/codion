@@ -671,8 +671,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public ObservableState empty() {
-			return selected.empty.observable();
+		public ObservableState present() {
+			return selected.present.observable();
 		}
 
 		@Override
@@ -694,7 +694,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final class SelectedItem extends AbstractValue<T> {
 
 		private final Event<T> changing = Event.event();
-		private final State empty = State.state(true);
+		private final State present = State.state();
 		private final Function<@Nullable Object, T> translator;
 
 		private @Nullable T item = null;
@@ -718,7 +718,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (!Objects.equals(this.item, toSelect)) {
 				changing.accept(toSelect);
 				this.item = toSelect;
-				empty.set(toSelect == null);
+				present.set(toSelect != null);
 				notifyObserver();
 			}
 		}
@@ -740,11 +740,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected @Nullable V getValue() {
-			if (selection.selected.empty.is()) {
-				return null;
+			if (selection.selected.present.is()) {
+				return itemFinder.value(selection.item().getOrThrow());
 			}
 
-			return itemFinder.value(selection.item().getOrThrow());
+			return null;
 		}
 
 		@Override

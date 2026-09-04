@@ -85,7 +85,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void selectionSingle() {
-		assertTrue(searchModel.selection().empty().is());
+		assertFalse(searchModel.selection().present().is());
 		assertFalse(searchModel.selection().single().is());
 
 		searchModel.search().strings().set(singleton("joh"));
@@ -105,7 +105,7 @@ public final class DefaultEntitySearchModelTest {
 	@Test
 	void searchModel() {
 		searchModel.search().strings().set(singleton("joh"));
-		assertTrue(searchModel.selection().empty().is());
+		assertFalse(searchModel.selection().present().is());
 		List<Entity> result = searchModel.search().perform();
 		assertFalse(result.isEmpty());
 		assertTrue(contains(result, "John"));
@@ -114,7 +114,7 @@ public final class DefaultEntitySearchModelTest {
 		assertFalse(contains(result, "Andrew"));
 		assertEquals(singleton("joh"), searchModel.search().strings().get());
 		searchModel.selection().entities().set(result);
-		assertFalse(searchModel.selection().empty().is());
+		assertTrue(searchModel.selection().present().is());
 
 		searchModel.search().strings().set(asList("joh", "and"));
 		result = searchModel.search().perform();
@@ -287,7 +287,7 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals("Newname", searchModel.selection().entity().get().get(Employee.NAME));
 
 		persistenceEvents.deleted().accept(singletonList(temp));
-		assertTrue(searchModel.selection().empty().is());
+		assertFalse(searchModel.selection().present().is());
 	}
 
 	@Test

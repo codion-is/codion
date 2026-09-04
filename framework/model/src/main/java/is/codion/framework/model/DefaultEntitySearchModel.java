@@ -67,8 +67,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private static final String WILDCARD_MULTIPLE = "%";
 	private static final String WILDCARD_SINGLE = "_";
 
-	private final State selectionEmpty = State.state(true);
-	private final State selectionSingle = State.state(false);
+	private final State selectionPresent = State.state();
+	private final State selectionSingle = State.state();
 
 	private final EntityDefinition entityDefinition;
 	private final Collection<Column<String>> columns;
@@ -240,7 +240,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 						.notify(Notify.SET)
 						.validator(new EntityValidator())
 						.consumer(selectedEntities -> {
-							selectionEmpty.set(selectedEntities.isEmpty());
+							selectionPresent.set(!selectedEntities.isEmpty());
 							selectionSingle.set(selectedEntities.size() == 1);
 						})
 						.build();
@@ -256,8 +256,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public ObservableState empty() {
-			return selectionEmpty.observable();
+		public ObservableState present() {
+			return selectionPresent.observable();
 		}
 
 		@Override

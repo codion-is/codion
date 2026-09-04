@@ -58,7 +58,7 @@ final class CountryTablePanel extends EntityTablePanel {
 						.command(this::viewCountryReport)
 						.caption("Country report")
 						.icon(FrameworkIcons.instance().print())
-						.enabled(model().selection().empty().not())
+						.enabled(model().selection().present())
 						.build());
 	}
 
