@@ -21,6 +21,7 @@ Codion Change Log
 - AbstractEntityTableModel, an unmodified editor now takes the refreshed instance of the selected entity on refresh, an edit in progress is kept. The editor used to show the stale values until the row was reselected.
 - EntityComboBoxModel.Builder now self-typed, Builder<B extends Builder<B>>, abstract base builder added.
 - EntitySearchModel.Selection.empty() replaced with present().
+- ForeignKeyModelLink, a master selection the link has already applied is not applied again, be it on the link being activated anew or on a master refresh notifying with fresher instances of the same rows, a detail condition changed by hand therefore survives navigation and refresh, a changed master selection overrules it.
 ### is.codion.swing.common.model
 - DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
 - DefaultListSelection is now a DefaultListSelectionModel serving as the MultiSelection.IndexStore of a common DefaultMultiSelection, forwarding to its facades, rather than a copy of it with the store swapped. The JTable and JList keyboard actions moving the lead are enabled only for a DefaultListSelectionModel, hence the extension stays.

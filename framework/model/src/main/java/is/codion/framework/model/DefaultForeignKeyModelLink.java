@@ -25,10 +25,12 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
 				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements ForeignKeyModelLink {
@@ -85,8 +87,19 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 
 	private final class OnSelection implements Consumer<Collection<Entity>> {
 
+		// The master selection this link last applied, by primary key.
+		// A selection already applied is not applied again, however it arrives.
+		private @Nullable Set<Entity.Key> applied;
+
 		@Override
 		public void accept(Collection<Entity> selectedEntities) {
+			Set<Entity.Key> keys = selectedEntities.stream()
+							.map(Entity::primaryKey)
+							.collect(toSet());
+			if (keys.equals(applied)) {
+				return;
+			}
+			applied = keys;
 			if (model().containsTableModel() &&
 							setConditionOnSelection(selectedEntities) && refreshOnSelection) {
 				model().tableModel().items().refresh(result -> setValueOnSelection(selectedEntities));

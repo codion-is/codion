@@ -20,6 +20,7 @@ package is.codion.framework.model.test;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
@@ -564,6 +565,57 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		departmentModel.tableModel().items().refresh();
 		assertEquals(1, masterNotified.get());
 		assertEquals(0, detailRefreshes.get());
+	}
+
+	@Test
+	public void manualDetailConditionSurvivesMasterRefresh() {
+		M departmentModel = createDepartmentModel();
+		if (!departmentModel.containsTableModel()) {
+			return;
+		}
+		M employeeModel = departmentModel.detail().get(Employee.TYPE);
+		departmentModel.tableModel().items().refresh();
+		departmentModel.tableModel().selection().index().set(0);
+		Entity other = departmentModel.tableModel().items().included().get(1);
+		ConditionModel<Entity> condition = employeeModel.tableModel().query().condition().get(Employee.DEPARTMENT_FK);
+		condition.set().equalTo(other);
+		AtomicInteger detailRefreshes = new AtomicInteger();
+		employeeModel.tableModel().items().refresher().result().addListener(detailRefreshes::incrementAndGet);
+
+		// the master selection notifies with the refreshed instances of the same rows, which the link has applied already
+		departmentModel.tableModel().items().refresh();
+		assertEquals(Operator.EQUAL, condition.operator().get());
+		assertEquals(other, condition.operands().equal().get());
+		assertEquals(0, detailRefreshes.get());
+	}
+
+	@Test
+	public void manualDetailConditionSurvivesReactivation() {
+		M departmentModel = createDepartmentModel();
+		if (!departmentModel.containsTableModel()) {
+			return;
+		}
+		M employeeModel = departmentModel.detail().get(Employee.TYPE);
+		departmentModel.tableModel().items().refresh();
+		departmentModel.tableModel().selection().index().set(0);
+		Entity other = departmentModel.tableModel().items().included().get(1);
+		ConditionModel<Entity> condition = employeeModel.tableModel().query().condition().get(Employee.DEPARTMENT_FK);
+		condition.set().equalTo(other);
+		AtomicInteger detailRefreshes = new AtomicInteger();
+		employeeModel.tableModel().items().refresher().result().addListener(detailRefreshes::incrementAndGet);
+
+		// the link activated anew with the master selection it has applied already
+		departmentModel.detail().active(employeeModel).set(false);
+		departmentModel.detail().active(employeeModel).set(true);
+		assertEquals(Operator.EQUAL, condition.operator().get());
+		assertEquals(other, condition.operands().equal().get());
+		assertEquals(0, detailRefreshes.get());
+
+		// a changed master selection overrules it
+		departmentModel.tableModel().selection().index().set(1);
+		assertEquals(Operator.IN, condition.operator().get());
+		assertEquals(singleton(other), condition.operands().in().get());
+		assertEquals(1, detailRefreshes.get());
 	}
 
 	protected final EntityConnection connection() {
