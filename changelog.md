@@ -25,6 +25,7 @@ Codion Change Log
 - DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
 - DefaultListSelection is now a DefaultListSelectionModel serving as the MultiSelection.IndexStore of a common DefaultMultiSelection, forwarding to its facades, rather than a copy of it with the store swapped. The JTable and JList keyboard actions moving the lead are enabled only for a DefaultListSelectionModel, hence the extension stays.
 - SwingFilterTableModel.Builder, SwingFilterListModel.Builder, SwingFilterComboBoxModel.Builder and SwingItemComboBoxModelBuilder now extend their common counterparts.
+- SwingFilterComboBoxModel.booleanItems() removed.
 ### is.codion.swing.common.ui
 - FilterTableColumnModel.ColumnSelection.empty() replaced with present().
 ### is.codion.swing.framework.model

@@ -576,6 +576,12 @@ public final class ComponentsTest {
 
 		value.set(false);
 		assertFalse(boxModel.selection().item().getOrThrow().getOrThrow());
+
+		assertFalse(componentValue.getOrThrow());
+		componentValue.component().getModel().setSelectedItem(true);
+		assertTrue(componentValue.getOrThrow());
+		componentValue.component().getModel().setSelectedItem(null);
+		assertNull(componentValue.get());
 	}
 
 	@Test

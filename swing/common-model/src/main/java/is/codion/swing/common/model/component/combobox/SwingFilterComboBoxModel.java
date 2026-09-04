@@ -18,18 +18,14 @@
  */
 package is.codion.swing.common.model.component.combobox;
 
-import is.codion.common.i18n.Messages;
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.utilities.item.Item;
-
 
 import javax.swing.ComboBoxModel;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.common.utilities.item.Item.item;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -58,37 +54,6 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 	 */
 	static <T> SwingFilterComboBoxModel<T> model(FilterComboBoxModel<T> model) {
 		return DefaultSwingFilterComboBoxModel.model(requireNonNull(model));
-	}
-
-	/**
-	 * @return items for null, true and false, using the default captions
-	 * @see #NULL_CAPTION
-	 * @see Messages#yes()
-	 * @see Messages#no()
-	 */
-	static List<Item<Boolean>> booleanItems() {
-		return booleanItems(NULL_CAPTION.getOrThrow());
-	}
-
-	/**
-	 * @param nullCaption the caption for the null value
-	 * @return items for null, true and false, using the given null caption and the default true/false captions
-	 */
-	static List<Item<Boolean>> booleanItems(String nullCaption) {
-		return booleanItems(nullCaption, Messages.yes(), Messages.no());
-	}
-
-	/**
-	 * @param nullCaption the caption for null
-	 * @param trueCaption the caption for true
-	 * @param falseCaption the caption for false
-	 * @return items for null, true and false
-	 */
-	static List<Item<Boolean>> booleanItems(String nullCaption, String trueCaption, String falseCaption) {
-		return asList(
-						item(null, requireNonNull(nullCaption)),
-						item(true, requireNonNull(trueCaption)),
-						item(false, requireNonNull(falseCaption)));
 	}
 
 	/**

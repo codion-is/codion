@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.reactive.value.Value;
-import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -28,7 +26,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JToggleButton;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,22 +43,6 @@ public class BooleanValuesTest {
 		assertTrue(checkBox.isSelected());
 		checkBox.doClick();
 		assertFalse(booleanValue.getOrThrow());
-	}
-
-	@Test
-	void booleanComboBox() {
-		SwingFilterComboBoxModel<Item<Boolean>> model = SwingFilterComboBoxModel.builder()
-						.items(SwingFilterComboBoxModel.booleanItems())
-						.build();
-		model.setSelectedItem(false);
-		ComponentValue<JComboBox<Item<Boolean>>, Boolean> componentValue = Components.itemComboBox()
-						.model(model)
-						.buildValue();
-		assertFalse(componentValue.getOrThrow());
-		componentValue.component().getModel().setSelectedItem(true);
-		assertTrue(componentValue.getOrThrow());
-		componentValue.component().getModel().setSelectedItem(null);
-		assertNull(componentValue.get());
 	}
 
 	@Test
