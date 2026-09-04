@@ -38,6 +38,8 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -69,7 +71,7 @@ final class JsonPreferencesStore {
 	private final Path filePath;
 	private final Path lockFilePath;
 	private final boolean prettyPrint;
-	private final JsonPreferences preferences = new JsonPreferences();
+	private final JsonPreferences preferences = new JsonPreferences(true);
 
 	/**
 	 * Serializes this JVM's own access to the file, so that the {@link FileLock} below only ever arbitrates
@@ -84,7 +86,12 @@ final class JsonPreferencesStore {
 	 */
 	private final Lock lock = new ReentrantLock();
 
+	private int saves = 0;
+
 	private volatile long lastModified;
+	//each save creates a new file, so the file key, the inode where available, changes with every save,
+	//where the modification time, coarse grained, might not
+	private volatile @Nullable Object fileKey;
 
 	JsonPreferencesStore(Path filePath) {
 		this(filePath, false);
@@ -96,7 +103,7 @@ final class JsonPreferencesStore {
 		this.prettyPrint = prettyPrint;
 		LOG.debug("Initializing preferences store at {}", filePath);
 		try {
-			loadData();
+			loadData(false);
 		}
 		catch (IOException e) {
 			throw new UncheckedIOException(e);
@@ -127,10 +134,6 @@ final class JsonPreferencesStore {
 		return preferences.childrenNames(path);
 	}
 
-	void removeNode(String path) {
-		preferences.removeNode(path);
-	}
-
 	/**
 	 * Saves the preferences to disk using atomic write with file locking.
 	 * If the preferences are empty, the file is deleted instead of written.
@@ -139,11 +142,14 @@ final class JsonPreferencesStore {
 	void save() throws IOException {
 		lock.lock();
 		try {
+			saves++;
 			// A point-in-time snapshot of the store, taken atomically; the file write below need not hold the in-memory lock.
-			String content = preferences.snapshot(prettyPrint);
+			JsonPreferences.Snapshot snapshot = preferences.snapshot(prettyPrint);
+			String content = snapshot.content;
 			if (content == null) {
 				LOG.debug("Preferences empty, deleting file if exists: {}", filePath);
 				delete();
+				preferences.saved(snapshot.changes);
 				return;
 			}
 			LOG.debug("Saving preferences to {}", filePath);
@@ -160,7 +166,8 @@ final class JsonPreferencesStore {
 				// Atomic move with lock
 				try (FileLock fileLock = acquireExclusiveLock()) {
 					atomicMove(tempFile, filePath);
-					lastModified = Files.getLastModifiedTime(filePath).toMillis();
+					stamp();
+					preferences.saved(snapshot.changes);
 					LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
 				}
 			}
@@ -174,12 +181,37 @@ final class JsonPreferencesStore {
 	}
 
 	/**
-	 * Reloads the preferences from disk if the file has been modified externally.
-	 * If the preferences file becomes corrupted (invalid JSON), this method will
-	 * automatically create a backup of the corrupted file with a ".corrupt.{timestamp}"
-	 * suffix and continue with empty preferences.
-	 * @throws IOException if an I/O error occurs
+	 * Reloads the file if it has been modified since it was last read or written, re-applying the changes made
+	 * since on top of it, and saves those changes, the file is left untouched when there are none. This is what
+	 * the JDK's own file backed implementation does for both {@code flush()} and {@code sync()}.
+	 * @throws IOException in case of an I/O error
 	 */
+	void sync() throws IOException {
+		lock.lock();
+		try {
+			reload();
+			if (preferences.modified()) {
+				save();
+			}
+		}
+		finally {
+			lock.unlock();
+		}
+	}
+
+	/**
+	 * @return the number of times {@link #save()} has been called, for tests
+	 */
+	int saves() {
+		lock.lock();
+		try {
+			return saves;
+		}
+		finally {
+			lock.unlock();
+		}
+	}
+
 	void reload() throws IOException {
 		// held across the check and the load, so two threads seeing the same modification time do not both reload
 		lock.lock();
@@ -188,17 +220,23 @@ final class JsonPreferencesStore {
 			// when the preferences are emptied, or by another process - so ask for the timestamp and treat
 			// its absence as the answer, rather than racing between the two calls
 			try {
-				long currentModified = Files.getLastModifiedTime(filePath).toMillis();
-				if (currentModified != lastModified) {
+				if (modifiedExternally()) {
 					LOG.debug("File has been modified externally, reloading from {}", filePath);
-					loadData();
+					loadData(true);
 				}
 				else {
 					LOG.trace("File has not been modified, skipping reload");
 				}
 			}
 			catch (NoSuchFileException e) {
-				LOG.trace("File does not exist, nothing to reload");
+				if (lastModified == 0) {
+					LOG.trace("File does not exist, nothing to reload");
+				}
+				else {
+					// deleted since it was last read or written, the changes made since apply to an empty file
+					LOG.debug("File has been deleted externally, {}", filePath);
+					missing(true);
+				}
 			}
 		}
 		finally {
@@ -216,7 +254,7 @@ final class JsonPreferencesStore {
 		lock.lock();
 		try (FileLock fileLock = acquireExclusiveLock()) {
 			Files.deleteIfExists(filePath);
-			lastModified = 0;
+			fileGone();
 		}
 		finally {
 			lock.unlock();
@@ -244,23 +282,23 @@ final class JsonPreferencesStore {
 		}
 	}
 
-	private void loadData() throws IOException {
+	private void loadData(boolean merge) throws IOException {
 		lock.lock();
 		try {
-			doLoadData();
+			doLoadData(merge);
 		}
 		finally {
 			lock.unlock();
 		}
 	}
 
-	private void doLoadData() throws IOException {
+	private void doLoadData(boolean merge) throws IOException {
 		if (!Files.exists(filePath)) {
 			// fast path only, so the common "no preferences yet" case costs no lock; this is not the
 			// authoritative check, the file may be deleted at any point after it returns true, which is
 			// what the NoSuchFileException below is for
 			LOG.trace("Preferences file does not exist, starting with empty preferences");
-			lastModified = 0;
+			missing(merge);
 			return;
 		}
 		LOG.trace("Loading preferences from {}", filePath);
@@ -272,41 +310,75 @@ final class JsonPreferencesStore {
 			catch (NoSuchFileException e) {
 				// as in reload(): no exists() check, the file may be deleted concurrently
 				LOG.trace("Preferences file does not exist, starting with empty preferences");
-				lastModified = 0;
+				missing(merge);
 				return;
 			}
 			catch (MalformedInputException e) {
 				// File contains binary data or invalid encoding
 				LOG.error("Preferences file contains invalid character encoding: {}", filePath, e);
-				handleCorruptedFile("File contains invalid character encoding", e);
+				handleCorruptedFile("File contains invalid character encoding", e, merge);
 				return;
 			}
 
 			try {
-				preferences.load(content);
-				lastModified = Files.getLastModifiedTime(filePath).toMillis();
+				if (merge) {
+					preferences.merge(content);
+				}
+				else {
+					preferences.load(content);
+				}
+				stamp();
 				LOG.trace("Loaded preferences from file");
 			}
 			catch (NoSuchFileException e) {
 				// deleted between the read and the timestamp; the content read above is still valid
-				lastModified = 0;
+				fileGone();
 			}
 			catch (JSONException e) {
 				// Invalid JSON format
 				LOG.error("Preferences file contains invalid JSON: {}", filePath, e);
-				handleCorruptedFile("Invalid JSON format", e);
+				handleCorruptedFile("Invalid JSON format", e, merge);
 			}
 		}
 	}
 
-	private void handleCorruptedFile(String reason, Exception cause) throws IOException {
+	/**
+	 * The file is missing or unreadable, when merging the changes made since it was last read or written apply to an empty file.
+	 */
+	private boolean modifiedExternally() throws IOException {
+		BasicFileAttributes attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+
+		return attributes.lastModifiedTime().toMillis() != lastModified || !Objects.equals(attributes.fileKey(), fileKey);
+	}
+
+	private void stamp() throws IOException {
+		BasicFileAttributes attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+		lastModified = attributes.lastModifiedTime().toMillis();
+		fileKey = attributes.fileKey();
+	}
+
+	private void fileGone() {
+		lastModified = 0;
+		fileKey = null;
+	}
+
+	private void missing(boolean merge) {
+		fileGone();
+		if (merge) {
+			preferences.merge("{}");
+		}
+		else {
+			preferences.clear();
+		}
+	}
+
+	private void handleCorruptedFile(String reason, Exception cause, boolean merge) throws IOException {
 		// Backup corrupted file
 		Path backupPath = filePath.resolveSibling(filePath.getFileName() + ".corrupt." + currentTimeMillis());
 		Files.copy(filePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
 
 		// Initialize with empty data
-		preferences.clear();
-		lastModified = 0;
+		missing(merge);
 
 		LOG.warn("Corrupted preferences file detected at {}, reason: {}, backup saved to: {}, starting with empty preferences",
 						filePath, reason, backupPath, cause);
