@@ -65,7 +65,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		return modelLink.model();
 	}
 
-	ForeignKey foreignKey() {
+	@Override
+	public ForeignKey foreignKey() {
 		return foreignKey;
 	}
 

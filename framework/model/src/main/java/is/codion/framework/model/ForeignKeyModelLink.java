@@ -87,6 +87,11 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 					booleanValue(ForeignKeyModelLink.class.getName() + ".clearConditionOnEmptySelection", true);
 
 	/**
+	 * @return the foreign key this link is based on
+	 */
+	ForeignKey foreignKey();
+
+	/**
 	 * <p>Returns a new {@link Builder.ModelStep} instance.
 	 * @return a {@link Builder.ModelStep} instance
 	 */
