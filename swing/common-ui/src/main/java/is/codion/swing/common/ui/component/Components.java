@@ -18,7 +18,9 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.common.i18n.Messages;
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.common.utilities.item.Item;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -79,6 +81,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.List;
+
+import static is.codion.common.utilities.item.Item.item;
+import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory for {@link ComponentBuilder} instances.
@@ -153,7 +160,7 @@ public final class Components {
 	 * @return a boolean based {@link ItemComboBoxBuilder}
 	 */
 	public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
-		return ItemComboBoxBuilder.builder().items(SwingFilterComboBoxModel.booleanItems());
+		return ItemComboBoxBuilder.builder().items(booleanItems());
 	}
 
 	/**
@@ -531,5 +538,12 @@ public final class Components {
 	 */
 	public static MenuBuilder.ControlsStep menu() {
 		return MenuBuilder.builder();
+	}
+
+	private static List<Item<Boolean>> booleanItems() {
+		return asList(
+						item(null, requireNonNull(FilterComboBoxModel.NULL_CAPTION.getOrThrow())),
+						item(true, requireNonNull(Messages.yes())),
+						item(false, requireNonNull(Messages.no())));
 	}
 }

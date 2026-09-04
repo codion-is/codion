@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.common.utilities.item.Item.item;
-import static is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel.booleanItems;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -124,22 +123,6 @@ public class DefaultSwingFilterComboBoxModelTest {
 		model.setSelectedItem(null);
 		assertNull(model.selection().item().get());
 		assertSame(nullItem, model.selectedItem());
-	}
-
-	@Test
-	void booleanItemComboBoxModel() {
-		List<Item<Boolean>> items = booleanItems();
-		SwingFilterComboBoxModel<Item<Boolean>> model = SwingFilterComboBoxModel.builder()
-						.items(items)
-						.build();
-		assertSame(items.get(0), model.selectedItem());
-		assertNull(model.selection().item().get());
-		model.setSelectedItem(false);
-		assertEquals(false, model.selection().item().getOrThrow().get());
-		model.setSelectedItem(true);
-		assertEquals(true, model.selection().item().getOrThrow().get());
-		model.setSelectedItem(null);
-		assertNull(model.selection().item().get());
 	}
 
 	@BeforeEach
