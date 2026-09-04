@@ -29,6 +29,10 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Represents a link between two entity models based on a foreign key.
+ * <p>The master selection is applied to the detail once: a selection the link has already applied is ignored,
+ * whether it arrives with the link being activated anew or with the master refreshing and notifying with fresher
+ * instances of the same rows. A detail condition changed by hand therefore survives navigation and refresh,
+ * a changed master selection overrules it.
  */
 public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultForeignKeyModelLink {
 
