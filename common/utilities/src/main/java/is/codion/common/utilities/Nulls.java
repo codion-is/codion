@@ -21,7 +21,10 @@ package is.codion.common.utilities;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class for working with nulls.
@@ -31,18 +34,9 @@ public final class Nulls {
 	private Nulls() {}
 
 	/**
-	 * Returns true if the given object is non-null.
-	 * Included to skip the array creation in the varargs version.
-	 * @param object the object to check
-	 * @return true if the object is non-null
-	 */
-	public static boolean nonNull(@Nullable Object object) {
-		return Objects.nonNull(object);
-	}
-
-	/**
 	 * Returns true if none of the given objects are null, false if the array itself is null,
 	 * and true if no objects are provided.
+	 * <p>Use {@link Objects#nonNull(Object)} for single values, to eliminate varargs array creation.
 	 * @param objects the objects to check
 	 * @return true if none of the given objects are null, false if the array itself is null,
 	 * true if no objects are provided
@@ -55,5 +49,20 @@ public final class Nulls {
 			return true;
 		}
 		return Arrays.stream(objects).noneMatch(Objects::isNull);
+	}
+
+	/**
+	 * Throws a NullPointerException if the given collection, or any of its items, is null
+	 * @param items the items to check for nulls
+	 * @return the items
+	 * @param <C> the collection type
+	 * @param <T> the collection element type
+	 */
+	public static <C extends Collection<T>, T> C rejectNulls(@Nullable C items) {
+		for (T item : requireNonNull(items)) {
+			requireNonNull(item);
+		}
+
+		return items;
 	}
 }

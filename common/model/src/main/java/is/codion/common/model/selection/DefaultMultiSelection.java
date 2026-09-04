@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
+import static is.codion.common.utilities.Nulls.rejectNulls;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -397,8 +398,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		protected void setValue(List<R> itemsToSelect) {
-			rejectNulls(itemsToSelect);
-			selectedIndexes.set(itemsToSelect.stream()
+			selectedIndexes.set(rejectNulls(itemsToSelect).stream()
 							.mapToInt(items::indexOf)
 							.filter(index -> index >= 0)
 							.boxed()
@@ -422,8 +422,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		public void add(Collection<R> itemsToAdd) {
-			rejectNulls(itemsToAdd);
-			addInternal(itemsToAdd);
+			addInternal(rejectNulls(itemsToAdd));
 		}
 
 		@Override
@@ -433,8 +432,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		public void remove(Collection<R> itemsToRemove) {
-			rejectNulls(itemsToRemove);
-			selectedIndexes.remove(itemsToRemove.stream()
+			selectedIndexes.remove(rejectNulls(itemsToRemove).stream()
 							.mapToInt(items::indexOf)
 							.filter(index -> index >= 0)
 							.boxed()
@@ -480,12 +478,6 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 				lastNotified = current;
 				notifyObserver();
 			}
-		}
-	}
-
-	private static <T> void rejectNulls(Collection<T> items) {
-		for (T item : requireNonNull(items)) {
-			requireNonNull(item);
 		}
 	}
 

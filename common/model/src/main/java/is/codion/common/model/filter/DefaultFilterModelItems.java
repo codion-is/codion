@@ -49,6 +49,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
+import static is.codion.common.utilities.Nulls.rejectNulls;
 import static java.lang.Boolean.TRUE;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -221,7 +222,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	@Override
 	public void replace(Map<R, R> items) {
-		// Note: Similar logic exists in DefaultFilterComboBoxModel in swing-common-model module.
+		// Note: Similar logic exists in DefaultFilterComboBoxModel.
 		// Both implementations handle item replacement with filtering but have different collection types
 		// and threading requirements, making extraction to a common utility non-trivial.
 		requireNonNull(items).values().forEach(this::validate);
@@ -463,14 +464,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		if (!validator.test(requireNonNull(item))) {
 			throw new IllegalArgumentException("Invalid item: " + item);
 		}
-	}
-
-	private static <T> Collection<T> rejectNulls(Collection<T> items) {
-		for (T item : requireNonNull(items)) {
-			requireNonNull(item);
-		}
-
-		return items;
 	}
 
 	private final class DefaultIncludedItems implements IncludedItems<R> {
