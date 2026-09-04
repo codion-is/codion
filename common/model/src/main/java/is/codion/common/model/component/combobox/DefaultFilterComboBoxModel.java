@@ -48,6 +48,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
+import static is.codion.common.utilities.Nulls.rejectNulls;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -247,7 +248,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public void set(Collection<T> items) {
 			//null is the reserved sentinel (see includeNull), it must not appear among the actual items
-			requireNonNull(items).forEach(item -> requireNonNull(item, "The item collection may not contain null"));
+			rejectNulls(items);
 			synchronized (lock) {
 				filtered.items.clear();
 				included.items.clear();
@@ -274,7 +275,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void add(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
-				if (include(item)) {
+				if (included.predicate.test(item)) {
 					if (!included.items.contains(item)) {
 						//an item can linger in filtered if its stateful predicate flipped without predicate.set(),
 						//remove it so it does not end up in both partitions
@@ -301,8 +302,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void add(Collection<T> items) {
+			rejectNulls(items);
 			synchronized (lock) {
-				for (T item : requireNonNull(items)) {
+				for (T item : items) {
 					add(item);
 				}
 			}
@@ -324,8 +326,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void remove(Collection<T> items) {
+			rejectNulls(items);
 			synchronized (lock) {
-				for (T item : requireNonNull(items)) {
+				for (T item : items) {
 					remove(item);
 				}
 			}
@@ -399,7 +402,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void replace(Map<T, T> items) {
-			// Note: Similar logic exists in DefaultFilterModelItems in common-model module.
+			// Note: Similar logic exists in DefaultFilterModelItems.
 			// Both implementations handle item replacement with filtering but have different collection types
 			// and threading requirements, making extraction to a common utility non-trivial.
 			requireNonNull(items);
@@ -408,7 +411,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				for (T itemToReplace : items.keySet()) {
 					if (filtered.items.remove(itemToReplace)) {
 						T replacement = replacements.remove(itemToReplace);
-						if (include(replacement)) {
+						if (included.predicate.test(replacement)) {
 							included.items.add(replacement);
 						}
 						else {
@@ -421,7 +424,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					T item = iterator.next();
 					T replacement = replacements.remove(item);
 					if (replacement != null) {
-						if (include(replacement)) {
+						if (included.predicate.test(replacement)) {
 							iterator.set(replacement);
 						}
 						else {
@@ -493,10 +496,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					selection.selected.replaceWith(included.items.get(index));
 				}
 			}
-		}
-
-		private boolean include(T item) {
-			return included.predicate.isNull() || included.predicate.getOrThrow().test(item);
 		}
 
 		private final class DefaultIncludedItems implements IncludedItems<T> {

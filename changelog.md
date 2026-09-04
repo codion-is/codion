@@ -10,6 +10,8 @@ Codion Change Log
 - MultiSelection.IndexStore.size() added, adjusting() renamed grouping().
 - MultiSelection.Grouping added along with grouping(), for controlling the selection change grouping.
 - MultiSelection.adjusting() added, notified on every change to the selected indexes, grouped or not, where the index and item values notify once a group has ended, for a live status display.
+### is.codion.common.utilities
+- Nulls.noneNull(Object) removed and rejectNulls(Collection) added.
 ### is.codion.framework.domain
 - Entity.equalValues() renamed valuesEqual().
 ### is.codion.framework.model

@@ -21,8 +21,8 @@ package is.codion.common.utilities;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NullsTest {
 
@@ -34,5 +34,12 @@ public class NullsTest {
 		assertFalse(Nulls.nonNull((Object[]) null));
 		assertFalse(Nulls.nonNull(1, null));
 		assertFalse(Nulls.nonNull(null, 1));
+	}
+
+	@Test
+	void rejectNulls() {
+		assertThrows(NullPointerException.class, () -> Nulls.rejectNulls(null));
+		assertThrows(NullPointerException.class, () -> Nulls.rejectNulls(asList(1, 2, null)));
+		Nulls.rejectNulls(asList(1, 2, 3));
 	}
 }

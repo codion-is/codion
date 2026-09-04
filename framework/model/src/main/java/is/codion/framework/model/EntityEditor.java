@@ -194,7 +194,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	EditorTasks tasks();
 
 	/**
-	 * @param connection the connection to use when persisting
+	 * @param connection the connection to use
 	 * @return the {@link EditorTasks} instance
 	 */
 	EditorTasks tasks(EntityConnection connection);
