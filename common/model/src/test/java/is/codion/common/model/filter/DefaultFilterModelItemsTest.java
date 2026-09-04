@@ -730,7 +730,7 @@ public class DefaultFilterModelItemsTest {
 
 		//removing the selected item drops it from the selection, it no longer has an index
 		model.remove("c");
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 	}
 
 	@Test
@@ -752,12 +752,12 @@ public class DefaultFilterModelItemsTest {
 		AtomicInteger selectedItems = new AtomicInteger();
 		AtomicInteger index = new AtomicInteger();
 		AtomicInteger indexes = new AtomicInteger();
-		AtomicInteger empty = new AtomicInteger();
+		AtomicInteger present = new AtomicInteger();
 		selection.get().item().addListener(item::incrementAndGet);
 		selection.get().items().addListener(selectedItems::incrementAndGet);
 		selection.get().index().addListener(index::incrementAndGet);
 		selection.get().indexes().addListener(indexes::incrementAndGet);
-		selection.get().empty().addListener(empty::incrementAndGet);
+		selection.get().present().addListener(present::incrementAndGet);
 
 		version.set(1);
 		items.refresh();
@@ -766,7 +766,7 @@ public class DefaultFilterModelItemsTest {
 		assertEquals(1, selectedItems.get());
 		assertEquals(0, index.get());
 		assertEquals(0, indexes.get());
-		assertEquals(0, empty.get());
+		assertEquals(0, present.get());
 		assertEquals(1, selection.get().item().get().version);
 		assertEquals(asList(1, 2), selection.get().indexes().get());
 
@@ -780,7 +780,7 @@ public class DefaultFilterModelItemsTest {
 		assertEquals(0, selectedItems.get());
 		assertEquals(0, index.get());
 		assertEquals(0, indexes.get());
-		assertEquals(0, empty.get());
+		assertEquals(0, present.get());
 	}
 
 	@Test
@@ -828,7 +828,7 @@ public class DefaultFilterModelItemsTest {
 		// the replacement is filtered out: the selection is dropped, not left pointing at the row after it
 		items.replace(b, new Versioned("b", 1));
 		assertEquals(asList(new Versioned("a", 0), new Versioned("c", 0)), items.included().get());
-		assertTrue(selection.get().empty().is());
+		assertFalse(selection.get().present().is());
 		assertTrue(selection.get().indexes().get().isEmpty());
 	}
 
@@ -1046,8 +1046,8 @@ public class DefaultFilterModelItemsTest {
 		private final Grouping grouping = new DefaultGrouping();
 
 		@Override
-		public ObservableState empty() {
-			return State.state(selectedItems.get().isEmpty());
+		public ObservableState present() {
+			return State.state(!selectedItems.get().isEmpty());
 		}
 
 		@Override

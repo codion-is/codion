@@ -38,8 +38,8 @@ final class DefaultSingleSelection<T> implements SingleSelection<T> {
 	}
 
 	@Override
-	public ObservableState empty() {
-		return selected.empty.observable();
+	public ObservableState present() {
+		return selected.present.observable();
 	}
 
 	@Override
@@ -60,7 +60,7 @@ final class DefaultSingleSelection<T> implements SingleSelection<T> {
 	private final class SelectedItem extends AbstractValue<T> {
 
 		private final Event<T> changing = Event.event();
-		private final State empty = State.state(true);
+		private final State present = State.state();
 
 		private @Nullable T item = null;
 
@@ -80,7 +80,7 @@ final class DefaultSingleSelection<T> implements SingleSelection<T> {
 			if (!Objects.equals(this.item, item)) {
 				changing.accept(item);
 				this.item = item;
-				empty.set(item == null);
+				present.set(item != null);
 				notifyObserver();
 			}
 		}

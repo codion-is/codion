@@ -190,9 +190,9 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	interface ColumnSelection<C> extends ListSelectionModel {
 
 		/**
-		 * @return an {@link ObservableState} indicating whether the column selection is empty
+		 * @return an {@link ObservableState} indicating whether a column selection is present
 		 */
-		ObservableState empty();
+		ObservableState present();
 
 		/**
 		 * @return the selected column indexes

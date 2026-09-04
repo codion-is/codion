@@ -627,13 +627,13 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		MultiSelection<Entity> selection = tableModel.selection();
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 		assertEquals(0, selection.count());
 		assertFalse(selection.single().is());
 		assertFalse(selection.multiple().is());
 
 		selection.index().set(0);
-		assertFalse(selection.empty().is());
+		assertTrue(selection.present().is());
 		assertTrue(selection.single().is());
 		assertFalse(selection.multiple().is());
 		assertEquals(1, selection.count());
@@ -644,7 +644,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		assertEquals(3, selection.count());
 
 		selection.clear();
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 		assertEquals(0, selection.count());
 	}
 
@@ -657,7 +657,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		selection.selectAll();
 		assertEquals(tableModel.items().included().size(), selection.count());
 		selection.clear();
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 
 		selection.index().set(0);
 		selection.indexes().increment();

@@ -73,8 +73,8 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
-	public ObservableState empty() {
-		return selection.empty();
+	public ObservableState present() {
+		return selection.present();
 	}
 
 	@Override

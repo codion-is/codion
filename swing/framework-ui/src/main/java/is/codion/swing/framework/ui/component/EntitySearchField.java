@@ -530,7 +530,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void updateSearchReady() {
-		searchReady.set(getText().isEmpty() && model.selection().empty().not().is() || !getText().equals(selectionString()));
+		searchReady.set(getText().isEmpty() && model.selection().present().is() || !getText().equals(selectionString()));
 	}
 
 	private void onSelectionChanged() {
@@ -568,9 +568,13 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private @Nullable String createSelectionToolTip() {
-		return model.selection().empty().is() ? null : strings()
+		if (model.selection().present().is()) {
+			return strings()
 						.map(EntitySearchField::escape)
 						.collect(joining("<br>", "<html>", "</html"));
+		}
+
+		return null;
 	}
 
 	private String selectionString() {
@@ -1086,7 +1090,7 @@ public final class EntitySearchField extends HintTextField {
 		public void focusLost(FocusEvent e) {
 			if (!e.isTemporary()) {
 				// Selection uses Notify.SET, so no unnecessary clear() calls
-				if (getText().isEmpty() && !model().selection().empty().is()) {
+				if (getText().isEmpty() && model().selection().present().is()) {
 					model().selection().clear();
 				}
 				else if (shouldPerformSearch()) {

@@ -82,17 +82,17 @@ final class AlbumTagsPanelBuilder extends AbstractComponentValueBuilder<AlbumTag
 		private final Control removeTagControl = Control.builder()
 						.command(this::removeTags)
 						.smallIcon(ICONS.get("minus").small())
-						.enabled(model.selection().empty().not())
+						.enabled(model.selection().present())
 						.build();
 		private final Control moveSelectionUpControl = Control.builder()
 						.command(this::moveSelectedTagsUp)
 						.smallIcon(ICONS.up().small())
-						.enabled(model.selection().empty().not())
+						.enabled(model.selection().present())
 						.build();
 		private final Control moveSelectionDownControl = Control.builder()
 						.command(this::moveSelectedTagsDown)
 						.smallIcon(ICONS.down().small())
-						.enabled(model.selection().empty().not())
+						.enabled(model.selection().present())
 						.build();
 
 		AlbumTagsPanel() {

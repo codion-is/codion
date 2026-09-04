@@ -41,13 +41,13 @@ public final class DefaultMultiSelectionTest {
 		TestItems items = new TestItems(asList("a", "b", "c", "d"));
 		MultiSelection<String> selection = new DefaultMultiSelection<>(items);
 
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 		assertEquals(0, selection.count());
 		assertNull(selection.item().get());
 		assertNull(selection.index().get());
 
 		selection.item().set("b");
-		assertFalse(selection.empty().is());
+		assertTrue(selection.present().is());
 		assertTrue(selection.single().is());
 		assertFalse(selection.multiple().is());
 		assertEquals(1, selection.count());
@@ -75,7 +75,7 @@ public final class DefaultMultiSelectionTest {
 		assertEquals(asList("a", "b", "c", "d"), selection.items().get());
 
 		selection.clear();
-		assertTrue(selection.empty().is());
+		assertFalse(selection.present().is());
 		assertEquals(0, selection.count());
 	}
 

@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class SearchValueLinkTest {
 
@@ -58,7 +58,7 @@ public class SearchValueLinkTest {
 										.buildValue();
 		componentValue.link(model.editor().value(Employee.DEPARTMENT_FK));
 		EntitySearchModel searchModel = componentValue.component().model();
-		assertTrue(searchModel.selection().empty().is());
+		assertFalse(searchModel.selection().present().is());
 		Entity department = model.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		model.editor().value(Employee.DEPARTMENT_FK).set(department);
 		assertEquals(1, searchModel.selection().entities().get().size());

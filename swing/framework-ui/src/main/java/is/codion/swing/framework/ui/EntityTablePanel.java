@@ -653,7 +653,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void editSelected(Attribute<?> attributeToEdit) {
 		requireNonNull(attributeToEdit);
-		if (!model.selection().empty().is()) {
+		if (model.selection().present().is()) {
 			editDialogBuilder(attributeToEdit)
 							.edit(model.selection().items().get());
 		}
@@ -663,7 +663,7 @@ public class EntityTablePanel extends JPanel {
 	 * Displays a dialog containing tables of entities depending on the selected entities via non-soft foreign keys
 	 */
 	public final void viewDependencies() {
-		if (!model.selection().empty().is()) {
+		if (model.selection().present().is()) {
 			displayDependencies(false);
 		}
 	}
@@ -1093,13 +1093,13 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private ObservableState createEditAttributeEnabledState() {
-		ObservableState selectionNotEmpty = model.selection().empty().not();
+		ObservableState selectionPresent = model.selection().present();
 		ObservableState updateEnabled = model.editor().settings().updateEnabled();
 		ObservableState updateMultipleEnabledOrSingleSelection =
 						State.or(model.editor().settings().updateMultipleEnabled(),
 										model.selection().single());
 
-		return State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
+		return State.and(selectionPresent, updateEnabled, updateMultipleEnabledOrSingleSelection);
 	}
 
 	private Control createEditAttributeControl(AttributeDefinition<?> definition, ObservableState enabled) {
@@ -1117,7 +1117,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(this::viewDependencies)
 						.caption(FrameworkMessages.dependencies())
-						.enabled(model.selection().empty().not())
+						.enabled(model.selection().present())
 						.description(FrameworkMessages.dependenciesTip())
 						.icon(ICONS.dependencies())
 						.build();
@@ -1133,7 +1133,7 @@ public class EntityTablePanel extends JPanel {
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(
 										model.editor().settings().deleteEnabled(),
-										model.selection().empty().not()))
+										model.selection().present()))
 						.description(FrameworkMessages.deleteSelectedTip())
 						.icon(ICONS.delete())
 						.build();
@@ -1297,7 +1297,7 @@ public class EntityTablePanel extends JPanel {
 	private CommandControl createClearSelectionControl() {
 		return Control.builder()
 						.command(model.selection()::clear)
-						.enabled(model.selection().empty().not())
+						.enabled(model.selection().present())
 						.icon(ICONS.clearSelection())
 						.description(MESSAGES.getString("clear_selection_tip"))
 						.build();

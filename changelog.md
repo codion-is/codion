@@ -10,6 +10,7 @@ Codion Change Log
 - MultiSelection.IndexStore.size() added, adjusting() renamed grouping().
 - MultiSelection.Grouping added along with grouping(), for controlling the selection change grouping.
 - MultiSelection.adjusting() added, notified on every change to the selected indexes, grouped or not, where the index and item values notify once a group has ended, for a live status display.
+- SingleSelection.empty() replaced with present().
 ### is.codion.common.utilities
 - Nulls.noneNull(Object) removed and rejectNulls(Collection) added.
 ### is.codion.framework.domain
@@ -17,10 +18,13 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityTableModel, an unmodified editor now takes the refreshed instance of the selected entity on refresh, an edit in progress is kept. The editor used to show the stale values until the row was reselected.
 - EntityComboBoxModel.Builder now self-typed, Builder<B extends Builder<B>>, abstract base builder added.
+- EntitySearchModel.Selection.empty() replaced with present().
 ### is.codion.swing.common.model
 - DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
 - DefaultListSelection is now a DefaultListSelectionModel serving as the MultiSelection.IndexStore of a common DefaultMultiSelection, forwarding to its facades, rather than a copy of it with the store swapped. The JTable and JList keyboard actions moving the lead are enabled only for a DefaultListSelectionModel, hence the extension stays.
 - SwingFilterTableModel.Builder, SwingFilterListModel.Builder, SwingFilterComboBoxModel.Builder and SwingItemComboBoxModelBuilder now extend their common counterparts.
+### is.codion.swing.common.ui
+- FilterTableColumnModel.ColumnSelection.empty() replaced with present().
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 ### is.codion.swing.framework.ui

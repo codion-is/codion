@@ -62,9 +62,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	private final SelectedIndexes selectedIndexes = new SelectedIndexes();
 	private final SelectedItem selectedItem = new SelectedItem();
 	private final SelectedItems selectedItems = new SelectedItems();
-	private final State empty = State.state(true);
-	private final State single = State.state(false);
-	private final ObservableState multiple = State.and(empty.not(), single.not());
+	private final State present = State.state();
+	private final State single = State.state();
+	private final ObservableState multiple = State.and(present, single.not());
 
 	DefaultMultiSelection(IndexedItems<R> items) {
 		this(items, new DefaultIndexStore());
@@ -92,8 +92,8 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	}
 
 	@Override
-	public ObservableState empty() {
-		return empty.observable();
+	public ObservableState present() {
+		return present.observable();
 	}
 
 	@Override
@@ -167,7 +167,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	private void onChanged() {
 		Set<Integer> selected = store.get();
-		empty.set(selected.isEmpty());
+		present.set(!selected.isEmpty());
 		single.set(selected.size() == 1);
 		selectedIndex.onChanged();
 		selectedItem.onChanged();

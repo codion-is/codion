@@ -114,7 +114,7 @@ final class EntityControls {
 						.confirm(confirm)
 						.entity(() -> comboBox.getModel().selection().item().getOrThrow())
 						.onUpdate(new EntityComboBoxOnUpdate(comboBox.getModel()))
-						.show(), comboBox, comboBox.getModel().selection().empty().not(), keyStroke);
+						.show(), comboBox, comboBox.getModel().selection().present(), keyStroke);
 	}
 
 	/**

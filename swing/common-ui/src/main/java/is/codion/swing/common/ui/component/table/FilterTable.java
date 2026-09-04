@@ -823,7 +823,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::copyCell)
 						.caption(MESSAGES.getString("copy_cell"))
-						.enabled(State.and(tableModel.selection().empty().not(), columns().selection().lead().present()))
+						.enabled(State.and(tableModel.selection().present(), columns().selection().lead().present()))
 						.build();
 	}
 
@@ -834,7 +834,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::copyColumn)
 						.caption(MESSAGES.getString("copy_column"))
-						.enabled(State.and(tableModel.selection().empty().not(), columns().selection().lead().present()))
+						.enabled(State.and(tableModel.selection().present(), columns().selection().lead().present()))
 						.build();
 	}
 
@@ -2205,7 +2205,7 @@ public final class FilterTable<R, C> extends JTable {
 		public boolean subset() {
 			FilterListSelection<?> selection = tableModel.selection();
 
-			return selection.empty().not().is() &&
+			return selection.present().is() &&
 							selection.count() != tableModel.items().included().size();
 		}
 	}

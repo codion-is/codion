@@ -30,9 +30,9 @@ import is.codion.common.reactive.value.Value;
 public interface SingleSelection<T> {
 
 	/**
-	 * @return an {@link ObservableState} indicating whether the selection is empty
+	 * @return an {@link ObservableState} indicating whether a selection is present
 	 */
-	ObservableState empty();
+	ObservableState present();
 
 	/**
 	 * To prevent a selection change, add a listener throwing a {@link CancelException}.

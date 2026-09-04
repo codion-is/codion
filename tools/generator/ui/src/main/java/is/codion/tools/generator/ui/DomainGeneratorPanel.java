@@ -203,12 +203,12 @@ public final class DomainGeneratorPanel extends JPanel {
 		Control populateSchemaControl = Control.builder()
 						.command(this::populateSchema)
 						.caption("Populate")
-						.enabled(model.schemaModel().selection().empty().not())
+						.enabled(model.schemaModel().selection().present())
 						.build();
 		Control schemaSettingsControl = Control.builder()
 						.command(this::schemaSettings)
 						.caption("Settings...")
-						.enabled(model.schemaModel().selection().empty().not())
+						.enabled(model.schemaModel().selection().present())
 						.build();
 
 		return FilterTable.builder()

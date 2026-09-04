@@ -106,10 +106,10 @@ public final class FrameworkModelDemo {
 
 		// Table model states
 		ObservableState refreshing = tableModel.items().refresher().active();
-		ObservableState hasSelection = tableModel.selection().empty().not();
+		ObservableState selectionPresent = tableModel.selection().present();
 
 		// Combine states
-		ObservableState canDelete = State.and(hasSelection, refreshing.not());
+		ObservableState canDelete = State.and(selectionPresent, refreshing.not());
 		// end::observableState[]
 	}
 

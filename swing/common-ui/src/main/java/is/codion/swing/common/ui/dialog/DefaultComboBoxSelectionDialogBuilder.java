@@ -65,7 +65,7 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 						.build();
 		Control okControl = Control.builder()
 						.command(() -> Ancestor.window().of(comboBox).dispose())
-						.enabled(allowEmptySelection ? null : comboBoxModel.selection().empty().not())
+						.enabled(allowEmptySelection ? null : comboBoxModel.selection().present())
 						.build();
 		State cancelledState = State.state();
 		Runnable onCancel = () -> {

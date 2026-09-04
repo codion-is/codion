@@ -253,7 +253,7 @@ public final class LoadTestPanel<T> extends JPanel {
 														.control(Control.builder()
 																		.command(loadTest.applications()::addBatch)
 																		.caption("+")
-																		.enabled(userComboBoxModel.selection().empty().not())
+																		.enabled(userComboBoxModel.selection().present())
 																		.description("Add application batch"))))
 						.build();
 	}
@@ -340,7 +340,7 @@ public final class LoadTestPanel<T> extends JPanel {
 																		.command(this::removeUser)
 																		.caption("-")
 																		.description("Remove the selected application user")
-																		.enabled(userComboBoxModel.selection().empty().not())))
+																		.enabled(userComboBoxModel.selection().present())))
 										.add(button()
 														.control(Control.builder()
 																		.command(this::addUser)
@@ -465,7 +465,7 @@ public final class LoadTestPanel<T> extends JPanel {
 										.separator()
 										.control(Control.builder()
 														.command(model()::removeSelectedApplications)
-														.enabled(tableModel.selection().empty().not())
+														.enabled(tableModel.selection().present())
 														.caption("Remove"))
 										.separator()
 										.control(Controls.builder()
