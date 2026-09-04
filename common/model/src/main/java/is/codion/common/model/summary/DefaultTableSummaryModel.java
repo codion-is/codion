@@ -20,7 +20,6 @@ package is.codion.common.model.summary;
 
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
 
-import java.text.Format;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,8 @@ import static java.util.Objects.requireNonNull;
 final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 
 	private final SummaryValues.Factory<C> values;
-	private final Map<C, SummaryModel> summaryModels = new HashMap<>();
+	//the absence of a summary is cached as well, whether a column has one does not change
+	private final Map<C, Optional<SummaryModel>> summaryModels = new HashMap<>();
 
 	DefaultTableSummaryModel(SummaryValues.Factory<C> values) {
 		this.values = requireNonNull(values);
@@ -39,12 +39,11 @@ final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 
 	@Override
 	public Optional<SummaryModel> get(C identifier) {
-		return Optional.ofNullable(summaryModels.computeIfAbsent(requireNonNull(identifier), k ->
-						createSummaryModel(k, NumberFormat.getInstance()).orElse(null)));
+		return summaryModels.computeIfAbsent(requireNonNull(identifier), this::createSummaryModel);
 	}
 
-	private Optional<SummaryModel> createSummaryModel(C identifier, Format format) {
-		return values.create(identifier, format)
+	private Optional<SummaryModel> createSummaryModel(C identifier) {
+		return values.create(identifier, NumberFormat.getInstance())
 						.map(SummaryModel::summaryModel);
 	}
 }
