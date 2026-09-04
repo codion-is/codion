@@ -11,6 +11,7 @@ Codion Change Log
 - MultiSelection.Grouping added along with grouping(), for controlling the selection change grouping.
 - MultiSelection.adjusting() added, notified on every change to the selected indexes, grouped or not, where the index and item values notify once a group has ended, for a live status display.
 - SingleSelection.empty() replaced with present().
+- FilePreferences.flush() now saves the file once instead of once per node, and only when changes have been made, re-applied on top of the file if it has been modified externally, sync() does the same after reloading it once, an external modification used to discard the unsaved changes. removeNode() removed, unused.
 ### is.codion.common.utilities
 - Nulls.noneNull(Object) removed and rejectNulls(Collection) added.
 ### is.codion.framework.domain

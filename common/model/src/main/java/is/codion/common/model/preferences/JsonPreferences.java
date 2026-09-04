@@ -25,9 +25,12 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 
 import static java.util.Collections.emptySet;
@@ -55,8 +58,19 @@ public final class JsonPreferences {
 
 	private final Object lock = new Object();
 	private final JSONObject data = new JSONObject();
+	//the changes made since the last load or save, re-applied on top of the file when it has been modified externally
+	private final @Nullable List<Consumer<JsonPreferences>> journal;
 
-	JsonPreferences() {}
+	JsonPreferences() {
+		this(false);
+	}
+
+	/**
+	 * @param journal true if the changes made should be journaled, for re-applying them on top of an externally modified file
+	 */
+	JsonPreferences(boolean journal) {
+		this.journal = journal ? new ArrayList<>() : null;
+	}
 
 	/**
 	 * @return a file-less, in-memory {@link Preferences} node backed by a fresh {@link JsonPreferences}
@@ -70,6 +84,13 @@ public final class JsonPreferences {
 		requireNonNull(key);
 		requireNonNull(value);
 
+		synchronized (lock) {
+			doPut(path, key, value);
+			record(preferences -> preferences.doPut(path, key, value));
+		}
+	}
+
+	private void doPut(String path, String key, String value) {
 		synchronized (lock) {
 			LOG.trace("Putting value at path '{}', key '{}'", path, key);
 			JSONObject node = getOrCreateNode(path);
@@ -118,6 +139,13 @@ public final class JsonPreferences {
 		requireNonNull(key);
 
 		synchronized (lock) {
+			doRemove(path, key);
+			record(preferences -> preferences.doRemove(path, key));
+		}
+	}
+
+	private void doRemove(String path, String key) {
+		synchronized (lock) {
 			LOG.trace("Removing key '{}' at path '{}'", key, path);
 			JSONObject node = getNode(path);
 			if (node != null) {
@@ -163,6 +191,13 @@ public final class JsonPreferences {
 		requireNonNull(path);
 
 		synchronized (lock) {
+			doRemoveNode(path);
+			record(preferences -> preferences.doRemoveNode(path));
+		}
+	}
+
+	private void doRemoveNode(String path) {
+		synchronized (lock) {
 			LOG.debug("Removing node at path '{}'", path);
 			if (path.isEmpty()) {
 				// Clear root node
@@ -190,42 +225,96 @@ public final class JsonPreferences {
 	 * <p>Nodes holding no actual values are left out, a node exists in the file only for the values it holds.
 	 * A node created but never written to therefore does not survive a restart, which nothing here relies on.
 	 * @param prettyPrint true if the JSON should be pretty-printed
-	 * @return the whole tree serialized as JSON, or null if it holds no actual values (only node markers / empty nodes)
+	 * @return the whole tree serialized as JSON, null if it holds no actual values (only node markers / empty nodes),
+	 * along with the number of journaled changes it contains, to hand back to {@link #saved(int)} once it has been saved
 	 */
-	@Nullable String snapshot(boolean prettyPrint) {
+	Snapshot snapshot(boolean prettyPrint) {
 		synchronized (lock) {
+			int changes = journal == null ? 0 : journal.size();
 			if (isEmpty(data)) {
-				return null;
+				return new Snapshot(null, changes);
 			}
 			//prune a copy, the live tree keeps the nodes the application has created
 			JSONObject snapshot = new JSONObject(data.toString());
 			prune(snapshot);
 
-			return snapshot.toString(prettyPrint ? 2 : 0);
+			return new Snapshot(snapshot.toString(prettyPrint ? 2 : 0), changes);
 		}
 	}
 
 	/**
-	 * Replaces the entire contents with the given JSON.
+	 * Replaces the entire contents with the given JSON, discarding the journaled changes.
 	 * @param json the JSON to load
 	 * @throws JSONException in case the JSON is invalid
 	 */
 	void load(String json) {
 		synchronized (lock) {
-			JSONObject reloaded = new JSONObject(json); // may throw, leaving the current contents untouched
-			clearObject(data);
-			for (String key : keys(reloaded)) {
-				data.put(key, reloaded.get(key));
+			replace(json);
+			if (journal != null) {
+				journal.clear();
 			}
 		}
 	}
 
 	/**
-	 * Clears the entire contents.
+	 * Replaces the entire contents with the given JSON and re-applies the changes journaled since the last
+	 * load or save on top of it, so that an external modification does not discard them.
+	 * @param json the JSON to load
+	 * @throws JSONException in case the JSON is invalid
+	 */
+	void merge(String json) {
+		synchronized (lock) {
+			replace(json);
+			if (journal != null) {
+				journal.forEach(change -> change.accept(this));
+			}
+		}
+	}
+
+	/**
+	 * @return true if changes have been made since the last load or save
+	 */
+	boolean modified() {
+		synchronized (lock) {
+			return journal != null && !journal.isEmpty();
+		}
+	}
+
+	/**
+	 * Drops the given number of journaled changes, the oldest, once the snapshot containing them has been saved.
+	 * @param changes the number of changes saved, as reported by {@link Snapshot#changes}
+	 */
+	void saved(int changes) {
+		synchronized (lock) {
+			if (journal != null) {
+				journal.subList(0, changes).clear();
+			}
+		}
+	}
+
+	private void replace(String json) {
+		JSONObject reloaded = new JSONObject(json); // may throw, leaving the current contents untouched
+		clearObject(data);
+		for (String key : keys(reloaded)) {
+			data.put(key, reloaded.get(key));
+		}
+	}
+
+	private void record(Consumer<JsonPreferences> change) {
+		if (journal != null) {
+			journal.add(change);
+		}
+	}
+
+	/**
+	 * Clears the entire contents, discarding the journaled changes.
 	 */
 	void clear() {
 		synchronized (lock) {
 			clearObject(data);
+			if (journal != null) {
+				journal.clear();
+			}
 		}
 	}
 
@@ -375,5 +464,19 @@ public final class JsonPreferences {
 		}
 
 		return true;
+	}
+
+	/**
+	 * The tree serialized as JSON along with the number of journaled changes it contains.
+	 */
+	static final class Snapshot {
+
+		final @Nullable String content;
+		final int changes;
+
+		private Snapshot(@Nullable String content, int changes) {
+			this.content = content;
+			this.changes = changes;
+		}
 	}
 }

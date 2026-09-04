@@ -183,4 +183,43 @@ public final class FilePreferencesTest {
 
 		return false;
 	}
+
+	@Test
+	void flushSavesOnce() throws Exception {
+		Path file = tempDir.resolve("flush.json");
+		JsonPreferencesStore store = new JsonPreferencesStore(file);
+		Preferences root = new FilePreferences(store);
+		for (int i = 0; i < 50; i++) {
+			root.node("entities").node("entity" + i).node("view").put("key", "value" + i);
+		}
+		root.flush();
+		assertEquals(1, store.saves());
+		//nothing to save
+		root.node("entities").node("entity1").flush();
+		assertEquals(1, store.saves());
+		root.node("entities").node("entity1").put("key", "changed");
+		root.node("entities").node("entity1").flush();
+		assertEquals(2, store.saves());
+		//the whole tree is persisted
+		Preferences reloaded = new FilePreferences(new JsonPreferencesStore(file));
+		assertEquals("value49", reloaded.node("entities").node("entity49").node("view").get("key", null));
+	}
+
+	@Test
+	void removeNodePersistedByFlush() throws Exception {
+		Path file = tempDir.resolve("remove.json");
+		JsonPreferencesStore store = new JsonPreferencesStore(file);
+		Preferences root = new FilePreferences(store);
+		root.put("key", "value");
+		Preferences child = root.node("child");
+		child.node("grandchild").put("key", "value");
+		root.flush();
+		assertEquals(1, store.saves());
+		child.removeNode();
+		assertEquals(1, store.saves());
+		assertTrue(new FilePreferences(new JsonPreferencesStore(file)).nodeExists("child"));
+		root.flush();
+		assertEquals(2, store.saves());
+		assertFalse(new FilePreferences(new JsonPreferencesStore(file)).nodeExists("child"));
+	}
 }

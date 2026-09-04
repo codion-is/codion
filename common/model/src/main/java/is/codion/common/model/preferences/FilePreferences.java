@@ -164,6 +164,37 @@ public final class FilePreferences extends AbstractPreferences {
 		return preferences.keys(path).toArray(EMPTY_STRING_ARRAY);
 	}
 
+	/**
+	 * Saves the changes made since the last flush or sync, once for the whole tree, re-applied on top of the file
+	 * if it has been modified externally in the meantime, as {@link #sync()} does. Leaves the file untouched when
+	 * there are no changes to save. {@link AbstractPreferences#flush()} would call {@link #flushSpi()} on this node
+	 * and on each cached descendant, saving the file once per node.
+	 * @throws BackingStoreException in case of an I/O error
+	 */
+	@Override
+	public void flush() throws BackingStoreException {
+		synchronized (lock) {
+			flushSpi();
+		}
+	}
+
+	/**
+	 * Reloads the file if it has been modified externally since it was last read or written, re-applying the
+	 * changes made since the last flush or sync on top of it, and saves those changes, once for the whole tree.
+	 * {@link AbstractPreferences#sync()} would call {@link #syncSpi()} on this node and on each cached descendant.
+	 * @throws BackingStoreException in case of an I/O error
+	 * @throws IllegalStateException in case this node has been removed
+	 */
+	@Override
+	public void sync() throws BackingStoreException {
+		synchronized (lock) {
+			if (isRemoved()) {
+				throw new IllegalStateException("Node has been removed.");
+			}
+			syncSpi();
+		}
+	}
+
 	@Override
 	protected void flushSpi() throws BackingStoreException {
 		if (store == null) {
@@ -171,7 +202,7 @@ public final class FilePreferences extends AbstractPreferences {
 		}
 		LOG.debug("Flushing preferences to disk");
 		try {
-			store.save();
+			store.sync();
 		}
 		catch (IOException e) {
 			LOG.error("Failed to flush preferences", e);
@@ -184,9 +215,9 @@ public final class FilePreferences extends AbstractPreferences {
 		if (store == null) {
 			return; // in-memory, nothing to sync
 		}
-		LOG.debug("Syncing preferences from disk");
+		LOG.debug("Syncing preferences with disk");
 		try {
-			store.reload();
+			store.sync();
 		}
 		catch (IOException e) {
 			LOG.error("Failed to sync preferences", e);
@@ -206,18 +237,9 @@ public final class FilePreferences extends AbstractPreferences {
 	}
 
 	@Override
-	protected void removeNodeSpi() throws BackingStoreException {
+	protected void removeNodeSpi() {
 		LOG.debug("Removing preference node at path '{}'", path);
+		//persisted by the next flush(), as the Preferences contract states
 		preferences.removeNode(path);
-		if (store == null) {
-			return; // in-memory, nothing to persist
-		}
-		try {
-			store.save();
-		}
-		catch (IOException e) {
-			LOG.error("Failed to remove preference node", e);
-			throw new BackingStoreException(e);
-		}
 	}
 }
