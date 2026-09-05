@@ -13,8 +13,9 @@ Codion Change Log
 - SingleSelection.empty() replaced with present().
 - FilePreferences.flush() now saves the file once instead of once per node, and only when changes have been made, re-applied on top of the file if it has been modified externally, sync() does the same after reloading it once, an external modification used to discard the unsaved changes. removeNode() removed, unused.
 - TableSummaryModel.get() now caches the absence of a summary as well, the factory was consulted on every call for a column without one.
+- FilterModel.Refresher.exception() added along with a parameterless refresh().
 ### is.codion.common.utilities
-- Nulls.noneNull(Object) removed and rejectNulls(Collection) added.
+- Nulls.nonNull(Object) removed and rejectNulls(Collection) added.
 ### is.codion.framework.domain
 - Entity.equalValues() renamed valuesEqual().
 ### is.codion.framework.model

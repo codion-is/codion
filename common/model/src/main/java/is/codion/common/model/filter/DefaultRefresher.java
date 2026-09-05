@@ -40,6 +40,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
@@ -61,7 +62,8 @@ final class DefaultRefresher<T> implements Refresher<T> {
 						return thread;
 					});
 
-	private final Event<Collection<T>> event = Event.event();
+	private final Event<Collection<T>> resultEvent = Event.event();
+	private final Event<Exception> exceptionEvent = Event.event();
 	private final State active = State.state();
 	private final @Nullable Supplier<Collection<T>> items;
 	private final State async;
@@ -102,11 +104,25 @@ final class DefaultRefresher<T> implements Refresher<T> {
 
 	@Override
 	public Observer<Collection<T>> result() {
-		return event.observer();
+		return resultEvent.observer();
 	}
 
 	@Override
-	public void refresh(@Nullable Consumer<Collection<T>> onResult) {
+	public Observer<Exception> exception() {
+		return exceptionEvent.observer();
+	}
+
+	@Override
+	public void refresh() {
+		doRefresh(null);
+	}
+
+	@Override
+	public void refresh(Consumer<Collection<T>> onResult) {
+		doRefresh(requireNonNull(onResult));
+	}
+
+	private void doRefresh(@Nullable Consumer<Collection<T>> onResult) {
 		if (async.is() && Dispatcher.instance().bound()) {
 			refreshAsync(onResult);
 		}
@@ -166,6 +182,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 
 	private void onRefreshException(Exception exception) {
 		active.set(false);
+		exceptionEvent.accept(exception);
 		onException.accept(exception);
 	}
 
@@ -177,7 +194,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		if (onResult != null) {
 			onResult.accept(result);
 		}
-		event.accept(result);
+		resultEvent.accept(result);
 	}
 
 	private void cancelCurrentRefresh() {

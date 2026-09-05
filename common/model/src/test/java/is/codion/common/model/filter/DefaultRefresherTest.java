@@ -51,7 +51,7 @@ public final class DefaultRefresherTest {
 
 		//and the same asynchronously, where it does not even reach the delay
 		refresher.delay().set(60_000);
-		assertDoesNotThrow(() -> refresher.refresh(null));
+		assertDoesNotThrow(() -> refresher.refresh());
 		assertFalse(refresher.active().is());
 	}
 
@@ -92,7 +92,7 @@ public final class DefaultRefresherTest {
 		refresher.async().set(false);
 		refresher.delay().set(60_000);
 
-		refresher.refresh(null);
+		refresher.refresh();
 		assertEquals(1, supplierCalls.get());
 		assertFalse(refresher.active().is());
 	}
@@ -112,7 +112,7 @@ public final class DefaultRefresherTest {
 						.build();
 		refresher.async().set(false);
 
-		RuntimeException thrown = assertThrows(RuntimeException.class, () -> refresher.refresh(null));
+		RuntimeException thrown = assertThrows(RuntimeException.class, refresher::refresh);
 		assertSame(consumerException, thrown);
 		assertEquals(0, onExceptionCalls.get());
 		assertFalse(refresher.active().is());
@@ -130,7 +130,7 @@ public final class DefaultRefresherTest {
 						.build();
 		refresher.async().set(false);
 
-		assertDoesNotThrow(() -> refresher.refresh(null));
+		assertDoesNotThrow(() -> refresher.refresh());
 		assertEquals(1, onExceptionCalls.get());
 		assertFalse(refresher.active().is());
 	}
