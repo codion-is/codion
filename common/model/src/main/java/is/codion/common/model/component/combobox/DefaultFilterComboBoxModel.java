@@ -206,7 +206,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 							.onException(builder.onRefreshException)
 							.build();
 			if (builder.items == null && builder.refresh) {
-				refresher.refresh(null);
+				refresher.refresh();
 			}
 		}
 
@@ -222,7 +222,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void refresh() {
-			refresher.refresh(null);
+			refresher.refresh();
 		}
 
 		@Override

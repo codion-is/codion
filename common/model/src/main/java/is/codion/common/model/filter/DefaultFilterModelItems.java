@@ -103,7 +103,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	@Override
 	public void refresh() {
-		refresher.refresh(null);
+		refresher.refresh();
 	}
 
 	@Override

@@ -537,7 +537,7 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>Changes to this state are triggered on the UI thread when refreshed asynchronously,
-		 * otherwise on the calling thread (see {@link #refresh(Consumer)}).
+		 * otherwise on the calling thread (see {@link #refresh()}).
 		 * <p>Active from the moment a refresh is requested, so it covers the {@link #delay()} wait as well as
 		 * the fetch, and stays active across a burst rather than flickering between them.
 		 * @return an observable indicating that a refresh is in progress
@@ -546,10 +546,15 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>This event is triggered on the UI thread when refreshed asynchronously,
-		 * otherwise on the calling thread (see {@link #refresh(Consumer)}).
+		 * otherwise on the calling thread (see {@link #refresh()}).
 		 * @return an observer notified with the result after a successful refresh
 		 */
 		Observer<Collection<T>> result();
+
+		/**
+		 * @return an observer notified on an exception during refresh
+		 */
+		Observer<Exception> exception();
 
 		/**
 		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called
@@ -561,12 +566,30 @@ public interface FilterModel<T> {
 		 * {@link #result()} event, and {@link #active()} never activates. That is an ordinary model rather
 		 * than a mis-built one - a {@link is.codion.common.model.component.combobox.FilterComboBoxModel}
 		 * built from a fixed collection has nothing to refresh from.
-		 * @param onResult called with the result after a successful refresh, may be null (on the UI thread when refreshed asynchronously)
 		 * @see #active()
 		 * @see #result()
+		 * @see #exception()
 		 * @see #async()
 		 */
-		void refresh(@Nullable Consumer<Collection<T>> onResult);
+		void refresh();
+
+		/**
+		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called
+		 * where a dispatch context is bound, the UI thread on UI platforms.
+		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks, whether it was
+		 * already fetching or still waiting out {@link #delay()}, and whichever path the refresh that
+		 * superseded it took - a synchronous refresh cancels an asynchronous one in flight.
+		 * <p>A {@link Refresher} without an items supplier does nothing here: no fetch, no callbacks, no
+		 * {@link #result()} event, and {@link #active()} never activates. That is an ordinary model rather
+		 * than a mis-built one - a {@link is.codion.common.model.component.combobox.FilterComboBoxModel}
+		 * built from a fixed collection has nothing to refresh from.
+		 * @param onResult called with the result after a successful refresh (on the UI thread when refreshed asynchronously)
+		 * @see #active()
+		 * @see #result()
+		 * @see #exception()
+		 * @see #async()
+		 */
+		void refresh(Consumer<Collection<T>> onResult);
 
 		/**
 		 * @param <T> the item type

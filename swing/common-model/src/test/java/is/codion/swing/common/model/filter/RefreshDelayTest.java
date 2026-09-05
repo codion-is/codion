@@ -62,7 +62,7 @@ public final class RefreshDelayTest {
 		SwingUtilities.invokeAndWait(() -> {
 			//ten refreshes well inside the window, each replacing the one waiting
 			for (int i = 0; i < 10; i++) {
-				refresher.refresh(null);
+				refresher.refresh();
 			}
 			//under way from the moment the first was asked for, not only once fetching
 			assertTrue(refresher.active().is());
@@ -89,7 +89,7 @@ public final class RefreshDelayTest {
 		assertEquals(0, refresher.delay().getOrThrow());
 
 		//no wait, so active only goes on once the worker starts, as it always has
-		SwingUtilities.invokeAndWait(() -> refresher.refresh(null));
+		SwingUtilities.invokeAndWait(refresher::refresh);
 
 		assertTrue(refreshed.await(10, SECONDS));
 		assertEquals(1, fetches.get());
@@ -114,14 +114,14 @@ public final class RefreshDelayTest {
 		refresher.delay().set(1);
 
 		SwingUtilities.invokeAndWait(() -> {
-			refresher.refresh(null);
+			refresher.refresh();
 			try {
 				Thread.sleep(100);//the scheduler fires and queues its start behind this
 			}
 			catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-			refresher.refresh(null);//replaces it, too late to cancel
+			refresher.refresh();//replaces it, too late to cancel
 		});
 
 		assertTrue(refreshed.await(10, SECONDS));
@@ -145,7 +145,7 @@ public final class RefreshDelayTest {
 		SwingUtilities.invokeAndWait(() -> refresher.refresh(items -> delayedCallbacks.incrementAndGet()));
 		//no dispatch context bound on this thread, so this refresh is synchronous - and it supersedes
 		//the one waiting, rather than leaving it to fetch and deliver after it
-		refresher.refresh(null);
+		refresher.refresh();
 		assertEquals(1, fetches.get());
 
 		Thread.sleep(1_000);//long past the wait
@@ -181,7 +181,7 @@ public final class RefreshDelayTest {
 
 		SwingUtilities.invokeAndWait(() -> refresher.refresh(items -> asyncCallbacks.incrementAndGet()));
 		assertTrue(fetching.await(10, SECONDS));
-		refresher.refresh(null);//synchronous, supersedes the fetch in flight
+		refresher.refresh();//synchronous, supersedes the fetch in flight
 		release.countDown();
 		Thread.sleep(200);
 		SwingUtilities.invokeAndWait(() -> {});
