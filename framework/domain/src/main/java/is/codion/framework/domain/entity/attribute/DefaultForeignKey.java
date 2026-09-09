@@ -92,6 +92,11 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 	}
 
 	@Override
+	public AttributeDefinition.Builder<Entity, ?> as(AttributeTemplate<Entity> template) {
+		return requireNonNull(template).apply(this);
+	}
+
+	@Override
 	public EntityType referencedType() {
 		return references.get(0).foreign().entityType();
 	}

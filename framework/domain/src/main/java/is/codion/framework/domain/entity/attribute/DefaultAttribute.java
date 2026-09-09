@@ -68,6 +68,11 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 	}
 
 	@Override
+	public AttributeDefinition.Builder<T, ?> as(AttributeTemplate<T> template) {
+		return requireNonNull(template).apply(this);
+	}
+
+	@Override
 	public DataType<T> type() {
 		return type;
 	}

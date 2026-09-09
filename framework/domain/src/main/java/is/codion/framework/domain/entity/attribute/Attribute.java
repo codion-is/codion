@@ -128,6 +128,16 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 	AttributeDefiner<T> as();
 
 	/**
+	 * Returns an {@link AttributeDefinition.Builder} for this attribute, configured by the given template.
+	 * <p>The template is applied first, any subsequent configuration overriding it.
+	 * <p>Note that a {@link Column} has {@link Column#as(ColumnTemplate)} as well, so a template handed
+	 * to a column must be typed, an inline lambda being ambiguous between the two.
+	 * @param template the attribute template
+	 * @return a {@link AttributeDefinition.Builder} configured by the given template
+	 */
+	AttributeDefinition.Builder<T, ?> as(AttributeTemplate<T> template);
+
+	/**
 	 * @return the attribute type
 	 */
 	DataType<T> type();

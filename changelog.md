@@ -18,6 +18,7 @@ Codion Change Log
 - Nulls.nonNull(Object) removed and rejectNulls(Collection) added.
 ### is.codion.framework.domain
 - Entity.equalValues() renamed valuesEqual().
+- AttributeTemplate added.
 ### is.codion.framework.model
 - AbstractEntityTableModel, an unmodified editor now takes the refreshed instance of the selected entity on refresh, an edit in progress is kept. The editor used to show the stale values until the row was reselected.
 - EntityComboBoxModel.Builder now self-typed, Builder<B extends Builder<B>>, abstract base builder added.
