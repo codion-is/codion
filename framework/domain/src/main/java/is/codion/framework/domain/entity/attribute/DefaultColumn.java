@@ -86,6 +86,11 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 	}
 
 	@Override
+	public AttributeDefinition.Builder<T, ?> as(AttributeTemplate<T> template) {
+		return requireNonNull(template).apply(this);
+	}
+
+	@Override
 	public ColumnDefinition.Builder<T, ?> as(ColumnTemplate<T> template) {
 		return requireNonNull(template).apply(this);
 	}

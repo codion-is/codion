@@ -127,6 +127,8 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 *         .caption("Age")
 	 *}
 	 * <p>The template is applied first, any subsequent configuration overriding it.
+	 * <p>Note that a column has {@link Attribute#as(AttributeTemplate)} as well, so the template
+	 * must be typed, an inline lambda being ambiguous between the two.
 	 * @param template the column template
 	 * @return a {@link ColumnDefinition.Builder} configured by the given template
 	 */

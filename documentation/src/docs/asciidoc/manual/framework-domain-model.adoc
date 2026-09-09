@@ -531,6 +531,36 @@ These templates demonstrate how column templates can:
 * **Reduce boilerplate** - Complex type configuration is defined once and reused everywhere
 * **Improve maintainability** - Changes to geometry handling are centralized in the template definitions
 
+==== Attribute templates
+
+Attributes that are not columns, transient, derived and denormalized ones, are templated the same way through the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/AttributeTemplate.html[AttributeTemplate] functional interface, applied via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Attribute.html#as(is.codion.framework.domain.entity.attribute.AttributeTemplate)[Attribute.as(AttributeTemplate)]. The same production domain derives the latitude and longitude of a point column, the template taking the column it derives from:
+
+[source,java]
+----
+public static AttributeTemplate<Double> latitude(Attribute<Point> coordinates) {
+    return attribute -> attribute.as()
+            .derived()
+            .from(coordinates)
+            .with(new DerivedLatitude(coordinates))
+            .caption("Latitude");
+}
+
+public static AttributeTemplate<Double> longitude(Attribute<Point> coordinates) {
+    return attribute -> attribute.as()
+            .derived()
+            .from(coordinates)
+            .with(new DerivedLongitude(coordinates))
+            .caption("Longitude");
+}
+
+// Usage in entity definitions:
+Location.COORDINATES.as(GeospatialTemplates.POINT),
+Location.LATITUDE.as(latitude(Location.COORDINATES)),
+Location.LONGITUDE.as(longitude(Location.COORDINATES))
+----
+
+Note that a column has both `as(ColumnTemplate)` and `as(AttributeTemplate)`, so a template handed to a column must be typed: a constant or a method returning one, as in the examples above, rather than an inline lambda, which is ambiguous between the two.
+
 == Domain
 
 Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#as()[EntityType.as()] and adding the resulting definition to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add(is.codion.framework.domain.entity.EntityDefinition...)[add(EntityDefinition)] method in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class.
