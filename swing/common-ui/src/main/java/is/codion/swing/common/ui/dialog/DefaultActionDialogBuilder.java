@@ -154,7 +154,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 										.actions(actions))
 						.build();
 		JDialog dialog = createDialog(owner, title, icon, createPanel(buttonPanel), size, locationRelativeTo,
-						location, modal, resizable, onShownConsumers, keyEventBuilders);
+						location, modal, resizable, onShownConsumers, keyEventBuilders, windowFocusListeners, undecorated);
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		if (defaultAction != null) {
 			Arrays.stream(buttonPanel.getComponents())

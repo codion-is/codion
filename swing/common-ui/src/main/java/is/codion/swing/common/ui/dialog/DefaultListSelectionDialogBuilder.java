@@ -127,17 +127,13 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 				list.clearSelection();
 				cancelledState.set(true);
 			};
-			OkCancelDialogBuilder dialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
-							.component(new JScrollPane(list))
-							.owner(owner)
-							.locationRelativeTo(locationRelativeTo)
+			JDialog dialog = configure(DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
+							.component(new JScrollPane(list)))
 							.title(createTitle(singleSelection))
 							.size(dialogSize)
 							.okAction(okControl)
-							.onCancel(onCancel);
-			onBuildConsumers.forEach(dialogBuilder::onBuild);
-
-			JDialog dialog = dialogBuilder.build();
+							.onCancel(onCancel)
+							.build();
 			if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
 				dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
 			}

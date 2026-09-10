@@ -72,16 +72,12 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 			comboBoxModel.selection().clear();
 			cancelledState.set(true);
 		};
-		OkCancelDialogBuilder dialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
-						.component(comboBox)
-						.owner(owner)
-						.locationRelativeTo(locationRelativeTo)
+		JDialog dialog = configure(DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
+						.component(comboBox))
 						.title(createTitle())
 						.okAction(okControl)
-						.onCancel(onCancel);
-		onBuildConsumers.forEach(dialogBuilder::onBuild);
-
-		JDialog dialog = dialogBuilder.build();
+						.onCancel(onCancel)
+						.build();
 		if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
 			dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
 		}

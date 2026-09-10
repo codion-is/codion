@@ -54,6 +54,9 @@ public final class ProgressDialog extends JDialog {
 
 	private ProgressDialog(DefaultBuilder builder) {
 		super(builder.owner, builder.owner == null ? ModalityType.MODELESS : ModalityType.APPLICATION_MODAL);
+		if (builder.undecorated) {
+			setUndecorated(true);
+		}
 		if (builder.title != null) {
 			setTitle(builder.title.get());
 			builder.title.addConsumer(this::setTitle);
@@ -65,6 +68,8 @@ public final class ProgressDialog extends JDialog {
 		progressBar = createProgressBar(builder);
 		initializeUI(builder);
 		setLocationRelativeTo(builder.locationRelativeTo == null ? builder.owner : builder.locationRelativeTo);
+		builder.keyEventBuilders.forEach(new DefaultComponentDialogBuilder.EnableKeyEvent(this));
+		builder.windowFocusListeners.forEach(new DefaultComponentDialogBuilder.AddWindowFocusListener(this));
 	}
 
 	/**

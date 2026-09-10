@@ -20,7 +20,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
-import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -41,12 +40,9 @@ import is.codion.swing.framework.ui.component.EditComponent;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -308,11 +304,8 @@ public final class EntityDialogs {
 							new EditAttributePanel<>(editor, entities, attribute, componentValue,
 											editComponent.caption(editor.entityDefinition()
 															.attributes().definition(attribute)).orElse(null));
-			Dialogs.okCancel()
-							.component(editPanel)
-							.owner(owner)
-							.location(location)
-							.locationRelativeTo(locationRelativeTo)
+			configure(Dialogs.okCancel()
+							.component(editPanel))
 							.title(FrameworkMessages.edit())
 							.okAction(editPanel.update())
 							.cancelAction(editPanel.cancel())
@@ -359,16 +352,19 @@ public final class EntityDialogs {
 
 			@Override
 			public List<Entity> multiple() {
-				return new EntitySearchDialog(tablePanel, owner, location,
-								locationRelativeTo, title, icon, false, includeSearchButton).selectedEntities();
+				return new EntitySearchDialog(tablePanel, this::dialogBuilder, false, includeSearchButton).selectedEntities();
 			}
 
 			@Override
 			public Optional<Entity> single() {
-				List<Entity> entities = new EntitySearchDialog(tablePanel, owner, location,
-								locationRelativeTo, title, icon, true, includeSearchButton).selectedEntities();
+				List<Entity> entities = new EntitySearchDialog(tablePanel, this::dialogBuilder, true, includeSearchButton).selectedEntities();
 
 				return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
+			}
+
+			// The dialog builder configured with this builder's options, the dialog's content once the search dialog has it
+			private ActionDialogBuilder<?> dialogBuilder(JComponent component) {
+				return configure(Dialogs.action().component(component));
 			}
 		}
 	}
@@ -378,8 +374,7 @@ public final class EntityDialogs {
 		private final EntityTablePanel tablePanel;
 		private final State cancelled = State.state();
 
-		private EntitySearchDialog(EntityTablePanel tablePanel, @Nullable Window owner, @Nullable Point location,
-															 @Nullable Component locationRelativeTo, @Nullable Observable<String> title, @Nullable ImageIcon icon,
+		private EntitySearchDialog(EntityTablePanel tablePanel, Function<JComponent, ActionDialogBuilder<?>> dialogBuilder,
 															 boolean singleSelection, boolean includeSearchButton) {
 			this.tablePanel = requireNonNull(tablePanel).initialize();
 			Control okControl = Control.builder()
@@ -389,15 +384,10 @@ public final class EntityDialogs {
 							.enabled(tablePanel.model().selection().present())
 							.build();
 			configureTable(tablePanel.table(), okControl, singleSelection);
-			ActionDialogBuilder<?> builder = Dialogs.action()
-							.component(borderLayoutPanel()
+			ActionDialogBuilder<?> builder = dialogBuilder.apply(borderLayoutPanel()
 											.center(tablePanel)
-											.border(emptyBorder()))
-							.owner(owner)
-							.location(location)
-							.locationRelativeTo(locationRelativeTo)
-							.title(title)
-							.icon(icon)
+											.border(emptyBorder())
+											.build())
 							.defaultAction(okControl)
 							.escapeAction(Control.builder()
 											.command(this::cancel)
@@ -498,13 +488,10 @@ public final class EntityDialogs {
 			//veto (e.g. the modified warning) simply prevents the dialog opening, as in the edit sibling
 			editPanel.editor().entity().defaults();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
-			Dialogs.action()
+			configure(Dialogs.action()
 							.component(borderLayoutPanel()
 											.center(editPanel.initialize())
-											.border(emptyBorder()))
-							.owner(owner)
-							.location(location)
-							.locationRelativeTo(locationRelativeTo)
+											.border(emptyBorder())))
 							.defaultAction(createAddControl(editPanel,
 											new OnInsert(disposeDialog), confirm))
 							.escapeAction(createCancelControl(disposeDialog))
@@ -606,13 +593,10 @@ public final class EntityDialogs {
 		public void show() {
 			SwingEntityEditor editor = editPanel.editor();
 			initializeEditor(editor);
-			Dialogs.action()
+			configure(Dialogs.action()
 							.component(borderLayoutPanel()
 											.center(editPanel.initialize())
-											.border(emptyBorder()))
-							.owner(owner)
-							.location(location)
-							.locationRelativeTo(locationRelativeTo)
+											.border(emptyBorder())))
 							.defaultAction(createUpdateControl(editPanel,
 											new OnUpdate(new DisposeDialog(editPanel)), confirm))
 							.escapeAction(createCancelControl(new RevertAndDisposeDialog(editPanel)))

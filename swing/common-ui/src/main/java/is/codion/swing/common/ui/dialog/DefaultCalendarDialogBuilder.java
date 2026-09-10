@@ -78,10 +78,8 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 	}
 
 	private CalendarPanel showCalendarDialog(CalendarPanel calendarPanel, String title, State okPressed) {
-		OkCancelDialogBuilder dialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
-						.component(calendarPanel)
-						.owner(owner)
-						.locationRelativeTo(locationRelativeTo)
+		OkCancelDialogBuilder dialogBuilder = configure(DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
+						.component(calendarPanel))
 						.title(title)
 						.onBuild(dialog ->
 										calendarPanel.doubleClicked().addListener(() -> {
@@ -90,8 +88,6 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 										}))
 						.onShown(dialog -> calendarPanel.requestInputFocus())
 						.onOk(() -> okPressed.set(true));
-		onBuildConsumers.forEach(dialogBuilder::onBuild);
-
 		dialogBuilder.show();
 
 		return calendarPanel;

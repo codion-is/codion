@@ -42,6 +42,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.WindowFocusListener;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -136,6 +137,18 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	@Override
 	public InputDialogBuilder<T> keyEvent(KeyEvents.Builder keyEventBuilder) {
 		okCancelDialogBuilder.keyEvent(keyEventBuilder);
+		return this;
+	}
+
+	@Override
+	public InputDialogBuilder<T> undecorated(boolean undecorated) {
+		okCancelDialogBuilder.undecorated(undecorated);
+		return this;
+	}
+
+	@Override
+	public InputDialogBuilder<T> windowFocusListener(WindowFocusListener windowFocusListener) {
+		okCancelDialogBuilder.windowFocusListener(windowFocusListener);
 		return this;
 	}
 

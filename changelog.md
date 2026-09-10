@@ -38,6 +38,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTableColumnModel.ColumnSelection.empty() replaced with present().
 - ColumnConditionPanel, the key bindings now apply while a descendant of a condition component has the focus, a field inside a panel.
+- FrameBuilder, DialogBuilder.windowFocusListener() and undecorated() added.
+- AbstractDialogBuilder.configure() added, applying the dialog options to the builder building the dialog, the exception, calendar, selection, login and progress dialogs now honouring keyEvent(), undecorated() and windowFocusListener().
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 ### is.codion.swing.framework.ui
