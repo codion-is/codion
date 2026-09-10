@@ -64,11 +64,6 @@ final class DefaultStateGroup implements State.Group {
 	}
 
 	@Override
-	public void add(Collection<State> states) {
-		requireNonNull(states).forEach(this::add);
-	}
-
-	@Override
 	public void remove(State state) {
 		requireNonNull(state);
 		synchronized (members) {

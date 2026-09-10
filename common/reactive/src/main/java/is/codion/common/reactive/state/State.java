@@ -137,12 +137,6 @@ public interface State extends ObservableState {
 		void add(State state);
 
 		/**
-		 * Adds the given states to this {@link State.Group}.
-		 * @param states the {@link State} instances to add
-		 */
-		void add(Collection<State> states);
-
-		/**
 		 * <p>Removes a state from this {@link State.Group}.
 		 * If the given state is not in the group, this method has no effect.
 		 * <p>Removing a state does not change its value.

@@ -23,7 +23,6 @@ import is.codion.common.reactive.value.ValueSet;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -206,7 +205,6 @@ public class StateTest {
 		assertFalse(stateThree.is());
 
 		stateGroup = State.group(asList(stateOne, stateTwo));
-		stateGroup.add(Collections.singletonList(stateThree));
 	}
 
 	@Test
