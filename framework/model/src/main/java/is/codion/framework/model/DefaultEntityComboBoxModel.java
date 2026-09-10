@@ -75,6 +75,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.items(entityItems)
 						// otherwise the sorting overrides the order by
 						.comparator(entityItems.orderBy == null ? builder.comparator : null)
+						.validator(new EntityTypeValidator(entityItems.entityDefinition.type()))
 						.filterSelected(builder.filterSelected)
 						.select(builder.selectEntity)
 						.nullItem(builder.nullItem)

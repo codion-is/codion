@@ -16,6 +16,7 @@ Codion Change Log
 - FilePreferences.flush() now saves the file once instead of once per node, and only when changes have been made, re-applied on top of the file if it has been modified externally, sync() does the same after reloading it once, an external modification used to discard the unsaved changes. removeNode() removed, unused.
 - TableSummaryModel.get() now caches the absence of a summary as well, the factory was consulted on every call for a column without one.
 - FilterModel.Refresher.exception() added along with a parameterless refresh().
+- FilterComboBoxModel.Builder.validator(Predicate) added, applied to the items and the selected item.
 ### is.codion.common.utilities
 - Nulls.nonNull(Object) removed and rejectNulls(Collection) added.
 ### is.codion.framework.domain
@@ -27,6 +28,7 @@ Codion Change Log
 - EntitySearchModel.Selection.empty() replaced with present().
 - ForeignKeyModelLink, a master selection the link has already applied is not applied again, be it on the link being activated anew or on a master refresh notifying with fresher instances of the same rows, a detail condition changed by hand therefore survives navigation and refresh, a changed master selection overrules it.
 - ForeignKeyModelLink.foreignKey() added.
+- DefaultEntityComboBoxModel now validates entity types of added items.
 ### is.codion.swing.common.model
 - DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
 - DefaultListSelection is now a DefaultListSelectionModel serving as the MultiSelection.IndexStore of a common DefaultMultiSelection, forwarding to its facades, rather than a copy of it with the store swapped. The JTable and JList keyboard actions moving the lead are enabled only for a DefaultListSelectionModel, hence the extension stays.

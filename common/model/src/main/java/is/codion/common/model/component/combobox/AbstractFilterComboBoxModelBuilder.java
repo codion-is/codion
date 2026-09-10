@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -42,6 +43,7 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	final @Nullable Supplier<Collection<T>> supplier;
 	final Collection<Consumer<T>> onSelectedItem = new ArrayList<>(1);
 
+	Predicate<T> validator = new ValidPredicate<>();
 	Comparator<T> comparator = (Comparator<T>) DefaultFilterComboBoxModel.DEFAULT_COMPARATOR;
 	Function<Object, T> translator = (Function<Object, T>) DefaultFilterComboBoxModel.DEFAULT_SELECTED_ITEM_TRANSLATOR;
 	@Nullable Consumer<Exception> onRefreshException;
@@ -65,6 +67,12 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	protected AbstractFilterComboBoxModelBuilder(Supplier<Collection<T>> supplier) {
 		this.items = null;
 		this.supplier = requireNonNull(supplier);
+	}
+
+	@Override
+	public final B validator(Predicate<T> validator) {
+		this.validator = requireNonNull(validator);
+		return self();
 	}
 
 	@Override
@@ -134,5 +142,13 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	 */
 	protected final B self() {
 		return (B) this;
+	}
+
+	private static final class ValidPredicate<T> implements Predicate<T> {
+
+		@Override
+		public boolean test(T item) {
+			return true;
+		}
 	}
 }
