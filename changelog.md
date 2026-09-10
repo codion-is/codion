@@ -37,6 +37,7 @@ Codion Change Log
 - SwingFilterComboBoxModel.booleanItems() removed.
 ### is.codion.swing.common.ui
 - FilterTableColumnModel.ColumnSelection.empty() replaced with present().
+- ColumnConditionPanel, the key bindings now apply while a descendant of a condition component has the focus, a field inside a panel.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 ### is.codion.swing.framework.ui

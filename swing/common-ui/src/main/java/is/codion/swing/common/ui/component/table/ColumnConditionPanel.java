@@ -102,6 +102,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.FocusManager.getCurrentManager;
 import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingUtilities.isDescendingFrom;
 
 /**
  * A UI implementation for {@link ConditionModel}.
@@ -567,6 +568,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private void bindEvents() {
 		model().operator().addConsumer(this::onOperatorChanged);
+		// The keys bound where the focused component is a descendant of the condition component as well as the
+		// component itself, since an operand component may be a panel around the field that has the focus
 		Collection<JComponent> conditionComponents = components();
 		enabled(model().locked().not(), conditionComponents.toArray(new JComponent[0]));
 		FocusGained focusGained = new FocusGained();
@@ -574,21 +577,25 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
 										.keyStroke(keyStroke)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(command(this::toggleEnabled))
 										.enable(conditionComponents));
 		CLEAR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
 										.keyStroke(keyStroke)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(command(model()::clear))
 										.enable(conditionComponents));
 		PREVIOUS_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
 										.keyStroke(keyStroke)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(command(this::selectPreviousOperator))
 										.enable(conditionComponents));
 		NEXT_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
 										.keyStroke(keyStroke)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(command(this::selectNextOperator))
 										.enable(conditionComponents));
 	}
@@ -870,18 +877,14 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.build();
 	}
 
-	private static boolean operandHasFocus(JComponent component) {
+	private static boolean operandHasFocus(@Nullable JComponent component) {
 		if (component == null) {
 			return false;
 		}
-		if (component.hasFocus()) {
-			return true;
-		}
-		if (component instanceof JComboBox) {
-			return ((JComboBox<?>) component).getEditor().getEditorComponent().hasFocus();
-		}
+		// The component itself, or a descendant of it: a combo box's editor, the field inside a panel
+		Component focusOwner = getCurrentManager().getFocusOwner();
 
-		return false;
+		return focusOwner != null && isDescendingFrom(focusOwner, component);
 	}
 
 	private static <T> ComponentValueBuilder<? extends JComponent, T, ?> createField(ConditionModel<T> conditionModel) {
