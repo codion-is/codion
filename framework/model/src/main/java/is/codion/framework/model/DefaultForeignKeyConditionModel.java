@@ -72,6 +72,11 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	}
 
 	@Override
+	public Optional<String> caption() {
+		return condition.caption();
+	}
+
+	@Override
 	public Optional<EntitySearchModel> equalSearchModel() {
 		return Optional.ofNullable(equalSearchModel);
 	}

@@ -143,6 +143,11 @@ public interface ConditionModel<T> {
 	State autoEnable();
 
 	/**
+	 * @return the caption associated with this condition model
+	 */
+	Optional<String> caption();
+
+	/**
 	 * @return the {@link State} controlling the locked status
 	 */
 	State locked();
@@ -460,6 +465,12 @@ public interface ConditionModel<T> {
 		 * @return this builder instance
 		 */
 		Builder<T> dateTimePattern(@Nullable String dateTimePattern);
+
+		/**
+		 * @param caption the caption to associate with this condition model
+		 * @return this builder instance
+		 */
+		Builder<T> caption(@Nullable String caption);
 
 		/**
 		 * @param caseSensitive true if the model should be case-sensitive, {@link ConditionModel#CASE_SENSITIVE} by default

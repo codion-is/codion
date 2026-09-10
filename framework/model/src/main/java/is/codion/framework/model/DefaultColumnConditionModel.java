@@ -23,6 +23,8 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
+import java.util.Optional;
+
 final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 
 	private final Column<T> column;
@@ -33,6 +35,7 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 		condition = ConditionModel.builder()
 						.valueClass(column.type().valueClass())
 						.format(builder.columnDefinition.format().orElse(null))
+						.caption(builder.columnDefinition.caption())
 						.dateTimePattern(builder.columnDefinition.dateTimePattern().orElse(null))
 						.operands(new AttributeOperands<>(builder.columnDefinition))
 						.build();
@@ -51,6 +54,11 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 	@Override
 	public Observer<?> changed() {
 		return condition.changed();
+	}
+
+	@Override
+	public Optional<String> caption() {
+		return condition.caption();
 	}
 
 	static final class DefaultBuilder<T> implements Builder<T> {

@@ -17,6 +17,7 @@ Codion Change Log
 - TableSummaryModel.get() now caches the absence of a summary as well, the factory was consulted on every call for a column without one.
 - FilterModel.Refresher.exception() added along with a parameterless refresh().
 - FilterComboBoxModel.Builder.validator(Predicate) added, applied to the items and the selected item.
+- ConditionModel.caption() added.
 ### is.codion.common.utilities
 - Nulls.nonNull(Object) removed and rejectNulls(Collection) added.
 ### is.codion.framework.domain

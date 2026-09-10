@@ -187,6 +187,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 				if (Comparable.class.isAssignableFrom(columnClass)) {
 					columnFilterModels.put(identifier, ConditionModel.builder()
 									.valueClass(columnClass)
+									.caption(columns.caption(identifier))
 									.build());
 				}
 			}
