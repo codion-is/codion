@@ -72,6 +72,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	private final @Nullable Format format;
 	private final @Nullable String dateTimePattern;
 	private final List<Operator> operators;
+	private final @Nullable String caption;
 
 	private DefaultConditionModel(DefaultBuilder<T> builder) {
 		this.operators = unmodifiableList(builder.operators);
@@ -95,6 +96,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		this.valueClass = builder.valueClass;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
+		this.caption = builder.caption;
 		this.caseSensitive = State.builder()
 						.value(builder.caseSensitive)
 						.listener(conditionChanged)
@@ -118,6 +120,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	@Override
 	public Optional<String> dateTimePattern() {
 		return Optional.ofNullable(dateTimePattern);
+	}
+
+	@Override
+	public Optional<String> caption() {
+		return Optional.ofNullable(caption);
 	}
 
 	@Override
@@ -613,6 +620,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.hoursMinutesSeconds()
 						.build()
 						.dateTimePattern();
+		private @Nullable String caption;
 		private boolean caseSensitive = CASE_SENSITIVE.getOrThrow();
 		private boolean autoEnable = AUTO_ENABLE.getOrThrow();
 
@@ -653,6 +661,12 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		@Override
 		public Builder<T> dateTimePattern(@Nullable String dateTimePattern) {
 			this.dateTimePattern = dateTimePattern;
+			return this;
+		}
+
+		@Override
+		public Builder<T> caption(@Nullable String caption) {
+			this.caption = caption;
 			return this;
 		}
 
