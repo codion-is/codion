@@ -61,6 +61,34 @@ public final class DefaultEntityComboBoxModelTest {
 					.build();
 
 	@Test
+	void validation() {
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+
+		Entity employee = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.ID, -42)
+						.with(Employee.NAME, "Noname")
+						.build();
+
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().add(employee));
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.selection().item().set(employee));
+
+		Entity department = ENTITIES.entity(Department.TYPE)
+						.with(Department.ID, -42)
+						.with(Department.NAME, "Noname")
+						.build();
+
+		comboBoxModel.items().add(department);
+
+		Map<Entity, Entity> replace = new HashMap<>();
+		replace.put(department, employee);
+
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().replace(replace));
+	}
+
+	@Test
 	void persistenceAware() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
@@ -94,7 +122,7 @@ public final class DefaultEntityComboBoxModelTest {
 
 	@Test
 	void builderReuseProducesIndependentModels() {
-		EntityComboBoxModel.Builder builder = EntityComboBoxModel.builder()
+		EntityComboBoxModel.Builder<?> builder = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION);
 		EntityComboBoxModel modelA = builder.build();

@@ -118,6 +118,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		}
 
 		/**
+		 * Items failing validation can not be added to the model, nor selected.
+		 * @param validator the item validator
+		 * @return this builder instance
+		 */
+		B validator(Predicate<T> validator);
+
+		/**
 		 * @param comparator the comparator, null for unsorted
 		 * @return this builder
 		 */

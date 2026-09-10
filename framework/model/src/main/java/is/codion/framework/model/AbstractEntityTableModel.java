@@ -240,7 +240,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	 * @return a {@link Predicate} validating that items are of the given entity type
 	 */
 	protected static Predicate<Entity> itemValidator(EntityType entityType) {
-		return new EntityItemValidator(entityType);
+		return new EntityTypeValidator(entityType);
 	}
 
 	/**
@@ -587,20 +587,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 		private static boolean itemBased(AttributeDefinition<?> definition) {
 			return definition instanceof ValueAttributeDefinition<?> && !((ValueAttributeDefinition<?>) definition).items().isEmpty();
-		}
-	}
-
-	private static final class EntityItemValidator implements Predicate<Entity> {
-
-		private final EntityType entityType;
-
-		private EntityItemValidator(EntityType entityType) {
-			this.entityType = requireNonNull(entityType);
-		}
-
-		@Override
-		public boolean test(Entity entity) {
-			return entity.type().equals(entityType);
 		}
 	}
 }

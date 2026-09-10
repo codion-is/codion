@@ -26,7 +26,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +35,7 @@ import java.util.function.Predicate;
 
 import static is.codion.common.utilities.item.Item.item;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultFilterComboBoxModelTest {
@@ -50,6 +50,32 @@ public final class DefaultFilterComboBoxModelTest {
 	private static final String BJORN = "björn";
 
 	private static final List<String> ITEMS = asList(ANNA, KALLI, SIGGI, TOMAS, BJORN);
+
+	@Test
+	void validation() {
+		assertThrows(IllegalArgumentException.class, () -> FilterComboBoxModel.builder()
+						.items(asList(ANNA, TOMAS, BJORN))
+						.validator(value -> !value.equals(ANNA))
+						.build());
+
+		FilterComboBoxModel<String> comboBoxModel = FilterComboBoxModel.builder()
+						.items(asList(ANNA, TOMAS, BJORN))
+						.validator(value -> !value.equals(SIGGI))
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().add(SIGGI));
+		// Validated before any is added: KALLI is not in
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().add(asList(KALLI, SIGGI)));
+		assertFalse(comboBoxModel.items().contains(KALLI));
+		// The selection likewise
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.selection().item().set(SIGGI));
+		comboBoxModel.selection().item().set(KALLI);
+		assertEquals(KALLI, comboBoxModel.selection().item().get());
+
+		Map<String, String> replace = new HashMap<>();
+		replace.put(ANNA, SIGGI);
+
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().replace(replace));
+	}
 
 	@Test
 	void sorting() {
@@ -309,7 +335,7 @@ public final class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void nullItem() {
-		List<String> strings = Collections.emptyList();
+		List<String> strings = emptyList();
 		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
 						.items(strings)
 						.build();

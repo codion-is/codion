@@ -180,6 +180,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final Refresher<T> refresher;
 		private final DefaultIncludedItems included;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
+		private final Predicate<T> validator;
 
 		private final boolean filterSelected;
 		private final boolean includeNull;
@@ -191,6 +192,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			this.includeNull = builder.includeNull;
 			this.nullItem = builder.nullItem;
 			this.filterSelected = builder.filterSelected;
+			this.validator = builder.validator;
 			this.sort = sort;
 			this.included = new DefaultIncludedItems();
 			if (includeNull) {
@@ -248,7 +250,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public void set(Collection<T> items) {
 			//null is the reserved sentinel (see includeNull), it must not appear among the actual items
-			rejectNulls(items);
+			requireNonNull(items).forEach(this::validate);
 			synchronized (lock) {
 				filtered.items.clear();
 				included.items.clear();
@@ -273,7 +275,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void add(T item) {
-			requireNonNull(item);
+			validate(item);
 			synchronized (lock) {
 				if (included.predicate.test(item)) {
 					if (!included.items.contains(item)) {
@@ -302,7 +304,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void add(Collection<T> items) {
-			rejectNulls(items);
+			// All validated before any is added, so a rejected item leaves the model as it was
+			requireNonNull(items).forEach(this::validate);
 			synchronized (lock) {
 				for (T item : items) {
 					add(item);
@@ -405,7 +408,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			// Note: Similar logic exists in DefaultFilterModelItems.
 			// Both implementations handle item replacement with filtering but have different collection types
 			// and threading requirements, making extraction to a common utility non-trivial.
-			requireNonNull(items);
+			requireNonNull(items).values().forEach(this::validate);
 			synchronized (lock) {
 				Map<T, T> replacements = new HashMap<>(items);
 				for (T itemToReplace : items.keySet()) {
@@ -495,6 +498,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					//replace the selected item since the underlying data could have changed
 					selection.selected.replaceWith(included.items.get(index));
 				}
+			}
+		}
+
+		private void validate(T item) {
+			if (!validator.test(requireNonNull(item))) {
+				throw new IllegalArgumentException("Invalid item: " + item);
 			}
 		}
 
@@ -715,6 +724,10 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private void setSelectedItem(@Nullable Object item) {
 			T toSelect = translator.apply(Objects.equals(modelItems.nullItem, item) ? null : item);
+			// The selection may be an item that is not among the items, so it is validated in its own right
+			if (toSelect != null && !Objects.equals(modelItems.nullItem, toSelect)) {
+				modelItems.validate(toSelect);
+			}
 			if (!Objects.equals(this.item, toSelect)) {
 				changing.accept(toSelect);
 				this.item = toSelect;
