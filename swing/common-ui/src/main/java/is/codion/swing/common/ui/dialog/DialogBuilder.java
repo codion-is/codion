@@ -28,6 +28,7 @@ import javax.swing.JDialog;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.WindowFocusListener;
 import java.util.function.Consumer;
 
 /**
@@ -89,6 +90,18 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
 	 * @return this builder instance
 	 */
 	B keyEvent(KeyEvents.Builder keyEventBuilder);
+
+	/**
+	 * @param undecorated true if the dialog should be undecorated
+	 * @return this builder instance
+	 */
+	B undecorated(boolean undecorated);
+
+	/**
+	 * @param windowFocusListener a window focus listener
+	 * @return this builder instance
+	 */
+	B windowFocusListener(WindowFocusListener windowFocusListener);
 
 	/**
 	 * @param onBuild called when the dialog has been built, before it is shown

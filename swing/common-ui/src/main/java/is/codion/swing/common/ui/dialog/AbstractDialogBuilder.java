@@ -32,6 +32,7 @@ import java.awt.Component;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -46,12 +47,14 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 
 	protected final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
 	protected final List<Consumer<JDialog>> onBuildConsumers = new ArrayList<>(1);
+	protected final List<WindowFocusListener> windowFocusListeners = new ArrayList<>(0);
 
 	protected @Nullable Window owner;
 	protected @Nullable Component locationRelativeTo;
 	protected @Nullable Point location;
 	protected @Nullable Observable<String> title;
 	protected @Nullable ImageIcon icon;
+	protected boolean undecorated;
 
 	@Override
 	public final B owner(@Nullable Window owner) {
@@ -114,9 +117,55 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 	}
 
 	@Override
+	public final B undecorated(boolean undecorated) {
+		this.undecorated = undecorated;
+		return self();
+	}
+
+	@Override
+	public final B windowFocusListener(WindowFocusListener windowFocusListener) {
+		this.windowFocusListeners.add(requireNonNull(windowFocusListener));
+		return self();
+	}
+
+	@Override
 	public final B onBuild(Consumer<JDialog> onBuild) {
 		this.onBuildConsumers.add(requireNonNull(onBuild));
 		return self();
+	}
+
+	/**
+	 * Configures the given builder with the options this builder holds, the ones of {@link DialogBuilder}: the owner,
+	 * the location, the title, the icon, undecorated, the key events, the window focus listeners and the on-build
+	 * consumers, for a builder that has another build its dialog. Null options are left to the builder given, whose
+	 * own settings, chained after this, override.
+	 * @param builder the builder building the dialog
+	 * @param <T> the builder type
+	 * @return the builder given
+	 */
+	protected final <T extends DialogBuilder<?>> T configure(T builder) {
+		requireNonNull(builder);
+		if (owner != null) {
+			builder.owner(owner);
+		}
+		if (locationRelativeTo != null) {
+			builder.locationRelativeTo(locationRelativeTo);
+		}
+		if (location != null) {
+			builder.location(location);
+		}
+		if (title != null) {
+			builder.title(title);
+		}
+		if (icon != null) {
+			builder.icon(icon);
+		}
+		builder.undecorated(undecorated);
+		keyEventBuilders.forEach(builder::keyEvent);
+		windowFocusListeners.forEach(builder::windowFocusListener);
+		onBuildConsumers.forEach(builder::onBuild);
+
+		return builder;
 	}
 
 	protected final B self() {

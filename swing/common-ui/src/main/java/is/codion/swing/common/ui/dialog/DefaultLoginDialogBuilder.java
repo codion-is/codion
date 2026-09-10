@@ -89,21 +89,16 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 			owner = dummyFrame = createDummyFrame(title == null ? null : title.get(), icon);
 		}
 		LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent, inputFieldColumns, validationProgressDelay);
-		OkCancelDialogBuilder dialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
-						.component(loginPanel)
-						.owner(owner)
+		configure(DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
+						.component(loginPanel))
 						.resizable(resizable)
-						.title(title)
-						.icon(icon)
 						.okAction(loginPanel.okControl())
 						.cancelAction(loginPanel.cancelControl())
 						.onShown(dialog -> {
 							dialog.setMinimumSize(dialog.getSize());
 							loginPanel.requestInitialFocus();
-						});
-		onBuildConsumers.forEach(dialogBuilder::onBuild);
-
-		dialogBuilder.show();
+						})
+						.show();
 		if (dummyFrame != null) {
 			dummyFrame.dispose();
 		}

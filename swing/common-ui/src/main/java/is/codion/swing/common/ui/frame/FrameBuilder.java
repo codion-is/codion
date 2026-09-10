@@ -33,6 +33,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.util.List;
 import java.util.function.Consumer;
@@ -170,10 +171,22 @@ public interface FrameBuilder {
 	FrameBuilder centerFrame(boolean centerFrame);
 
 	/**
+	 * @param undecorated true if the frame should be undecorated
+	 * @return this builder instance
+	 */
+	FrameBuilder undecorated(boolean undecorated);
+
+	/**
 	 * @param windowListener a window listener
 	 * @return this builder instance
 	 */
 	FrameBuilder windowListener(WindowListener windowListener);
+
+	/**
+	 * @param windowFocusListener a window focus listener
+	 * @return this builder instance
+	 */
+	FrameBuilder windowFocusListener(WindowFocusListener windowFocusListener);
 
 	/**
 	 * @param componentListener the component listener

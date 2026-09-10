@@ -38,6 +38,7 @@ import java.awt.Point;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +51,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultFrameBuilder implements FrameBuilder {
 
 	private final List<WindowListener> windowListeners = new ArrayList<>(0);
+	private final List<WindowFocusListener> windowFocusListeners = new ArrayList<>(0);
 	private final List<ComponentListener> componentListeners = new ArrayList<>(0);
 	private final Collection<Consumer<WindowEvent>> onClosing = new ArrayList<>();
 	private final Collection<Consumer<WindowEvent>> onClosed = new ArrayList<>();
@@ -69,6 +71,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	private @Nullable JMenuBar menuBar;
 	private int extendedState = Frame.NORMAL;
 	private boolean centerFrame;
+	private boolean undecorated;
 
 	@Override
 	public FrameBuilder component(@Nullable JComponent component) {
@@ -182,6 +185,12 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
+	public FrameBuilder undecorated(boolean undecorated) {
+		this.undecorated = undecorated;
+		return this;
+	}
+
+	@Override
 	public FrameBuilder centerFrame(boolean centerFrame) {
 		this.centerFrame = centerFrame;
 		return this;
@@ -190,6 +199,12 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	@Override
 	public FrameBuilder windowListener(WindowListener windowListener) {
 		this.windowListeners.add(requireNonNull(windowListener));
+		return this;
+	}
+
+	@Override
+	public FrameBuilder windowFocusListener(WindowFocusListener windowFocusListener) {
+		this.windowFocusListeners.add(requireNonNull(windowFocusListener));
 		return this;
 	}
 
@@ -220,6 +235,9 @@ final class DefaultFrameBuilder implements FrameBuilder {
 		if (!iconImages.isEmpty()) {
 			frame.setIconImages(iconImages);
 		}
+		if (undecorated) {
+			frame.setUndecorated(true);
+		}
 		if (size != null) {
 			frame.setSize(size);
 		}
@@ -249,6 +267,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 			frame.addWindowListener(new FrameListener(onClosing, onClosed, onOpened));
 		}
 		windowListeners.forEach(frame::addWindowListener);
+		windowFocusListeners.forEach(frame::addWindowFocusListener);
 		componentListeners.forEach(frame::addComponentListener);
 		onBuild.forEach(consumer -> consumer.accept(frame));
 
