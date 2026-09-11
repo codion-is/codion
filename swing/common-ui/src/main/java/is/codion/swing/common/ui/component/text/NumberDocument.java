@@ -169,8 +169,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 					// BigDecimal has no negative zero, format the Double one
 					formattedNumber = format.format(-0d);
 				}
-				//handle trailing decimal symbol and trailing decimal zeros
-				if (format instanceof DecimalFormat) {
+				//handle trailing decimal symbol and trailing decimal zeros, within the maximum fraction digits
+				if (format instanceof DecimalFormat && format.getMaximumFractionDigits() > 0) {
 					String decimalSeparator =
 									String.valueOf(((DecimalFormat) format).getDecimalFormatSymbols().getDecimalSeparator());
 					if (!formattedNumber.contains(decimalSeparator) && string.endsWith(decimalSeparator)) {
@@ -179,7 +179,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 					int decimalSeparatorIndex = string.indexOf(decimalSeparator);
 					if (decimalSeparatorIndex >= 0 && string.substring(decimalSeparatorIndex).endsWith("0")) {
 						formattedNumber += (formattedNumber.contains(decimalSeparator) ? "" : decimalSeparator) +
-										trailingDecimalZeros(string, decimalSeparatorIndex);
+										trailingDecimalZeros(string, decimalSeparatorIndex,
+														format.getMaximumFractionDigits() - fractionDigits(formattedNumber, decimalSeparator));
 					}
 				}
 
@@ -314,16 +315,28 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return count(newNumber, symbols.getGroupingSeparator()) - count(currentNumber, symbols.getGroupingSeparator());
 		}
 
-		private static String trailingDecimalZeros(String string, int decimalSeparatorIndex) {
+		/**
+		 * @param string the string
+		 * @param decimalSeparatorIndex the index of the decimal separator in the string
+		 * @param maximum the maximum number of zeros
+		 * @return the trailing decimal zeros of the given string, at most {@code maximum}
+		 */
+		private static String trailingDecimalZeros(String string, int decimalSeparatorIndex, int maximum) {
 			StringBuilder builder = new StringBuilder();
 			int index = string.length() - 1;
 			char c = string.charAt(index);
-			while (c == '0' && index > decimalSeparatorIndex) {
+			while (c == '0' && index > decimalSeparatorIndex && builder.length() < maximum) {
 				builder.append('0');
 				c = string.charAt(--index);
 			}
 
 			return builder.toString();
+		}
+
+		private static int fractionDigits(String number, String decimalSeparator) {
+			int decimalSeparatorIndex = number.indexOf(decimalSeparator);
+
+			return decimalSeparatorIndex < 0 ? 0 : number.length() - decimalSeparatorIndex - 1;
 		}
 
 		private static int count(String string, char groupingSeparator) {
@@ -532,7 +545,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			public NumberParseResult<T> parse(String string) {
 				DecimalFormat format = (DecimalFormat) format();
 				String decimalSeparator = String.valueOf(format.getDecimalFormatSymbols().getDecimalSeparator());
-				if (string.equals(decimalSeparator) || string.equals(format.getNegativePrefix() + decimalSeparator)) {
+				if (format.getMaximumFractionDigits() > 0 &&
+								(string.equals(decimalSeparator) || string.equals(format.getNegativePrefix() + decimalSeparator))) {
 					NumberParseResult<T> parseResult = super.parse(string.replace(decimalSeparator, "0" + decimalSeparator));
 
 					return new DefaultNumberParseResult<>(parseResult.text(), parseResult.value(),
