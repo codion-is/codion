@@ -32,6 +32,7 @@ Codion Change Log
 - DefaultEntityComboBoxModel now validates entity types of added items.
 - ForeignKeyConditionModel, the EQUAL and IN operands no longer bound to the search and combo box models, which are now the models to build and link the condition components on, the operands reconciled on update and delete of the referenced entities, Builder.caption() added, set by EntityConditions.
 - DefaultForeignKeyConditionModel, a model with only an IN operand could not be built, the operator being validated against the default operators.
+- ForeignKeyConditionModel.inComboBoxModel() added, along with Builder.inComboBoxModel(), the IN operand based on either a search model or a combo box model.
 ### is.codion.swing.common.model
 - DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
 - DefaultListSelection is now a DefaultListSelectionModel serving as the MultiSelection.IndexStore of a common DefaultMultiSelection, forwarding to its facades, rather than a copy of it with the store swapped. The JTable and JList keyboard actions moving the lead are enabled only for a DefaultListSelectionModel, hence the extension stays.
@@ -48,11 +49,13 @@ Codion Change Log
 - MultiValueInput, setting the value now clears the wrapped component, Enter consumed by the wrapped component no longer adds its value.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
+- SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
 ### is.codion.swing.framework.ui
 - EntityComboBoxPanel and EntitySearchFieldPanel renamed EntityComboBoxInput and EntitySearchInput, EntityComponents.comboBoxPanel(), searchFieldPanel(), temporalFieldPanel(), textFieldPanel() and byteArrayInputPanel() renamed comboBoxInput(), searchFieldInput(), temporalFieldInput(), textFieldInput() and fileByteArrayInput().
 - ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING renamed HANDLING.
 - EntityApplicationPanel, EntityPanel, EntityEditPanel and EntityTablePanel.initialize() now ignore a call made while the initialization is in progress.
 - EntityConditionComponents, the foreign key IN operand is now a MultiValueInput wrapping a single selection EntitySearchField, the EQUAL combo box and search field now linked to the operand.
+- EntityConditionComponents, a foreign key IN operand based on a combo box model is a MultiValueInput wrapping a combo box.
 
 ## 0.18.85
 ### is.codion.common.reactive

@@ -30,8 +30,8 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A foreign key condition model. The {@link Operator#EQUAL} operand component is based on either a {@link EntitySearchModel}
- * or a {@link EntityComboBoxModel}, the {@link Operator#IN} operand component on a {@link EntitySearchModel}.
+ * A foreign key condition model. The {@link Operator#EQUAL} and {@link Operator#IN} operand components are each based on
+ * either a {@link EntitySearchModel} or a {@link EntityComboBoxModel}.
  * <p>The operands are plain values, independent of these models, a component based on a model must be linked to the
  * operand it edits, {@link Operands#equal()} or {@link Operands#in()}. Entities of the referenced type updated or deleted
  * are replaced in, or removed from, the operands, via {@link PersistenceEvents}.
@@ -59,9 +59,16 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 	/**
 	 * Note that the selection of this search model is not the IN operand, a component based on it
 	 * must be linked to {@link Operands#in()}.
-	 * @return the {@link EntitySearchModel} to base the IN operand component on, an empty {@link Optional} if the IN operand is not available
+	 * @return the {@link EntitySearchModel} to base the IN operand component on, an empty {@link Optional} if the IN operand is not based on a search model
 	 */
 	Optional<EntitySearchModel> inSearchModel();
+
+	/**
+	 * Note that the selection of this combo box model is not the IN operand, a component based on it
+	 * must be linked to {@link Operands#in()}.
+	 * @return the {@link EntityComboBoxModel} to base the IN operand component on, an empty {@link Optional} if the IN operand is not based on a combo box model
+	 */
+	Optional<EntityComboBoxModel> inComboBoxModel();
 
 	/**
 	 * @param foreignKey the foreign key
@@ -73,7 +80,7 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 
 	/**
 	 * A builder for a {@link ForeignKeyConditionModel}.
-	 * The EQUAL operand is based on either a {@link EntitySearchModel} or a {@link EntityComboBoxModel}, not both.
+	 * The EQUAL and IN operands are each based on either a {@link EntitySearchModel} or a {@link EntityComboBoxModel}, not both.
 	 */
 	interface Builder {
 
@@ -102,8 +109,17 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 		Builder inSearchModel(EntitySearchModel inSearchModel);
 
 		/**
-		 * Sets the initial operator, the one {@link ForeignKeyConditionModel#clear()} reverts to. Defaults to the first of the available
-		 * {@link ForeignKeyConditionModel#operators()} — {@link Operator#EQUAL} when an EQUAL operand is available, otherwise {@link Operator#IN}.
+		 * Note that the selection of this combo box model is not the IN operand, a component
+		 * based on it must be linked to {@link Operands#in()}.
+		 * @param inComboBoxModel the combo box model to base the IN operand component on
+		 * @return this builder
+		 */
+		Builder inComboBoxModel(EntityComboBoxModel inComboBoxModel);
+
+		/**
+		 * Sets the initial operator, the one {@link ForeignKeyConditionModel#clear()} reverts to. Defaults to {@link Operator#EQUAL}
+		 * when the EQUAL operand is based on a combo box model, otherwise to {@link Operator#IN} when an IN operand is available,
+		 * otherwise to {@link Operator#EQUAL}.
 		 * @param operator the initial operator, must be one of the available operators
 		 * @return this builder
 		 */
