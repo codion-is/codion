@@ -49,6 +49,7 @@ Codion Change Log
 - ListComboBox replaced with MultiValueInput, the wrapped component beside a button opening the collected values in a non-modal dialog, instead of hosting the component as a combo box editor.
 - TemporalFieldPanel, TextFieldPanel and FileInputPanel renamed TemporalInput, TextInput and FileInput, Components.temporalFieldPanel(), localTimeFieldPanel(), localDateFieldPanel(), localDateTimeFieldPanel(), textFieldPanel(), pathInputPanel() and byteArrayInputPanel() renamed temporalInput(), localTimeInput(), localDateInput(), localDateTimeInput(), textInput(), filePathInput() and fileByteArrayInput().
 - MultiValueInput, setting the value now clears the wrapped component, Enter consumed by the wrapped component no longer adds its value.
+- MultiValueInput members button now selected when member dialog is visible.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.

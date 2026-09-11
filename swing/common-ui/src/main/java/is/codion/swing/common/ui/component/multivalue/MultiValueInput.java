@@ -339,11 +339,8 @@ public final class MultiValueInput<T> extends JPanel {
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(Control.action(e ->
 														Ancestor.window().of((JComponent) e.getSource()).dispose())))
-						.onShown(shown -> {
-							list.setSelectedIndex(0);
-							list.requestFocusInWindow();
-						})
-						.onClosed(closed -> dialog = null)
+						.onShown(this::onMembersShown)
+						.onClosed(this::onMembersClosed)
 						.show();
 	}
 
@@ -368,6 +365,17 @@ public final class MultiValueInput<T> extends JPanel {
 		membersButton.setToolTipText(included.isEmpty() ? null : included.stream()
 						.map(this::format)
 						.collect(Collectors.joining("<br>", "<html>", "</html>")));
+	}
+
+	private void onMembersShown(JDialog dialog) {
+		membersButton.setSelected(true);
+		list.setSelectedIndex(0);
+		list.requestFocusInWindow();
+	}
+
+	private void onMembersClosed(WindowEvent event) {
+		membersButton.setSelected(false);
+		dialog = null;
 	}
 
 	private String format(@Nullable T value) {
