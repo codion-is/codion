@@ -328,8 +328,11 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		public final Builder<T> range(@Nullable Number minimum, @Nullable Number maximum) {
-			minimum(minimum);
-			maximum(maximum);
+			if (minimum != null && maximum != null && minimum.doubleValue() > maximum.doubleValue()) {
+				throw new IllegalArgumentException("minimum can't be greater than maximum");
+			}
+			this.minimum = minimum;
+			this.maximum = maximum;
 			return this;
 		}
 
