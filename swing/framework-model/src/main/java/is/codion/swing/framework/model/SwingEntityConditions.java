@@ -46,8 +46,7 @@ public class SwingEntityConditions extends EntityConditions {
 	@Override
 	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
 		if (definition(requireNonNull(foreignKey).referencedType()).smallDataset()) {
-			// A combo box for the EQUAL operand, so the model defaults to EQUAL (the intuitive single pick),
-			// and one for the IN operand, which works whether or not the referenced entity is searchable
+			// Combo boxes for both operands, whether or not the referenced entity is searchable, the model defaulting to EQUAL
 			return ForeignKeyConditionModel.builder(foreignKey)
 							.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
 							.inComboBoxModel(createInComboBoxModel(foreignKey))

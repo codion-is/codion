@@ -530,7 +530,7 @@ NOTE: Text based condition fields are by default *Case-Insensitive* and the *EQU
 
 image::help/search/search_cleared.png[Search,cleared]
 
-By default, column condition operators are set to *EQUAL* and foreign keys to *IN*, or *EQUAL* when the foreign key value is selected from a combo box, to change the operator you can use the kbd:[Ctrl + UP / DOWN] keyboard shortcut (the operator is displayed in a tooltip) or switch to the *advanced* search panel view, see below.
+By default, condition operators are set to *EQUAL*, to change the operator you can use the kbd:[Ctrl + UP / DOWN] keyboard shortcut (the operator is displayed in a tooltip) or switch to the *advanced* search panel view, see below.
 
 NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for keyboard shortcuts.
 
@@ -589,7 +589,7 @@ image::help/search/search_string_wildcard_negated_number_between_selection_negat
 NOTE: When searching for empty values, the condition must be manually enabled, since it's only enabled automatically when a non-empty value is entered.
 
 NOTE: To clear all column conditions use the *Search* -> *Clear* action in the table popup menu.
-This clears all values and resets all operators to their defaults *EQUAL* for columns and *IN* for foreign keys.
+This clears all values and resets all operators to their default, *EQUAL*.
 
 == Filtering
 
