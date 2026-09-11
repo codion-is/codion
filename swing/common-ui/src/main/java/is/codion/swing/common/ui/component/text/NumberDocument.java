@@ -148,6 +148,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			this.format = requireNonNull(format);
 			this.format.setRoundingMode(RoundingMode.DOWN);
 			this.clazz = requireNonNull(clazz);
+			if (clazz.equals(BigInteger.class) && format instanceof DecimalFormat) {
+				// a Long or Double can not hold every BigInteger
+				((DecimalFormat) format).setParseBigDecimal(true);
+			}
 		}
 
 		@Override
@@ -266,8 +270,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			if (number instanceof BigInteger) {
 				return number;
 			}
+			if (number instanceof BigDecimal) {
+				return ((BigDecimal) number).toBigInteger();
+			}
 
-			return BigInteger.valueOf(number.intValue());
+			return BigInteger.valueOf(number.longValue());
 		}
 
 		private static Number toBigDecimal(Number number) {

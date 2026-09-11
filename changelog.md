@@ -51,6 +51,7 @@ Codion Change Log
 - MultiValueInput, setting the value now clears the wrapped component, Enter consumed by the wrapped component no longer adds its value.
 - MultiValueInput members button now selected when member dialog is visible.
 - TextComponentBuilder.maximumLength(), typing beyond the maximum length is now rejected silently, a longer edit, such as a paste, still throws, now also for character fields.
+- NumberField, a BigInteger based field no longer truncates its value to the int range.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
