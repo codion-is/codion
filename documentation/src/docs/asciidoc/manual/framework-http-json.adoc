@@ -4,7 +4,7 @@
 :dir-technical: ../technical
 :url-javadoc: link:../api
 
-A client connecting over HTTP (see <<_httpentityconnection, HttpEntityConnection>>) uses one of two wire formats: *JSON*, the default, or *Java serialization*.
+A client connecting over HTTP (see <<manual.adoc#_httpentityconnection, HttpEntityConnection>>) uses one of two wire formats: *JSON*, the default, or *Java serialization*.
 The serialization format requires the exchanged classes on both ends and a deserialization filter; the JSON format exchanges typed JSON documents — entities, conditions, error envelopes — and is the format for clients outside the trusted network, such as mobile clients.
 This chapter covers what a JSON client must provide: its domain, and JSON type registrations for the database operations it calls.
 
@@ -33,7 +33,7 @@ The entity definitions served by the *entities route* deliberately omit these: t
 == Registering operation types
 
 Entities, keys and conditions serialize out of the box.
-The parameter and return values of database <<_procedures_functions, procedures, functions>> and reports are domain-specific types, so the domain registers how they travel, in an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory]:
+The parameter and return values of database <<manual.adoc#_procedures_functions, procedures, functions>> and reports are domain-specific types, so the domain registers how they travel, in an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory]:
 
 [source,java,indent=0]
 ----
@@ -56,9 +56,9 @@ An error the server does not recognize yields a generic message and a correlatio
 == Reports
 
 A report result travels as JSON like a function result, using a registered return type — a report exported to *PDF* on the server simply arrives as *byte[]*.
-A client displaying reports with the JasperReports viewer can keep working with *JasperPrint* over a JSON connection via *JRExport.SERIALIZED* and *JasperReports.loadPrint()* — see <<_reporting_with_jasperreports, Reporting with JasperReports>>.
+A client displaying reports with the JasperReports viewer can keep working with *JasperPrint* over a JSON connection via *JRExport.SERIALIZED* and *JasperReports.loadPrint()* — see <<manual.adoc#_reporting_with_jasperreports, Reporting with JasperReports>>.
 
 == Deployment
 
 Exposing the HTTP service outside a trusted network is a deployment decision with security consequences — authentication, authorization, rate limiting, TLS.
-See <<{dir-technical}/internet-deployment.adoc#_internet_deployment, Internet deployment>> before opening the port.
+See <<{dir-technical}/technical.adoc#_internet_deployment, Internet deployment>> before opening the port.

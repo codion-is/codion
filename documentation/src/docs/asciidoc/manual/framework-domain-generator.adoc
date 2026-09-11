@@ -4,6 +4,7 @@
 :dir-tutorials: ../tutorials
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
+:basedir: ..
 
 The Domain Model Generator is a desktop application that automatically generates Codion domain model source code from existing database schemas. Instead of manually writing entity definitions, columns, foreign keys, and attribute configurations, you connect to a database, select a schema, and generate fully-formed Codion domain code. This tool accelerates development, ensures consistency across entities, and serves as a starting point for new projects or when integrating with legacy databases.
 
@@ -843,6 +844,6 @@ For complete working examples:
 * *Hand-crafted Domains*: See domain model sections in demo tutorials:
 ** <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook domain model>>
 ** <<{dir-tutorials}/world/world.adoc#_domain_model, World domain model>>
-** <<{dir-tutorials}/petstore/petstore.adoc#_domain, Petstore domain model>>
+** <<{dir-tutorials}/petstore/petstore.adoc#_domain_model, Petstore domain model>>
 
 The generator produces code that follows the same patterns as these hand-crafted examples, although the structure may differ, making it easy to compare generated vs manually-written domain models.

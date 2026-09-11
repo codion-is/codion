@@ -36,7 +36,7 @@ include::{dir-source}/is/codion/manual/swing/framework/ui/EntityPanelDemo.java[t
 
 == Detail panels
 
-Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the corresponding detail model, see <<_detail_models, detail models>>.
+Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the corresponding detail model, see <<manual.adoc#_detail_models, detail models>>.
 The detail panel hierarchy typically mirrors the model hierarchy — here the customer panel adds an invoice panel, whose model is the customer model's detail model:
 
 [source,java,indent=0]

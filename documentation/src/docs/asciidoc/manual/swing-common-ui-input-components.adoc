@@ -2,6 +2,7 @@
 = Input Components
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
+:basedir: ..
 
 Binding model data to UI components is accomplished by linking a {url-javadoc}{common-reactive}/is/codion/common/reactive/value/Value.html[Value] instance to an instance of its subclass {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/value/ComponentValue.html[ComponentValue], which represents a value based on an input component.
 

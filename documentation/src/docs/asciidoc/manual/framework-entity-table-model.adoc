@@ -18,7 +18,7 @@ interface EntityEditModel {}
 EntityTableModel --o EntityEditModel
 -------------------------------------------
 
-The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] provides a table representation of entities: the *items* fetched by its <<_entityquerymodel, EntityQueryModel>>, a *selection* and an *editModel* for editing them.
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] provides a table representation of entities: the *items* fetched by its <<manual.adoc#_entityquerymodel, EntityQueryModel>>, a *selection* and an *editModel* for editing them.
 
 Every *EntityTableModel* contains an *EntityEditModel* instance — a default one is created automatically unless one is supplied via a constructor argument.
 
@@ -34,7 +34,7 @@ include::{dir-source}/is/codion/manual/app/store/model/CustomerAddressTableModel
 
 == Items, selection and query
 
-*items().refresh()* populates the table by running the <<_entityquerymodel, query model>>'s query — the condition, attributes, order by and limit it is configured with.
+*items().refresh()* populates the table by running the <<manual.adoc#_entityquerymodel, query model>>'s query — the condition, attributes, order by and limit it is configured with.
 *selection()* provides the selected items and indexes as observable values, which is what selection-scoped controls bind their enabled state to, and what master models propagate to their detail models.
 
 When entities of the table's type are inserted, updated or deleted anywhere in the application, the table model reacts: updated rows are replaced in place, deleted rows removed, and inserted entities added according to the {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html#onInsert()[onInsert()] strategy — prepended by default, appended, or ignored.
