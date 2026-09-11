@@ -30,6 +30,7 @@ import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,6 @@ import java.util.Optional;
 
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class NumberFieldTest {
@@ -235,6 +235,27 @@ public final class NumberFieldTest {
 		bigDecimalField.set(new BigDecimal("0.1"));
 		bigDecimalField.set(new BigDecimal("1.00000000000000001"));
 		assertThrows(IllegalArgumentException.class, () -> bigDecimalField.set(new BigDecimal("1.00000000000000002")));
+	}
+
+	@Test
+	void infinityAndNaN() throws BadLocationException {
+		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
+						.numberClass(BigDecimal.class)
+						.build();
+		DecimalFormatSymbols bigDecimalSymbols = ((DecimalFormat) bigDecimalField.document().format()).getDecimalFormatSymbols();
+		bigDecimalField.getDocument().insertString(0, bigDecimalSymbols.getInfinity(), null);
+		assertEquals("", bigDecimalField.getText());
+		bigDecimalField.getDocument().insertString(0, bigDecimalSymbols.getNaN(), null);
+		assertEquals("", bigDecimalField.getText());
+
+		NumberField<Double> doubleField = NumberField.builder()
+						.numberClass(Double.class)
+						.build();
+		DecimalFormatSymbols doubleSymbols = ((DecimalFormat) doubleField.document().format()).getDecimalFormatSymbols();
+		doubleField.getDocument().insertString(0, doubleSymbols.getInfinity(), null);
+		assertEquals("", doubleField.getText());
+		doubleField.getDocument().insertString(0, doubleSymbols.getNaN(), null);
+		assertEquals("", doubleField.getText());
 	}
 
 	@Test
