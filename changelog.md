@@ -55,6 +55,7 @@ Codion Change Log
 - NumberField, a Short, Integer or Long based field now rejects input exceeding the range of its type, instead of overflowing.
 - NumberField, a BigDecimal based field no longer drops the minus sign of a negative zero, preventing negative values between -1 and 0 from being typed.
 - NumberField, observable() and optional() of a Double based field no longer hold a Long after a leading decimal separator is typed.
+- NumberField, a decimal separator typed after a leading minus sign now adds a zero in front of it, as a leading one does, instead of being ignored.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
