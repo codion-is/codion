@@ -29,6 +29,8 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 
 import javax.swing.JComponent;
 
+import static is.codion.swing.common.ui.component.Components.multiValueInput;
+
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
@@ -65,19 +67,34 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 		@Override
 		public <T> JComponent equal(ConditionModel<T> conditionModel) {
+			ForeignKeyConditionModel condition = (ForeignKeyConditionModel) conditionModel;
+
 			return EntitySearchField.builder()
-							.model(((ForeignKeyConditionModel) conditionModel).equalSearchModel().orElseThrow())
+							.model(condition.equalSearchModel().orElseThrow())
 							.singleSelection()
 							.selector(new TrackSelector())
+							// The component is linked to the EQUAL operand
+							.link(condition.operands().equal())
 							.build();
 		}
 
 		@Override
 		public <T> JComponent in(ConditionModel<T> conditionModel) {
-			return EntitySearchField.builder()
-							.model(((ForeignKeyConditionModel) conditionModel).inSearchModel().orElseThrow())
-							.multiSelection()
-							.selector(new TrackSelector())
+			ForeignKeyConditionModel condition = (ForeignKeyConditionModel) conditionModel;
+
+			// A track found is added with Enter, clearing the search field for the next
+			return multiValueInput()
+							.component(EntitySearchField.builder()
+											.model(condition.inSearchModel().orElseThrow())
+											.singleSelection()
+											// Not set by the single selection builder, otherwise the
+											// result selector allows selecting multiple tracks
+											.singleSelection(true)
+											.selector(new TrackSelector())
+											.buildValue())
+							// The component is linked to the IN operand
+							.link(condition.operands().in())
+							.caption(condition.caption().orElse(null))
 							.build();
 		}
 	}

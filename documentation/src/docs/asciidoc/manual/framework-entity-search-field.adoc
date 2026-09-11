@@ -47,11 +47,23 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.jav
 
 === Multi-Selection
 
-For selecting multiple entities (this is the default mode):
+For selecting multiple entities from the result of a single search, each search replacing the selection:
 
 [source,java]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=multiSelectionSearchField]
+----
+
+=== Collecting Entities
+
+To collect entities over several searches, wrap a single selection search field in a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multivalue/MultiValueInput.html[MultiValueInput], as the table condition panel does for the IN operator of a foreign key condition.
+The entity found is shown in the field and added with ENTER or INSERT, clearing the field for the next search.
+The button beside the field shows how many entities have been collected, and opens a list of them, where DELETE removes the selected ones.
+
+[source,java]
+.Collecting customers for a condition
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=multiValueSearchField]
 ----
 
 == Customization Options
