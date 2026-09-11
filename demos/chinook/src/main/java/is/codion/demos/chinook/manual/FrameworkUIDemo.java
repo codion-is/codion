@@ -27,6 +27,9 @@ import is.codion.demos.chinook.ui.MediaTypeEditPanel;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -83,6 +86,20 @@ final class FrameworkUIDemo {
 						.multiSelection()
 						.build();
 		// end::multiSelectionSearchField[]
+	}
+
+	void multiValueSearchField(ForeignKeyConditionModel customerCondition) {
+		// tag::multiValueSearchField[]
+		MultiValueInput<Entity> customers = Components.multiValueInput()
+						.component(EntitySearchField.builder()
+										.model(customerCondition.inSearchModel().orElseThrow())
+										.singleSelection()
+										.buildValue())
+						// The entities collected, here the IN operand of a foreign key condition
+						.link(customerCondition.operands().in())
+						.caption(customerCondition.caption().orElse(null))
+						.build();
+		// end::multiValueSearchField[]
 	}
 
 	void customTableSelector(EntitySearchModel searchModel) {

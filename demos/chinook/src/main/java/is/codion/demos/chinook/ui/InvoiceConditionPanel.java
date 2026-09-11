@@ -28,6 +28,7 @@ import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
@@ -46,6 +47,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.Month;
@@ -202,36 +204,47 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 		private static final class CustomerConditionPanel extends ConditionPanel<Entity> {
 
-			private final EntitySearchField searchField;
+			private final MultiValueInput<Entity> customers;
 
 			private CustomerConditionPanel(ForeignKeyConditionModel conditionModel, SwingEntityTableModel tableModel) {
 				super(conditionModel);
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(),
 								tableModel.entityDefinition().attributes().definition(Invoice.CUSTOMER_FK).caption()));
-				searchField = EntitySearchField.builder()
-								.model(conditionModel.inSearchModel().orElseThrow())
-								.multiSelection()
-								.columns(25)
+				// A customer found is added with Enter, clearing the search field for the next,
+				// the members button displaying the customers added
+				customers = Components.multiValueInput()
+								.component(EntitySearchField.builder()
+												.model(conditionModel.inSearchModel().orElseThrow())
+												.singleSelection()
+												// Not set by the single selection builder, otherwise the
+												// result selector allows selecting multiple customers
+												.singleSelection(true)
+												.columns(25)
+												.buildValue())
+								// The component is linked to the IN operand
+								.link(conditionModel.operands().in())
+								.caption(conditionModel.caption().orElse(null))
 								.build();
-				add(searchField, BorderLayout.CENTER);
+				add(customers, BorderLayout.CENTER);
 			}
 
 			@Override
 			public Collection<JComponent> components() {
-				return List.of(searchField);
+				return List.of(customers);
 			}
 
 			@Override
 			public void requestInputFocus() {
-				searchField.requestFocusInWindow();
+				customers.requestFocusInWindow();
 			}
 
 			@Override
 			protected void onViewChanged(ConditionView conditionView) {}
 
 			private boolean isFocused() {
-				return searchField.hasFocus();
+				// The search field or the members button
+				return customers.isAncestorOf(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
 			}
 		}
 
