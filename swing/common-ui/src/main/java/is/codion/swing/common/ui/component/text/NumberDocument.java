@@ -91,8 +91,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 	protected final void setText(String text) {
 		try {
 			if (!Objects.equals(getText(0, getLength()), text)) {
-				remove(0, getLength());
-				insertString(0, text, null);
+				replace(0, getLength(), text, null);
 			}
 		}
 		catch (BadLocationException e) {
