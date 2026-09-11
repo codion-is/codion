@@ -21,8 +21,8 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TemporalInput;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -189,11 +189,11 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 			else if (editorComponent instanceof JComboBox) {
 				new ComboBoxStopEditingOnEnter(cellEditor, (JComboBox<?>) editorComponent);
 			}
-			else if (editorComponent instanceof TextFieldPanel) {
-				((TextFieldPanel) editorComponent).textField().addKeyListener(stopEditingOnEnter);
+			else if (editorComponent instanceof TextInput) {
+				((TextInput) editorComponent).textField().addKeyListener(stopEditingOnEnter);
 			}
-			else if (editorComponent instanceof TemporalFieldPanel<?>) {
-				((TemporalFieldPanel<?>) editorComponent).temporalField().addKeyListener(stopEditingOnEnter);
+			else if (editorComponent instanceof TemporalInput<?>) {
+				((TemporalInput<?>) editorComponent).temporalField().addKeyListener(stopEditingOnEnter);
 			}
 			else if (editorComponent instanceof JSpinner) {
 				JComponent editor = ((JSpinner) editorComponent).getEditor();

@@ -22,10 +22,10 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.TestDomain;
 import is.codion.swing.framework.ui.TestDomain.Department;
 
@@ -40,7 +40,7 @@ import static java.util.Arrays.asList;
 import static javax.swing.JComponent.WHEN_FOCUSED;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class EntitySearchFieldPanelTest {
+public final class EntityComboBoxInputTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -52,53 +52,35 @@ public final class EntitySearchFieldPanelTest {
 
 	@Test
 	void test() {
-		EntitySearchModel model = EntitySearchModel.builder()
+		SwingEntityComboBoxModel model = SwingEntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
 						.connection(CONNECTION)
 						.build();
-		ComponentValue<EntitySearchFieldPanel, Entity> value = EntitySearchFieldPanel.builder()
+		model.items().refresh();
+		ComponentValue<EntityComboBoxInput, Entity> value = EntityComboBoxInput.builder()
 						.model(model)
 						.editPanel(() -> null)
-						.singleSelection()
 						.buildValue();
 		Entity sales = CONNECTION.selectSingle(
 						Department.NAME.equalTo("SALES"));
-		model.selection().entity().set(sales);
+		model.selection().item().set(sales);
 		assertEquals(sales, value.get());
 		value.clear();
-		Entity entity = model.selection().entity().get();
+		Entity entity = model.selection().item().get();
 		assertNull(entity);
 		value.set(sales);
-		assertEquals(sales, model.selection().entity().get());
+		assertEquals(sales, model.selection().item().get());
 	}
 
 	@Test
-	void namePropagatesToSearchField() {
-		EntitySearchModel model = EntitySearchModel.builder()
-						.entityType(Department.TYPE)
-						.connection(CONNECTION)
-						.build();
-		EntitySearchFieldPanel panel = EntitySearchFieldPanel.builder()
-						.model(model)
-						.editPanel(() -> null)
-						.singleSelection()
-						.name("test.name")
-						.build();
-		//the panel never receives focus, so the name must reach the focusable inner search field,
-		//the way a tool driving the UI identifies a plain search field
-		assertEquals("test.name", panel.searchField().getName());
-	}
-
-	@Test
-	void keyEventsAndListenersLandOnTheSearchField() {
+	void keyEventsAndListenersLandOnTheComboBox() {
 		FocusListener focusListener = new FocusAdapter() {};
-		EntitySearchFieldPanel panel = EntitySearchFieldPanel.builder()
-						.model(EntitySearchModel.builder()
+		EntityComboBoxInput panel = EntityComboBoxInput.builder()
+						.model(SwingEntityComboBoxModel.builder()
 										.entityType(Department.TYPE)
 										.connection(CONNECTION)
 										.build())
 						.editPanel(() -> null)
-						.singleSelection()
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_F5)
 										.action(Control.action(e -> {})))
@@ -106,8 +88,8 @@ public final class EntitySearchFieldPanelTest {
 						.build();
 		KeyStroke f5 = KeyStroke.getKeyStroke(VK_F5, 0);
 		assertNull(panel.getInputMap(WHEN_FOCUSED).get(f5));
-		assertNotNull(panel.searchField().getInputMap(WHEN_FOCUSED).get(f5));
+		assertNotNull(panel.comboBox().getInputMap(WHEN_FOCUSED).get(f5));
 		assertFalse(asList(panel.getFocusListeners()).contains(focusListener));
-		assertTrue(asList(panel.searchField().getFocusListeners()).contains(focusListener));
+		assertTrue(asList(panel.comboBox().getFocusListeners()).contains(focusListener));
 	}
 }

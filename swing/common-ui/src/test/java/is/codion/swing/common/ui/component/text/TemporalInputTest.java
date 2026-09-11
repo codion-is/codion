@@ -39,11 +39,11 @@ import static java.util.Arrays.asList;
 import static javax.swing.JComponent.WHEN_FOCUSED;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TemporalFieldPanelTest {
+public class TemporalInputTest {
 
 	@Test
 	void setText() {
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder()
+		TemporalInput<LocalDate> panel = TemporalInput.builder()
 						.temporalClass(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
@@ -54,7 +54,7 @@ public class TemporalFieldPanelTest {
 	@Test
 	void set() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder()
+		TemporalInput<LocalDate> panel = TemporalInput.builder()
 						.temporalClass(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
@@ -66,7 +66,7 @@ public class TemporalFieldPanelTest {
 
 	@Test
 	void get() {
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder()
+		TemporalInput<LocalDate> panel = TemporalInput.builder()
 						.temporalClass(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
@@ -81,20 +81,20 @@ public class TemporalFieldPanelTest {
 
 	@Test
 	void unsupportedType() {
-		assertThrows(IllegalArgumentException.class, () -> TemporalFieldPanel.builder()
+		assertThrows(IllegalArgumentException.class, () -> TemporalInput.builder()
 						.temporalClass(LocalTime.class));
 	}
 
 	@Test
 	void constructorNullInputField() {
-		assertThrows(NullPointerException.class, () -> new TemporalFieldPanel<>(null));
+		assertThrows(NullPointerException.class, () -> new TemporalInput<>(null));
 	}
 
 	@Test
 	void enabledState() {
 		SwingUtilities.invokeLater(() -> {
 			State enabledState = State.state();
-			TemporalFieldPanel<LocalDate> inputPanel = TemporalFieldPanel.builder()
+			TemporalInput<LocalDate> inputPanel = TemporalInput.builder()
 							.temporalClass(LocalDate.class)
 							.dateTimePattern("dd.MM.yyyy")
 							.build();
@@ -110,7 +110,7 @@ public class TemporalFieldPanelTest {
 	@Test
 	void keyEventsAndListenersLandOnTheTemporalField() {
 		FocusListener focusListener = new FocusAdapter() {};
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder()
+		TemporalInput<LocalDate> panel = TemporalInput.builder()
 						.temporalClass(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.keyEvent(KeyEvents.builder()

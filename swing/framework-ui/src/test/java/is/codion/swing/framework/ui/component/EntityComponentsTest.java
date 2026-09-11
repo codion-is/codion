@@ -29,7 +29,7 @@ import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -286,16 +286,16 @@ public final class EntityComponentsTest {
 	}
 
 	@Test
-	void textFieldPanel() {
-		ComponentValue<TextFieldPanel, String> componentValue =
-						entityComponents.textFieldPanel(Detail.STRING)
+	void textInput() {
+		ComponentValue<TextInput, String> componentValue =
+						entityComponents.textFieldInput(Detail.STRING)
 										.transferFocusOnEnter(true)
 										.columns(10)
 										.buttonFocusable(true)
 										.updateOn(UpdateOn.VALUE_CHANGE)
 										.link(editor.value(Detail.STRING))
 										.buildValue();
-		TextFieldPanel inputPanel = componentValue.component();
+		TextInput inputPanel = componentValue.component();
 		inputPanel.setText("hello");
 		assertEquals("hello", editor.value(Detail.STRING).get());
 	}

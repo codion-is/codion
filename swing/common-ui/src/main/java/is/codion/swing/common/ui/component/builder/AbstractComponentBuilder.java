@@ -505,7 +505,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	 * @param component the component
 	 * @return the input component
 	 */
-	protected JComponent input(C component) {
+	protected JComponent field(C component) {
 		return component;
 	}
 
@@ -606,7 +606,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		if (focusCycleRoot) {
 			component.setFocusCycleRoot(true);
 		}
-		JComponent input = requireNonNull(input(component));
+		JComponent input = requireNonNull(field(component));
 		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(input));
 		focusListeners.forEach(input::addFocusListener);
 		mouseListeners.forEach(input::addMouseListener);

@@ -61,15 +61,15 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.columns(20);
 		create().textField(Track.NAME)
 						.columns(12);
-		create().comboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
+		create().comboBoxInput(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
 						.preferredWidth(160)
 						.includeAddButton(true)
 						.includeEditButton(true);
-		create().comboBoxPanel(Track.GENRE_FK, this::createGenreEditPanel)
+		create().comboBoxInput(Track.GENRE_FK, this::createGenreEditPanel)
 						.preferredWidth(160)
 						.includeAddButton(true)
 						.includeEditButton(true);
-		create().textFieldPanel(Track.COMPOSER)
+		create().textInput(Track.COMPOSER)
 						.columns(12);
 
 		component(Track.MILLISECONDS).set(new DurationPanelBuilder());

@@ -39,14 +39,14 @@ import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
-import is.codion.swing.common.ui.component.text.FileInputPanel;
+import is.codion.swing.common.ui.component.text.FileInput;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
+import is.codion.swing.common.ui.component.text.TemporalInput;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -149,7 +149,7 @@ public final class EntityComponents {
 			return (ComponentValueBuilder<C, T, B>) comboBox(attribute, createEnumComboBoxModel(attribute, nullable(attributeDefinition)));
 		}
 		if (attribute.type().isByteArray()) {
-			return (ComponentValueBuilder<C, T, B>) byteArrayInputPanel((Attribute<byte[]>) attribute);
+			return (ComponentValueBuilder<C, T, B>) fileByteArrayInput((Attribute<byte[]>) attribute);
 		}
 
 		throw new IllegalArgumentException(ATTRIBUTE + " " + attribute + " (type: " + type.valueClass() + ") not supported");
@@ -236,18 +236,18 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a {@link EntityComboBoxPanel.Builder} with optional buttons for adding and editing items.
+	 * Creates a {@link EntityComboBoxInput.Builder} with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
 	 * @param comboBoxModel the combo box model
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
-	 * @return a foreign key combo box panel builder
+	 * @return a foreign key combo box input builder
 	 */
-	public EntityComboBoxPanel.Builder comboBoxPanel(ForeignKey foreignKey,
+	public EntityComboBoxInput.Builder comboBoxInput(ForeignKey foreignKey,
 																									 SwingEntityComboBoxModel comboBoxModel,
 																									 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
 
-		return EntityComboBoxPanel.builder()
+		return EntityComboBoxInput.builder()
 						.model(comboBoxModel)
 						.editPanel(editPanel)
 						.toolTipText(foreignKeyDefinition.description().orElse(null));
@@ -264,16 +264,16 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a {@link EntitySearchFieldPanel.Builder.Factory}.
+	 * Creates a {@link EntitySearchInput.Builder.Factory}.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
-	 * @return a foreign key search field panel builder
+	 * @return a foreign key search input builder
 	 */
-	public EntitySearchFieldPanel.Builder.Factory searchFieldPanel(ForeignKey foreignKey,
-																																 EntitySearchModel searchModel,
-																																 Supplier<EntityEditPanel> editPanel) {
-		return new SearchFieldPanelBuilderFactory(foreignKey, searchModel, editPanel);
+	public EntitySearchInput.Builder.Factory searchFieldInput(ForeignKey foreignKey,
+																														EntitySearchModel searchModel,
+																														Supplier<EntityEditPanel> editPanel) {
+		return new SearchFieldInputBuilderFactory(foreignKey, searchModel, editPanel);
 	}
 
 	/**
@@ -334,15 +334,15 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a {@link TemporalFieldPanel} builder based on the given attribute.
+	 * Creates a {@link TemporalInput} builder based on the given attribute.
 	 * @param attribute the attribute
 	 * @param <T> the attribute type
-	 * @return a {@link TemporalFieldPanel} builder
+	 * @return a {@link TemporalInput} builder
 	 */
-	public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
+	public <T extends Temporal> TemporalInput.Builder<T> temporalFieldInput(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = definition(attribute);
 
-		return Components.temporalFieldPanel()
+		return Components.temporalInput()
 						.temporalClass(attribute.type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(() -> dateTimePatternMissing(attributeDefinition)))
 						.toolTipText(attributeDefinition.description().orElse(null))
@@ -350,14 +350,14 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a {@link TextFieldPanel} builder based on the given attribute.
+	 * Creates a {@link TextInput} builder based on the given attribute.
 	 * @param attribute the attribute
-	 * @return a {@link TextFieldPanel} builder
+	 * @return a {@link TextInput} builder
 	 */
-	public TextFieldPanel.Builder textFieldPanel(Attribute<String> attribute) {
+	public TextInput.Builder textFieldInput(Attribute<String> attribute) {
 		AttributeDefinition<String> attributeDefinition = definition(attribute);
 
-		return Components.textFieldPanel()
+		return Components.textInput()
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.maximumLength(maximumLength(attributeDefinition))
 						.dialogTitle(attributeDefinition.caption())
@@ -628,14 +628,14 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a byte array based {@link FileInputPanel} builder based on the given attribute.
+	 * Creates a byte array based {@link FileInput} builder based on the given attribute.
 	 * @param attribute the attribute
-	 * @return a {@link FileInputPanel.Builder}
+	 * @return a {@link FileInput.Builder}
 	 */
-	public ComponentValueBuilder<FileInputPanel, byte[], FileInputPanel.Builder<byte[]>> byteArrayInputPanel(Attribute<byte[]> attribute) {
+	public ComponentValueBuilder<FileInput, byte[], FileInput.Builder<byte[]>> fileByteArrayInput(Attribute<byte[]> attribute) {
 		AttributeDefinition<byte[]> attributeDefinition = definition(attribute);
 
-		return Components.byteArrayInputPanel()
+		return Components.fileByteArrayInput()
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
@@ -723,21 +723,21 @@ public final class EntityComponents {
 		}
 	}
 
-	private final class SearchFieldPanelBuilderFactory implements EntitySearchFieldPanel.Builder.Factory {
+	private final class SearchFieldInputBuilderFactory implements EntitySearchInput.Builder.Factory {
 
 		private final EntitySearchModel searchModel;
 		private final ForeignKeyDefinition foreignKeyDefinition;
 		private final Supplier<EntityEditPanel> editPanel;
 
-		private SearchFieldPanelBuilderFactory(ForeignKey foreignKey, EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
+		private SearchFieldInputBuilderFactory(ForeignKey foreignKey, EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
 			this.searchModel = requireNonNull(searchModel);
 			this.foreignKeyDefinition = definition(foreignKey);
 			this.editPanel = requireNonNull(editPanel);
 		}
 
 		@Override
-		public EntitySearchFieldPanel.MultiSelectionBuilder multiSelection() {
-			return EntitySearchFieldPanel.builder()
+		public EntitySearchInput.MultiSelectionBuilder multiSelection() {
+			return EntitySearchInput.builder()
 							.model(searchModel)
 							.editPanel(editPanel)
 							.multiSelection()
@@ -745,8 +745,8 @@ public final class EntityComponents {
 		}
 
 		@Override
-		public EntitySearchFieldPanel.SingleSelectionBuilder singleSelection() {
-			return EntitySearchFieldPanel.builder()
+		public EntitySearchInput.SingleSelectionBuilder singleSelection() {
+			return EntitySearchInput.builder()
 							.model(searchModel)
 							.editPanel(editPanel)
 							.singleSelection()

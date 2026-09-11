@@ -54,7 +54,7 @@ import java.awt.event.FocusEvent;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.panel;
-import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlKeys.DISPLAY_TEXT_AREA;
+import static is.codion.swing.common.ui.component.text.TextInput.ControlKeys.DISPLAY_TEXT_AREA;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.KeyEvent.VK_INSERT;
@@ -66,10 +66,10 @@ import static java.util.ResourceBundle.getBundle;
  * which opens a JTextArea for editing long strings.
  * @see #builder()
  */
-public final class TextFieldPanel extends JPanel {
+public final class TextInput extends JPanel {
 
 	private static final MessageBundle MESSAGES =
-					messageBundle(TextFieldPanel.class, getBundle(TextFieldPanel.class.getName()));
+					messageBundle(TextInput.class, getBundle(TextInput.class.getName()));
 
 	/**
 	 * The available controls.
@@ -93,7 +93,7 @@ public final class TextFieldPanel extends JPanel {
 	private final @Nullable Dimension textAreaSize;
 	private final int maximumLength;
 
-	private TextFieldPanel(DefaultBuilder builder) {
+	private TextInput(DefaultBuilder builder) {
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(DISPLAY_TEXT_AREA).set(createTextAreaControl(builder));
 		this.textField = createTextField(builder);
@@ -159,9 +159,9 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	/**
-	 * A builder for {@link TextFieldPanel}.
+	 * A builder for {@link TextInput}.
 	 */
-	public interface Builder extends ComponentValueBuilder<TextFieldPanel, String, Builder> {
+	public interface Builder extends ComponentValueBuilder<TextInput, String, Builder> {
 
 		/**
 		 * @param updateOn specifies when the underlying value should be updated
@@ -300,7 +300,7 @@ public final class TextFieldPanel extends JPanel {
 						.show();
 	}
 
-	private static final class DefaultBuilder extends AbstractComponentValueBuilder<TextFieldPanel, String, Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComponentValueBuilder<TextInput, String, Builder> implements Builder {
 
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
@@ -317,37 +317,37 @@ public final class TextFieldPanel extends JPanel {
 		private DefaultBuilder() {}
 
 		@Override
-		public TextFieldPanel.Builder updateOn(UpdateOn updateOn) {
+		public TextInput.Builder updateOn(UpdateOn updateOn) {
 			textFieldBuilder.updateOn(updateOn);
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder columns(int columns) {
+		public TextInput.Builder columns(int columns) {
 			textFieldBuilder.columns(columns);
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder upperCase(boolean upperCase) {
+		public TextInput.Builder upperCase(boolean upperCase) {
 			textFieldBuilder.upperCase(upperCase);
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder lowerCase(boolean lowerCase) {
+		public TextInput.Builder lowerCase(boolean lowerCase) {
 			textFieldBuilder.lowerCase(lowerCase);
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder selectAllOnFocusGained(boolean selectAllOnFocusGained) {
+		public TextInput.Builder selectAllOnFocusGained(boolean selectAllOnFocusGained) {
 			textFieldBuilder.selectAllOnFocusGained(selectAllOnFocusGained);
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder buttonFocusable(boolean buttonFocusable) {
+		public TextInput.Builder buttonFocusable(boolean buttonFocusable) {
 			this.buttonFocusable = buttonFocusable;
 			return this;
 		}
@@ -359,74 +359,74 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		public TextFieldPanel.Builder textAreaSize(Dimension textAreaSize) {
+		public TextInput.Builder textAreaSize(Dimension textAreaSize) {
 			this.textAreaSize = requireNonNull(textAreaSize);
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder maximumLength(int maximumLength) {
+		public TextInput.Builder maximumLength(int maximumLength) {
 			textFieldBuilder.maximumLength(maximumLength);
 			this.maximumLength = maximumLength;
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder caption(@Nullable String caption) {
+		public TextInput.Builder caption(@Nullable String caption) {
 			this.caption = caption;
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder dialogTitle(@Nullable String dialogTitle) {
+		public TextInput.Builder dialogTitle(@Nullable String dialogTitle) {
 			this.dialogTitle = dialogTitle;
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+		public TextInput.Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 
 		@Override
-		protected TextFieldPanel createComponent() {
-			return new TextFieldPanel(this);
+		protected TextInput createComponent() {
+			return new TextInput(this);
 		}
 
 		@Override
-		protected ComponentValue<TextFieldPanel, String> createValue(TextFieldPanel component) {
-			return new TextFieldPanelValue(component);
+		protected ComponentValue<TextInput, String> createValue(TextInput component) {
+			return new TextInputValue(component);
 		}
 
 		@Override
-		protected void enable(TransferFocusOnEnter transferFocusOnEnter, TextFieldPanel component) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, TextInput component) {
 			transferFocusOnEnter.enable(component.textField);
 			transferFocusOnEnter.enable(component.button);
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, TextFieldPanel component, ObservableState valid, ObservableState warned) {
+		protected void enable(ValidationIndicator validationIndicator, TextInput component, ObservableState valid, ObservableState warned) {
 			validationIndicator.enable(component.textField, valid, warned);
 		}
 
 		@Override
-		protected JComponent input(TextFieldPanel component) {
+		protected JComponent field(TextInput component) {
 			return component.textField;
 		}
 
 		@Override
-		protected void setName(String name, TextFieldPanel component) {
+		protected void setName(String name, TextInput component) {
 			super.setName(name, component);
 			component.textField.setName(name);
 		}
 	}
 
-	private static class TextFieldPanelValue extends AbstractComponentValue<TextFieldPanel, String> {
+	private static class TextInputValue extends AbstractComponentValue<TextInput, String> {
 
-		private TextFieldPanelValue(TextFieldPanel textFieldPanel) {
-			super(textFieldPanel);
-			textFieldPanel.textField().getDocument().addDocumentListener(new NotifyListeners());
+		private TextInputValue(TextInput textInput) {
+			super(textInput);
+			textInput.textField().getDocument().addDocumentListener(new NotifyListeners());
 		}
 
 		@Override

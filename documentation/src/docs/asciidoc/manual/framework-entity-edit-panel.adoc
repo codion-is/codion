@@ -70,7 +70,7 @@ include::{dir-source}/is/codion/manual/swing/framework/ui/EntityEditPanelDemo.ja
 
 === Temporal
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#temporalFieldPanel(is.codion.framework.domain.entity.attribute.Attribute)[temporalFieldPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#temporalFieldInput(is.codion.framework.domain.entity.attribute.Attribute)[temporalFieldInput(attribute)]
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#temporalField(is.codion.framework.domain.entity.attribute.Attribute)[temporalField(attribute)]
 
@@ -94,7 +94,7 @@ include::{dir-source}/is/codion/manual/swing/framework/ui/EntityEditPanelDemo.ja
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textArea(is.codion.framework.domain.entity.attribute.Attribute)[textArea(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textFieldPanel(is.codion.framework.domain.entity.attribute.Attribute)[textFieldPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textFieldInput(is.codion.framework.domain.entity.attribute.Attribute)[textFieldInput(attribute)]
 
 [source,java,indent=0]
 ----

@@ -33,7 +33,7 @@ import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -716,7 +716,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		private final ComponentValue<JTextField, String> viewSuffix;
 		private final ComponentValue<JTextField, String> viewPrefix;
 		private final ComponentValue<JCheckBox, Boolean> hideAuditColumns;
-		private final ComponentValue<TextFieldPanel, String> auditColumnNames;
+		private final ComponentValue<TextInput, String> auditColumnNames;
 		private final ComponentValue<JCheckBox, Boolean> lowerCaseIdentifiers;
 
 		private SchemaSettingsPanel(SchemaSettings schemaSettings) {
@@ -737,7 +737,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			hideAuditColumns = checkBox()
 							.value(schemaSettings.hideAuditColumns())
 							.buildValue();
-			auditColumnNames = Components.textFieldPanel()
+			auditColumnNames = Components.textInput()
 							.value(schemaSettings.auditColumnNames().stream()
 											.collect(joining(", ")))
 							.buildValue();

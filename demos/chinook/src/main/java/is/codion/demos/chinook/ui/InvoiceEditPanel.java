@@ -58,7 +58,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 						// We add a custom selector factory, creating a selector which
 						// displays a table instead of a list when selecting a customer
 						.selector(new CustomerSelector());
-		create().temporalFieldPanel(Invoice.DATE)
+		create().temporalInput(Invoice.DATE)
 						.columns(6);
 
 		create().textField(Invoice.BILLINGADDRESS)

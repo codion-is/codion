@@ -41,9 +41,9 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 						.columns(6);
 		create().textField(Employee.LASTNAME)
 						.columns(6);
-		create().temporalFieldPanel(Employee.BIRTHDATE)
+		create().temporalInput(Employee.BIRTHDATE)
 						.columns(7);
-		create().temporalFieldPanel(Employee.HIREDATE)
+		create().temporalInput(Employee.HIREDATE)
 						.columns(7);
 		create().textField(Employee.TITLE)
 						.columns(8);

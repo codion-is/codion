@@ -32,10 +32,10 @@ import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.panel.InputPanelLayout;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
+import is.codion.swing.common.ui.component.text.TemporalInput;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextComponentBuilder.CaretPosition;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -251,12 +251,12 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void temporalFieldPanel() {
+	void temporalInput() {
 		LocalDate date = LocalDate.now();
 
 		Value<LocalDate> value = Value.nullable();
-		ComponentValue<TemporalFieldPanel<LocalDate>, LocalDate> componentValue =
-						Components.temporalFieldPanel()
+		ComponentValue<TemporalInput<LocalDate>, LocalDate> componentValue =
+						Components.temporalInput()
 										.temporalClass(LocalDate.class)
 										.link(value)
 										.dateTimePattern("dd-MM-yyyy")
@@ -699,9 +699,9 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void textFieldPanel() {
+	void textInput() {
 		Value<String> value = Value.nullable();
-		ComponentValue<TextFieldPanel, String> componentValue = Components.textFieldPanel()
+		ComponentValue<TextInput, String> componentValue = Components.textInput()
 						.transferFocusOnEnter(true)
 						.columns(10)
 						.buttonFocusable(true)
@@ -715,13 +715,13 @@ public final class ComponentsTest {
 						.updateOn(UpdateOn.VALUE_CHANGE)
 						.link(value)
 						.buildValue();
-		TextFieldPanel textFieldPanel = componentValue.component();
-		textFieldPanel.setText("hello");
+		TextInput textInput = componentValue.component();
+		textInput.setText("hello");
 		assertEquals("hello", value.get());
 
 		assertEquals(value.get(), componentValue.get());
 
-		textFieldPanel.setText("");
+		textInput.setText("");
 
 		assertNull(componentValue.get());
 
@@ -731,7 +731,7 @@ public final class ComponentsTest {
 		componentValue.component().setText("");
 		assertNull(componentValue.get());
 
-		assertThrows(IllegalArgumentException.class, () -> textFieldPanel.textField().setText("asdfasdfasdfasdfasdf"));
+		assertThrows(IllegalArgumentException.class, () -> textInput.textField().setText("asdfasdfasdfasdfasdf"));
 	}
 
 	@Test

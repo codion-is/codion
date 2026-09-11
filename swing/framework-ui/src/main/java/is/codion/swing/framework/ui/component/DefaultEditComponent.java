@@ -78,7 +78,7 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 		EntityComponents components = entityComponents(editor.entityDefinition());
 		ValueAttributeDefinition<T> definition = (ValueAttributeDefinition<T>) attributeDefinition;
 		if (attribute.type().isString() && definition.items().isEmpty()) {
-			return (ComponentValue<C, T>) components.textFieldPanel((Attribute<String>) attribute)
+			return (ComponentValue<C, T>) components.textFieldInput((Attribute<String>) attribute)
 							.columns(textFieldColumns((ValueAttributeDefinition<String>) definition))
 							.buildValue();
 		}
@@ -130,7 +130,7 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<C, T> createTemporalComponentValue(A attribute,
 																																																										 EntityComponents inputComponents) {
 		if (CalendarPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
-			return (ComponentValue<C, T>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute).buildValue();
+			return (ComponentValue<C, T>) inputComponents.temporalFieldInput((Attribute<Temporal>) attribute).buildValue();
 		}
 
 		return (ComponentValue<C, T>) inputComponents.temporalField((Attribute<Temporal>) attribute).buildValue();

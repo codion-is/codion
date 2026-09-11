@@ -598,12 +598,12 @@ is/codion/swing/common/ui/component/text/TemporalField_is_IS.properties
 |display_calendar|Display calendar|Birta dagatal
 |===
 
-=== is/codion/swing/common/ui/component/text/TextFieldPanel.java
+=== is/codion/swing/common/ui/component/text/TextInput.java
 
 [source]
 ----
-is/codion/swing/common/ui/component/text/TextFieldPanel.properties
-is/codion/swing/common/ui/component/text/TextFieldPanel_is_IS.properties
+is/codion/swing/common/ui/component/text/TextInput.properties
+is/codion/swing/common/ui/component/text/TextInput_is_IS.properties
 ----
 
 [cols="1,1,1"]
