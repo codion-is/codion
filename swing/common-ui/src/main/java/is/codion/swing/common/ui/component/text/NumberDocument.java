@@ -224,7 +224,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 				return new DefaultNumberParseResult<>(formattedNumber, parseNumber(formattedNumber),
 								countAddedGroupingSeparators(string, formattedNumber), true);
 			}
-			if (number != null && finite(number)) {
+			if (number != null) {
 				// exceeds the range of the number type
 				return DefaultNumberParseResult.overflow(string, number);
 			}
@@ -273,7 +273,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		/**
 		 * @param text the text to parse
-		 * @return the number parsed by the format, null if it can not parse the text
+		 * @return the number parsed by the format, null if it can not parse the text or in case of NaN or infinity
 		 */
 		private @Nullable Number parseFormat(String text) {
 			if (text.isEmpty()) {
@@ -282,7 +282,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 			ParsePosition position = new ParsePosition(0);
 			Number number = format.parse(text, position);
-			if (position.getIndex() != text.length() || position.getErrorIndex() != -1) {
+			if (position.getIndex() != text.length() || position.getErrorIndex() != -1 || !finite(number)) {
 				return null;
 			}
 
@@ -360,7 +360,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			if (number instanceof Double || number instanceof Float) {
 				double value = number.doubleValue();
 
-				return Double.isNaN(value) || Double.isInfinite(value) ? null : new BigDecimal(value).toBigInteger();
+				return Double.isNaN(value) || Double.isInfinite(value) ? null : BigDecimal.valueOf(value).toBigInteger();
 			}
 
 			return BigInteger.valueOf(number.longValue());
