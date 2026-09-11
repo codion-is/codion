@@ -32,7 +32,7 @@ final class CharacterDocument extends PlainDocument {
 
 	CharacterDocument() {
 		documentFilter = new CaseDocumentFilter(DocumentCase.NONE);
-		documentFilter.addValidator(new CharacterLengthValidator<>());
+		documentFilter.addValidator(new CharacterLengthValidator());
 		super.setDocumentFilter(documentFilter);
 	}
 
@@ -41,13 +41,16 @@ final class CharacterDocument extends PlainDocument {
 		throw new UnsupportedOperationException("Changing the DocumentFilter of CharacterDocument is not allowed");
 	}
 
-	private static final class CharacterLengthValidator<T> implements SilentValidator<T> {
+	/**
+	 * Not a {@link StringLengthValidator}, since {@link MaximumTextFieldLength} would then modify it
+	 */
+	private static final class CharacterLengthValidator implements SilentValidator<String> {
+
+		private final StringLengthValidator lengthValidator = new StringLengthValidator(1);
 
 		@Override
-		public void validate(@Nullable T text) {
-			if (text != null && text.toString().length() > 1) {
-				throw new IllegalArgumentException();
-			}
+		public void validate(@Nullable String text) {
+			lengthValidator.validate(text);
 		}
 	}
 }
