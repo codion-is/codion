@@ -217,6 +217,28 @@ public final class NumberFieldTest {
 	}
 
 	@Test
+	void exactRange() {
+		// 2^53 + 1 equals 2^53 as a double
+		NumberField<Long> longField = NumberField.builder()
+						.numberClass(Long.class)
+						.maximum(9007199254740992L)
+						.build();
+		longField.set(9007199254740992L);
+		assertThrows(IllegalArgumentException.class, () -> longField.set(9007199254740993L));
+		assertThrows(IllegalArgumentException.class, () -> NumberField.builder()
+						.numberClass(Long.class)
+						.range(9007199254740993L, 9007199254740992L));
+
+		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
+						.numberClass(BigDecimal.class)
+						.range(0.1, new BigDecimal("1.00000000000000001"))
+						.build();
+		bigDecimalField.set(new BigDecimal("0.1"));
+		bigDecimalField.set(new BigDecimal("1.00000000000000001"));
+		assertThrows(IllegalArgumentException.class, () -> bigDecimalField.set(new BigDecimal("1.00000000000000002")));
+	}
+
+	@Test
 	void minusSign() throws BadLocationException {
 		NumberField<Integer> integerField = NumberField.builder()
 						.numberClass(Integer.class)

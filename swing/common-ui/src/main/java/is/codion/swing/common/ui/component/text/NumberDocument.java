@@ -137,6 +137,39 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		set(value);
 	}
 
+	/**
+	 * Compares two numbers exactly, regardless of their types, unlike comparing their double values,
+	 * which loses precision for large Long, BigInteger and BigDecimal values
+	 * @param first the first number
+	 * @param second the second number
+	 * @return a negative integer, zero, or a positive integer as the first number is less than, equal to, or greater than the second
+	 */
+	static int compare(Number first, Number second) {
+		if (finite(first) && finite(second)) {
+			return bigDecimal(first).compareTo(bigDecimal(second));
+		}
+
+		return Double.compare(first.doubleValue(), second.doubleValue());
+	}
+
+	private static BigDecimal bigDecimal(Number number) {
+		if (number instanceof BigDecimal) {
+			return (BigDecimal) number;
+		}
+		if (number instanceof BigInteger) {
+			return new BigDecimal((BigInteger) number);
+		}
+		if (number instanceof Double || number instanceof Float) {
+			return BigDecimal.valueOf(number.doubleValue());
+		}
+
+		return BigDecimal.valueOf(number.longValue());
+	}
+
+	private static boolean finite(Number number) {
+		return !(number instanceof Double || number instanceof Float) || Double.isFinite(number.doubleValue());
+	}
+
 	static class NumberParser<T extends Number> implements Parser<T> {
 
 		private static final String MINUS_SIGN = "-";
@@ -254,10 +287,6 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			}
 
 			return number;
-		}
-
-		private static boolean finite(Number number) {
-			return !(number instanceof Double || number instanceof Float) || Double.isFinite(number.doubleValue());
 		}
 
 		private static @Nullable Number toType(Class<? extends Number> clazz, Number number) {
@@ -591,10 +620,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			private boolean withinTypingRange(Number value) {
 				Number minimum = minimum();
 				Number maximum = maximum();
-				if (minimum != null && minimum.doubleValue() > 0) {
+				if (minimum != null && compare(minimum, 0) > 0) {
 					minimum = 0;
 				}
-				if (maximum != null && maximum.doubleValue() < 0) {
+				if (maximum != null && compare(maximum, 0) < 0) {
 					maximum = 0;
 				}
 
@@ -604,7 +633,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			private boolean negativeAllowed() {
 				Number minimum = minimum();
 
-				return minimum == null || minimum.doubleValue() < 0;
+				return minimum == null || compare(minimum, 0) < 0;
 			}
 
 			private IllegalArgumentException outsideRange(Number value) {
@@ -626,8 +655,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			}
 
 			private static boolean within(Number value, @Nullable Number minimum, @Nullable Number maximum) {
-				return (minimum == null || value.doubleValue() >= minimum.doubleValue())
-								&& (maximum == null || value.doubleValue() <= maximum.doubleValue());
+				return (minimum == null || compare(value, minimum) >= 0)
+								&& (maximum == null || compare(value, maximum) <= 0);
 			}
 
 			private static @Nullable Number typeMinimum(Class<? extends Number> numberClass) {
