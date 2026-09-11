@@ -419,6 +419,32 @@ public final class NumberFieldTest {
 		assertEquals(Double.valueOf(5.14), doubleField.observable().get());
 		doubleField.getDocument().remove(3, 1);
 		assertEquals("5,1", doubleField.getText());
+		doubleField.setText("5,100");
+		assertEquals("5,10", doubleField.getText());
+		doubleField.setText("5,120");
+		assertEquals("5,12", doubleField.getText());
+
+		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
+						.numberClass(BigDecimal.class)
+						.decimalSeparator(',')
+						.groupingSeparator('.')
+						.fractionDigits(2)
+						.build();
+		bigDecimalField.setText("5,12000");
+		assertEquals("5,12", bigDecimalField.getText());
+		assertEquals(new BigDecimal("5.12"), bigDecimalField.get());
+
+		doubleField = NumberField.builder()
+						.numberClass(Double.class)
+						.decimalSeparator(',')
+						.groupingSeparator('.')
+						.fractionDigits(0)
+						.build();
+		doubleField.setText("5,");
+		assertEquals("5", doubleField.getText());
+		doubleField.setText("");
+		doubleField.getDocument().insertString(0, ",", null);
+		assertEquals("", doubleField.getText());
 
 		doubleField = NumberField.builder()
 						.numberClass(Double.class)

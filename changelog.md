@@ -57,6 +57,7 @@ Codion Change Log
 - NumberField, observable() and optional() of a Double based field no longer hold a Long after a leading decimal separator is typed.
 - NumberField, a decimal separator typed after a leading minus sign now adds a zero in front of it, as a leading one does, instead of being ignored.
 - NumberField, observable() no longer holds fraction digits dropped from the text due to the maximum fraction digits.
+- NumberField, trailing decimal zeros and a trailing decimal separator no longer exceed the maximum fraction digits.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
