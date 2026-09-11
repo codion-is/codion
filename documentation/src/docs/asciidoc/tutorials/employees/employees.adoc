@@ -93,7 +93,7 @@ Here is the parameter required for running the Employees test on the default H2 
 
 -Dcodion.db.url=jdbc:h2:mem:h2db -Dcodion.test.user=scott:tiger
 
-For further information on parameters required for running Codion applications see <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> and <<{basedir}/technical/server.adoc#_server_configuration, server configuration>>.
+For further information on parameters required for running Codion applications see <<{basedir}/technical/technical.adoc#_client_configuration, client configuration>> and <<{basedir}/technical/technical.adoc#_server_configuration, server configuration>>.
 
 == Model
 
@@ -229,7 +229,7 @@ include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=c
 ----
 
 We create a *main()* method for configuring and running the application.
-See <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> for what configuration is required for running the client.
+See <<{basedir}/technical/technical.adoc#_client_configuration, client configuration>> for what configuration is required for running the client.
 
 [source,java]
 ----

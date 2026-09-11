@@ -346,7 +346,7 @@ IMPORTANT: The hybrid approach protects the server from deserialization attacks 
 
 When using the JSON connection with functions, procedures, or reports that have parameters, you must register parameter types with the {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper]. This is required because Jackson needs target types to deserialize JSON, and generic type parameters are erased at runtime.
 
-See the manual section on <<../manual/framework-domain-procedures-functions.adoc#_entityobjectmapperfactory, HTTP/JSON Serialization>> for details on registering parameter types via {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory].
+See the manual section on <<../manual/manual.adoc#_entityobjectmapperfactory, HTTP/JSON Serialization>> for details on registering parameter types via {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory].
 
 === Server Configuration
 

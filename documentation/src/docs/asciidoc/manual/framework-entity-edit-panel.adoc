@@ -195,7 +195,7 @@ The action mechanism used throughout the Codion framework is based on the {url-j
 
 An *Editor Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.Config.html#INCLUDE_INSPECTOR[EntityEditPanel.Config.INCLUDE_INSPECTOR] configuration value or for a single panel via the panel configuration.
 
-The inspector displays the editor state — values, modified/valid flags, validation messages — along with the INSERT and UPDATE queries the current state would produce, dynamically updated. See <<_development_tools, Development tools>>.
+The inspector displays the editor state — values, modified/valid flags, validation messages — along with the INSERT and UPDATE queries the current state would produce, dynamically updated. See <<manual.adoc#_development_tools, Development tools>>.
 
 [source,java]
 ----

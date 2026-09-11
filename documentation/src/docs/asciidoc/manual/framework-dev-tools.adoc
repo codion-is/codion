@@ -13,7 +13,7 @@ Included by default in every table panel, on CTRL-ALT-V; excluded via {url-javad
 
 == Query inspector
 
-Displays the *SELECT* statement the table's query model will run, updated live as conditions change — see <<_table_query_inspector, Query Inspector>>.
+Displays the *SELECT* statement the table's query model will run, updated live as conditions change — see <<manual.adoc#_table_query_inspector, Query Inspector>>.
 Enabled via *EntityTablePanel.Config.INCLUDE_INSPECTOR*, opened with CTRL-ALT-Q.
 
 NOTE: The query inspector requires the *codion-framework-db-local* module on the classpath, since it renders SQL — on a purely remote client it is unavailable.
@@ -38,7 +38,7 @@ Available from the table popup menu, and shown automatically when a delete fails
 
 == SQL tracing
 
-Traces the queries a local connection runs — see <<_entityapplicationpanel, EntityApplicationPanel>>.
+Traces the queries a local connection runs — see <<manual.adoc#_entityapplicationpanel, EntityApplicationPanel>>.
 
 == Server monitor
 

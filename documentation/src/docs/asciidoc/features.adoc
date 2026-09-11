@@ -37,10 +37,10 @@
 
 == IV. The Application Server & Deployment
 
-* Lightweight, Pluggable Application Server with <<technical/server.adoc#_entity_server, EntityServer>>
+* Lightweight, Pluggable Application Server with <<technical/technical.adoc#_entity_server, EntityServer>>
 * Multi-Protocol Support (RMI & HTTP out of the box)
 * Pluggable <<technical/technical.adoc#_authentication, Authentication Management>>
-* Server monitoring UI with <<technical/server-monitor.adoc#_server_monitor, Server Monitor>>.
+* Server monitoring UI with <<technical/technical.adoc#_server_monitor, Server Monitor>>.
 * Flexible Client Deployment Models
 ** <<manual/manual.adoc#_localentityconnection, Local JDBC Connection>>
 ** <<manual/manual.adoc#_remoteentityconnection, Client-Server (RMI)>>

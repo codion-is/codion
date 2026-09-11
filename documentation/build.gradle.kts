@@ -65,12 +65,16 @@ tasks.asciidoctor {
         inputs.files(demo.sourceSets.main.get().allSource)
         inputs.files(demo.sourceSets.test.get().allSource)
     }
+    // the chapters and docinfo, which are not sources, so that changing them triggers the conversion
+    inputs.dir("src/docs/asciidoc")
 
     setOutputDir(project.layout.buildDirectory.dir("asciidoc"))
 
     baseDirFollowsSourceFile()
     sources {
-        include("*.adoc", "technical/**/*.adoc", "tutorials/**/*.adoc", "manual/**/*.adoc", "help/**/*.adoc")
+        // the manual and technical chapters are converted as parts of manual.adoc and technical.adoc only
+        include("*.adoc", "manual/manual.adoc", "technical/technical.adoc", "technical/i18n-values.adoc",
+            "tutorials/**/*.adoc", "help/**/*.adoc")
     }
     attributes(
         mapOf(

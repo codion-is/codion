@@ -4,7 +4,7 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities: a searchable, filterable, sortable grid with a toolbar, a popup menu, in-table editing, a summary panel and a status bar — all driven by an underlying <<_entitytablemodel, EntityTableModel>>.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities: a searchable, filterable, sortable grid with a toolbar, a popup menu, in-table editing, a summary panel and a status bar — all driven by an underlying <<manual.adoc#_entitytablemodel, EntityTableModel>>.
 
 == Configuration
 
@@ -77,7 +77,7 @@ Filter panels are excluded by default and included via *Config.INCLUDE_FILTERS* 
 == Exporting data
 
 A configurable denormalized data export tool — including attributes of referenced entities via foreign key traversal — can be included in the EntityTablePanel **Copy** table popup submenu, via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_EXPORT[EntityTablePanel.Config.INCLUDE_EXPORT] configuration value or the panel configuration.
-See <<_table_export, Exporting data>>.
+See <<manual.adoc#_table_export, Exporting data>>.
 
 [#_table_query_inspector]
 == Query Inspector

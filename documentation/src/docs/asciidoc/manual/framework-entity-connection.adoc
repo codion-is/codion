@@ -393,17 +393,3 @@ A cached result is shared by every cache hit, so it is handed out as an unmodifi
 Use `entity.copy().mutable()` to obtain a modifiable copy.
 
 Note that the cache is not invalidated by inserts, updates, deletes or transaction rollback, that selects for update always bypass the cache and return mutable entities, and that these scopes do not nest.
-
-== LocalEntityConnection
-
-An EntityConnection implementation based on a direct connection to the database, provides access to the underlying JDBC connection.
-
-== RemoteEntityConnection
-
-An EntityConnection implementation based on an RMI connection.
-Requires a server.
-
-== HttpEntityConnection
-
-An EntityConnection implementation based on HTTP.
-Requires a server.
