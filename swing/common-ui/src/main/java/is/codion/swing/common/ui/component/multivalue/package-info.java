@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 /**
- * <p>List box component implementations.
+ * <p>A field collecting a set of values through a wrapped component.
  */
 @org.jspecify.annotations.NullMarked
-package is.codion.swing.common.ui.component.listbox;
+package is.codion.swing.common.ui.component.multivalue;
