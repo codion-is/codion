@@ -34,11 +34,11 @@ import static java.util.Arrays.asList;
 import static javax.swing.JComponent.WHEN_FOCUSED;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TextFieldPanelTest {
+public class TextInputTest {
 
 	@Test
 	void test() {
-		TextFieldPanel panel = TextFieldPanel.builder()
+		TextInput panel = TextInput.builder()
 						.caption("caption")
 						.dialogTitle("title")
 						.build();
@@ -51,7 +51,7 @@ public class TextFieldPanelTest {
 
 	@Test
 	void setTextExceedMaxLength() {
-		TextFieldPanel panel = TextFieldPanel.builder()
+		TextInput panel = TextInput.builder()
 						.maximumLength(5)
 						.dialogTitle("title")
 						.build();
@@ -62,7 +62,7 @@ public class TextFieldPanelTest {
 	@Test
 	void enabledState() throws InterruptedException {
 		State enabledState = State.state();
-		TextFieldPanel inputPanel = TextFieldPanel.builder()
+		TextInput inputPanel = TextInput.builder()
 						.build();
 		enabled(enabledState, inputPanel);
 		assertFalse(inputPanel.textField().isEnabled());
@@ -76,7 +76,7 @@ public class TextFieldPanelTest {
 	@Test
 	void keyEventsAndListenersLandOnTheTextField() {
 		FocusListener focusListener = new FocusAdapter() {};
-		TextFieldPanel panel = TextFieldPanel.builder()
+		TextInput panel = TextInput.builder()
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_F5)
 										.action(Control.action(e -> {})))

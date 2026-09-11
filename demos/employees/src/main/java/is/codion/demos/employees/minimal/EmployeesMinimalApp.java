@@ -236,7 +236,7 @@ public final class EmployeesMinimalApp {
 			create().comboBox(Employee.DEPARTMENT_FK);
 			create().textField(Employee.JOB);
 			create().comboBox(Employee.MANAGER_FK);
-			create().temporalFieldPanel(Employee.HIREDATE);
+			create().temporalInput(Employee.HIREDATE);
 			create().textField(Employee.SALARY);
 			create().textField(Employee.COMMISSION);
 

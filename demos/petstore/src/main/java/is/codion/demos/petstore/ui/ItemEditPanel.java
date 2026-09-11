@@ -34,13 +34,13 @@ public class ItemEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		create().comboBox(Item.PRODUCT_FK);
 		create().textField(Item.NAME);
-		create().textFieldPanel(Item.DESCRIPTION)
+		create().textInput(Item.DESCRIPTION)
 						.buttonFocusable(false);
 		create().textField(Item.PRICE);
-		create().comboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
+		create().comboBoxInput(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
 						.preferredWidth(180)
 						.includeAddButton(true);
-		create().comboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
+		create().comboBoxInput(Item.ADDRESS_FK, this::createAddressEditPanel)
 						.preferredWidth(180)
 						.includeAddButton(true);
 		create().textField(Item.IMAGE_URL);

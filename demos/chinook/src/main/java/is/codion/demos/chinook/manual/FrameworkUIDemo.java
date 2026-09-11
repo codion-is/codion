@@ -224,12 +224,12 @@ final class FrameworkUIDemo {
 
 			@Override
 			protected void initializeUI() {
-				create().comboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
+				create().comboBoxInput(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
 								.preferredWidth(160)
 								.includeAddButton(true)
 								.includeEditButton(true);
 
-				create().searchFieldPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
+				create().searchFieldInput(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
 								.preferredWidth(160)
 								.includeAddButton(true)
 								.includeEditButton(true);

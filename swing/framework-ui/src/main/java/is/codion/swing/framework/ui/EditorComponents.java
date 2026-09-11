@@ -47,18 +47,18 @@ import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
+import is.codion.swing.common.ui.component.text.TemporalInput;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
-import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
+import is.codion.swing.framework.ui.component.EntityComboBoxInput;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.EntitySearchField;
-import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
+import is.codion.swing.framework.ui.component.EntitySearchInput;
 
 import org.jspecify.annotations.Nullable;
 
@@ -628,22 +628,22 @@ public final class EditorComponents {
 		}
 
 		/**
-		 * Creates a builder for text field panels.
-		 * @param attribute the attribute for which to build a text field panel
-		 * @return a text field panel builder
+		 * Creates a builder for text inputs.
+		 * @param attribute the attribute for which to build a text input
+		 * @return a text input builder
 		 */
-		public TextFieldPanel.Builder textFieldPanel(Attribute<String> attribute) {
-			return components.component(attribute).set(entityComponents.textFieldPanel(attribute));
+		public TextInput.Builder textInput(Attribute<String> attribute) {
+			return components.component(attribute).set(entityComponents.textFieldInput(attribute));
 		}
 
 		/**
-		 * Creates a builder for temporal field panels.
-		 * @param attribute the attribute for which to build a temporal field panel
+		 * Creates a builder for temporal inputs.
+		 * @param attribute the attribute for which to build a temporal input
 		 * @param <T> the temporal type
-		 * @return a temporal field panel builder
+		 * @return a temporal input builder
 		 */
-		public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
-			return components.component(attribute).set(entityComponents.temporalFieldPanel(attribute));
+		public <T extends Temporal> TemporalInput.Builder<T> temporalInput(Attribute<T> attribute) {
+			return components.component(attribute).set(entityComponents.temporalFieldInput(attribute));
 		}
 
 		/**
@@ -873,16 +873,16 @@ public final class EditorComponents {
 		}
 
 		/**
-		 * Creates a builder for a foreign key combo box panel with optional buttons for adding and editing items.
+		 * Creates a builder for a foreign key combo box input with optional buttons for adding and editing items.
 		 * @param foreignKey the foreign key
 		 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
-		 * @return a foreign key combo box panel builder
+		 * @return a foreign key combo box input builder
 		 */
-		public EntityComboBoxPanel.Builder comboBoxPanel(ForeignKey foreignKey,
+		public EntityComboBoxInput.Builder comboBoxInput(ForeignKey foreignKey,
 																										 Supplier<EntityEditPanel> editPanel) {
 			SwingEntityComboBoxModel comboBoxModel = components.editor().comboBoxModels().get(foreignKey);
 
-			return components.component(foreignKey).set(entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
+			return components.component(foreignKey).set(entityComponents.comboBoxInput(foreignKey, comboBoxModel, editPanel))
 							.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
 		}
 
@@ -898,14 +898,14 @@ public final class EditorComponents {
 		}
 
 		/**
-		 * Creates a builder for a foreign key search field panel with optional buttons for adding and editing items.
+		 * Creates a builder for a foreign key search field input with optional buttons for adding and editing items.
 		 * @param foreignKey the foreign key
 		 * @param editPanel the edit panel supplier to use for the add and/or edit buttons
-		 * @return a foreign key combo box panel builder
+		 * @return a foreign key combo box input builder
 		 */
-		public EntitySearchFieldPanel.SingleSelectionBuilder searchFieldPanel(ForeignKey foreignKey,
-																																					Supplier<EntityEditPanel> editPanel) {
-			return components.component(foreignKey).set(entityComponents.searchFieldPanel(foreignKey,
+		public EntitySearchInput.SingleSelectionBuilder searchFieldInput(ForeignKey foreignKey,
+																																		 Supplier<EntityEditPanel> editPanel) {
+			return components.component(foreignKey).set(entityComponents.searchFieldInput(foreignKey,
 											components.editor().searchModels().get(foreignKey), editPanel)
 							.singleSelection());
 		}

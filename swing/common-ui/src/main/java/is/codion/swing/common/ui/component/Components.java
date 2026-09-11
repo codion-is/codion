@@ -53,15 +53,15 @@ import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.splitpane.SplitPaneBuilder;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
-import is.codion.swing.common.ui.component.text.FileInputPanel;
+import is.codion.swing.common.ui.component.text.FileInput;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
+import is.codion.swing.common.ui.component.text.TemporalInput;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.common.ui.component.text.TextPaneBuilder;
 import is.codion.swing.common.ui.component.tree.TreeBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -191,38 +191,38 @@ public final class Components {
 	}
 
 	/**
-	 * @return a {@link TemporalFieldPanel.Builder.TemporalClassStep} builder
+	 * @return a {@link TemporalInput.Builder.TemporalClassStep} builder
 	 */
-	public static TemporalFieldPanel.Builder.TemporalClassStep temporalFieldPanel() {
-		return TemporalFieldPanel.builder();
+	public static TemporalInput.Builder.TemporalClassStep temporalInput() {
+		return TemporalInput.builder();
 	}
 
 	/**
-	 * @return a {@link LocalTime} based {@link TemporalFieldPanel} builder
+	 * @return a {@link LocalTime} based {@link TemporalInput} builder
 	 */
-	public static TemporalFieldPanel.Builder<LocalTime> localTimeFieldPanel() {
-		return temporalFieldPanel().temporalClass(LocalTime.class);
+	public static TemporalInput.Builder<LocalTime> localTimeInput() {
+		return temporalInput().temporalClass(LocalTime.class);
 	}
 
 	/**
-	 * @return a {@link LocalDate} based {@link TemporalFieldPanel} builder
+	 * @return a {@link LocalDate} based {@link TemporalInput} builder
 	 */
-	public static TemporalFieldPanel.Builder<LocalDate> localDateFieldPanel() {
-		return temporalFieldPanel().temporalClass(LocalDate.class);
+	public static TemporalInput.Builder<LocalDate> localDateInput() {
+		return temporalInput().temporalClass(LocalDate.class);
 	}
 
 	/**
-	 * @return a {@link LocalDateTime} based {@link TemporalFieldPanel} builder
+	 * @return a {@link LocalDateTime} based {@link TemporalInput} builder
 	 */
-	public static TemporalFieldPanel.Builder<LocalDateTime> localDateTimeFieldPanel() {
-		return temporalFieldPanel().temporalClass(LocalDateTime.class);
+	public static TemporalInput.Builder<LocalDateTime> localDateTimeInput() {
+		return temporalInput().temporalClass(LocalDateTime.class);
 	}
 
 	/**
-	 * @return a {@link TextFieldPanel} builder
+	 * @return a {@link TextInput} builder
 	 */
-	public static TextFieldPanel.Builder textFieldPanel() {
-		return TextFieldPanel.builder();
+	public static TextInput.Builder textInput() {
+		return TextInput.builder();
 	}
 
 	/**
@@ -459,19 +459,19 @@ public final class Components {
 	}
 
 	/**
-	 * Provides builder for a {@link Path} based file input panel.
-	 * @return a {@link FileInputPanel} builder
+	 * Provides builder for a {@link Path} based file input.
+	 * @return a {@link FileInput} builder
 	 */
-	public static FileInputPanel.Builder<Path> pathInputPanel() {
-		return FileInputPanel.builder().path();
+	public static FileInput.Builder<Path> filePathInput() {
+		return FileInput.builder().path();
 	}
 
 	/**
-	 * Provides builder for a byte array based file input panel.
-	 * @return a {@link FileInputPanel} builder
+	 * Provides builder for a byte array based file input.
+	 * @return a {@link FileInput} builder
 	 */
-	public static FileInputPanel.Builder<byte[]> byteArrayInputPanel() {
-		return FileInputPanel.builder().byteArray();
+	public static FileInput.Builder<byte[]> fileByteArrayInput() {
+		return FileInput.builder().byteArray();
 	}
 
 	/**

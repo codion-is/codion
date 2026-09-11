@@ -25,14 +25,14 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TemporalInput;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
-import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
+import is.codion.swing.framework.ui.component.EntityComboBoxInput;
 import is.codion.swing.framework.ui.component.EntitySearchField;
-import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
+import is.codion.swing.framework.ui.component.EntitySearchInput;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
@@ -106,8 +106,8 @@ public final class EntityEditPanelDemo {
 							.build();
 
 			// Include add/edit buttons
-			EntityComboBoxPanel comboBoxPanel = create()
-							.comboBoxPanel(Demo.FOREIGN_KEY, this::createEditPanel)
+			EntityComboBoxInput comboBoxInput = create()
+							.comboBoxInput(Demo.FOREIGN_KEY, this::createEditPanel)
 							.includeAddButton(true)
 							.includeEditButton(true)
 							.build();
@@ -117,8 +117,8 @@ public final class EntityEditPanelDemo {
 							.build();
 
 			// Include add/edit buttons
-			EntitySearchFieldPanel searchFieldPanel = create()
-							.searchFieldPanel(Demo.FOREIGN_KEY, this::createEditPanel)
+			EntitySearchInput searchFieldInput = create()
+							.searchFieldInput(Demo.FOREIGN_KEY, this::createEditPanel)
 							.includeAddButton(true)
 							.includeEditButton(true)
 							.build();
@@ -141,8 +141,8 @@ public final class EntityEditPanelDemo {
 							.temporalField(Demo.LOCAL_DATE)
 							.build();
 
-			TemporalFieldPanel<LocalDate> temporalPanel = create()
-							.temporalFieldPanel(Demo.LOCAL_DATE)
+			TemporalInput<LocalDate> temporalInput = create()
+							.temporalInput(Demo.LOCAL_DATE)
 											.build();
 			// end::temporalValue[]
 		}
@@ -214,8 +214,8 @@ public final class EntityEditPanelDemo {
 							.rowsColumns(5, 20)
 							.build();
 
-			TextFieldPanel inputPanel = create()
-							.textFieldPanel(Demo.LONG_TEXT)
+			TextInput textInput = create()
+							.textInput(Demo.LONG_TEXT)
 							.build();
 			// end::textValue[]
 		}

@@ -50,12 +50,12 @@ import static java.util.Objects.requireNonNull;
 /**
  * A {@link EntitySearchField} based panel, with optional buttons for searching, adding and editing items.
  */
-public final class EntitySearchFieldPanel extends JPanel {
+public final class EntitySearchInput extends JPanel {
 
 	private final EntitySearchField searchField;
 	private final List<AbstractButton> buttons = new ArrayList<>(0);
 
-	private EntitySearchFieldPanel(AbstractBuilder<?, ?> builder) {
+	private EntitySearchInput(AbstractBuilder<?, ?> builder) {
 		searchField = builder.createSearchField();
 		List<Action> actions = new ArrayList<>();
 		if (builder.includeSearchButton) {
@@ -88,11 +88,11 @@ public final class EntitySearchFieldPanel extends JPanel {
 	}
 
 	/**
-	 * A builder for a {@link EntitySearchFieldPanel}
+	 * A builder for a {@link EntitySearchInput}
 	 * @param <T> the type of the value the component represents
 	 * @param <B> the builder type
 	 */
-	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<EntitySearchFieldPanel, T, B> {
+	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<EntitySearchInput, T, B> {
 
 		/**
 		 * Provides a {@link EditPanelStep}
@@ -226,12 +226,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		B limit(int limit);
 
 		/**
-		 * @return a new {@link EntitySearchFieldPanel} based on this builder
+		 * @return a new {@link EntitySearchInput} based on this builder
 		 */
-		EntitySearchFieldPanel build();
+		EntitySearchInput build();
 
 		/**
-		 * Provides multi or single selection {@link EntitySearchFieldPanel.Builder} instances
+		 * Provides multi or single selection {@link EntitySearchInput.Builder} instances
 		 */
 		interface Factory {
 
@@ -250,18 +250,18 @@ public final class EntitySearchFieldPanel extends JPanel {
 	}
 
 	/**
-	 * Builds a multi selection entity search field panel.
+	 * Builds a multi selection entity search input.
 	 */
 	public interface MultiSelectionBuilder extends Builder<Set<Entity>, MultiSelectionBuilder> {}
 
 	/**
-	 * Builds a single selection entity search field panel.
+	 * Builds a single selection entity search input.
 	 */
 	public interface SingleSelectionBuilder extends Builder<Entity, SingleSelectionBuilder> {}
 
-	private static class SingleSelectionValue extends AbstractComponentValue<EntitySearchFieldPanel, Entity> {
+	private static class SingleSelectionValue extends AbstractComponentValue<EntitySearchInput, Entity> {
 
-		private SingleSelectionValue(EntitySearchFieldPanel component) {
+		private SingleSelectionValue(EntitySearchInput component) {
 			super(component);
 			component.searchField.model().selection().entity().addListener(this::notifyObserver);
 		}
@@ -277,11 +277,11 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 	}
 
-	private static final class MultiSelectionValue extends AbstractComponentValue<EntitySearchFieldPanel, Set<Entity>> {
+	private static final class MultiSelectionValue extends AbstractComponentValue<EntitySearchInput, Set<Entity>> {
 
-		private MultiSelectionValue(EntitySearchFieldPanel searchFieldPanel) {
-			super(searchFieldPanel);
-			searchFieldPanel.searchField.model().selection().entities().addListener(this::notifyObserver);
+		private MultiSelectionValue(EntitySearchInput searchInput) {
+			super(searchInput);
+			searchInput.searchField.model().selection().entities().addListener(this::notifyObserver);
 		}
 
 		@Override
@@ -364,7 +364,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<EntitySearchFieldPanel, Set<Entity>> createValue(EntitySearchFieldPanel component) {
+		protected ComponentValue<EntitySearchInput, Set<Entity>> createValue(EntitySearchInput component) {
 			return new MultiSelectionValue(component);
 		}
 	}
@@ -379,13 +379,13 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<EntitySearchFieldPanel, Entity> createValue(EntitySearchFieldPanel component) {
+		protected ComponentValue<EntitySearchInput, Entity> createValue(EntitySearchInput component) {
 			return new SingleSelectionValue(component);
 		}
 	}
 
 	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
-					extends AbstractComponentValueBuilder<EntitySearchFieldPanel, T, B> implements Builder<T, B> {
+					extends AbstractComponentValueBuilder<EntitySearchInput, T, B> implements Builder<T, B> {
 
 		private final EntitySearchField.Builder<?, ?> searchFieldBuilder;
 
@@ -503,29 +503,29 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected EntitySearchFieldPanel createComponent() {
-			return new EntitySearchFieldPanel(this);
+		protected EntitySearchInput createComponent() {
+			return new EntitySearchInput(this);
 		}
 
 		@Override
-		protected JComponent input(EntitySearchFieldPanel component) {
+		protected JComponent field(EntitySearchInput component) {
 			return component.searchField;
 		}
 
 		@Override
-		protected void setName(String name, EntitySearchFieldPanel component) {
+		protected void setName(String name, EntitySearchInput component) {
 			super.setName(name, component);
 			component.searchField.setName(name);
 		}
 
 		@Override
-		protected void enable(TransferFocusOnEnter transferFocusOnEnter, EntitySearchFieldPanel component) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, EntitySearchInput component) {
 			transferFocusOnEnter.enable(component.searchField);
 			transferFocusOnEnter.enable(component.buttons.toArray(new JComponent[0]));
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, EntitySearchFieldPanel component, ObservableState valid, ObservableState warned) {
+		protected void enable(ValidationIndicator validationIndicator, EntitySearchInput component, ObservableState valid, ObservableState warned) {
 			validationIndicator.enable(component.searchField, valid, warned);
 		}
 

@@ -46,14 +46,14 @@ import static is.codion.swing.framework.ui.component.EntityControls.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A {@link EntityComboBox} based panel, with optional buttons for adding and editing items.
+ * A {@link EntityComboBox} based input component, with optional buttons for adding and editing items.
  */
-public final class EntityComboBoxPanel extends JPanel {
+public final class EntityComboBoxInput extends JPanel {
 
 	private final EntityComboBox comboBox;
 	private final List<AbstractButton> buttons = new ArrayList<>(0);
 
-	private EntityComboBoxPanel(DefaultBuilder builder) {
+	private EntityComboBoxInput(DefaultBuilder builder) {
 		comboBox = builder.createComboBox();
 		List<Action> actions = new ArrayList<>();
 		if (builder.includeAddButton) {
@@ -83,9 +83,9 @@ public final class EntityComboBoxPanel extends JPanel {
 	}
 
 	/**
-	 * A builder for a {@link EntityComboBoxPanel}
+	 * A builder for a {@link EntityComboBoxInput}
 	 */
-	public interface Builder extends ComponentValueBuilder<EntityComboBoxPanel, Entity, Builder> {
+	public interface Builder extends ComponentValueBuilder<EntityComboBoxInput, Entity, Builder> {
 
 		/**
 		 * Provides a {@link EditPanelStep}
@@ -157,9 +157,9 @@ public final class EntityComboBoxPanel extends JPanel {
 		Builder preferredComboBoxWidth(int preferredComboBoxWidth);
 
 		/**
-		 * @return a new {@link EntityComboBoxPanel} based on this builder
+		 * @return a new {@link EntityComboBoxInput} based on this builder
 		 */
-		EntityComboBoxPanel build();
+		EntityComboBoxInput build();
 	}
 
 	private static final class InputFocusAdapter extends FocusAdapter {
@@ -198,7 +198,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultBuilder extends AbstractComponentValueBuilder<EntityComboBoxPanel, Entity, Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComponentValueBuilder<EntityComboBoxInput, Entity, Builder> implements Builder {
 
 		private static final ModelStep MODEL = new DefaultModelStep();
 
@@ -258,33 +258,33 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
-		protected EntityComboBoxPanel createComponent() {
-			return new EntityComboBoxPanel(this);
+		protected EntityComboBoxInput createComponent() {
+			return new EntityComboBoxInput(this);
 		}
 
 		@Override
-		protected ComponentValue<EntityComboBoxPanel, Entity> createValue(EntityComboBoxPanel component) {
-			return new EntityComboBoxPanelValue(component);
+		protected ComponentValue<EntityComboBoxInput, Entity> createValue(EntityComboBoxInput component) {
+			return new EntityComboBoxInputValue(component);
 		}
 
 		@Override
-		protected void enable(TransferFocusOnEnter transferFocusOnEnter, EntityComboBoxPanel component) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, EntityComboBoxInput component) {
 			transferFocusOnEnter.enable(component.comboBox());
 			transferFocusOnEnter.enable(component.buttons.toArray(new JComponent[0]));
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, EntityComboBoxPanel component, ObservableState valid, ObservableState warned) {
+		protected void enable(ValidationIndicator validationIndicator, EntityComboBoxInput component, ObservableState valid, ObservableState warned) {
 			validationIndicator.enable(component.comboBox, valid, warned);
 		}
 
 		@Override
-		protected JComponent input(EntityComboBoxPanel component) {
+		protected JComponent field(EntityComboBoxInput component) {
 			return component.comboBox;
 		}
 
 		@Override
-		protected void setName(String name, EntityComboBoxPanel component) {
+		protected void setName(String name, EntityComboBoxInput component) {
 			super.setName(name, component);
 			component.comboBox.setName(name);
 			component.comboBox.getEditor().getEditorComponent().setName(name);
@@ -294,9 +294,9 @@ public final class EntityComboBoxPanel extends JPanel {
 			return entityComboBoxBuilder.build();
 		}
 
-		private static class EntityComboBoxPanelValue extends AbstractComponentValue<EntityComboBoxPanel, Entity> {
+		private static class EntityComboBoxInputValue extends AbstractComponentValue<EntityComboBoxInput, Entity> {
 
-			private EntityComboBoxPanelValue(EntityComboBoxPanel component) {
+			private EntityComboBoxInputValue(EntityComboBoxInput component) {
 				super(component);
 				component.comboBox.getModel().selection().item().addListener(this::notifyObserver);
 			}

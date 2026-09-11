@@ -85,7 +85,7 @@ final class CountryEditPanel extends EntityEditPanel {
 						.editable(true);
 		create().textField(Country.HEADOFSTATE);
 		//create a panel with a button for adding a new city
-		create().comboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
+		create().comboBoxInput(Country.CAPITAL_FK, this::createCapitalEditPanel)
 						.preferredComboBoxWidth(PREFERRED_COMBO_BOX_WIDTH)
 						.includeAddButton(true);
 		component(Country.FLAG).set(ImagePane.builder())

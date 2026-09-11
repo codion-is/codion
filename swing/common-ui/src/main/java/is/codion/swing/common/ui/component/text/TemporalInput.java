@@ -51,12 +51,12 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the Temporal type supplied by this panel
  * @see CalendarPanel#supports(Class)
  */
-public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
+public final class TemporalInput<T extends Temporal> extends JPanel {
 
 	private final TemporalField<T> temporalField;
 	private final JButton button;
 
-	TemporalFieldPanel(DefaultBuilder<T> builder) {
+	TemporalInput(DefaultBuilder<T> builder) {
 		temporalField = requireNonNull(builder.createTemporalField());
 		button = createButton(builder);
 		initializeUI();
@@ -117,13 +117,13 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	}
 
 	/**
-	 * Builds a {@link TemporalFieldPanel}
+	 * Builds a {@link TemporalInput}
 	 * @param <T> the temporal type
 	 */
-	public interface Builder<T extends Temporal> extends ComponentValueBuilder<TemporalFieldPanel<T>, T, Builder<T>> {
+	public interface Builder<T extends Temporal> extends ComponentValueBuilder<TemporalInput<T>, T, Builder<T>> {
 
 		/**
-		 * Provides a {@link TemporalFieldPanel.Builder}
+		 * Provides a {@link TemporalInput.Builder}
 		 */
 		interface TemporalClassStep {
 
@@ -216,7 +216,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	}
 
 	private static final class DefaultBuilder<T extends Temporal>
-					extends AbstractComponentValueBuilder<TemporalFieldPanel<T>, T, Builder<T>>
+					extends AbstractComponentValueBuilder<TemporalInput<T>, T, Builder<T>>
 					implements Builder<T> {
 
 		private static final Builder.TemporalClassStep TEMPORAL_CLASS = new DefaultTemporalClassStep();
@@ -269,33 +269,33 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		protected TemporalFieldPanel<T> createComponent() {
-			return new TemporalFieldPanel<>(this);
+		protected TemporalInput<T> createComponent() {
+			return new TemporalInput<>(this);
 		}
 
 		@Override
-		protected ComponentValue<TemporalFieldPanel<T>, T> createValue(TemporalFieldPanel<T> component) {
-			return new TemporalFieldPanelValue<>(component);
+		protected ComponentValue<TemporalInput<T>, T> createValue(TemporalInput<T> component) {
+			return new TemporalInputValue<>(component);
 		}
 
 		@Override
-		protected void enable(TransferFocusOnEnter transferFocusOnEnter, TemporalFieldPanel<T> component) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, TemporalInput<T> component) {
 			transferFocusOnEnter.enable(component.temporalField);
 			transferFocusOnEnter.enable(component.button);
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, TemporalFieldPanel<T> component, ObservableState valid, ObservableState warned) {
+		protected void enable(ValidationIndicator validationIndicator, TemporalInput<T> component, ObservableState valid, ObservableState warned) {
 			validationIndicator.enable(component.temporalField, valid, warned);
 		}
 
 		@Override
-		protected JComponent input(TemporalFieldPanel<T> component) {
+		protected JComponent field(TemporalInput<T> component) {
 			return component.temporalField;
 		}
 
 		@Override
-		protected void setName(String name, TemporalFieldPanel<T> component) {
+		protected void setName(String name, TemporalInput<T> component) {
 			super.setName(name, component);
 			component.temporalField.setName(name);
 		}
@@ -305,11 +305,11 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		}
 	}
 
-	private static final class TemporalFieldPanelValue<T extends Temporal> extends AbstractComponentValue<TemporalFieldPanel<T>, T> {
+	private static final class TemporalInputValue<T extends Temporal> extends AbstractComponentValue<TemporalInput<T>, T> {
 
-		private TemporalFieldPanelValue(TemporalFieldPanel<T> inputPanel) {
-			super(inputPanel);
-			inputPanel.temporalField().observable().addListener(new NotifyListeners());
+		private TemporalInputValue(TemporalInput<T> temporalInput) {
+			super(temporalInput);
+			temporalInput.temporalField().observable().addListener(new NotifyListeners());
 		}
 
 		@Override
