@@ -341,6 +341,18 @@ public interface Chinook {
 		}
 	}
 
+	final class InvoiceFormatter
+					implements EntityFormatter {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		@Override
+		public String apply(Entity invoice) {
+			return "Invoice [" + invoice.formatted(Invoice.ID) + "]";
+		}
+	}
+
 	final class CoverFormat extends Format {
 
 		private final NumberFormat kbFormat = NumberFormat.getIntegerInstance();
