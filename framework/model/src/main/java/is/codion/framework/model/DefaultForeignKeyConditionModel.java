@@ -28,11 +28,19 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 
+import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toCollection;
 
 final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel {
 
@@ -41,6 +49,9 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	private final @Nullable EntitySearchModel equalSearchModel;
 	private final @Nullable EntityComboBoxModel equalComboBoxModel;
 	private final @Nullable EntitySearchModel inSearchModel;
+	// strong references, the persistence events hold their consumers weakly
+	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
+	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
 		foreignKey = builder.foreignKey;
@@ -50,10 +61,14 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		List<Operator> operators = builder.operators();
 		condition = ConditionModel.builder()
 						.valueClass(Entity.class)
-						.operators(operators)
+						// the operator before the operators, which must contain it, the default EQUAL being absent without an EQUAL operand
 						.operator(builder.operator == null ? builder.defaultOperator(operators) : builder.operator)
-						.operands(new ForeignKeyOperands())
+						.operators(operators)
+						.caption(builder.caption)
 						.build();
+		PersistenceEvents persistenceEvents = persistenceEvents(foreignKey.referencedType());
+		persistenceEvents.updated().addWeakConsumer(updateListener);
+		persistenceEvents.deleted().addWeakConsumer(deleteListener);
 	}
 
 	@Override
@@ -99,6 +114,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		private @Nullable EntityComboBoxModel equalComboBoxModel;
 		private @Nullable EntitySearchModel inSearchModel;
 		private @Nullable Operator operator;
+		private @Nullable String caption;
 
 		DefaultBuilder(ForeignKey foreignKey) {
 			this.foreignKey = foreignKey;
@@ -125,6 +141,12 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		@Override
 		public Builder operator(Operator operator) {
 			this.operator = requireNonNull(operator);
+			return this;
+		}
+
+		@Override
+		public Builder caption(@Nullable String caption) {
+			this.caption = caption;
 			return this;
 		}
 
@@ -168,23 +190,50 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		}
 	}
 
-	private final class ForeignKeyOperands implements Operands<Entity> {
+	/**
+	 * Replaces updated entities in the operands with their updated state, the primary key matched on
+	 * its original value, in case the update modified it.
+	 */
+	private final class UpdateListener implements Consumer<Map<Entity, Entity>> {
 
 		@Override
-		public Value<Entity> equal() {
-			if (equalComboBoxModel != null) {
-				return equalComboBoxModel.selection().item();
+		public void accept(Map<Entity, Entity> updated) {
+			Map<Entity.Key, Entity> updatedByKey = new HashMap<>(updated.size());
+			updated.forEach((beforeUpdate, afterUpdate) -> updatedByKey.put(beforeUpdate.originalPrimaryKey(), afterUpdate));
+			Value<Entity> equal = condition.operands().equal();
+			Entity equalOperand = equal.get();
+			if (equalOperand != null && updatedByKey.containsKey(equalOperand.primaryKey())) {
+				equal.set(updatedByKey.get(equalOperand.primaryKey()));
 			}
-			if (equalSearchModel != null) {
-				return equalSearchModel.selection().entity();
+			ValueSet<Entity> in = condition.operands().in();
+			Set<Entity> inOperands = in.get();
+			if (inOperands.stream().anyMatch(entity -> updatedByKey.containsKey(entity.primaryKey()))) {
+				// a single set(), a remove followed by an add would leave the operand transiently without the updated entities
+				in.set(inOperands.stream()
+								.map(entity -> updatedByKey.getOrDefault(entity.primaryKey(), entity))
+								.collect(toCollection(LinkedHashSet::new)));
 			}
-
-			return Operands.super.equal();
 		}
+	}
+
+	/**
+	 * Removes deleted entities from the operands, only touching an operand containing one,
+	 * since setting an operand notifies its listeners regardless of whether it changed.
+	 */
+	private final class DeleteListener implements Consumer<Collection<Entity>> {
 
 		@Override
-		public ValueSet<Entity> in() {
-			return inSearchModel == null ? Operands.super.in() : inSearchModel.selection().entities();
+		public void accept(Collection<Entity> deleted) {
+			Value<Entity> equal = condition.operands().equal();
+			Entity equalOperand = equal.get();
+			if (equalOperand != null && deleted.contains(equalOperand)) {
+				equal.clear();
+			}
+			ValueSet<Entity> in = condition.operands().in();
+			Set<Entity> inOperands = in.get();
+			if (deleted.stream().anyMatch(inOperands::contains)) {
+				in.removeAll(deleted);
+			}
 		}
 	}
 }
