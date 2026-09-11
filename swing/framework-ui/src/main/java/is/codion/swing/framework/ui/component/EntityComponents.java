@@ -254,26 +254,35 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a {@link EntitySearchField.Builder.Factory}.
+	 * Creates a {@link EntitySearchField.Builder}.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
 	 * @return a foreign key {@link EntitySearchField} builder
 	 */
-	public EntitySearchField.Builder.Factory searchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
-		return new SearchFieldBuilderFactory(foreignKey, searchModel);
+	public EntitySearchField.Builder searchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
+		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
+
+		return EntitySearchField.builder()
+						.model(requireNonNull(searchModel))
+						.toolTipText(foreignKeyDefinition.description().orElse(null));
 	}
 
 	/**
-	 * Creates a {@link EntitySearchInput.Builder.Factory}.
+	 * Creates a {@link EntitySearchInput.Builder}.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key search input builder
 	 */
-	public EntitySearchInput.Builder.Factory searchFieldInput(ForeignKey foreignKey,
-																														EntitySearchModel searchModel,
-																														Supplier<EntityEditPanel> editPanel) {
-		return new SearchFieldInputBuilderFactory(foreignKey, searchModel, editPanel);
+	public EntitySearchInput.Builder searchFieldInput(ForeignKey foreignKey,
+																										EntitySearchModel searchModel,
+																										Supplier<EntityEditPanel> editPanel) {
+		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
+
+		return EntitySearchInput.builder()
+						.model(requireNonNull(searchModel))
+						.editPanel(requireNonNull(editPanel))
+						.toolTipText(foreignKeyDefinition.description().orElse(null));
 	}
 
 	/**
@@ -694,64 +703,6 @@ public final class EntityComponents {
 						.items(asList(attribute.type().valueClass().getEnumConstants()))
 						.includeNull(nullable)
 						.build();
-	}
-
-	private final class SearchFieldBuilderFactory implements EntitySearchField.Builder.Factory {
-
-		private final EntitySearchModel searchModel;
-		private final ForeignKeyDefinition foreignKeyDefinition;
-
-		private SearchFieldBuilderFactory(ForeignKey foreignKey, EntitySearchModel searchModel) {
-			this.searchModel = requireNonNull(searchModel);
-			this.foreignKeyDefinition = definition(foreignKey);
-		}
-
-		@Override
-		public EntitySearchField.MultiSelectionBuilder multiSelection() {
-			return EntitySearchField.builder()
-							.model(searchModel)
-							.multiSelection()
-							.toolTipText(foreignKeyDefinition.description().orElse(null));
-		}
-
-		@Override
-		public EntitySearchField.SingleSelectionBuilder singleSelection() {
-			return EntitySearchField.builder()
-							.model(searchModel)
-							.singleSelection()
-							.toolTipText(foreignKeyDefinition.description().orElse(null));
-		}
-	}
-
-	private final class SearchFieldInputBuilderFactory implements EntitySearchInput.Builder.Factory {
-
-		private final EntitySearchModel searchModel;
-		private final ForeignKeyDefinition foreignKeyDefinition;
-		private final Supplier<EntityEditPanel> editPanel;
-
-		private SearchFieldInputBuilderFactory(ForeignKey foreignKey, EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
-			this.searchModel = requireNonNull(searchModel);
-			this.foreignKeyDefinition = definition(foreignKey);
-			this.editPanel = requireNonNull(editPanel);
-		}
-
-		@Override
-		public EntitySearchInput.MultiSelectionBuilder multiSelection() {
-			return EntitySearchInput.builder()
-							.model(searchModel)
-							.editPanel(editPanel)
-							.multiSelection()
-							.toolTipText(foreignKeyDefinition.description().orElse(null));
-		}
-
-		@Override
-		public EntitySearchInput.SingleSelectionBuilder singleSelection() {
-			return EntitySearchInput.builder()
-							.model(searchModel)
-							.editPanel(editPanel)
-							.singleSelection()
-							.toolTipText(foreignKeyDefinition.description().orElse(null));
-		}
 	}
 
 	private static final class ItemReadOnlyFormat extends Format {

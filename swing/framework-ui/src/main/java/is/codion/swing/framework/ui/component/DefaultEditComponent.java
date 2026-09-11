@@ -106,13 +106,11 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 	/**
 	 * @param foreignKey the foreign key
 	 * @param editor the editor providing the search model factory
-	 * @return a {@link EntitySearchField.SingleSelectionBuilder} instance
-	 * @throws IllegalArgumentException in case {@code searchModel} is not configured for single selection
+	 * @return a {@link EntitySearchField.Builder} instance
 	 * @see SwingEntityEditor.SearchModels
 	 */
-	protected EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey, SwingEntityEditor editor) {
+	protected EntitySearchField.Builder searchField(ForeignKey foreignKey, SwingEntityEditor editor) {
 		return entityComponents(requireNonNull(editor).entityDefinition()).searchField(requireNonNull(foreignKey), editor.searchModels().create(foreignKey))
-						.singleSelection()
 						.searchOnFocusLost(false);
 	}
 

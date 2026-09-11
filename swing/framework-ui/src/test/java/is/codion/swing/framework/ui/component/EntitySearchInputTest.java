@@ -59,7 +59,6 @@ public final class EntitySearchInputTest {
 		ComponentValue<EntitySearchInput, Entity> value = EntitySearchInput.builder()
 						.model(model)
 						.editPanel(() -> null)
-						.singleSelection()
 						.buildValue();
 		Entity sales = CONNECTION.selectSingle(
 						Department.NAME.equalTo("SALES"));
@@ -81,7 +80,6 @@ public final class EntitySearchInputTest {
 		EntitySearchInput panel = EntitySearchInput.builder()
 						.model(model)
 						.editPanel(() -> null)
-						.singleSelection()
 						.name("test.name")
 						.build();
 		//the panel never receives focus, so the name must reach the focusable inner search field,
@@ -98,7 +96,6 @@ public final class EntitySearchInputTest {
 										.connection(CONNECTION)
 										.build())
 						.editPanel(() -> null)
-						.singleSelection()
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_F5)
 										.action(Control.action(e -> {})))

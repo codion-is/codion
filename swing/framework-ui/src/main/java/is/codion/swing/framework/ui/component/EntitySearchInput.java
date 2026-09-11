@@ -40,7 +40,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -55,7 +54,7 @@ public final class EntitySearchInput extends JPanel {
 	private final EntitySearchField searchField;
 	private final List<AbstractButton> buttons = new ArrayList<>(0);
 
-	private EntitySearchInput(AbstractBuilder<?, ?> builder) {
+	private EntitySearchInput(DefaultBuilder builder) {
 		searchField = builder.createSearchField();
 		List<Action> actions = new ArrayList<>();
 		if (builder.includeSearchButton) {
@@ -84,15 +83,13 @@ public final class EntitySearchInput extends JPanel {
 	 * @return a {@link Builder.ModelStep}
 	 */
 	public static Builder.ModelStep builder() {
-		return DefaultBuilderFactory.MODEL;
+		return DefaultModelStep.MODEL;
 	}
 
 	/**
 	 * A builder for a {@link EntitySearchInput}
-	 * @param <T> the type of the value the component represents
-	 * @param <B> the builder type
 	 */
-	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<EntitySearchInput, T, B> {
+	public interface Builder extends ComponentValueBuilder<EntitySearchInput, Entity, Builder> {
 
 		/**
 		 * Provides a {@link EditPanelStep}
@@ -115,45 +112,45 @@ public final class EntitySearchInput extends JPanel {
 			 * @param editPanel the edit panel supplier
 			 * @return a new builder instance
 			 */
-			Builder.Factory editPanel(Supplier<EntityEditPanel> editPanel);
+			Builder editPanel(Supplier<EntityEditPanel> editPanel);
 		}
 
 		/**
 		 * @param includeSearchButton true if a search button should be included
 		 * @return this builder instance
 		 */
-		B includeSearchButton(boolean includeSearchButton);
+		Builder includeSearchButton(boolean includeSearchButton);
 
 		/**
 		 * @param includeAddButton true if an 'Add' button should be included
 		 * @return this builder instance
 		 */
-		B includeAddButton(boolean includeAddButton);
+		Builder includeAddButton(boolean includeAddButton);
 
 		/**
 		 * @param includeEditButton true if an 'Edit' button should be included
 		 * @return this builder instance
 		 */
-		B includeEditButton(boolean includeEditButton);
+		Builder includeEditButton(boolean includeEditButton);
 
 		/**
 		 * @param confirmAdd true if adding an item should be confirmed
 		 * @return this builder instance
 		 */
-		B confirmAdd(boolean confirmAdd);
+		Builder confirmAdd(boolean confirmAdd);
 
 		/**
 		 * @param confirmEdit true if editing an item should be confirmed
 		 * @return this builder instance
 		 */
-		B confirmEdit(boolean confirmEdit);
+		Builder confirmEdit(boolean confirmEdit);
 
 		/**
 		 * Default false
 		 * @param buttonsFocusable true if the buttons should be focusable
 		 * @return this builder instance
 		 */
-		B buttonsFocusable(boolean buttonsFocusable);
+		Builder buttonsFocusable(boolean buttonsFocusable);
 
 		/**
 		 * Must be one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
@@ -161,107 +158,79 @@ public final class EntitySearchInput extends JPanel {
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case the value is not one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
 		 */
-		B buttonLocation(String buttonLocation);
+		Builder buttonLocation(String buttonLocation);
 
 		/**
 		 * @param preferredSearchFieldWidth the preferred search field width
 		 * @return this builder instance
 		 */
-		B preferredSearchFieldWidth(int preferredSearchFieldWidth);
+		Builder preferredSearchFieldWidth(int preferredSearchFieldWidth);
 
 		/**
 		 * @param columns the number of colums in the text field
 		 * @return this builder instance
 		 */
-		B columns(int columns);
+		Builder columns(int columns);
 
 		/**
 		 * Makes the field convert all lower case input to upper case
 		 * @param upperCase if true the text component convert all lower case input to upper case
 		 * @return this builder instance
 		 */
-		B upperCase(boolean upperCase);
+		Builder upperCase(boolean upperCase);
 
 		/**
 		 * Makes the field convert all upper case input to lower case
 		 * @param lowerCase if true the text component convert all upper case input to lower case
 		 * @return this builder instance
 		 */
-		B lowerCase(boolean lowerCase);
+		Builder lowerCase(boolean lowerCase);
 
 		/**
 		 * @param editable false if the field should not be editable
 		 * @return this builder instance
 		 */
-		B editable(boolean editable);
+		Builder editable(boolean editable);
 
 		/**
 		 * @param searchHintEnabled true if a search hint text should be visible when the field is empty and not focused
 		 * @return this builder instance
 		 */
-		B searchHintEnabled(boolean searchHintEnabled);
+		Builder searchHintEnabled(boolean searchHintEnabled);
 
 		/**
 		 * @param searchOnFocusLost true if search should be performed on focus lost
 		 * @return this builder instance
 		 */
-		B searchOnFocusLost(boolean searchOnFocusLost);
+		Builder searchOnFocusLost(boolean searchOnFocusLost);
 
 		/**
 		 * @param searchIndicator the search indicator
 		 * @return this builder instance
 		 */
-		B searchIndicator(EntitySearchField.SearchIndicator searchIndicator);
+		Builder searchIndicator(EntitySearchField.SearchIndicator searchIndicator);
 
 		/**
 		 * @param selector the selector factory to use
 		 * @return this builder instance
 		 */
-		B selector(Function<EntitySearchField, EntitySearchField.Selector> selector);
+		Builder selector(Function<EntitySearchField, EntitySearchField.Selector> selector);
 
 		/**
 		 * @param limit the search result limit
 		 * @return this builder instance
 		 */
-		B limit(int limit);
+		Builder limit(int limit);
 
 		/**
 		 * @return a new {@link EntitySearchInput} based on this builder
 		 */
 		EntitySearchInput build();
-
-		/**
-		 * Provides multi or single selection {@link EntitySearchInput.Builder} instances
-		 */
-		interface Factory {
-
-			/**
-			 * Instantiates a new {@link MultiSelectionBuilder}
-			 * @return a new builder instance
-			 */
-			MultiSelectionBuilder multiSelection();
-
-			/**
-			 * Instantiates a new {@link SingleSelectionBuilder}
-			 * @return a new builder instance
-			 */
-			SingleSelectionBuilder singleSelection();
-		}
 	}
 
-	/**
-	 * Builds a multi selection entity search input.
-	 */
-	public interface MultiSelectionBuilder extends Builder<Set<Entity>, MultiSelectionBuilder> {}
+	private static final class SelectionValue extends AbstractComponentValue<EntitySearchInput, Entity> {
 
-	/**
-	 * Builds a single selection entity search input.
-	 */
-	public interface SingleSelectionBuilder extends Builder<Entity, SingleSelectionBuilder> {}
-
-	private static class SingleSelectionValue extends AbstractComponentValue<EntitySearchInput, Entity> {
-
-		private SingleSelectionValue(EntitySearchInput component) {
+		private SelectionValue(EntitySearchInput component) {
 			super(component);
 			component.searchField.model().selection().entity().addListener(this::notifyObserver);
 		}
@@ -274,24 +243,6 @@ public final class EntitySearchInput extends JPanel {
 		@Override
 		protected void setComponentValue(@Nullable Entity entity) {
 			component().searchField.model().selection().entity().set(entity);
-		}
-	}
-
-	private static final class MultiSelectionValue extends AbstractComponentValue<EntitySearchInput, Set<Entity>> {
-
-		private MultiSelectionValue(EntitySearchInput searchInput) {
-			super(searchInput);
-			searchInput.searchField.model().selection().entities().addListener(this::notifyObserver);
-		}
-
-		@Override
-		protected Set<Entity> getComponentValue() {
-			return component().searchField.model().selection().entities().get();
-		}
-
-		@Override
-		protected void setComponentValue(Set<Entity> value) {
-			component().searchField.model().selection().entities().set(value);
 		}
 	}
 
@@ -311,6 +262,8 @@ public final class EntitySearchInput extends JPanel {
 
 	private static final class DefaultModelStep implements Builder.ModelStep {
 
+		private static final Builder.ModelStep MODEL = new DefaultModelStep();
+
 		@Override
 		public Builder.EditPanelStep model(EntitySearchModel model) {
 			return new DefaultEditPanelStep(requireNonNull(model));
@@ -326,68 +279,15 @@ public final class EntitySearchInput extends JPanel {
 		}
 
 		@Override
-		public Builder.Factory editPanel(Supplier<EntityEditPanel> editPanel) {
-			return new DefaultBuilderFactory(entitySearchModel, requireNonNull(editPanel));
+		public Builder editPanel(Supplier<EntityEditPanel> editPanel) {
+			return new DefaultBuilder(entitySearchModel, requireNonNull(editPanel));
 		}
 	}
 
-	private static final class DefaultBuilderFactory implements Builder.Factory {
+	private static final class DefaultBuilder
+					extends AbstractComponentValueBuilder<EntitySearchInput, Entity, Builder> implements Builder {
 
-		private static final Builder.ModelStep MODEL = new DefaultModelStep();
-
-		private final EntitySearchModel searchModel;
-		private final Supplier<EntityEditPanel> editPanel;
-
-		private DefaultBuilderFactory(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
-			this.searchModel = searchModel;
-			this.editPanel = editPanel;
-		}
-
-		@Override
-		public MultiSelectionBuilder multiSelection() {
-			return new DefaultMultiSelectionBuilder(searchModel, editPanel);
-		}
-
-		@Override
-		public SingleSelectionBuilder singleSelection() {
-			return new DefaultSingleSelectionBuilder(searchModel, editPanel);
-		}
-	}
-
-	private static final class DefaultMultiSelectionBuilder
-					extends AbstractBuilder<Set<Entity>, MultiSelectionBuilder> implements MultiSelectionBuilder {
-
-		private DefaultMultiSelectionBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
-			super(EntitySearchField.builder()
-							.model(searchModel)
-							.multiSelection(), editPanel);
-		}
-
-		@Override
-		protected ComponentValue<EntitySearchInput, Set<Entity>> createValue(EntitySearchInput component) {
-			return new MultiSelectionValue(component);
-		}
-	}
-
-	private static final class DefaultSingleSelectionBuilder
-					extends AbstractBuilder<Entity, SingleSelectionBuilder> implements SingleSelectionBuilder {
-
-		private DefaultSingleSelectionBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
-			super(EntitySearchField.builder()
-							.model(searchModel)
-							.singleSelection(), editPanel);
-		}
-
-		@Override
-		protected ComponentValue<EntitySearchInput, Entity> createValue(EntitySearchInput component) {
-			return new SingleSelectionValue(component);
-		}
-	}
-
-	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
-					extends AbstractComponentValueBuilder<EntitySearchInput, T, B> implements Builder<T, B> {
-
-		private final EntitySearchField.Builder<?, ?> searchFieldBuilder;
+		private final EntitySearchField.Builder searchFieldBuilder;
 
 		private boolean includeSearchButton;
 		private boolean includeAddButton;
@@ -395,116 +295,122 @@ public final class EntitySearchInput extends JPanel {
 		private boolean buttonsFocusable;
 		private String buttonLocation = defaultButtonLocation();
 
-		protected AbstractBuilder(EntitySearchField.Builder<?, ?> searchFieldBuilder, Supplier<EntityEditPanel> editPanelSupplier) {
-			this.searchFieldBuilder = searchFieldBuilder
-							.editPanel(editPanelSupplier);
+		private DefaultBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
+			this.searchFieldBuilder = EntitySearchField.builder()
+							.model(searchModel)
+							.editPanel(editPanel);
 		}
 
 		@Override
-		public B includeSearchButton(boolean includeSearchButton) {
+		public Builder includeSearchButton(boolean includeSearchButton) {
 			this.includeSearchButton = includeSearchButton;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B includeAddButton(boolean includeAddButton) {
+		public Builder includeAddButton(boolean includeAddButton) {
 			this.includeAddButton = includeAddButton;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B includeEditButton(boolean includeEditButton) {
+		public Builder includeEditButton(boolean includeEditButton) {
 			this.includeEditButton = includeEditButton;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B confirmAdd(boolean confirmAdd) {
+		public Builder confirmAdd(boolean confirmAdd) {
 			this.searchFieldBuilder.confirmAdd(confirmAdd);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B confirmEdit(boolean confirmEdit) {
+		public Builder confirmEdit(boolean confirmEdit) {
 			this.searchFieldBuilder.confirmEdit(confirmEdit);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B buttonsFocusable(boolean buttonsFocusable) {
+		public Builder buttonsFocusable(boolean buttonsFocusable) {
 			this.buttonsFocusable = buttonsFocusable;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B buttonLocation(String buttonLocation) {
+		public Builder buttonLocation(String buttonLocation) {
 			this.buttonLocation = validateButtonLocation(buttonLocation);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B preferredSearchFieldWidth(int preferredSearchFieldWidth) {
+		public Builder preferredSearchFieldWidth(int preferredSearchFieldWidth) {
 			searchFieldBuilder.preferredWidth(preferredSearchFieldWidth);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B columns(int columns) {
+		public Builder columns(int columns) {
 			searchFieldBuilder.columns(columns);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B upperCase(boolean upperCase) {
+		public Builder upperCase(boolean upperCase) {
 			searchFieldBuilder.upperCase(upperCase);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B lowerCase(boolean lowerCase) {
+		public Builder lowerCase(boolean lowerCase) {
 			searchFieldBuilder.lowerCase(lowerCase);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B editable(boolean editable) {
+		public Builder editable(boolean editable) {
 			searchFieldBuilder.editable(editable);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B searchHintEnabled(boolean searchHintEnabled) {
+		public Builder searchHintEnabled(boolean searchHintEnabled) {
 			searchFieldBuilder.searchHintEnabled(searchHintEnabled);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B searchOnFocusLost(boolean searchOnFocusLost) {
+		public Builder searchOnFocusLost(boolean searchOnFocusLost) {
 			searchFieldBuilder.searchOnFocusLost(searchOnFocusLost);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B searchIndicator(EntitySearchField.SearchIndicator searchIndicator) {
+		public Builder searchIndicator(EntitySearchField.SearchIndicator searchIndicator) {
 			searchFieldBuilder.searchIndicator(searchIndicator);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B selector(Function<EntitySearchField, EntitySearchField.Selector> selector) {
+		public Builder selector(Function<EntitySearchField, EntitySearchField.Selector> selector) {
 			searchFieldBuilder.selector(selector);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B limit(int limit) {
+		public Builder limit(int limit) {
 			searchFieldBuilder.limit(limit);
-			return (B) this;
+			return this;
 		}
 
 		@Override
 		protected EntitySearchInput createComponent() {
 			return new EntitySearchInput(this);
+		}
+
+		@Override
+		protected ComponentValue<EntitySearchInput, Entity> createValue(EntitySearchInput component) {
+			return new SelectionValue(component);
 		}
 
 		@Override

@@ -64,28 +64,9 @@ final class FrameworkUIDemo {
 
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
-						.multiSelection()
 						.columns(20)
 						.build();
 		// end::basicSearchField[]
-	}
-
-	void singleSelectionSearchField(EntitySearchModel searchModel) {
-		// tag::singleSelectionSearchField[]
-		EntitySearchField searchField = EntitySearchField.builder()
-						.model(searchModel)
-						.singleSelection()
-						.build();
-		// end::singleSelectionSearchField[]
-	}
-
-	void multiSelectionSearchField(EntitySearchModel searchModel) {
-		// tag::multiSelectionSearchField[]
-		EntitySearchField searchField = EntitySearchField.builder()
-						.model(searchModel)
-						.multiSelection()
-						.build();
-		// end::multiSelectionSearchField[]
 	}
 
 	void multiValueSearchField(ForeignKeyConditionModel customerCondition) {
@@ -93,7 +74,6 @@ final class FrameworkUIDemo {
 		MultiValueInput<Entity> customers = Components.multiValueInput()
 						.component(EntitySearchField.builder()
 										.model(customerCondition.inSearchModel().orElseThrow())
-										.singleSelection()
 										.buildValue())
 						// The entities collected, here the IN operand of a foreign key condition
 						.link(customerCondition.operands().in())
@@ -106,7 +86,6 @@ final class FrameworkUIDemo {
 		// tag::customTableSelector[]
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
-						.multiSelection()
 						.selector(new CustomerSelector())
 						.build();
 		// end::customTableSelector[]
@@ -118,7 +97,6 @@ final class FrameworkUIDemo {
 
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
-						.singleSelection()
 						.editPanel(() -> new CustomerEditPanel(editModel))
 						.confirmAdd(true)     // Confirm before adding
 						.confirmEdit(true)    // Confirm before editing
@@ -134,16 +112,14 @@ final class FrameworkUIDemo {
 		// tag::searchFieldConfiguration[]
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
-						.singleSelection()
 						.columns(20)                      // Field width
 						.upperCase(true)                  // Force uppercase
 						.searchHintEnabled(true)          // Show "Search..." hint
 						.searchOnFocusLost(true)          // Auto-search when focus lost
-						.selectionToolTip(true)           // Show selection as tooltip
+						.selectionToolTip(true)           // Show the selection as a tooltip
 						.editable(false)                  // Make read-only
 						.formatter(entity ->        // Custom display text
 										entity.get(Customer.LASTNAME) + " - " + entity.get(Customer.CITY))
-						.separator(" | ")                 // Multi-selection separator
 						.build();
 		// end::searchFieldConfiguration[]
 	}
@@ -152,7 +128,6 @@ final class FrameworkUIDemo {
 		// tag::searchFieldProgrammaticControl[]
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
-						.multiSelection()
 						.build();
 
 		// Get search control
@@ -172,13 +147,12 @@ final class FrameworkUIDemo {
 		ComponentValue<EntitySearchField, Entity> searchFieldValue =
 						EntitySearchField.builder()
 										.model(searchModel)
-										.singleSelection()
 										.buildValue();
 
 		EntitySearchField searchField = searchFieldValue.component();
 		// React to selection changes
-		searchField.model().selection().entities().addConsumer(selectedEntities ->
-						System.out.println("Selected: " + selectedEntities));
+		searchField.model().selection().entity().addConsumer(selectedEntity ->
+						System.out.println("Selected: " + selectedEntity));
 
 		// Link to edit model
 		editModel.editor().value(Invoice.CUSTOMER_FK).link(searchFieldValue);
@@ -189,7 +163,6 @@ final class FrameworkUIDemo {
 		// tag::searchFieldProgressBar[]
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
-						.multiSelection()
 						.searchIndicator(SearchIndicator.PROGRESS_BAR)
 						.build();
 		// end::searchFieldProgressBar[]

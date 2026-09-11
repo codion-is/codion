@@ -30,13 +30,9 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import javax.swing.ListSelectionModel;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -56,46 +52,28 @@ public class EntitySearchFieldTest {
 
 	@Test
 	void componentValue() {
-		EntitySearchModel singleSelectionSearchModel = EntitySearchModel.builder()
+		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Department.TYPE)
 						.connection(CONNECTION)
 						.build();
-		ComponentValue<EntitySearchField, Entity> singleSelectionValue = EntitySearchField.builder()
-						.model(singleSelectionSearchModel)
-						.singleSelection()
+		ComponentValue<EntitySearchField, Entity> value = EntitySearchField.builder()
+						.model(searchModel)
 						.buildValue();
 
-		assertNull(singleSelectionValue.get());
+		assertNull(value.get());
 
 		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
 
-		singleSelectionSearchModel.selection().entity().set(sales);
-		assertEquals(sales, singleSelectionValue.get());
-		singleSelectionSearchModel.selection().entity().clear();
-		assertNull(singleSelectionValue.get());
+		searchModel.selection().entity().set(sales);
+		assertEquals(sales, value.get());
+		searchModel.selection().entity().clear();
+		assertNull(value.get());
 
-		assertNull(singleSelectionValue.get());
-
-		Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
-
-		singleSelectionValue.clear();
-		assertFalse(singleSelectionSearchModel.selection().present().is());
-		assertNull(singleSelectionValue.get());
-
-		EntitySearchModel multiSelectionSearchModel = EntitySearchModel.builder()
-						.entityType(Department.TYPE)
-						.connection(CONNECTION)
-						.build();
-		ComponentValue<EntitySearchField, Set<Entity>> multiSelectionValue = EntitySearchField.builder()
-						.model(multiSelectionSearchModel)
-						.multiSelection()
-						.buildValue();
-
-		assertTrue(multiSelectionValue.getOrThrow().isEmpty());
-
-		multiSelectionSearchModel.selection().entities().set(Arrays.asList(sales, research));
-
-		assertTrue(multiSelectionValue.getOrThrow().containsAll(Arrays.asList(sales, research)));
+		value.set(sales);
+		assertEquals(sales, searchModel.selection().entity().get());
+		value.clear();
+		assertFalse(searchModel.selection().present().is());
+		assertNull(value.get());
 	}
 
 	@Test
@@ -109,39 +87,45 @@ public class EntitySearchFieldTest {
 
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
-						.multiSelection()
-						.separator(";")
+						.selectionToolTip(true)
 						.build();
 		assertEquals("JONES", searchField.getText());
+		assertEquals("JONES", searchField.getToolTipText());
 
 		Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
-		Entity allen = CONNECTION.selectSingle(Employee.NAME.equalTo("ALLEN"));
+		searchModel.selection().entity().set(blake);
+		assertEquals("BLAKE", searchField.getText());
+		assertEquals("BLAKE", searchField.getToolTipText());
 
-		searchModel.selection().entities().set(asList(jones, blake, allen));
-		assertEquals("ALLEN;BLAKE;JONES", searchField.getText());
-
-		List<Entity> result = new ArrayList<>(asList(jones, blake, allen));
-		Collections.reverse(result);
-		searchModel.selection().entities().set(result);
-		assertEquals("ALLEN;BLAKE;JONES", searchField.getText());
+		searchModel.selection().clear();
+		assertEquals("", searchField.getText());
+		assertNull(searchField.getToolTipText());
 	}
 
 	@Test
-	void separatorWithRegexMetacharacter() {
+	void theTextIsASingleSearchString() {
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.build();
 		EntitySearchField field = EntitySearchField.builder()
 						.model(searchModel)
-						.multiSelection()
-						.separator("|")//regex metacharacter
 						.build();
-		field.setText("foo|bar");
-		Set<String> strings = searchModel.search().strings().get();
-		assertEquals(2, strings.size());
-		assertTrue(strings.contains("foo"));
-		assertTrue(strings.contains("bar"));
+		field.setText("foo, bar");
+		assertEquals(Set.of("foo, bar"), searchModel.search().strings().get());
+	}
+
+	@Test
+	void selectorsSelectASingleEntity() {
+		EntitySearchField field = EntitySearchField.builder()
+						.model(EntitySearchModel.builder()
+										.entityType(Employee.TYPE)
+										.connection(CONNECTION)
+										.build())
+						.build();
+		assertEquals(ListSelectionModel.SINGLE_SELECTION, EntitySearchField.listSelector(field).list().getSelectionMode());
+		assertEquals(ListSelectionModel.SINGLE_SELECTION,
+						EntitySearchField.tableSelector(field).table().getSelectionModel().getSelectionMode());
 	}
 
 	@Test
@@ -152,7 +136,6 @@ public class EntitySearchFieldTest {
 						.build();
 		EntitySearchField field = EntitySearchField.builder()
 						.model(model)
-						.multiSelection()
 						.formatter(entity -> entity.formatted(Employee.JOB))
 						.build();
 		Entity employee = CONNECTION.entities().entity(Employee.TYPE)

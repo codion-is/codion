@@ -11,7 +11,7 @@ It extends `HintTextField` and provides a search interface that triggers on ENTE
 `EntitySearchField` provides:
 
 * Text-based entity searching with automatic result handling
-* Single or multi-entity selection
+* Single entity selection, several entities collected via a `MultiValueInput`
 * Customizable result selection UI (list, table, or custom)
 * Optional add/edit functionality for creating or modifying entities
 * Search progress indication (wait cursor or progress bar)
@@ -34,29 +34,11 @@ The search field operates as follows:
 2. If the search returns:
    - **No results**: A message dialog is shown
    - **Single result**: That entity is automatically selected
-   - **Multiple results**: A selection dialog appears
-
-=== Single Selection
-
-For selecting one entity at a time:
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=singleSelectionSearchField]
-----
-
-=== Multi-Selection
-
-For selecting multiple entities from the result of a single search, each search replacing the selection:
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=multiSelectionSearchField]
-----
+   - **Multiple results**: A selection dialog appears, for selecting one of them
 
 === Collecting Entities
 
-To collect entities over several searches, wrap a single selection search field in a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multivalue/MultiValueInput.html[MultiValueInput], as the table condition panel does for the IN operator of a foreign key condition.
+To collect entities over several searches, wrap the search field in a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multivalue/MultiValueInput.html[MultiValueInput], as the table condition panel does for the IN operator of a foreign key condition.
 The entity found is shown in the field and added with ENTER or INSERT, clearing the field for the next search.
 The button beside the field shows how many entities have been collected, and opens a list of them, where DELETE removes the selected ones.
 

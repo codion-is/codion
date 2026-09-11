@@ -56,6 +56,8 @@ Codion Change Log
 - EntityApplicationPanel, EntityPanel, EntityEditPanel and EntityTablePanel.initialize() now ignore a call made while the initialization is in progress.
 - EntityConditionComponents, the foreign key IN operand is now a MultiValueInput wrapping a single selection EntitySearchField, the EQUAL combo box and search field now linked to the operand.
 - EntityConditionComponents, a foreign key IN operand based on a combo box model is a MultiValueInput wrapping a combo box.
+- EntitySearchField, multi selection removed, multiple entities are collected by wrapping the field in a MultiValueInput, Builder.Factory, MultiSelectionBuilder, SingleSelectionBuilder, Builder.separator(), Builder.singleSelection() and singleSelection() removed, Builder no longer generic, the result selector now always selecting a single entity.
+- EntitySearchInput, multi selection removed, Builder.Factory, MultiSelectionBuilder and SingleSelectionBuilder removed, Builder no longer generic, EntityComponents.searchField() and searchFieldInput(), EditorComponents.searchField() and searchFieldInput() and DefaultEditComponent.searchField() now return the builders.
 
 ## 0.18.85
 ### is.codion.common.reactive
