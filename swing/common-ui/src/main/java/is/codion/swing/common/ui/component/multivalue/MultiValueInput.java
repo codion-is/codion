@@ -89,7 +89,8 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  * {@link KeyEvent#VK_ESCAPE} or {@link KeyEvent#VK_ENTER} closes it.
  * </ul>
  * The value is the set collected plus whatever the wrapped component holds, in the order added, so a single value
- * typed into the component counts without being added. The wrapped component keeps every key of its own.
+ * typed into the component counts without being added. Setting the value sets the collected values and clears
+ * the wrapped component. The wrapped component keeps every key of its own.
  * @param <T> the value type
  * @see Components#multiValueInput()
  */
@@ -389,7 +390,8 @@ public final class MultiValueInput<T> extends JPanel {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == VK_ENTER && e.getModifiersEx() == 0 && !componentValue.isNull()) {
+			// consumed by the component, which uses the Enter, a search field searching for example
+			if (e.getKeyCode() == VK_ENTER && e.getModifiersEx() == 0 && !e.isConsumed() && !componentValue.isNull()) {
 				addValue();
 				e.consume();
 			}
@@ -519,7 +521,10 @@ public final class MultiValueInput<T> extends JPanel {
 
 		@Override
 		protected void setComponentValue(@Nullable Set<T> value) {
-			super.component().members.items().set(value == null ? emptySet() : value);
+			MultiValueInput<T> field = super.component();
+			field.members.items().set(value == null ? emptySet() : value);
+			// otherwise a value pending in the component would remain, and be part of the value on the next change
+			field.componentValue.clear();
 		}
 	}
 }

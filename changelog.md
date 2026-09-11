@@ -45,12 +45,14 @@ Codion Change Log
 - AbstractComponentBuilder.field() added, the component receiving the key events and the focus, mouse and key listeners, the composite components returning their field, TemporalInput, TextInput, MultiValueInput, EntityComboBoxInput and EntitySearchInput.
 - ListComboBox replaced with MultiValueInput, the wrapped component beside a button opening the collected values in a non-modal dialog, instead of hosting the component as a combo box editor.
 - TemporalFieldPanel, TextFieldPanel and FileInputPanel renamed TemporalInput, TextInput and FileInput, Components.temporalFieldPanel(), localTimeFieldPanel(), localDateFieldPanel(), localDateTimeFieldPanel(), textFieldPanel(), pathInputPanel() and byteArrayInputPanel() renamed temporalInput(), localTimeInput(), localDateInput(), localDateTimeInput(), textInput(), filePathInput() and fileByteArrayInput().
+- MultiValueInput, setting the value now clears the wrapped component, Enter consumed by the wrapped component no longer adds its value.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 ### is.codion.swing.framework.ui
 - EntityComboBoxPanel and EntitySearchFieldPanel renamed EntityComboBoxInput and EntitySearchInput, EntityComponents.comboBoxPanel(), searchFieldPanel(), temporalFieldPanel(), textFieldPanel() and byteArrayInputPanel() renamed comboBoxInput(), searchFieldInput(), temporalFieldInput(), textFieldInput() and fileByteArrayInput().
 - ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING renamed HANDLING.
 - EntityApplicationPanel, EntityPanel, EntityEditPanel and EntityTablePanel.initialize() now ignore a call made while the initialization is in progress.
+- EntityConditionComponents, the foreign key IN operand is now a MultiValueInput wrapping a single selection EntitySearchField, the EQUAL combo box and search field now linked to the operand.
 
 ## 0.18.85
 ### is.codion.common.reactive
