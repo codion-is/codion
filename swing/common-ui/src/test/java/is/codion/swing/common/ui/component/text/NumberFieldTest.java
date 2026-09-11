@@ -39,8 +39,7 @@ import java.util.Optional;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class NumberFieldTest {
 
@@ -285,7 +284,8 @@ public final class NumberFieldTest {
 						.build();
 		integerField.setText("-2147483648");
 		assertEquals(Integer.MIN_VALUE, integerField.get());
-		assertThrows(IllegalArgumentException.class, () -> integerField.setText("3000000000"));
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> integerField.setText("3000000000"));
+		assertTrue(exception.getMessage().endsWith(": 2147483647"));
 		assertEquals("-2147483648", integerField.getText());
 
 		NumberField<Long> longField = NumberField.builder()
@@ -750,9 +750,11 @@ public final class NumberFieldTest {
 		// typing beyond the maximum is rejected silently
 		document.insertString(2, "0", null);
 		assertEquals(15, integerField.get());
-		// a longer edit or setting a value outside the range throws
-		assertThrows(IllegalArgumentException.class, () -> integerField.setText("150"));
-		assertThrows(IllegalArgumentException.class, () -> integerField.set(5));
+		// a longer edit or setting a value outside the range throws, naming the bound exceeded
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> integerField.setText("150"));
+		assertTrue(exception.getMessage().endsWith(": 100"));
+		exception = assertThrows(IllegalArgumentException.class, () -> integerField.set(5));
+		assertTrue(exception.getMessage().endsWith(": 10"));
 		assertThrows(IllegalArgumentException.class, () -> integerField.set(101));
 		assertEquals(15, integerField.get());
 
@@ -767,6 +769,8 @@ public final class NumberFieldTest {
 		doubleDocument.insertString(1, ".", null);
 		doubleDocument.insertString(2, "7", null);
 		assertEquals(0.7, doubleField.get());
+		exception = assertThrows(IllegalArgumentException.class, () -> doubleField.set(1.5));
+		assertTrue(exception.getMessage().endsWith(": 1"));
 
 		NumberField<Integer> negativeField = NumberField.builder()
 						.numberClass(Integer.class)

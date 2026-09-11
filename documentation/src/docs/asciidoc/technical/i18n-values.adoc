@@ -550,7 +550,8 @@ is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFil
 |===
 |key|default|is_IS
 
-|value_outside_range|Value outside allowed range|Gildi utan leyfilegs bils
+|value_above_maximum|Value may not exceed|Gildið má ekki vera hærra en
+|value_below_minimum|Value may not be less than|Gildið má ekki vera lægra en
 |===
 
 === is/codion/swing/common/ui/component/text/SearchHighlighter.java

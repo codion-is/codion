@@ -607,8 +607,13 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			 * @throws IllegalArgumentException in case the value is outside the range
 			 */
 			private void validate(Number value) {
-				if (!within(value, minimum(), maximum())) {
-					throw outsideRange(value);
+				Number minimum = minimum();
+				if (minimum != null && compare(value, minimum) < 0) {
+					throw belowMinimum(minimum);
+				}
+				Number maximum = maximum();
+				if (maximum != null && compare(value, maximum) > 0) {
+					throw aboveMaximum(maximum);
 				}
 			}
 
@@ -636,8 +641,27 @@ class NumberDocument<T extends Number> extends PlainDocument {
 				return minimum == null || compare(minimum, 0) < 0;
 			}
 
-			private IllegalArgumentException outsideRange(Number value) {
-				return new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + value + " [" + minimum() + " - " + maximum() + "]");
+			/**
+			 * @param overflow a number exceeding the range of the number type
+			 * @return an exception describing the bound exceeded
+			 */
+			private IllegalArgumentException outsideRange(Number overflow) {
+				return compare(overflow, 0) < 0 ? belowMinimum(requireNonNull(minimum())) : aboveMaximum(requireNonNull(maximum()));
+			}
+
+			private static IllegalArgumentException belowMinimum(Number minimum) {
+				return new IllegalArgumentException(MESSAGES.getString("value_below_minimum") + ": " + plain(minimum));
+			}
+
+			private static IllegalArgumentException aboveMaximum(Number maximum) {
+				return new IllegalArgumentException(MESSAGES.getString("value_above_maximum") + ": " + plain(maximum));
+			}
+
+			/**
+			 * @return the number without trailing zeros or an exponent, such as 100 for 1.0E2
+			 */
+			private static String plain(Number number) {
+				return finite(number) ? bigDecimal(number).stripTrailingZeros().toPlainString() : number.toString();
 			}
 
 			/**
