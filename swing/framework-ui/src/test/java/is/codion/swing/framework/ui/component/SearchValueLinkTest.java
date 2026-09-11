@@ -60,8 +60,7 @@ public class SearchValueLinkTest {
 		assertFalse(searchModel.selection().present().is());
 		Entity department = model.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		model.editor().value(Employee.DEPARTMENT_FK).set(department);
-		assertEquals(1, searchModel.selection().entities().get().size());
-		assertEquals(department, searchModel.selection().entities().get().iterator().next());
+		assertEquals(department, searchModel.selection().entity().get());
 		department = model.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
 		searchModel.selection().entity().set(department);
 		assertEquals(department, model.editor().value(Employee.DEPARTMENT_FK).get());

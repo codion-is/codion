@@ -452,8 +452,8 @@ public final class EntitySearchField extends HintTextField {
 	private void bindEvents() {
 		getDocument().addDocumentListener((DocumentAdapter) e -> updateSearchStrings());
 		model.search().strings().addListener(this::updateSearchReady);
-		// the entities, not the entity, which does not notify when an updated entity replaces an equal one
-		model.selection().entities().addListener(this::onSelectionChanged);
+		// notified when an updated entity replaces the selected one as well, updating the text
+		model.selection().entity().addListener(this::onSelectionChanged);
 		addFocusListener(new FocusListener());
 		addKeyListener(new EnterEscapeListener());
 	}
@@ -768,7 +768,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private DefaultListSelector(EntitySearchField searchField) {
 			this.searchField = requireNonNull(searchField);
-			this.list = createList(searchField);
+			this.list = createList();
 			this.formatter = searchField.formatter;
 			this.selectorPanel = borderLayoutPanel()
 							.center(scrollPane()
@@ -805,7 +805,7 @@ public final class EntitySearchField extends HintTextField {
 			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private FilterList<Entity> createList(EntitySearchField searchField) {
+		private FilterList<Entity> createList() {
 			SwingFilterListModel<Entity> listModel = SwingFilterListModel.builder()
 							.<Entity>items()
 							.build();

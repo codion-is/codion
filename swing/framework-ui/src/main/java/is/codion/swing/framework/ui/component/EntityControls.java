@@ -133,7 +133,7 @@ final class EntityControls {
 						.confirm(confirm)
 						.entity(() -> searchField.model().selection().entity().getOrThrow())
 						.onUpdate(new EntitySearchFieldOnUpdate(searchField.model()))
-						.show(), searchField, searchField.model().selection().single(), keyStroke);
+						.show(), searchField, searchField.model().selection().present(), keyStroke);
 	}
 
 	static String validateButtonLocation(String buttonLocation) {

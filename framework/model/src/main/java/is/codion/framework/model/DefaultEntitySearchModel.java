@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.reactive.value.ValueSet;
@@ -40,11 +41,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -68,7 +66,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private static final String WILDCARD_SINGLE = "_";
 
 	private final State selectionPresent = State.state();
-	private final State selectionSingle = State.state();
 
 	private final EntityDefinition entityDefinition;
 	private final Collection<Column<String>> columns;
@@ -143,12 +140,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	@Override
 	public Value<Supplier<Condition>> condition() {
 		return condition;
-	}
-
-	private void validateType(Entity entity) {
-		if (!entity.type().equals(entityDefinition.type())) {
-			throw new IllegalArgumentException("Entities of type " + entityDefinition.type() + " expected, got " + entity.type());
-		}
 	}
 
 	private final class DefaultSearch implements Search {
@@ -236,23 +227,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private final class DefaultSelection implements Selection {
 
-		private final ValueSet<Entity> entities = ValueSet.<Entity>builder()
-						.notify(Notify.SET)
-						.validator(new EntityValidator())
-						.consumer(selectedEntities -> {
-							selectionPresent.set(!selectedEntities.isEmpty());
-							selectionSingle.set(selectedEntities.size() == 1);
-						})
-						.build();
+		private final SelectedEntity entity = new SelectedEntity();
 
 		@Override
 		public Value<Entity> entity() {
-			return entities.value();
-		}
-
-		@Override
-		public ValueSet<Entity> entities() {
-			return entities;
+			return entity;
 		}
 
 		@Override
@@ -261,21 +240,46 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public ObservableState single() {
-			return selectionSingle.observable();
-		}
-
-		@Override
 		public void clear() {
-			entities.clear();
+			entity.clear();
 		}
 	}
 
-	private final class EntityValidator implements Value.Validator<Set<Entity>> {
+	/**
+	 * The selected entity, notifying when the instance changes, so that an updated entity replacing an
+	 * equal one notifies, while setting the selected instance again, or clearing an empty selection, does not.
+	 */
+	private final class SelectedEntity extends AbstractValue<Entity> {
+
+		private @Nullable Entity entity;
+
+		private SelectedEntity() {
+			addValidator(new EntityValidator());
+		}
 
 		@Override
-		public void validate(Set<Entity> entitySet) {
-			entitySet.forEach(DefaultEntitySearchModel.this::validateType);
+		protected @Nullable Entity getValue() {
+			return entity;
+		}
+
+		@Override
+		protected void setValue(@Nullable Entity entity) {
+			Entity previous = this.entity;
+			this.entity = entity;
+			selectionPresent.set(entity != null);
+			if (entity != previous) {
+				notifyObserver();
+			}
+		}
+	}
+
+	private final class EntityValidator implements Value.Validator<Entity> {
+
+		@Override
+		public void validate(@Nullable Entity entity) {
+			if (entity != null && !entity.type().equals(entityDefinition.type())) {
+				throw new IllegalArgumentException("Entities of type " + entityDefinition.type() + " expected, got " + entity.type());
+			}
 		}
 	}
 
@@ -283,23 +287,15 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public void accept(Map<Entity, Entity> updated) {
-			Set<Entity> toRemove = new HashSet<>();
-			Set<Entity> toAdd = new HashSet<>();
-			updated.keySet().forEach(beforeUpdate -> {
-				Entity entity = beforeUpdate.copy().builder().originalPrimaryKey().build();
-				if (selection.entities.contains(entity)) {
-					toRemove.add(entity);
-					toAdd.add(updated.get(beforeUpdate));
-				}
-			});
-			if (!toRemove.isEmpty()) {
-				//apply the reconciliation in a single set(), a remove followed by an add would leave the
-				//selection transiently missing the updated entities, and this set is a live condition operand
-				Set<Entity> reconciled = new LinkedHashSet<>(selection.entities.get());
-				reconciled.removeAll(toRemove);
-				reconciled.addAll(toAdd);
-				selection.entities.set(reconciled);
-				LOG.debug("{} - reconciled {} updated entities", DefaultEntitySearchModel.this, toRemove.size());
+			Entity selected = selection.entity.get();
+			if (selected != null) {
+				updated.forEach((beforeUpdate, afterUpdate) -> {
+					// matched on the original primary key, in case the update modified it
+					if (beforeUpdate.originalPrimaryKey().equals(selected.primaryKey())) {
+						selection.entity.set(afterUpdate);
+						LOG.debug("{} - replaced the updated selected entity", DefaultEntitySearchModel.this);
+					}
+				});
 			}
 		}
 	}
@@ -308,11 +304,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public void accept(Collection<Entity> deleted) {
-			int sizeBefore = selection.entities.size();
-			selection.entities.removeAll(deleted);
-			int removed = sizeBefore - selection.entities.size();
-			if (removed > 0) {
-				LOG.debug("{} - removed {} deleted entities", DefaultEntitySearchModel.this, removed);
+			Entity selected = selection.entity.get();
+			if (selected != null && deleted.contains(selected)) {
+				selection.entity.clear();
+				LOG.debug("{} - cleared the deleted selected entity", DefaultEntitySearchModel.this);
 			}
 		}
 	}
