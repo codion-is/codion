@@ -27,6 +27,7 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComponents;
@@ -134,23 +135,36 @@ public class EntityConditionComponents implements ConditionComponents {
 	}
 
 	private JComponent createInForeignKeyField(ForeignKeyConditionModel conditionModel) {
-		EntitySearchModel searchModel = conditionModel.inSearchModel().orElseThrow();
-
-		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
-
-		// a single selection search field, the entity selected added with Enter or Insert, clearing the field for the next search
 		return multiValueInput()
-						.component(inputComponents.searchField(conditionModel.attribute(), searchModel)
-										.singleSelection()
-										// the single selection builder does not set this, the result selector would otherwise
-										// allow selecting several, of which only the first would be added
-										.singleSelection(true)
-										.editable(searchable)
-										.searchHintEnabled(searchable)
-										.buildValue())
+						.component(createInForeignKeyComponent(conditionModel))
 						.link(conditionModel.operands().in())
 						.caption(conditionModel.caption().orElse(null))
 						.build();
+	}
+
+	private ComponentValue<? extends JComponent, Entity> createInForeignKeyComponent(ForeignKeyConditionModel conditionModel) {
+		Optional<EntityComboBoxModel> inComboBoxModel = conditionModel.inComboBoxModel();
+		if (inComboBoxModel.isPresent()) {
+			// SwingEntityConditions always supplies a SwingEntityComboBoxModel for the IN operand,
+			// the entity selected added with Insert, Enter being the combo box's
+			return inputComponents.comboBox(conditionModel.attribute(), (SwingEntityComboBoxModel) inComboBoxModel.get())
+							.completionMode(Completion.Mode.MAXIMUM_MATCH)
+							.onSetVisible(EntityConditionComponents::refreshIfCleared)
+							.buildValue();
+		}
+
+		EntitySearchModel searchModel = conditionModel.inSearchModel().orElseThrow();
+		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
+
+		// a single selection search field, the entity selected added with Enter or Insert, clearing the field for the next search
+		return inputComponents.searchField(conditionModel.attribute(), searchModel)
+						.singleSelection()
+						// the single selection builder does not set this, the result selector would otherwise
+						// allow selecting several, of which only the first would be added
+						.singleSelection(true)
+						.editable(searchable)
+						.searchHintEnabled(searchable)
+						.buildValue();
 	}
 
 	private static void refreshIfCleared(EntityComboBox comboBox) {

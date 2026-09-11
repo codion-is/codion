@@ -23,17 +23,12 @@ import is.codion.common.reactive.value.Value.Validator;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.EntityConditionModel;
-import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.framework.model.SwingEntityConditions;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Track;
-import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 
 public final class TrackTableModel extends SwingEntityTableModel {
 
@@ -41,12 +36,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 	private static final int MAXIMUM_LIMIT = 10_000;
 
 	public TrackTableModel(EntityConnection connection) {
-		super(new TrackEditModel(connection),
-						entityQueryModel(EntityConditionModel.builder()
-										.entityType(Track.TYPE)
-										.connection(connection)
-										.conditions(new TrackConditions(connection))
-										.build()));
+		super(new TrackEditModel(connection));
 		rowEditor().enabled().set(true);
 		configureLimit();
 	}
@@ -92,24 +82,6 @@ public final class TrackTableModel extends SwingEntityTableModel {
 				// The error message is never displayed, so not required
 				throw new IllegalArgumentException();
 			}
-		}
-	}
-
-	private static class TrackConditions extends SwingEntityConditions {
-
-		private TrackConditions(EntityConnection connection) {
-			super(Track.TYPE, connection);
-		}
-
-		@Override
-		protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
-			if (foreignKey.equals(Track.MEDIATYPE_FK)) {
-				return ForeignKeyConditionModel.builder(foreignKey)
-								.equalComboBoxModel(createEqualComboBoxModel(Track.MEDIATYPE_FK))
-								.build();
-			}
-
-			return super.condition(foreignKey);
 		}
 	}
 }

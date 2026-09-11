@@ -29,7 +29,8 @@ import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Swing {@link ConditionModel} supplier using {@link SwingEntityComboBoxModel} for foreign keys based on small datasets
+ * A Swing {@link ConditionModel} supplier using {@link SwingEntityComboBoxModel} for the EQUAL and IN operands
+ * of foreign keys based on small datasets
  */
 public class SwingEntityConditions extends EntityConditions {
 
@@ -45,10 +46,11 @@ public class SwingEntityConditions extends EntityConditions {
 	@Override
 	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
 		if (definition(requireNonNull(foreignKey).referencedType()).smallDataset()) {
-			// A combo box for the EQUAL operand, so the model defaults to EQUAL (the intuitive single pick)
+			// A combo box for the EQUAL operand, so the model defaults to EQUAL (the intuitive single pick),
+			// and one for the IN operand, which works whether or not the referenced entity is searchable
 			return ForeignKeyConditionModel.builder(foreignKey)
 							.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
-							.inSearchModel(createInSearchModel(foreignKey))
+							.inComboBoxModel(createInComboBoxModel(foreignKey))
 							.caption(definition().foreignKeys().definition(foreignKey).caption())
 							.build();
 		}
@@ -61,6 +63,20 @@ public class SwingEntityConditions extends EntityConditions {
 	 * @return a combo box model to use for the equal value
 	 */
 	protected SwingEntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
+		return SwingEntityComboBoxModel.builder()
+						.entityType(requireNonNull(foreignKey).referencedType())
+						.connection(connection())
+						.includeNull(true)
+						.build();
+	}
+
+	/**
+	 * Note that this must be a separate instance from the one returned by {@link #createEqualComboBoxModel(ForeignKey)},
+	 * since the EQUAL and IN operand components exist side by side.
+	 * @param foreignKey the foreign key
+	 * @return a combo box model to use for the in value
+	 */
+	protected SwingEntityComboBoxModel createInComboBoxModel(ForeignKey foreignKey) {
 		return SwingEntityComboBoxModel.builder()
 						.entityType(requireNonNull(foreignKey).referencedType())
 						.connection(connection())

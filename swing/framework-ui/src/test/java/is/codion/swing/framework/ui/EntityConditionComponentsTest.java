@@ -36,7 +36,9 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
@@ -66,7 +68,8 @@ public final class EntityConditionComponentsTest {
 	@Test
 	void inAddsTheEntitySelectedInASingleSelectionSearchFieldOnEnter() throws Exception {
 		onEventDispatchThread(() -> {
-			ForeignKeyConditionModel condition = departmentCondition(new SwingEntityConditions(Employee.TYPE, CONNECTION));
+			// search models for both operands, Department being a small dataset SwingEntityConditions would use combo boxes
+			ForeignKeyConditionModel condition = departmentCondition(new EntityConditions(Employee.TYPE, CONNECTION));
 			MultiValueInput<?> input = (MultiValueInput<?>) components.in(condition);
 			EntitySearchField searchField = (EntitySearchField) input.component();
 			assertSame(condition.inSearchModel().orElseThrow(), searchField.model());
@@ -96,6 +99,41 @@ public final class EntityConditionComponentsTest {
 			// the operand set, by a master selection say, the pending selection cleared
 			condition.operands().in().set(Set.of(research));
 			assertFalse(searchField.model().selection().present().is());
+			assertEquals(Set.of(research), condition.operands().in().get());
+		});
+	}
+
+	@Test
+	void inAddsTheEntitySelectedInAComboBoxOnInsert() throws Exception {
+		ForeignKeyConditionModel condition = departmentCondition(new SwingEntityConditions(Employee.TYPE, CONNECTION));
+		assertNotSame(condition.equalComboBoxModel().orElseThrow(), condition.inComboBoxModel().orElseThrow());
+		// off the event dispatch thread, a refresh on it being asynchronous
+		condition.inComboBoxModel().orElseThrow().items().refresh();
+		onEventDispatchThread(() -> {
+			MultiValueInput<?> input = (MultiValueInput<?>) components.in(condition);
+			EntityComboBox comboBox = (EntityComboBox) input.component();
+			assertSame(condition.inComboBoxModel().orElseThrow(), comboBox.model());
+
+			Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+			Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
+			// the entity selected is part of the operand before being added
+			comboBox.model().selection().item().set(sales);
+			assertEquals(Set.of(sales), condition.operands().in().get());
+			// Insert adds it, clearing the combo box for the next
+			insert(comboBox);
+			assertNull(comboBox.model().selection().item().get());
+			comboBox.model().selection().item().set(research);
+			insert(comboBox);
+			assertNull(comboBox.model().selection().item().get());
+			assertEquals(Set.of(sales, research), condition.operands().in().get());
+			// the EQUAL combo box untouched
+			assertNull(condition.operands().equal().get());
+			assertNull(condition.equalComboBoxModel().orElseThrow().selection().item().get());
+
+			// the operand set, by a master selection say, the pending selection cleared
+			comboBox.model().selection().item().set(sales);
+			condition.operands().in().set(Set.of(research));
+			assertNull(comboBox.model().selection().item().get());
 			assertEquals(Set.of(research), condition.operands().in().get());
 		});
 	}
@@ -149,6 +187,17 @@ public final class EntityConditionComponentsTest {
 			}
 			throw e;
 		}
+	}
+
+	/**
+	 * Performs the Insert key binding the {@link MultiValueInput} installs on the component it wraps
+	 */
+	private static void insert(JComponent component) {
+		Object actionKey = component.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.get(KeyStroke.getKeyStroke(VK_INSERT, 0));
+		assertNotNull(actionKey);
+		component.getActionMap().get(actionKey)
+						.actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, "insert"));
 	}
 
 	/**

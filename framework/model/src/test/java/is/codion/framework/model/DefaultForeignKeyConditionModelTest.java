@@ -104,6 +104,37 @@ public final class DefaultForeignKeyConditionModelTest {
 	}
 
 	@Test
+	void inComboBoxModel() {
+		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+						.equalComboBoxModel(comboBoxModel())
+						.inComboBoxModel(comboBoxModel())
+						.build();
+		assertEquals(asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN), condition.operators());
+		assertEquals(Operator.EQUAL, condition.operator().get());
+
+		condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+						.inComboBoxModel(comboBoxModel())
+						.build();
+		assertEquals(asList(Operator.IN, Operator.NOT_IN), condition.operators());
+		assertEquals(Operator.IN, condition.operator().get());
+
+		// the selection is not the operand
+		EntityComboBoxModel inComboBoxModel = condition.inComboBoxModel().orElseThrow();
+		inComboBoxModel.items().refresh();
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		inComboBoxModel.selection().item().set(sales);
+		assertTrue(condition.operands().in().get().isEmpty());
+		inComboBoxModel.selection().item().clear();
+		condition.operands().in().set(singletonList(sales));
+		assertNull(inComboBoxModel.selection().item().get());
+
+		assertThrows(IllegalStateException.class, () -> ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+						.inSearchModel(searchModel())
+						.inComboBoxModel(comboBoxModel())
+						.build());
+	}
+
+	@Test
 	void caption() {
 		ForeignKeyConditionModel condition = new EntityConditions(Employee.TYPE, CONNECTION).condition(Employee.DEPARTMENT_FK);
 		assertEquals(ENTITIES.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK).caption(),
@@ -192,6 +223,13 @@ public final class DefaultForeignKeyConditionModelTest {
 
 	private static EntitySearchModel searchModel() {
 		return EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+	}
+
+	private static EntityComboBoxModel comboBoxModel() {
+		return EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
 						.connection(CONNECTION)
 						.build();
