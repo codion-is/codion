@@ -519,7 +519,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			setText("");
 		}
 
-		/* Automatically adds a 0 in front of a decimal separator, when it's the first character entered */
+		/* Automatically adds a 0 in front of a decimal separator, when it's the first character entered or follows a leading minus sign */
 		private static final class DecimalDocumentParser<T extends Number> extends NumberParser<T> {
 
 			private DecimalDocumentParser(DecimalFormat format, boolean parseBigDecimal) {
@@ -528,9 +528,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 			@Override
 			public NumberParseResult<T> parse(String string) {
-				char decimalSeparator = ((DecimalFormat) format()).getDecimalFormatSymbols().getDecimalSeparator();
-				if (string.equals(Character.toString(decimalSeparator))) {
-					NumberParseResult<T> parseResult = super.parse("0" + decimalSeparator);
+				DecimalFormat format = (DecimalFormat) format();
+				String decimalSeparator = String.valueOf(format.getDecimalFormatSymbols().getDecimalSeparator());
+				if (string.equals(decimalSeparator) || string.equals(format.getNegativePrefix() + decimalSeparator)) {
+					NumberParseResult<T> parseResult = super.parse(string.replace(decimalSeparator, "0" + decimalSeparator));
 
 					return new DefaultNumberParseResult<>(parseResult.text(), parseResult.value(),
 									parseResult.charetOffset() + 1, parseResult.successful());

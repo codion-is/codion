@@ -497,6 +497,34 @@ public final class NumberFieldTest {
 	}
 
 	@Test
+	void negativeLeadingDecimalSeparator() throws BadLocationException {
+		NumberField<Double> doubleField = NumberField.builder()
+						.numberClass(Double.class)
+						.decimalSeparator('.')
+						.groupingSeparator(',')
+						.build();
+		NumberDocument<Double> doubleDocument = doubleField.document();
+		doubleDocument.insertString(0, "-", null);
+		doubleDocument.insertString(1, ".", null);
+		assertEquals("-0.", doubleField.getText());
+		assertEquals(3, doubleField.getCaretPosition());
+		doubleDocument.insertString(3, "5", null);
+		assertEquals(Double.valueOf(-0.5), doubleField.get());
+
+		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
+						.numberClass(BigDecimal.class)
+						.decimalSeparator('.')
+						.groupingSeparator(',')
+						.build();
+		NumberDocument<BigDecimal> bigDecimalDocument = bigDecimalField.document();
+		bigDecimalDocument.insertString(0, "-", null);
+		bigDecimalDocument.insertString(1, ".", null);
+		assertEquals("-0.", bigDecimalField.getText());
+		bigDecimalDocument.insertString(3, "5", null);
+		assertEquals(new BigDecimal("-0.5"), bigDecimalField.get());
+	}
+
+	@Test
 	void setSeparators() {
 		NumberField<Double> doubleField = NumberField.builder()
 						.numberClass(Double.class)
