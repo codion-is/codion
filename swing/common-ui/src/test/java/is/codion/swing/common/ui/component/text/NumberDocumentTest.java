@@ -45,23 +45,25 @@ public final class NumberDocumentTest {
 		document.getDocumentFilter().setMinimumValue(-1);
 		document.getDocumentFilter().setMaximumValue(1);
 		document.insertString(0, "-", null);
-		assertEquals(-1, document.get());
+		assertEquals(1, document.getLength());
+		assertNull(document.get()); // no value yet
 
 		clear(document);
 
 		document.getDocumentFilter().setMinimumValue(-1);
 		document.getDocumentFilter().setMaximumValue(0);
 		document.insertString(0, "-", null);
-		assertEquals(-1, document.get());
+		assertNull(document.get());
 		document.insertString(1, "2", null); // -2 invalid
-		assertEquals(-1, document.get());
+		assertEquals(1, document.getLength());
+		assertNull(document.get());
 
 		clear(document);
 
 		document.getDocumentFilter().setMinimumValue(-3);
 		document.getDocumentFilter().setMaximumValue(0);
 		document.insertString(0, "-", null);
-		assertEquals(-1, document.get());
+		assertNull(document.get());
 		document.insertString(1, "2", null); // -2 valid
 		assertEquals(-2, document.get());
 		document.insertString(1, "3", null); // -23 invalid

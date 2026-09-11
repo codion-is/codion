@@ -157,8 +157,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			if (string.isEmpty()) {
 				return new DefaultNumberParseResult<>(string, null);
 			}
-			if (MINUS_SIGN.equals(string)) {
-				return new DefaultNumberParseResult<>(string, (T) toType(clazz, -1));
+			if (string.equals(negativePrefix())) {
+				// the start of a negative number
+				return new DefaultNumberParseResult<>(string, null);
 			}
 
 			T parsedNumber = parseNumber(string);
@@ -196,6 +197,13 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		 */
 		protected final NumberFormat format() {
 			return format;
+		}
+
+		/**
+		 * @return the prefix of a negative number
+		 */
+		final String negativePrefix() {
+			return format instanceof DecimalFormat ? ((DecimalFormat) format).getNegativePrefix() : MINUS_SIGN;
 		}
 
 		/**
@@ -412,7 +420,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		public void replace(FilterBypass filterBypass, int offset, int length, String text,
 												@Nullable AttributeSet attributeSet) throws BadLocationException {
 			if (text != null) {
-				text = convertSingleGroupingToDecimalSeparator(text);
+				text = convertMinusSign(convertSingleGroupingToDecimalSeparator(text));
 				Document document = filterBypass.getDocument();
 				StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
 				builder.replace(offset, offset + length, text);
@@ -468,6 +476,18 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return text;
 		}
 
+		/**
+		 * Some locales use a minus sign other than the hyphen-minus found on keyboards, such as U+2212,
+		 * so interpret a hyphen-minus as the minus sign of the format.
+		 */
+		private String convertMinusSign(String text) {
+			if (parser.format instanceof DecimalFormat) {
+				return text.replace('-', ((DecimalFormat) parser.format).getDecimalFormatSymbols().getMinusSign());
+			}
+
+			return text;
+		}
+
 		private void validateReplace(NumberParseResult<T> parseResult, FilterBypass filterBypass,
 																 @Nullable AttributeSet attributeSet, int dotLocation) throws BadLocationException {
 			if (parseResult.value() != null) {
@@ -480,6 +500,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 					}
 					throw e;
 				}
+			}
+			else if (parseResult.text().equals(parser.negativePrefix()) && !rangeValidator.negativeAllowed()) {
+				// a lone minus sign, when negative values are not allowed
+				return;
 			}
 			super.replace(filterBypass, 0, filterBypass.getDocument().getLength(), parseResult.text(), attributeSet);
 			value.set(parseResult.value());
@@ -502,6 +526,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 			private boolean withinRange(@Nullable T value) {
 				return value == null || (greaterThanMinimum(value) && lessThanMaximum(value));
+			}
+
+			private boolean negativeAllowed() {
+				return minimumValue == null || minimumValue.doubleValue() < 0;
 			}
 
 			private boolean greaterThanMinimum(T value) {
