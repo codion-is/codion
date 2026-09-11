@@ -28,10 +28,14 @@ import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static java.awt.event.KeyEvent.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class NumberFieldTest {
 
@@ -61,9 +65,9 @@ public final class NumberFieldTest {
 		zeroToTen.set(9);
 		assertEquals("9", zeroToTen.getText());
 		assertThrows(IllegalArgumentException.class, () -> zeroToTen.set(-1));
-		assertEquals("", zeroToTen.getText());
+		assertEquals("9", zeroToTen.getText());
 		assertThrows(IllegalArgumentException.class, () -> zeroToTen.set(-10));
-		assertEquals("", zeroToTen.getText());
+		assertEquals("9", zeroToTen.getText());
 
 		NumberField<Integer> zeroToMax = NumberField.builder()
 						.numberClass(Integer.class)
@@ -160,6 +164,18 @@ public final class NumberFieldTest {
 		assertEquals(value, bigIntegerField.get());
 		bigIntegerField.setText("-98765432109876543210");
 		assertEquals(new BigInteger("-98765432109876543210"), bigIntegerField.get());
+	}
+
+	@Test
+	void set() {
+		NumberField<Integer> integerField = NumberField.builder()
+						.numberClass(Integer.class)
+						.build();
+		integerField.set(3);
+		List<Integer> values = new ArrayList<>();
+		integerField.observable().addConsumer(values::add);
+		integerField.set(5);
+		assertEquals(singletonList(5), values);
 	}
 
 	@Test
@@ -645,8 +661,8 @@ public final class NumberFieldTest {
 						.silentValidation(true)
 						.build();
 		silentField.set(50);
-		assertNotNull(silentField.get());
+		assertEquals(50, silentField.get());
 		silentField.set(110);
-		assertNull(silentField.get());
+		assertEquals(50, silentField.get());
 	}
 }
