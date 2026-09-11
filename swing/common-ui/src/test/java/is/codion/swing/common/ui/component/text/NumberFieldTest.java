@@ -25,6 +25,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 
 import static java.awt.event.KeyEvent.*;
@@ -144,6 +145,19 @@ public final class NumberFieldTest {
 		rangedField.setText("");
 		assertThrows(IllegalArgumentException.class, () -> rangedField.set(-1L));
 		assertEquals("", rangedField.getText());
+	}
+
+	@Test
+	void bigIntegerFieldTest() {
+		NumberField<BigInteger> bigIntegerField = NumberField.builder()
+						.numberClass(BigInteger.class)
+						.build();
+		BigInteger value = new BigInteger("123456789012345678901234567890");
+		bigIntegerField.set(value);
+		assertEquals("123456789012345678901234567890", bigIntegerField.getText());
+		assertEquals(value, bigIntegerField.get());
+		bigIntegerField.setText("-98765432109876543210");
+		assertEquals(new BigInteger("-98765432109876543210"), bigIntegerField.get());
 	}
 
 	@Test
