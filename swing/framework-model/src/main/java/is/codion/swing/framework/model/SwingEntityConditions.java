@@ -49,6 +49,7 @@ public class SwingEntityConditions extends EntityConditions {
 			return ForeignKeyConditionModel.builder(foreignKey)
 							.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
 							.inSearchModel(createInSearchModel(foreignKey))
+							.caption(definition().foreignKeys().definition(foreignKey).caption())
 							.build();
 		}
 

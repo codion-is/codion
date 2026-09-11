@@ -108,6 +108,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 		return ForeignKeyConditionModel.builder(foreignKey)
 						.equalSearchModel(createEqualSearchModel(foreignKey))
 						.inSearchModel(createInSearchModel(foreignKey))
+						.caption(definition().foreignKeys().definition(foreignKey).caption())
 						.build();
 	}
 
