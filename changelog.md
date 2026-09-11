@@ -40,6 +40,7 @@ Codion Change Log
 - ColumnConditionPanel, the key bindings now apply while a descendant of a condition component has the focus, a field inside a panel.
 - FrameBuilder, DialogBuilder.windowFocusListener() and undecorated() added.
 - AbstractDialogBuilder.configure() added, applying the dialog options to the builder building the dialog, the exception, calendar, selection, login and progress dialogs now honouring keyEvent(), undecorated() and windowFocusListener().
+- AbstractComponentBuilder.input() added, the component receiving the key events and the focus, mouse and key listeners, the composite panels returning their input component, TemporalFieldPanel, TextFieldPanel, EntityComboBoxPanel and EntitySearchFieldPanel.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 ### is.codion.swing.framework.ui

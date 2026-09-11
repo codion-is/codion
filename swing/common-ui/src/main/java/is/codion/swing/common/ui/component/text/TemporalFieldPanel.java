@@ -32,6 +32,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -286,6 +287,11 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		@Override
 		protected void enable(ValidationIndicator validationIndicator, TemporalFieldPanel<T> component, ObservableState valid, ObservableState warned) {
 			validationIndicator.enable(component.temporalField, valid, warned);
+		}
+
+		@Override
+		protected JComponent input(TemporalFieldPanel<T> component) {
+			return component.temporalField;
 		}
 
 		@Override

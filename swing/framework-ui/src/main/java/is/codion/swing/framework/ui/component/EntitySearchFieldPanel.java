@@ -508,6 +508,11 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
+		protected JComponent input(EntitySearchFieldPanel component) {
+			return component.searchField;
+		}
+
+		@Override
 		protected void setName(String name, EntitySearchFieldPanel component) {
 			super.setName(name, component);
 			component.searchField.setName(name);

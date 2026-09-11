@@ -19,16 +19,24 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.reactive.state.State;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JButton;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusListener;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.Utilities.enabled;
+import static java.awt.event.KeyEvent.VK_F5;
+import static java.util.Arrays.asList;
+import static javax.swing.JComponent.WHEN_FOCUSED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TemporalFieldPanelTest {
@@ -97,5 +105,23 @@ public class TemporalFieldPanelTest {
 			enabledState.set(true);
 			assertTrue(calendarButton.isEnabled());
 		});
+	}
+
+	@Test
+	void keyEventsAndListenersLandOnTheTemporalField() {
+		FocusListener focusListener = new FocusAdapter() {};
+		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder()
+						.temporalClass(LocalDate.class)
+						.dateTimePattern("dd.MM.yyyy")
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_F5)
+										.action(Control.action(e -> {})))
+						.focusListener(focusListener)
+						.build();
+		KeyStroke f5 = KeyStroke.getKeyStroke(VK_F5, 0);
+		assertNull(panel.getInputMap(WHEN_FOCUSED).get(f5));
+		assertNotNull(panel.temporalField().getInputMap(WHEN_FOCUSED).get(f5));
+		assertFalse(asList(panel.getFocusListeners()).contains(focusListener));
+		assertTrue(asList(panel.temporalField().getFocusListeners()).contains(focusListener));
 	}
 }

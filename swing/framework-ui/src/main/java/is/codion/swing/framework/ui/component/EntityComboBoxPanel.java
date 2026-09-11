@@ -279,6 +279,11 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
+		protected JComponent input(EntityComboBoxPanel component) {
+			return component.comboBox;
+		}
+
+		@Override
 		protected void setName(String name, EntityComboBoxPanel component) {
 			super.setName(name, component);
 			component.comboBox.setName(name);
