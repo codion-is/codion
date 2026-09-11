@@ -58,14 +58,16 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 
 	/**
 	 * Note that the selection of this search model is not the IN operand, a component based on it
-	 * must be linked to {@link Operands#in()}.
+	 * must be linked to {@link Operands#in()}. The selection being the value pending in that component,
+	 * a second IN component for the same condition requires a search model of its own.
 	 * @return the {@link EntitySearchModel} to base the IN operand component on, an empty {@link Optional} if the IN operand is not based on a search model
 	 */
 	Optional<EntitySearchModel> inSearchModel();
 
 	/**
 	 * Note that the selection of this combo box model is not the IN operand, a component based on it
-	 * must be linked to {@link Operands#in()}.
+	 * must be linked to {@link Operands#in()}. The selection being the value pending in that component,
+	 * a second IN component for the same condition requires a combo box model of its own.
 	 * @return the {@link EntityComboBoxModel} to base the IN operand component on, an empty {@link Optional} if the IN operand is not based on a combo box model
 	 */
 	Optional<EntityComboBoxModel> inComboBoxModel();

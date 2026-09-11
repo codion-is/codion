@@ -33,6 +33,7 @@ Codion Change Log
 - ForeignKeyConditionModel, the EQUAL and IN operands no longer bound to the search and combo box models, which are now the models to build and link the condition components on, the operands reconciled on update and delete of the referenced entities, Builder.caption() added, set by EntityConditions.
 - DefaultForeignKeyConditionModel, a model with only an IN operand could not be built, the operator being validated against the default operators.
 - ForeignKeyConditionModel.inComboBoxModel() added, along with Builder.inComboBoxModel(), the IN operand based on either a search model or a combo box model.
+- EntitySearchModel.Selection.entities() and single() removed, the search model holding a single selected entity, Selection.entity() now notifying when the selected instance changes, an updated entity replacing an equal one included.
 ### is.codion.swing.common.model
 - DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
 - DefaultListSelection is now a DefaultListSelectionModel serving as the MultiSelection.IndexStore of a common DefaultMultiSelection, forwarding to its facades, rather than a copy of it with the store swapped. The JTable and JList keyboard actions moving the lead are enabled only for a DefaultListSelectionModel, hence the extension stays.

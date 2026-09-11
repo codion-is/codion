@@ -49,7 +49,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
 public interface EntitySearchModel {
 
 	/**
-	 * Specifies whether search models respond to persistence events, by replacing updated entities and removing deleted ones
+	 * Specifies whether search models respond to persistence events, by replacing the selected entity when updated and clearing it when deleted
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
@@ -140,24 +140,16 @@ public interface EntitySearchModel {
 	interface Selection {
 
 		/**
+		 * Note that this value notifies when the selected instance changes, also when an entity equal
+		 * to the selected one replaces it, as happens when the selected entity is updated.
 		 * @return a {@link Value} controlling the selected entity
 		 */
 		Value<Entity> entity();
 
 		/**
-		 * @return a {@link Value} controlling the selected entities
-		 */
-		ValueSet<Entity> entities();
-
-		/**
 		 * @return an {@link ObservableState} indicating whether a selection is present
 		 */
 		ObservableState present();
-
-		/**
-		 * @return an {@link ObservableState} indicating whether a single entity is selected
-		 */
-		ObservableState single();
 
 		/**
 		 * Clears the selection
@@ -256,7 +248,8 @@ public interface EntitySearchModel {
 		Builder orderBy(OrderBy orderBy);
 
 		/**
-		 * @param persistenceAware controls whether this search model should respond to entity persistence events, by updating any updated items and removing deleted ones
+		 * @param persistenceAware controls whether this search model should respond to entity persistence events,
+		 * by replacing the selected entity when updated and clearing it when deleted
 		 * @return this builder instance
 		 * @see PersistenceEvents
 		 */

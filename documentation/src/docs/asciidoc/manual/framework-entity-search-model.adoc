@@ -45,24 +45,13 @@ The search model supports different wildcard configurations:
 
 == Selection Management
 
-=== Single Selection Mode
-
-For selecting one entity at a time:
-
-[source,java]
-.Single selection search model
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=singleSelectionSearch]
-----
-
-=== Multi-Selection Mode
-
-For selecting multiple entities:
+The search model holds a single selected entity.
+To collect several, a UI component wraps the search field in a multi-value input, which keeps the collected entities itself.
 
 [source,java]
-.Multi-selection search model
+.Search model selection
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=multiSelectionSearch]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=searchSelection]
 ----
 
 == Configuration Properties

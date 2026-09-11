@@ -398,8 +398,8 @@ public final class FrameworkModelDemo {
 		// end::searchSettings[]
 	}
 
-	void singleSelectionSearch(EntityConnection connection) {
-		// tag::singleSelectionSearch[]
+	void searchSelection(EntityConnection connection) {
+		// tag::searchSelection[]
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Album.TYPE)
 						.connection(connection)
@@ -419,30 +419,7 @@ public final class FrameworkModelDemo {
 
 		// Clear selection
 		searchModel.selection().clear();
-		// end::singleSelectionSearch[]
-	}
-
-	void multiSelectionSearch(EntityConnection connection) {
-		// tag::multiSelectionSearch[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Track.TYPE)
-						.connection(connection)
-						.search(Track.NAME)
-						.build();
-
-		// Get all selected entities
-		Collection<Entity> selectedTracks = searchModel.selection().entities().get();
-
-		// Add to selection
-		Entity track = getTrack(connection);
-		searchModel.selection().entities().add(track);
-
-		// Remove from selection
-		searchModel.selection().entities().remove(track);
-
-		// Replace entire selection
-		searchModel.selection().entities().set(List.of(track));
-		// end::multiSelectionSearch[]
+		// end::searchSelection[]
 	}
 
 	// ModelLink examples
@@ -549,10 +526,6 @@ public final class FrameworkModelDemo {
 
 	private Entity getAlbum(EntityConnection connection) {
 		return connection.selectSingle(Album.ID.equalTo(1L));
-	}
-
-	private Entity getTrack(EntityConnection connection) {
-		return connection.selectSingle(Track.ID.equalTo(1L));
 	}
 
 	private Condition customComplexCondition() {

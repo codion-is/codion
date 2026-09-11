@@ -25,6 +25,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityConditionModel;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -215,7 +216,10 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				// the members button displaying the customers added
 				customers = Components.multiValueInput()
 								.component(EntitySearchField.builder()
-												.model(conditionModel.inSearchModel().orElseThrow())
+												.model(EntitySearchModel.builder()
+																.entityType(conditionModel.attribute().referencedType())
+																.connection(tableModel.connection())
+																.build())
 												.columns(25)
 												.buildValue())
 								// The component is linked to the IN operand

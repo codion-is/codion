@@ -84,22 +84,28 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
-	void selectionSingle() {
+	void selection() {
 		assertFalse(searchModel.selection().present().is());
-		assertFalse(searchModel.selection().single().is());
 
 		searchModel.search().strings().set(singleton("joh"));
 		List<Entity> result = searchModel.search().perform();
 
-		searchModel.selection().entities().set(singletonList(result.get(0)));
-		assertTrue(searchModel.selection().single().is());
+		List<Entity> notified = new ArrayList<>();
+		searchModel.selection().entity().addConsumer(notified::add);
 
-		searchModel.selection().entities().set(result);
-		assertTrue(result.size() > 1);
-		assertFalse(searchModel.selection().single().is());
+		searchModel.selection().entity().set(result.get(0));
+		assertTrue(searchModel.selection().present().is());
+		assertEquals(result.get(0), searchModel.selection().entity().get());
+		// the same instance again does not notify
+		searchModel.selection().entity().set(result.get(0));
+		assertEquals(1, notified.size());
 
 		searchModel.selection().clear();
-		assertFalse(searchModel.selection().single().is());
+		assertFalse(searchModel.selection().present().is());
+		assertNull(searchModel.selection().entity().get());
+		// nor does clearing an empty selection
+		searchModel.selection().clear();
+		assertEquals(2, notified.size());
 	}
 
 	@Test
@@ -113,7 +119,7 @@ public final class DefaultEntitySearchModelTest {
 		assertFalse(contains(result, "Andy"));
 		assertFalse(contains(result, "Andrew"));
 		assertEquals(singleton("joh"), searchModel.search().strings().get());
-		searchModel.selection().entities().set(result);
+		searchModel.selection().entity().set(result.get(0));
 		assertTrue(searchModel.selection().present().is());
 
 		searchModel.search().strings().set(asList("joh", "and"));
@@ -175,7 +181,7 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals(2, result.size());
 		assertTrue(contains(result, "Andy"));
 		assertTrue(contains(result, "Andrew"));
-		searchModel.selection().entities().set(result);
+		searchModel.selection().entity().set(result.get(0));
 
 		searchModel.search().strings().set(asList("and", " rew"));
 		searchModel.settings().get(Employee.NAME).wildcardPrefix().set(true);
@@ -210,9 +216,9 @@ public final class DefaultEntitySearchModelTest {
 		searchModel.search().strings().set(singleton("johnson"));
 		List<Entity> result = searchModel.search().perform();
 		assertEquals(1, result.size());
-		searchModel.selection().entities().set(result);
+		searchModel.selection().entity().set(result.get(0));
 		searchModel.condition().set(Employee.CONDITION_1_TYPE::get);
-		assertEquals(1, searchModel.selection().entities().get().size());
+		assertTrue(searchModel.selection().present().is());
 		result = searchModel.search().perform();
 		assertTrue(result.isEmpty());
 		searchModel.condition().set(() -> null);
@@ -291,41 +297,41 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
-	void persistenceAwareUpdateIsSinglePhase() {
-		Entity one = ENTITIES.entity(Employee.TYPE)
+	void persistenceAwareUpdateReplacesTheSelectedEntity() {
+		Entity selected = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, -42)
 						.with(Employee.NAME, "Noname")
 						.build();
-		Entity two = ENTITIES.entity(Employee.TYPE)
+		searchModel.selection().entity().set(selected);
+		List<Entity> notified = new ArrayList<>();
+		searchModel.selection().entity().addConsumer(notified::add);
+
+		// the primary key modified as well, matched on its original value
+		Entity beforeUpdate = selected.copy().mutable();
+		beforeUpdate.set(Employee.ID, -44);
+		beforeUpdate.set(Employee.NAME, "Newname");
+		Entity afterUpdate = beforeUpdate.copy().mutable();
+		afterUpdate.save();
+		Map<Entity, Entity> updated = new HashMap<>();
+		updated.put(beforeUpdate, afterUpdate);
+		PersistenceEvents.persistenceEvents(Employee.TYPE).updated().accept(updated);
+
+		assertSame(afterUpdate, searchModel.selection().entity().get());
+		assertEquals(singletonList(afterUpdate), notified);
+
+		// an update or delete of another entity leaves the selection alone
+		Entity other = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, -43)
 						.with(Employee.NAME, "Another")
 						.build();
-		searchModel.selection().entities().set(asList(one, two));
-
-		one.set(Employee.NAME, "Newname");
-		Entity oneUpdated = one.copy().mutable();
-		oneUpdated.save(Employee.NAME);
-
-		//the selection set is a live condition operand, a remove followed by an add would notify
-		//consumers with an intermediate selection missing the updated entity
-		List<Integer> notifiedSizes = new ArrayList<>();
-		searchModel.selection().entities().addConsumer(entities -> notifiedSizes.add(entities.size()));
-
-		Map<Entity, Entity> updated = new HashMap<>();
-		updated.put(one, oneUpdated);
-		PersistenceEvents.persistenceEvents(Employee.TYPE).updated().accept(updated);
-
-		assertEquals(singletonList(2), notifiedSizes);
-		assertEquals(2, searchModel.selection().entities().get().size());
-
-		//the reconciled set is equal to the previous one, Entity.equals being primary key based, so this
-		//ValueSet notifies on set() rather than on change; a display consumer, the search field's text,
-		//would otherwise never see the new value
-		assertEquals("Newname", searchModel.selection().entities().get().stream()
-						.filter(entity -> entity.primaryKey().equals(one.primaryKey()))
-						.findFirst()
-						.orElseThrow()
-						.get(Employee.NAME));
+		Entity otherUpdated = other.copy().mutable();
+		otherUpdated.set(Employee.NAME, "Changed");
+		Map<Entity, Entity> otherUpdates = new HashMap<>();
+		otherUpdates.put(otherUpdated, otherUpdated.copy().mutable());
+		PersistenceEvents.persistenceEvents(Employee.TYPE).updated().accept(otherUpdates);
+		PersistenceEvents.persistenceEvents(Employee.TYPE).deleted().accept(singletonList(other));
+		assertEquals(1, notified.size());
+		assertSame(afterUpdate, searchModel.selection().entity().get());
 	}
 
 	@BeforeEach
