@@ -58,4 +58,19 @@ public class StringLengthValidatorTest {
 		assertThrows(IllegalArgumentException.class, () -> textArea.replaceRange("ab", 4, 4));
 		assertEquals(text10, textArea.getText());
 	}
+
+	@Test
+	void singleCharacter() {
+		JTextArea textArea = new JTextArea();
+		ParsingDocumentFilter<String> documentFilter = new ParsingDocumentFilter<>(ParsingDocumentFilter.STRING_PARSER);
+		documentFilter.addValidator(new StringLengthValidator(3));
+		((AbstractDocument) textArea.getDocument()).setDocumentFilter(documentFilter);
+		textArea.setText("123");
+		textArea.replaceSelection("4");// typing, rejected silently
+		assertEquals("123", textArea.getText());
+		textArea.insert("4", 3);
+		assertEquals("123", textArea.getText());
+		assertThrows(IllegalArgumentException.class, () -> textArea.replaceSelection("45"));// a paste
+		assertEquals("123", textArea.getText());
+	}
 }

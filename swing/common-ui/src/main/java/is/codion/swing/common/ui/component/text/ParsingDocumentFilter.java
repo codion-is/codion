@@ -29,6 +29,7 @@ import javax.swing.text.DocumentFilter;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -58,7 +59,7 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		builder.insert(offset, transformedString);
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
 		if (parseResult.successful()) {
-			if (!validate(parseResult.value())) {
+			if (!validate(parseResult.value(), singleCharacter(transformedString))) {
 				return;
 			}
 			super.insertString(filterBypass, offset, transformedString, attributeSet);
@@ -72,7 +73,7 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		builder.replace(offset, offset + length, "");
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
 		if (parseResult.successful()) {
-			if (!validate(parseResult.value())) {
+			if (!validate(parseResult.value(), true)) {
 				return;
 			}
 			super.remove(filterBypass, offset, length);
@@ -89,7 +90,7 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		builder.replace(offset, offset + length, transformedString);
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
 		if (parseResult.successful()) {
-			if (!validate(parseResult.value())) {
+			if (!validate(parseResult.value(), singleCharacter(transformedString))) {
 				return;
 			}
 			super.replace(filterBypass, offset, length, transformedString, attributeSet);
@@ -117,15 +118,17 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 	}
 
 	final Collection<Validator<T>> validators() {
-		return validators;
+		return Stream.concat(silentValidators.stream(), validators.stream()).toList();
 	}
 
 	/**
 	 * @param value the value to validate
+	 * @param singleCharacter true if the edit inserts at most a single character, in which case
+	 * a failing {@link SilentValidator} rejects the edit silently instead of throwing
 	 * @return true if the value is valid, false if the value fails silent validation
 	 * @throws IllegalArgumentException in case validation fails
 	 */
-	private boolean validate(@Nullable T value) {
+	private boolean validate(@Nullable T value, boolean singleCharacter) {
 		if (value == null) {
 			return true;
 		}
@@ -134,7 +137,10 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 				validator.validate(value);
 			}
 			catch (IllegalArgumentException e) {
-				return false;
+				if (singleCharacter) {
+					return false;
+				}
+				throw e;
 			}
 		}
 		validators.forEach(validator -> validator.validate(value));
@@ -142,6 +148,15 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		return true;
 	}
 
+	private static boolean singleCharacter(String string) {
+		return string.length() <= 1;
+	}
+
+	/**
+	 * A validator rejecting a single character edit, such as a keystroke, silently,
+	 * while throwing in case of a longer edit, such as a paste or setting the text.
+	 * @param <T> the value type
+	 */
 	interface SilentValidator<T> extends Validator<T> {}
 
 	private static final class StringParser implements Parser<String> {

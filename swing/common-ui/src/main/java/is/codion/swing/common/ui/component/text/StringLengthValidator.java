@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.resource.MessageBundle;
+import is.codion.swing.common.ui.component.text.ParsingDocumentFilter.SilentValidator;
 
 import org.jspecify.annotations.Nullable;
 
@@ -29,7 +30,7 @@ import static java.util.ResourceBundle.getBundle;
 /**
  * A {@link Value.Validator} restricting the maximum length of a string value.
  */
-final class StringLengthValidator implements Value.Validator<String> {
+final class StringLengthValidator implements SilentValidator<String> {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(StringLengthValidator.class, getBundle(StringLengthValidator.class.getName()));

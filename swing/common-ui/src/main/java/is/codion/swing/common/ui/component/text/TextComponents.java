@@ -29,7 +29,9 @@ public final class TextComponents {
 	private TextComponents() {}
 
 	/**
-	 * Sets the maximum length for the given document, supports {@link SizedDocument} and {@link AbstractDocument}
+	 * Sets the maximum length for the given document, supports {@link SizedDocument} and {@link AbstractDocument}.
+	 * Typing beyond the maximum length is silently rejected, while a longer edit exceeding it,
+	 * such as a paste or setting the text, throws {@link IllegalArgumentException}.
 	 * @param document the document
 	 * @param maximumLength the maximum string length
 	 */

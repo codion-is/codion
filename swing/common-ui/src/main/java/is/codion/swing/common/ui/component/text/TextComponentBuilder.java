@@ -76,6 +76,8 @@ public interface TextComponentBuilder<C extends JTextComponent, T, B extends Tex
 	B lowerCase(boolean lowerCase);
 
 	/**
+	 * Typing beyond the maximum length is silently rejected, while a longer edit exceeding it,
+	 * such as a paste or setting the text, throws {@link IllegalArgumentException}.
 	 * Note that length restriction is only supported for String based text components.
 	 * Builders for fields based on other data types may throw {@link UnsupportedOperationException}
 	 * @param maximumLength the maximum text length
