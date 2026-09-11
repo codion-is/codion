@@ -497,6 +497,19 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	/**
+	 * Returns the component receiving the key events and the focus, mouse and key listeners,
+	 * the component itself by default. Override for composite components, returning the input component,
+	 * such as the text field of a panel wrapping it along with a button.
+	 * <p>Note that a focus listener on the input component sees the focus moving to a sibling
+	 * within the composite component as a focus loss.
+	 * @param component the component
+	 * @return the input component
+	 */
+	protected JComponent input(C component) {
+		return component;
+	}
+
+	/**
 	 * Sets the component name, override this method to set the name of composite components
 	 * @param name the name
 	 * @param component the component
@@ -593,12 +606,13 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		if (focusCycleRoot) {
 			component.setFocusCycleRoot(true);
 		}
-		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
-		focusListeners.forEach(component::addFocusListener);
-		mouseListeners.forEach(component::addMouseListener);
-		mouseMotionListeners.forEach(component::addMouseMotionListener);
-		mouseWheelListeners.forEach(component::addMouseWheelListener);
-		keyListeners.forEach(component::addKeyListener);
+		JComponent input = requireNonNull(input(component));
+		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(input));
+		focusListeners.forEach(input::addFocusListener);
+		mouseListeners.forEach(input::addMouseListener);
+		mouseMotionListeners.forEach(input::addMouseMotionListener);
+		mouseWheelListeners.forEach(input::addMouseWheelListener);
+		keyListeners.forEach(input::addKeyListener);
 		componentListeners.forEach(component::addComponentListener);
 		ancestorListeners.forEach(component::addAncestorListener);
 		hierarchyListeners.forEach(component::addHierarchyListener);

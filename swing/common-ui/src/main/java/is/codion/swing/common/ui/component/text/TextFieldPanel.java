@@ -39,6 +39,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -407,6 +408,11 @@ public final class TextFieldPanel extends JPanel {
 		@Override
 		protected void enable(ValidationIndicator validationIndicator, TextFieldPanel component, ObservableState valid, ObservableState warned) {
 			validationIndicator.enable(component.textField, valid, warned);
+		}
+
+		@Override
+		protected JComponent input(TextFieldPanel component) {
+			return component.textField;
 		}
 
 		@Override

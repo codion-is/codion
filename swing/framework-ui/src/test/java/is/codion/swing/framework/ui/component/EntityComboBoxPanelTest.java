@@ -23,14 +23,22 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.TestDomain;
 import is.codion.swing.framework.ui.TestDomain.Department;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import javax.swing.KeyStroke;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusListener;
+
+import static java.awt.event.KeyEvent.VK_F5;
+import static java.util.Arrays.asList;
+import static javax.swing.JComponent.WHEN_FOCUSED;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityComboBoxPanelTest {
 
@@ -62,5 +70,26 @@ public final class EntityComboBoxPanelTest {
 		assertNull(entity);
 		value.set(sales);
 		assertEquals(sales, model.selection().item().get());
+	}
+
+	@Test
+	void keyEventsAndListenersLandOnTheComboBox() {
+		FocusListener focusListener = new FocusAdapter() {};
+		EntityComboBoxPanel panel = EntityComboBoxPanel.builder()
+						.model(SwingEntityComboBoxModel.builder()
+										.entityType(Department.TYPE)
+										.connection(CONNECTION)
+										.build())
+						.editPanel(() -> null)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_F5)
+										.action(Control.action(e -> {})))
+						.focusListener(focusListener)
+						.build();
+		KeyStroke f5 = KeyStroke.getKeyStroke(VK_F5, 0);
+		assertNull(panel.getInputMap(WHEN_FOCUSED).get(f5));
+		assertNotNull(panel.comboBox().getInputMap(WHEN_FOCUSED).get(f5));
+		assertFalse(asList(panel.getFocusListeners()).contains(focusListener));
+		assertTrue(asList(panel.comboBox().getFocusListeners()).contains(focusListener));
 	}
 }
