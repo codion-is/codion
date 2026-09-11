@@ -27,7 +27,6 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
@@ -387,7 +386,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		}
 	}
 
-	static final class NumberParsingDocumentFilter<T extends Number> extends DocumentFilter {
+	static final class NumberParsingDocumentFilter<T extends Number> extends ParsingDocumentFilter<T> {
 
 		private static final MessageBundle MESSAGES =
 						messageBundle(NumberParsingDocumentFilter.class, getBundle(NumberParsingDocumentFilter.class.getName()));
@@ -401,34 +400,49 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		private boolean silentValidation = false;
 
 		NumberParsingDocumentFilter(NumberParser<T> parser) {
-			this.parser = requireNonNull(parser);
+			super(parser);
+			this.parser = parser;
 			this.rangeValidator = new NumberRangeValidator<>();
 		}
 
 		@Override
-		public void insertString(FilterBypass filterBypass, int offset, String string,
-														 AttributeSet attributeSet) throws BadLocationException {
-			replace(filterBypass, offset, 0, string, attributeSet);
+		protected String transform(String string) {
+			return convertMinusSign(convertSingleGroupingToDecimalSeparator(string));
 		}
 
 		@Override
-		public void remove(FilterBypass filterBypass, int offset, int length) throws BadLocationException {
-			replace(filterBypass, offset, length, "", null);
-		}
-
-		@Override
-		public void replace(FilterBypass filterBypass, int offset, int length, String text,
-												@Nullable AttributeSet attributeSet) throws BadLocationException {
-			if (text != null) {
-				text = convertMinusSign(convertSingleGroupingToDecimalSeparator(text));
-				Document document = filterBypass.getDocument();
-				StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
-				builder.replace(offset, offset + length, text);
-				NumberParseResult<T> parseResult = parser.parse(builder.toString());
-				if (parseResult.successful()) {
-					validateReplace(parseResult, filterBypass, attributeSet,
-									offset + text.length() + parseResult.charetOffset());
+		protected boolean validate(Parser.ParseResult<T> parseResult, boolean singleCharacter) {
+			T number = parseResult.value();
+			if (number != null) {
+				try {
+					rangeValidator.validate(number);
 				}
+				catch (IllegalArgumentException e) {
+					if (silentValidation) {
+						return false;
+					}
+					throw e;
+				}
+			}
+			else if (parseResult.text().equals(parser.negativePrefix()) && !rangeValidator.negativeAllowed()) {
+				// a lone minus sign, when negative values are not allowed
+				return false;
+			}
+
+			return super.validate(parseResult, singleCharacter);
+		}
+
+		/**
+		 * Replaces the whole text with the formatted one, grouping separators included
+		 */
+		@Override
+		protected void apply(FilterBypass filterBypass, int offset, int length, String string,
+												 Parser.ParseResult<T> parseResult, @Nullable AttributeSet attributeSet) throws BadLocationException {
+			filterBypass.replace(0, filterBypass.getDocument().getLength(), parseResult.text(), attributeSet);
+			value.set(parseResult.value());
+			if (textComponent != null) {
+				// the parse result comes from the NumberParser
+				textComponent.getCaret().setDot(offset + string.length() + ((NumberParseResult<T>) parseResult).charetOffset());
 			}
 		}
 
@@ -486,30 +500,6 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			}
 
 			return text;
-		}
-
-		private void validateReplace(NumberParseResult<T> parseResult, FilterBypass filterBypass,
-																 @Nullable AttributeSet attributeSet, int dotLocation) throws BadLocationException {
-			if (parseResult.value() != null) {
-				try {
-					rangeValidator.validate(parseResult.value());
-				}
-				catch (IllegalArgumentException e) {
-					if (silentValidation) {
-						return;
-					}
-					throw e;
-				}
-			}
-			else if (parseResult.text().equals(parser.negativePrefix()) && !rangeValidator.negativeAllowed()) {
-				// a lone minus sign, when negative values are not allowed
-				return;
-			}
-			super.replace(filterBypass, 0, filterBypass.getDocument().getLength(), parseResult.text(), attributeSet);
-			value.set(parseResult.value());
-			if (textComponent != null) {
-				textComponent.getCaret().setDot(dotLocation);
-			}
 		}
 
 		private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {

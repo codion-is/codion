@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.reactive.value.Value;
+
 import org.junit.jupiter.api.Test;
 
 import javax.swing.text.BadLocationException;
@@ -179,6 +181,24 @@ public final class NumberFieldTest {
 		integerField.observable().addConsumer(values::add);
 		integerField.set(5);
 		assertEquals(singletonList(5), values);
+	}
+
+	@Test
+	void validator() throws BadLocationException {
+		Value<Integer> value = Value.nullable();
+		NumberField<Integer> integerField = NumberField.builder()
+						.numberClass(Integer.class)
+						.validator(number -> {
+							if (number != null && number == 13) {
+								throw new IllegalArgumentException();
+							}
+						})
+						.link(value)
+						.build();
+		integerField.getDocument().insertString(0, "1", null);
+		assertThrows(IllegalArgumentException.class, () -> integerField.getDocument().insertString(1, "3", null));
+		assertEquals("1", integerField.getText());
+		assertEquals(1, value.get());
 	}
 
 	@Test

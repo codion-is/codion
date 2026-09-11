@@ -63,6 +63,7 @@ Codion Change Log
 - NumberField, a typed hyphen-minus is now converted to the minus sign of the format, negative values could not be typed in locales using another one, such as U+2212.
 - NumberField.Builder.maximum() IllegalArgumentException message corrected.
 - NumberField.Builder.range() no longer validates the new minimum against the previous maximum, a range could not be replaced with a higher one.
+- NumberField, builder validators now validate an edit before it is applied, as in other text fields, instead of throwing after the field already displayed the rejected value.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
