@@ -35,6 +35,7 @@ import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -109,6 +110,29 @@ public final class MultiValueInputTest {
 	}
 
 	@Test
+	void settingTheValueClearsThePendingValue() {
+		ValueSet<String> valueSet = ValueSet.valueSet();
+		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
+		MultiValueInput<String> field = Components.multiValueInput()
+						.component(stringValue)
+						.link(valueSet)
+						.build();
+		valueSet.set(Set.of("a", "b"));
+		stringValue.set("c");
+		assertEquals(Set.of("a", "b", "c"), valueSet.get());
+		// clearing the condition, say
+		valueSet.clear();
+		assertTrue(field.members().isEmpty());
+		assertNull(stringValue.get());
+		assertTrue(valueSet.get().isEmpty());
+		// the pending value no longer returns with the next change
+		valueSet.set(Set.of("x"));
+		assertEquals(asList("x"), new ArrayList<>(field.members()));
+		assertNull(stringValue.get());
+		assertEquals(Set.of("x"), valueSet.get());
+	}
+
+	@Test
 	void theDialogsListRemovesTheSelected() {
 		ValueSet<String> valueSet = ValueSet.valueSet();
 		MultiValueInput<String> field = Components.multiValueInput()
@@ -145,6 +169,27 @@ public final class MultiValueInputTest {
 						.build();
 		assertFalse(enter(insertOnly.component()));
 		assertTrue(insertOnly.members().isEmpty());
+	}
+
+	@Test
+	void aConsumedEnterIsLeftAlone() {
+		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
+		// the component using the Enter, a search field searching, its listener added before the field's
+		stringValue.component().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == VK_ENTER) {
+					e.consume();
+				}
+			}
+		});
+		MultiValueInput<String> field = Components.multiValueInput()
+						.component(stringValue)
+						.build();
+		stringValue.set("a");
+		assertTrue(enter(field.component()));
+		assertTrue(field.members().isEmpty());
+		assertEquals("a", stringValue.get());
 	}
 
 	@Test

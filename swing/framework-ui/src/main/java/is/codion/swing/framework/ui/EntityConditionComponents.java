@@ -123,11 +123,13 @@ public class EntityConditionComponents implements ConditionComponents {
 			return inputComponents.comboBox(conditionModel.attribute(), (SwingEntityComboBoxModel) equalComboBoxModel.get())
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
 							.onSetVisible(EntityConditionComponents::refreshIfCleared)
+							.link(conditionModel.operands().equal())
 							.build();
 		}
 
 		return inputComponents.searchField(conditionModel.attribute(), conditionModel.equalSearchModel().orElseThrow())
 						.singleSelection()
+						.link(conditionModel.operands().equal())
 						.build();
 	}
 
@@ -136,12 +138,19 @@ public class EntityConditionComponents implements ConditionComponents {
 
 		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
 
-		return inputComponents.searchField(conditionModel.attribute(), searchModel)
-						.multiSelection()
-						.editable(searchable)
-						.searchHintEnabled(searchable)
+		// a single selection search field, the entity selected added with Enter or Insert, clearing the field for the next search
+		return multiValueInput()
+						.component(inputComponents.searchField(conditionModel.attribute(), searchModel)
+										.singleSelection()
+										// the single selection builder does not set this, the result selector would otherwise
+										// allow selecting several, of which only the first would be added
+										.singleSelection(true)
+										.editable(searchable)
+										.searchHintEnabled(searchable)
+										.buildValue())
+						.link(conditionModel.operands().in())
+						.caption(conditionModel.caption().orElse(null))
 						.build();
-
 	}
 
 	private static void refreshIfCleared(EntityComboBox comboBox) {
