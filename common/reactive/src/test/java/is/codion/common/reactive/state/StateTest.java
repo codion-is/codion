@@ -203,8 +203,6 @@ public class StateTest {
 		stateOne.set(true);
 		assertFalse(stateTwo.is());
 		assertFalse(stateThree.is());
-
-		stateGroup = State.group(asList(stateOne, stateTwo));
 	}
 
 	@Test

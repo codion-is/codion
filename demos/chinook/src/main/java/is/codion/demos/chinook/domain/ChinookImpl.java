@@ -463,7 +463,7 @@ public final class ChinookImpl extends DomainModel {
 										.ascending(Invoice.CUSTOMER_ID)
 										.descending(Invoice.DATE)
 										.build())
-						.formatter(Invoice.ID)
+						.formatter(new InvoiceFormatter())
 						.build();
 	}
 
