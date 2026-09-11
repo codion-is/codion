@@ -37,7 +37,6 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Objects;
 
@@ -531,11 +530,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			public NumberParseResult<T> parse(String string) {
 				char decimalSeparator = ((DecimalFormat) format()).getDecimalFormatSymbols().getDecimalSeparator();
 				if (string.equals(Character.toString(decimalSeparator))) {
-					try {
-						//use the format for the correct type
-						return new DefaultNumberParseResult<>("0" + decimalSeparator, (T) format().parse("0"), 1, true);
-					}
-					catch (ParseException e) {/*Won't happen*/}
+					NumberParseResult<T> parseResult = super.parse("0" + decimalSeparator);
+
+					return new DefaultNumberParseResult<>(parseResult.text(), parseResult.value(),
+									parseResult.charetOffset() + 1, parseResult.successful());
 				}
 
 				return super.parse(string);
