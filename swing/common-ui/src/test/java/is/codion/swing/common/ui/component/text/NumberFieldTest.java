@@ -182,6 +182,21 @@ public final class NumberFieldTest {
 	}
 
 	@Test
+	void range() {
+		NumberField<Integer> integerField = NumberField.builder()
+						.numberClass(Integer.class)
+						.range(0, 10)
+						.range(20, 30)
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> integerField.set(10));
+		integerField.set(25);
+		assertEquals(25, integerField.get());
+		assertThrows(IllegalArgumentException.class, () -> NumberField.builder()
+						.numberClass(Integer.class)
+						.range(30, 20));
+	}
+
+	@Test
 	void minusSign() throws BadLocationException {
 		NumberField<Integer> integerField = NumberField.builder()
 						.numberClass(Integer.class)
