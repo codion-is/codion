@@ -71,7 +71,6 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 			return EntitySearchField.builder()
 							.model(condition.equalSearchModel().orElseThrow())
-							.singleSelection()
 							.selector(new TrackSelector())
 							// The component is linked to the EQUAL operand
 							.link(condition.operands().equal())
@@ -86,10 +85,6 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 			return multiValueInput()
 							.component(EntitySearchField.builder()
 											.model(condition.inSearchModel().orElseThrow())
-											.singleSelection()
-											// Not set by the single selection builder, otherwise the
-											// result selector allows selecting multiple tracks
-											.singleSelection(true)
 											.selector(new TrackSelector())
 											.buildValue())
 							// The component is linked to the IN operand

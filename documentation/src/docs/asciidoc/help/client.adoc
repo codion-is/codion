@@ -132,8 +132,6 @@ NOTE: The field background color changes when the search text differs from the c
 
 ===== Search Behavior
 
-* **Single selection fields** - Enter a single search term
-* **Multiple selection fields** - Enter multiple search terms separated by commas
 * **Automatic search** - By default, a search is performed when the field loses focus (only auto-selects on single result to avoid interrupting focus traversal)
 * **Cancel search** - Press kbd:[Esc] to cancel your edits and restore the current selection
 
@@ -159,13 +157,6 @@ Some search fields have Add and Edit buttons that allow you to create or modify 
 * **Edit** - Press kbd:[Ctrl + Insert] to edit the currently selected related record
 
 After adding or editing a related record, it is automatically selected in the search field.
-
-===== Multiple Selection
-
-When a search field supports multiple selections:
-
-* Selected items are displayed separated by commas (or a custom separator)
-* Hover over the field to see all selected items in a tooltip
 
 ==== Saving New Records
 

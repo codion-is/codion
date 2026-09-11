@@ -891,23 +891,20 @@ public final class EditorComponents {
 		 * @param foreignKey the foreign key for which to build a search field
 		 * @return a foreign key search field builder
 		 */
-		public EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey) {
+		public EntitySearchField.Builder searchField(ForeignKey foreignKey) {
 			return components.component(foreignKey).set(entityComponents.searchField(foreignKey,
-											components.editor().searchModels().get(foreignKey))
-							.singleSelection());
+							components.editor().searchModels().get(foreignKey)));
 		}
 
 		/**
 		 * Creates a builder for a foreign key search field input with optional buttons for adding and editing items.
 		 * @param foreignKey the foreign key
 		 * @param editPanel the edit panel supplier to use for the add and/or edit buttons
-		 * @return a foreign key combo box input builder
+		 * @return a foreign key search field input builder
 		 */
-		public EntitySearchInput.SingleSelectionBuilder searchFieldInput(ForeignKey foreignKey,
-																																		 Supplier<EntityEditPanel> editPanel) {
+		public EntitySearchInput.Builder searchFieldInput(ForeignKey foreignKey, Supplier<EntityEditPanel> editPanel) {
 			return components.component(foreignKey).set(entityComponents.searchFieldInput(foreignKey,
-											components.editor().searchModels().get(foreignKey), editPanel)
-							.singleSelection());
+							components.editor().searchModels().get(foreignKey), editPanel));
 		}
 
 		/**

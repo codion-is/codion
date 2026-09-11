@@ -92,12 +92,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Configuration.enumValue;
 import static is.codion.common.utilities.Configuration.integerValue;
@@ -117,12 +114,10 @@ import static is.codion.swing.framework.ui.component.EntitySearchField.SearchInd
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.event.FocusEvent.Cause.ACTIVATION;
 import static java.awt.event.KeyEvent.*;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.joining;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -131,8 +126,9 @@ import static javax.swing.BorderFactory.createTitledBorder;
  * The search is triggered by the ENTER key and behaves in the following way:
  * If the search result is empty a message is shown, if a single entity fits the
  * condition then that entity is selected, otherwise a component displaying the entities
- * fitting the condition is shown in a dialog allowing either a single or multiple
- * selection based on the search model settings.
+ * fitting the condition is shown in a dialog, for selecting one of them.
+ * <p>For collecting multiple entities, wrap the field in a
+ * {@link is.codion.swing.common.ui.component.multivalue.MultiValueInput}.
  * {@link ListSelector} is the default {@link Selector}.
  * Use {@link EntitySearchField#builder()} for a builder instance.
  * @see EntitySearchModel
@@ -205,14 +201,11 @@ public final class EntitySearchField extends HintTextField {
 
 	private static final Cursor WAIT = getPredefinedCursor(Cursor.WAIT_CURSOR);
 	private static final Function<Entity, String> DEFAULT_FORMATTER = Object::toString;
-	private static final String DEFAULT_SEPARATOR = ", ";
 
 	private final EntitySearchModel model;
 	private final Function<Entity, String> formatter;
-	private final String separator;
 	private final boolean searchOnFocusLost;
 	private final boolean selectionToolTip;
-	private final boolean singleSelection;
 	private final State searchReady = State.builder()
 					.listener(this::updateColors)
 					.build();
@@ -230,7 +223,7 @@ public final class EntitySearchField extends HintTextField {
 	private Color backgroundColor;
 	private Color searchBackgroundColor;
 
-	private EntitySearchField(AbstractBuilder<?, ?> builder) {
+	private EntitySearchField(DefaultBuilder builder) {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
 		model = builder.searchModel;
 		controlMap = builder.controlMap;
@@ -251,15 +244,12 @@ public final class EntitySearchField extends HintTextField {
 			setEditable(false);
 		}
 		searchOnFocusLost = builder.searchOnFocusLost;
-		//explicit configuration wins, otherwise the tooltip is enabled for multi-selection only
-		selectionToolTip = builder.selectionToolTip != null ? builder.selectionToolTip : !builder.singleSelection;
-		singleSelection = builder.singleSelection;
+		selectionToolTip = builder.selectionToolTip;
 		searchIndicator = createSearchIndicator(builder.searchIndicator);
 		searchRefreshProgressBarDelay = builder.searchProgressBarDelay;
 		searching.addConsumer(searchIndicator);
 		selector = builder.selector;
 		formatter = builder.formatter;
-		separator = builder.separator;
 		setComponentPopupMenu(createPopupMenu());
 		onSelectionChanged();
 		configureColors();
@@ -324,99 +314,75 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
-	 * @return true if single selection is enabled
-	 */
-	public boolean singleSelection() {
-		return singleSelection;
-	}
-
-	/**
 	 * @return a {@link Builder.ModelStep}
 	 */
 	public static Builder.ModelStep builder() {
-		return DefaultBuilderFactory.MODEL;
+		return DefaultModelStep.MODEL;
 	}
 
 	/**
 	 * Builds an entity search field.
-	 * @param <T> the type of the value the component represents
-	 * @param <B> the builder type
 	 */
-	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<EntitySearchField, T, B> {
+	public interface Builder extends ComponentValueBuilder<EntitySearchField, Entity, Builder> {
 
 		/**
-		 * Provides a {@link EntitySearchField.Builder.Factory}
+		 * Provides a {@link EntitySearchField.Builder}
 		 */
 		interface ModelStep {
 
 			/**
-			 * Instantiates a new {@link EntitySearchField.Builder.Factory}
 			 * @param model the search model
 			 * @return a builder for a {@link EntitySearchField}
 			 */
-			Builder.Factory model(EntitySearchModel model);
+			Builder model(EntitySearchModel model);
 		}
 
 		/**
 		 * @param columns the number of colums in the text field
 		 * @return this builder instance
 		 */
-		B columns(int columns);
+		Builder columns(int columns);
 
 		/**
 		 * Makes the field convert all lower case input to upper case
 		 * @param upperCase if true the text component convert all lower case input to upper case
 		 * @return this builder instance
 		 */
-		B upperCase(boolean upperCase);
+		Builder upperCase(boolean upperCase);
 
 		/**
 		 * Makes the field convert all upper case input to lower case
 		 * @param lowerCase if true the text component convert all upper case input to lower case
 		 * @return this builder instance
 		 */
-		B lowerCase(boolean lowerCase);
+		Builder lowerCase(boolean lowerCase);
 
 		/**
 		 * @param editable false if the field should not be editable
 		 * @return this builder instance
 		 */
-		B editable(boolean editable);
+		Builder editable(boolean editable);
 
 		/**
 		 * Overrides the default formatter for search elements when displayed in a field based on this field
 		 * @param formatter the formatter
 		 * @return this builder
 		 */
-		B formatter(Function<Entity, String> formatter);
-
-		/**
-		 * Default ", "
-		 * @param separator the String used to separate multiple items
-		 * @return this builder
-		 */
-		B separator(String separator);
+		Builder formatter(Function<Entity, String> formatter);
 
 		/**
 		 * @param searchHintEnabled true if a search hint text should be visible when the field is empty and not focused
 		 * @return this builder instance
 		 */
-		B searchHintEnabled(boolean searchHintEnabled);
+		Builder searchHintEnabled(boolean searchHintEnabled);
 
 		/**
-		 * Specifies whether the selection should be available in a multi-line tool tip.
-		 * Enabled by default for multi-selection instances.
-		 * @param selectionToolTip true if the selection should be available in a multi-line tool tip
+		 * Specifies whether the selected entity should be available in a tool tip,
+		 * for a field too narrow to display it in full. Default false.
+		 * @param selectionToolTip true if the selected entity should be available in a tool tip
 		 * @return this builder instance
 		 */
-		B selectionToolTip(boolean selectionToolTip);
-
-		/**
-		 * Default false
-		 * @param singleSelection true if single selection should be enabled
-		 * @return this builder
-		 */
-		B singleSelection(boolean singleSelection);
+		Builder selectionToolTip(boolean selectionToolTip);
 
 		/**
 		 * <p>Specifies whether a search should be performed when the field loses focus.
@@ -427,93 +393,66 @@ public final class EntitySearchField extends HintTextField {
 		 * @param searchOnFocusLost true if search should be performed on focus lost
 		 * @return this builder instance
 		 */
-		B searchOnFocusLost(boolean searchOnFocusLost);
+		Builder searchOnFocusLost(boolean searchOnFocusLost);
 
 		/**
 		 * @param searchIndicator the search indicator
 		 * @return this builder instance
 		 */
-		B searchIndicator(SearchIndicator searchIndicator);
+		Builder searchIndicator(SearchIndicator searchIndicator);
 
 		/**
 		 * @param searchProgressBarDelay the number of milliseconds to delay showing the search progress bar, if enabled
 		 * @return this builder instance
 		 * @see #SEARCH_PROGRESS_BAR_DELAY
 		 */
-		B searchProgressBarDelay(int searchProgressBarDelay);
+		Builder searchProgressBarDelay(int searchProgressBarDelay);
 
 		/**
 		 * @param selector the selector factory to use
 		 * @return this builder instance
 		 */
-		B selector(Function<EntitySearchField, Selector> selector);
+		Builder selector(Function<EntitySearchField, Selector> selector);
 
 		/**
 		 * An edit panel is required for the add and edit controls.
 		 * @param editPanel the edit panel supplier
 		 * @return this builder instance
 		 */
-		B editPanel(Supplier<EntityEditPanel> editPanel);
+		Builder editPanel(Supplier<EntityEditPanel> editPanel);
 
 		/**
 		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		B keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
+		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 
 		/**
 		 * @param limit the search result limit
 		 * @return this builder instance
 		 */
-		B limit(int limit);
+		Builder limit(int limit);
 
 		/**
 		 * @param confirmAdd true if adding an item should be confirmed
 		 * @return this builder instance
 		 * @see #editPanel(Supplier)
 		 */
-		B confirmAdd(boolean confirmAdd);
+		Builder confirmAdd(boolean confirmAdd);
 
 		/**
 		 * @param confirmEdit true if editing an item should be confirmed
 		 * @return this builder instance
 		 * @see #editPanel(Supplier)
 		 */
-		B confirmEdit(boolean confirmEdit);
-
-		/**
-		 * Provides multi or single selection {@link Builder.Factory} instances
-		 */
-		interface Factory {
-
-			/**
-			 * Instantiates a new {@link MultiSelectionBuilder}
-			 * @return a new builder instance
-			 */
-			MultiSelectionBuilder multiSelection();
-
-			/**
-			 * Instantiates a new {@link SingleSelectionBuilder}
-			 * @return a new builder instance
-			 */
-			SingleSelectionBuilder singleSelection();
-		}
+		Builder confirmEdit(boolean confirmEdit);
 	}
-
-	/**
-	 * Builds a multi selection entity search field.
-	 */
-	public interface MultiSelectionBuilder extends Builder<Set<Entity>, MultiSelectionBuilder> {}
-
-	/**
-	 * Builds a single selection entity search field.
-	 */
-	public interface SingleSelectionBuilder extends Builder<Entity, SingleSelectionBuilder> {}
 
 	private void bindEvents() {
 		getDocument().addDocumentListener((DocumentAdapter) e -> updateSearchStrings());
 		model.search().strings().addListener(this::updateSearchReady);
+		// the entities, not the entity, which does not notify when an updated entity replaces an equal one
 		model.selection().entities().addListener(this::onSelectionChanged);
 		addFocusListener(new FocusListener());
 		addKeyListener(new EnterEscapeListener());
@@ -525,7 +464,7 @@ public final class EntitySearchField extends HintTextField {
 			model.search().strings().clear();
 		}
 		else {
-			model.search().strings().set(singleSelection ? singleton(text) : asList(text.split(Pattern.quote(separator))));
+			model.search().strings().set(singleton(text));
 		}
 	}
 
@@ -568,23 +507,15 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private @Nullable String createSelectionToolTip() {
-		if (model.selection().present().is()) {
-			return strings()
-						.map(EntitySearchField::escape)
-						.collect(joining("<br>", "<html>", "</html"));
-		}
-
-		return null;
+		return model.selection().entity().optional()
+						.map(formatter)
+						.orElse(null);
 	}
 
 	private String selectionString() {
-		return strings().collect(joining(separator));
-	}
-
-	private Stream<String> strings() {
-		return model.selection().entities().get().stream()
-						.sorted()
-						.map(formatter);
+		return model.selection().entity().optional()
+						.map(formatter)
+						.orElse("");
 	}
 
 	private void performSearch() {
@@ -638,7 +569,7 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public void onResult(List<Entity> searchResult) {
 			if (searchResult.size() == 1) {
-				model.selection().entities().set(searchResult);
+				model.selection().entity().set(searchResult.get(0));
 			}
 			else if (promptUser) {
 				promptUser(searchResult);
@@ -691,10 +622,6 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		return settingsPanel;
-	}
-
-	private static String escape(String string) {
-		return string.replace("<", "&lt;").replace(">", "&gt;");
 	}
 
 	private static final class SettingsPanel extends JPanel {
@@ -883,13 +810,9 @@ public final class EntitySearchField extends HintTextField {
 							.<Entity>items()
 							.build();
 
-			return (searchField.singleSelection() ?
-							FilterList.builder()
-											.model(listModel)
-											.selectedItem() :
-							FilterList.builder()
-											.model(listModel)
-											.selectedItems())
+			return FilterList.builder()
+							.model(listModel)
+							.selectedItem()
 							.mouseListener(new DoubleClickListener())
 							.cellRenderer(new Renderer())
 							.onBuild(new RemoveDefaultEnterAction())
@@ -911,7 +834,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() {
-				searchField.model.selection().entities().set(list.getSelectedValuesList());
+				searchField.model.selection().entity().set(list.getSelectedValue());
 				Ancestor.window().of(list).dispose();
 			}
 		}
@@ -995,8 +918,7 @@ public final class EntitySearchField extends HintTextField {
 							.model(tableModel)
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.cellRenderers(new EntityTableCellRenderers())
-							.selectionMode(searchField.singleSelection() ?
-											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
+							.selectionMode(ListSelectionModel.SINGLE_SELECTION)
 							.doubleClick(selectControl)
 							.keyEvent(KeyEvents.builder()
 											.keyCode(VK_ENTER)
@@ -1026,7 +948,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() {
-				searchField.model.selection().entities().set(table.model().selection().items().get());
+				searchField.model.selection().entity().set(table.model().selection().item().get());
 				Ancestor.window().of(table).dispose();
 			}
 		}
@@ -1040,9 +962,9 @@ public final class EntitySearchField extends HintTextField {
 		label.setVisible(resultLimitReached);
 	}
 
-	private static final class SingleSelectionValue extends AbstractComponentValue<EntitySearchField, Entity> {
+	private static final class SelectionValue extends AbstractComponentValue<EntitySearchField, Entity> {
 
-		private SingleSelectionValue(EntitySearchField searchField) {
+		private SelectionValue(EntitySearchField searchField) {
 			super(searchField);
 			searchField.model.selection().entity().addListener(this::notifyObserver);
 		}
@@ -1055,24 +977,6 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		protected void setComponentValue(@Nullable Entity value) {
 			component().model().selection().entity().set(value);
-		}
-	}
-
-	private static final class MultiSelectionValue extends AbstractComponentValue<EntitySearchField, Set<Entity>> {
-
-		private MultiSelectionValue(EntitySearchField searchField) {
-			super(searchField);
-			searchField.model.selection().entities().addListener(this::notifyObserver);
-		}
-
-		@Override
-		protected Set<Entity> getComponentValue() {
-			return component().model().selection().entities().get();
-		}
-
-		@Override
-		protected void setComponentValue(Set<Entity> value) {
-			component().model().selection().entities().set(value);
 		}
 	}
 
@@ -1203,61 +1107,16 @@ public final class EntitySearchField extends HintTextField {
 
 	private static final class DefaultModelStep implements Builder.ModelStep {
 
-		@Override
-		public Builder.Factory model(EntitySearchModel model) {
-			return new DefaultBuilderFactory(requireNonNull(model));
-		}
-	}
-
-	private static final class DefaultBuilderFactory implements Builder.Factory {
-
 		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 
-		private final EntitySearchModel searchModel;
-
-		private DefaultBuilderFactory(EntitySearchModel searchModel) {
-			this.searchModel = searchModel;
-		}
-
 		@Override
-		public MultiSelectionBuilder multiSelection() {
-			return new DefaultMultiSelectionBuilder(searchModel);
-		}
-
-		@Override
-		public SingleSelectionBuilder singleSelection() {
-			return new DefaultSingleSelectionBuilder(searchModel);
+		public Builder model(EntitySearchModel model) {
+			return new DefaultBuilder(requireNonNull(model));
 		}
 	}
 
-	private static final class DefaultMultiSelectionBuilder
-					extends AbstractBuilder<Set<Entity>, MultiSelectionBuilder> implements MultiSelectionBuilder {
-
-		private DefaultMultiSelectionBuilder(EntitySearchModel searchModel) {
-			super(searchModel);
-		}
-
-		@Override
-		protected ComponentValue<EntitySearchField, Set<Entity>> createValue(EntitySearchField component) {
-			return new MultiSelectionValue(component);
-		}
-	}
-
-	private static final class DefaultSingleSelectionBuilder
-					extends AbstractBuilder<Entity, SingleSelectionBuilder> implements SingleSelectionBuilder {
-
-		private DefaultSingleSelectionBuilder(EntitySearchModel searchModel) {
-			super(searchModel);
-		}
-
-		@Override
-		protected ComponentValue<EntitySearchField, Entity> createValue(EntitySearchField component) {
-			return new SingleSelectionValue(component);
-		}
-	}
-
-	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
-					extends AbstractComponentValueBuilder<EntitySearchField, T, B> implements Builder<T, B> {
+	private static final class DefaultBuilder
+					extends AbstractComponentValueBuilder<EntitySearchField, Entity, Builder> implements Builder {
 
 		private final EntitySearchModel searchModel;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
@@ -1268,141 +1127,129 @@ public final class EntitySearchField extends HintTextField {
 		private boolean editable = true;
 		private boolean searchHintEnabled = true;
 		private boolean searchOnFocusLost = true;
-		private @Nullable Boolean selectionToolTip;
-		private boolean singleSelection = false;
+		private boolean selectionToolTip = false;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.getOrThrow();
 		private int searchProgressBarDelay = SEARCH_PROGRESS_BAR_DELAY.getOrThrow();
 		private Function<EntitySearchField, Selector> selector = new ListSelectorFactory();
 		private Function<Entity, String> formatter = DEFAULT_FORMATTER;
-		private String separator = DEFAULT_SEPARATOR;
 		private @Nullable Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;
 		private boolean confirmEdit;
 
-		private AbstractBuilder(EntitySearchModel searchModel) {
+		private DefaultBuilder(EntitySearchModel searchModel) {
 			this.searchModel = searchModel;
 		}
 
 		@Override
-		public B columns(int columns) {
+		public Builder columns(int columns) {
 			this.columns = columns;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B upperCase(boolean upperCase) {
+		public Builder upperCase(boolean upperCase) {
 			if (upperCase && lowerCase) {
 				throw new IllegalArgumentException("Field is already lowercase");
 			}
 			this.upperCase = upperCase;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B lowerCase(boolean lowerCase) {
+		public Builder lowerCase(boolean lowerCase) {
 			if (lowerCase && upperCase) {
 				throw new IllegalArgumentException("Field is already uppercase");
 			}
 			this.lowerCase = lowerCase;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B editable(boolean editable) {
+		public Builder editable(boolean editable) {
 			this.editable = editable;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B formatter(Function<Entity, String> formatter) {
+		public Builder formatter(Function<Entity, String> formatter) {
 			this.formatter = requireNonNull(formatter);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B separator(String separator) {
-			if (requireNonNull(separator).isEmpty()) {
-				throw new IllegalArgumentException("Separator must not be empty");
-			}
-			this.separator = separator;
-			return (B) this;
-		}
-
-		@Override
-		public B searchHintEnabled(boolean searchHintEnabled) {
+		public Builder searchHintEnabled(boolean searchHintEnabled) {
 			this.searchHintEnabled = searchHintEnabled;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B selectionToolTip(boolean selectionToolTip) {
+		public Builder selectionToolTip(boolean selectionToolTip) {
 			this.selectionToolTip = selectionToolTip;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B singleSelection(boolean singleSelection) {
-			this.singleSelection = singleSelection;
-			return (B) this;
-		}
-
-		@Override
-		public B searchOnFocusLost(boolean searchOnFocusLost) {
+		public Builder searchOnFocusLost(boolean searchOnFocusLost) {
 			this.searchOnFocusLost = searchOnFocusLost;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B searchIndicator(SearchIndicator searchIndicator) {
+		public Builder searchIndicator(SearchIndicator searchIndicator) {
 			this.searchIndicator = requireNonNull(searchIndicator);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B searchProgressBarDelay(int searchProgressBarDelay) {
+		public Builder searchProgressBarDelay(int searchProgressBarDelay) {
 			this.searchProgressBarDelay = searchProgressBarDelay;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B selector(Function<EntitySearchField, Selector> selector) {
+		public Builder selector(Function<EntitySearchField, Selector> selector) {
 			this.selector = requireNonNull(selector);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B editPanel(Supplier<EntityEditPanel> editPanel) {
+		public Builder editPanel(Supplier<EntityEditPanel> editPanel) {
 			this.editPanel = requireNonNull(editPanel);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
+		public Builder keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B limit(int limit) {
+		public Builder limit(int limit) {
 			this.searchModel.limit().set(limit);
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B confirmAdd(boolean confirmAdd) {
+		public Builder confirmAdd(boolean confirmAdd) {
 			this.confirmAdd = confirmAdd;
-			return (B) this;
+			return this;
 		}
 
 		@Override
-		public B confirmEdit(boolean confirmEdit) {
+		public Builder confirmEdit(boolean confirmEdit) {
 			this.confirmEdit = confirmEdit;
-			return (B) this;
+			return this;
 		}
 
 		@Override
 		protected EntitySearchField createComponent() {
 			return new EntitySearchField(this);
+		}
+
+		@Override
+		protected ComponentValue<EntitySearchField, Entity> createValue(EntitySearchField component) {
+			return new SelectionValue(component);
 		}
 
 		private static final class ListSelectorFactory implements Function<EntitySearchField, Selector> {

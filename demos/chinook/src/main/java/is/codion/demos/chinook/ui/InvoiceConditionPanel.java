@@ -216,10 +216,6 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				customers = Components.multiValueInput()
 								.component(EntitySearchField.builder()
 												.model(conditionModel.inSearchModel().orElseThrow())
-												.singleSelection()
-												// Not set by the single selection builder, otherwise the
-												// result selector allows selecting multiple customers
-												.singleSelection(true)
 												.columns(25)
 												.buildValue())
 								// The component is linked to the IN operand

@@ -129,7 +129,6 @@ public class EntityConditionComponents implements ConditionComponents {
 		}
 
 		return inputComponents.searchField(conditionModel.attribute(), conditionModel.equalSearchModel().orElseThrow())
-						.singleSelection()
 						.link(conditionModel.operands().equal())
 						.build();
 	}
@@ -156,12 +155,8 @@ public class EntityConditionComponents implements ConditionComponents {
 		EntitySearchModel searchModel = conditionModel.inSearchModel().orElseThrow();
 		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
 
-		// a single selection search field, the entity selected added with Enter or Insert, clearing the field for the next search
+		// a search field, the entity selected added with Enter or Insert, clearing the field for the next search
 		return inputComponents.searchField(conditionModel.attribute(), searchModel)
-						.singleSelection()
-						// the single selection builder does not set this, the result selector would otherwise
-						// allow selecting several, of which only the first would be added
-						.singleSelection(true)
 						.editable(searchable)
 						.searchHintEnabled(searchable)
 						.buildValue();

@@ -73,7 +73,6 @@ public final class EntityConditionComponentsTest {
 			MultiValueInput<?> input = (MultiValueInput<?>) components.in(condition);
 			EntitySearchField searchField = (EntitySearchField) input.component();
 			assertSame(condition.inSearchModel().orElseThrow(), searchField.model());
-			assertTrue(searchField.singleSelection());
 
 			Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
 			Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
