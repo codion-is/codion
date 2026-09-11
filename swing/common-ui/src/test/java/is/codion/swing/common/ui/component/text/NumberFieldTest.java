@@ -161,6 +161,34 @@ public final class NumberFieldTest {
 	}
 
 	@Test
+	void overflow() throws BadLocationException {
+		NumberField<Short> shortField = NumberField.builder()
+						.numberClass(Short.class)
+						.build();
+		shortField.setText("3276");
+		shortField.getDocument().insertString(4, "8", null);
+		assertEquals("3276", shortField.getText());
+		shortField.getDocument().insertString(4, "7", null);
+		assertEquals(Short.MAX_VALUE, shortField.get());
+
+		NumberField<Integer> integerField = NumberField.builder()
+						.numberClass(Integer.class)
+						.build();
+		integerField.setText("-2147483648");
+		assertEquals(Integer.MIN_VALUE, integerField.get());
+		integerField.setText("3000000000");
+		assertEquals("-2147483648", integerField.getText());
+
+		NumberField<Long> longField = NumberField.builder()
+						.numberClass(Long.class)
+						.build();
+		longField.setText("9223372036854775807");
+		assertEquals(Long.MAX_VALUE, longField.get());
+		longField.setText("9223372036854775808");
+		assertEquals("9223372036854775807", longField.getText());
+	}
+
+	@Test
 	void testNoGrouping() {
 		NumberField<Double> doubleField = NumberField.builder()
 						.numberClass(Double.class)

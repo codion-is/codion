@@ -195,7 +195,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		/**
 		 * @param text the text to parse
-		 * @return a number if the format can parse it, null otherwise
+		 * @return a number if the format can parse it and it fits the number type, null otherwise
 		 */
 		private @Nullable T parseNumber(String text) {
 			if (text.isEmpty()) {
@@ -211,7 +211,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return (T) toType(clazz, number);
 		}
 
-		private static Number toType(Class<? extends Number> clazz, Number number) {
+		private static @Nullable Number toType(Class<? extends Number> clazz, Number number) {
 			if (clazz.equals(Short.class)) {
 				return toShort(number);
 			}
@@ -234,28 +234,22 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			throw new IllegalArgumentException("Unsupported type class: " + clazz);
 		}
 
-		private static Number toShort(Number number) {
-			if (number instanceof Short) {
-				return number;
-			}
+		private static @Nullable Number toShort(Number number) {
+			BigInteger integer = toBigInteger(number);
 
-			return Short.valueOf(number.shortValue());
+			return integer == null || integer.bitLength() >= Short.SIZE ? null : integer.shortValue();
 		}
 
-		private static Number toInteger(Number number) {
-			if (number instanceof Integer) {
-				return number;
-			}
+		private static @Nullable Number toInteger(Number number) {
+			BigInteger integer = toBigInteger(number);
 
-			return Integer.valueOf(number.intValue());
+			return integer == null || integer.bitLength() >= Integer.SIZE ? null : integer.intValue();
 		}
 
-		private static Number toLong(Number number) {
-			if (number instanceof Long) {
-				return number;
-			}
+		private static @Nullable Number toLong(Number number) {
+			BigInteger integer = toBigInteger(number);
 
-			return Long.valueOf(number.longValue());
+			return integer == null || integer.bitLength() >= Long.SIZE ? null : integer.longValue();
 		}
 
 		private static Number toDouble(Number number) {
@@ -266,23 +260,32 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return Double.valueOf(number.doubleValue());
 		}
 
-		private static Number toBigInteger(Number number) {
-			if (number instanceof BigInteger) {
-				return number;
-			}
-			if (number instanceof BigDecimal) {
-				return ((BigDecimal) number).toBigInteger();
-			}
-
-			return BigInteger.valueOf(number.longValue());
-		}
-
 		private static Number toBigDecimal(Number number) {
 			if (number instanceof BigDecimal) {
 				return number;
 			}
 
 			return BigDecimal.valueOf(number.doubleValue());
+		}
+
+		/**
+		 * @param number the number
+		 * @return the integer part of the given number, null in case of NaN or infinity
+		 */
+		private static @Nullable BigInteger toBigInteger(Number number) {
+			if (number instanceof BigInteger) {
+				return (BigInteger) number;
+			}
+			if (number instanceof BigDecimal) {
+				return ((BigDecimal) number).toBigInteger();
+			}
+			if (number instanceof Double || number instanceof Float) {
+				double value = number.doubleValue();
+
+				return Double.isNaN(value) || Double.isInfinite(value) ? null : new BigDecimal(value).toBigInteger();
+			}
+
+			return BigInteger.valueOf(number.longValue());
 		}
 
 		private int countAddedGroupingSeparators(String currentNumber, String newNumber) {
