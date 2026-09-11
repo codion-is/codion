@@ -28,6 +28,7 @@ import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.util.Optional;
 
 import static java.awt.event.KeyEvent.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -479,6 +480,20 @@ public final class NumberFieldTest {
 		document.insertString(2, "1", null);
 		assertEquals("1.1", doubleField.getText());
 		assertEquals(Double.valueOf(1.1), doubleField.get());
+	}
+
+	@Test
+	void leadingDecimalSeparator() throws BadLocationException {
+		NumberField<Double> doubleField = NumberField.builder()
+						.numberClass(Double.class)
+						.decimalSeparator('.')
+						.groupingSeparator(',')
+						.build();
+		doubleField.document().insertString(0, ".", null);
+		assertEquals("0.", doubleField.getText());
+		assertEquals(2, doubleField.getCaretPosition());
+		assertEquals(Double.valueOf(0), doubleField.observable().get());
+		assertEquals(Optional.of(0d), doubleField.optional());
 	}
 
 	@Test
