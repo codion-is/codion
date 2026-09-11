@@ -104,7 +104,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	 * @return a {@link ForeignKeyConditionModel} based on the given foreign key
 	 */
 	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
-		// No combo box for the EQUAL operand, so the model defaults to IN (a search field is no simpler single-select)
+		// Search models for both operands, the model defaulting to EQUAL
 		return ForeignKeyConditionModel.builder(foreignKey)
 						.equalSearchModel(createEqualSearchModel(foreignKey))
 						.inSearchModel(createInSearchModel(foreignKey))

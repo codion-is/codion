@@ -119,9 +119,8 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 		Builder inComboBoxModel(EntityComboBoxModel inComboBoxModel);
 
 		/**
-		 * Sets the initial operator, the one {@link ForeignKeyConditionModel#clear()} reverts to. Defaults to {@link Operator#EQUAL}
-		 * when the EQUAL operand is based on a combo box model, otherwise to {@link Operator#IN} when an IN operand is available,
-		 * otherwise to {@link Operator#EQUAL}.
+		 * Sets the initial operator, the one {@link ForeignKeyConditionModel#clear()} reverts to. Defaults to the first of the available
+		 * {@link ForeignKeyConditionModel#operators()}, {@link Operator#EQUAL} when an EQUAL operand is available, otherwise {@link Operator#IN}.
 		 * @param operator the initial operator, must be one of the available operators
 		 * @return this builder
 		 */
