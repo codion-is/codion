@@ -37,7 +37,7 @@ import is.codion.swing.common.ui.component.button.ToolBarBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
-import is.codion.swing.common.ui.component.listbox.ListComboBoxBuilder;
+import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlexibleGridLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlowLayoutPanelBuilder;
@@ -64,11 +64,9 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.common.ui.component.text.TextPaneBuilder;
 import is.codion.swing.common.ui.component.tree.TreeBuilder;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -178,16 +176,11 @@ public final class Components {
 	}
 
 	/**
-	 * Creates a {@link JComboBox} based {@link ComponentValue} instance, represented by the items
-	 * in the combo box (as opposed to the selected item).
-	 * <ul>
-	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value to the list
-	 * <li>{@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
-	 * </ul>
-	 * @return a new {@link ListComboBoxBuilder.ComponentStep}
+	 * Creates a {@link MultiValueInput}, collecting a set of values through a wrapped component.
+	 * @return a new {@link MultiValueInput.Builder.ComponentStep}
 	 */
-	public static ListComboBoxBuilder.ComponentStep listComboBox() {
-		return ListComboBoxBuilder.builder();
+	public static MultiValueInput.Builder.ComponentStep multiValueInput() {
+		return MultiValueInput.builder();
 	}
 
 	/**

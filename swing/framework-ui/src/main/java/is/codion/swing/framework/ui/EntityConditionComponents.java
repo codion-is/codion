@@ -41,7 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static is.codion.swing.common.ui.component.Components.listComboBox;
+import static is.codion.swing.common.ui.component.Components.multiValueInput;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 
@@ -108,9 +108,11 @@ public class EntityConditionComponents implements ConditionComponents {
 			return createInForeignKeyField((ForeignKeyConditionModel) conditionModel);
 		}
 
-		return listComboBox()
+		return multiValueInput()
 						.component(inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute()).buildValue())
 						.link(conditionModel.operands().in())
+						.format(conditionModel.format().orElse(null))
+						.caption(conditionModel.caption().orElse(null))
 						.build();
 	}
 
