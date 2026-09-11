@@ -28,12 +28,15 @@ import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -176,6 +179,37 @@ public final class NumberFieldTest {
 		integerField.observable().addConsumer(values::add);
 		integerField.set(5);
 		assertEquals(singletonList(5), values);
+	}
+
+	@Test
+	void minusSign() throws BadLocationException {
+		NumberField<Integer> integerField = NumberField.builder()
+						.numberClass(Integer.class)
+						.build();
+		integerField.getDocument().insertString(0, "-", null);
+		assertEquals("-", integerField.getText());
+		assertNull(integerField.get());
+		assertNull(integerField.observable().get());
+		integerField.getDocument().insertString(1, "5", null);
+		assertEquals(-5, integerField.get());
+
+		NumberField<Integer> nonNegative = NumberField.builder()
+						.numberClass(Integer.class)
+						.range(0, 100)
+						.build();
+		nonNegative.getDocument().insertString(0, "-", null);
+		assertEquals("", nonNegative.getText());
+
+		NumberField<Integer> swedish = NumberField.builder()
+						.numberClass(Integer.class)
+						.format(NumberFormat.getIntegerInstance(Locale.forLanguageTag("sv-SE")))
+						.build();
+		swedish.getDocument().insertString(0, "-", null);
+		assertEquals("\u2212", swedish.getText());
+		swedish.getDocument().insertString(1, "5", null);
+		assertEquals(-5, swedish.get());
+		swedish.setText("-12");
+		assertEquals(-12, swedish.get());
 	}
 
 	@Test
