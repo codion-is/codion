@@ -75,6 +75,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 	}
 
 	protected final void set(@Nullable T number) {
+		if (number != null) {
+			getDocumentFilter().validateRange(number);
+		}
 		setText(number == null ? "" : format().format(number));
 	}
 
@@ -161,7 +164,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 				return new DefaultNumberParseResult<>(string, null);
 			}
 
-			T parsedNumber = parseNumber(string);
+			Number number = parseFormat(string);
+			T parsedNumber = number == null ? null : (T) toType(clazz, number);
 			if (parsedNumber != null) {
 				String formattedNumber = format.format(parsedNumber);
 				if (negativeZero(string, parsedNumber)) {
@@ -186,6 +190,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 				// the value of the formatted text, which may have dropped fraction digits
 				return new DefaultNumberParseResult<>(formattedNumber, parseNumber(formattedNumber),
 								countAddedGroupingSeparators(string, formattedNumber), true);
+			}
+			if (number != null && finite(number)) {
+				// exceeds the range of the number type
+				return DefaultNumberParseResult.overflow(string, number);
 			}
 
 			return new DefaultNumberParseResult<>(string, null, 0, false);
@@ -225,17 +233,31 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		 * @return a number if the format can parse it and it fits the number type, null otherwise
 		 */
 		private @Nullable T parseNumber(String text) {
+			Number number = parseFormat(text);
+
+			return number == null ? null : (T) toType(clazz, number);
+		}
+
+		/**
+		 * @param text the text to parse
+		 * @return the number parsed by the format, null if it can not parse the text
+		 */
+		private @Nullable Number parseFormat(String text) {
 			if (text.isEmpty()) {
 				return null;
 			}
 
 			ParsePosition position = new ParsePosition(0);
-			T number = (T) format.parse(text, position);
+			Number number = format.parse(text, position);
 			if (position.getIndex() != text.length() || position.getErrorIndex() != -1) {
 				return null;
 			}
 
-			return (T) toType(clazz, number);
+			return number;
+		}
+
+		private static boolean finite(Number number) {
+			return !(number instanceof Double || number instanceof Float) || Double.isFinite(number.doubleValue());
 		}
 
 		private static @Nullable Number toType(Class<? extends Number> clazz, Number number) {
@@ -362,12 +384,18 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			 * @return the number of characters added
 			 */
 			int charetOffset();
+
+			/**
+			 * @return the parsed number in case it exceeds the range of the number type, otherwise null
+			 */
+			@Nullable Number overflow();
 		}
 
 		protected static final class DefaultNumberParseResult<T extends Number>
 						extends DefaultParseResult<T> implements NumberParseResult<T> {
 
 			private final int charetOffset;
+			private final @Nullable Number overflow;
 
 			private DefaultNumberParseResult(String text, @Nullable T value) {
 				this(text, value, 0, true);
@@ -375,13 +403,28 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 			DefaultNumberParseResult(String text, @Nullable T value, int charetOffset,
 															 boolean successful) {
+				this(text, value, charetOffset, successful, null);
+			}
+
+			private DefaultNumberParseResult(String text, @Nullable T value, int charetOffset,
+																			 boolean successful, @Nullable Number overflow) {
 				super(text, value, successful);
 				this.charetOffset = charetOffset;
+				this.overflow = overflow;
 			}
 
 			@Override
 			public int charetOffset() {
 				return charetOffset;
+			}
+
+			@Override
+			public @Nullable Number overflow() {
+				return overflow;
+			}
+
+			private static <T extends Number> DefaultNumberParseResult<T> overflow(String text, Number number) {
+				return new DefaultNumberParseResult<>(text, null, 0, false, number);
 			}
 		}
 	}
@@ -391,18 +434,17 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		private static final MessageBundle MESSAGES =
 						messageBundle(NumberParsingDocumentFilter.class, getBundle(NumberParsingDocumentFilter.class.getName()));
 
-		private final NumberRangeValidator<T> rangeValidator;
+		private final NumberRangeValidator rangeValidator;
 		private final NumberParser<T> parser;
 		private final Value<T> value = Value.nullable();
 
 		private @Nullable JTextComponent textComponent;
 		private boolean convertGroupingToDecimalSeparator = true;
-		private boolean silentValidation = false;
 
 		NumberParsingDocumentFilter(NumberParser<T> parser) {
 			super(parser);
 			this.parser = parser;
-			this.rangeValidator = new NumberRangeValidator<>();
+			this.rangeValidator = new NumberRangeValidator(parser.clazz);
 		}
 
 		@Override
@@ -410,18 +452,30 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return convertMinusSign(convertSingleGroupingToDecimalSeparator(string));
 		}
 
+		/**
+		 * A single character edit, typing, is checked against the range widened to include zero, since
+		 * a value typed one digit at a time passes through it, and rejected silently, while a longer edit,
+		 * such as a paste, is checked against the range itself, throwing in case of a value outside it.
+		 */
 		@Override
 		protected boolean validate(Parser.ParseResult<T> parseResult, boolean singleCharacter) {
+			// the parse result comes from the NumberParser
+			Number overflow = ((NumberParseResult<T>) parseResult).overflow();
+			if (overflow != null) {
+				if (singleCharacter) {
+					return false;
+				}
+				throw rangeValidator.outsideRange(overflow);
+			}
 			T number = parseResult.value();
 			if (number != null) {
-				try {
-					rangeValidator.validate(number);
-				}
-				catch (IllegalArgumentException e) {
-					if (silentValidation) {
+				if (singleCharacter) {
+					if (!rangeValidator.withinTypingRange(number)) {
 						return false;
 					}
-					throw e;
+				}
+				else {
+					rangeValidator.validate(number);
 				}
 			}
 			else if (parseResult.text().equals(parser.negativePrefix()) && !rangeValidator.negativeAllowed()) {
@@ -462,8 +516,12 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			this.convertGroupingToDecimalSeparator = convertGroupingToDecimalSeparator;
 		}
 
-		void setSilentValidation(boolean silentValidation) {
-			this.silentValidation = silentValidation;
+		/**
+		 * @param number the number to validate
+		 * @throws IllegalArgumentException in case the number is outside the range
+		 */
+		void validateRange(Number number) {
+			rangeValidator.validate(number);
 		}
 
 		/**
@@ -502,32 +560,102 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return text;
 		}
 
-		private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {
+		private static final class NumberRangeValidator {
+
+			private final @Nullable Number typeMinimum;
+			private final @Nullable Number typeMaximum;
 
 			private @Nullable Number minimumValue;
 			private @Nullable Number maximumValue;
 
-			@Override
-			public void validate(@Nullable T value) {
-				if (!withinRange(value)) {
-					throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + value + " [" + minimumValue + " - " + maximumValue + "]");
+			private NumberRangeValidator(Class<? extends Number> numberClass) {
+				this.typeMinimum = typeMinimum(numberClass);
+				this.typeMaximum = typeMaximum(numberClass);
+			}
+
+			/**
+			 * @param value the value to validate
+			 * @throws IllegalArgumentException in case the value is outside the range
+			 */
+			private void validate(Number value) {
+				if (!within(value, minimum(), maximum())) {
+					throw outsideRange(value);
 				}
 			}
 
-			private boolean withinRange(@Nullable T value) {
-				return value == null || (greaterThanMinimum(value) && lessThanMaximum(value));
+			/**
+			 * @param value the value
+			 * @return true if the value is within the range widened to include zero, which a value
+			 * typed one digit at a time passes through on its way to a value within the range
+			 */
+			private boolean withinTypingRange(Number value) {
+				Number minimum = minimum();
+				Number maximum = maximum();
+				if (minimum != null && minimum.doubleValue() > 0) {
+					minimum = 0;
+				}
+				if (maximum != null && maximum.doubleValue() < 0) {
+					maximum = 0;
+				}
+
+				return within(value, minimum, maximum);
 			}
 
 			private boolean negativeAllowed() {
-				return minimumValue == null || minimumValue.doubleValue() < 0;
+				Number minimum = minimum();
+
+				return minimum == null || minimum.doubleValue() < 0;
 			}
 
-			private boolean greaterThanMinimum(T value) {
-				return minimumValue == null || value.doubleValue() >= minimumValue.doubleValue();
+			private IllegalArgumentException outsideRange(Number value) {
+				return new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + value + " [" + minimum() + " - " + maximum() + "]");
 			}
 
-			private boolean lessThanMaximum(T value) {
-				return maximumValue == null || value.doubleValue() <= maximumValue.doubleValue();
+			/**
+			 * @return the minimum value, the minimum of the number type in case none is specified
+			 */
+			private @Nullable Number minimum() {
+				return minimumValue == null ? typeMinimum : minimumValue;
+			}
+
+			/**
+			 * @return the maximum value, the maximum of the number type in case none is specified
+			 */
+			private @Nullable Number maximum() {
+				return maximumValue == null ? typeMaximum : maximumValue;
+			}
+
+			private static boolean within(Number value, @Nullable Number minimum, @Nullable Number maximum) {
+				return (minimum == null || value.doubleValue() >= minimum.doubleValue())
+								&& (maximum == null || value.doubleValue() <= maximum.doubleValue());
+			}
+
+			private static @Nullable Number typeMinimum(Class<? extends Number> numberClass) {
+				if (numberClass.equals(Short.class)) {
+					return Short.MIN_VALUE;
+				}
+				if (numberClass.equals(Integer.class)) {
+					return Integer.MIN_VALUE;
+				}
+				if (numberClass.equals(Long.class)) {
+					return Long.MIN_VALUE;
+				}
+
+				return null;
+			}
+
+			private static @Nullable Number typeMaximum(Class<? extends Number> numberClass) {
+				if (numberClass.equals(Short.class)) {
+					return Short.MAX_VALUE;
+				}
+				if (numberClass.equals(Integer.class)) {
+					return Integer.MAX_VALUE;
+				}
+				if (numberClass.equals(Long.class)) {
+					return Long.MAX_VALUE;
+				}
+
+				return null;
 			}
 		}
 	}

@@ -131,14 +131,12 @@ final class DurationPanelBuilder extends AbstractComponentValueBuilder<DurationP
 		private final NumberField<Integer> secondsField = integerField()
 						.range(0, 59)
 						.selectAllOnFocusGained(true)
-						.silentValidation(true)
 						.label(secLabel)
 						.columns(2)
 						.build();
 		private final NumberField<Integer> millisecondsField = integerField()
 						.range(0, 999)
 						.selectAllOnFocusGained(true)
-						.silentValidation(true)
 						.label(msLabel)
 						.columns(3)
 						.build();

@@ -47,7 +47,6 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 		create().checkBox(CountryLanguage.IS_OFFICIAL);
 		create().doubleField(CountryLanguage.PERCENTAGE)
 						.range(0, 100)
-						.silentValidation(true)
 						.columns(4);
 		create().textField(CountryLanguage.NO_OF_SPEAKERS)
 						.columns(6);

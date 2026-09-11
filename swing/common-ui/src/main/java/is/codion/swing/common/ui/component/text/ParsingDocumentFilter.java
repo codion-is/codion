@@ -68,7 +68,7 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
 		builder.replace(offset, offset + length, transformedString);
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
-		if (parseResult.successful() && validate(parseResult, singleCharacter(transformedString))) {
+		if (validate(parseResult, singleCharacter(transformedString))) {
 			apply(filterBypass, offset, length, transformedString, parseResult, attributeSet);
 		}
 	}
@@ -98,7 +98,7 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 	}
 
 	/**
-	 * Validates the result of an edit, before it is applied.
+	 * Validates the result of an edit, before it is applied, an unsuccessful parse is rejected silently.
 	 * @param parseResult the result of parsing the edited text
 	 * @param singleCharacter true if the edit inserts at most a single character, in which case
 	 * a failing {@link SilentValidator} rejects the edit silently instead of throwing
@@ -106,6 +106,9 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 	 * @throws IllegalArgumentException in case validation fails
 	 */
 	protected boolean validate(Parser.ParseResult<T> parseResult, boolean singleCharacter) {
+		if (!parseResult.successful()) {
+			return false;
+		}
 		T value = parseResult.value();
 		if (value == null) {
 			return true;

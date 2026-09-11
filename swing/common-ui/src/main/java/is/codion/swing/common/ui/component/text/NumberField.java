@@ -67,7 +67,6 @@ public final class NumberField<T extends Number> extends HintTextField {
 		NumberParsingDocumentFilter<T> documentFilter = document.getDocumentFilter();
 		documentFilter.setMinimumValue(builder.minimum);
 		documentFilter.setMaximumValue(builder.maximum);
-		documentFilter.setSilentValidation(builder.silentValidation);
 		documentFilter.setConvertGroupingToDecimalSeparator(builder.convertGroupingToDecimalSeparator);
 		if (document.format() instanceof DecimalFormat) {
 			addKeyListener(new GroupingSkipAdapter());
@@ -105,6 +104,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 	/**
 	 * @param number the number to set
+	 * @throws IllegalArgumentException in case the number is outside the range
+	 * @see Builder#range(Number, Number)
 	 */
 	public void set(@Nullable T number) {
 		document().set(number);
@@ -167,6 +168,12 @@ public final class NumberField<T extends Number> extends HintTextField {
 		Builder<T> nullable(boolean nullable);
 
 		/**
+		 * <p>Specifies the range of valid values, a Short, Integer or Long based field is always limited
+		 * to the range of its type.
+		 * <p>Typing is rejected silently when it results in a value outside the range, while a longer edit,
+		 * such as a paste, or setting a value outside the range throws {@link IllegalArgumentException}.
+		 * <p>Note that a value is typed one digit at a time, starting from zero, so a typed value may be
+		 * between zero and the range, such as 5 on the way to 50 in a field with the range 10 to 100.
 		 * @param minimum the minimum value
 		 * @param maximum the maximum value
 		 * @return this builder instance
@@ -176,20 +183,16 @@ public final class NumberField<T extends Number> extends HintTextField {
 		/**
 		 * @param minimum the minimum numerical value
 		 * @return this builder instance
+		 * @see #range(Number, Number)
 		 */
 		Builder<T> minimum(@Nullable Number minimum);
 
 		/**
 		 * @param maximum the maximum numerical value
 		 * @return this builder instance
+		 * @see #range(Number, Number)
 		 */
 		Builder<T> maximum(@Nullable Number maximum);
-
-		/**
-		 * @param silentValidation true if invalid input should be silently prevented instead of throwing validation exceptions
-		 * @return this builder instance
-		 */
-		Builder<T> silentValidation(boolean silentValidation);
 
 		/**
 		 * @param groupingSeparator the grouping separator
@@ -304,7 +307,6 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		private @Nullable Number maximum;
 		private @Nullable Number minimum;
-		private boolean silentValidation = false;
 		private char groupingSeparator = 0;
 		private @Nullable Boolean grouping;
 		private char decimalSeparator = 0;
@@ -351,12 +353,6 @@ public final class NumberField<T extends Number> extends HintTextField {
 				throw new IllegalArgumentException("maximum can't be less than minimum");
 			}
 			this.maximum = maximum;
-			return this;
-		}
-
-		@Override
-		public final Builder<T> silentValidation(boolean silentValidation) {
-			this.silentValidation = silentValidation;
 			return this;
 		}
 

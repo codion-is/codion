@@ -112,9 +112,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		return Dialogs.input()
 						.component(bigDecimalField()
 										.nullable(false)
-										.minimum(0)
-										// Silently prevent invalid input
-										.silentValidation(true))
+										.minimum(0))
 						.owner(this)
 						.title(BUNDLE.getString("amount"))
 						// The field is not nullable so the amount is never null
