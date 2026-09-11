@@ -166,6 +166,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			T parsedNumber = parseNumber(string);
 			if (parsedNumber != null) {
 				String formattedNumber = format.format(parsedNumber);
+				if (negativeZero(string, parsedNumber)) {
+					// BigDecimal has no negative zero, format the Double one
+					formattedNumber = format.format(-0d);
+				}
 				//handle trailing decimal symbol and trailing decimal zeros
 				if (format instanceof DecimalFormat) {
 					String decimalSeparator =
@@ -191,6 +195,21 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		 */
 		protected final NumberFormat format() {
 			return format;
+		}
+
+		/**
+		 * @param string the parsed string
+		 * @param number the parsed number
+		 * @return true if the string represents a negative zero, which a BigDecimal can not hold
+		 */
+		private boolean negativeZero(String string, T number) {
+			if (number instanceof BigDecimal && ((BigDecimal) number).signum() == 0 && format instanceof DecimalFormat) {
+				String negativePrefix = ((DecimalFormat) format).getNegativePrefix();
+
+				return !negativePrefix.isEmpty() && string.startsWith(negativePrefix);
+			}
+
+			return false;
 		}
 
 		/**

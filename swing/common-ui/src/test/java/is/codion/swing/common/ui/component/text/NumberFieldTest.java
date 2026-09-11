@@ -25,6 +25,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 
@@ -186,6 +187,27 @@ public final class NumberFieldTest {
 		assertEquals(Long.MAX_VALUE, longField.get());
 		longField.setText("9223372036854775808");
 		assertEquals("9223372036854775807", longField.getText());
+	}
+
+	@Test
+	void bigDecimalNegativeZero() throws BadLocationException {
+		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
+						.numberClass(BigDecimal.class)
+						.decimalSeparator('.')
+						.groupingSeparator(',')
+						.build();
+		NumberDocument<BigDecimal> document = bigDecimalField.document();
+
+		document.insertString(0, "-", null);
+		document.insertString(1, "0", null);
+		assertEquals("-0", bigDecimalField.getText());
+		document.insertString(2, ".", null);
+		assertEquals("-0.", bigDecimalField.getText());
+		document.insertString(3, "0", null);
+		assertEquals("-0.0", bigDecimalField.getText());
+		document.insertString(4, "5", null);
+		assertEquals("-0.05", bigDecimalField.getText());
+		assertEquals(new BigDecimal("-0.05"), bigDecimalField.get());
 	}
 
 	@Test
