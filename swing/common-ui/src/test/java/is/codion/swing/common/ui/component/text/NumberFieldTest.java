@@ -413,8 +413,10 @@ public final class NumberFieldTest {
 		assertEquals("5,12", doubleField.getText());
 		doubleField.setText("5,123");
 		assertEquals("5,12", doubleField.getText());
+		assertEquals(Double.valueOf(5.12), doubleField.observable().get());
 		doubleField.getDocument().insertString(3, "4", null);
 		assertEquals("5,14", doubleField.getText());
+		assertEquals(Double.valueOf(5.14), doubleField.observable().get());
 		doubleField.getDocument().remove(3, 1);
 		assertEquals("5,1", doubleField.getText());
 

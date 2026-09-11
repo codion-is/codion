@@ -183,7 +183,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 					}
 				}
 
-				return new DefaultNumberParseResult<>(formattedNumber, parsedNumber, countAddedGroupingSeparators(string, formattedNumber), true);
+				// the value of the formatted text, which may have dropped fraction digits
+				return new DefaultNumberParseResult<>(formattedNumber, parseNumber(formattedNumber),
+								countAddedGroupingSeparators(string, formattedNumber), true);
 			}
 
 			return new DefaultNumberParseResult<>(string, null, 0, false);
