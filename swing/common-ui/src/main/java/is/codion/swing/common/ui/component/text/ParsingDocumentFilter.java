@@ -51,49 +51,25 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 
 	@Override
 	public final void insertString(FilterBypass filterBypass, int offset, String string,
-																 AttributeSet attributeSet) throws BadLocationException {
-		String transformedString = transform(string);
-		transformedString = transformedString == null ? "" : transformedString;
-		Document document = filterBypass.getDocument();
-		StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
-		builder.insert(offset, transformedString);
-		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
-		if (parseResult.successful()) {
-			if (!validate(parseResult.value(), singleCharacter(transformedString))) {
-				return;
-			}
-			super.insertString(filterBypass, offset, transformedString, attributeSet);
-		}
+																 @Nullable AttributeSet attributeSet) throws BadLocationException {
+		replace(filterBypass, offset, 0, string, attributeSet);
 	}
 
 	@Override
 	public final void remove(FilterBypass filterBypass, int offset, int length) throws BadLocationException {
-		Document document = filterBypass.getDocument();
-		StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
-		builder.replace(offset, offset + length, "");
-		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
-		if (parseResult.successful()) {
-			if (!validate(parseResult.value(), true)) {
-				return;
-			}
-			super.remove(filterBypass, offset, length);
-		}
+		replace(filterBypass, offset, length, "", null);
 	}
 
 	@Override
-	public final void replace(FilterBypass filterBypass, int offset, int length, String string,
-														AttributeSet attributeSet) throws BadLocationException {
-		String transformedString = transform(string);
-		transformedString = transformedString == null ? "" : transformedString;
+	public final void replace(FilterBypass filterBypass, int offset, int length, @Nullable String string,
+														@Nullable AttributeSet attributeSet) throws BadLocationException {
+		String transformedString = string == null ? "" : transform(string);
 		Document document = filterBypass.getDocument();
 		StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
 		builder.replace(offset, offset + length, transformedString);
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
-		if (parseResult.successful()) {
-			if (!validate(parseResult.value(), singleCharacter(transformedString))) {
-				return;
-			}
-			super.replace(filterBypass, offset, length, transformedString, attributeSet);
+		if (parseResult.successful() && validate(parseResult, singleCharacter(transformedString))) {
+			apply(filterBypass, offset, length, transformedString, parseResult, attributeSet);
 		}
 	}
 
@@ -122,13 +98,15 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 	}
 
 	/**
-	 * @param value the value to validate
+	 * Validates the result of an edit, before it is applied.
+	 * @param parseResult the result of parsing the edited text
 	 * @param singleCharacter true if the edit inserts at most a single character, in which case
 	 * a failing {@link SilentValidator} rejects the edit silently instead of throwing
-	 * @return true if the value is valid, false if the value fails silent validation
+	 * @return true if the value is valid, false if the edit should be rejected silently
 	 * @throws IllegalArgumentException in case validation fails
 	 */
-	private boolean validate(@Nullable T value, boolean singleCharacter) {
+	protected boolean validate(Parser.ParseResult<T> parseResult, boolean singleCharacter) {
+		T value = parseResult.value();
 		if (value == null) {
 			return true;
 		}
@@ -146,6 +124,21 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		validators.forEach(validator -> validator.validate(value));
 
 		return true;
+	}
+
+	/**
+	 * Applies a validated edit, replacing the given range with the given string by default.
+	 * @param filterBypass the filter bypass
+	 * @param offset the offset of the edit
+	 * @param length the length of the text being replaced
+	 * @param string the transformed string being inserted, empty in case of a removal
+	 * @param parseResult the result of parsing the edited text
+	 * @param attributeSet the attributes, if any
+	 * @throws BadLocationException in case of an invalid location
+	 */
+	protected void apply(FilterBypass filterBypass, int offset, int length, String string,
+											 Parser.ParseResult<T> parseResult, @Nullable AttributeSet attributeSet) throws BadLocationException {
+		filterBypass.replace(offset, length, string, attributeSet);
 	}
 
 	private static boolean singleCharacter(String string) {
