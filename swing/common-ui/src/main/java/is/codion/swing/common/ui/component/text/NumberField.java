@@ -330,7 +330,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		public final Builder<T> range(@Nullable Number minimum, @Nullable Number maximum) {
-			if (minimum != null && maximum != null && minimum.doubleValue() > maximum.doubleValue()) {
+			if (minimum != null && maximum != null && NumberDocument.compare(minimum, maximum) > 0) {
 				throw new IllegalArgumentException("minimum can't be greater than maximum");
 			}
 			this.minimum = minimum;
@@ -340,7 +340,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		public final Builder<T> minimum(@Nullable Number minimum) {
-			if (maximum != null && minimum != null && minimum.doubleValue() > maximum.doubleValue()) {
+			if (maximum != null && minimum != null && NumberDocument.compare(minimum, maximum) > 0) {
 				throw new IllegalArgumentException("minimum can't be greater than maximum");
 			}
 			this.minimum = minimum;
@@ -349,7 +349,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		public final Builder<T> maximum(@Nullable Number maximum) {
-			if (maximum != null && minimum != null && maximum.doubleValue() < minimum.doubleValue()) {
+			if (maximum != null && minimum != null && NumberDocument.compare(maximum, minimum) < 0) {
 				throw new IllegalArgumentException("maximum can't be less than minimum");
 			}
 			this.maximum = maximum;

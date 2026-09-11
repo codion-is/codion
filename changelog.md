@@ -66,6 +66,7 @@ Codion Change Log
 - NumberField, builder validators now validate an edit before it is applied, as in other text fields, instead of throwing after the field already displayed the rejected value.
 - NumberField, typing a value outside the range is now rejected silently, a longer edit, such as a paste, or setting a value outside the range throws, a typed value may be between zero and the range, such as 5 on the way to 50, Builder.silentValidation() removed.
 - NumberField, a paste exceeding the range of a Short, Integer or Long based field now throws, instead of being ignored.
+- NumberField, the range is now compared exactly, instead of by double value, which lost precision for large Long, BigInteger and BigDecimal values.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
