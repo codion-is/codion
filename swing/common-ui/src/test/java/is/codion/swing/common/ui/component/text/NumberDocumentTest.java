@@ -32,8 +32,6 @@ public final class NumberDocumentTest {
 	void test() throws BadLocationException {
 		NumberDocument<Integer> document = new NumberDocument<>(getIntegerInstance(), Integer.class);
 
-		document.getDocumentFilter().setSilentValidation(true);// Dont throw, just prevent input
-
 		document.getDocumentFilter().setMinimumValue(0);
 		document.getDocumentFilter().setMaximumValue(1);
 		document.insertString(0, "-", null);

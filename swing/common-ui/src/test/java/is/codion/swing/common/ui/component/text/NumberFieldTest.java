@@ -263,7 +263,7 @@ public final class NumberFieldTest {
 						.build();
 		integerField.setText("-2147483648");
 		assertEquals(Integer.MIN_VALUE, integerField.get());
-		integerField.setText("3000000000");
+		assertThrows(IllegalArgumentException.class, () -> integerField.setText("3000000000"));
 		assertEquals("-2147483648", integerField.getText());
 
 		NumberField<Long> longField = NumberField.builder()
@@ -271,7 +271,7 @@ public final class NumberFieldTest {
 						.build();
 		longField.setText("9223372036854775807");
 		assertEquals(Long.MAX_VALUE, longField.get());
-		longField.setText("9223372036854775808");
+		assertThrows(IllegalArgumentException.class, () -> longField.setText("9223372036854775808"));
 		assertEquals("9223372036854775807", longField.getText());
 	}
 
@@ -714,24 +714,50 @@ public final class NumberFieldTest {
 	}
 
 	@Test
-	void silentValidation() {
+	void rangeValidation() throws BadLocationException {
 		NumberField<Integer> integerField = NumberField.builder()
 						.numberClass(Integer.class)
-						.value(10)
-						.range(0, 100)
+						.range(10, 100)
 						.build();
-		assertEquals(10, integerField.get());
+		NumberDocument<Integer> document = integerField.document();
+		// typed one digit at a time, passing through a value below the minimum
+		document.insertString(0, "1", null);
+		assertEquals(1, integerField.get());
+		document.insertString(1, "5", null);
+		assertEquals(15, integerField.get());
+		// typing beyond the maximum is rejected silently
+		document.insertString(2, "0", null);
+		assertEquals(15, integerField.get());
+		// a longer edit or setting a value outside the range throws
+		assertThrows(IllegalArgumentException.class, () -> integerField.setText("150"));
+		assertThrows(IllegalArgumentException.class, () -> integerField.set(5));
 		assertThrows(IllegalArgumentException.class, () -> integerField.set(101));
+		assertEquals(15, integerField.get());
 
-		NumberField<Integer> silentField = NumberField.builder()
-						.numberClass(Integer.class)
-						.value(10)
-						.range(0, 100)
-						.silentValidation(true)
+		NumberField<Double> doubleField = NumberField.builder()
+						.numberClass(Double.class)
+						.decimalSeparator('.')
+						.groupingSeparator(',')
+						.range(0.5, 1)
 						.build();
-		silentField.set(50);
-		assertEquals(50, silentField.get());
-		silentField.set(110);
-		assertEquals(50, silentField.get());
+		NumberDocument<Double> doubleDocument = doubleField.document();
+		doubleDocument.insertString(0, "0", null);
+		doubleDocument.insertString(1, ".", null);
+		doubleDocument.insertString(2, "7", null);
+		assertEquals(0.7, doubleField.get());
+
+		NumberField<Integer> negativeField = NumberField.builder()
+						.numberClass(Integer.class)
+						.range(-100, -10)
+						.build();
+		NumberDocument<Integer> negativeDocument = negativeField.document();
+		negativeDocument.insertString(0, "-", null);
+		negativeDocument.insertString(1, "5", null);
+		negativeDocument.insertString(2, "0", null);
+		assertEquals(-50, negativeField.get());
+		// a positive value can not become valid
+		negativeField.setText("");
+		negativeDocument.insertString(0, "5", null);
+		assertEquals("", negativeField.getText());
 	}
 }
