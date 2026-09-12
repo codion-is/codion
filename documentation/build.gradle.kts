@@ -404,8 +404,34 @@ tasks.register<Copy>("copyLlmsTxt") {
     into("../../codion-pages")
 }
 
+private val versionedCodion = Regex("codion[^\\n]*\\d+\\.\\d+\\.\\d+", RegexOption.IGNORE_CASE)
+
+tasks.register("verifyMaterials") {
+    group = "documentation"
+    description = "Verifies that the codion-materials skill hardcodes no Codion version"
+
+    val skillDir = file("../../codion-materials/skills")
+    val codionVersion = project.version.toString()
+    doLast {
+        // the skill always describes the release setup.sh pins, a version in it can only go stale
+        val versioned = skillDir.walkTopDown()
+            .filter { it.isFile && it.extension == "md" }
+            .flatMap { file ->
+                file.readLines().asSequence()
+                    .withIndex()
+                    .filter { (_, line) -> line.contains(codionVersion) || versionedCodion.containsMatchIn(line) }
+                    .map { (index, line) -> file.name + ":" + (index + 1) + "  " + line.trim() }
+            }
+            .toList()
+        if (versioned.isNotEmpty()) {
+            throw GradleException("Codion versions in the skill, CODION_VERSION in setup.sh is the only one:\n" +
+                versioned.joinToString("\n"))
+        }
+    }
+}
+
 tasks.register<Copy>("updateMaterials") {
-    dependsOn("generateLlmsTxt")
+    dependsOn("generateLlmsTxt", "verifyMaterials")
     group = "documentation"
     description = "Updates manual.md in the codion-materials project"
     from(project.layout.buildDirectory.file("llms/llms-full.txt"))
