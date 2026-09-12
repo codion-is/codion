@@ -53,7 +53,15 @@ final class SwingMcpHttpServer {
 	/**
 	 * Tool specification for HTTP MCP.
 	 */
-	record HttpTool(String name, String description, String inputSchema, ToolHandler handler) {}
+	static final String SERVER_NAME = "codion-swing-mcp";
+	static final String PROTOCOL_VERSION = "2024-11-05";
+
+	record HttpTool(String name, String description, String inputSchema, ToolHandler handler) {
+
+		HttpTool(Tools.Tool tool, ToolHandler handler) {
+			this(tool.name(), tool.description(), tool.inputSchema(), handler);
+		}
+	}
 
 	/**
 	 * Simple tool handler that returns a result object.
@@ -172,7 +180,7 @@ final class SwingMcpHttpServer {
 			}
 
 			ObjectNode response = objectMapper.createObjectNode();
-			response.put("protocolVersion", "2024-11-05");
+			response.put("protocolVersion", PROTOCOL_VERSION);
 
 			ObjectNode serverInfo = response.putObject("serverInfo");
 			serverInfo.put("name", serverName);

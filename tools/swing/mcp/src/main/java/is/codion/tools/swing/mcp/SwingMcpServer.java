@@ -110,92 +110,14 @@ public final class SwingMcpServer {
 	 */
 	public static final PropertyValue<Integer> HTTP_PORT = integerValue("codion.tools.mcp.port", 8080);
 
-	// Tool names
-	static final String TYPE_TEXT = "type_text";
-	static final String KEY_COMBO = "key";
-	static final String INTERACTIONS = "interactions";
-	static final String CLEAR_FIELD = "clear_field";
-	static final String MODEL_STATE = "model_state";
-	static final String FOCUS_STATE = "focus_state";
-	static final String APP_SCREENSHOT = "app_screenshot";
-	static final String ACTIVE_WINDOW_SCREENSHOT = "active_window_screenshot";
-	static final String APP_WINDOW_BOUNDS = "app_window_bounds";
-	static final String FOCUS_WINDOW = "focus_window";
-
-	static final String TEXT = "text";
-	static final String FORMAT = "format";
-	static final String STRING = "string";
 	static final String PNG = "png";
-	static final String IMAGE_FORMAT = "Image format: 'png' or 'jpg' (default: 'png')";
-
-	// Schema constants
-	static final String INPUT_SCHEMA = "{\"type\": \"object\", \"properties\": {}}";
 
 	private static final String WIDTH = "width";
 	private static final String HEIGHT = "height";
 	private static final String IMAGE = "image";
-	private static final String CODION_SWING_MCP = "codion-swing-mcp";
 	private static final String SERVER_STARTUP_INFO = "Started MCP HTTP server for Swing application";
 	private static final String SERVER_STOPPED_INFO = "Stopped MCP server";
 	private static final String NARRATOR_NOT_AVAILABLE = "Narrator not available";
-	private static final String KEY_SCHEMA = """
-					{
-						"type": "object",
-						"properties": {
-							"combo": {
-								"type": "string",
-								"description": "Key combination in AWT keystroke format. Examples: 'ENTER', 'shift ENTER', 'TAB', 'ctrl S', 'ctrl alt LEFT', 'shift TAB', 'alt F4', 'UP', 'DOWN', 'typed a', 'F5'"
-							},
-							"repeat": {
-								"type": "integer",
-								"description": "Number of times to repeat the keystroke (default: 1)"
-							},
-							"description": {
-								"type": "string",
-								"description": "Optional description of the action associated with this keystroke"
-							}
-						},
-						"required": ["combo"]
-					}
-					""";
-	private static final String INTERACTIONS_SCHEMA = """
-					{
-						"type": "object",
-						"properties": {
-							"interactions": {
-								"type": "array",
-								"description": "Ordered interactions to run in one batch, e.g. to fill a whole form. Each item has either 'key' (an AWT keystroke, optionally repeated) or 'text' (to type).",
-								"items": {
-									"type": "object",
-									"properties": {
-										"key": {
-											"type": "string",
-											"description": "Key combination in AWT keystroke format, e.g. 'ENTER', 'ctrl S', 'TAB', 'alt A'"
-										},
-										"text": {
-											"type": "string",
-											"description": "Text to type into the currently focused field"
-										},
-										"repeat": {
-											"type": "integer",
-											"description": "Number of times to repeat 'key' (default: 1)"
-										},
-										"wait": {
-											"type": "integer",
-											"description": "Milliseconds to wait before the next step, to let asynchronous application work (a table refresh, master-detail selection) settle, e.g. after an insert or navigation"
-										},
-										"description": {
-											"type": "string",
-											"description": "Optional description of the step"
-										}
-									}
-								}
-							}
-						},
-						"required": ["interactions"]
-					}
-					""";
-
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private final Supplier<Window> applicationWindow;
@@ -294,7 +216,7 @@ public final class SwingMcpServer {
 	}
 
 	private Interaction execute(Map<String, Object> step) {
-		Object text = step.get(TEXT);
+		Object text = step.get(Tools.TEXT);
 		if (text != null) {
 			return controller.type((String) text);
 		}
@@ -557,7 +479,7 @@ public final class SwingMcpServer {
 	}
 
 	private void startHttpServer() throws IOException {
-		httpServer = new SwingMcpHttpServer(HTTP_PORT.getOrThrow(), CODION_SWING_MCP, Version.versionString());
+		httpServer = new SwingMcpHttpServer(HTTP_PORT.getOrThrow(), SwingMcpHttpServer.SERVER_NAME, Version.versionString());
 		registerHttpTools(httpServer);
 		httpServer.start();
 		LOG.info(SERVER_STARTUP_INFO);
@@ -566,52 +488,39 @@ public final class SwingMcpServer {
 	private void registerHttpTools(SwingMcpHttpServer httpServer) {
 		// Type text tool
 		httpServer.addTool(new HttpTool(
-						TYPE_TEXT, "Type text into the currently focused field. Returns the observed delivery " +
-						"(CONSUMED = a component received it, FELL_THROUGH = it did nothing, MISSED = it did not go through) " +
-						"and the receiving component.",
-						createSchema(TEXT, STRING, "The text to type"),
-						arguments -> interaction(type((String) arguments.get(TEXT)))
+						Tools.TYPE_TEXT,
+						arguments -> interaction(type((String) arguments.get(Tools.TEXT)))
 		));
 
 		// Key combination tool - handles all keyboard input
 		httpServer.addTool(new HttpTool(
-						KEY_COMBO, "Press a key combination using AWT KeyStroke format. Returns the observed delivery " +
-						"(CONSUMED = a component handled it, FELL_THROUGH = it did nothing, MISSED = it did not go through), " +
-						"the receiving component and the bound action, if any.",
-						KEY_SCHEMA,
+						Tools.KEY,
 						arguments -> interaction(key((String) arguments.get("combo"),
 										integerParam(arguments, "repeat", 1), (String) arguments.get("description")))
 		));
 
 		// Interactions batch tool - runs a whole flow in one round-trip, stopping at the first miss
 		httpServer.addTool(new HttpTool(
-						INTERACTIONS, "Run an ordered batch of interactions (e.g. fill a whole form) in a single call, " +
-						"stopping at the first that does not go through. Returns {ok:true, executed:n} on success, or " +
-						"{ok:false, failedAt:i, step, delivery, component} at the first MISSED step, localizing the failure. " +
-						"Use model_state afterwards to assert the resulting state.",
-						INTERACTIONS_SCHEMA,
-						arguments -> interactions((List<Map<String, Object>>) arguments.get(INTERACTIONS))
+						Tools.INTERACTIONS,
+						arguments -> interactions((List<Map<String, Object>>) arguments.get("interactions"))
 		));
 
 
 		// Application window screenshot tool
 		httpServer.addTool(new HttpTool(
-						APP_SCREENSHOT, "Take a screenshot of just the application window and return as base64",
-						createSchema(FORMAT, STRING, IMAGE_FORMAT + " (tip: use 'jpg' for better compression)"),
+						Tools.APP_SCREENSHOT,
 						arguments -> screenshotToBase64(arguments, takeApplicationScreenshot())
 		));
 
 		// Active window screenshot tool
 		httpServer.addTool(new HttpTool(
-						ACTIVE_WINDOW_SCREENSHOT, "Take a screenshot of the currently active window (dialog, popup, etc.) and return as base64",
-						createSchema(FORMAT, STRING, IMAGE_FORMAT + " (tip: use 'jpg' for better compression)"),
+						Tools.ACTIVE_WINDOW_SCREENSHOT,
 						arguments -> screenshotToBase64(arguments, takeActiveWindowScreenshot())
 		));
 
 		// Application window bounds tool
 		httpServer.addTool(new HttpTool(
-						APP_WINDOW_BOUNDS, "Get the application window bounds (x, y, width, height)",
-						INPUT_SCHEMA,
+						Tools.APP_WINDOW_BOUNDS,
 						arguments -> {
 							Rectangle bounds = getApplicationWindowBounds();
 
@@ -625,8 +534,7 @@ public final class SwingMcpServer {
 
 		// Focus application window tool
 		httpServer.addTool(new HttpTool(
-						FOCUS_WINDOW, "Bring the application window to front and focus it",
-						INPUT_SCHEMA,
+						Tools.FOCUS_WINDOW,
 						arguments -> {
 							focusWindow();
 
@@ -636,8 +544,7 @@ public final class SwingMcpServer {
 
 		// Clear field tool
 		httpServer.addTool(new HttpTool(
-						CLEAR_FIELD, "Clear the current field by selecting all and deleting",
-						INPUT_SCHEMA,
+						Tools.CLEAR_FIELD,
 						arguments -> {
 							clearField();
 
@@ -647,20 +554,13 @@ public final class SwingMcpServer {
 
 		// Model state tool - reads the edit model behind the focused component (cheap text, no screenshot)
 		httpServer.addTool(new HttpTool(
-						MODEL_STATE, "Read the state of the edit model behind the focused component: per-attribute " +
-						"value, valid, modified and validation message, plus entity-level exists/modified/valid. " +
-						"Cheap structured feedback for verifying state after edits, instead of a screenshot.",
-						INPUT_SCHEMA,
+						Tools.MODEL_STATE,
 						arguments -> modelState()
 		));
 
 		// Focus state tool - what has the focus and what would get it back (cheap text, no screenshot)
 		httpServer.addTool(new HttpTool(
-						FOCUS_STATE, "Read the focus state without stealing the focus: the focus owner and focused window, " +
-						"plus for each showing window the focus owner it remembers and the component its focus traversal " +
-						"policy falls back to, with whether that one is showing, a fallback which is not showing leaves the " +
-						"window without a focus owner. Note that the focus owner is null while another application is active.",
-						INPUT_SCHEMA,
+						Tools.FOCUS_STATE,
 						arguments -> focusState()
 		));
 
@@ -669,9 +569,9 @@ public final class SwingMcpServer {
 			// Narrate tool
 			httpServer.addTool(new HttpTool(
 							"narrate", "Add narration text to the narrator window",
-							createSchema(TEXT, STRING, "The narration text to display"),
+							Tools.createSchema(Tools.TEXT, Tools.STRING, "The narration text to display"),
 							arguments -> {
-								String text = (String) arguments.get(TEXT);
+								String text = (String) arguments.get(Tools.TEXT);
 								if (narrate(text)) {
 									return "Narration added successfully";
 								}
@@ -683,7 +583,7 @@ public final class SwingMcpServer {
 			// Clear narration tool
 			httpServer.addTool(new HttpTool(
 							"clear_narration", "Clear all narration text from the narrator window",
-							INPUT_SCHEMA,
+							Tools.INPUT_SCHEMA,
 							arguments -> {
 								if (clearNarration()) {
 									return "Narration cleared successfully";
@@ -696,7 +596,7 @@ public final class SwingMcpServer {
 			// Clear keystrokes tool
 			httpServer.addTool(new HttpTool(
 							"clear_keystrokes", "Clear the keystroke history from the narrator window",
-							INPUT_SCHEMA,
+							Tools.INPUT_SCHEMA,
 							arguments -> {
 								if (clearKeyStrokes()) {
 									return "Keystrokes cleared successfully";
@@ -724,7 +624,7 @@ public final class SwingMcpServer {
 
 	private static Map<String, Object> screenshotToBase64(Map<String, Object> arguments, BufferedImage screenshot) {
 		return handleImageOperation(() -> {
-			String format = (String) arguments.getOrDefault(FORMAT, PNG);
+			String format = (String) arguments.getOrDefault(Tools.FORMAT, PNG);
 			if ("jpg".equalsIgnoreCase(format)) {
 				format = "jpeg";
 			}
@@ -734,7 +634,7 @@ public final class SwingMcpServer {
 							IMAGE, base64,
 							WIDTH, screenshot.getWidth(),
 							HEIGHT, screenshot.getHeight(),
-							FORMAT, format);
+							Tools.FORMAT, format);
 		});
 	}
 
@@ -1077,20 +977,6 @@ public final class SwingMcpServer {
 	}
 
 	// Helper methods for HTTP tool creation
-	static String createSchema(String propName, String propType, String propDesc) {
-		return String.format("""
-						{
-							"type": "object",
-							"properties": {
-								"%s": {
-									"type": "%s",
-									"description": "%s"
-								}
-							},
-							"required": ["%s"]
-						}
-						""", propName, propType, propDesc, propName);
-	}
 
 	static String createTwoPropertySchema(String prop1Name, String prop1Type, String prop1Desc,
 																				String prop2Name, String prop2Type, String prop2Desc) {
