@@ -25,7 +25,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.utilities.Text;
 import is.codion.common.utilities.item.Item;
 
 import org.jspecify.annotations.Nullable;
@@ -57,7 +56,6 @@ import static java.util.stream.Collectors.toMap;
 final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
-	static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 	static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
 
 	private final DefaultComboBoxSelection selection;
@@ -819,32 +817,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public int compare(T o1, T o2) {
 			return 0;
-		}
-	}
-
-	private static final class DefaultComparator<T> implements Comparator<T> {
-
-		private final Comparator<T> collator = Text.collator();
-
-		@Override
-		public int compare(T o1, T o2) {
-			if (o1 == null && o2 == null) {
-				return 0;
-			}
-			if (o1 == null) {
-				return -1;
-			}
-			if (o2 == null) {
-				return 1;
-			}
-			if (o1 instanceof String && o2 instanceof String) {
-				return collator.compare(o1, o2);
-			}
-			if (o1 instanceof Comparable && o2 instanceof Comparable) {
-				return ((Comparable<T>) o1).compareTo(o2);
-			}
-
-			return collator.compare(o1, o2);
 		}
 	}
 
