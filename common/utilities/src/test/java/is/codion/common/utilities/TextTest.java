@@ -20,6 +20,7 @@ package is.codion.common.utilities;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -73,6 +74,31 @@ public final class TextTest {
 		assertEquals("hello", Text.leftPad(string, 5, '*'));
 		assertEquals("***hello", Text.leftPad(string, 8, '*'));
 		assertEquals("hello***", Text.rightPad(string, 8, '*'));
+	}
+
+	@Test
+	void comparator() {
+		Comparator<Object> comparator = Text.comparator();
+		//strings collated, String.compareTo would place the lower case and the accented ones after Z
+		List<Object> strings = new ArrayList<>(asList("Zoe", "Ása", "Björn", "arnar"));
+		strings.sort(comparator);
+		assertEquals(asList("arnar", "Ása", "Björn", "Zoe"), strings);
+
+		//other comparables compare naturally
+		List<Object> integers = new ArrayList<>(asList(10, 2, 1));
+		integers.sort(comparator);
+		assertEquals(asList(1, 2, 10), integers);
+
+		//the rest by their string representation, null included
+		Object object = new Object() {
+			@Override
+			public String toString() {
+				return "b";
+			}
+		};
+		assertTrue(comparator.compare(object, "a") > 0);
+		assertTrue(comparator.compare(null, "a") < 0);
+		assertEquals(0, comparator.compare(null, null));
 	}
 
 	@Test

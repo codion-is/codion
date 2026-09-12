@@ -57,6 +57,10 @@ public final class Text {
 	public static final PropertyValue<String> COLLATOR_LOCALE =
 					stringValue("codion.collator.locale", Locale.getDefault().toLanguageTag());
 
+	private static final class ComparatorHolder {
+		private static final Comparator<?> INSTANCE = new DefaultComparator<>();
+	}
+
 	private static final class SpaceAwareComparatorHolder {
 		// forLanguageTag rather than the Locale constructor, which takes a language alone and so drops the country -
 		// and zh-TW collates by stroke where zh-CN collates by pinyin. It also predates the constructor's deprecation
@@ -91,6 +95,19 @@ public final class Text {
 	 */
 	public static <T> Comparator<T> collator() {
 		return (Comparator<T>) SpaceAwareComparatorHolder.INSTANCE;
+	}
+
+	/**
+	 * Returns a Comparator comparing strings with the collator for the {@link #COLLATOR_LOCALE} locale,
+	 * other {@link Comparable} instances naturally and the rest by their string representation.
+	 * <p>{@link String#compareTo(String)} orders by code point, which puts every accented character after Z
+	 * and every lower case letter after every upper case one, hence the collator for strings.
+	 * @param <T> the type of the objects to compare
+	 * @return a comparator collating strings, comparing other comparables naturally
+	 * @see #collator()
+	 */
+	public static <T> Comparator<T> comparator() {
+		return (Comparator<T>) ComparatorHolder.INSTANCE;
 	}
 
 	/**
@@ -187,6 +204,26 @@ public final class Text {
 		}
 
 		return false;
+	}
+
+	private static final class DefaultComparator<T> implements Comparator<T>, Serializable {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		private final Comparator<T> collator = collator();
+
+		@Override
+		public int compare(T o1, T o2) {
+			if (o1 instanceof String && o2 instanceof String) {
+				return collator.compare(o1, o2);
+			}
+			if (o1 instanceof Comparable && o2 instanceof Comparable) {
+				return ((Comparable<T>) o1).compareTo(o2);
+			}
+
+			return collator.compare(o1, o2);
+		}
 	}
 
 	private static final class SpaceAwareComparator<T> implements Comparator<T>, Serializable {

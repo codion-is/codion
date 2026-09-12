@@ -99,8 +99,6 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  */
 public final class MultiInput<C extends JComponent, T> extends JPanel {
 
-	static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
-
 	private static final int MAXIMUM_VISIBLE_ROWS = 8;
 	private static final int MINIMUM_VISIBLE_ROWS = 3;
 	private static final String WIDEST_COUNT = "00";
@@ -495,7 +493,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 
 		private final ComponentValue<C, T> componentValue;
 
-		private @Nullable Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
+		private @Nullable Comparator<T> comparator = Text.comparator();
 		private @Nullable Format format;
 		private @Nullable String caption;
 		private @Nullable Boolean addOnEnter;
@@ -583,23 +581,6 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 			field.members.items().set(value == null ? emptySet() : value);
 			// otherwise a value pending in the component would remain, and be part of the value on the next change
 			field.componentValue.clear();
-		}
-	}
-
-	private static final class DefaultComparator<T> implements Comparator<T> {
-
-		private final Comparator<T> collator = Text.collator();
-
-		@Override
-		public int compare(T o1, T o2) {
-			if (o1 instanceof String && o2 instanceof String) {
-				return collator.compare(o1, o2);
-			}
-			if (o1 instanceof Comparable && o2 instanceof Comparable) {
-				return ((Comparable<T>) o1).compareTo(o2);
-			}
-
-			return collator.compare(o1, o2);
 		}
 	}
 }

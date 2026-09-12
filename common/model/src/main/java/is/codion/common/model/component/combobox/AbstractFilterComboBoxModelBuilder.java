@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.component.combobox;
 
+import is.codion.common.utilities.Text;
+
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	final Collection<Consumer<T>> onSelectedItem = new ArrayList<>(1);
 
 	Predicate<T> validator = new ValidPredicate<>();
-	Comparator<T> comparator = (Comparator<T>) DefaultFilterComboBoxModel.DEFAULT_COMPARATOR;
+	Comparator<T> comparator = Text.comparator();
 	Function<Object, T> translator = (Function<Object, T>) DefaultFilterComboBoxModel.DEFAULT_SELECTED_ITEM_TRANSLATOR;
 	@Nullable Consumer<Exception> onRefreshException;
 	boolean filterSelected;
