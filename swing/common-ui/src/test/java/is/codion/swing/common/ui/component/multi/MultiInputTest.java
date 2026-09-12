@@ -95,6 +95,24 @@ public final class MultiInputTest {
 	}
 
 	@Test
+	void membersAreSortedStringsCollated() {
+		Set<String> names = new LinkedHashSet<>(asList("Zoe", "Ása", "Björn", "arnar"));
+		ComponentValue<MultiInput<JTextField, String>, Set<String>> value = Components.multiInput()
+						.component(Components.stringField().buildValue())
+						.buildValue();
+		value.set(names);
+		// String.compareTo would place the lower case and the accented ones after Z
+		assertEquals(asList("arnar", "Ása", "Björn", "Zoe"), new ArrayList<>(value.component().members()));
+
+		ComponentValue<MultiInput<JTextField, String>, Set<String>> unsorted = Components.multiInput()
+						.component(Components.stringField().buildValue())
+						.comparator(null)
+						.buildValue();
+		unsorted.set(names);
+		assertEquals(new ArrayList<>(names), new ArrayList<>(unsorted.component().members()));
+	}
+
+	@Test
 	void linkedToAValueSet() {
 		ValueSet<String> valueSet = ValueSet.valueSet();
 		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
