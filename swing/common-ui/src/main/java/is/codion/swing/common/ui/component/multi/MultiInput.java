@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.multi;
 
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.common.utilities.Text;
 import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
@@ -59,6 +60,7 @@ import java.awt.event.WindowEvent;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -88,14 +90,16 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  * <li>In the dialog {@link KeyEvent#VK_DELETE} removes the selected values, the Clear button clears the set, and
  * {@link KeyEvent#VK_ESCAPE} or {@link KeyEvent#VK_ENTER} closes it.
  * </ul>
- * The value is the set collected plus whatever the wrapped component holds, in the order added, so a single value
- * typed into the component counts without being added. Setting the value sets the collected values and clears
- * the wrapped component. The wrapped component keeps every key of its own.
+ * The value is the set collected, sorted, see {@link Builder#comparator(Comparator)}, plus whatever the wrapped
+ * component holds, last, so a single value typed into the component counts without being added. Setting the value
+ * sets the collected values and clears the wrapped component. The wrapped component keeps every key of its own.
  * @param <C> the wrapped component type
  * @param <T> the value type
  * @see Components#multiInput()
  */
 public final class MultiInput<C extends JComponent, T> extends JPanel {
+
+	static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
 	private static final int MAXIMUM_VISIBLE_ROWS = 8;
 	private static final int MINIMUM_VISIBLE_ROWS = 3;
@@ -103,7 +107,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	private static final int TITLE_MARGIN = 24;
 
 	private final ComponentValue<C, T> componentValue;
-	private final SwingFilterListModel<T> members = SwingFilterListModel.builder().<T>items().build();
+	private final SwingFilterListModel<T> members;
 	private final @Nullable Format format;
 	private final @Nullable String caption;
 	private final State enabled = State.state(true);
@@ -124,6 +128,10 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		add(component, BorderLayout.CENTER);
 		add(membersButton, BorderLayout.EAST);
 		addFocusListener(new InputFocusAdapter(component));
+		members = SwingFilterListModel.builder()
+						.<T>items()
+						.comparator(builder.comparator)
+						.build();
 		members.items().included().addListener(this::onMembersChanged);
 		onMembersChanged();
 		bindKeys(component, builder.addOnEnter == null ? !(component instanceof JComboBox) : builder.addOnEnter);
@@ -149,6 +157,17 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	}
 
 	@Override
+	public void setName(String name) {
+		super.setName(name);
+		componentValue.component().setName(name);
+	}
+
+	@Override
+	public void requestFocus() {
+		componentValue.component().requestFocus();
+	}
+
+	@Override
 	public boolean requestFocusInWindow() {
 		return componentValue.component().requestFocusInWindow();
 	}
@@ -156,6 +175,12 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	@Override
 	public void updateUI() {
 		super.updateUI();
+		if (componentValue != null) {
+			componentValue.component().updateUI();
+		}
+		if (membersButton != null) {
+			membersButton.updateUI();
+		}
 		if (dialog != null) {
 			updateComponentTreeUI(dialog);
 		}
@@ -193,6 +218,14 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		 * @return this builder instance
 		 */
 		Builder<C, T> caption(@Nullable String caption);
+
+		/**
+		 * <p>The default comparator collates strings according to {@link Text#COLLATOR_LOCALE}, compares other
+		 * {@link Comparable} values naturally and the rest by their string representation.
+		 * @param comparator the comparator to use when sorting member items, null for insertion order
+		 * @return this builder instance
+		 */
+		Builder<C, T> comparator(@Nullable Comparator<T> comparator);
 
 		/**
 		 * Whether {@link KeyEvent#VK_ENTER} adds the wrapped component's value while it holds one, leaving the key
@@ -239,6 +272,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 										.keyCode(VK_DELETE)
 										.action(Control.action(e ->
 														removeSelected((FilterList<T>) e.getSource()))))
+						.name("MultiInput:memberList" + caption())
 						.build();
 	}
 
@@ -253,6 +287,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 										.build())
 						.margin(new Insets(0, 2, 0, 2))
 						.preferredSize(new Dimension(width, height))
+						.name("MultiInput:membersButton" + caption())
 						.build();
 	}
 
@@ -321,7 +356,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 																		.command(this::clearMembers)
 																		.caption(clear())
 																		.mnemonic(clearMnemonic())
-																		.build())))
+																		.build())
+														.name("MultiInput:clearMembers" + caption())))
 						.border(caption == null ? null : createTitledBorder(caption))
 						.build();
 		Point location = getLocationOnScreen();
@@ -345,6 +381,10 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.onShown(this::onMembersShown)
 						.onClosed(this::onMembersClosed)
 						.show();
+	}
+
+	private String caption() {
+		return caption != null ? ":" + caption : "";
 	}
 
 	private Dimension dialogSize(JComponent content) {
@@ -455,6 +495,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 
 		private final ComponentValue<C, T> componentValue;
 
+		private @Nullable Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private @Nullable Format format;
 		private @Nullable String caption;
 		private @Nullable Boolean addOnEnter;
@@ -472,6 +513,12 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		@Override
 		public Builder<C, T> caption(@Nullable String caption) {
 			this.caption = caption;
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> comparator(@Nullable Comparator<T> comparator) {
+			this.comparator = comparator;
 			return this;
 		}
 
@@ -536,6 +583,23 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 			field.members.items().set(value == null ? emptySet() : value);
 			// otherwise a value pending in the component would remain, and be part of the value on the next change
 			field.componentValue.clear();
+		}
+	}
+
+	private static final class DefaultComparator<T> implements Comparator<T> {
+
+		private final Comparator<T> collator = Text.collator();
+
+		@Override
+		public int compare(T o1, T o2) {
+			if (o1 instanceof String && o2 instanceof String) {
+				return collator.compare(o1, o2);
+			}
+			if (o1 instanceof Comparable && o2 instanceof Comparable) {
+				return ((Comparable<T>) o1).compareTo(o2);
+			}
+
+			return collator.compare(o1, o2);
 		}
 	}
 }
