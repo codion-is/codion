@@ -37,7 +37,7 @@ import is.codion.swing.common.ui.component.button.ToolBarBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
-import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
+import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlexibleGridLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlowLayoutPanelBuilder;
@@ -176,11 +176,11 @@ public final class Components {
 	}
 
 	/**
-	 * Creates a {@link MultiValueInput}, collecting a set of values through a wrapped component.
-	 * @return a new {@link MultiValueInput.Builder.ComponentStep}
+	 * Creates a {@link MultiInput}, collecting a set of values through a wrapped component.
+	 * @return a new {@link MultiInput.Builder.ComponentStep}
 	 */
-	public static MultiValueInput.Builder.ComponentStep multiValueInput() {
-		return MultiValueInput.builder();
+	public static MultiInput.Builder.ComponentStep multiInput() {
+		return MultiInput.builder();
 	}
 
 	/**

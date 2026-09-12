@@ -29,7 +29,7 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.list.FilterList;
-import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
+import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.panel.InputPanelLayout;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -1046,10 +1046,10 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void multiValueInput() {
+	void multiInput() {
 		Set<String> items = new HashSet<>(asList("one", "two", "three"));
-		ComponentValue<MultiValueInput<JTextField, String>, Set<String>> componentValue =
-						Components.multiValueInput()
+		ComponentValue<MultiInput<JTextField, String>, Set<String>> componentValue =
+						Components.multiInput()
 										.component(Components.stringField().buildValue())
 										.value(items)
 										.buildValue();

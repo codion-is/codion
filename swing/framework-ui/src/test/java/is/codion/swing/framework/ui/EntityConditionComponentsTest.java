@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityConditions;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
+import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.framework.model.SwingEntityConditions;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -70,7 +70,7 @@ public final class EntityConditionComponentsTest {
 		onEventDispatchThread(() -> {
 			// search models for both operands, Department being a small dataset SwingEntityConditions would use combo boxes
 			ForeignKeyConditionModel condition = departmentCondition(new EntityConditions(Employee.TYPE, CONNECTION));
-			MultiValueInput<?, ?> input = (MultiValueInput<?, ?>) components.in(condition);
+			MultiInput<?, ?> input = (MultiInput<?, ?>) components.in(condition);
 			EntitySearchField searchField = (EntitySearchField) input.component();
 			assertSame(condition.inSearchModel().orElseThrow(), searchField.model());
 
@@ -109,7 +109,7 @@ public final class EntityConditionComponentsTest {
 		// off the event dispatch thread, a refresh on it being asynchronous
 		condition.inComboBoxModel().orElseThrow().items().refresh();
 		onEventDispatchThread(() -> {
-			MultiValueInput<?, ?> input = (MultiValueInput<?, ?>) components.in(condition);
+			MultiInput<?, ?> input = (MultiInput<?, ?>) components.in(condition);
 			EntityComboBox comboBox = (EntityComboBox) input.component();
 			assertSame(condition.inComboBoxModel().orElseThrow(), comboBox.model());
 
@@ -189,7 +189,7 @@ public final class EntityConditionComponentsTest {
 	}
 
 	/**
-	 * Performs the Insert key binding the {@link MultiValueInput} installs on the component it wraps
+	 * Performs the Insert key binding the {@link MultiInput} installs on the component it wraps
 	 */
 	private static void insert(JComponent component) {
 		Object actionKey = component.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

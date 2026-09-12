@@ -20,4 +20,4 @@
  * <p>A field collecting a set of values through a wrapped component.
  */
 @org.jspecify.annotations.NullMarked
-package is.codion.swing.common.ui.component.multivalue;
+package is.codion.swing.common.ui.component.multi;

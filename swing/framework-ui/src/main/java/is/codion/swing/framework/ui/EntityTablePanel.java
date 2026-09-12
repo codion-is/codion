@@ -52,7 +52,7 @@ import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
+import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
@@ -1524,9 +1524,9 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void enableConditionPanelRefreshOnEnter(JComponent component) {
-		if (component instanceof MultiValueInput) {
+		if (component instanceof MultiInput) {
 			// The in operand: the component the values are added through is the one Enter is pressed in
-			component = ((MultiValueInput<?, ?>) component).component();
+			component = ((MultiInput<?, ?>) component).component();
 		}
 		if (component instanceof JComboBox) {
 			new ComboBoxEnterPressedAction((JComboBox<?>) component, conditionRefreshControl);
