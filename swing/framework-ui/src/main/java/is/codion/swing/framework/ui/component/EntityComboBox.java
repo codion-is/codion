@@ -34,6 +34,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -120,6 +121,24 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 */
 	public Optional<CommandControl> editControl() {
 		return controlMap.control(EDIT).optional();
+	}
+
+	@Override
+	public void setName(String name) {
+		super.setName(name);
+		getEditor().getEditorComponent().setName(name);
+	}
+
+	/**
+	 * Overridden in order to name the new editor component, the editor being replaced
+	 * during a look and feel change, leaving the new one without a name
+	 */
+	@Override
+	public void setEditor(@Nullable ComboBoxEditor editor) {
+		super.setEditor(editor);
+		if (editor != null) {
+			editor.getEditorComponent().setName(getName());
+		}
 	}
 
 	/**

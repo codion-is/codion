@@ -18,6 +18,9 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
+import org.jspecify.annotations.Nullable;
+
+import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import java.awt.event.FocusListener;
@@ -26,6 +29,24 @@ final class FocusableComboBox<T> extends JComboBox<T> {
 
 	FocusableComboBox(ComboBoxModel<T> model) {
 		super(model);
+	}
+
+	@Override
+	public void setName(String name) {
+		super.setName(name);
+		getEditor().getEditorComponent().setName(name);
+	}
+
+	/**
+	 * Overridden in order to name the new editor component, the editor being replaced
+	 * during a look and feel change, leaving the new one without a name
+	 */
+	@Override
+	public void setEditor(@Nullable ComboBoxEditor editor) {
+		super.setEditor(editor);
+		if (editor != null) {
+			editor.getEditorComponent().setName(getName());
+		}
 	}
 
 	/**
