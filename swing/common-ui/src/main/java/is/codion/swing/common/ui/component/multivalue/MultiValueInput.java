@@ -91,17 +91,18 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  * The value is the set collected plus whatever the wrapped component holds, in the order added, so a single value
  * typed into the component counts without being added. Setting the value sets the collected values and clears
  * the wrapped component. The wrapped component keeps every key of its own.
+ * @param <C> the wrapped component type
  * @param <T> the value type
  * @see Components#multiValueInput()
  */
-public final class MultiValueInput<T> extends JPanel {
+public final class MultiValueInput<C extends JComponent, T> extends JPanel {
 
 	private static final int MAXIMUM_VISIBLE_ROWS = 8;
 	private static final int MINIMUM_VISIBLE_ROWS = 3;
 	private static final String WIDEST_COUNT = "00";
 	private static final int TITLE_MARGIN = 24;
 
-	private final ComponentValue<? extends JComponent, T> componentValue;
+	private final ComponentValue<C, T> componentValue;
 	private final SwingFilterListModel<T> members = SwingFilterListModel.builder().<T>items().build();
 	private final @Nullable Format format;
 	private final @Nullable String caption;
@@ -112,7 +113,7 @@ public final class MultiValueInput<T> extends JPanel {
 	private @Nullable JDialog dialog;
 	private @Nullable JList<T> list;
 
-	private MultiValueInput(DefaultBuilder<T> builder) {
+	private MultiValueInput(DefaultBuilder<C, T> builder) {
 		super(new BorderLayout());
 		this.componentValue = builder.componentValue;
 		this.format = builder.format;
@@ -131,7 +132,7 @@ public final class MultiValueInput<T> extends JPanel {
 	/**
 	 * @return the wrapped component, the one the values are added through
 	 */
-	public JComponent component() {
+	public C component() {
 		return componentValue.component();
 	}
 
@@ -176,21 +177,22 @@ public final class MultiValueInput<T> extends JPanel {
 
 	/**
 	 * Builds a {@link MultiValueInput}.
+	 * @param <C> the wrapped component type
 	 * @param <T> the value type
 	 */
-	public interface Builder<T> extends ComponentValueBuilder<MultiValueInput<T>, Set<T>, Builder<T>> {
+	public interface Builder<C extends JComponent, T> extends ComponentValueBuilder<MultiValueInput<C, T>, Set<T>, Builder<C, T>> {
 
 		/**
 		 * @param format formats a value for the dialog and the button's tool tip, null for {@link Object#toString()}
 		 * @return this builder instance
 		 */
-		Builder<T> format(@Nullable Format format);
+		Builder<C, T> format(@Nullable Format format);
 
 		/**
 		 * @param caption the caption of the border around the dialog's list, the caption of what is collected; null for none
 		 * @return this builder instance
 		 */
-		Builder<T> caption(@Nullable String caption);
+		Builder<C, T> caption(@Nullable String caption);
 
 		/**
 		 * Whether {@link KeyEvent#VK_ENTER} adds the wrapped component's value while it holds one, leaving the key
@@ -200,7 +202,7 @@ public final class MultiValueInput<T> extends JPanel {
 		 * @param addOnEnter true if Enter should add the value
 		 * @return this builder instance
 		 */
-		Builder<T> addOnEnter(boolean addOnEnter);
+		Builder<C, T> addOnEnter(boolean addOnEnter);
 
 		/**
 		 * Provides a {@link Builder}
@@ -209,10 +211,11 @@ public final class MultiValueInput<T> extends JPanel {
 
 			/**
 			 * @param component the component the values are added through
+			 * @param <C> the wrapped component type
 			 * @param <T> the value type
 			 * @return a {@link Builder}
 			 */
-			<T> Builder<T> component(ComponentValue<? extends JComponent, T> component);
+			<C extends JComponent, T> Builder<C, T> component(ComponentValue<C, T> component);
 		}
 	}
 
@@ -439,80 +442,80 @@ public final class MultiValueInput<T> extends JPanel {
 	private static final class DefaultComponentStep implements Builder.ComponentStep {
 
 		@Override
-		public <T> Builder<T> component(ComponentValue<? extends JComponent, T> component) {
+		public <C extends JComponent, T> Builder<C, T> component(ComponentValue<C, T> component) {
 			return new DefaultBuilder<>(requireNonNull(component));
 		}
 	}
 
-	private static final class DefaultBuilder<T>
-					extends AbstractComponentValueBuilder<MultiValueInput<T>, Set<T>, Builder<T>>
-					implements Builder<T> {
+	private static final class DefaultBuilder<C extends JComponent, T>
+					extends AbstractComponentValueBuilder<MultiValueInput<C, T>, Set<T>, Builder<C, T>>
+					implements Builder<C, T> {
 
 		private static final Builder.ComponentStep COMPONENT = new DefaultComponentStep();
 
-		private final ComponentValue<? extends JComponent, T> componentValue;
+		private final ComponentValue<C, T> componentValue;
 
 		private @Nullable Format format;
 		private @Nullable String caption;
 		private @Nullable Boolean addOnEnter;
 
-		private DefaultBuilder(ComponentValue<? extends JComponent, T> componentValue) {
+		private DefaultBuilder(ComponentValue<C, T> componentValue) {
 			this.componentValue = componentValue;
 		}
 
 		@Override
-		public Builder<T> format(@Nullable Format format) {
+		public Builder<C, T> format(@Nullable Format format) {
 			this.format = format;
 			return this;
 		}
 
 		@Override
-		public Builder<T> caption(@Nullable String caption) {
+		public Builder<C, T> caption(@Nullable String caption) {
 			this.caption = caption;
 			return this;
 		}
 
 		@Override
-		public Builder<T> addOnEnter(boolean addOnEnter) {
+		public Builder<C, T> addOnEnter(boolean addOnEnter) {
 			this.addOnEnter = addOnEnter;
 			return this;
 		}
 
 		@Override
-		protected MultiValueInput<T> createComponent() {
+		protected MultiValueInput<C, T> createComponent() {
 			return new MultiValueInput<>(this);
 		}
 
 		@Override
-		protected ComponentValue<MultiValueInput<T>, Set<T>> createValue(MultiValueInput<T> component) {
+		protected ComponentValue<MultiValueInput<C, T>, Set<T>> createValue(MultiValueInput<C, T> component) {
 			return new MultiValueInputValue<>(component);
 		}
 
 		@Override
-		protected void enable(TransferFocusOnEnter transferFocusOnEnter, MultiValueInput<T> component) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, MultiValueInput<C, T> component) {
 			transferFocusOnEnter.enable(component.component());
 			transferFocusOnEnter.enable(component.membersButton);
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, MultiValueInput<T> component, ObservableState valid, ObservableState warned) {
+		protected void enable(ValidationIndicator validationIndicator, MultiValueInput<C, T> component, ObservableState valid, ObservableState warned) {
 			validationIndicator.enable(component.component(), valid, warned);
 		}
 
 		@Override
-		protected void enable(ModifiedIndicator modifiedIndicator, MultiValueInput<T> component, ObservableState modified) {
+		protected void enable(ModifiedIndicator modifiedIndicator, MultiValueInput<C, T> component, ObservableState modified) {
 			modifiedIndicator.enable(component.component(), modified);
 		}
 
 		@Override
-		protected JComponent field(MultiValueInput<T> component) {
+		protected JComponent field(MultiValueInput<C, T> component) {
 			return component.component();
 		}
 	}
 
-	private static final class MultiValueInputValue<T> extends AbstractComponentValue<MultiValueInput<T>, Set<T>> {
+	private static final class MultiValueInputValue<C extends JComponent, T> extends AbstractComponentValue<MultiValueInput<C, T>, Set<T>> {
 
-		private MultiValueInputValue(MultiValueInput<T> field) {
+		private MultiValueInputValue(MultiValueInput<C, T> field) {
 			super(field, emptySet());
 			field.componentValue.addListener(this::notifyObserver);
 			field.members.items().included().addListener(this::notifyObserver);
@@ -520,7 +523,7 @@ public final class MultiValueInput<T> extends JPanel {
 
 		@Override
 		protected Set<T> getComponentValue() {
-			MultiValueInput<T> field = super.component();
+			MultiValueInput<C, T> field = super.component();
 			Set<T> values = new LinkedHashSet<>(field.members.items().included().get());
 			field.componentValue.optional().ifPresent(values::add);
 
@@ -529,7 +532,7 @@ public final class MultiValueInput<T> extends JPanel {
 
 		@Override
 		protected void setComponentValue(@Nullable Set<T> value) {
-			MultiValueInput<T> field = super.component();
+			MultiValueInput<C, T> field = super.component();
 			field.members.items().set(value == null ? emptySet() : value);
 			// otherwise a value pending in the component would remain, and be part of the value on the next change
 			field.componentValue.clear();

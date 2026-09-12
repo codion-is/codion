@@ -1526,7 +1526,7 @@ public class EntityTablePanel extends JPanel {
 	private void enableConditionPanelRefreshOnEnter(JComponent component) {
 		if (component instanceof MultiValueInput) {
 			// The in operand: the component the values are added through is the one Enter is pressed in
-			component = ((MultiValueInput<?>) component).component();
+			component = ((MultiValueInput<?, ?>) component).component();
 		}
 		if (component instanceof JComboBox) {
 			new ComboBoxEnterPressedAction((JComboBox<?>) component, conditionRefreshControl);

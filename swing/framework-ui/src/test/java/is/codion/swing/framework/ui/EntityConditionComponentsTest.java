@@ -70,7 +70,7 @@ public final class EntityConditionComponentsTest {
 		onEventDispatchThread(() -> {
 			// search models for both operands, Department being a small dataset SwingEntityConditions would use combo boxes
 			ForeignKeyConditionModel condition = departmentCondition(new EntityConditions(Employee.TYPE, CONNECTION));
-			MultiValueInput<?> input = (MultiValueInput<?>) components.in(condition);
+			MultiValueInput<?, ?> input = (MultiValueInput<?, ?>) components.in(condition);
 			EntitySearchField searchField = (EntitySearchField) input.component();
 			assertSame(condition.inSearchModel().orElseThrow(), searchField.model());
 
@@ -109,7 +109,7 @@ public final class EntityConditionComponentsTest {
 		// off the event dispatch thread, a refresh on it being asynchronous
 		condition.inComboBoxModel().orElseThrow().items().refresh();
 		onEventDispatchThread(() -> {
-			MultiValueInput<?> input = (MultiValueInput<?>) components.in(condition);
+			MultiValueInput<?, ?> input = (MultiValueInput<?, ?>) components.in(condition);
 			EntityComboBox comboBox = (EntityComboBox) input.component();
 			assertSame(condition.inComboBoxModel().orElseThrow(), comboBox.model());
 

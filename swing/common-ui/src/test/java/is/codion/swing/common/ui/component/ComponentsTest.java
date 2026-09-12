@@ -1048,7 +1048,7 @@ public final class ComponentsTest {
 	@Test
 	void multiValueInput() {
 		Set<String> items = new HashSet<>(asList("one", "two", "three"));
-		ComponentValue<MultiValueInput<String>, Set<String>> componentValue =
+		ComponentValue<MultiValueInput<JTextField, String>, Set<String>> componentValue =
 						Components.multiValueInput()
 										.component(Components.stringField().buildValue())
 										.value(items)
