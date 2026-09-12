@@ -11,7 +11,7 @@ It extends `HintTextField` and provides a search interface that triggers on ENTE
 `EntitySearchField` provides:
 
 * Text-based entity searching with automatic result handling
-* Single entity selection, several entities collected via a `MultiValueInput`
+* Single entity selection, several entities collected via a `MultiInput`
 * Customizable result selection UI (list, table, or custom)
 * Optional add/edit functionality for creating or modifying entities
 * Search progress indication (wait cursor or progress bar)
@@ -38,7 +38,7 @@ The search field operates as follows:
 
 === Collecting Entities
 
-To collect entities over several searches, wrap the search field in a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multivalue/MultiValueInput.html[MultiValueInput], as the table condition panel does for the IN operator of a foreign key condition.
+To collect entities over several searches, wrap the search field in a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multi/MultiInput.html[MultiInput], as the table condition panel does for the IN operator of a foreign key condition.
 The entity found is shown in the field and added with ENTER or INSERT, clearing the field for the next search.
 The button beside the field shows how many entities have been collected, and opens a list of them, where DELETE removes the selected ones.
 

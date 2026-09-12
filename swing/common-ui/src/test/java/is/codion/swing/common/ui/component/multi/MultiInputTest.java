@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2021 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui.component.multivalue;
+package is.codion.swing.common.ui.component.multi;
 
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
@@ -50,15 +50,15 @@ import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.JComponent.WHEN_FOCUSED;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class MultiValueInputTest {
+public final class MultiInputTest {
 
 	@Test
 	void valueIsTheMembersPlusThePendingValueInOrder() {
 		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
-		ComponentValue<MultiValueInput<JTextField, String>, Set<String>> value = Components.multiValueInput()
+		ComponentValue<MultiInput<JTextField, String>, Set<String>> value = Components.multiInput()
 						.component(stringValue)
 						.buildValue();
-		MultiValueInput<JTextField, String> field = value.component();
+		MultiInput<JTextField, String> field = value.component();
 		assertSame(stringValue.component(), field.component());
 		assertTrue(value.getOrThrow().isEmpty());
 
@@ -84,7 +84,7 @@ public final class MultiValueInputTest {
 	@Test
 	void settingTheValueSetsTheMembers() {
 		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
-		ComponentValue<MultiValueInput<JTextField, String>, Set<String>> value = Components.multiValueInput()
+		ComponentValue<MultiInput<JTextField, String>, Set<String>> value = Components.multiInput()
 						.component(stringValue)
 						.buildValue();
 		value.set(Set.of("a"));
@@ -98,7 +98,7 @@ public final class MultiValueInputTest {
 	void linkedToAValueSet() {
 		ValueSet<String> valueSet = ValueSet.valueSet();
 		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
-		MultiValueInput<JTextField, String> field = Components.multiValueInput()
+		MultiInput<JTextField, String> field = Components.multiInput()
 						.component(stringValue)
 						.link(valueSet)
 						.build();
@@ -113,7 +113,7 @@ public final class MultiValueInputTest {
 	void settingTheValueClearsThePendingValue() {
 		ValueSet<String> valueSet = ValueSet.valueSet();
 		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
-		MultiValueInput<JTextField, String> field = Components.multiValueInput()
+		MultiInput<JTextField, String> field = Components.multiInput()
 						.component(stringValue)
 						.link(valueSet)
 						.build();
@@ -135,7 +135,7 @@ public final class MultiValueInputTest {
 	@Test
 	void theDialogsListRemovesTheSelected() {
 		ValueSet<String> valueSet = ValueSet.valueSet();
-		MultiValueInput<JTextField, String> field = Components.multiValueInput()
+		MultiInput<JTextField, String> field = Components.multiInput()
 						.component(Components.stringField().buildValue())
 						.link(valueSet)
 						.build();
@@ -153,7 +153,7 @@ public final class MultiValueInputTest {
 	@Test
 	void enterAddsWhileTheComponentHoldsAValueAndIsLeftAloneOtherwise() {
 		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
-		MultiValueInput<JTextField, String> field = Components.multiValueInput()
+		MultiInput<JTextField, String> field = Components.multiInput()
 						.component(stringValue)
 						.build();
 		assertFalse(enter(field.component()));
@@ -163,7 +163,7 @@ public final class MultiValueInputTest {
 		assertTrue(stringValue.isNull());
 		assertFalse(enter(field.component()));
 
-		MultiValueInput<JTextField, String> insertOnly = Components.multiValueInput()
+		MultiInput<JTextField, String> insertOnly = Components.multiInput()
 						.component(Components.stringField().value("one").buildValue())
 						.addOnEnter(false)
 						.build();
@@ -183,7 +183,7 @@ public final class MultiValueInputTest {
 				}
 			}
 		});
-		MultiValueInput<JTextField, String> field = Components.multiValueInput()
+		MultiInput<JTextField, String> field = Components.multiInput()
 						.component(stringValue)
 						.build();
 		stringValue.set("a");
@@ -200,7 +200,7 @@ public final class MultiValueInputTest {
 		ComponentValue<JComboBox<String>, String> comboBoxValue = Components.comboBox()
 						.model(model)
 						.buildValue();
-		MultiValueInput<JComboBox<String>, String> field = Components.multiValueInput()
+		MultiInput<JComboBox<String>, String> field = Components.multiInput()
 						.component(comboBoxValue)
 						.build();
 		comboBoxValue.set("one");
@@ -214,7 +214,7 @@ public final class MultiValueInputTest {
 	void keyEventsAndListenersLandOnTheWrappedComponent() {
 		AtomicBoolean fired = new AtomicBoolean();
 		FocusListener focusListener = new FocusAdapter() {};
-		MultiValueInput<JTextField, String> field = Components.multiValueInput()
+		MultiInput<JTextField, String> field = Components.multiInput()
 						.component(Components.stringField().buildValue())
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_F5)

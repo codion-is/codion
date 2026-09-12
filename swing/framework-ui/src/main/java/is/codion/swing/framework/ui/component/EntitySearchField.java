@@ -128,7 +128,7 @@ import static javax.swing.BorderFactory.createTitledBorder;
  * condition then that entity is selected, otherwise a component displaying the entities
  * fitting the condition is shown in a dialog, for selecting one of them.
  * <p>For collecting multiple entities, wrap the field in a
- * {@link is.codion.swing.common.ui.component.multivalue.MultiValueInput}.
+ * {@link is.codion.swing.common.ui.component.multi.MultiInput}.
  * {@link ListSelector} is the default {@link Selector}.
  * Use {@link EntitySearchField#builder()} for a builder instance.
  * @see EntitySearchModel

@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
+import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -71,7 +71,7 @@ final class FrameworkUIDemo {
 
 	void multiValueSearchField(ForeignKeyConditionModel customerCondition) {
 		// tag::multiValueSearchField[]
-		MultiValueInput<EntitySearchField, Entity> customers = Components.multiValueInput()
+		MultiInput<EntitySearchField, Entity> customers = Components.multiInput()
 						.component(EntitySearchField.builder()
 										.model(customerCondition.inSearchModel().orElseThrow())
 										.buildValue())

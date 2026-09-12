@@ -29,7 +29,7 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 
 import javax.swing.JComponent;
 
-import static is.codion.swing.common.ui.component.Components.multiValueInput;
+import static is.codion.swing.common.ui.component.Components.multiInput;
 
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
@@ -82,7 +82,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 			ForeignKeyConditionModel condition = (ForeignKeyConditionModel) conditionModel;
 
 			// A track found is added with Enter, clearing the search field for the next
-			return multiValueInput()
+			return multiInput()
 							.component(EntitySearchField.builder()
 											.model(condition.inSearchModel().orElseThrow())
 											.selector(new TrackSelector())

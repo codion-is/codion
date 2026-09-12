@@ -456,7 +456,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * @return a component linked to the in operands
 		 */
 		default <T> JComponent in(ConditionModel<T> conditionModel) {
-			return multiValueInput()
+			return multiInput()
 							.component(createField(conditionModel).buildValue())
 							.link(conditionModel.operands().in())
 							.format(conditionModel.format().orElse(null))

@@ -29,7 +29,7 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.multivalue.MultiValueInput;
+import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
@@ -64,8 +64,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.ADVANCED;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -205,7 +204,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 		private static final class CustomerConditionPanel extends ConditionPanel<Entity> {
 
-			private final MultiValueInput<EntitySearchField, Entity> customers;
+			private final MultiInput<EntitySearchField, Entity> customers;
 
 			private CustomerConditionPanel(ForeignKeyConditionModel conditionModel, SwingEntityTableModel tableModel) {
 				super(conditionModel);
@@ -214,7 +213,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 								tableModel.entityDefinition().attributes().definition(Invoice.CUSTOMER_FK).caption()));
 				// A customer found is added with Enter, clearing the search field for the next,
 				// the members button displaying the customers added
-				customers = Components.multiValueInput()
+				customers = multiInput()
 								.component(EntitySearchField.builder()
 												.model(EntitySearchModel.builder()
 																.entityType(conditionModel.attribute().referencedType())
