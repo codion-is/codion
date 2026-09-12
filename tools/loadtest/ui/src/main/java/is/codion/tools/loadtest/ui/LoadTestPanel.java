@@ -451,7 +451,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.model(tableModel)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(command(this::viewException))
-						.scrollToSelectedItem(false)
+						.scrollToSelected(false)
 						.cellRenderer(ApplicationRow.CREATED, LocalDateTime.class, renderer -> renderer
 										.formatter(CREATED_FORMAT::format)
 										.build())

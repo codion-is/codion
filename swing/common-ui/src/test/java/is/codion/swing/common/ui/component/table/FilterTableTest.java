@@ -24,9 +24,9 @@ import is.codion.common.model.filter.SortOrder;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
-import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
+import is.codion.swing.common.ui.component.table.FilterTable.CenterOnScroll;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.text.NumberField;
 
@@ -501,7 +501,7 @@ public class FilterTableTest {
 	void scrollToAdded() {
 		FilterTable<TestRow, Integer> table = FilterTable.builder()
 						.model(createTestModel(null))
-						.scrollToAddedItem(true)
+						.scrollToAdded(true)
 						.build();
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setPreferredSize(new Dimension(200, 200));
@@ -514,7 +514,7 @@ public class FilterTableTest {
 		model.sort().ascending(0);
 		model.items().add(new TestRow("200"));
 
-		JViewport viewport = Ancestor.ofType(JViewport.class).of(table).get();
+		JViewport viewport = table.viewport().get();
 		int row = table.rowAtPoint(viewport.getViewPosition());
 		TestRow testRow = model.items().included().get(row);
 		assertEquals("200", testRow.value);
@@ -561,8 +561,8 @@ public class FilterTableTest {
 						.collect(toList());
 		model.items().add(rows);
 
-		JViewport viewport = Ancestor.ofType(JViewport.class).of(table).get();
-		table.scrollToRowColumn(80, 0, FilterTable.CenterOnScroll.NEITHER);
+		JViewport viewport = table.viewport().get();
+		table.scrollTo().rowColumn(80, 0, CenterOnScroll.NEITHER);
 		int scrolledTo = table.rowAtPoint(viewport.getViewPosition());
 		assertTrue(scrolledTo > 0, "the table must be scrolled away from the top for this to mean anything");
 

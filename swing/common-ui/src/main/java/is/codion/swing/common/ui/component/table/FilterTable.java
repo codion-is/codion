@@ -363,12 +363,13 @@ public final class FilterTable<R, C> extends JTable {
 	private final Map<C, ConditionComponents> filterComponents;
 	private final Event<MouseEvent> doubleClicked = Event.event();
 	private final Copy copy = new Copy();
+	private final ScrollTo scrollTo = new ScrollTo();
 	private final Value<Action> doubleClick;
 	private final BiPredicate<R, C> cellEditable;
 	private final State sortable;
-	private final State scrollToSelectedItem;
+	private final State scrollToSelected;
 	private final Value<CenterOnScroll> centerOnScroll;
-	private final boolean scrollToAddedItem;
+	private final boolean scrollToAdded;
 	private final boolean rowsFillViewport;
 	private final int visibleRows;
 	private final boolean fitColumnHeaders;
@@ -393,8 +394,8 @@ public final class FilterTable<R, C> extends JTable {
 						.build();
 		this.doubleClick = Value.nullable(builder.doubleClick);
 		this.cellEditable = builder.cellEditable;
-		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
-		this.scrollToAddedItem = builder.scrollToAddedItem;
+		this.scrollToSelected = State.state(builder.scrollToSelected);
+		this.scrollToAdded = builder.scrollToAdded;
 		this.columnToolTips = builder.columnToolTips;
 		this.rowsFillViewport = builder.rowsFillViewport;
 		this.visibleRows = builder.visibleRows;
@@ -596,6 +597,13 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
+	 * @return the {@link JViewport} parent of this table, an empty {@link Optional} if none exists
+	 */
+	public Optional<JViewport> viewport() {
+		return Ancestor.ofType(JViewport.class).of(this).optional();
+	}
+
+	/**
 	 * <p>The {@link Action} is only triggered if enabled.
 	 * <p>The {@link ActionEvent} propagated when this action is performed, contains the associated {@link MouseEvent} as source.
 	 * {@snippet :
@@ -616,21 +624,6 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public State sortable() {
 		return sortable;
-	}
-
-	/**
-	 * @return the {@link State} controlling whether the JTable instance scrolls automatically to the coordinate
-	 * of the item selected in the underlying table model
-	 */
-	public State scrollToSelectedItem() {
-		return scrollToSelectedItem;
-	}
-
-	/**
-	 * @return the {@link Value} controlling the scrolling behaviour when scrolling to the selected row/column
-	 */
-	public Value<CenterOnScroll> centerOnScroll() {
-		return centerOnScroll;
 	}
 
 	@Override
@@ -677,33 +670,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
 	 */
 	public boolean cellVisible(int row, int column) {
-		JViewport viewport = Ancestor.ofType(JViewport.class).of(this).get();
-
-		return viewport != null && cellVisible(viewport, row, column);
-	}
-
-	/**
-	 * Scrolls horizontally so that the column identified by the given identifier becomes visible.
-	 * Has no effect if this table is not contained in a scrollpanel.
-	 * @param identifier the column identifier
-	 */
-	public void scrollToColumn(C identifier) {
-		requireNonNull(identifier);
-		Ancestor.ofType(JViewport.class).of(this).optional().ifPresent(viewport ->
-						scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
-										columns().indexOf(identifier), CenterOnScroll.NEITHER));
-	}
-
-	/**
-	 * Scrolls to the given coordinate. Has no effect if this table is not contained in a scrollpanel.
-	 * @param row the row
-	 * @param column the column
-	 * @param centerOnScroll specifies whether to center the selected row and or column
-	 */
-	public void scrollToRowColumn(int row, int column, CenterOnScroll centerOnScroll) {
-		requireNonNull(centerOnScroll);
-		Ancestor.ofType(JViewport.class).of(this).optional().ifPresent(viewport ->
-						scrollToRowColumn(viewport, row, column, centerOnScroll));
+		return viewport().map(viewport -> cellVisible(viewport, row, column)).orElse(false);
 	}
 
 	/**
@@ -711,6 +678,13 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public Copy copy() {
 		return copy;
+	}
+
+	/**
+	 * @return the {@link ScrollTo}
+	 */
+	public ScrollTo scrollTo() {
+		return scrollTo;
 	}
 
 	/**
@@ -939,13 +913,13 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void navigateToSearchResult(boolean next) {
 		searchResult(next).ifPresent(rowColumn ->
-						scrollToRowColumn(rowColumn.row(), rowColumn.column(), centerOnScroll.getOrThrow()));
+						scrollTo.rowColumn(rowColumn.row(), rowColumn.column()));
 	}
 
 	private void selectSearchResult(boolean addToSelection, boolean next) {
 		selectedSearchResult(addToSelection, next).ifPresent(rowColumn -> {
 			changeSelection(rowColumn.row(), rowColumn.column(), true, true);
-			scrollToRowColumn(rowColumn.row(), rowColumn.column(), centerOnScroll.getOrThrow());
+			scrollTo.rowColumn(rowColumn.row(), rowColumn.column());
 		});
 	}
 
@@ -1023,30 +997,6 @@ public final class FilterTable<R, C> extends JTable {
 		return new Rectangle(viewport.getExtentSize()).contains(cellRect);
 	}
 
-	private void scrollToRowColumn(JViewport viewport, int row, int column, CenterOnScroll centerOnScroll) {
-		Rectangle cellRectangle = getCellRect(row, column, true);
-		Rectangle viewRectangle = viewport.getViewRect();
-		cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
-		int x = cellRectangle.x;
-		int y = cellRectangle.y;
-		if (centerOnScroll != CenterOnScroll.NEITHER) {
-			if (centerOnScroll == CenterOnScroll.COLUMN || centerOnScroll == CenterOnScroll.BOTH) {
-				x = (viewRectangle.width - cellRectangle.width) / 2;
-				if (cellRectangle.x < x) {
-					x = -x;
-				}
-			}
-			if (centerOnScroll == CenterOnScroll.ROW || centerOnScroll == CenterOnScroll.BOTH) {
-				y = (viewRectangle.height - cellRectangle.height) / 2;
-				if (cellRectangle.y < y) {
-					y = -y;
-				}
-			}
-			cellRectangle.translate(x, y);
-		}
-		viewport.scrollRectToVisible(cellRectangle);
-	}
-
 	private ToggleControl createToggleColumnControl(FilterTableColumn<C> column) {
 		return Control.builder()
 						.toggle(columns().visible(column.identifier()))
@@ -1117,14 +1067,15 @@ public final class FilterTable<R, C> extends JTable {
 	private void bindEvents(DefaultBuilder<R, C>	builder) {
 		columns().columnHidden().addConsumer(this::onColumnHidden);
 		if (getTableHeader() != null) {
-			columns().selection().lead().addListener(getTableHeader()::repaint);
-			tableModel.selection().indexes().addListener(getTableHeader()::repaint);
-			tableModel.filters().changed().addListener(getTableHeader()::repaint);
-			tableModel.sort().observer().addListener(getTableHeader()::repaint);
-			searchModel.results().current().addListener(getTableHeader()::repaint);
+			Runnable repaintHeader = getTableHeader()::repaint;
+			columns().selection().lead().addListener(repaintHeader);
+			tableModel.selection().indexes().addListener(repaintHeader);
+			tableModel.filters().changed().addListener(repaintHeader);
+			tableModel.sort().observer().addListener(repaintHeader);
+			searchModel.results().current().addListener(repaintHeader);
 		}
-		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
-		tableModel.items().included().added().addConsumer(new ScrollToAdded());
+		tableModel.selection().indexes().addConsumer(scrollTo::onSelectionChanged);
+		tableModel.items().included().added().addConsumer(scrollTo::onItemsAdded);
 		searchModel.results().addListener(this::repaint);
 		searchModel.results().current().addListener(this::repaint);
 		addMouseListener(new FilterTableMouseListener());
@@ -1187,7 +1138,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void configureFilterPanel(C identifier, ConditionPanel<?> filterPanel) {
 		filterPanel.focusGained().ifPresent(focusGained ->
-						focusGained.addListener(() -> scrollToColumn(identifier)));
+						focusGained.addListener(() -> scrollTo.column(identifier)));
 	}
 
 	private void updateCellEditorUI() {
@@ -1317,6 +1268,125 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
+	/**
+	 * Provides scrolling actions
+	 */
+	public final class ScrollTo {
+
+		private ScrollTo() {}
+
+		/**
+		 * @return the {@link State} controlling whether the JTable instance scrolls automatically to the coordinate
+		 * of the item selected in the underlying table model
+		 */
+		public State selected() {
+			return scrollToSelected;
+		}
+
+		/**
+		 * @return the {@link Value} controlling the scrolling behaviour when scrolling to the selected row/column
+		 */
+		public Value<CenterOnScroll> centerOn() {
+			return centerOnScroll;
+		}
+
+		/**
+		 * Scrolls horizontally so that the column identified by the given identifier becomes visible.
+		 * Has no effect if this table is not contained in a scrollpanel.
+		 * @param identifier the column identifier
+		 */
+		public void column(C identifier) {
+			requireNonNull(identifier);
+			viewport().ifPresent(viewport ->
+							scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
+											columns().indexOf(identifier), CenterOnScroll.NEITHER));
+		}
+
+		/**
+		 * Scrolls to the given coordinate. Has no effect if this table is not contained in a scrollpanel.
+		 * @param row the row
+		 * @param column the column
+		 * @see #centerOn()
+		 */
+		public void rowColumn(int row, int column) {
+			rowColumn(row, column, centerOnScroll.getOrThrow());
+		}
+
+		/**
+		 * Scrolls to the given coordinate. Has no effect if this table is not contained in a scrollpanel.
+		 * @param row the row
+		 * @param column the column
+		 * @param centerOnScroll specifies whether to center the selected row and or column
+		 */
+		public void rowColumn(int row, int column, CenterOnScroll centerOnScroll) {
+			requireNonNull(centerOnScroll);
+			viewport().ifPresent(viewport ->
+							scrollToRowColumn(viewport, row, column, centerOnScroll));
+		}
+
+		private void scrollToRowColumn(JViewport viewport, int row, int column, CenterOnScroll centerOnScroll) {
+			Rectangle cellRectangle = getCellRect(row, column, true);
+			Rectangle viewRectangle = viewport.getViewRect();
+			cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
+			int x = cellRectangle.x;
+			int y = cellRectangle.y;
+			if (centerOnScroll != CenterOnScroll.NEITHER) {
+				if (centerOnScroll == CenterOnScroll.COLUMN || centerOnScroll == CenterOnScroll.BOTH) {
+					x = (viewRectangle.width - cellRectangle.width) / 2;
+					if (cellRectangle.x < x) {
+						x = -x;
+					}
+				}
+				if (centerOnScroll == CenterOnScroll.ROW || centerOnScroll == CenterOnScroll.BOTH) {
+					y = (viewRectangle.height - cellRectangle.height) / 2;
+					if (cellRectangle.y < y) {
+						y = -y;
+					}
+				}
+				cellRectangle.translate(x, y);
+			}
+			viewport.scrollRectToVisible(cellRectangle);
+		}
+
+		private void onSelectionChanged(List<Integer> indexes) {
+			if (scrollToSelected.is() && !indexes.isEmpty()) {
+				viewport().ifPresent(viewport -> {
+					int column = columnModel.getSelectionModel().getLeadSelectionIndex();
+					if (noCellVisible(viewport, indexes, column)) {
+						rowColumn(indexes.get(0), column, centerOnScroll.getOrThrow());
+					}
+				});
+			}
+		}
+
+		private void onItemsAdded(Collection<R> items) {
+			if (scrollToAdded && !items.isEmpty()) {
+				viewport().ifPresent(viewport -> {
+					Set<R> distinct = new HashSet<>(items);
+					List<R> includedItems = tableModel.items().included().get();
+					for (int row = 0; row < includedItems.size(); row++) {
+						if (distinct.contains(includedItems.get(row))) {
+							scrollToAddedRow(viewport, row);
+							return;
+						}
+					}
+				});
+			}
+		}
+
+		private boolean noCellVisible(JViewport viewport, List<Integer> rows, int column) {
+			return rows.stream().noneMatch(row -> cellVisible(viewport, row, column));
+		}
+
+		private void scrollToAddedRow(JViewport viewport, int row) {
+			Rectangle cellRectangle = getCellRect(row, 0, true);
+			Rectangle viewRectangle = viewport.getViewRect();
+			cellRectangle.setLocation(0, cellRectangle.y - viewRectangle.y);
+			cellRectangle.height = viewRectangle.height;
+			viewport.scrollRectToVisible(cellRectangle);
+		}
+	}
+
 	private final class FilterTableMouseListener extends MouseAdapter {
 
 		@Override
@@ -1327,56 +1397,6 @@ public final class FilterTable<R, C> extends JTable {
 								.ifPresent(action -> action.actionPerformed(new ActionEvent(event, ACTION_PERFORMED, "doubleClick")));
 				doubleClicked.accept(event);
 			}
-		}
-	}
-
-	private final class ScrollToSelected implements Consumer<List<Integer>> {
-
-		@Override
-		public void accept(List<Integer> selectedRows) {
-			Ancestor.ofType(JViewport.class).of(FilterTable.this).optional().ifPresent(viewport -> {
-				if (scrollToSelectedItem.is() && !selectedRows.isEmpty()) {
-					int column = columnModel.getSelectionModel().getLeadSelectionIndex();
-					if (noCellVisible(viewport, selectedRows, column)) {
-						scrollToRowColumn(selectedRows.get(0), column, centerOnScroll.getOrThrow());
-					}
-				}
-			});
-		}
-
-		private boolean noCellVisible(JViewport viewport, List<Integer> rows, int column) {
-			return rows.stream().noneMatch(row -> cellVisible(viewport, row, column));
-		}
-
-		private boolean cellVisible(JViewport viewport, int row, int column) {
-			return viewport.getViewRect().contains(getCellRect(row, column, true));
-		}
-	}
-
-	private final class ScrollToAdded implements Consumer<Collection<R>> {
-
-		@Override
-		public void accept(Collection<R> addedItems) {
-			Ancestor.ofType(JViewport.class).of(FilterTable.this).optional().ifPresent(viewport -> {
-				if (scrollToAddedItem && !addedItems.isEmpty()) {
-					Set<R> items = new HashSet<>(addedItems);
-					List<R> includedItems = tableModel.items().included().get();
-					for (int row = 0; row < includedItems.size(); row++) {
-						if (items.contains(includedItems.get(row))) {
-							scrollToAddedRow(viewport, row);
-							return;
-						}
-					}
-				}
-			});
-		}
-
-		private void scrollToAddedRow(JViewport viewport, int row) {
-			Rectangle cellRectangle = getCellRect(row, 0, true);
-			Rectangle viewRectangle = viewport.getViewRect();
-			cellRectangle.setLocation(0, cellRectangle.y - viewRectangle.y);
-			cellRectangle.height = viewRectangle.height;
-			viewport.scrollRectToVisible(cellRectangle);
 		}
 	}
 
@@ -1562,10 +1582,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> doubleClick(Action doubleClick);
 
 		/**
-		 * @param scrollToSelectedItem true if this table should scroll to the selected item
+		 * @param scrollToSelected true if this table should scroll to the selected item
 		 * @return this builder instance
 		 */
-		Builder<R, C> scrollToSelectedItem(boolean scrollToSelectedItem);
+		Builder<R, C> scrollToSelected(boolean scrollToSelected);
 
 		/**
 		 * <p>Specifies whether the table should scroll when items are added, so that the topmost added item appears at the top of the table view.
@@ -1574,10 +1594,10 @@ public final class FilterTable<R, C> extends JTable {
 		 * <p>Turn this off for a table appended to continuously while being read, where following each arrival
 		 * would keep pulling the view away from the reader.
 		 * <p>Default: true.
-		 * @param scrollToAddedItem true if this table should scroll to the topmost added item
+		 * @param scrollToAdded true if this table should scroll to the topmost added item
 		 * @return this builder instance
 		 */
-		Builder<R, C> scrollToAddedItem(boolean scrollToAddedItem);
+		Builder<R, C> scrollToAdded(boolean scrollToAdded);
 
 		/**
 		 * <p>Specifies whether the table should display the column tooltips when the mouse hovers over the table header
@@ -1826,8 +1846,8 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean stopEditOnFocusLost = STOP_EDIT_ON_FOCUS_LOST.getOrThrow();
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 		private @Nullable Action doubleClick;
-		private boolean scrollToSelectedItem = true;
-		private boolean scrollToAddedItem = true;
+		private boolean scrollToSelected = true;
+		private boolean scrollToAdded = true;
 		private boolean columnToolTips = COLUMN_TOOL_TIPS.getOrThrow();
 		private boolean fillsViewportHeight = FILLS_VIEWPORT_HEIGHT.getOrThrow();
 		private boolean rowsFillViewport = ROWS_FILL_VIEWPORT.getOrThrow();
@@ -1973,14 +1993,14 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> scrollToSelectedItem(boolean scrollToSelectedItem) {
-			this.scrollToSelectedItem = scrollToSelectedItem;
+		public Builder<R, C> scrollToSelected(boolean scrollToSelected) {
+			this.scrollToSelected = scrollToSelected;
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> scrollToAddedItem(boolean scrollToAddedItem) {
-			this.scrollToAddedItem = scrollToAddedItem;
+		public Builder<R, C> scrollToAdded(boolean scrollToAdded) {
+			this.scrollToAdded = scrollToAdded;
 			return this;
 		}
 
