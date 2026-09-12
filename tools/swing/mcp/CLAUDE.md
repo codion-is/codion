@@ -10,19 +10,19 @@ can act and self-verify without a screenshot after every step — reserving scre
 
 ## Architecture
 
-1. **SwingMcpPlugin** — integrates with a Codion application; starts the HTTP server on port 8080
-   (`codion.tools.mcp.port`). Toggle at runtime via `SwingMcpPlugin.mcpServer(panel)` (a `State`).
-2. **SwingMcpServer** — the tool implementations. Drives the UI through a `Controller`
-   (`is.codion.tools.swing.robot`) using the **EDT transport** (`Controller.Transport.EDT`), and reads model
-   state through the `UiInspector` SPI (`is.codion.swing.common.ui.inspect`, located via `ServiceLoader`). Uses
-   Jackson for JSON.
-3. **SwingMcpHttpServer** — HTTP wrapper over the JDK `HttpServer`, maps HTTP to MCP.
-4. **SwingMcpBridge** — STDIO↔HTTP bridge for Claude Desktop (built as a runnable distribution). It answers
+1. **SwingMcpServer** — the tool implementations, and the way an application enables them:
+   `SwingMcpServer.builder().component(panel).build()` returns a `State` controlling the HTTP server on port
+   8080 (`codion.tools.mcp.port`), so the application can toggle it from a menu (the Chinook demo does).
+   Drives the UI through a `Controller` (`is.codion.tools.swing.robot`) using the **EDT transport**
+   (`Controller.Transport.EDT`), and reads model state through the `UiInspector` SPI
+   (`is.codion.swing.common.ui.inspect`, located via `ServiceLoader`). Uses Jackson for JSON.
+2. **SwingMcpHttpServer** — HTTP wrapper over the JDK `HttpServer`, maps HTTP to MCP.
+3. **SwingMcpBridge** — STDIO↔HTTP bridge for Claude Desktop (built as a runnable distribution). It answers
    `initialize` and `tools/list` from `Tools` itself while **no application is listening**, so a client can
    connect before one starts, or keep working across restarts; tool calls then return "No application
    listening on ...". Being a STDIO protocol, its standard output carries the protocol only — logging there
    would corrupt the stream.
-5. **Tools** — the name, description and input schema of each tool, shared by the server, which adds the
+4. **Tools** — the name, description and input schema of each tool, shared by the server, which adds the
    handlers, and the bridge, which serves them as they are. The narrator tools are not among them, depending
    on a narrator being attached.
 
@@ -128,9 +128,13 @@ Screenshot: `{ "image": "<base64>", "width": 1920, "height": 1080, "format": "pn
 
 Start the server from an application panel:
 ```java
-State mcpServer = SwingMcpPlugin.mcpServer(this);
-mcpServer.set(true);
+State mcpServer = SwingMcpServer.builder()
+				.component(this)//any component, the server drives its window
+				.narrator(true)//optional, for demo recording, default false
+				.start(true)//optional, start right away, default false
+				.build();
 ```
+The `State` toggles the server, `ChinookAppPanel` binds it to a Tools menu item.
 Build the bridge distribution: `./gradlew :codion-tools-swing-mcp:installDist` (or `distZip`).
 
 Configure Claude Desktop:
