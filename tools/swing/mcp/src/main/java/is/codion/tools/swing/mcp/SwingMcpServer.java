@@ -49,6 +49,7 @@ import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.FocusTraversalPolicy;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
@@ -115,6 +116,7 @@ public final class SwingMcpServer {
 	static final String INTERACTIONS = "interactions";
 	static final String CLEAR_FIELD = "clear_field";
 	static final String MODEL_STATE = "model_state";
+	static final String FOCUS_STATE = "focus_state";
 	static final String APP_SCREENSHOT = "app_screenshot";
 	static final String ACTIVE_WINDOW_SCREENSHOT = "active_window_screenshot";
 	static final String APP_WINDOW_BOUNDS = "app_window_bounds";
@@ -341,13 +343,62 @@ public final class SwingMcpServer {
 					return state.get();
 				}
 			}
-			String focusOwnerName = focusOwner.getName();
-
 			return Map.<String, Object>of(
-							"focusOwner", focusOwner.getClass().getSimpleName() +
-											(focusOwnerName == null ? "" : "[" + focusOwnerName + "]"),
+							"focusOwner", requireNonNull(describe(focusOwner)),
 							"note", "No model state available for the focused component");
 		});
+	}
+
+	/**
+	 * Reads the focus state, without stealing the focus, the focus owner along with, for each showing window,
+	 * the focus owner it remembers and the component its focus traversal policy falls back to.
+	 * @return the focus state
+	 */
+	static Map<String, Object> focusState() {
+		return onEventDispatchThread(() -> {
+			KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+			Map<String, Object> state = new LinkedHashMap<>();
+			state.put("focusOwner", describe(focusManager.getFocusOwner()));
+			state.put("permanentFocusOwner", describe(focusManager.getPermanentFocusOwner()));
+			Window focusedWindow = focusManager.getFocusedWindow();
+			state.put("focusedWindow", focusedWindow == null ? null : getWindowTitle(focusedWindow));
+			state.put("windows", Arrays.stream(Window.getWindows())
+							.filter(Window::isShowing)
+							.map(SwingMcpServer::windowFocusState)
+							.collect(toList()));
+
+			return state;
+		});
+	}
+
+	private static Map<String, Object> windowFocusState(Window window) {
+		Component initialComponent = initialComponent(window);
+		Map<String, Object> state = new LinkedHashMap<>();
+		state.put("window", getWindowTitle(window));
+		state.put("focused", window.isFocused());
+		// the component receiving the focus when the window is focused again
+		state.put("mostRecentFocusOwner", describe(window.getMostRecentFocusOwner()));
+		// the fallback of the focus traversal policy, used when no focus owner is remembered,
+		// leaving the window without a focus owner in case it is not showing
+		state.put("initialComponent", describe(initialComponent));
+		state.put("initialComponentShowing", initialComponent != null && initialComponent.isShowing());
+
+		return state;
+	}
+
+	private static @Nullable Component initialComponent(Window window) {
+		FocusTraversalPolicy focusTraversalPolicy = window.getFocusTraversalPolicy();
+
+		return focusTraversalPolicy == null ? null : focusTraversalPolicy.getInitialComponent(window);
+	}
+
+	private static @Nullable String describe(@Nullable Component component) {
+		if (component == null) {
+			return null;
+		}
+		String name = component.getName();
+
+		return component.getClass().getSimpleName() + (name == null ? "" : "[" + name + "]");
 	}
 
 	private static void onEventDispatchThread(Runnable runnable) {
@@ -601,6 +652,16 @@ public final class SwingMcpServer {
 						"Cheap structured feedback for verifying state after edits, instead of a screenshot.",
 						INPUT_SCHEMA,
 						arguments -> modelState()
+		));
+
+		// Focus state tool - what has the focus and what would get it back (cheap text, no screenshot)
+		httpServer.addTool(new HttpTool(
+						FOCUS_STATE, "Read the focus state without stealing the focus: the focus owner and focused window, " +
+						"plus for each showing window the focus owner it remembers and the component its focus traversal " +
+						"policy falls back to, with whether that one is showing, a fallback which is not showing leaves the " +
+						"window without a focus owner. Note that the focus owner is null while another application is active.",
+						INPUT_SCHEMA,
+						arguments -> focusState()
 		));
 
 		// Narrator tools (only added if narrator is available)
