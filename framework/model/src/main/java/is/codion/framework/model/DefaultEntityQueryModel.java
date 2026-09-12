@@ -144,8 +144,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 						.where(conditionModel.where())
 						.having(conditionModel.having())
 						.attributes(attributes.defaults.get())
-						.include(attributes.include.get())
-						.exclude(attributes.exclude.get())
+						.include(attributes.included.get())
+						.exclude(attributes.excluded.get())
 						.limit(limit.get())
 						.orderBy(orderBy.get());
 		referenceDepth.optional().ifPresent(builder::referenceDepth);
@@ -181,14 +181,14 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		private final ValueSet<Attribute<?>> defaults = ValueSet.<Attribute<?>>builder()
 						.validator(attributeValidator)
 						.build();
-		private final ValueSet<Attribute<?>> include = ValueSet.<Attribute<?>>builder()
+		private final ValueSet<Attribute<?>> included = ValueSet.<Attribute<?>>builder()
 						.validator(attributeValidator)
 						.build();
-		private final ValueSet<Attribute<?>> exclude = ValueSet.<Attribute<?>>builder()
+		private final ValueSet<Attribute<?>> excluded = ValueSet.<Attribute<?>>builder()
 						.validator(attributeValidator)
 						.build();
-		private final Map<Attribute<?>, State> included = new HashMap<>();
-		private final Map<Attribute<?>, State> excluded = new HashMap<>();
+		private final Map<Attribute<?>, State> includedStates = new HashMap<>();
+		private final Map<Attribute<?>, State> excludedStates = new HashMap<>();
 
 		@Override
 		public ValueSet<Attribute<?>> defaults() {
@@ -196,27 +196,27 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		}
 
 		@Override
-		public ValueSet<Attribute<?>> include() {
-			return include;
+		public ValueSet<Attribute<?>> included() {
+			return included;
 		}
 
 		@Override
-		public ValueSet<Attribute<?>> exclude() {
-			return exclude;
+		public ValueSet<Attribute<?>> excluded() {
+			return excluded;
 		}
 
 		@Override
 		public State included(Attribute<?> attribute) {
 			attributeValidator.validate(singleton(requireNonNull(attribute)));
 
-			return included.computeIfAbsent(attribute, k -> State.contains(include, attribute));
+			return includedStates.computeIfAbsent(attribute, k -> State.contains(included, attribute));
 		}
 
 		@Override
 		public State excluded(Attribute<?> attribute) {
 			attributeValidator.validate(singleton(requireNonNull(attribute)));
 
-			return excluded.computeIfAbsent(attribute, k -> State.contains(exclude, attribute));
+			return excludedStates.computeIfAbsent(attribute, k -> State.contains(excluded, attribute));
 		}
 	}
 }

@@ -274,8 +274,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 			return connection().select(where(keys(keys))
 							.attributes(query().attributes().defaults().get())
-							.include(query().attributes().include().get())
-							.exclude(query().attributes().exclude().get()));
+							.include(query().attributes().included().get())
+							.exclude(query().attributes().excluded().get()));
 		}
 
 		@Override

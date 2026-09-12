@@ -52,8 +52,8 @@ final class SelectQueryInspector extends JPanel {
 		this.queryModel.limit().addListener(this::refreshQuery);
 		this.queryModel.orderBy().addListener(this::refreshQuery);
 		this.queryModel.attributes().defaults().addListener(this::refreshQuery);
-		this.queryModel.attributes().include().addListener(this::refreshQuery);
-		this.queryModel.attributes().exclude().addListener(this::refreshQuery);
+		this.queryModel.attributes().included().addListener(this::refreshQuery);
+		this.queryModel.attributes().excluded().addListener(this::refreshQuery);
 		initializeUI();
 		refreshQuery();
 	}

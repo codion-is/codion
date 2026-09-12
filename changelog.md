@@ -80,6 +80,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
+- EntityQueryModel.SelectAttributes.include() and exclude() renamed included() and excluded(), overloads of the attribute based included() and excluded().
 ### is.codion.swing.framework.ui
 - EntityComboBoxPanel and EntitySearchFieldPanel renamed EntityComboBoxInput and EntitySearchInput, EntityComponents.comboBoxPanel(), searchFieldPanel(), temporalFieldPanel(), textFieldPanel() and byteArrayInputPanel() renamed comboBoxInput(), searchFieldInput(), temporalFieldInput(), textFieldInput() and fileByteArrayInput().
 - ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING renamed HANDLING.

@@ -279,7 +279,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	@Test
 	public void attributes() {
 		T tableModel = createTableModel(Employee.TYPE, connection);
-		tableModel.query().attributes().exclude().addAll(Employee.COMMISSION, Employee.DEPARTMENT_FK);
+		tableModel.query().attributes().excluded().addAll(Employee.COMMISSION, Employee.DEPARTMENT_FK);
 		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
 			assertFalse(employee.contains(Employee.COMMISSION));
@@ -287,7 +287,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 			assertTrue(employee.contains(Employee.NAME));
 			assertTrue(employee.contains(Employee.HIREDATE));
 		});
-		assertThrows(IllegalArgumentException.class, () -> tableModel.query().attributes().include().add(Department.NAME));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.query().attributes().included().add(Department.NAME));
 	}
 
 	@Test
@@ -562,7 +562,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	@Test
 	public void replaceByKey() {
 		T tableModel = createTableModel(Employee.TYPE, connection());
-		tableModel.query().attributes().exclude().set(asList(Employee.JOB, Employee.SALARY));
+		tableModel.query().attributes().excluded().set(asList(Employee.JOB, Employee.SALARY));
 		tableModel.items().refresh();
 		Entity.Key jonesKey = tableModel.entities().primaryKey(Employee.TYPE, 3);
 		tableModel.refresh(singleton(jonesKey));

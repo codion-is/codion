@@ -139,8 +139,8 @@ public final class DefaultEntityTableModelTest extends
 			if (!keys.isEmpty()) {
 				replace(connection().select(Select.where(keys(keys))
 								.attributes(query().attributes().defaults().get())
-								.include(query().attributes().include().get())
-								.exclude(query().attributes().exclude().get())
+								.include(query().attributes().included().get())
+								.exclude(query().attributes().excluded().get())
 								.build()));
 			}
 		}
