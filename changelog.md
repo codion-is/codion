@@ -70,6 +70,12 @@ Codion Change Log
 - NumberField, a value outside the range now results in a message naming the bound exceeded, instead of the whole range, which could include null or the bounds of the number type.
 - NumberField, the infinity and NaN symbols are now rejected as unparseable, a BigDecimal based field threw a NumberFormatException and a Double based one accepted them.
 - FilterTable.Copy added along with copy().
+- FilterTable.ScrollTo added along with scrollTo() and viewport(), scrollToColumn(), scrollToRowColumn(), scrollToSelectedItem() and centerOnScroll() now ScrollTo.column(), ScrollTo.rowColumn(), ScrollTo.selected() and ScrollTo.centerOn(), Builder.scrollToSelectedItem() and Builder.scrollToAddedItem() renamed scrollToSelected() and scrollToAdded().
+- MultiValueInput, wrapped component type parameter added.
+- MultiValueInput renamed MultiInput, package renamed multi.
+- MultiInput now sorts members by default, Builder.comparator() added.
+- Utilities.updateComponentTreeForAllWindows() now requests the focus for the new editor of a focused editable combo box, the editor being replaced during the update, leaving the window without a focus owner, TAB included, in case the fallback component of its focus traversal policy is not showing.
+- FocusableComboBox now overrides setName() and setEditor() and names the editor component as well, the editor being replaced during a look and feel change, leaving the new one unnamed.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
