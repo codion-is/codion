@@ -29,6 +29,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -71,6 +72,16 @@ public class SwingMcpCoreTest {
 		Map<String, Object> shiftBooleanMap = new HashMap<>();
 		shiftBooleanMap.put("shift", Boolean.TRUE);
 		assertTrue(SwingMcpServer.booleanParam(shiftBooleanMap, "shift", false));
+	}
+
+	@Test
+	void focusState() {
+		Map<String, Object> state = SwingMcpServer.focusState();
+		assertTrue(state.containsKey("focusOwner"));
+		assertTrue(state.containsKey("permanentFocusOwner"));
+		assertTrue(state.containsKey("focusedWindow"));
+		assertInstanceOf(List.class, state.get("windows"));
+		assertDoesNotThrow(() -> OBJECT_MAPPER.writeValueAsString(state));
 	}
 
 	@Test

@@ -42,6 +42,13 @@ entity-aware introspection arrives at runtime through the `UiInspector` ServiceL
   client-side), `attribute`, `operator`, `operands`, `enabled`. Which one you get depends on where focus is
   (exactly one inspector applies; a condition field reports the condition, not the enclosing table).
 
+- **focus_state** — what has the focus and what would get it back, without stealing it: `focusOwner`,
+  `permanentFocusOwner`, `focusedWindow`, and per showing window `mostRecentFocusOwner` (what it focuses again
+  when re-activated) plus `initialComponent` / `initialComponentShowing` (the fallback of its focus traversal
+  policy, used when no focus owner is remembered). A fallback which is **not showing** leaves the window with no
+  focus owner at all, and keys, TAB included, then go nowhere. `focusOwner` is null while another application is
+  active, so call `focus_window` first for a live reading.
+
 ### Screenshots
 - **app_screenshot** `{format}` — the main window, via direct painting (works even when obscured). `png` or `jpg`.
 - **active_window_screenshot** `{format}` — the currently active window (dialog/popup). Use this to see dialogs.
@@ -66,6 +73,8 @@ The whole design exists so you *don't* screenshot after every keystroke. The loo
      `MISSED` = it did not go through.
    - A **surprising `component`**, a `FELL_THROUGH`, or a `MISSED` is your cue to look — that's when a screenshot
      earns its cost.
+   - When keys go nowhere at all (repeated `MISSED`, TAB doing nothing), **`focus_state`** says whether the window
+     has a focus owner and which component it would fall back to.
 3. **Assert state with `model_state`**, not pixels — confirm values/validity/messages after an edit, or the
    selection after navigating a table. The post-insert "form reset to empty" is itself the success signal.
 4. **Screenshot only** for genuinely visual checks, or to confirm a surprising verdict/state. Use
