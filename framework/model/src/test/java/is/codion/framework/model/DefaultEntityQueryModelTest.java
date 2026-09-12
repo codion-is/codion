@@ -109,10 +109,10 @@ public final class DefaultEntityQueryModelTest {
 		assertFalse(queryModel.condition().modified().is());
 		queryModel.orderBy().clear();
 
-		queryModel.attributes().include().set(asList(Employee.NAME, Employee.JOB));
+		queryModel.attributes().included().set(asList(Employee.NAME, Employee.JOB));
 		nameCondition.operands().equal().set(null);
 		assertFalse(queryModel.condition().modified().is());
-		queryModel.attributes().include().clear();
+		queryModel.attributes().included().clear();
 
 		nameCondition.operands().equal().set("Scott");
 		assertTrue(queryModel.condition().modified().is());
@@ -158,7 +158,7 @@ public final class DefaultEntityQueryModelTest {
 		assertNull(employee.get(Employee.DATA));// not selected by default
 		assertTrue(employee.contains(Employee.MGR_FK));
 
-		queryModel.attributes().include().set(asList(Employee.NAME, Employee.JOB, Employee.DATA));
+		queryModel.attributes().included().set(asList(Employee.NAME, Employee.JOB, Employee.DATA));
 		employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertTrue(employee.contains(Employee.JOB));
@@ -167,23 +167,23 @@ public final class DefaultEntityQueryModelTest {
 		State excludeJob = queryModel.attributes().excluded(Employee.JOB);
 		assertFalse(excludeJob.is());
 
-		queryModel.attributes().include().clear();
+		queryModel.attributes().included().clear();
 		excludeJob.set(true);
-		assertTrue(queryModel.attributes().exclude().contains(Employee.JOB));
+		assertTrue(queryModel.attributes().excluded().contains(Employee.JOB));
 		employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertFalse(employee.contains(Employee.JOB));
 		assertTrue(employee.contains(Employee.MGR));
 		assertTrue(employee.contains(Employee.MGR_FK));
 
-		queryModel.attributes().include().set(asList(Employee.NAME, Employee.JOB, Employee.MGR_FK));
+		queryModel.attributes().included().set(asList(Employee.NAME, Employee.JOB, Employee.MGR_FK));
 		employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertFalse(employee.contains(Employee.JOB));
 		assertTrue(employee.contains(Employee.MGR));
 		assertTrue(employee.contains(Employee.MGR_FK));
 
-		queryModel.attributes().include().set(singleton(Employee.JOB));
+		queryModel.attributes().included().set(singleton(Employee.JOB));
 		employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertTrue(employee.contains(Employee.MGR));
@@ -194,8 +194,8 @@ public final class DefaultEntityQueryModelTest {
 		employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.JOB));
 
-		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().include().set(singleton(Department.NAME)));
-		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().exclude().set(singleton(Department.NAME)));
+		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().included().set(singleton(Department.NAME)));
+		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().excluded().set(singleton(Department.NAME)));
 
 		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().included(Department.NAME));
 		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().excluded(Department.NAME));

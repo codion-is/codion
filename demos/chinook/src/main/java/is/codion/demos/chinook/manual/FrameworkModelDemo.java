@@ -342,16 +342,16 @@ public final class FrameworkModelDemo {
 		EntityQueryModel query = albumModel.tableModel().query();
 
 		// Exclude large columns by default
-		query.attributes().exclude().add(Album.COVER);
+		query.attributes().excluded().add(Album.COVER);
 
 		// Include them only when needed
 		State detailView = State.state();
 		detailView.addConsumer(showDetails -> {
 			if (showDetails) {
-				query.attributes().exclude().remove(Album.COVER);
+				query.attributes().excluded().remove(Album.COVER);
 			}
 			else {
-				query.attributes().exclude().add(Album.COVER);
+				query.attributes().excluded().add(Album.COVER);
 			}
 		});
 		// end::attributeManagement[]

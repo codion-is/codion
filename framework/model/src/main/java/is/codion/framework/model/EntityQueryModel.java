@@ -166,8 +166,8 @@ public interface EntityQueryModel {
 	 * Provides runtime configuration of which attributes to load:
 	 * <ul>
 	 *   <li>{@link #defaults()} - Override the base set of attributes (normally those with {@code .selected(true)})</li>
-	 *   <li>{@link #include()} - Add attributes beyond the defaults (e.g., lazy-loaded columns)</li>
-	 *   <li>{@link #exclude()} - Remove attributes from the final set</li>
+	 *   <li>{@link #included()} - Add attributes beyond the defaults (e.g., lazy-loaded columns)</li>
+	 *   <li>{@link #excluded()} - Remove attributes from the final set</li>
 	 * </ul>
 	 */
 	interface SelectAttributes {
@@ -192,8 +192,8 @@ public interface EntityQueryModel {
 		 * tableModel.items().refresh();
 		 *}
 		 * @return the {@link ValueSet} controlling the default base attributes
-		 * @see #include()
-		 * @see #exclude()
+		 * @see #included()
+		 * @see #excluded()
 		 */
 		ValueSet<Attribute<?>> defaults();
 
@@ -211,22 +211,22 @@ public interface EntityQueryModel {
 		 * {@snippet :
 		 * // Include a lazy blob column on-demand
 		 * EntityQueryModel query = tableModel.query();
-		 * query.attributes().include().add(Country.FLAG);
+		 * query.attributes().included().add(Country.FLAG);
 		 * tableModel.items().refresh();
 		 *
 		 * // Remove the lazy attribute
-		 * query.attributes().include().remove(Country.FLAG);
+		 * query.attributes().included().remove(Country.FLAG);
 		 * tableModel.items().refresh();
 		 *}
 		 * @return the {@link ValueSet} controlling additional attributes to include
-		 * @see #exclude()
+		 * @see #excluded()
 		 */
-		ValueSet<Attribute<?>> include();
+		ValueSet<Attribute<?>> included();
 
 		/**
 		 * Returns the {@link ValueSet} controlling attributes to exclude when querying entities.
 		 * <p>
-		 * These attributes are removed from the final set after applying defaults and {@link #include()}.
+		 * These attributes are removed from the final set after applying defaults and {@link #included()}.
 		 * <p>
 		 * Note that primary key attributes are always included regardless of exclusions,
 		 * and attributes required by included foreign keys cannot be excluded.
@@ -235,29 +235,29 @@ public interface EntityQueryModel {
 		 * {@snippet :
 		 * // Exclude expensive computed columns
 		 * EntityQueryModel query = tableModel.query();
-		 * query.attributes().exclude().add(Employee.COMPUTED_BONUS);
+		 * query.attributes().excluded().add(Employee.COMPUTED_BONUS);
 		 * tableModel.items().refresh();
 		 *
 		 * // Re-include the column
-		 * query.attributes().exclude().remove(Employee.COMPUTED_BONUS);
+		 * query.attributes().excluded().remove(Employee.COMPUTED_BONUS);
 		 * tableModel.items().refresh();
 		 *}
 		 * @return the {@link ValueSet} controlling attributes to exclude
-		 * @see #include()
+		 * @see #included()
 		 */
-		ValueSet<Attribute<?>> exclude();
+		ValueSet<Attribute<?>> excluded();
 
 		/**
 		 * @param attribute the attribute
 		 * @return a {@link State} controlling whether the given attribute is included
-		 * @see #include()
+		 * @see #included()
 		 */
 		State included(Attribute<?> attribute);
 
 		/**
 		 * @param attribute the attribute
 		 * @return a {@link State} controlling whether the given attribute is excluded
-		 * @see #exclude()
+		 * @see #excluded()
 		 */
 		State excluded(Attribute<?> attribute);
 	}
