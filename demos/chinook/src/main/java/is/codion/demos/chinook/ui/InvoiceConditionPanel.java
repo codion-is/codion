@@ -205,7 +205,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 		private static final class CustomerConditionPanel extends ConditionPanel<Entity> {
 
-			private final MultiValueInput<Entity> customers;
+			private final MultiValueInput<EntitySearchField, Entity> customers;
 
 			private CustomerConditionPanel(ForeignKeyConditionModel conditionModel, SwingEntityTableModel tableModel) {
 				super(conditionModel);

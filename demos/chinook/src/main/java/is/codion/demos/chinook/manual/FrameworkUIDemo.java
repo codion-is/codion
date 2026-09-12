@@ -71,7 +71,7 @@ final class FrameworkUIDemo {
 
 	void multiValueSearchField(ForeignKeyConditionModel customerCondition) {
 		// tag::multiValueSearchField[]
-		MultiValueInput<Entity> customers = Components.multiValueInput()
+		MultiValueInput<EntitySearchField, Entity> customers = Components.multiValueInput()
 						.component(EntitySearchField.builder()
 										.model(customerCondition.inSearchModel().orElseThrow())
 										.buildValue())
