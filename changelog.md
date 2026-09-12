@@ -87,6 +87,10 @@ Codion Change Log
 - EntityConditionComponents, a foreign key IN operand based on a combo box model is a MultiValueInput wrapping a combo box.
 - EntitySearchField, multi selection removed, multiple entities are collected by wrapping the field in a MultiValueInput, Builder.Factory, MultiSelectionBuilder, SingleSelectionBuilder, Builder.separator(), Builder.singleSelection() and singleSelection() removed, Builder no longer generic, the result selector now always selecting a single entity.
 - EntitySearchInput, multi selection removed, Builder.Factory, MultiSelectionBuilder and SingleSelectionBuilder removed, Builder no longer generic, EntityComponents.searchField() and searchFieldInput(), EditorComponents.searchField() and searchFieldInput() and DefaultEditComponent.searchField() now return the builders.
+- EntityComboBox now overrides setName() and setEditor() and names the editor component as well, the editor being replaced during a look and feel change, leaving the new one unnamed.
+### is.codion.tools.swing.mcp
+- SwingMcpServer, focus_state tool added, the focus owner along with, per showing window, the focus owner it remembers and the fallback component of its focus traversal policy.
+- SwingMcpBridge now answers initialize and tools/list itself while no application is listening, instead of failing, a client had to connect after an application had started, Tools added, the tool definitions the server and the bridge share.
 
 ## 0.18.85
 ### is.codion.common.reactive

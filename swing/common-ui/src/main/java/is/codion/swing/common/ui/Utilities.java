@@ -26,9 +26,11 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -103,11 +105,16 @@ public final class Utilities {
 
 	/**
 	 * Calls {@link SwingUtilities#updateComponentTreeUI(Component)} for all windows.
+	 * The editor of an editable combo box is replaced during the update, so in case it held the focus,
+	 * the focus is requested for the new one, the window would otherwise be left without a focus owner.
 	 * @see Window#getWindows()
 	 */
 	public static void updateComponentTreeForAllWindows() {
 		for (Window window : Window.getWindows()) {
+			Component focusOwner = window.getMostRecentFocusOwner();
+			Container focusOwnerParent = focusOwner == null ? null : focusOwner.getParent();
 			SwingUtilities.updateComponentTreeUI(window);
+			restoreFocus(focusOwner, focusOwnerParent);
 		}
 	}
 
@@ -224,6 +231,19 @@ public final class Utilities {
 		if (Stream.of(focusManager.getPropertyChangeListeners())
 						.noneMatch(PrintFocusOwnerPropertyChangeListener.class::isInstance)) {
 			focusManager.addPropertyChangeListener("focusOwner", new PrintFocusOwnerPropertyChangeListener(formatter));
+		}
+	}
+
+	private static void restoreFocus(@Nullable Component focusOwner, @Nullable Container focusOwnerParent) {
+		if (focusOwner != null && !focusOwner.isDisplayable()
+						&& focusOwnerParent instanceof JComboBox && focusOwnerParent.isDisplayable()) {
+			JComboBox<?> comboBox = (JComboBox<?>) focusOwnerParent;
+			if (comboBox.isEditable()) {
+				comboBox.getEditor().getEditorComponent().requestFocusInWindow();
+			}
+			else {
+				comboBox.requestFocusInWindow();
+			}
 		}
 	}
 

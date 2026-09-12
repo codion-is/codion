@@ -615,6 +615,21 @@ public final class ComponentsTest {
 	}
 
 	@Test
+	void comboBoxEditorNamed() {
+		JComboBox<String> comboBox = Components.comboBox()
+						.model(new DefaultComboBoxModel<>(new String[] {"0", "1"}))
+						.editable(true)
+						.name("combo.name")
+						.build();
+		assertEquals("combo.name", comboBox.getEditor().getEditorComponent().getName());
+		//a look and feel change replaces the editor, the new one must be named as well
+		comboBox.updateUI();
+		assertEquals("combo.name", comboBox.getEditor().getEditorComponent().getName());
+		comboBox.setName("renamed");
+		assertEquals("renamed", comboBox.getEditor().getEditorComponent().getName());
+	}
+
+	@Test
 	void comboBox() {
 		DefaultComboBoxModel<String> boxModel = new DefaultComboBoxModel<>(new String[] {"0", "1", "2", "3"});
 		Value<String> value = Value.nullable();

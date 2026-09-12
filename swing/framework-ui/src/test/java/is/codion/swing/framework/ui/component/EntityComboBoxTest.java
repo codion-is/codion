@@ -73,6 +73,23 @@ public class EntityComboBoxTest {
 	}
 
 	@Test
+	void editorNamed() {
+		SwingEntityComboBoxModel model = SwingEntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		EntityComboBox comboBox = EntityComboBox.builder()
+						.model(model)
+						.editable(true)
+						.name("department.combo")
+						.build();
+		assertEquals("department.combo", comboBox.getEditor().getEditorComponent().getName());
+		//a look and feel change replaces the editor, the new one must be named as well
+		comboBox.updateUI();
+		assertEquals("department.combo", comboBox.getEditor().getEditorComponent().getName());
+	}
+
+	@Test
 	void integerSelectorField() {
 		SwingEntityComboBoxModel comboBoxModel = SwingEntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
