@@ -362,6 +362,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
 	private final Map<C, ConditionComponents> filterComponents;
 	private final Event<MouseEvent> doubleClicked = Event.event();
+	private final Copy copy = new Copy();
 	private final Value<Action> doubleClick;
 	private final BiPredicate<R, C> cellEditable;
 	private final State sortable;
@@ -706,46 +707,10 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * Copies the contents of the selected cell to the clipboard.
+	 * @return the {@link Copy}
 	 */
-	public void copyCell() {
-		int selectedRow = getSelectedRow();
-		int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
-		if (selectedRow >= 0 && selectedColumn >= 0) {
-			FilterTableColumn<C> column = columns().columnAt(selectedColumn);
-			Utilities.setClipboard(model().values().formatted(selectedRow, column.identifier()));
-		}
-	}
-
-	/**
-	 * Copies the contents of the selected column cells to the clipboard.
-	 * <p>If the selection is empty, values from all rows are included, otherwise only selected ones.
-	 */
-	public void copyColumn() {
-		int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
-		if (selectedColumn >= 0) {
-			Utilities.setClipboard(tableModel.export()
-							.columns(singletonList(columns().columnAt(selectedColumn).identifier()))
-							.header(false)
-							.selected(!selectionModel.isSelectionEmpty())
-							.get());
-		}
-	}
-
-	/**
-	 * <p>Copies the table data as a TAB delimited string, with header, to the clipboard.
-	 * <p>If the selection is empty, all rows are included, otherwise only selected ones.
-	 * <p>If column selection is enabled, only selected columns are included, otherwise all visible columns.
-	 * @see #getColumnSelectionAllowed()
-	 */
-	public void copyRows() {
-		Utilities.setClipboard(tableModel.export()
-						.columns(getColumnSelectionAllowed() ?
-										columns().selection().identifiers().getOrThrow() :
-										columns().visible().get())
-						.delimiter('\t')
-						.selected(!selectionModel.isSelectionEmpty())
-						.get());
+	public Copy copy() {
+		return copy;
 	}
 
 	/**
@@ -821,7 +786,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public CommandControl createCopyCellControl() {
 		return Control.builder()
-						.command(this::copyCell)
+						.command(copy::cell)
 						.caption(MESSAGES.getString("copy_cell"))
 						.enabled(State.and(tableModel.selection().present(), columns().selection().lead().present()))
 						.build();
@@ -832,7 +797,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public CommandControl createCopyColumnControl() {
 		return Control.builder()
-						.command(this::copyColumn)
+						.command(copy::column)
 						.caption(MESSAGES.getString("copy_column"))
 						.enabled(State.and(tableModel.selection().present(), columns().selection().lead().present()))
 						.build();
@@ -1299,6 +1264,57 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		return unmodifiableList(columns);
+	}
+
+	/**
+	 * Provides copy to clipboard actions
+	 */
+	public final class Copy {
+
+		private Copy() {}
+
+		/**
+		 * Copies the contents of the selected cell to the clipboard.
+		 */
+		public void cell() {
+			int selectedRow = getSelectedRow();
+			int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
+			if (selectedRow >= 0 && selectedColumn >= 0) {
+				FilterTableColumn<C> column = columns().columnAt(selectedColumn);
+				Utilities.setClipboard(model().values().formatted(selectedRow, column.identifier()));
+			}
+		}
+
+		/**
+		 * Copies the contents of the selected column cells to the clipboard.
+		 * <p>If the selection is empty, values from all rows are included, otherwise only selected ones.
+		 */
+		public void column() {
+			int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
+			if (selectedColumn >= 0) {
+				Utilities.setClipboard(tableModel.export()
+								.columns(singletonList(columns().columnAt(selectedColumn).identifier()))
+								.header(false)
+								.selected(!selectionModel.isSelectionEmpty())
+								.get());
+			}
+		}
+
+		/**
+		 * <p>Copies the table data as a TAB delimited string, with header, to the clipboard.
+		 * <p>If the selection is empty, all rows are included, otherwise only selected ones.
+		 * <p>If column selection is enabled, only selected columns are included, otherwise all visible columns.
+		 * @see #getColumnSelectionAllowed()
+		 */
+		public void rows() {
+			Utilities.setClipboard(tableModel.export()
+							.columns(getColumnSelectionAllowed() ?
+											columns().selection().identifiers().getOrThrow() :
+											columns().visible().get())
+							.delimiter('\t')
+							.selected(!selectionModel.isSelectionEmpty())
+							.get());
+		}
 	}
 
 	private final class FilterTableMouseListener extends MouseAdapter {

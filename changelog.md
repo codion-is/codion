@@ -69,6 +69,7 @@ Codion Change Log
 - NumberField, the range is now compared exactly, instead of by double value, which lost precision for large Long, BigInteger and BigDecimal values.
 - NumberField, a value outside the range now results in a message naming the bound exceeded, instead of the whole range, which could include null or the bounds of the number type.
 - NumberField, the infinity and NaN symbols are now rejected as unparseable, a BigDecimal based field threw a NumberFormatException and a Double based one accepted them.
+- FilterTable.Copy added along with copy().
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
