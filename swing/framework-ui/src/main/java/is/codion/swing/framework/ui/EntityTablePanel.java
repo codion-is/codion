@@ -1368,7 +1368,7 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createCopyRowsControl() {
 		return Control.builder()
-						.command(table::copyRows)
+						.command(table.copy()::rows)
 						.caption(MESSAGES.getString("copy_table_with_header"))
 						.build();
 	}
