@@ -17,11 +17,23 @@ can act and self-verify without a screenshot after every step — reserving scre
    state through the `UiInspector` SPI (`is.codion.swing.common.ui.inspect`, located via `ServiceLoader`). Uses
    Jackson for JSON.
 3. **SwingMcpHttpServer** — HTTP wrapper over the JDK `HttpServer`, maps HTTP to MCP.
-4. **SwingMcpBridge** — STDIO↔HTTP bridge for Claude Desktop (built as a runnable distribution).
+4. **SwingMcpBridge** — STDIO↔HTTP bridge for Claude Desktop (built as a runnable distribution). It answers
+   `initialize` and `tools/list` from `Tools` itself while **no application is listening**, so a client can
+   connect before one starts, or keep working across restarts; tool calls then return "No application
+   listening on ...". Being a STDIO protocol, its standard output carries the protocol only — logging there
+   would corrupt the stream.
+5. **Tools** — the name, description and input schema of each tool, shared by the server, which adds the
+   handlers, and the bridge, which serves them as they are. The narrator tools are not among them, depending
+   on a narrator being attached.
 
 The module stays **framework-agnostic**: it depends on `swing-common-ui` + `robot`, not on framework-ui. The
 entity-aware introspection arrives at runtime through the `UiInspector` ServiceLoader boundary (framework-ui
 `provides` `EntityEditorInspector` and `EntityTableModelInspector`).
+
+### Connecting
+The client establishes the tool list once, when it connects. The bridge holds no state, forwarding each call to
+`localhost:8080` as it comes, so an application can be **stopped, rebuilt and restarted** freely without
+reconnecting. Tools added to an application while the client is connected only show up after a reconnect.
 
 ## Available MCP tools
 

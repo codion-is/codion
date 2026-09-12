@@ -18,9 +18,12 @@
  */
 package is.codion.tools.swing.mcp;
 
+import is.codion.common.utilities.version.Version;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +56,7 @@ public final class SwingMcpBridge {
 	private static final Logger LOG = LoggerFactory.getLogger(SwingMcpBridge.class);
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final String NO_APPLICATION = "No application listening on ";
 	private static final String DEFAULT_PORT = "8080";
 	private static final String MCP_BASE_PATH = "/mcp";
 	private static final String JSONRPC = "jsonrpc";
@@ -64,7 +68,7 @@ public final class SwingMcpBridge {
 
 	private SwingMcpBridge() {}
 
-	private static JsonNode handleRequest(String baseUrl, JsonNode request) throws Exception {
+	static JsonNode handleRequest(String baseUrl, JsonNode request) throws Exception {
 		String method = request.get("method").asText();
 		JsonNode params = request.has("params") ? request.get("params") : MAPPER.createObjectNode();
 		Object id = request.has(ID) ? request.get(ID) : null;
@@ -90,34 +94,86 @@ public final class SwingMcpBridge {
 	}
 
 	private static JsonNode handleInitialize(String baseUrl, JsonNode params, Object id) throws Exception {
-		String url = baseUrl + "/initialize";
-		JsonNode httpResponse = postRequest(url, params);
-		ObjectNode response = MAPPER.createObjectNode();
-		response.put(JSONRPC, V2);
-		if (id != null) {
-			response.set(ID, MAPPER.valueToTree(id));
-		}
-		response.set(RESULT, httpResponse);
+		return response(id, initialize(baseUrl, params));
+	}
 
-		return response;
+	private static JsonNode initialize(String baseUrl, JsonNode params) throws Exception {
+		try {
+			return postRequest(baseUrl + "/initialize", params);
+		}
+		catch (IOException e) {
+			// no application is listening, connect anyway, the tools become available when one starts,
+			// note that logging here would corrupt the protocol, which owns the standard output
+			return initialized();
+		}
+	}
+
+	private static JsonNode initialized() {
+		ObjectNode result = MAPPER.createObjectNode();
+		result.put("protocolVersion", SwingMcpHttpServer.PROTOCOL_VERSION);
+		ObjectNode serverInfo = result.putObject("serverInfo");
+		serverInfo.put("name", SwingMcpHttpServer.SERVER_NAME);
+		serverInfo.put("version", Version.versionString());
+		ObjectNode capabilities = result.putObject("capabilities");
+		capabilities.putObject("tools");
+		capabilities.putObject("logging");
+
+		return result;
 	}
 
 	private static JsonNode handleToolsList(String baseUrl, Object id) throws Exception {
-		String url = baseUrl + "/tools/list";
-		JsonNode httpResponse = getRequest(url);
+		return response(id, toolsList(baseUrl));
+	}
+
+	private static JsonNode toolsList(String baseUrl) throws Exception {
+		try {
+			return getRequest(baseUrl + "/tools/list");
+		}
+		catch (IOException e) {
+			// no application is listening, the tools of one are known regardless
+			return tools();
+		}
+	}
+
+	private static JsonNode tools() {
+		ObjectNode result = MAPPER.createObjectNode();
+		ArrayNode toolList = result.putArray("tools");
+		for (Tools.Tool tool : Tools.TOOLS) {
+			ObjectNode toolNode = toolList.addObject();
+			toolNode.put("name", tool.name());
+			toolNode.put("description", tool.description());
+			try {
+				toolNode.set("inputSchema", MAPPER.readTree(tool.inputSchema()));
+			}
+			catch (JsonProcessingException e) {
+				toolNode.put("inputSchema", tool.inputSchema());
+			}
+		}
+
+		return result;
+	}
+
+	private static JsonNode response(Object id, JsonNode result) {
 		ObjectNode response = MAPPER.createObjectNode();
 		response.put(JSONRPC, V2);
 		if (id != null) {
 			response.set(ID, MAPPER.valueToTree(id));
 		}
-		response.set(RESULT, httpResponse);
+		response.set(RESULT, result);
 
 		return response;
 	}
 
 	private static JsonNode handleToolsCall(String baseUrl, JsonNode params, Object id) throws Exception {
 		String url = baseUrl + "/tools/call";
-		JsonNode httpResponse = postRequest(url, params);
+		JsonNode httpResponse;
+		try {
+			httpResponse = postRequest(url, params);
+		}
+		catch (IOException e) {
+			return createErrorResponse(id, -32000, NO_APPLICATION + baseUrl +
+							", start one with the mcp server enabled");
+		}
 		ObjectNode response = MAPPER.createObjectNode();
 		response.put(JSONRPC, V2);
 		if (id != null) {

@@ -23,6 +23,7 @@ import is.codion.tools.swing.mcp.SwingMcpHttpServer.HttpTool;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 
 import java.awt.GraphicsEnvironment;
@@ -85,8 +86,34 @@ public class SwingMcpCoreTest {
 	}
 
 	@Test
+	void bridgeWithoutApplication() throws Exception {
+		// nothing listening, the bridge serves the tools as they are, so that a client can connect
+		String baseUrl = "http://localhost:1/mcp";
+		JsonNode initialized = SwingMcpBridge.handleRequest(baseUrl, request("initialize", 1));
+		assertTrue(initialized.get("result").get("capabilities").has("tools"));
+
+		JsonNode tools = SwingMcpBridge.handleRequest(baseUrl, request("tools/list", 2));
+		JsonNode toolList = tools.get("result").get("tools");
+		assertEquals(Tools.TOOLS.size(), toolList.size());
+		assertEquals(Tools.TYPE_TEXT.name(), toolList.get(0).get("name").asText());
+		assertTrue(toolList.get(0).get("inputSchema").has("properties"));
+
+		JsonNode called = SwingMcpBridge.handleRequest(baseUrl, request("tools/call", 3));
+		assertTrue(called.get("error").get("message").asText().startsWith("No application listening on"));
+	}
+
+	private static JsonNode request(String method, int id) {
+		ObjectNode request = OBJECT_MAPPER.createObjectNode();
+		request.put("jsonrpc", "2.0");
+		request.put("method", method);
+		request.put("id", id);
+
+		return request;
+	}
+
+	@Test
 	void testSchemaCreation() {
-		String schema = SwingMcpServer.createSchema("text", "string", "The text to type");
+		String schema = Tools.createSchema("text", "string", "The text to type");
 		assertNotNull(schema);
 		assertTrue(schema.contains("\"text\""));
 		assertTrue(schema.contains("\"string\""));
@@ -175,7 +202,7 @@ public class SwingMcpCoreTest {
 		HttpTool tool = new HttpTool(
 						"test_tool",
 						"A test tool for unit testing",
-						SwingMcpServer.createSchema("message", "string", "Test message"),
+						Tools.createSchema("message", "string", "Test message"),
 						args -> "Response: " + args.getOrDefault("message", "default")
 		);
 
@@ -196,9 +223,9 @@ public class SwingMcpCoreTest {
 	@Test
 	void testJsonSchemaConstants() throws Exception {
 		// Test that the schema constants are valid JSON
-		assertDoesNotThrow(() -> OBJECT_MAPPER.readTree(SwingMcpServer.INPUT_SCHEMA));
+		assertDoesNotThrow(() -> OBJECT_MAPPER.readTree(Tools.INPUT_SCHEMA));
 
-		JsonNode emptySchema = OBJECT_MAPPER.readTree(SwingMcpServer.INPUT_SCHEMA);
+		JsonNode emptySchema = OBJECT_MAPPER.readTree(Tools.INPUT_SCHEMA);
 		assertEquals("object", emptySchema.get("type").asText());
 		assertEquals(0, emptySchema.get("properties").size());
 	}
