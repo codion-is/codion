@@ -79,6 +79,7 @@ Codion Change Log
 - FocusableComboBox now overrides setName() and setEditor() and names the editor component as well, the editor being replaced during a look and feel change, leaving the new one unnamed.
 - FlexibleGridLayout.Builder.growRow() and growColumn() added, specifying the rows and columns absorbing the space a container has beyond the preferred one and giving up the space it lacks, the difference was and still is by default divided equally between all rows and columns, which moved the labels of a two column form away from their inputs as the container grew.
 - AbstractComponentBuilder.label(Consumer) now configures the label specified so far instead of replacing it with a new one, a call configuring the label of an entity component, the alignment say, discarded the caption it came with, leaving the label empty, label(JLabel) still replaces the label and is replaced in turn.
+- LabelBuilder.verticalAlignment() added, a label beside a tall input component, a text area or an image, otherwise floats in the middle of the row it shares with it.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.

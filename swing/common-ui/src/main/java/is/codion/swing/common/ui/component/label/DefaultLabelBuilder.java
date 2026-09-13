@@ -35,6 +35,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<JLabel,
 	private @Nullable String text;
 	private @Nullable Icon icon;
 	private int horizontalAlignment = SwingConstants.LEADING;
+	private int verticalAlignment = SwingConstants.CENTER;
 	private @Nullable Integer displayedMnemonic;
 	private @Nullable Character displayedMnemonicChar;
 	private int iconTextGap = -1;
@@ -85,6 +86,12 @@ final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<JLabel,
 	}
 
 	@Override
+	public LabelBuilder<T> verticalAlignment(int verticalAlignment) {
+		this.verticalAlignment = verticalAlignment;
+		return this;
+	}
+
+	@Override
 	public LabelBuilder<T> iconTextGap(int iconTextGap) {
 		this.iconTextGap = iconTextGap;
 		return this;
@@ -93,6 +100,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<JLabel,
 	@Override
 	protected JLabel createComponent() {
 		JLabel label = new JLabel(text, icon, horizontalAlignment);
+		label.setVerticalAlignment(verticalAlignment);
 		if (displayedMnemonic != null) {
 			label.setDisplayedMnemonic(displayedMnemonic);
 		}
