@@ -118,6 +118,74 @@ public final class FlexibleGridLayoutTest {
 	}
 
 	@Test
+	void growColumn() {
+		panel.setLayout(FlexibleGridLayout.builder()
+						.rows(0)
+						.columns(2)
+						.growColumn(1)
+						.build());
+		for (int i = 0; i < 3; i++) {
+			panel.add(createSizedLabel(40, 20));// the label column
+			panel.add(createSizedLabel(100, 20));// the input column
+		}
+		Dimension preferred = panel.getPreferredSize();
+		panel.setSize(preferred.width + 400, preferred.height);
+		panel.doLayout();
+		//the labels keep their preferred width, the input column takes all of the extra
+		assertEquals(40, panel.getComponent(0).getWidth());
+		assertEquals(500, panel.getComponent(1).getWidth());
+
+		//and gives up the width the container lacks, down to zero
+		panel.setSize(preferred.width - 60, preferred.height);
+		panel.doLayout();
+		assertEquals(40, panel.getComponent(0).getWidth());
+		assertEquals(40, panel.getComponent(1).getWidth());
+
+		panel.setSize(20, preferred.height);
+		panel.doLayout();
+		assertEquals(40, panel.getComponent(0).getWidth());
+		assertEquals(0, panel.getComponent(1).getWidth());
+	}
+
+	@Test
+	void growRow() {
+		panel.setLayout(FlexibleGridLayout.builder()
+						.rows(0)
+						.columns(1)
+						.growRow(1)
+						.build());
+		panel.add(createSizedLabel(40, 20));
+		panel.add(createSizedLabel(40, 20));
+		Dimension preferred = panel.getPreferredSize();
+		panel.setSize(preferred.width, preferred.height + 100);
+		panel.doLayout();
+		assertEquals(20, panel.getComponent(0).getHeight());
+		assertEquals(120, panel.getComponent(1).getHeight());
+	}
+
+	@Test
+	void growWithoutMatchingColumn() {
+		panel.setLayout(FlexibleGridLayout.builder()
+						.rows(0)
+						.columns(2)
+						.growColumn(4)// no such column, the extra space is divided equally, as by default
+						.build());
+		panel.add(createSizedLabel(40, 20));
+		panel.add(createSizedLabel(100, 20));
+		Dimension preferred = panel.getPreferredSize();
+		panel.setSize(preferred.width + 100, preferred.height);
+		panel.doLayout();
+		assertEquals(90, panel.getComponent(0).getWidth());
+		assertEquals(150, panel.getComponent(1).getWidth());
+	}
+
+	@Test
+	void growNegativeIndex() {
+		assertThrows(IllegalArgumentException.class, () -> FlexibleGridLayout.builder().growColumn(-1));
+		assertThrows(IllegalArgumentException.class, () -> FlexibleGridLayout.builder().growRow(-1));
+	}
+
+	@Test
 	void componentOverflow() {
 		panel.setLayout(FlexibleGridLayout.builder().rows(1).build());
 		for (int i = 0; i < 10; i++) {
