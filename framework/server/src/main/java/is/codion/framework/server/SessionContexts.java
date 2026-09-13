@@ -86,7 +86,7 @@ final class SessionContexts {
 	void prepare(Connection connection) {
 		for (SessionContext context : contexts) {
 			try {
-				context.prepare(clientInfo, connection);
+				context.prepare(connection, clientInfo);
 				applied++;
 			}
 			catch (Exception e) {
@@ -110,7 +110,7 @@ final class SessionContexts {
 		while (applied > 0) {
 			SessionContext context = contexts.get(--applied);
 			try {
-				context.release(clientInfo, connection);
+				context.release(connection, clientInfo);
 			}
 			catch (Exception e) {
 				clean = false;

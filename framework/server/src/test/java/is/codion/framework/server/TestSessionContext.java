@@ -70,7 +70,7 @@ public final class TestSessionContext implements SessionContext {
 	}
 
 	@Override
-	public void prepare(ClientInfo clientInfo, Connection connection) throws SQLException {
+	public void prepare(Connection connection, ClientInfo clientInfo) throws SQLException {
 		if (armed) {
 			CALLS.add("prepare:" + clientInfo.user() + "@" + clientInfo.clientType());
 			//prove the connection is usable, this being the point of receiving it
@@ -83,7 +83,7 @@ public final class TestSessionContext implements SessionContext {
 	}
 
 	@Override
-	public void release(ClientInfo clientInfo, Connection connection) throws SQLException {
+	public void release(Connection connection, ClientInfo clientInfo) throws SQLException {
 		if (armed) {
 			CALLS.add("release:" + clientInfo.user() + "@" + clientInfo.clientType());
 			if (failOnRelease) {

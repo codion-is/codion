@@ -21,6 +21,8 @@ Codion Change Log
 ### is.codion.common.utilities
 - Text.comparator() added, comparing strings with the collator, other comparables naturally and the rest by their string representation, the default comparator of FilterComboBoxModel and MultiInput now based on it.
 - Nulls.nonNull(Object) removed and rejectNulls(Collection) added.
+### is.codion.common.db
+- SessionContext.prepare() and release(), parameters reordered.
 ### is.codion.framework.domain
 - Entity.equalValues() renamed valuesEqual().
 - AttributeTemplate added.
