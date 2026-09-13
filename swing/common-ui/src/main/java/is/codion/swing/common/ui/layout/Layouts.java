@@ -76,18 +76,28 @@ public final class Layouts {
 	}
 
 	/**
-	 * Creates a FlexibleGridLayout using the default vertical and horizontal gap value,
+	 * Creates a {@link FlexibleGridLayout} using the default vertical and horizontal gap value,
 	 * with neither row heights nor column widths fixed.
 	 * @param rows the number of rows
 	 * @param columns the number of columns
-	 * @return a FlexibleGridLayout
+	 * @return a {@link FlexibleGridLayout}
 	 * @see #GAP
 	 */
 	public static FlexibleGridLayout flexibleGridLayout(int rows, int columns) {
-		return FlexibleGridLayout.builder()
+		return flexibleGridLayout()
 						.rowsColumns(rows, columns)
-						.horizontalGap(GAP.getOrThrow())
-						.verticalGap(GAP.getOrThrow())
 						.build();
+	}
+
+	/**
+	 * Creates a {@link FlexibleGridLayout.Builder} using the default vertical and horizontal gap value,
+	 * with neither row heights nor column widths fixed.
+	 * @return a {@link FlexibleGridLayout.Builder}
+	 * @see #GAP
+	 */
+	public static FlexibleGridLayout.Builder flexibleGridLayout() {
+		return FlexibleGridLayout.builder()
+						.verticalGap(GAP.getOrThrow())
+						.horizontalGap(GAP.getOrThrow());
 	}
 }
