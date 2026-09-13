@@ -57,6 +57,17 @@ public interface LabelBuilder<T> extends ComponentValueBuilder<JLabel, T, LabelB
 	LabelBuilder<T> horizontalAlignment(int horizontalAlignment);
 
 	/**
+	 * <p>Default {@link javax.swing.SwingConstants#CENTER}
+	 * <p>{@link javax.swing.SwingConstants#TOP} is the one to use for a label
+	 * beside a tall input component, a text area or an image, which it otherwise
+	 * floats in the middle of.
+	 * @param verticalAlignment the vertical text alignment
+	 * @return this builder instance
+	 * @see JLabel#setVerticalAlignment(int)
+	 */
+	LabelBuilder<T> verticalAlignment(int verticalAlignment);
+
+	/**
 	 * @param displayedMnemonic the label mnemonic key code
 	 * @return this builder instance
 	 * @see JLabel#setDisplayedMnemonic(int)

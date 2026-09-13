@@ -921,6 +921,18 @@ public final class ComponentsTest {
 		assertEquals("label", componentValue.component().getText());
 		textValue.set("hello");
 		assertEquals("hello", componentValue.component().getText());
+		//the JLabel defaults
+		assertEquals(SwingConstants.LEADING, componentValue.component().getHorizontalAlignment());
+		assertEquals(SwingConstants.CENTER, componentValue.component().getVerticalAlignment());
+
+		//a label beside a tall input component
+		JLabel top = Components.<String>label()
+						.text("label")
+						.verticalAlignment(SwingConstants.TOP)
+						.horizontalAlignment(SwingConstants.TRAILING)
+						.build();
+		assertEquals(SwingConstants.TOP, top.getVerticalAlignment());
+		assertEquals(SwingConstants.TRAILING, top.getHorizontalAlignment());
 	}
 
 	@Test
