@@ -86,6 +86,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	private @Nullable String name;
 	private @Nullable JLabel label;
+	private @Nullable LabelBuilder<String> labelBuilder;
 	private @Nullable Boolean focusable;
 	private @Nullable Integer preferredHeight;
 	private @Nullable Integer preferredWidth;
@@ -142,10 +143,10 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	@Override
 	public final B label(Consumer<LabelBuilder<String>> label) {
-		LabelBuilder<String> labelBuilder = LabelBuilder.builder();
-		requireNonNull(label).accept(labelBuilder);
+		LabelBuilder<String> builder = labelBuilder();
+		requireNonNull(label).accept(builder);
 
-		return label(labelBuilder.build());
+		return label(builder.build());
 	}
 
 	@Override
@@ -520,6 +521,22 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	protected final B self() {
 		return (B) this;
+	}
+
+	/**
+	 * <p>The label configuration accumulated so far, so that {@link #label(String)} and {@link #label(Consumer)}
+	 * add to the label instead of replacing it, a caption specified by an entity component surviving a call
+	 * specifying the alignment, say.
+	 * <p>Created on demand, a {@link LabelBuilder} being a component builder itself, so creating one eagerly
+	 * would recurse without end.
+	 * @return the {@link LabelBuilder} this builder configures its label with
+	 */
+	private LabelBuilder<String> labelBuilder() {
+		if (labelBuilder == null) {
+			labelBuilder = LabelBuilder.builder();
+		}
+
+		return labelBuilder;
 	}
 
 	/**
