@@ -26,8 +26,13 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.LayoutManager2;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -38,6 +43,7 @@ import static java.util.Objects.requireNonNull;
  * Features:
  * <ul>
  * <li>Optional fixed row heights or column widths.
+ * <li>Optional growing rows or columns, absorbing the space a container has beyond the preferred one.
  * <li>Custom horizontal and vertical gaps.
  * <li>Maintains preferred component sizes when not fixed.
  * <li>Safe for variable component counts and nested containers.
@@ -54,6 +60,8 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 	private final boolean fixColumnWidths;
 	private final @Nullable Integer fixedRowHeight;
 	private final @Nullable Integer fixedColumnWidth;
+	private final Set<Integer> growRows;
+	private final Set<Integer> growColumns;
 
 	private FlexibleGridLayout(DefaultBuilder defaultBuilder) {
 		this.rows = defaultBuilder.rows;
@@ -64,6 +72,8 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 		this.fixColumnWidths = defaultBuilder.fixColumnWidths;
 		this.fixedRowHeight = defaultBuilder.fixedRowHeight;
 		this.fixedColumnWidth = defaultBuilder.fixedColumnWidth;
+		this.growRows = unmodifiableSet(new LinkedHashSet<>(defaultBuilder.growRows));
+		this.growColumns = unmodifiableSet(new LinkedHashSet<>(defaultBuilder.growColumns));
 	}
 
 	/**
@@ -139,24 +149,39 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 
 	private void distributeExtraSpace(Container parent, Insets insets, int[] rowHeights, int[] colWidths) {
 		if (fixedColumnWidth == null) {
-			distributeExtraSpace(colWidths, parent.getWidth() - insets.left - insets.right, horizontalGap);
+			distributeExtraSpace(colWidths, parent.getWidth() - insets.left - insets.right, horizontalGap, growColumns);
 		}
 		if (fixedRowHeight == null) {
-			distributeExtraSpace(rowHeights, parent.getHeight() - insets.top - insets.bottom, verticalGap);
+			distributeExtraSpace(rowHeights, parent.getHeight() - insets.top - insets.bottom, verticalGap, growRows);
 		}
 	}
 
-	private static void distributeExtraSpace(int[] sizes, int availableSpace, int gap) {
+	private static void distributeExtraSpace(int[] sizes, int availableSpace, int gap, Set<Integer> grow) {
 		int totalPreferredSize = Arrays.stream(sizes).sum() + (sizes.length - 1) * gap;
 		int additionalSpace = availableSpace - totalPreferredSize;
 		if (additionalSpace != 0) {
-			int extra = additionalSpace / sizes.length;
-			int remainder = Math.abs(additionalSpace % sizes.length);
+			int[] indexes = growing(sizes.length, grow);
+			int extra = additionalSpace / indexes.length;
+			int remainder = Math.abs(additionalSpace % indexes.length);
 			int sign = additionalSpace > 0 ? 1 : -1;
-			for (int i = 0; i < sizes.length; i++) {
-				sizes[i] += extra + (i < remainder ? sign : 0);
+			for (int i = 0; i < indexes.length; i++) {
+				sizes[indexes[i]] = Math.max(0, sizes[indexes[i]] + extra + (i < remainder ? sign : 0));
 			}
 		}
+	}
+
+	/**
+	 * @param size the number of rows or columns
+	 * @param grow the ones specified as growing
+	 * @return the indexes absorbing the extra space, all of them unless one or more valid ones were specified
+	 */
+	private static int[] growing(int size, Set<Integer> grow) {
+		int[] indexes = grow.stream()
+						.mapToInt(Integer::intValue)
+						.filter(index -> index < size)
+						.toArray();
+
+		return indexes.length == 0 ? IntStream.range(0, size).toArray() : indexes;
 	}
 
 	private Dimension calculateLayoutSize(Container parent, Function<Component, Dimension> dimension) {
@@ -315,6 +340,35 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 		Builder fixedColumnWidth(int fixedColumnWidth);
 
 		/**
+		 * <p>Specifies a row absorbing the height a container has beyond the preferred one, and giving up
+		 * the height it lacks, the other rows keeping their preferred height. Call for each growing row.
+		 * <p>By default the difference is divided equally between all rows, as it is when none of the
+		 * rows specified exists.
+		 * @param index the index of the growing row
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case the index is negative
+		 */
+		Builder growRow(int index);
+
+		/**
+		 * <p>Specifies a column absorbing the width a container has beyond the preferred one, and giving up
+		 * the width it lacks, the other columns keeping their preferred width. Call for each growing column.
+		 * <p>By default the difference is divided equally between all columns, as it is when none of the
+		 * columns specified exists. A label column in a two column form typically keeps its preferred width:
+		 * {@snippet :
+		 * FlexibleGridLayout.builder()
+		 *         .rows(0)
+		 *         .columns(2)
+		 *         .growColumn(1)// the input column takes the space the labels do not need
+		 *         .build();
+		 *}
+		 * @param index the index of the growing column
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case the index is negative
+		 */
+		Builder growColumn(int index);
+
+		/**
 		 * Builds a new {@link FlexibleGridLayout} instance with the current configuration.
 		 * @return a configured layout manager
 		 */
@@ -331,6 +385,9 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 		private boolean fixColumnWidths = false;
 		private @Nullable Integer fixedRowHeight = null;
 		private @Nullable Integer fixedColumnWidth = null;
+
+		private final Collection<Integer> growRows = new LinkedHashSet<>();
+		private final Collection<Integer> growColumns = new LinkedHashSet<>();
 
 		public Builder rows(int rows) {
 			this.rows = rows;
@@ -385,8 +442,26 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 			return this;
 		}
 
+		public Builder growRow(int index) {
+			growRows.add(validateIndex(index));
+			return this;
+		}
+
+		public Builder growColumn(int index) {
+			growColumns.add(validateIndex(index));
+			return this;
+		}
+
 		public FlexibleGridLayout build() {
 			return new FlexibleGridLayout(this);
+		}
+
+		private static int validateIndex(int index) {
+			if (index < 0) {
+				throw new IllegalArgumentException("Index must be positive: " + index);
+			}
+
+			return index;
 		}
 	}
 }

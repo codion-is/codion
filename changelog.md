@@ -77,6 +77,7 @@ Codion Change Log
 - MultiInput now sorts members by default, Builder.comparator() added.
 - Utilities.updateComponentTreeForAllWindows() now requests the focus for the new editor of a focused editable combo box, the editor being replaced during the update, leaving the window without a focus owner, TAB included, in case the fallback component of its focus traversal policy is not showing.
 - FocusableComboBox now overrides setName() and setEditor() and names the editor component as well, the editor being replaced during a look and feel change, leaving the new one unnamed.
+- FlexibleGridLayout.Builder.growRow() and growColumn() added, specifying the rows and columns absorbing the space a container has beyond the preferred one and giving up the space it lacks, the difference was and still is by default divided equally between all rows and columns, which moved the labels of a two column form away from their inputs as the container grew.
 ### is.codion.swing.framework.model
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
