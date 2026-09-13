@@ -51,14 +51,14 @@ public final class TestClientTypeSessionContext implements SessionContext {
 	}
 
 	@Override
-	public void prepare(ClientInfo clientInfo, Connection connection) {
+	public void prepare(Connection connection, ClientInfo clientInfo) {
 		if (armed) {
 			CALLS.add("prepare:specific");
 		}
 	}
 
 	@Override
-	public void release(ClientInfo clientInfo, Connection connection) {
+	public void release(Connection connection, ClientInfo clientInfo) {
 		if (armed) {
 			CALLS.add("release:specific");
 		}

@@ -150,12 +150,12 @@ public final class SessionContextsTest {
 		}
 
 		@Override
-		public void prepare(ClientInfo clientInfo, Connection connection) throws SQLException {
+		public void prepare(Connection connection, ClientInfo clientInfo) throws SQLException {
 			calls.add("prepare:" + name);
 		}
 
 		@Override
-		public void release(ClientInfo clientInfo, Connection connection) throws SQLException {
+		public void release(Connection connection, ClientInfo clientInfo) throws SQLException {
 			calls.add("release:" + name);
 		}
 	}
@@ -170,16 +170,16 @@ public final class SessionContextsTest {
 		}
 
 		@Override
-		public void prepare(ClientInfo clientInfo, Connection connection) throws SQLException {
-			super.prepare(clientInfo, connection);
+		public void prepare(Connection connection, ClientInfo clientInfo) throws SQLException {
+			super.prepare(connection, clientInfo);
 			if (onPrepare) {
 				throw new SQLException("prepare failed");
 			}
 		}
 
 		@Override
-		public void release(ClientInfo clientInfo, Connection connection) throws SQLException {
-			super.release(clientInfo, connection);
+		public void release(Connection connection, ClientInfo clientInfo) throws SQLException {
+			super.release(connection, clientInfo);
 			if (!onPrepare) {
 				throw new SQLException("release failed");
 			}

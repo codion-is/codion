@@ -50,7 +50,7 @@ public final class ChinookSessionContext implements SessionContext {
 	}
 
 	@Override
-	public void prepare(ClientInfo clientInfo, Connection connection) throws SQLException {
+	public void prepare(Connection connection, ClientInfo clientInfo) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(SET_USER)) {
 			statement.setString(1, clientInfo.user());
 			statement.execute();
@@ -62,7 +62,7 @@ public final class ChinookSessionContext implements SessionContext {
 	 * every other client.
 	 */
 	@Override
-	public void release(ClientInfo clientInfo, Connection connection) throws SQLException {
+	public void release(Connection connection, ClientInfo clientInfo) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			statement.execute(CLEAR_USER);
 		}

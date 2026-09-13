@@ -48,10 +48,10 @@ public final class ChinookSessionContextTest {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			assertNull(chinookUser(connection));
 
-			sessionContext.prepare(CLIENT_INFO, connection);
+			sessionContext.prepare(connection, CLIENT_INFO);
 			assertEquals("peter", chinookUser(connection));
 
-			sessionContext.release(CLIENT_INFO, connection);
+			sessionContext.release(connection, CLIENT_INFO);
 			assertNull(chinookUser(connection));
 		}
 	}
