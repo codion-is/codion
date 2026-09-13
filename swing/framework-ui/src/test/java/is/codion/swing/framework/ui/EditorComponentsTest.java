@@ -35,6 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,6 +66,19 @@ public final class EditorComponentsTest {
 		components.component(Employee.SALARY).set(salary);
 		salary.set(2000d);
 		assertEquals(salary.get(), editModel.editor().value(Employee.SALARY).get());
+	}
+
+	@Test
+	void labelConfigurationKeepsTheCaption() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
+		ComponentFactory create = new ComponentFactory(components);
+		//the caption comes from the attribute definition, configuring the label must not discard it
+		create.textField(Employee.NAME)
+						.label(label -> label.horizontalAlignment(SwingConstants.TRAILING));
+		JLabel label = components.component(Employee.NAME).label();
+		assertEquals(editModel.entityDefinition().attributes().definition(Employee.NAME).caption(), label.getText());
+		assertEquals(SwingConstants.TRAILING, label.getHorizontalAlignment());
 	}
 
 	@Test

@@ -924,6 +924,42 @@ public final class ComponentsTest {
 	}
 
 	@Test
+	void labelSpecifications() {
+		//label(String) and label(Consumer) add to the same label, in either order
+		JTextField field = Components.stringField()
+						.label("Title")
+						.label(label -> label.horizontalAlignment(SwingConstants.TRAILING))
+						.build();
+		JLabel label = (JLabel) field.getClientProperty("labeledBy");
+		assertEquals("Title", label.getText());
+		assertEquals(SwingConstants.TRAILING, label.getHorizontalAlignment());
+		assertSame(field, label.getLabelFor());
+
+		JTextField reversed = Components.stringField()
+						.label(label1 -> label1.horizontalAlignment(SwingConstants.TRAILING))
+						.label("Title")
+						.build();
+		JLabel reversedLabel = (JLabel) reversed.getClientProperty("labeledBy");
+		assertEquals("Title", reversedLabel.getText());
+		assertEquals(SwingConstants.TRAILING, reversedLabel.getHorizontalAlignment());
+
+		//label(JLabel) replaces, and is replaced in turn
+		JLabel given = new JLabel("Given");
+		JTextField replaced = Components.stringField()
+						.label("Title")
+						.label(given)
+						.build();
+		assertSame(given, replaced.getClientProperty("labeledBy"));
+
+		JTextField replacedInTurn = Components.stringField()
+						.label(given)
+						.label("Title")
+						.build();
+		assertNotSame(given, replacedInTurn.getClientProperty("labeledBy"));
+		assertEquals("Title", ((JLabel) replacedInTurn.getClientProperty("labeledBy")).getText());
+	}
+
+	@Test
 	void listSelectedItems() {
 		SwingFilterListModel<String> listModel = SwingFilterListModel.builder()
 						.items(asList("one", "two", "three"))
