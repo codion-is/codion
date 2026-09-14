@@ -127,11 +127,6 @@ public final class DefaultForeignKeyConditionModelTest {
 		inComboBoxModel.selection().item().clear();
 		condition.operands().in().set(singletonList(sales));
 		assertNull(inComboBoxModel.selection().item().get());
-
-		assertThrows(IllegalStateException.class, () -> ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.inSearchModel(searchModel())
-						.inComboBoxModel(comboBoxModel())
-						.build());
 	}
 
 	@Test

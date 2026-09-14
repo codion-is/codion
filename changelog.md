@@ -38,6 +38,7 @@ Codion Change Log
 - ForeignKeyConditionModel.inComboBoxModel() added, along with Builder.inComboBoxModel(), the IN operand based on either a search model or a combo box model.
 - EntitySearchModel.Selection.entities() and single() removed, the search model holding a single selected entity, Selection.entity() now notifying when the selected instance changes, an updated entity replacing an equal one included.
 - DefaultForeignKeyConditionModel, EQUAL is now the default operator, when possible.
+- DefaultForeignKeyConditionModel now permits both search and combo box models for both IN and EQUAL operators.
 ### is.codion.swing.common.model
 - DefaultListSelection, item() and items() now notify when the instances the selected indexes refer to are replaced, see DefaultMultiSelection.
 - DefaultListSelection is now a DefaultListSelectionModel serving as the MultiSelection.IndexStore of a common DefaultMultiSelection, forwarding to its facades, rather than a copy of it with the store swapped. The JTable and JList keyboard actions moving the lead are enabled only for a DefaultListSelectionModel, hence the extension stays.
@@ -87,6 +88,7 @@ Codion Change Log
 - SwingEntityComboBoxModel.Builder now extends EntityComboBoxModel.Builder.
 - SwingEntityConditions, a foreign key based on a small dataset now bases its IN operand on a combo box model, as it does the EQUAL operand, instead of a search model, disabled when the referenced entity is not searchable, createInComboBoxModel() added.
 - EntityQueryModel.SelectAttributes.include() and exclude() renamed included() and excluded(), overloads of the attribute based included() and excluded().
+- SwingEntityConditions now initializes search and combo box models for both IN and EQUAL operators.
 ### is.codion.swing.framework.ui
 - EntityComboBoxPanel and EntitySearchFieldPanel renamed EntityComboBoxInput and EntitySearchInput, EntityComponents.comboBoxPanel(), searchFieldPanel(), temporalFieldPanel(), textFieldPanel() and byteArrayInputPanel() renamed comboBoxInput(), searchFieldInput(), temporalFieldInput(), textFieldInput() and fileByteArrayInput().
 - ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING renamed HANDLING.
