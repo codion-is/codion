@@ -1,6 +1,6 @@
 plugins {
     id "org.gradle.toolchains.foojay-resolver-convention" version "1.0.0"
-    id "io.github.ben-manes.versions.settings"  version "0.61.0"
+    id "io.github.ben-manes.versions.settings"  version "0.62.0"
 }
 
 rootProject.name = "is.codion"
@@ -215,9 +215,9 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         libs {
-            version("slf4j.api", "2.0.18")
+            version("slf4j.api", "2.0.19")
             version("logback", "1.6.3")
-            version("h2", "2.3.232")
+            version("h2", "2.5.250")
             version("json", "20260814")
 
             version("jfreechart", "1.5.6")
@@ -225,7 +225,7 @@ dependencyResolutionManagement {
             version("assertj.swing", "4.0.0-beta-2")
             version("ayza", "10.0.7")
             version("flatlaf", "3.7.2")
-            version("jsvg", "2.1.0")
+            version("jsvg", "2.2.0")
             version("javalin", "7.2.3")
             version("javapoet", "0.19.0")
 
