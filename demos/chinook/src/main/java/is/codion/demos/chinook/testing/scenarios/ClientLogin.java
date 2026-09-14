@@ -29,7 +29,7 @@ public final class ClientLogin implements Performer<EntityConnection> {
 	public void perform(EntityConnection connection) {
 		try (EntityConnection login = EntityConnection.builder()
 						.domain(Chinook.DOMAIN)
-						.clientType("LogoutLogin")
+						.clientType(Chinook.DOMAIN.name())
 						.user(connection.user())
 						.build()) {
 			login.select(Genre.ID.isNull());

@@ -54,6 +54,7 @@ public interface LookAndFeelProvider {
 
 	/**
 	 * Adds a new look and feel enabler.
+	 * Note that this replaces any existing look and feel enabler based on the same classname.
 	 * @param lookAndFeelInfo the look and feel info
 	 */
 	static void addLookAndFeel(LookAndFeelInfo lookAndFeelInfo) {
@@ -62,6 +63,7 @@ public interface LookAndFeelProvider {
 
 	/**
 	 * Adds a new look and feel enabler.
+	 * Note that this replaces any existing look and feel enabler based on the same classname.
 	 * @param lookAndFeelInfo the look and feel info
 	 * @param enabler configures and enables this look and feel
 	 */

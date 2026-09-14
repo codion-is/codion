@@ -59,8 +59,7 @@ exposes your database login surface. See <<_authenticate_against_your_applicatio
 
 **Authorization is database privileges.** Codion has no per-operation or row-level authorization
 layer. Authorization is enforced by the database, below the application, where it cannot be
-bypassed — the same model the framework has used since its Oracle Forms ancestry. This is a
-strength, provided the database user actually constrains the client.
+bypassed. This is a strength, provided the database user actually constrains the client.
 
 **The client is trusted to be well behaved.** A desktop client on your network runs your code.
 A mobile application runs on a device its user controls, and its traffic can be modified.
@@ -110,8 +109,8 @@ connection attempt.
 
 See also <<server.adoc#_authentication, Authentication>>.
 <<{dir-tutorials}/chinook/chinook.adoc#_authenticator, ChinookAuthenticator>> demonstrates the
-pattern: authenticate the client's user against an application table, then return
-`client.withDatabaseUser(databaseUser)`.
+pattern: authenticate the session's user against an application table, then return
+`session.withDatabaseUser(databaseUser)`.
 
 For mobile clients, have the application present an opaque, revocable **token** as the password.
 The device then never stores a reusable credential, and access can be withdrawn without changing
