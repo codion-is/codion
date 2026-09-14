@@ -13,10 +13,6 @@ The Codion framework is based on a three tiered architecture.
 The {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html[EntityConnection] class defines the database layer.
 See <<{basedir}/manual/manual.adoc#_entityconnection, Manual:EntityConnection>>.
 
-The database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific functionality except primary key generation via <<{basedir}/manual/manual.adoc#_generator, Generator>> strategies.
-The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.
-Note that you can always use the underlying JDBC connection directly as well.
-
 == Model layer
 
 The {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] class defines the model layer.

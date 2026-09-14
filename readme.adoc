@@ -104,7 +104,7 @@ image::https://github.com/codion-is/llemmy/blob/main/llemmy/src/docs/asciidoc/im
 
 === https://github.com/codion-is/petclinic[Petclinic]
 
-Minimalistic bare-bones CRUD application project, with a local JDBC connection option.
+Minimalistic bare-bones CRUD application project, configured for a local JDBC connection.
 A good place to start.
 
 https://codion.is/doc/{version}/tutorials/petclinic/petclinic.html[Petclinic Tutorial]
@@ -113,7 +113,7 @@ image::https://github.com/codion-is/petclinic/blob/main/src/docs/asciidoc/images
 
 === https://github.com/codion-is/world[World]
 
-Fully configured multi-module CRUD application project, with separate client modules configured for JDBC, RMI and HTTP connection options.
+Fully configured multi-module CRUD application project, with separate client modules configured for JDBC and RMI connections.
 
 https://codion.is/doc/{version}/tutorials/world/world.html[World Tutorial]
 
@@ -127,7 +127,7 @@ The *Kitchen Sink* demo, with lots of customization and deployment examples.
 
 https://codion.is/doc/{version}/tutorials/chinook/chinook.html[Chinook Tutorial]
 
-Fully configured multi-module CRUD application project, with separate client modules configured for JDBC, RMI and HTTP connection options.
+Fully configured multi-module CRUD application project, with separate client modules configured for JDBC, RMI and HTTP connections.
 
 Includes load-test, server, and server monitor modules and `jlink`/`jpackage` configurations.
 
