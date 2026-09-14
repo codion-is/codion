@@ -174,12 +174,6 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		 * from a combo box or a search field, is the most intuitive.
 		 */
 		private List<Operator> operators() {
-			if (equalSearchModel != null && equalComboBoxModel != null) {
-				throw new IllegalStateException("The EQUAL operand can not be based on both a search model and a combo box model");
-			}
-			if (inSearchModel != null && inComboBoxModel != null) {
-				throw new IllegalStateException("The IN operand can not be based on both a search model and a combo box model");
-			}
 			boolean equal = equalSearchModel != null || equalComboBoxModel != null;
 			boolean in = inSearchModel != null || inComboBoxModel != null;
 			if (!equal && !in) {
