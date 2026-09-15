@@ -14,17 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2009 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
 package is.codion.framework.model;
 
 import is.codion.common.reactive.value.ValueSet;
-import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.model.ForeignKeyConditionModel.Models;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -34,8 +36,12 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
+import static is.codion.common.utilities.Operator.*;
+import static is.codion.framework.domain.entity.condition.Condition.all;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,12 +59,9 @@ public final class DefaultForeignKeyConditionModelTest {
 
 	@Test
 	void operandsAreNotTheSearchModelSelections() {
-		EntitySearchModel equalSearchModel = searchModel();
-		EntitySearchModel inSearchModel = searchModel();
-		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.equalSearchModel(equalSearchModel)
-						.inSearchModel(inSearchModel)
-						.build();
+		ForeignKeyConditionModel condition = condition().build();
+		EntitySearchModel equalSearchModel = condition.models().equal().searchModel();
+		EntitySearchModel inSearchModel = condition.models().in().searchModel();
 		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
 
 		equalSearchModel.selection().entity().set(sales);
@@ -76,14 +79,9 @@ public final class DefaultForeignKeyConditionModelTest {
 
 	@Test
 	void operandIsNotTheComboBoxModelSelection() {
-		EntityComboBoxModel equalComboBoxModel = EntityComboBoxModel.builder()
-						.entityType(Department.TYPE)
-						.connection(CONNECTION)
-						.build();
+		ForeignKeyConditionModel condition = condition().build();
+		EntityComboBoxModel equalComboBoxModel = condition.models().equal().comboBoxModel();
 		equalComboBoxModel.items().refresh();
-		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.equalComboBoxModel(equalComboBoxModel)
-						.build();
 		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
 
 		equalComboBoxModel.selection().item().set(sales);
@@ -95,38 +93,94 @@ public final class DefaultForeignKeyConditionModelTest {
 	}
 
 	@Test
-	void inOperandOnly() {
-		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.inSearchModel(searchModel())
+	void operators() {
+		ForeignKeyConditionModel condition = condition().build();
+		assertEquals(asList(EQUAL, NOT_EQUAL, IN, NOT_IN), condition.operators());
+		assertEquals(EQUAL, condition.operator().get());
+
+		condition = condition()
+						.operators(asList(IN, NOT_IN))
 						.build();
-		assertEquals(asList(Operator.IN, Operator.NOT_IN), condition.operators());
-		assertEquals(Operator.IN, condition.operator().get());
+		assertEquals(asList(IN, NOT_IN), condition.operators());
+		assertEquals(IN, condition.operator().get());
+
+		// the initial operator, the one clear() reverts to
+		condition = condition()
+						.operator(NOT_IN)
+						.build();
+		assertEquals(NOT_IN, condition.operator().get());
+		condition.operator().set(EQUAL);
+		condition.clear();
+		assertEquals(NOT_IN, condition.operator().get());
+
+		assertThrows(IllegalArgumentException.class, () -> condition().operators(emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> condition().operators(asList(EQUAL, LESS_THAN)));
+		assertThrows(IllegalArgumentException.class, () -> condition()
+						.operators(singletonList(EQUAL))
+						.operator(IN)
+						.build());
 	}
 
 	@Test
-	void inComboBoxModel() {
-		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.equalComboBoxModel(comboBoxModel())
-						.inComboBoxModel(comboBoxModel())
+	void modelsCreatedOnFirstAccessOnePerOperand() {
+		AtomicInteger comboBoxModels = new AtomicInteger();
+		AtomicInteger searchModels = new AtomicInteger();
+		ForeignKeyConditionModel condition = condition()
+						.comboBoxModel(() -> {
+							comboBoxModels.incrementAndGet();
+							return comboBoxModel();
+						})
+						.searchModel(() -> {
+							searchModels.incrementAndGet();
+							return searchModel();
+						})
 						.build();
-		assertEquals(asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN), condition.operators());
-		assertEquals(Operator.EQUAL, condition.operator().get());
+		assertEquals(0, comboBoxModels.get());
+		assertEquals(0, searchModels.get());
 
-		condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.inComboBoxModel(comboBoxModel())
-						.build();
-		assertEquals(asList(Operator.IN, Operator.NOT_IN), condition.operators());
-		assertEquals(Operator.IN, condition.operator().get());
+		Models models = condition.models();
+		assertSame(models.equal().comboBoxModel(), models.equal().comboBoxModel());
+		assertEquals(1, comboBoxModels.get());
+		assertNotSame(models.equal().comboBoxModel(), models.in().comboBoxModel());
+		assertEquals(2, comboBoxModels.get());
+		assertSame(models.in().searchModel(), models.in().searchModel());
+		assertEquals(1, searchModels.get());
+		assertNotSame(models.in().searchModel(), models.equal().searchModel());
+		assertEquals(2, searchModels.get());
+	}
 
-		// the selection is not the operand
-		EntityComboBoxModel inComboBoxModel = condition.inComboBoxModel().orElseThrow();
-		inComboBoxModel.items().refresh();
-		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
-		inComboBoxModel.selection().item().set(sales);
-		assertTrue(condition.operands().in().get().isEmpty());
-		inComboBoxModel.selection().item().clear();
-		condition.operands().in().set(singletonList(sales));
-		assertNull(inComboBoxModel.selection().item().get());
+	@Test
+	void conditionAppliedToEveryModel() {
+		Models models = condition().build().models();
+		Supplier<Condition> accounting = () -> Department.NAME.equalTo("ACCOUNTING");
+		// a model created before the condition is set
+		EntityComboBoxModel equalComboBoxModel = models.equal().comboBoxModel();
+		assertEquals(all(Department.TYPE), equalComboBoxModel.condition().getOrThrow().get());
+		models.condition().set(accounting);
+		assertSame(accounting, equalComboBoxModel.condition().get());
+		// and the ones created after
+		assertSame(accounting, models.in().comboBoxModel().condition().get());
+		assertSame(accounting, models.equal().searchModel().condition().get());
+		assertSame(accounting, models.in().searchModel().condition().get());
+
+		Supplier<Condition> research = () -> Department.NAME.equalTo("RESEARCH");
+		models.condition().set(research);
+		assertSame(research, models.equal().comboBoxModel().condition().get());
+		assertSame(research, models.in().comboBoxModel().condition().get());
+		assertSame(research, models.equal().searchModel().condition().get());
+		assertSame(research, models.in().searchModel().condition().get());
+
+		// cleared, the models revert to their own defaults
+		models.condition().clear();
+		assertEquals(all(Department.TYPE), equalComboBoxModel.condition().getOrThrow().get());
+		assertNotSame(research, models.equal().searchModel().condition().getOrThrow());
+
+		// a condition set directly on a model is left alone until the shared one is set
+		Supplier<Condition> sales = () -> Department.NAME.equalTo("SALES");
+		models.equal().searchModel().condition().set(sales);
+		assertSame(sales, models.equal().searchModel().condition().get());
+		models.condition().set(accounting);
+		assertSame(accounting, models.equal().searchModel().condition().get());
 	}
 
 	@Test
@@ -134,19 +188,55 @@ public final class DefaultForeignKeyConditionModelTest {
 		ForeignKeyConditionModel condition = new EntityConditions(Employee.TYPE, CONNECTION).condition(Employee.DEPARTMENT_FK);
 		assertEquals(ENTITIES.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK).caption(),
 						condition.caption().orElseThrow());
-		assertFalse(ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.inSearchModel(searchModel())
+		assertFalse(condition().build().caption().isPresent());
+	}
+
+	@Test
+	void operandsCanNotShareAModel() {
+		EntityComboBoxModel comboBoxModel = comboBoxModel();
+		EntitySearchModel searchModel = searchModel();
+		ForeignKeyConditionModel condition = condition()
+						.comboBoxModel(() -> comboBoxModel)
+						.searchModel(() -> searchModel)
+						.build();
+		Models models = condition.models();
+		assertSame(comboBoxModel, models.equal().comboBoxModel());
+		assertThrows(IllegalStateException.class, () -> models.in().comboBoxModel());
+		assertSame(searchModel, models.in().searchModel());
+		assertThrows(IllegalStateException.class, () -> models.equal().searchModel());
+		// a shared model, the operators restricted to the ones of a single operand
+		Models restricted = condition()
+						.comboBoxModel(() -> comboBoxModel)
+						.operators(asList(EQUAL, NOT_EQUAL))
 						.build()
-						.caption()
-						.isPresent());
+						.models();
+		assertSame(comboBoxModel, restricted.equal().comboBoxModel());
+	}
+
+	@Test
+	void entityConditionsBuilderInitializedWithTheDefaults() {
+		EntityConditions conditions = new EntityConditions(Employee.TYPE, CONNECTION) {
+			@Override
+			protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
+				return builder(foreignKey)
+								.operators(asList(EQUAL, NOT_EQUAL))
+								.build();
+			}
+		};
+		ForeignKeyConditionModel condition = (ForeignKeyConditionModel) conditions.get().get(Employee.DEPARTMENT_FK);
+		assertEquals(asList(EQUAL, NOT_EQUAL), condition.operators());
+		assertEquals(ENTITIES.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK).caption(),
+						condition.caption().orElseThrow());
+		Models models = condition.models();
+		assertEquals(Department.TYPE, models.equal().comboBoxModel().entityDefinition().type());
+		assertNotSame(models.equal().comboBoxModel(), models.in().comboBoxModel());
+		assertEquals(Department.TYPE, models.equal().searchModel().entityDefinition().type());
+		assertNotSame(models.equal().searchModel(), models.in().searchModel());
 	}
 
 	@Test
 	void updatedEntitiesReplacedInOperands() {
-		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.equalSearchModel(searchModel())
-						.inSearchModel(searchModel())
-						.build();
+		ForeignKeyConditionModel condition = condition().build();
 		Entity renamed = department(-42, "Renamed");
 		Entity rekeyed = department(-43, "Rekeyed");
 		Entity untouched = department(-44, "Untouched");
@@ -194,10 +284,7 @@ public final class DefaultForeignKeyConditionModelTest {
 
 	@Test
 	void deletedEntitiesRemovedFromOperands() {
-		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
-						.equalSearchModel(searchModel())
-						.inSearchModel(searchModel())
-						.build();
+		ForeignKeyConditionModel condition = condition().build();
 		Entity one = department(-42, "One");
 		Entity two = department(-43, "Two");
 		condition.operands().equal().set(one);
@@ -214,6 +301,12 @@ public final class DefaultForeignKeyConditionModelTest {
 		assertNull(condition.operands().equal().get());
 		assertEquals(singletonList(two), asList(condition.operands().in().get().toArray()));
 		assertEquals(1, inNotifications.get());
+	}
+
+	private static ForeignKeyConditionModel.Builder condition() {
+		return ForeignKeyConditionModel.builder()
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.connection(CONNECTION);
 	}
 
 	private static EntitySearchModel searchModel() {

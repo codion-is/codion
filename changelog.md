@@ -2,6 +2,18 @@ Codion Change Log
 =================
 
 ## 0.18.87
+### is.codion.framework.model
+- EntityQueryModel.entityQueryModel() removed, replaced by AbstractEntityTableModel.entityQueryModel(), protected, a query model being created by the table model.
+- ForeignKeyConditionModel.models() added, providing the combo box and search models the operand components are based on, one of each per operand, created on first access from the builder recipes, the four Optional based model accessors removed along with the respective builder methods, ForeignKeyConditionModel.builder() now a step builder, with a connection step.
+- ForeignKeyConditionModel.Builder.comboBoxModel(), searchModel() and operators() added, the operators no longer inferred from the models supplied, all four available by default, a model supplied for both operands rejected.
+- ForeignKeyConditionModel.Models.condition() added, restricting the referenced entities offered by all the operand models.
+- EntityConditions.builder(ForeignKey) added, a foreign key condition model builder initialized with the defaults, createEqualSearchModel() and createInSearchModel() removed.
+### is.codion.swing.framework.model
+- SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
+- SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).
+- SwingEntityComboBoxModel.model(EntityComboBoxModel) added, the Swing coat over a UI-agnostic combo box model.
+### is.codion.swing.framework.ui
+- EntityConditionComponents, a foreign key operand component is now a combo box when the referenced entity is based on a small dataset, a search field otherwise, based on the models provided by ForeignKeyConditionModel.models().
 
 ## 0.18.86
 ### is.codion.common.reactive

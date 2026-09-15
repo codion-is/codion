@@ -23,11 +23,14 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.Operator;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -36,36 +39,34 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import static is.codion.common.utilities.Operator.*;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
 
 final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel {
 
+	private static final List<Operator> OPERATORS = unmodifiableList(asList(EQUAL, NOT_EQUAL, IN, NOT_IN));
+
 	private final ForeignKey foreignKey;
 	private final ConditionModel<Entity> condition;
-	private final @Nullable EntitySearchModel equalSearchModel;
-	private final @Nullable EntityComboBoxModel equalComboBoxModel;
-	private final @Nullable EntitySearchModel inSearchModel;
-	private final @Nullable EntityComboBoxModel inComboBoxModel;
+	private final DefaultModels models;
 	// strong references, the persistence events hold their consumers weakly
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
 		foreignKey = builder.foreignKey;
-		equalSearchModel = builder.equalSearchModel;
-		equalComboBoxModel = builder.equalComboBoxModel;
-		inSearchModel = builder.inSearchModel;
-		inComboBoxModel = builder.inComboBoxModel;
-		List<Operator> operators = builder.operators();
+		models = new DefaultModels(builder.comboBoxModel, builder.searchModel);
 		condition = ConditionModel.builder()
 						.valueClass(Entity.class)
-						// the operator before the operators, which must contain it, the default EQUAL being absent without an EQUAL operand
-						.operator(builder.operator == null ? operators.get(0) : builder.operator)
-						.operators(operators)
+						// the operator before the operators, which must contain it
+						.operator(builder.operator == null ? builder.operators.get(0) : builder.operator)
+						.operators(builder.operators)
 						.caption(builder.caption)
 						.build();
 		PersistenceEvents persistenceEvents = persistenceEvents(foreignKey.referencedType());
@@ -94,61 +95,74 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	}
 
 	@Override
-	public Optional<EntitySearchModel> equalSearchModel() {
-		return Optional.ofNullable(equalSearchModel);
+	public Models models() {
+		return models;
 	}
 
-	@Override
-	public Optional<EntityComboBoxModel> equalComboBoxModel() {
-		return Optional.ofNullable(equalComboBoxModel);
+	/**
+	 * @param foreignKey the foreign key
+	 * @param connection the connection
+	 * @return the default combo box model for the given foreign key, of the referenced entities, including null
+	 */
+	static EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnection connection) {
+		return EntityComboBoxModel.builder()
+						.entityType(requireNonNull(foreignKey).referencedType())
+						.connection(requireNonNull(connection))
+						.includeNull(true)
+						.build();
 	}
 
-	@Override
-	public Optional<EntitySearchModel> inSearchModel() {
-		return Optional.ofNullable(inSearchModel);
-	}
-
-	@Override
-	public Optional<EntityComboBoxModel> inComboBoxModel() {
-		return Optional.ofNullable(inComboBoxModel);
+	/**
+	 * @param foreignKey the foreign key
+	 * @param connection the connection
+	 * @return the default search model for the given foreign key, of the referenced entities
+	 */
+	static EntitySearchModel searchModel(ForeignKey foreignKey, EntityConnection connection) {
+		return EntitySearchModel.builder()
+						.entityType(requireNonNull(foreignKey).referencedType())
+						.connection(requireNonNull(connection))
+						.build();
 	}
 
 	static final class DefaultBuilder implements Builder {
 
+		static final ForeignKeyStep FOREIGN_KEY_STEP = new DefaultForeignKeyStep();
+
 		private final ForeignKey foreignKey;
 
-		private @Nullable EntitySearchModel equalSearchModel;
-		private @Nullable EntityComboBoxModel equalComboBoxModel;
-		private @Nullable EntitySearchModel inSearchModel;
-		private @Nullable EntityComboBoxModel inComboBoxModel;
+		private Supplier<EntityComboBoxModel> comboBoxModel;
+		private Supplier<EntitySearchModel> searchModel;
+		private List<Operator> operators = OPERATORS;
 		private @Nullable Operator operator;
 		private @Nullable String caption;
 
-		DefaultBuilder(ForeignKey foreignKey) {
+		private DefaultBuilder(ForeignKey foreignKey, EntityConnection connection) {
 			this.foreignKey = foreignKey;
+			this.comboBoxModel = () -> DefaultForeignKeyConditionModel.comboBoxModel(foreignKey, connection);
+			this.searchModel = () -> DefaultForeignKeyConditionModel.searchModel(foreignKey, connection);
 		}
 
 		@Override
-		public Builder equalSearchModel(EntitySearchModel equalSearchModel) {
-			this.equalSearchModel = requireNonNull(equalSearchModel);
+		public Builder comboBoxModel(Supplier<EntityComboBoxModel> comboBoxModel) {
+			this.comboBoxModel = requireNonNull(comboBoxModel);
 			return this;
 		}
 
 		@Override
-		public Builder equalComboBoxModel(EntityComboBoxModel equalComboBoxModel) {
-			this.equalComboBoxModel = requireNonNull(equalComboBoxModel);
+		public Builder searchModel(Supplier<EntitySearchModel> searchModel) {
+			this.searchModel = requireNonNull(searchModel);
 			return this;
 		}
 
 		@Override
-		public Builder inSearchModel(EntitySearchModel inSearchModel) {
-			this.inSearchModel = requireNonNull(inSearchModel);
-			return this;
-		}
-
-		@Override
-		public Builder inComboBoxModel(EntityComboBoxModel inComboBoxModel) {
-			this.inComboBoxModel = requireNonNull(inComboBoxModel);
+		public Builder operators(List<Operator> operators) {
+			if (requireNonNull(operators).isEmpty()) {
+				throw new IllegalArgumentException("No operators specified");
+			}
+			if (!OPERATORS.containsAll(operators)) {
+				throw new IllegalArgumentException("Operators not supported by a foreign key condition: " + operators);
+			}
+			this.operators = unmodifiableList(new ArrayList<>(operators));
 			return this;
 		}
 
@@ -166,27 +180,112 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 
 		@Override
 		public ForeignKeyConditionModel build() {
+			if (operator != null && !operators.contains(operator)) {
+				throw new IllegalArgumentException("Operator " + operator + " is not one of the available operators: " + operators);
+			}
+
 			return new DefaultForeignKeyConditionModel(this);
 		}
 
-		/**
-		 * The first operator is the default one, EQUAL when available, since picking a single entity,
-		 * from a combo box or a search field, is the most intuitive.
-		 */
-		private List<Operator> operators() {
-			boolean equal = equalSearchModel != null || equalComboBoxModel != null;
-			boolean in = inSearchModel != null || inComboBoxModel != null;
-			if (!equal && !in) {
-				throw new IllegalStateException("Neither EQUAL nor IN operator specified");
+		private static final class DefaultForeignKeyStep implements ForeignKeyStep {
+
+			@Override
+			public ConnectionStep foreignKey(ForeignKey foreignKey) {
+				return new DefaultConnectionStep(requireNonNull(foreignKey));
 			}
-			if (equal && in) {
-				return asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);
-			}
-			if (equal) {
-				return asList(Operator.EQUAL, Operator.NOT_EQUAL);
+		}
+
+		private static final class DefaultConnectionStep implements ConnectionStep {
+
+			private final ForeignKey foreignKey;
+
+			private DefaultConnectionStep(ForeignKey foreignKey) {
+				this.foreignKey = foreignKey;
 			}
 
-			return asList(Operator.IN, Operator.NOT_IN);
+			@Override
+			public Builder connection(EntityConnection connection) {
+				return new DefaultBuilder(foreignKey, requireNonNull(connection));
+			}
+		}
+	}
+
+	private static final class DefaultModels implements Models {
+
+		private final Supplier<EntityComboBoxModel> comboBoxModel;
+		private final Supplier<EntitySearchModel> searchModel;
+		private final Value<Supplier<Condition>> condition = Value.nullable();
+		private final DefaultOperand equal = new DefaultOperand();
+		private final DefaultOperand in = new DefaultOperand();
+
+		private DefaultModels(Supplier<EntityComboBoxModel> comboBoxModel, Supplier<EntitySearchModel> searchModel) {
+			this.comboBoxModel = comboBoxModel;
+			this.searchModel = searchModel;
+		}
+
+		@Override
+		public Operand equal() {
+			return equal;
+		}
+
+		@Override
+		public Operand in() {
+			return in;
+		}
+
+		@Override
+		public Value<Supplier<Condition>> condition() {
+			return condition;
+		}
+
+		/**
+		 * Applies the shared condition to the given model condition, now if set, and whenever set from now on
+		 */
+		private void restrict(Value<Supplier<Condition>> modelCondition) {
+			condition.optional().ifPresent(modelCondition::set);
+			condition.addConsumer(modelCondition::set);
+		}
+
+		private final class DefaultOperand implements Operand {
+
+			private @Nullable EntityComboBoxModel comboBoxModel;
+			private @Nullable EntitySearchModel searchModel;
+
+			@Override
+			public EntityComboBoxModel comboBoxModel() {
+				synchronized (DefaultModels.this) {
+					if (comboBoxModel == null) {
+						EntityComboBoxModel created = requireNonNull(DefaultModels.this.comboBoxModel.get());
+						if (created == other().comboBoxModel) {
+							throw new IllegalStateException("The EQUAL and IN operands can not share a combo box model: " + created);
+						}
+						restrict(created.condition());
+						comboBoxModel = created;
+					}
+
+					return comboBoxModel;
+				}
+			}
+
+			@Override
+			public EntitySearchModel searchModel() {
+				synchronized (DefaultModels.this) {
+					if (searchModel == null) {
+						EntitySearchModel created = requireNonNull(DefaultModels.this.searchModel.get());
+						if (created == other().searchModel) {
+							throw new IllegalStateException("The EQUAL and IN operands can not share a search model: " + created);
+						}
+						restrict(created.condition());
+						searchModel = created;
+					}
+
+					return searchModel;
+				}
+			}
+
+			private DefaultOperand other() {
+				return this == equal ? in : equal;
+			}
 		}
 	}
 

@@ -147,6 +147,14 @@ final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel 
 		coat.removeListDataListener(listener);
 	}
 
+	static SwingEntityComboBoxModel model(EntityComboBoxModel model) {
+		if (requireNonNull(model) instanceof SwingEntityComboBoxModel) {
+			return (SwingEntityComboBoxModel) model;
+		}
+
+		return new DefaultSwingEntityComboBoxModel(model);
+	}
+
 	static final class DefaultBuilder extends AbstractEntityComboBoxModelBuilder<Builder> implements Builder {
 
 		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();

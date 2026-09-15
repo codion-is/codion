@@ -34,6 +34,7 @@ import java.util.function.Predicate;
  * persistence-awareness) lives in {@link EntityComboBoxModel}; this only adds the Swing surface and a Swing-typed builder.
  * <p>To filter use {@link #filter()} to set a {@link Predicate} or configure {@link ForeignKey} based filtering.
  * @see #builder()
+ * @see #model(EntityComboBoxModel)
  * @see SwingFilterComboBoxModel#model(is.codion.common.model.component.combobox.FilterComboBoxModel)
  */
 public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilterComboBoxModel<Entity> {
@@ -43,6 +44,16 @@ public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilt
 	 */
 	static Builder.EntityTypeStep builder() {
 		return DefaultSwingEntityComboBoxModel.DefaultBuilder.ENTITY_TYPE;
+	}
+
+	/**
+	 * Returns a {@link SwingEntityComboBoxModel} based on the given {@link EntityComboBoxModel},
+	 * the given model itself in case it is one already.
+	 * @param model the model to base the Swing combo box model on
+	 * @return a {@link SwingEntityComboBoxModel} based on the given model
+	 */
+	static SwingEntityComboBoxModel model(EntityComboBoxModel model) {
+		return DefaultSwingEntityComboBoxModel.model(model);
 	}
 
 	/**

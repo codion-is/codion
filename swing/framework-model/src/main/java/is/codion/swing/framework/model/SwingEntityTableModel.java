@@ -37,7 +37,6 @@ import java.util.Collection;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
-import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
@@ -80,42 +79,36 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
-	 * @param conditionModel the {@link EntityConditionModel}
-	 */
-	public SwingEntityTableModel(EntityConditionModel conditionModel) {
-		this(entityQueryModel(conditionModel));
-	}
-
-	/**
-	 * Instantiates a new SwingEntityTableModel.
-	 * @param queryModel the table query model
-	 */
-	public SwingEntityTableModel(EntityQueryModel queryModel) {
-		this(new SwingEntityEditModel(requireNonNull(queryModel).entityType(),
-						queryModel.condition().connection()), queryModel);
-	}
-
-	/**
-	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, entityQueryModel(EntityConditionModel.builder()
+		this(editModel, EntityConditionModel.builder()
 						.entityType(editModel.entityType())
 						.connection(editModel.connection())
-						.conditions(new SwingEntityConditions(editModel.entityType(), editModel.connection()))
-						.build()));
+						.build());
+	}
+
+	/**
+	 * Instantiates a new SwingEntityTableModel.
+	 * @param conditionModel the condition model
+	 */
+	public SwingEntityTableModel(EntityConditionModel conditionModel) {
+		this(new SwingEntityEditModel(conditionModel.entityType(), conditionModel.connection()), conditionModel);
 	}
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
-	 * @param queryModel the table query model
-	 * @throws IllegalArgumentException in case the edit model and query model entity types are not the same
+	 * @param conditionModel the condition model
+	 * @throws IllegalArgumentException in case the edit model and condition model entity types are not the same
 	 */
-	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
+	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityConditionModel conditionModel) {
+		this(editModel, entityQueryModel(conditionModel));
+	}
+
+	private SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
 		super(requireNonNull(editModel), queryModel, tableModelBuilder(editModel.editor())
-						.items(requireNonNull(queryModel)::query)
+						.items(queryModel::query)
 						.build());
 	}
 

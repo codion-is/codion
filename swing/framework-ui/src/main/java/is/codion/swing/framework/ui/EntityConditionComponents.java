@@ -21,10 +21,11 @@ package is.codion.swing.framework.ui;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.ColumnConditionModel;
-import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.framework.model.ForeignKeyConditionModel.Models.Operand;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -40,14 +41,17 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.Components.multiInput;
+import static is.codion.swing.framework.model.component.SwingEntityComboBoxModel.model;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A default component factory implementation for attributes.
+ * <p>A foreign key operand component is a combo box when the referenced entity is based on a small dataset,
+ * a search field otherwise, based on the models provided by {@link ForeignKeyConditionModel#models()}.
+ * @see EntityDefinition#smallDataset()
  */
 public class EntityConditionComponents implements ConditionComponents {
 
@@ -56,12 +60,14 @@ public class EntityConditionComponents implements ConditionComponents {
 					BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
 					LocalDateTime.class, OffsetDateTime.class, Entity.class);
 
+	private final EntityDefinition entityDefinition;
 	private final EntityComponents inputComponents;
 
 	/**
 	 * @param entityDefinition the entity definition
 	 */
 	public EntityConditionComponents(EntityDefinition entityDefinition) {
+		this.entityDefinition = requireNonNull(entityDefinition);
 		this.inputComponents = entityComponents(entityDefinition);
 	}
 
@@ -118,17 +124,16 @@ public class EntityConditionComponents implements ConditionComponents {
 	}
 
 	private JComponent createEqualForeignKeyField(ForeignKeyConditionModel conditionModel) {
-		Optional<EntityComboBoxModel> equalComboBoxModel = conditionModel.equalComboBoxModel();
-		if (equalComboBoxModel.isPresent()) {
-			// SwingEntityConditions always supplies a SwingEntityComboBoxModel for the EQUAL operand
-			return inputComponents.comboBox(conditionModel.attribute(), (SwingEntityComboBoxModel) equalComboBoxModel.get())
+		Operand models = conditionModel.models().equal();
+		if (smallDataset(conditionModel.attribute())) {
+			return inputComponents.comboBox(conditionModel.attribute(), model(models.comboBoxModel()))
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
 							.onSetVisible(EntityConditionComponents::refreshIfCleared)
 							.link(conditionModel.operands().equal())
 							.build();
 		}
 
-		return inputComponents.searchField(conditionModel.attribute(), conditionModel.equalSearchModel().orElseThrow())
+		return inputComponents.searchField(conditionModel.attribute(), models.searchModel())
 						.link(conditionModel.operands().equal())
 						.build();
 	}
@@ -142,17 +147,16 @@ public class EntityConditionComponents implements ConditionComponents {
 	}
 
 	private ComponentValue<? extends JComponent, Entity> createInForeignKeyComponent(ForeignKeyConditionModel conditionModel) {
-		Optional<EntityComboBoxModel> inComboBoxModel = conditionModel.inComboBoxModel();
-		if (inComboBoxModel.isPresent()) {
-			// SwingEntityConditions always supplies a SwingEntityComboBoxModel for the IN operand,
-			// the entity selected added with Insert, Enter being the combo box's
-			return inputComponents.comboBox(conditionModel.attribute(), (SwingEntityComboBoxModel) inComboBoxModel.get())
+		Operand models = conditionModel.models().in();
+		if (smallDataset(conditionModel.attribute())) {
+			// a combo box, the entity selected added with Insert, Enter being the combo box's
+			return inputComponents.comboBox(conditionModel.attribute(), model(models.comboBoxModel()))
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
 							.onSetVisible(EntityConditionComponents::refreshIfCleared)
 							.buildValue();
 		}
 
-		EntitySearchModel searchModel = conditionModel.inSearchModel().orElseThrow();
+		EntitySearchModel searchModel = models.searchModel();
 		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
 
 		// a search field, the entity selected added with Enter or Insert, clearing the field for the next search
@@ -160,6 +164,10 @@ public class EntityConditionComponents implements ConditionComponents {
 						.editable(searchable)
 						.searchHintEnabled(searchable)
 						.buildValue();
+	}
+
+	private boolean smallDataset(ForeignKey foreignKey) {
+		return entityDefinition.foreignKeys().referencedBy(foreignKey).smallDataset();
 	}
 
 	private static void refreshIfCleared(EntityComboBox comboBox) {

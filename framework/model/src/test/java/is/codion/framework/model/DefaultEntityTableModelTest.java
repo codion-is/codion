@@ -103,7 +103,7 @@ public final class DefaultEntityTableModelTest extends
 		private final EntityRowEditor rowEditor;
 
 		private TestEntityTableModel(TestEntityEditModel editModel) {
-			this(editModel, EntityQueryModel.entityQueryModel(EntityConditionModel.builder()
+			this(editModel, entityQueryModel(EntityConditionModel.builder()
 							.entityType(editModel.entityType())
 							.connection(editModel.connection())
 							.build()));

@@ -70,7 +70,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 			ForeignKeyConditionModel condition = (ForeignKeyConditionModel) conditionModel;
 
 			return EntitySearchField.builder()
-							.model(condition.equalSearchModel().orElseThrow())
+							.model(condition.models().equal().searchModel())
 							.selector(new TrackSelector())
 							// The component is linked to the EQUAL operand
 							.link(condition.operands().equal())
@@ -84,7 +84,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 			// A track found is added with Enter, clearing the search field for the next
 			return multiInput()
 							.component(EntitySearchField.builder()
-											.model(condition.inSearchModel().orElseThrow())
+											.model(condition.models().in().searchModel())
 											.selector(new TrackSelector())
 											.buildValue())
 							// The component is linked to the IN operand
