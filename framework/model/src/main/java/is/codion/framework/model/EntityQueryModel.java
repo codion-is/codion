@@ -47,7 +47,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  *   return connection.select(Employee.NAME.equalTo("John"));
  * });
  *}
- * @see #entityQueryModel(EntityConditionModel)
+ * @see EntityTableModel#query()
  */
 public interface EntityQueryModel {
 
@@ -149,14 +149,6 @@ public interface EntityQueryModel {
 	 * @return the {@link Value} controlling the data source
 	 */
 	Value<Function<EntityQueryModel, List<Entity>>> dataSource();
-
-	/**
-	 * @param conditionModel the {@link EntityConditionModel}
-	 * @return a new {@link EntityQueryModel} instance based on the given {@link EntityConditionModel}
-	 */
-	static EntityQueryModel entityQueryModel(EntityConditionModel conditionModel) {
-		return new DefaultEntityQueryModel(conditionModel);
-	}
 
 	/**
 	 * Manages the attributes to include and exclude when querying.

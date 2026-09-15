@@ -162,8 +162,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		private Select select() {
-			//not validated at build time, DefaultForeignKeyConditionModel eagerly builds a search model
-			//for every foreign key, including those referencing entities without searchable columns
+			//not validated at build time, a ForeignKeyConditionModel provides a search model for any
+			//foreign key, including those referencing entities without searchable columns
 			if (columns.isEmpty()) {
 				throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.type());
 			}

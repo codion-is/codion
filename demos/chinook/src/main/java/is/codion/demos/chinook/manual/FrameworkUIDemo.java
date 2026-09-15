@@ -73,7 +73,7 @@ final class FrameworkUIDemo {
 		// tag::multiValueSearchField[]
 		MultiInput<EntitySearchField, Entity> customers = Components.multiInput()
 						.component(EntitySearchField.builder()
-										.model(customerCondition.inSearchModel().orElseThrow())
+										.model(customerCondition.models().in().searchModel())
 										.buildValue())
 						// The entities collected, here the IN operand of a foreign key condition
 						.link(customerCondition.operands().in())

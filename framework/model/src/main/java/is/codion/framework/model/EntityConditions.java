@@ -41,8 +41,10 @@ import static java.util.stream.Collectors.toMap;
  * Extend and override the protected hooks to customize which conditions are created and how:
  * {@link #include(Column)}/{@link #include(ForeignKey)} to control which attributes get a
  * condition model, {@link #condition(Column)}/{@link #condition(ForeignKey)} to customize the
- * created models, and {@link #createEqualSearchModel(ForeignKey)}/{@link #createInSearchModel(ForeignKey)}
- * to customize the foreign key search models.
+ * created models, {@link #builder(ForeignKey)} providing a foreign key condition model builder
+ * initialized with the defaults, for customizing the operators or the models the operand
+ * components are based on.
+ * @see ForeignKeyConditionModel#models()
  */
 public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
 
@@ -104,34 +106,20 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	 * @return a {@link ForeignKeyConditionModel} based on the given foreign key
 	 */
 	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
-		// Search models for both operands, the model defaulting to EQUAL
-		return ForeignKeyConditionModel.builder(foreignKey)
-						.equalSearchModel(createEqualSearchModel(foreignKey))
-						.inSearchModel(createInSearchModel(foreignKey))
-						.caption(definition().foreignKeys().definition(foreignKey).caption())
-						.build();
+		return builder(foreignKey).build();
 	}
 
 	/**
+	 * Returns a {@link ForeignKeyConditionModel.Builder} for the given foreign key, initialized with the defaults,
+	 * the caption included, for {@link #condition(ForeignKey)} overrides customizing the operators or the models.
 	 * @param foreignKey the foreign key
-	 * @return a search model to use for the equal value
+	 * @return a {@link ForeignKeyConditionModel.Builder} initialized with the defaults
 	 */
-	protected EntitySearchModel createEqualSearchModel(ForeignKey foreignKey) {
-		return EntitySearchModel.builder()
-						.entityType(requireNonNull(foreignKey).referencedType())
+	protected final ForeignKeyConditionModel.Builder builder(ForeignKey foreignKey) {
+		return ForeignKeyConditionModel.builder()
+						.foreignKey(foreignKey)
 						.connection(connection)
-						.build();
-	}
-
-	/**
-	 * @param foreignKey the foreign key
-	 * @return a search model to use for the in values
-	 */
-	protected EntitySearchModel createInSearchModel(ForeignKey foreignKey) {
-		return EntitySearchModel.builder()
-						.entityType(requireNonNull(foreignKey).referencedType())
-						.connection(connection)
-						.build();
+						.caption(definition().foreignKeys().definition(foreignKey).caption());
 	}
 
 	/**

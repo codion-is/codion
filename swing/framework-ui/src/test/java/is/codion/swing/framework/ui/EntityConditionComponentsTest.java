@@ -18,16 +18,14 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditions;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.multi.MultiInput;
-import is.codion.swing.framework.model.SwingEntityConditions;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 import is.codion.swing.framework.ui.component.EntityComboBox;
@@ -42,15 +40,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import static java.awt.event.KeyEvent.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * The components are exercised on the event dispatch thread, as in an application.
+ * Department is based on a small dataset, its operands combo boxes, Employee is not, its operands search fields.
  */
 public final class EntityConditionComponentsTest {
 
@@ -66,52 +63,65 @@ public final class EntityConditionComponentsTest {
 					new EntityConditionComponents(CONNECTION.entities().definition(Employee.TYPE));
 
 	@Test
+	void comboBoxForASmallDatasetSearchFieldOtherwise() throws Exception {
+		onEventDispatchThread(() -> {
+			ForeignKeyConditionModel department = condition(Employee.DEPARTMENT_FK);
+			assertInstanceOf(EntityComboBox.class, components.equal(department));
+			assertInstanceOf(EntityComboBox.class, ((MultiInput<?, ?>) components.in(department)).component());
+
+			ForeignKeyConditionModel manager = condition(Employee.MGR_FK);
+			assertInstanceOf(EntitySearchField.class, components.equal(manager));
+			assertInstanceOf(EntitySearchField.class, ((MultiInput<?, ?>) components.in(manager)).component());
+		});
+	}
+
+	@Test
 	void inAddsTheEntitySelectedInASingleSelectionSearchFieldOnEnter() throws Exception {
 		onEventDispatchThread(() -> {
-			// search models for both operands, Department being a small dataset SwingEntityConditions would use combo boxes
-			ForeignKeyConditionModel condition = departmentCondition(new EntityConditions(Employee.TYPE, CONNECTION));
+			ForeignKeyConditionModel condition = condition(Employee.MGR_FK);
 			MultiInput<?, ?> input = (MultiInput<?, ?>) components.in(condition);
 			EntitySearchField searchField = (EntitySearchField) input.component();
-			assertSame(condition.inSearchModel().orElseThrow(), searchField.model());
+			assertSame(condition.models().in().searchModel(), searchField.model());
 
-			Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
-			Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
+			Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
+			Entity jones = CONNECTION.selectSingle(Employee.NAME.equalTo("JONES"));
 			// a search result selected is shown in the field, part of the operand before being added
-			searchField.model().selection().entity().set(sales);
+			searchField.model().selection().entity().set(king);
 			assertTrue(searchField.model().selection().present().is());
-			assertEquals(Set.of(sales), condition.operands().in().get());
+			assertEquals(Set.of(king), condition.operands().in().get());
 			// Enter adds it, clearing the field for the next search
 			assertTrue(enter(searchField));
 			assertFalse(searchField.model().selection().present().is());
-			assertEquals(Set.of(sales), condition.operands().in().get());
-			searchField.model().selection().entity().set(research);
+			assertEquals(Set.of(king), condition.operands().in().get());
+			searchField.model().selection().entity().set(jones);
 			assertTrue(enter(searchField));
-			assertEquals(Set.of(sales, research), condition.operands().in().get());
+			assertEquals(Set.of(king, jones), condition.operands().in().get());
 			// Enter on the empty field is left alone, for the condition panel to refresh on
 			assertFalse(enter(searchField));
 
 			// the operand cleared, the condition say, the members follow
 			condition.operands().in().clear();
-			searchField.model().selection().entity().set(sales);
-			assertEquals(Set.of(sales), condition.operands().in().get());
+			searchField.model().selection().entity().set(king);
+			assertEquals(Set.of(king), condition.operands().in().get());
 
 			// the operand set, by a master selection say, the pending selection cleared
-			condition.operands().in().set(Set.of(research));
+			condition.operands().in().set(Set.of(jones));
 			assertFalse(searchField.model().selection().present().is());
-			assertEquals(Set.of(research), condition.operands().in().get());
+			assertEquals(Set.of(jones), condition.operands().in().get());
 		});
 	}
 
 	@Test
 	void inAddsTheEntitySelectedInAComboBoxOnInsert() throws Exception {
-		ForeignKeyConditionModel condition = departmentCondition(new SwingEntityConditions(Employee.TYPE, CONNECTION));
-		assertNotSame(condition.equalComboBoxModel().orElseThrow(), condition.inComboBoxModel().orElseThrow());
+		ForeignKeyConditionModel condition = condition(Employee.DEPARTMENT_FK);
+		assertNotSame(condition.models().equal().comboBoxModel(), condition.models().in().comboBoxModel());
 		// off the event dispatch thread, a refresh on it being asynchronous
-		condition.inComboBoxModel().orElseThrow().items().refresh();
+		condition.models().in().comboBoxModel().items().refresh();
 		onEventDispatchThread(() -> {
 			MultiInput<?, ?> input = (MultiInput<?, ?>) components.in(condition);
 			EntityComboBox comboBox = (EntityComboBox) input.component();
-			assertSame(condition.inComboBoxModel().orElseThrow(), comboBox.model());
+			// the Swing combo box model a coat over the condition's, sharing its selection
+			assertSame(condition.models().in().comboBoxModel().selection(), comboBox.model().selection());
 
 			Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
 			Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
@@ -127,7 +137,7 @@ public final class EntityConditionComponentsTest {
 			assertEquals(Set.of(sales, research), condition.operands().in().get());
 			// the EQUAL combo box untouched
 			assertNull(condition.operands().equal().get());
-			assertNull(condition.equalComboBoxModel().orElseThrow().selection().item().get());
+			assertNull(condition.models().equal().comboBoxModel().selection().item().get());
 
 			// the operand set, by a master selection say, the pending selection cleared
 			comboBox.model().selection().item().set(sales);
@@ -139,12 +149,12 @@ public final class EntityConditionComponentsTest {
 
 	@Test
 	void equalComboBoxLinkedToTheOperand() throws Exception {
-		ForeignKeyConditionModel condition = departmentCondition(new SwingEntityConditions(Employee.TYPE, CONNECTION));
+		ForeignKeyConditionModel condition = condition(Employee.DEPARTMENT_FK);
 		// off the event dispatch thread, a refresh on it being asynchronous
-		condition.equalComboBoxModel().orElseThrow().items().refresh();
+		condition.models().equal().comboBoxModel().items().refresh();
 		onEventDispatchThread(() -> {
 			EntityComboBox comboBox = (EntityComboBox) components.equal(condition);
-			assertSame(condition.equalComboBoxModel().orElseThrow(), comboBox.model());
+			assertSame(condition.models().equal().comboBoxModel().selection(), comboBox.model().selection());
 
 			Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
 			Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
@@ -160,16 +170,16 @@ public final class EntityConditionComponentsTest {
 	@Test
 	void equalSearchFieldLinkedToTheOperand() throws Exception {
 		onEventDispatchThread(() -> {
-			ForeignKeyConditionModel condition = departmentCondition(new EntityConditions(Employee.TYPE, CONNECTION));
+			ForeignKeyConditionModel condition = condition(Employee.MGR_FK);
 			EntitySearchField searchField = (EntitySearchField) components.equal(condition);
-			assertSame(condition.equalSearchModel().orElseThrow(), searchField.model());
+			assertSame(condition.models().equal().searchModel(), searchField.model());
 
-			Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
-			Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
-			searchField.model().selection().entity().set(sales);
-			assertEquals(sales, condition.operands().equal().get());
-			condition.operands().equal().set(research);
-			assertEquals(research, searchField.model().selection().entity().get());
+			Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
+			Entity jones = CONNECTION.selectSingle(Employee.NAME.equalTo("JONES"));
+			searchField.model().selection().entity().set(king);
+			assertEquals(king, condition.operands().equal().get());
+			condition.operands().equal().set(jones);
+			assertEquals(jones, searchField.model().selection().entity().get());
 		});
 	}
 
@@ -211,7 +221,7 @@ public final class EntityConditionComponentsTest {
 		return event.isConsumed();
 	}
 
-	private static ForeignKeyConditionModel departmentCondition(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions) {
-		return (ForeignKeyConditionModel) conditions.get().get(Employee.DEPARTMENT_FK);
+	private static ForeignKeyConditionModel condition(ForeignKey foreignKey) {
+		return (ForeignKeyConditionModel) new EntityConditions(Employee.TYPE, CONNECTION).get().get(foreignKey);
 	}
 }

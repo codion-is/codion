@@ -89,9 +89,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 	/**
 	 * @param editModel the edit model
+	 * @param queryModel the table query model, providing the items of the given filter model
 	 * @param filterModel the filter model
-	 * @param queryModel the table query model
 	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
+	 * @see #entityQueryModel(EntityConditionModel)
 	 */
 	protected AbstractEntityTableModel(E editModel, EntityQueryModel queryModel, FilterTableModel<Entity, Attribute<?>> filterModel) {
 		this.editModel = requireNonNull(editModel);
@@ -217,6 +218,16 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	 */
 	protected FilterTableModel<Entity, Attribute<?>> filterModel() {
 		return filterModel;
+	}
+
+	/**
+	 * Creates the query model for a table model to base its {@link FilterTableModel} items on, and to be given
+	 * to {@link #AbstractEntityTableModel(EntityEditModel, EntityQueryModel, FilterTableModel)}.
+	 * @param conditionModel the condition model
+	 * @return a new {@link EntityQueryModel} based on the given condition model
+	 */
+	protected static EntityQueryModel entityQueryModel(EntityConditionModel conditionModel) {
+		return new DefaultEntityQueryModel(requireNonNull(conditionModel));
 	}
 
 	/**
