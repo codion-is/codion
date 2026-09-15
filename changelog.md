@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.87
+
 ## 0.18.86
 ### is.codion.common.reactive
 - State.Group.add(Collection) removed.
