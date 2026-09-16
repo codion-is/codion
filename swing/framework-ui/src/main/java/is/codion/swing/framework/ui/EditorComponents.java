@@ -97,12 +97,17 @@ public final class EditorComponents {
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final DetailEditorComponents detail = new DetailEditorComponents();
 
-	private final ComponentSettings settings = new ComponentSettings();
+	private final ComponentSettings settings;
 	private final ComponentFactory create;
 	private final SwingEntityEditor editor;
 
 	private EditorComponents(SwingEntityEditor editor) {
+		this(editor, new ComponentSettings());
+	}
+
+	private EditorComponents(SwingEntityEditor editor, ComponentSettings settings) {
 		this.editor = requireNonNull(editor);
+		this.settings = settings;
 		this.create = new ComponentFactory(this);
 	}
 
@@ -114,7 +119,8 @@ public final class EditorComponents {
 	}
 
 	/**
-	 * @return the component settings
+	 * @return the component settings, shared with the detail {@link EditorComponents} instances
+	 * @see #detail()
 	 */
 	public ComponentSettings settings() {
 		return settings;
@@ -217,7 +223,7 @@ public final class EditorComponents {
 			SwingEntityEditor detailEditor = editor.detail().get(requireNonNull(foreignKey));
 
 			return components.computeIfAbsent(new LinkKey(foreignKey, editor.detail().name(foreignKey)),
-							k -> new DetailComponents(new EditorComponents(detailEditor), editor.detail().caption(foreignKey))).components;
+							k -> new DetailComponents(new EditorComponents(detailEditor, settings), editor.detail().caption(foreignKey))).components;
 		}
 
 		/**
@@ -230,7 +236,7 @@ public final class EditorComponents {
 			SwingEntityEditor detailEditor = editor.detail().get(requireNonNull(name));
 
 			return components.computeIfAbsent(new LinkKey(editor.detail().foreignKey(name), name),
-							k -> new DetailComponents(new EditorComponents(detailEditor), editor.detail().caption(name))).components;
+							k -> new DetailComponents(new EditorComponents(detailEditor, settings), editor.detail().caption(name))).components;
 		}
 
 		/**
@@ -373,7 +379,9 @@ public final class EditorComponents {
 
 	/**
 	 * Manages settings that are applied to a component builder when set.
+	 * A detail {@link EditorComponents} instance shares the settings of its parent.
 	 * @see EditorComponent#set(ComponentValueBuilder)
+	 * @see EditorComponents#detail()
 	 */
 	public static final class ComponentSettings {
 

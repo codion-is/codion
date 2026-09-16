@@ -22,6 +22,7 @@ Codion Change Log
 - SwingEntityComboBoxModel.model(EntityComboBoxModel) added, the Swing coat over a UI-agnostic combo box model.
 ### is.codion.swing.framework.ui
 - EntityConditionComponents, a foreign key operand component is now a combo box when the referenced entity is based on a small dataset, a search field otherwise, based on the models provided by ForeignKeyConditionModel.models().
+- EditorComponents.ComponentSettings now shared with the detail EditorComponents instances, the panel configuration reaching the detail editor components.
 
 ## 0.18.86
 ### is.codion.common.reactive
