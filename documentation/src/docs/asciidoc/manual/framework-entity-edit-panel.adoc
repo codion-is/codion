@@ -94,7 +94,9 @@ include::{dir-source}/is/codion/manual/swing/framework/ui/EntityEditPanelDemo.ja
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textArea(is.codion.framework.domain.entity.attribute.Attribute)[textArea(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textFieldInput(is.codion.framework.domain.entity.attribute.Attribute)[textFieldInput(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textInput(is.codion.framework.domain.entity.attribute.Attribute)[textInput(attribute)]
+
+Text fields, search fields, text inputs and temporal inputs are created with a default number of columns, 12 unless configured, so that an empty field has a reasonable width instead of growing with its contents and distorting the form it occupies. The columns do not restrict the field from stretching when the layout calls for it. The default is specified for the application via {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.Config.html#TEXT_FIELD_COLUMNS[EntityEditPanel.Config.TEXT_FIELD_COLUMNS], for a panel via the panel configuration {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.Config.html#textFieldColumns(int)[textFieldColumns(int)] or {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentSettings.html#textFieldColumns()[components().settings().textFieldColumns()], and for a single field via *columns(int)* on the builder. Masked text fields are excluded, since the mask determines their width.
 
 [source,java,indent=0]
 ----
