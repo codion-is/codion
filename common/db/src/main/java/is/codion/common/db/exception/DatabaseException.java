@@ -43,12 +43,6 @@ public class DatabaseException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The sql statement being run when this exception occurred, if any, transient
-	 * so that it's not available client side if running in a server/client environment
-	 */
-	private final transient @Nullable String statement;
-
-	/**
 	 * The underlying error code, if any, transient so that it's not
 	 * available client side if running in a server/client environment
 	 */
@@ -65,17 +59,7 @@ public class DatabaseException extends RuntimeException {
 	 * @param message the exception message
 	 */
 	public DatabaseException(@Nullable String message) {
-		this(message, null);
-	}
-
-	/**
-	 * Constructs a new DatabaseException instance
-	 * @param message the exception message
-	 * @param statement the sql statement which caused the exception
-	 */
-	public DatabaseException(@Nullable String message, @Nullable String statement) {
 		super(message);
-		this.statement = statement;
 		this.errorCode = -1;
 		this.sqlState = null;
 	}
@@ -94,18 +78,7 @@ public class DatabaseException extends RuntimeException {
 	 * @param message the exception message
 	 */
 	public DatabaseException(SQLException cause, @Nullable String message) {
-		this(cause, message, null);
-	}
-
-	/**
-	 * Constructs a new DatabaseException instance
-	 * @param cause the root cause, the stack trace is copied and used
-	 * @param message the exception message
-	 * @param statement the sql statement which caused the exception
-	 */
-	public DatabaseException(@Nullable SQLException cause, @Nullable String message, @Nullable String statement) {
 		super(message);
-		this.statement = statement;
 		if (cause != null) {
 			errorCode = cause.getErrorCode();
 			sqlState = cause.getSQLState();
@@ -115,15 +88,6 @@ public class DatabaseException extends RuntimeException {
 			errorCode = -1;
 			sqlState = null;
 		}
-	}
-
-	/**
-	 * Returns the sql statement causing this exception, if available, note that this is only
-	 * available when running with a local database connection.
-	 * @return the sql statement which caused the exception, an empty Optional if not available
-	 */
-	public final Optional<String> statement() {
-		return Optional.ofNullable(this.statement);
 	}
 
 	/**
