@@ -74,7 +74,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 	DefaultFilterTableModel(AbstractFilterTableModelBuilder<R, C, ?> builder,
 													Function<IncludedItems<R>, MultiSelection<R>> selectionFactory, @Nullable ItemsListener listener) {
 		this.columns = builder.columns;
-		this.filters = tableConditionModel(builder.filters);
+		this.filters = tableConditionModel(builder.filters.get());
 		this.sort = new DefaultFilterTableSort<>(columns);
 		Items.Builder<R> itemsBuilder = Items.builder()
 						.selection(selectionFactory)

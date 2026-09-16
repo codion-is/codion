@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.87
+### is.codion.common.model
+- TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 ### is.codion.framework.model
 - EntityQueryModel.entityQueryModel() removed, replaced by AbstractEntityTableModel.entityQueryModel(), protected, a query model being created by the table model.
 - ForeignKeyConditionModel.models() added, providing the combo box and search models the operand components are based on, one of each per operand, created on first access from the builder recipes, the four Optional based model accessors removed along with the respective builder methods, ForeignKeyConditionModel.builder() now a step builder, with a connection step.

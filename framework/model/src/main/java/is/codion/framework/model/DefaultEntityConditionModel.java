@@ -82,7 +82,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	DefaultEntityConditionModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.connection.entities().definition(builder.entityType);
 		this.connection = builder.connection;
-		this.conditionModel = tableConditionModel(builder.conditions);
+		this.conditionModel = tableConditionModel(builder.conditions.get());
 		this.modified = new DefaultModified();
 		bindEvents();
 	}
