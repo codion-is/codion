@@ -394,6 +394,8 @@ public final class EditorComponents {
 		private ComponentSettings() {}
 
 		/**
+		 * Applies to text fields, search fields, text inputs and temporal inputs,
+		 * masked text fields excluded, since the mask determines the width.
 		 * Note that changing this has no effect on previously created components
 		 * @return a {@link Value} controlling the default text field columns for created components
 		 */
@@ -515,9 +517,7 @@ public final class EditorComponents {
 			if (attributeDefinition.derived()) {
 				componentBuilder.enabled(false);
 			}
-			if (componentBuilder instanceof TextFieldBuilder<?, ?, ?>) {
-				((TextFieldBuilder<?, ?, ?>) componentBuilder).columns(settings.textFieldColumns().getOrThrow());
-			}
+			columns(componentBuilder);
 
 			return componentBuilder;
 		}
@@ -574,6 +574,31 @@ public final class EditorComponents {
 
 		private boolean present() {
 			return component != null;
+		}
+
+		/**
+		 * Applies the default text field columns to the builders providing a columns setting,
+		 * masked text fields excluded, since the mask determines the width.
+		 * @param componentBuilder the component builder
+		 * @see ComponentSettings#textFieldColumns()
+		 */
+		private void columns(ComponentValueBuilder<?, ?, ?> componentBuilder) {
+			int columns = settings.textFieldColumns().getOrThrow();
+			if (componentBuilder instanceof TextFieldBuilder<?, ?, ?>) {
+				((TextFieldBuilder<?, ?, ?>) componentBuilder).columns(columns);
+			}
+			else if (componentBuilder instanceof EntitySearchField.Builder) {
+				((EntitySearchField.Builder) componentBuilder).columns(columns);
+			}
+			else if (componentBuilder instanceof EntitySearchInput.Builder) {
+				((EntitySearchInput.Builder) componentBuilder).columns(columns);
+			}
+			else if (componentBuilder instanceof TextInput.Builder) {
+				((TextInput.Builder) componentBuilder).columns(columns);
+			}
+			else if (componentBuilder instanceof TemporalInput.Builder) {
+				((TemporalInput.Builder<?>) componentBuilder).columns(columns);
+			}
 		}
 
 		private static Observable<String> toolTip(EditorValue<?> value, AttributeDefinition<?> definition) {

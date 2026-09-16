@@ -100,6 +100,20 @@ public final class EditorComponentsTest {
 	}
 
 	@Test
+	void textFieldColumns() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
+		components.settings().textFieldColumns().set(7);
+		ComponentFactory create = components.create();
+		assertEquals(7, create.textField(Employee.NAME).build().getColumns());
+		assertEquals(7, create.searchField(Employee.DEPARTMENT_FK).build().getColumns());
+		assertEquals(7, create.textInput(Employee.JOB).build().textField().getColumns());
+		assertEquals(7, create.temporalInput(Employee.HIREDATE).build().temporalField().getColumns());
+		// explicitly specified columns win
+		assertEquals(3, create.textField(Employee.SALARY).columns(3).build().getColumns());
+	}
+
+	@Test
 	void derived() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION);
 		EditorComponents components = EditorComponents.editorComponents(editModel.editor());

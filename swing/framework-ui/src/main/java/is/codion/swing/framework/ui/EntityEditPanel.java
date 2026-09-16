@@ -1090,7 +1090,8 @@ public abstract class EntityEditPanel extends JPanel {
 						booleanValue(EntityEditPanel.class.getName() + ".transferFocusOnEnter", true);
 
 		/**
-		 * Specifies the default number of text field columns
+		 * Specifies the default number of text field columns, applying to text fields,
+		 * search fields, text inputs and temporal inputs, masked text fields excluded
 		 * <ul>
 		 * <li>Value type: Integer
 		 * <li>Default value: 12
@@ -1358,7 +1359,8 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 
 		/**
-		 * Specifies the default number of text field columns
+		 * Specifies the default number of text field columns, applying to text fields,
+		 * search fields, text inputs and temporal inputs, masked text fields excluded
 		 * @param textFieldColumns the default number of text field columns
 		 * @return this Config instance
 		 * @see JTextField#setColumns(int)
