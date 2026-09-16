@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.87
+### is.codion.common.db
+- DatabaseException.statement() removed, unused.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 ### is.codion.framework.model
