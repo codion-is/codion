@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
@@ -42,8 +41,8 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	private final ObservableState enabled;
 	private final Event<?> changed = Event.event();
 
-	DefaultTableConditionModel(Supplier<Map<C, ConditionModel<?>>> conditionModelFactory) {
-		this.conditions = unmodifiableMap(new HashMap<>(requireNonNull(conditionModelFactory).get()));
+	DefaultTableConditionModel(Map<C, ConditionModel<?>> conditionModels) {
+		this.conditions = unmodifiableMap(new HashMap<>(requireNonNull(conditionModels)));
 		this.persist = ValueSet.<C>builder()
 						.validator(new PersistValidator())
 						.build();

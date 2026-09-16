@@ -23,14 +23,13 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.ValueSet;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Manages a set of {@link ConditionModel}s for table columns.
  * @param <C> the condition identifier type
- * @see #tableConditionModel(Supplier)
+ * @see #tableConditionModel(Map)
  */
 public interface TableConditionModel<C> {
 
@@ -73,11 +72,11 @@ public interface TableConditionModel<C> {
 
 	/**
 	 * Instantiates a new {@link TableConditionModel}
-	 * @param conditionModels supplies the condition models mapped to their respective column identifiers
+	 * @param conditionModels the condition models mapped to their respective column identifiers
 	 * @param <C> the condition identifier type
 	 * @return a new {@link TableConditionModel}
 	 */
-	static <C> TableConditionModel<C> tableConditionModel(Supplier<Map<C, ConditionModel<?>>> conditionModels) {
+	static <C> TableConditionModel<C> tableConditionModel(Map<C, ConditionModel<?>> conditionModels) {
 		return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
 	}
 }
