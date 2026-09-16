@@ -68,7 +68,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.SwingUtilities;
@@ -95,7 +94,6 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
-import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -933,7 +931,6 @@ public abstract class EntityEditPanel extends JPanel {
 		editorComponents.defaults().warningIndicator().set(configuration.warningIndicator);
 		editorComponents.defaults().modifiedIndicator().set(configuration.modifiedIndicator);
 		editorComponents.defaults().transferFocusOnEnter().set(configuration.transferFocusOnEnter);
-		editorComponents.defaults().textFieldColumns().set(configuration.textFieldColumns);
 		editorComponents.editor().entity().changing().addConsumer(this::onEntityChanging);
 
 		return editorComponents;
@@ -1089,17 +1086,6 @@ public abstract class EntityEditPanel extends JPanel {
 		public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
 						booleanValue(EntityEditPanel.class.getName() + ".transferFocusOnEnter", true);
 
-		/**
-		 * Specifies the default number of text field columns, applying to text fields,
-		 * search fields, text inputs and temporal inputs, masked text fields excluded
-		 * <ul>
-		 * <li>Value type: Integer
-		 * <li>Default value: 12
-		 * </ul>
-		 */
-		public static final PropertyValue<Integer> TEXT_FIELD_COLUMNS =
-						integerValue(EntityEditPanel.class.getName() + ".textFieldColumns", 12);
-
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
@@ -1122,7 +1108,6 @@ public abstract class EntityEditPanel extends JPanel {
 		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
 		private boolean warningIndicator = WARNING_INDICATOR.getOrThrow();
 		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
-		private int textFieldColumns = TEXT_FIELD_COLUMNS.getOrThrow();
 		private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.getOrThrow();
 
 		final ControlMap controlMap;
@@ -1154,7 +1139,6 @@ public abstract class EntityEditPanel extends JPanel {
 			this.validIndicator = config.validIndicator;
 			this.warningIndicator = config.warningIndicator;
 			this.modifiedIndicator = config.modifiedIndicator;
-			this.textFieldColumns = config.textFieldColumns;
 			this.transferFocusOnEnter = config.transferFocusOnEnter;
 		}
 
@@ -1355,19 +1339,6 @@ public abstract class EntityEditPanel extends JPanel {
 		 */
 		public Config modifiedIndicator(boolean modifiedIndicator) {
 			this.modifiedIndicator = modifiedIndicator;
-			return this;
-		}
-
-		/**
-		 * Specifies the default number of text field columns, applying to text fields,
-		 * search fields, text inputs and temporal inputs, masked text fields excluded
-		 * @param textFieldColumns the default number of text field columns
-		 * @return this Config instance
-		 * @see JTextField#setColumns(int)
-		 * @see #TEXT_FIELD_COLUMNS
-		 */
-		public Config textFieldColumns(int textFieldColumns) {
-			this.textFieldColumns = textFieldColumns;
 			return this;
 		}
 

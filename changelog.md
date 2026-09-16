@@ -25,6 +25,8 @@ Codion Change Log
 - EditorComponents.ComponentSettings now shared with the detail EditorComponents instances, the panel configuration reaching the detail editor components.
 - EditorComponents.ComponentSettings.textFieldColumns() now applies to search fields, text inputs and temporal inputs as well, masked text fields excluded.
 - EditorComponents.ComponentSettings renamed ComponentDefaults, settings() renamed defaults().
+- EntityEditPanel.Config.TEXT_FIELD_COLUMNS moved to EditorComponents, Config.textFieldColumns() removed, unused.
+- EditorComponents.TEXT_FIELD_COLUMNS and ComponentDefaults.textFieldColumns(), 0 now disables the default columns, the fields sizing to their contents.
 
 ## 0.18.86
 ### is.codion.common.reactive
