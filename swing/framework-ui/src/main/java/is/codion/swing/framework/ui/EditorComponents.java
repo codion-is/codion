@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -81,6 +82,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Arrays.asList;
@@ -92,6 +94,19 @@ import static java.util.stream.Collectors.toList;
  * Manages the components for a {@link SwingEntityEditor}
  */
 public final class EditorComponents {
+
+	/**
+	 * Specifies the default number of text field columns, applying to text fields,
+	 * search fields, text inputs and temporal inputs, masked text fields excluded,
+	 * 0 disabling the default, the fields then sizing to their contents
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 12
+	 * </ul>
+	 * @see ComponentDefaults#textFieldColumns()
+	 */
+	public static final PropertyValue<Integer> TEXT_FIELD_COLUMNS =
+					integerValue(EditorComponents.class.getName() + ".textFieldColumns", 12);
 
 	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
@@ -386,7 +401,7 @@ public final class EditorComponents {
 	 */
 	public static final class ComponentDefaults {
 
-		private final Value<Integer> textFieldColumns = Value.nonNull(12);
+		private final Value<Integer> textFieldColumns = Value.nonNull(TEXT_FIELD_COLUMNS.getOrThrow());
 		private final State modifiedIndicator = State.state(true);
 		private final State validIndicator = State.state(true);
 		private final State warningIndicator = State.state(true);
@@ -397,7 +412,9 @@ public final class EditorComponents {
 		/**
 		 * Applies to text fields, search fields, text inputs and temporal inputs,
 		 * masked text fields excluded, since the mask determines the width.
+		 * 0 disables the default, the fields then sizing to their contents.
 		 * @return a {@link Value} controlling the default text field columns for created components
+		 * @see EditorComponents#TEXT_FIELD_COLUMNS
 		 */
 		public Value<Integer> textFieldColumns() {
 			return textFieldColumns;
@@ -580,6 +597,9 @@ public final class EditorComponents {
 		 */
 		private void columns(ComponentValueBuilder<?, ?, ?> componentBuilder) {
 			int columns = defaults.textFieldColumns().getOrThrow();
+			if (columns == 0) {
+				return;
+			}
 			if (componentBuilder instanceof TextFieldBuilder<?, ?, ?>) {
 				((TextFieldBuilder<?, ?, ?>) componentBuilder).columns(columns);
 			}

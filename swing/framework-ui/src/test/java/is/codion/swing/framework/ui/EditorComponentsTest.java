@@ -111,6 +111,17 @@ public final class EditorComponentsTest {
 		assertEquals(7, create.temporalInput(Employee.HIREDATE).build().temporalField().getColumns());
 		// explicitly specified columns win
 		assertEquals(3, create.textField(Employee.SALARY).columns(3).build().getColumns());
+		// 0 disables the default, the field sizing to its contents
+		components.defaults().textFieldColumns().set(0);
+		assertEquals(0, create.textField(Employee.COMMISSION).build().getColumns());
+		// the application wide default initializes the panel default
+		EditorComponents.TEXT_FIELD_COLUMNS.set(20);
+		try {
+			assertEquals(20, EditorComponents.editorComponents(editModel.editor()).defaults().textFieldColumns().getOrThrow());
+		}
+		finally {
+			EditorComponents.TEXT_FIELD_COLUMNS.set(12);
+		}
 	}
 
 	@Test

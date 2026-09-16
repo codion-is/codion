@@ -19,6 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
+ * <li>{@link is.codion.swing.framework.ui.EditorComponents#TEXT_FIELD_COLUMNS}
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#USER}
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#SAVE_DEFAULT_USERNAME}
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#STARTUP_DIALOG}
@@ -30,7 +31,6 @@
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#SQL_TRACING}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#VALID_INDICATOR}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MODIFIED_INDICATOR}
- * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#TEXT_FIELD_COLUMNS}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MODIFIED_WARNING}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_FOCUS_ACTIVATION}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_ENTITY_VIEWER}
