@@ -929,11 +929,11 @@ public abstract class EntityEditPanel extends JPanel {
 
 	private EditorComponents createEditorComponents(SwingEntityEditor editor) {
 		EditorComponents editorComponents = EditorComponents.editorComponents(editor);
-		editorComponents.settings().validIndicator().set(configuration.validIndicator);
-		editorComponents.settings().warningIndicator().set(configuration.warningIndicator);
-		editorComponents.settings().modifiedIndicator().set(configuration.modifiedIndicator);
-		editorComponents.settings().transferFocusOnEnter().set(configuration.transferFocusOnEnter);
-		editorComponents.settings().textFieldColumns().set(configuration.textFieldColumns);
+		editorComponents.defaults().validIndicator().set(configuration.validIndicator);
+		editorComponents.defaults().warningIndicator().set(configuration.warningIndicator);
+		editorComponents.defaults().modifiedIndicator().set(configuration.modifiedIndicator);
+		editorComponents.defaults().transferFocusOnEnter().set(configuration.transferFocusOnEnter);
+		editorComponents.defaults().textFieldColumns().set(configuration.textFieldColumns);
 		editorComponents.editor().entity().changing().addConsumer(this::onEntityChanging);
 
 		return editorComponents;

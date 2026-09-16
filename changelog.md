@@ -24,6 +24,7 @@ Codion Change Log
 - EntityConditionComponents, a foreign key operand component is now a combo box when the referenced entity is based on a small dataset, a search field otherwise, based on the models provided by ForeignKeyConditionModel.models().
 - EditorComponents.ComponentSettings now shared with the detail EditorComponents instances, the panel configuration reaching the detail editor components.
 - EditorComponents.ComponentSettings.textFieldColumns() now applies to search fields, text inputs and temporal inputs as well, masked text fields excluded.
+- EditorComponents.ComponentSettings renamed ComponentDefaults, settings() renamed defaults().
 
 ## 0.18.86
 ### is.codion.common.reactive
