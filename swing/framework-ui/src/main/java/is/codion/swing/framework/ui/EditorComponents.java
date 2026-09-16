@@ -97,17 +97,17 @@ public final class EditorComponents {
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final DetailEditorComponents detail = new DetailEditorComponents();
 
-	private final ComponentSettings settings;
+	private final ComponentDefaults defaults;
 	private final ComponentFactory create;
 	private final SwingEntityEditor editor;
 
 	private EditorComponents(SwingEntityEditor editor) {
-		this(editor, new ComponentSettings());
+		this(editor, new ComponentDefaults());
 	}
 
-	private EditorComponents(SwingEntityEditor editor, ComponentSettings settings) {
+	private EditorComponents(SwingEntityEditor editor, ComponentDefaults defaults) {
 		this.editor = requireNonNull(editor);
-		this.settings = settings;
+		this.defaults = defaults;
 		this.create = new ComponentFactory(this);
 	}
 
@@ -119,11 +119,11 @@ public final class EditorComponents {
 	}
 
 	/**
-	 * @return the component settings, shared with the detail {@link EditorComponents} instances
+	 * @return the component defaults, shared with the detail {@link EditorComponents} instances
 	 * @see #detail()
 	 */
-	public ComponentSettings settings() {
-		return settings;
+	public ComponentDefaults defaults() {
+		return defaults;
 	}
 
 	/**
@@ -223,7 +223,7 @@ public final class EditorComponents {
 			SwingEntityEditor detailEditor = editor.detail().get(requireNonNull(foreignKey));
 
 			return components.computeIfAbsent(new LinkKey(foreignKey, editor.detail().name(foreignKey)),
-							k -> new DetailComponents(new EditorComponents(detailEditor, settings), editor.detail().caption(foreignKey))).components;
+							k -> new DetailComponents(new EditorComponents(detailEditor, defaults), editor.detail().caption(foreignKey))).components;
 		}
 
 		/**
@@ -236,7 +236,7 @@ public final class EditorComponents {
 			SwingEntityEditor detailEditor = editor.detail().get(requireNonNull(name));
 
 			return components.computeIfAbsent(new LinkKey(editor.detail().foreignKey(name), name),
-							k -> new DetailComponents(new EditorComponents(detailEditor, settings), editor.detail().caption(name))).components;
+							k -> new DetailComponents(new EditorComponents(detailEditor, defaults), editor.detail().caption(name))).components;
 		}
 
 		/**
@@ -378,12 +378,13 @@ public final class EditorComponents {
 	}
 
 	/**
-	 * Manages settings that are applied to a component builder when set.
-	 * A detail {@link EditorComponents} instance shares the settings of its parent.
+	 * Defaults applied to a component builder when set, changing these
+	 * has no effect on previously created components.
+	 * A detail {@link EditorComponents} instance shares the defaults of its parent.
 	 * @see EditorComponent#set(ComponentValueBuilder)
 	 * @see EditorComponents#detail()
 	 */
-	public static final class ComponentSettings {
+	public static final class ComponentDefaults {
 
 		private final Value<Integer> textFieldColumns = Value.nonNull(12);
 		private final State modifiedIndicator = State.state(true);
@@ -391,12 +392,11 @@ public final class EditorComponents {
 		private final State warningIndicator = State.state(true);
 		private final State transferFocusOnEnter = State.state(true);
 
-		private ComponentSettings() {}
+		private ComponentDefaults() {}
 
 		/**
 		 * Applies to text fields, search fields, text inputs and temporal inputs,
 		 * masked text fields excluded, since the mask determines the width.
-		 * Note that changing this has no effect on previously created components
 		 * @return a {@link Value} controlling the default text field columns for created components
 		 */
 		public Value<Integer> textFieldColumns() {
@@ -404,24 +404,21 @@ public final class EditorComponents {
 		}
 
 		/**
-		 * Note that changing this has no effect on previously created components
-		 * @return a State controlling whether created components have a modified indicator
+		 * @return a {@link State} controlling whether created components have a modified indicator
 		 */
 		public State modifiedIndicator() {
 			return modifiedIndicator;
 		}
 
 		/**
-		 * Note that changing this has no effect on previously created components
-		 * @return a State controlling whether created components have a valid indicator
+		 * @return a {@link State} controlling whether created components have a valid indicator
 		 */
 		public State validIndicator() {
 			return validIndicator;
 		}
 
 		/**
-		 * Note that changing this has no effect on previously created components
-		 * @return a State controlling whether created components indicate a warning — the soft validation severity
+		 * @return a {@link State} controlling whether created components indicate a warning — the soft validation severity
 		 * @see is.codion.framework.domain.entity.EntityValidator#warning
 		 */
 		public State warningIndicator() {
@@ -429,7 +426,6 @@ public final class EditorComponents {
 		}
 
 		/**
-		 * Note that changing this has no effect on previously created components
 		 * @return a {@link State} controlling whether created components transfer focus on enter
 		 */
 		public State transferFocusOnEnter() {
@@ -509,10 +505,10 @@ public final class EditorComponents {
 							.label(label -> label
 											.text(attributeDefinition.caption())
 											.displayedMnemonic(attributeDefinition.mnemonic()))
-							.transferFocusOnEnter(settings.transferFocusOnEnter().is())
-							.valid(settings.validIndicator().is() ? value.valid() : null)
-							.warned(settings.warningIndicator().is() ? value.warned() : null)
-							.modified(settings.modifiedIndicator().is() ? value.modified() : null)
+							.transferFocusOnEnter(defaults.transferFocusOnEnter().is())
+							.valid(defaults.validIndicator().is() ? value.valid() : null)
+							.warned(defaults.warningIndicator().is() ? value.warned() : null)
+							.modified(defaults.modifiedIndicator().is() ? value.modified() : null)
 							.onBuild(this::setComponent));
 			if (attributeDefinition.derived()) {
 				componentBuilder.enabled(false);
@@ -580,10 +576,10 @@ public final class EditorComponents {
 		 * Applies the default text field columns to the builders providing a columns setting,
 		 * masked text fields excluded, since the mask determines the width.
 		 * @param componentBuilder the component builder
-		 * @see ComponentSettings#textFieldColumns()
+		 * @see ComponentDefaults#textFieldColumns()
 		 */
 		private void columns(ComponentValueBuilder<?, ?, ?> componentBuilder) {
-			int columns = settings.textFieldColumns().getOrThrow();
+			int columns = defaults.textFieldColumns().getOrThrow();
 			if (componentBuilder instanceof TextFieldBuilder<?, ?, ?>) {
 				((TextFieldBuilder<?, ?, ?>) componentBuilder).columns(columns);
 			}

@@ -92,9 +92,9 @@ public final class EditorComponentsTest {
 						.foreignKey(Employee.DEPARTMENT_FK)
 						.build());
 		EditorComponents components = EditorComponents.editorComponents(departmentEditModel.editor());
-		components.settings().textFieldColumns().set(7);
+		components.defaults().textFieldColumns().set(7);
 		EditorComponents detailComponents = components.detail().get(Employee.DEPARTMENT_FK);
-		assertSame(components.settings(), detailComponents.settings());
+		assertSame(components.defaults(), detailComponents.defaults());
 		JTextField nameField = detailComponents.create().textField(Employee.NAME).build();
 		assertEquals(7, nameField.getColumns());
 	}
@@ -103,7 +103,7 @@ public final class EditorComponentsTest {
 	void textFieldColumns() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
 		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
-		components.settings().textFieldColumns().set(7);
+		components.defaults().textFieldColumns().set(7);
 		ComponentFactory create = components.create();
 		assertEquals(7, create.textField(Employee.NAME).build().getColumns());
 		assertEquals(7, create.searchField(Employee.DEPARTMENT_FK).build().getColumns());
