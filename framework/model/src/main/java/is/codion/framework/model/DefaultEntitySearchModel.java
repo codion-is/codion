@@ -33,6 +33,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.OrderBy.OrderByColumn;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
@@ -41,8 +42,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -73,6 +79,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final @Nullable OrderBy orderBy;
 	private final DefaultSearch search = new DefaultSearch();
 	private final DefaultSelection selection = new DefaultSelection();
+	private final DefaultFilter filter = new DefaultFilter();
 	private final EntityConnection connection;
 	private final Map<Column<String>, Settings> settings;
 	private final Value<Supplier<Condition>> condition;
@@ -100,6 +107,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			persistenceEvents.updated().addWeakConsumer(updateListener);
 			persistenceEvents.deleted().addWeakConsumer(deleteListener);
 		}
+		builder.filterLinks.forEach((foreignKey, link) -> link.accept(filter.get(foreignKey)));
 	}
 
 	@Override
@@ -142,6 +150,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		return condition;
 	}
 
+	@Override
+	public Filter filter() {
+		return filter;
+	}
+
 	private final class DefaultSearch implements Search {
 
 		private final ValueSet<String> strings = ValueSet.<String>builder()
@@ -155,6 +168,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public List<Entity> perform() {
+			if (filter.excludesAll()) {
+				return emptyList();
+			}
 			List<Entity> result = new ArrayList<>(connection.select(select()));
 			result.sort(entityDefinition.comparator());
 
@@ -203,13 +219,14 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		private Condition createCombinedCondition(Collection<Condition> conditions) {
-			Condition conditionCombination = or(conditions);
+			List<Condition> combined = new ArrayList<>(filter.conditions());
 			Supplier<Condition> conditionSupplier = condition.getOrThrow();
-			if (conditionSupplier == NULL_CONDITION) {
-				return conditionCombination;
+			if (conditionSupplier != NULL_CONDITION) {
+				combined.add(validate(conditionSupplier.get()));
 			}
+			combined.add(or(conditions));
 
-			return and(validate(conditionSupplier.get()), conditionCombination);
+			return combined.size() == 1 ? combined.get(0) : and(combined);
 		}
 
 		private Condition validate(Condition queryCondition) {
@@ -222,6 +239,147 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			}
 
 			return queryCondition;
+		}
+	}
+
+	private final class DefaultFilter implements Filter {
+
+		private final Map<ForeignKey, DefaultForeignKeyFilter> foreignKeyFilters = new HashMap<>();
+
+		@Override
+		public ForeignKeyFilter get(ForeignKey foreignKey) {
+			entityDefinition.foreignKeys().definition(foreignKey);
+
+			return foreignKeyFilters.computeIfAbsent(foreignKey, DefaultForeignKeyFilter::new);
+		}
+
+		/**
+		 * @return true if a strict filter without keys excludes all entities
+		 */
+		private boolean excludesAll() {
+			return foreignKeyFilters.values().stream()
+							.anyMatch(DefaultForeignKeyFilter::excludesAll);
+		}
+
+		private List<Condition> conditions() {
+			return foreignKeyFilters.values().stream()
+							.map(DefaultForeignKeyFilter::condition)
+							.flatMap(Optional::stream)
+							.collect(toList());
+		}
+	}
+
+	private final class DefaultForeignKeyFilter implements ForeignKeyFilter {
+
+		private final ForeignKey foreignKey;
+		private final State strict = State.state(true);
+
+		private @Nullable Set<Entity.Key> keys;
+
+		private DefaultForeignKeyFilter(ForeignKey foreignKey) {
+			this.foreignKey = foreignKey;
+		}
+
+		@Override
+		public void set(Entity.Key key) {
+			set(singleton(requireNonNull(key)));
+		}
+
+		@Override
+		public void set(Collection<Entity.Key> keys) {
+			for (Entity.Key key : requireNonNull(keys)) {
+				if (!key.type().equals(foreignKey.referencedType())) {
+					throw new IllegalArgumentException("Key " + key + " is not of the correct type (" + foreignKey.referencedType() + ")");
+				}
+			}
+			this.keys = unmodifiableSet(new HashSet<>(keys));
+		}
+
+		@Override
+		public Collection<Entity.Key> get() {
+			return keys == null ? emptySet() : keys;
+		}
+
+		@Override
+		public void clear() {
+			keys = null;
+		}
+
+		@Override
+		public State strict() {
+			return strict;
+		}
+
+		@Override
+		public void link(EntityComboBoxModel filterModel) {
+			DefaultEntityComboBoxModel.validateLink(foreignKey, requireNonNull(filterModel).entityDefinition().type());
+			link(filterModel.selection().item());
+			selection.entity.addConsumer(selected -> select(filterModel, selected));
+		}
+
+		@Override
+		public void link(EntitySearchModel filterModel) {
+			DefaultEntityComboBoxModel.validateLink(foreignKey, requireNonNull(filterModel).entityDefinition().type());
+			link(filterModel.selection().entity());
+			selection.entity.addConsumer(selected -> select(filterModel, selected));
+		}
+
+		private void link(Value<Entity> masterSelection) {
+			Entity selected = masterSelection.get();
+			//preserve any pre-set filter keys when the master has no selection to sync from
+			if (selected != null || get().isEmpty()) {
+				set(selected);
+			}
+			masterSelection.addConsumer(this::set);
+		}
+
+		private boolean excludesAll() {
+			return keys != null && keys.isEmpty() && strict.is();
+		}
+
+		/**
+		 * @return the filter condition, empty if cleared or no keys and not strict, the strict case excluding all without a query
+		 */
+		private Optional<Condition> condition() {
+			if (keys == null || keys.isEmpty()) {
+				return Optional.empty();
+			}
+			Condition in = foreignKey.in(keys.stream()
+							.map(this::entity)
+							.collect(toList()));
+
+			return Optional.of(strict.is() ? in : or(in, foreignKey.isNull()));
+		}
+
+		private Entity entity(Entity.Key key) {
+			Entity.Builder builder = connection.entities().entity(key.type());
+			key.columns().forEach(column -> builder.with((Column<Object>) column, key.get((Column<Object>) column)));
+
+			return builder.build();
+		}
+
+		private void set(@Nullable Entity selected) {
+			if (selected != null) {
+				set(selected.primaryKey());
+			}
+			else if (strict.is()) {
+				set(emptyList());
+			}
+			else {
+				clear();
+			}
+		}
+
+		private void select(EntityComboBoxModel filterModel, @Nullable Entity selected) {
+			if (selected != null && selected.present(foreignKey)) {
+				filterModel.select(selected.key(foreignKey));
+			}
+		}
+
+		private void select(EntitySearchModel filterModel, @Nullable Entity selected) {
+			if (selected != null && selected.present(foreignKey)) {
+				filterModel.selection().entity().set(selected.entity(foreignKey));
+			}
 		}
 	}
 
@@ -378,6 +536,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private @Nullable Integer limit = DEFAULT_LIMIT.get();
 		private boolean persistenceAware = PERSISTENCE_AWARE.getOrThrow();
 		private @Nullable OrderBy orderBy;
+		private final Map<ForeignKey, Consumer<ForeignKeyFilter>> filterLinks = new LinkedHashMap<>();
 
 		DefaultBuilder(EntityType entityType, EntityConnection connection) {
 			this.connection = requireNonNull(connection);
@@ -404,6 +563,22 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public Builder condition(Supplier<Condition> condition) {
 			this.condition = condition;
+			return this;
+		}
+
+		@Override
+		public Builder filter(ForeignKey foreignKey, EntityComboBoxModel filterModel) {
+			entityDefinition.foreignKeys().definition(foreignKey);
+			DefaultEntityComboBoxModel.validateLink(foreignKey, requireNonNull(filterModel).entityDefinition().type());
+			filterLinks.put(foreignKey, filter -> filter.link(filterModel));
+			return this;
+		}
+
+		@Override
+		public Builder filter(ForeignKey foreignKey, EntitySearchModel filterModel) {
+			entityDefinition.foreignKeys().definition(foreignKey);
+			DefaultEntityComboBoxModel.validateLink(foreignKey, requireNonNull(filterModel).entityDefinition().type());
+			filterLinks.put(foreignKey, filter -> filter.link(filterModel));
 			return this;
 		}
 

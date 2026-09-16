@@ -52,7 +52,7 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 
 	final DefaultEntityComboBoxModel.EntityItems items;
 	final EntityDefinition entityDefinition;
-	final Map<ForeignKey, EntityComboBoxModel> filterLinks = new HashMap<>();
+	final Map<ForeignKey, Consumer<ForeignKeyFilter>> filterLinks = new HashMap<>();
 
 	@Nullable Comparator<Entity> comparator;
 	boolean persistenceAware = PERSISTENCE_AWARE.getOrThrow();
@@ -147,8 +147,16 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 	@Override
 	public final B filter(ForeignKey foreignKey, EntityComboBoxModel filterModel) {
 		entityDefinition.foreignKeys().definition(foreignKey);
-		DefaultEntityComboBoxModel.validateLink(foreignKey, filterModel);
-		filterLinks.put(foreignKey, filterModel);
+		DefaultEntityComboBoxModel.validateLink(foreignKey, requireNonNull(filterModel).entityDefinition().type());
+		filterLinks.put(foreignKey, filter -> filter.link(filterModel));
+		return self();
+	}
+
+	@Override
+	public final B filter(ForeignKey foreignKey, EntitySearchModel filterModel) {
+		entityDefinition.foreignKeys().definition(foreignKey);
+		DefaultEntityComboBoxModel.validateLink(foreignKey, requireNonNull(filterModel).entityDefinition().type());
+		filterLinks.put(foreignKey, filter -> filter.link(filterModel));
 		return self();
 	}
 

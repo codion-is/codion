@@ -8,6 +8,9 @@ Codion Change Log
 - ForeignKeyConditionModel.Builder.comboBoxModel(), searchModel() and operators() added, the operators no longer inferred from the models supplied, all four available by default, a model supplied for both operands rejected.
 - ForeignKeyConditionModel.Models.condition() added, restricting the referenced entities offered by all the operand models.
 - EntityConditions.builder(ForeignKey) added, a foreign key condition model builder initialized with the defaults, createEqualSearchModel() and createInSearchModel() removed.
+- ForeignKeyFilter now a top-level interface, moved from EntityComboBoxModel, shared with EntitySearchModel, link(EntitySearchModel) added, a search model selection filtering a combo box or search model.
+- EntitySearchModel.filter() added, foreign key filters applied when searching, a strict one without keys excluding all without a query, a non-strict one including entities with a null reference, along with Builder.filter(ForeignKey, EntityComboBoxModel) and filter(ForeignKey, EntitySearchModel).
+- EntityComboBoxModel.Builder.filter(ForeignKey, EntitySearchModel) added.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).
