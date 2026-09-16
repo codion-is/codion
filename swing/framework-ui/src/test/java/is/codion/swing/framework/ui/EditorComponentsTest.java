@@ -21,11 +21,13 @@ package is.codion.swing.framework.ui;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.model.EditorLink;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EditorComponents.ComponentFactory;
+import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
@@ -79,6 +81,22 @@ public final class EditorComponentsTest {
 		JLabel label = components.component(Employee.NAME).label();
 		assertEquals(editModel.entityDefinition().attributes().definition(Employee.NAME).caption(), label.getText());
 		assertEquals(SwingConstants.TRAILING, label.getHorizontalAlignment());
+	}
+
+	@Test
+	void detailComponentsShareTheSettings() {
+		SwingEntityEditModel departmentEditModel = new SwingEntityEditModel(Department.TYPE, CONNECTION);
+		SwingEntityEditModel employeeEditModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		departmentEditModel.editor().detail().add(EditorLink.builder()
+						.editor(employeeEditModel.editor())
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.build());
+		EditorComponents components = EditorComponents.editorComponents(departmentEditModel.editor());
+		components.settings().textFieldColumns().set(7);
+		EditorComponents detailComponents = components.detail().get(Employee.DEPARTMENT_FK);
+		assertSame(components.settings(), detailComponents.settings());
+		JTextField nameField = detailComponents.create().textField(Employee.NAME).build();
+		assertEquals(7, nameField.getColumns());
 	}
 
 	@Test
