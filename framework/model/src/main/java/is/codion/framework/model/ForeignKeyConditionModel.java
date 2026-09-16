@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Operator;
 import is.codion.framework.db.EntityConnection;
@@ -49,6 +50,47 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 	 * @return the models the operand components are based on
 	 */
 	Models models();
+
+	/**
+	 * Links this condition to the given master condition, the referenced entities offered by the {@link #models()}
+	 * restricted to those referring, via the given foreign key of the referenced entity, to the entities the master
+	 * condition refers to, the EQUAL operand or the IN operands, none when the master condition is disabled or its
+	 * operator negated. The operands of this condition no longer referred to are dropped.
+	 * @param master the master condition
+	 * @param foreignKey the foreign key of the referenced entity, referencing the referenced entity type of the master condition
+	 * @return the link, controlling the strictness of the filtering
+	 * @throws IllegalArgumentException in case the given foreign key is not one of the referenced entity or does not reference
+	 * the referenced entity type of the master condition, or the master condition is this condition
+	 * @throws IllegalStateException in case this condition is already linked on the given foreign key
+	 * @see ForeignKeyFilter
+	 */
+	Link link(ForeignKeyConditionModel master, ForeignKey foreignKey);
+
+	/**
+	 * Links this condition to the given master condition, the referenced entity having exactly one foreign key
+	 * referencing the referenced entity type of the master condition.
+	 * @param master the master condition
+	 * @return the link, controlling the strictness of the filtering
+	 * @throws IllegalArgumentException in case the referenced entity has none or several foreign keys referencing
+	 * the referenced entity type of the master condition, or the master condition is this condition
+	 * @throws IllegalStateException in case this condition is already linked on the foreign key
+	 * @see #link(ForeignKeyConditionModel, ForeignKey)
+	 */
+	Link link(ForeignKeyConditionModel master);
+
+	/**
+	 * A link to a master condition.
+	 * @see ForeignKeyConditionModel#link(ForeignKeyConditionModel, ForeignKey)
+	 */
+	interface Link {
+
+		/**
+		 * Controls whether the filtering is strict, true by default, applied to the filters of all the models.
+		 * @return the {@link State} controlling whether the filtering is strict
+		 * @see ForeignKeyFilter#strict()
+		 */
+		State strict();
+	}
 
 	/**
 	 * Provides the models the operand components are based on, each created on first access.

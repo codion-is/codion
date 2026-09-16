@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.model.ForeignKeyConditionModel.Link;
 import is.codion.framework.model.ForeignKeyConditionModel.Models;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -34,6 +35,7 @@ import is.codion.framework.model.test.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -41,8 +43,7 @@ import java.util.function.Supplier;
 import static is.codion.common.utilities.Operator.*;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultForeignKeyConditionModelTest {
@@ -235,6 +236,97 @@ public final class DefaultForeignKeyConditionModelTest {
 	}
 
 	@Test
+	void link() {
+		ForeignKeyConditionModel department = condition(Employee.DEPARTMENT_FK).build();
+		ForeignKeyConditionModel manager = condition(Employee.MGR_FK).build();
+		// itself, a foreign key not referencing the master type, no foreign key referencing the master type
+		assertThrows(IllegalArgumentException.class, () -> manager.link(manager));
+		assertThrows(IllegalArgumentException.class, () -> manager.link(department, Employee.MGR_FK));
+		assertThrows(IllegalArgumentException.class, () -> department.link(manager));
+		assertThrows(IllegalArgumentException.class, () -> department.link(manager, Employee.MGR_FK));
+
+		// Employee.DEPARTMENT_FK inferred, the one foreign key from Employee to Department
+		Link link = manager.link(department);
+		assertTrue(link.strict().is());
+		assertThrows(IllegalStateException.class, () -> manager.link(department, Employee.DEPARTMENT_FK));
+
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity accounting = CONNECTION.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		// a model created after the link, the master disabled, unfiltered
+		EntityComboBoxModel managers = manager.models().equal().comboBoxModel();
+		managers.items().refresh();
+		int all = managers.items().included().size();
+		ForeignKeyFilter filter = managers.filter().get(Employee.DEPARTMENT_FK);
+		assertTrue(filter.get().isEmpty());
+		assertTrue(filter.strict().is());
+
+		department.set().equalTo(sales);
+		assertEquals(singleton(sales.primaryKey()), new HashSet<>(filter.get()));
+		assertTrue(managers.items().included().get().stream().allMatch(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(sales)));
+		department.set().in(sales, accounting);
+		assertEquals(new HashSet<>(asList(sales.primaryKey(), accounting.primaryKey())), new HashSet<>(filter.get()));
+		// a negated operator, unfiltered
+		department.set().notEqualTo(sales);
+		assertTrue(filter.get().isEmpty());
+		assertEquals(all, managers.items().included().size());
+		department.set().notIn(sales);
+		assertEquals(all, managers.items().included().size());
+		// disabled, unfiltered
+		department.set().equalTo(sales);
+		department.enabled().set(false);
+		assertEquals(all, managers.items().included().size());
+		department.enabled().set(true);
+		assertTrue(managers.items().included().get().stream().allMatch(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(sales)));
+		// enabled without an operand, referring to nothing, strict filters all
+		department.operands().equal().clear();
+		department.enabled().set(true);
+		assertEquals(0, managers.items().included().size());
+		link.strict().set(false);
+		assertFalse(filter.strict().is());
+		assertEquals(all, managers.items().included().size());
+		link.strict().set(true);
+		assertEquals(0, managers.items().included().size());
+
+		// a model created after the master is set gets the current filter, strictness included
+		department.set().equalTo(accounting);
+		link.strict().set(false);
+		EntitySearchModel searchModel = manager.models().in().searchModel();
+		ForeignKeyFilter searchFilter = searchModel.filter().get(Employee.DEPARTMENT_FK);
+		assertEquals(singleton(accounting.primaryKey()), new HashSet<>(searchFilter.get()));
+		assertFalse(searchFilter.strict().is());
+		link.strict().set(true);
+		assertTrue(searchFilter.strict().is());
+		assertTrue(filter.strict().is());
+
+		// the operands no longer referred to dropped
+		Entity inAccounting = CONNECTION.select(Employee.DEPARTMENT_FK.equalTo(accounting)).get(0);
+		Entity inSales = CONNECTION.select(Employee.DEPARTMENT_FK.equalTo(sales)).get(0);
+		manager.operands().in().set(asList(inAccounting, inSales));
+		manager.operands().equal().set(inAccounting);
+		department.set().equalTo(sales);
+		assertEquals(singleton(inSales), manager.operands().in().get());
+		assertNull(manager.operands().equal().get());
+		// the ones still referred to kept
+		manager.operands().equal().set(inSales);
+		department.set().in(sales, accounting);
+		assertSame(inSales, manager.operands().equal().get());
+		assertEquals(singleton(inSales), manager.operands().in().get());
+
+		// a chain, the reconciled operands filtering the next condition
+		ForeignKeyConditionModel subordinate = condition(Employee.MGR_FK).build();
+		subordinate.link(manager, Employee.MGR_FK);
+		EntityComboBoxModel subordinates = subordinate.models().equal().comboBoxModel();
+		ForeignKeyFilter subordinateFilter = subordinates.filter().get(Employee.MGR_FK);
+		manager.set().equalTo(inSales);
+		assertEquals(singleton(inSales.primaryKey()), new HashSet<>(subordinateFilter.get()));
+		department.set().equalTo(accounting);
+		// the manager operand dropped, the manager condition disabled, the subordinates unfiltered
+		assertNull(manager.operands().equal().get());
+		assertFalse(manager.enabled().is());
+		assertTrue(subordinateFilter.get().isEmpty());
+	}
+
+	@Test
 	void updatedEntitiesReplacedInOperands() {
 		ForeignKeyConditionModel condition = condition().build();
 		Entity renamed = department(-42, "Renamed");
@@ -304,8 +396,12 @@ public final class DefaultForeignKeyConditionModelTest {
 	}
 
 	private static ForeignKeyConditionModel.Builder condition() {
+		return condition(Employee.DEPARTMENT_FK);
+	}
+
+	private static ForeignKeyConditionModel.Builder condition(ForeignKey foreignKey) {
 		return ForeignKeyConditionModel.builder()
-						.foreignKey(Employee.DEPARTMENT_FK)
+						.foreignKey(foreignKey)
 						.connection(CONNECTION);
 	}
 

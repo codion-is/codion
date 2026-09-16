@@ -20,11 +20,15 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.Operator;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 
@@ -44,15 +48,17 @@ import java.util.function.Supplier;
 import static is.codion.common.utilities.Operator.*;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toSet;
 
 final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel {
 
 	private static final List<Operator> OPERATORS = unmodifiableList(asList(EQUAL, NOT_EQUAL, IN, NOT_IN));
 
 	private final ForeignKey foreignKey;
+	private final Entities entities;
 	private final ConditionModel<Entity> condition;
 	private final DefaultModels models;
 	// strong references, the persistence events hold their consumers weakly
@@ -61,6 +67,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
 		foreignKey = builder.foreignKey;
+		entities = builder.entities;
 		models = new DefaultModels(builder.comboBoxModel, builder.searchModel);
 		condition = ConditionModel.builder()
 						.valueClass(Entity.class)
@@ -99,6 +106,39 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		return models;
 	}
 
+	@Override
+	public Link link(ForeignKeyConditionModel master, ForeignKey foreignKey) {
+		requireNonNull(foreignKey);
+		if (requireNonNull(master) == this) {
+			throw new IllegalArgumentException("A condition can not be linked to itself");
+		}
+		referencedDefinition().foreignKeys().definition(foreignKey);
+		if (!foreignKey.referencedType().equals(master.attribute().referencedType())) {
+			throw new IllegalArgumentException(foreignKey + " does not reference the entity type of the master condition: " +
+							master.attribute().referencedType());
+		}
+
+		return models.link(master, foreignKey);
+	}
+
+	@Override
+	public Link link(ForeignKeyConditionModel master) {
+		EntityType masterType = requireNonNull(master).attribute().referencedType();
+		Collection<ForeignKey> candidates = referencedDefinition().foreignKeys().get(masterType);
+		if (candidates.isEmpty()) {
+			throw new IllegalArgumentException(foreignKey.referencedType() + " has no foreign key referencing " + masterType);
+		}
+		if (candidates.size() > 1) {
+			throw new IllegalArgumentException(foreignKey.referencedType() + " has more than one foreign key referencing " + masterType + ": " + candidates);
+		}
+
+		return link(master, candidates.iterator().next());
+	}
+
+	private EntityDefinition referencedDefinition() {
+		return entities.definition(foreignKey.referencedType());
+	}
+
 	/**
 	 * @param foreignKey the foreign key
 	 * @param connection the connection
@@ -129,6 +169,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		static final ForeignKeyStep FOREIGN_KEY_STEP = new DefaultForeignKeyStep();
 
 		private final ForeignKey foreignKey;
+		private final Entities entities;
 
 		private Supplier<EntityComboBoxModel> comboBoxModel;
 		private Supplier<EntitySearchModel> searchModel;
@@ -138,6 +179,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 
 		private DefaultBuilder(ForeignKey foreignKey, EntityConnection connection) {
 			this.foreignKey = foreignKey;
+			this.entities = connection.entities();
 			this.comboBoxModel = () -> DefaultForeignKeyConditionModel.comboBoxModel(foreignKey, connection);
 			this.searchModel = () -> DefaultForeignKeyConditionModel.searchModel(foreignKey, connection);
 		}
@@ -210,13 +252,14 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		}
 	}
 
-	private static final class DefaultModels implements Models {
+	private final class DefaultModels implements Models {
 
 		private final Supplier<EntityComboBoxModel> comboBoxModel;
 		private final Supplier<EntitySearchModel> searchModel;
 		private final Value<Supplier<Condition>> condition = Value.nullable();
 		private final DefaultOperand equal = new DefaultOperand();
 		private final DefaultOperand in = new DefaultOperand();
+		private final List<DefaultLink> links = new ArrayList<>();
 
 		private DefaultModels(Supplier<EntityComboBoxModel> comboBoxModel, Supplier<EntitySearchModel> searchModel) {
 			this.comboBoxModel = comboBoxModel;
@@ -246,6 +289,27 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 			condition.addConsumer(modelCondition::set);
 		}
 
+		private Link link(ForeignKeyConditionModel master, ForeignKey foreignKey) {
+			synchronized (this) {
+				if (links.stream().anyMatch(link -> link.foreignKey.equals(foreignKey))) {
+					throw new IllegalStateException("Already linked on foreign key: " + foreignKey);
+				}
+				DefaultLink link = new DefaultLink(master, foreignKey);
+				links.add(link);
+				for (DefaultOperand operand : asList(equal, in)) {
+					if (operand.comboBoxModel != null) {
+						link.attach(operand.comboBoxModel.filter().get(foreignKey));
+					}
+					if (operand.searchModel != null) {
+						link.attach(operand.searchModel.filter().get(foreignKey));
+					}
+				}
+				link.apply();
+
+				return link;
+			}
+		}
+
 		private final class DefaultOperand implements Operand {
 
 			private @Nullable EntityComboBoxModel comboBoxModel;
@@ -260,6 +324,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 							throw new IllegalStateException("The EQUAL and IN operands can not share a combo box model: " + created);
 						}
 						restrict(created.condition());
+						links.forEach(link -> link.attach(created.filter().get(link.foreignKey)));
 						comboBoxModel = created;
 					}
 
@@ -276,6 +341,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 							throw new IllegalStateException("The EQUAL and IN operands can not share a search model: " + created);
 						}
 						restrict(created.condition());
+						links.forEach(link -> link.attach(created.filter().get(link.foreignKey)));
 						searchModel = created;
 					}
 
@@ -285,6 +351,100 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 
 			private DefaultOperand other() {
 				return this == equal ? in : equal;
+			}
+		}
+
+		/**
+		 * Derives the keys the master condition refers to on each change to it, applies them to the filters
+		 * of the models, created or not, and drops the operands no longer referred to.
+		 */
+		private final class DefaultLink implements Link {
+
+			private final ForeignKeyConditionModel master;
+			private final ForeignKey foreignKey;
+			private final State strict = State.state(true);
+			private final List<ForeignKeyFilter> filters = new ArrayList<>(4);
+
+			private DefaultLink(ForeignKeyConditionModel master, ForeignKey foreignKey) {
+				this.master = master;
+				this.foreignKey = foreignKey;
+				master.changed().addListener(this::apply);
+				// the filters follow, being linked, the operands depend on it
+				strict.addListener(this::reconcile);
+			}
+
+			@Override
+			public State strict() {
+				return strict;
+			}
+
+			private void attach(ForeignKeyFilter filter) {
+				filter.strict().link(strict);
+				filters.add(filter);
+				set(filter, keys());
+			}
+
+			private void apply() {
+				Set<Entity.Key> keys = keys();
+				filters.forEach(filter -> set(filter, keys));
+				reconcile(keys);
+			}
+
+			private void reconcile() {
+				reconcile(keys());
+			}
+
+			private void reconcile(@Nullable Set<Entity.Key> keys) {
+				if (keys == null) {
+					return;
+				}
+				Value<Entity> equal = DefaultForeignKeyConditionModel.this.condition.operands().equal();
+				Entity equalOperand = equal.get();
+				if (equalOperand != null && !accepted(equalOperand, keys)) {
+					equal.clear();
+				}
+				ValueSet<Entity> in = DefaultForeignKeyConditionModel.this.condition.operands().in();
+				Set<Entity> inOperands = in.get();
+				if (!inOperands.stream().allMatch(entity -> accepted(entity, keys))) {
+					in.set(inOperands.stream()
+									.filter(entity -> accepted(entity, keys))
+									.collect(toCollection(LinkedHashSet::new)));
+				}
+			}
+
+			private boolean accepted(Entity entity, Set<Entity.Key> keys) {
+				Entity.Key key = entity.key(foreignKey);
+
+				return key == null ? !strict.is() : keys.contains(key);
+			}
+
+			/**
+			 * @return the keys of the entities the master condition refers to, null for none, the models unfiltered
+			 */
+			private @Nullable Set<Entity.Key> keys() {
+				if (!master.enabled().is()) {
+					return null;
+				}
+				switch (master.operator().getOrThrow()) {
+					case EQUAL:
+						Entity equalOperand = master.operands().equal().get();
+						return equalOperand == null ? emptySet() : singleton(equalOperand.primaryKey());
+					case IN:
+						return master.operands().in().get().stream()
+										.map(Entity::primaryKey)
+										.collect(toSet());
+					default:
+						return null;
+				}
+			}
+
+			private void set(ForeignKeyFilter filter, @Nullable Set<Entity.Key> keys) {
+				if (keys == null) {
+					filter.clear();
+				}
+				else {
+					filter.set(keys);
+				}
 			}
 		}
 	}
