@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
@@ -109,9 +110,32 @@ public interface EntitySearchModel {
 	Value<Supplier<Condition>> condition();
 
 	/**
+	 * @return the {@link Filter} instance
+	 */
+	Filter filter();
+
+	/**
 	 * @return the settings associated with each search column
 	 */
 	Map<Column<String>, Settings> settings();
+
+	/**
+	 * Controls the foreign key filters for a {@link EntitySearchModel}, applied when searching, AND'ed to the
+	 * search condition and {@link EntitySearchModel#condition()}.
+	 * <p>NOTE, these do not affect the currently selected entity, if any.
+	 */
+	interface Filter {
+
+		/**
+		 * Returns a filter based on the given foreign key. A strict filter without keys results in an empty
+		 * search result, without querying, a non-strict one includes entities with a null reference.
+		 * @param foreignKey the foreign key
+		 * @return a foreign key filter
+		 * @throws IllegalArgumentException in case the foreign key is not associated with the underlying entity
+		 * @see ForeignKeyFilter#strict()
+		 */
+		ForeignKeyFilter get(ForeignKey foreignKey);
+	}
 
 	/**
 	 * Manages the search strings and provides search results.
@@ -239,6 +263,26 @@ public interface EntitySearchModel {
 		 * @throws IllegalArgumentException in case an attribute is not associated with the underlying entity
 		 */
 		Builder attributes(Collection<Attribute<?>> attributes);
+
+		/**
+		 * Links the given combo box model representing foreign key entities to this search model
+		 * so that selection in the foreign key model filters this model.
+		 * @param foreignKey the foreign key
+		 * @param filterModel the combo box model filtering this model
+		 * @return this builder instance
+		 * @see ForeignKeyFilter#link(EntityComboBoxModel)
+		 */
+		Builder filter(ForeignKey foreignKey, EntityComboBoxModel filterModel);
+
+		/**
+		 * Links the given search model representing foreign key entities to this search model
+		 * so that selection in the foreign key model filters this model.
+		 * @param foreignKey the foreign key
+		 * @param filterModel the search model filtering this model
+		 * @return this builder instance
+		 * @see ForeignKeyFilter#link(EntitySearchModel)
+		 */
+		Builder filter(ForeignKey foreignKey, EntitySearchModel filterModel);
 
 		/**
 		 * Defaults to {@link EntityDefinition#orderBy()}.

@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
@@ -237,6 +236,16 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		B filter(ForeignKey foreignKey, EntityComboBoxModel filterModel);
 
 		/**
+		 * Links the given search model representing foreign key entities to this combo box model
+		 * so that selection in the foreign key model filters this model.
+		 * @param foreignKey the foreign key
+		 * @param filterModel the search model filtering this model
+		 * @return this builder instance
+		 * @see ForeignKeyFilter#link(EntitySearchModel)
+		 */
+		B filter(ForeignKey foreignKey, EntitySearchModel filterModel);
+
+		/**
 		 * @param item receives the selected item, note that this item may be null
 		 * @return this builder instance
 		 */
@@ -266,58 +275,14 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Value<Predicate<Entity>> predicate();
 
 		/**
-		 * Returns a filter based on the given foreign key
-		 * @param foreignKey the foreign key
-		 * @return a foreign key filter
-		 */
-		ForeignKeyFilter get(ForeignKey foreignKey);
-	}
-
-	/**
-	 * Controls a foreign key filter for a {@link EntityComboBoxModel}
-	 */
-	interface ForeignKeyFilter {
-
-		/**
-		 * Filters the combo box model so that only items referencing the given key are included.
-		 * @param key the key to filter by
-		 */
-		void set(Entity.Key key);
-
-		/**
-		 * Filters the combo box model so that only items referencing the given keys are included.
-		 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are filtered.
-		 * @param keys the keys to filter by
-		 */
-		void set(Collection<Entity.Key> keys);
-
-		/**
-		 * @return the current filter keys
-		 */
-		Collection<Entity.Key> get();
-
-		/**
-		 * Clears and disables this foreign key filter
-		 */
-		void clear();
-
-		/**
-		 * Controls whether foreign key filtering should be strict or not.
-		 * A strict foreign key filter filters all entities if no filter keys are specified and filters individual entities if the reference key is null.
-		 * @return the {@link State} controlling whether foreign key filtering should be strict
-		 * @see #set(Collection)
-		 */
-		State strict();
-
-		/**
-		 * Links the given combo box model representing foreign key entities to this combo box model
-		 * so that selection in the foreign key model filters this model.
-		 * Note that {@code filterModel} is automatically refreshed each time this combo box model is refreshed.
-		 * <p>Linking a single-selection {@code filterModel} to a filter with multiple keys already set narrows
+		 * Returns a filter based on the given foreign key, applied to the items in memory.
+		 * <p>Linking a single-selection combo box model to a filter with multiple keys already set narrows
 		 * the filter to the master's single selection. Pre-set filter keys are only synced into the master if it
 		 * has already been refreshed; otherwise they are preserved until the master selection changes.
-		 * @param filterModel the combo box model filtering this model
+		 * @param foreignKey the foreign key
+		 * @return a foreign key filter
+		 * @see ForeignKeyFilter#link(EntityComboBoxModel)
 		 */
-		void link(EntityComboBoxModel filterModel);
+		ForeignKeyFilter get(ForeignKey foreignKey);
 	}
 }

@@ -314,6 +314,59 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
+	void linkSearchModel() {
+		EntityComboBoxModel employees = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build();
+		employees.items().refresh();
+		int all = employees.items().included().size();
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity accounting = CONNECTION.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		EntitySearchModel departments = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		departments.selection().entity().set(sales);
+		ForeignKeyFilter filter = employees.filter().get(Employee.DEPARTMENT_FK);
+		filter.link(departments);
+		assertEquals(singleton(sales.primaryKey()), new HashSet<>(filter.get()));
+		assertTrue(employees.items().included().get().stream().allMatch(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(sales)));
+		departments.selection().entity().set(accounting);
+		assertTrue(employees.items().included().get().stream().allMatch(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(accounting)));
+		// strict, no master selection, nothing
+		departments.selection().clear();
+		assertEquals(0, employees.items().included().size());
+		filter.strict().set(false);
+		assertEquals(all, employees.items().included().size());
+		// the entity selected selects the one it references in the master
+		Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
+		Entity blakesDepartment = blake.entity(Employee.DEPARTMENT_FK);
+		employees.selection().item().set(blake);
+		assertEquals(blakesDepartment, departments.selection().entity().get());
+		assertTrue(employees.items().included().get().stream().allMatch(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(blakesDepartment)));
+
+		// linked when built
+		EntityComboBoxModel built = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.filter(Employee.DEPARTMENT_FK, departments)
+						.build();
+		built.items().refresh();
+		assertFalse(built.items().included().get().isEmpty());
+		assertTrue(built.items().included().get().stream().allMatch(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(blakesDepartment)));
+		EntitySearchModel employeeSearch = EntitySearchModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> filter.link(employeeSearch));
+		assertThrows(IllegalArgumentException.class, () -> EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.filter(Employee.DEPARTMENT_FK, employeeSearch));
+	}
+
+	@Test
 	void setForeignKeyFilterEntities() {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)

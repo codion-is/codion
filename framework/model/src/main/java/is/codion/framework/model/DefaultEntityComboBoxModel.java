@@ -85,8 +85,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 		this.comboBoxModel = modelBuilder.build();
 		this.filter = new DefaultFilter();
-		builder.filterLinks.forEach((foreignKey, filterModel) ->
-						filter.get(foreignKey).link(filterModel));
+		builder.filterLinks.forEach((foreignKey, link) -> link.accept(filter.get(foreignKey)));
 		this.comboBoxModel.items().included().predicate().set(filter);
 		this.comboBoxModel.items().included().predicate().addValidator(predicate -> {
 			if (predicate != filter) {
@@ -303,7 +302,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public void link(EntityComboBoxModel filterModel) {
 			entityItems.entityDefinition.foreignKeys().definition(foreignKey);
-			validateLink(foreignKey, filterModel);
+			validateLink(foreignKey, requireNonNull(filterModel).entityDefinition().type());
 			//if foreign key filter keys have been set previously, initialize with one of those
 			Collection<Entity.Key> filterKeys = get();
 			boolean hadFilterKeys = !filterKeys.isEmpty();
@@ -323,9 +322,28 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			filterModel.items().refresher().result().addListener(() -> select(filterModel, selectedItem()));
 		}
 
+		@Override
+		public void link(EntitySearchModel filterModel) {
+			entityItems.entityDefinition.foreignKeys().definition(foreignKey);
+			validateLink(foreignKey, requireNonNull(filterModel).entityDefinition().type());
+			Entity masterSelection = filterModel.selection().entity().get();
+			//preserve any pre-set filter keys when the master has no selection to sync from
+			if (masterSelection != null || get().isEmpty()) {
+				set(masterSelection);
+			}
+			filterModel.selection().entity().addConsumer(this::set);
+			selection().item().addConsumer(selected -> select(filterModel, selected));
+		}
+
 		private void select(EntityComboBoxModel filterModel, @Nullable Entity selected) {
 			if (selected != null && selected.present(foreignKey)) {
 				filterModel.select(selected.key(foreignKey));
+			}
+		}
+
+		private void select(EntitySearchModel filterModel, @Nullable Entity selected) {
+			if (selected != null && selected.present(foreignKey)) {
+				filterModel.selection().entity().set(selected.entity(foreignKey));
 			}
 		}
 
@@ -400,10 +418,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	static void validateLink(ForeignKey foreignKey, EntityComboBoxModel filterModel) {
-		if (!foreignKey.referencedType().equals(requireNonNull(filterModel).entityDefinition().type())) {
-			throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityDefinition().type()
-							+ ", should be: " + foreignKey.referencedType());
+	static void validateLink(ForeignKey foreignKey, EntityType entityType) {
+		if (!foreignKey.referencedType().equals(requireNonNull(entityType))) {
+			throw new IllegalArgumentException("Filter model is of type: " + entityType + ", should be: " + foreignKey.referencedType());
 		}
 	}
 

@@ -25,9 +25,11 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.DefaultEntitySearchModel.DefaultBuilder;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Detail;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.AfterEach;
@@ -38,6 +40,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -209,6 +212,139 @@ public final class DefaultEntitySearchModelTest {
 		result = searchModel.search().perform();
 		assertEquals(1, result.size());
 		assertTrue(contains(result, "johnson"));
+	}
+
+	@Test
+	void foreignKeyFilter() {
+		Entity testDept = CONNECTION.selectSingle(Department.ID.equalTo(88));
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity john = CONNECTION.selectSingle(Employee.NAME.equalTo("John"));
+		int all = CONNECTION.select(Condition.all(Employee.TYPE)).size();
+		int inSales = CONNECTION.select(Employee.DEPARTMENT_FK.equalTo(sales)).size();
+		// everything matches, the filter decides
+		searchModel.search().strings().set(singleton("%"));
+		assertEquals(all, searchModel.search().perform().size());
+
+		assertThrows(IllegalArgumentException.class, () -> searchModel.filter().get(Detail.MASTER_FK));
+		ForeignKeyFilter filter = searchModel.filter().get(Employee.DEPARTMENT_FK);
+		assertSame(filter, searchModel.filter().get(Employee.DEPARTMENT_FK));
+		assertTrue(filter.get().isEmpty());
+		assertTrue(filter.strict().is());
+		assertThrows(IllegalArgumentException.class, () -> filter.set(john.primaryKey()));
+
+		filter.set(testDept.primaryKey());
+		List<Entity> result = searchModel.search().perform();
+		assertEquals(4, result.size());
+		assertTrue(result.stream().allMatch(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(testDept)));
+
+		filter.set(asList(testDept.primaryKey(), sales.primaryKey()));
+		result = searchModel.search().perform();
+		assertEquals(4 + inSales, result.size());
+		assertEquals(2, filter.get().size());
+
+		// strict, no keys, nothing, without a query
+		filter.set(emptyList());
+		assertTrue(searchModel.search().perform().isEmpty());
+		// not strict, no keys, unfiltered
+		filter.strict().set(false);
+		assertEquals(all, searchModel.search().perform().size());
+		filter.set(testDept.primaryKey());
+		assertEquals(4, searchModel.search().perform().size());
+		filter.strict().set(true);
+		// not strict, entities with a null reference included
+		Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
+		int underBlake = CONNECTION.select(Employee.MGR_FK.equalTo(blake)).size();
+		int withoutManager = CONNECTION.select(Employee.MGR_FK.isNull()).size();
+		filter.clear();
+		ForeignKeyFilter managerFilter = searchModel.filter().get(Employee.MGR_FK);
+		managerFilter.set(blake.primaryKey());
+		assertEquals(underBlake, searchModel.search().perform().size());
+		managerFilter.strict().set(false);
+		assertEquals(underBlake + withoutManager, searchModel.search().perform().size());
+		managerFilter.clear();
+		filter.set(testDept.primaryKey());
+		assertEquals(4, searchModel.search().perform().size());
+
+		// AND'ed to the search condition and the additional condition
+		searchModel.search().strings().set(singleton("joh"));
+		assertEquals(2, searchModel.search().perform().size());
+		searchModel.condition().set(() -> Employee.JOB.equalTo("MANAGER"));
+		assertEquals(1, searchModel.search().perform().size());
+		searchModel.condition().clear();
+
+		filter.clear();
+		assertTrue(filter.get().isEmpty());
+		assertEquals(2, searchModel.search().perform().size());
+		searchModel.search().strings().set(singleton("%"));
+		assertEquals(all, searchModel.search().perform().size());
+	}
+
+	@Test
+	void foreignKeyFilterLink() {
+		Entity accounting = CONNECTION.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		Entity testDept = CONNECTION.selectSingle(Department.ID.equalTo(88));
+		int inAccounting = CONNECTION.select(Employee.DEPARTMENT_FK.equalTo(accounting)).size();
+		EntityComboBoxModel departments = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		departments.items().refresh();
+		departments.selection().item().set(accounting);
+		EntityComboBoxModel employees = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> searchModel.filter().get(Employee.DEPARTMENT_FK).link(employees));
+
+		searchModel.search().strings().set(singleton("%"));
+		ForeignKeyFilter filter = searchModel.filter().get(Employee.DEPARTMENT_FK);
+		filter.link(departments);
+		// the master selection filters
+		assertEquals(singleton(accounting.primaryKey()), new HashSet<>(filter.get()));
+		List<Entity> result = searchModel.search().perform();
+		assertEquals(inAccounting, result.size());
+		assertTrue(result.stream().allMatch(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(accounting)));
+		departments.selection().item().set(testDept);
+		assertEquals(4, searchModel.search().perform().size());
+		// strict, no master selection, nothing
+		departments.selection().item().clear();
+		assertTrue(filter.get().isEmpty());
+		assertTrue(searchModel.search().perform().isEmpty());
+		// the entity selected selects the one it references in the master
+		Entity john = CONNECTION.selectSingle(Employee.NAME.equalTo("John"));
+		searchModel.selection().entity().set(john);
+		assertEquals(testDept, departments.selection().item().get());
+		assertEquals(singleton(testDept.primaryKey()), new HashSet<>(filter.get()));
+
+		// linked when built
+		EntitySearchModel built = new DefaultBuilder(Employee.TYPE, CONNECTION)
+						.search(searchable)
+						.filter(Employee.DEPARTMENT_FK, departments)
+						.build();
+		built.search().strings().set(singleton("%"));
+		assertEquals(4, built.search().perform().size());
+		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION)
+						.filter(Employee.DEPARTMENT_FK, employees));
+
+		// a search model as the master
+		EntitySearchModel departmentSearch = new DefaultBuilder(Department.TYPE, CONNECTION)
+						.search(Department.NAME)
+						.build();
+		EntitySearchModel bySearch = new DefaultBuilder(Employee.TYPE, CONNECTION)
+						.search(searchable)
+						.filter(Employee.DEPARTMENT_FK, departmentSearch)
+						.build();
+		bySearch.search().strings().set(singleton("%"));
+		// strict, no master selection, nothing
+		assertTrue(bySearch.search().perform().isEmpty());
+		departmentSearch.selection().entity().set(accounting);
+		assertEquals(inAccounting, bySearch.search().perform().size());
+		bySearch.selection().entity().set(john);
+		assertEquals(testDept, departmentSearch.selection().entity().get());
+		assertEquals(4, bySearch.search().perform().size());
+		assertThrows(IllegalArgumentException.class, () -> bySearch.filter().get(Employee.DEPARTMENT_FK).link(searchModel));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION)
+						.filter(Employee.DEPARTMENT_FK, searchModel));
 	}
 
 	@Test
