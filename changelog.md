@@ -19,7 +19,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FormBuilder added, building a form panel, label/input pairs in rows, the label beside its input, over a GridBagLayout, along with DefaultFormBuilder, for extending, and Components.form(), LoginPanel now based on it.
 - TemporalInput, TextInput and FileInput now report the baseline of their field, aligning with a label beside them.
-- AbstractComponentBuilder.supportsNull() moved to AbstractComponentValueBuilder. 
+- AbstractComponentBuilder.supportsNull() moved to AbstractComponentValueBuilder.
+- AbstractComponentBuilder.setName() parameters reordered.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).

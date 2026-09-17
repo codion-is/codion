@@ -295,8 +295,8 @@ public final class EntityComboBoxInput extends JPanel {
 		}
 
 		@Override
-		protected void setName(String name, EntityComboBoxInput component) {
-			super.setName(name, component);
+		protected void setName(EntityComboBoxInput component, String name) {
+			super.setName(component, name);
 			component.comboBox.setName(name);
 			component.comboBox.getEditor().getEditorComponent().setName(name);
 		}
