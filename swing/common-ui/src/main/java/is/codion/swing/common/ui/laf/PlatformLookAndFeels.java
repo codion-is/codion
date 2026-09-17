@@ -36,7 +36,7 @@ public final class PlatformLookAndFeels implements LookAndFeelProvider {
 	public Collection<LookAndFeelEnabler> get() {
 		return unmodifiableList(Stream.of(UIManager.getInstalledLookAndFeels())
 						.filter(PlatformLookAndFeels::included)
-						.map(lookAndFeelInfo -> new DefaultLookAndFeelEnabler(lookAndFeelInfo, true, false))
+						.map(lookAndFeelInfo -> new DefaultLookAndFeelEnabler(lookAndFeelInfo, true, null))
 						.collect(toList()));
 	}
 

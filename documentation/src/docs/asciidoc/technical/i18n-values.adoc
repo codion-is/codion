@@ -681,7 +681,7 @@ is/codion/swing/common/ui/dialog/DefaultLookAndFeelSelectionDialogBuilder_is_IS.
 
 |dark|Dark|Dökk
 |dark_mnemonic|D|D
-|include|Include|Birta
+|include|Include|Sýna
 |light|Light|Ljós
 |light_mnemonic|L|L
 |look_and_feel|Look & Feel|Útlit

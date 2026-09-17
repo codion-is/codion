@@ -55,9 +55,9 @@ public interface LookAndFeelEnabler {
 	LookAndFeel lookAndFeel();
 
 	/**
-	 * @return true if this enabler represents a dark look and feel
+	 * @return an {@link Optional} boolean specifying whether this enabler represents a dark look and feel, an empty Optional if not specified
 	 */
-	boolean dark();
+	Optional<Boolean> dark();
 
 	/**
 	 * Whether this is one of the platform look and feels provided by {@link javax.swing.UIManager#getInstalledLookAndFeels()},

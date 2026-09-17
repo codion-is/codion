@@ -36,6 +36,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.Component;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -306,14 +307,17 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		@Override
 		public boolean test(Item<LookAndFeelEnabler> item) {
 			LookAndFeelEnabler enabler = item.getOrThrow();
-			if (!light.is() && !enabler.dark()) {
-				return false;
-			}
-			if (!dark.is() && enabler.dark()) {
-				return false;
+			Optional<Boolean> darkLaf = enabler.dark();
+			if (darkLaf.isPresent()) {
+				if (darkLaf.get()) {
+					return dark.is();
+				}
+				else {
+					return light.is();
+				}
 			}
 
-			return platform.is() || !enabler.platform();
+			return platform.is() && enabler.platform();
 		}
 	}
 
