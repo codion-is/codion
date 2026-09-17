@@ -69,6 +69,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnection connection;
+	private final boolean negationIncludesNull;
 	private final TableConditionModel<Attribute<?>> conditionModel;
 	private final Value<Conjunction> conjunction = Value.builder()
 					.nonNull(Conjunction.AND)
@@ -82,6 +83,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	DefaultEntityConditionModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.connection.entities().definition(builder.entityType);
 		this.connection = builder.connection;
+		this.negationIncludesNull = builder.negationIncludesNull;
 		this.conditionModel = tableConditionModel(builder.conditions.get());
 		this.modified = new DefaultModified();
 		bindEvents();
@@ -210,7 +212,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		changed.addListener(modified::set);
 	}
 
-	private static Condition condition(ConditionModel<?> conditionModel, Attribute<?> identifier) {
+	private Condition condition(ConditionModel<?> conditionModel, Attribute<?> identifier) {
 		if (identifier instanceof ForeignKey) {
 			return foreignKeyCondition((ConditionModel<Entity>) conditionModel, (ForeignKey) identifier);
 		}
@@ -218,7 +220,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return columnCondition(conditionModel, identifier);
 	}
 
-	private static Condition foreignKeyCondition(ConditionModel<Entity> conditionModel, ForeignKey foreignKey) {
+	private Condition foreignKeyCondition(ConditionModel<Entity> conditionModel, ForeignKey foreignKey) {
 		Entity equalOperand = conditionModel.operands().equal().get();
 		Collection<Entity> inOperands = conditionModel.operands().in().get();
 		switch (conditionModel.operator().getOrThrow()) {
@@ -227,15 +229,15 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 			case IN:
 				return inOperands.isEmpty() ? foreignKey.isNull() : foreignKey.in(inOperands);
 			case NOT_EQUAL:
-				return equalOperand == null ? foreignKey.isNotNull() : foreignKey.notEqualTo(equalOperand);
+				return equalOperand == null ? foreignKey.isNotNull() : negation(foreignKey.notEqualTo(equalOperand), foreignKey);
 			case NOT_IN:
-				return inOperands.isEmpty() ? foreignKey.isNotNull() : foreignKey.notIn(inOperands);
+				return inOperands.isEmpty() ? foreignKey.isNotNull() : negation(foreignKey.notIn(inOperands), foreignKey);
 			default:
 				throw new IllegalArgumentException("Unsupported operator: " + conditionModel.operator().get() + " for foreign key condition");
 		}
 	}
 
-	private static <T> Condition columnCondition(ConditionModel<T> conditionModel, Attribute<?> identifier) {
+	private <T> Condition columnCondition(ConditionModel<T> conditionModel, Attribute<?> identifier) {
 		Column<T> column = (Column<T>) identifier;
 		Operands<T> operands = conditionModel.operands();
 		switch (conditionModel.operator().getOrThrow()) {
@@ -286,22 +288,22 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return column.equalTo(equalOperand);
 	}
 
-	private static <T> Condition notEqualCondition(ConditionModel<T> conditionModel, Column<T> column) {
+	private <T> Condition notEqualCondition(ConditionModel<T> conditionModel, Column<T> column) {
 		T equalOperand = conditionModel.operands().equal().get();
 		if (equalOperand == null) {
 			return column.isNotNull();
 		}
 		if (column.type().isString()) {
-			return singleStringNotEqualCondition(conditionModel, column, conditionModel.operands().equalWithWildcards());
+			return negation(singleStringNotEqualCondition(conditionModel, column, conditionModel.operands().equalWithWildcards()), column);
 		}
 		if (column.type().isCharacter()) {
-			return singleCharacterNotEqualCondition(conditionModel, column, (Character) equalOperand);
+			return negation(singleCharacterNotEqualCondition(conditionModel, column, (Character) equalOperand), column);
 		}
 		if (column.type().isTemporal()) {
-			return temporalEqualCondition(conditionModel, column, (Temporal) equalOperand, true);
+			return negation(temporalEqualCondition(conditionModel, column, (Temporal) equalOperand, true), column);
 		}
 
-		return column.notEqualTo(equalOperand);
+		return negation(column.notEqualTo(equalOperand), column);
 	}
 
 	private static <T> ColumnCondition<T> singleStringEqualCondition(ConditionModel<T> conditionModel,
@@ -453,7 +455,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return column.in(operands);
 	}
 
-	private static <T> ColumnCondition<T> notInCondition(ConditionModel<T> conditionModel, Column<T> column) {
+	private <T> Condition notInCondition(ConditionModel<T> conditionModel, Column<T> column) {
 		Set<T> operands = conditionModel.operands().in().get();
 		if (operands.isEmpty()) {
 			return column.isNotNull();
@@ -462,12 +464,31 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 			Column<String> stringColumn = (Column<String>) column;
 			Collection<String> inOperands = (Collection<String>) operands;
 
-			return (ColumnCondition<T>) (conditionModel.caseSensitive().is() ?
+			return negation(conditionModel.caseSensitive().is() ?
 							stringColumn.notIn(inOperands) :
-							stringColumn.notInIgnoreCase(inOperands));
+							stringColumn.notInIgnoreCase(inOperands), column);
 		}
 
-		return column.notIn(operands);
+		return negation(column.notIn(operands), column);
+	}
+
+	/**
+	 * A negation matches what its positive counterpart does not, null values included, whereas SQL excludes them.
+	 * @return the given condition, also accepting null values in case the attribute is nullable
+	 * @see EntityConditionModel#NEGATION_INCLUDES_NULL
+	 */
+	private Condition negation(Condition condition, Attribute<?> attribute) {
+		if (!negationIncludesNull) {
+			return condition;
+		}
+		if (attribute instanceof ForeignKey) {
+			ForeignKey foreignKey = (ForeignKey) attribute;
+
+			return entityDefinition.foreignKeys().nullable(foreignKey) ? Condition.or(condition, foreignKey.isNull()) : condition;
+		}
+		Column<?> column = (Column<?>) attribute;
+
+		return entityDefinition.columns().definition(column).nullable() ? Condition.or(condition, column.isNull()) : condition;
 	}
 
 	private static boolean containsWildcards(@Nullable String value) {
@@ -482,6 +503,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		private final EntityConnection connection;
 
 		private Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions;
+		private boolean negationIncludesNull = NEGATION_INCLUDES_NULL.getOrThrow();
 
 		private DefaultBuilder(EntityType entityType, EntityConnection connection) {
 			this.entityType = entityType;
@@ -514,6 +536,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		@Override
 		public Builder conditions(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions) {
 			this.conditions = requireNonNull(conditions);
+			return this;
+		}
+
+		@Override
+		public Builder negationIncludesNull(boolean negationIncludesNull) {
+			this.negationIncludesNull = negationIncludesNull;
 			return this;
 		}
 

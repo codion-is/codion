@@ -31,6 +31,15 @@ The primary condition mechanism is the {url-javadoc}{framework-model}/is/codion/
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=tableConditionModel]
 ----
 
+==== Negative operators and null values
+
+In SQL no comparison to null holds, so `commission <> 0` and `state NOT IN ('KA', 'MH')` both exclude the rows without a value, which is rarely what the user typing _not in_ into a condition panel expects.
+The condition model therefore treats a negation as the complement of its positive counterpart: for a nullable column or foreign key, `NOT_EQUAL` and `NOT_IN` also match the rows without a value, `(state NOT IN (?, ?) OR state IS NULL)`, which is also how the same condition behaves when used as a table filter.
+`NOT_EQUAL` and `NOT_IN` without an operand still mean _is not null_, and the between operators are unaffected.
+
+This only applies to the conditions created by the condition model, conditions created via the domain API, `Customer.STATE.notIn("KA", "MH")`, are plain SQL.
+Set `EntityConditionModel.NEGATION_INCLUDES_NULL` to `false`, or use `negationIncludesNull(false)` when building the model, for SQL semantics.
+
 === Additional  Conditions
 
 Beyond the table condition model, you can add custom WHERE and/or HAVING conditions:

@@ -23,6 +23,7 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Conjunction;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -33,12 +34,29 @@ import is.codion.framework.domain.entity.condition.Condition;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static is.codion.common.utilities.Configuration.booleanValue;
+
 /**
  * Manages the condition models associated with an entity's attributes, providing the combined
  * WHERE and HAVING conditions used when querying entities.
  * Use {@link EntityConditionModel#builder()} for an instance.
  */
 public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
+
+	/**
+	 * Specifies whether the negative operators {@link is.codion.common.utilities.Operator#NOT_EQUAL} and
+	 * {@link is.codion.common.utilities.Operator#NOT_IN} include null values when translated to a query condition,
+	 * matching exactly the rows their positive counterparts do not, the way a {@link ConditionModel} used as a filter does.
+	 * If false the condition follows SQL, where no comparison to null holds, excluding rows without a value.
+	 * Note that this only affects conditions based on nullable columns and foreign keys, and only the conditions created
+	 * by this model, conditions created via {@link Column} and {@link ForeignKey} are always plain SQL.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see Builder#negationIncludesNull(boolean)
+	 */
+	PropertyValue<Boolean> NEGATION_INCLUDES_NULL = booleanValue(EntityConditionModel.class.getName() + ".negationIncludesNull", true);
 
 	/**
 	 * @return the type of the entity this table condition model is based on
@@ -179,6 +197,13 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 		 * @return this builder
 		 */
 		Builder conditions(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions);
+
+		/**
+		 * @param negationIncludesNull true if the negative operators should include null values
+		 * @return this builder
+		 * @see EntityConditionModel#NEGATION_INCLUDES_NULL
+		 */
+		Builder negationIncludesNull(boolean negationIncludesNull);
 
 		/**
 		 * @return a new {@link EntityConditionModel} instance

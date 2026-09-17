@@ -22,9 +22,11 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.DateTimeTest;
@@ -37,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static java.util.Collections.emptyList;
@@ -127,6 +130,82 @@ public class DefaultEntityConditionModelTest {
 		conditionModel.get(Employee.DEPARTMENT_FK).operator().set(Operator.NOT_IN);
 		conditionModel.get(Employee.DEPARTMENT_FK).enabled().set(true);
 		assertEquals(Employee.DEPARTMENT_FK.isNotNull(), conditionModel.where());
+	}
+
+	@Test
+	void negationIncludesNull() {
+		// 16 employees, 6 without a commission, 1 without a manager, the department is not nullable
+		List<Entity> employees = CONNECTION.select(Condition.all(Employee.TYPE));
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
+		Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
+
+		EntityConditionModel model = EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build();
+		ConditionModel<Double> commission = model.get(Employee.COMMISSION);
+		commission.set().notEqualTo(0d);
+		assertEquals(Condition.or(Employee.COMMISSION.notEqualTo(0d), Employee.COMMISSION.isNull()), model.where());
+		assertQueryAndFilterAgree(15, model, commission, employees, Employee.COMMISSION);
+		commission.set().notIn(0d, 300d);
+		assertEquals(Condition.or(Employee.COMMISSION.notIn(0d, 300d), Employee.COMMISSION.isNull()), model.where());
+		assertQueryAndFilterAgree(14, model, commission, employees, Employee.COMMISSION);
+		// without an operand the negation is 'not null', which must not include null
+		commission.set().notEqualTo(null);
+		commission.enabled().set(true);
+		assertEquals(Employee.COMMISSION.isNotNull(), model.where());
+		assertQueryAndFilterAgree(10, model, commission, employees, Employee.COMMISSION);
+		commission.set().notIn(emptyList());
+		commission.enabled().set(true);
+		assertEquals(Employee.COMMISSION.isNotNull(), model.where());
+		// the positive operators are unaffected
+		commission.set().in(0d, 300d);
+		assertEquals(Employee.COMMISSION.in(0d, 300d), model.where());
+		assertQueryAndFilterAgree(2, model, commission, employees, Employee.COMMISSION);
+		commission.clear();
+
+		ForeignKeyConditionModel manager = model.get(Employee.MGR_FK);
+		manager.set().notEqualTo(king);
+		assertEquals(Condition.or(Employee.MGR_FK.notEqualTo(king), Employee.MGR_FK.isNull()), model.where());
+		assertQueryAndFilterAgree(13, model, manager, employees, Employee.MGR_FK);
+		manager.set().notIn(king, blake);
+		assertEquals(Condition.or(Employee.MGR_FK.notIn(king, blake), Employee.MGR_FK.isNull()), model.where());
+		assertQueryAndFilterAgree(8, model, manager, employees, Employee.MGR_FK);
+		manager.clear();
+
+		// not nullable, nothing to include
+		ForeignKeyConditionModel department = model.get(Employee.DEPARTMENT_FK);
+		department.set().notEqualTo(sales);
+		assertEquals(Employee.DEPARTMENT_FK.notEqualTo(sales), model.where());
+		assertQueryAndFilterAgree(12, model, department, employees, Employee.DEPARTMENT_FK);
+		department.clear();
+		ConditionModel<String> name = model.get(Employee.NAME);
+		name.set().notEqualTo("KING");
+		assertFalse(model.where().string(CONNECTION.entities().definition(Employee.TYPE)).contains("IS NULL"));
+		assertQueryAndFilterAgree(15, model, name, employees, Employee.NAME);
+
+		// disabled, the query follows SQL and no longer agrees with the filter
+		model = EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.negationIncludesNull(false)
+						.build();
+		commission = model.get(Employee.COMMISSION);
+		commission.set().notEqualTo(0d);
+		assertEquals(Employee.COMMISSION.notEqualTo(0d), model.where());
+		assertEquals(9, CONNECTION.count(Count.where(model.where())));
+		commission.set().notIn(0d, 300d);
+		assertEquals(Employee.COMMISSION.notIn(0d, 300d), model.where());
+		assertEquals(8, CONNECTION.count(Count.where(model.where())));
+	}
+
+	private static <T> void assertQueryAndFilterAgree(int expected, EntityConditionModel model, ConditionModel<T> condition,
+																										List<Entity> entities, Attribute<T> attribute) {
+		assertEquals(expected, CONNECTION.count(Count.where(model.where())));
+		assertEquals(expected, entities.stream()
+						.filter(entity -> condition.accepts((Comparable<T>) entity.get(attribute)))
+						.count());
 	}
 
 	@Test
@@ -261,7 +340,7 @@ public class DefaultEntityConditionModelTest {
 		ConditionModel<LocalTime> timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00));
 		Condition where = condition.where();
-		assertEquals("(time_hh_mm < ? OR time_hh_mm >= ?)", where.string(entityDefinition));
+		assertEquals("((time_hh_mm < ? OR time_hh_mm >= ?) OR time_hh_mm IS NULL)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00), where.values().get(0));
 		assertEquals(LocalTime.of(11, 01), where.values().get(1));
@@ -274,7 +353,7 @@ public class DefaultEntityConditionModelTest {
 		timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM_SS);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00, 2));
 		where = condition.where();
-		assertEquals("(time_hh_mm_ss < ? OR time_hh_mm_ss >= ?)", where.string(entityDefinition));
+		assertEquals("((time_hh_mm_ss < ? OR time_hh_mm_ss >= ?) OR time_hh_mm_ss IS NULL)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 2), where.values().get(0));
 		assertEquals(LocalTime.of(11, 00, 3), where.values().get(1));
@@ -287,7 +366,7 @@ public class DefaultEntityConditionModelTest {
 		timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM_SS_SSS);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00, 3, 999_000_000));
 		where = condition.where();
-		assertEquals("time_hh_mm_ss_sss <> ?", where.string(entityDefinition));
+		assertEquals("(time_hh_mm_ss_sss <> ? OR time_hh_mm_ss_sss IS NULL)", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 3, 999_000_000), where.values().get(0));
 
@@ -299,7 +378,7 @@ public class DefaultEntityConditionModelTest {
 		ConditionModel<LocalDateTime> dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45));
 		where = condition.where();
-		assertEquals("(date_time_hh_mm < ? OR date_time_hh_mm >= ?)", where.string(entityDefinition));
+		assertEquals("((date_time_hh_mm < ? OR date_time_hh_mm >= ?) OR date_time_hh_mm IS NULL)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 46), where.values().get(1));
@@ -312,7 +391,7 @@ public class DefaultEntityConditionModelTest {
 		dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM_SS);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15));
 		where = condition.where();
-		assertEquals("(date_time_hh_mm_ss < ? OR date_time_hh_mm_ss >= ?)", where.string(entityDefinition));
+		assertEquals("((date_time_hh_mm_ss < ? OR date_time_hh_mm_ss >= ?) OR date_time_hh_mm_ss IS NULL)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 16), where.values().get(1));
@@ -325,7 +404,7 @@ public class DefaultEntityConditionModelTest {
 		dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM_SS_SSS);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000));
 		where = condition.where();
-		assertEquals("date_time_hh_mm_ss_sss <> ?", where.string(entityDefinition));
+		assertEquals("(date_time_hh_mm_ss_sss <> ? OR date_time_hh_mm_ss_sss IS NULL)", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(0));
 	}
