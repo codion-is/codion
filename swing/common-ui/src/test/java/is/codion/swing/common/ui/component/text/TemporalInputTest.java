@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusListener;
 import java.time.LocalDate;
@@ -40,6 +41,18 @@ import static javax.swing.JComponent.WHEN_FOCUSED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TemporalInputTest {
+
+	@Test
+	void baseline() {
+		TemporalInput<LocalDate> panel = TemporalInput.builder()
+						.temporalClass(LocalDate.class)
+						.dateTimePattern("dd.MM.yyyy")
+						.build();
+		Dimension size = panel.getPreferredSize();
+		assertEquals(panel.temporalField().getBaseline(size.width, size.height), panel.getBaseline(size.width, size.height));
+		assertTrue(panel.getBaseline(size.width, size.height) >= 0);
+		assertEquals(panel.temporalField().getBaselineResizeBehavior(), panel.getBaselineResizeBehavior());
+	}
 
 	@Test
 	void setText() {

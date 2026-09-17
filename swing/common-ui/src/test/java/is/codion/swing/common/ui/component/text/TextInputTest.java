@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.KeyStroke;
+import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusListener;
 
@@ -35,6 +36,18 @@ import static javax.swing.JComponent.WHEN_FOCUSED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TextInputTest {
+
+	@Test
+	void baseline() {
+		TextInput panel = TextInput.builder()
+						.caption("caption")
+						.dialogTitle("title")
+						.build();
+		Dimension size = panel.getPreferredSize();
+		assertEquals(panel.textField().getBaseline(size.width, size.height), panel.getBaseline(size.width, size.height));
+		assertTrue(panel.getBaseline(size.width, size.height) >= 0);
+		assertEquals(panel.textField().getBaselineResizeBehavior(), panel.getBaselineResizeBehavior());
+	}
 
 	@Test
 	void test() {

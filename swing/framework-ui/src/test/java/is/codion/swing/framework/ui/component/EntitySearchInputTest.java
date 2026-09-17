@@ -32,6 +32,7 @@ import is.codion.swing.framework.ui.TestDomain.Department;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.KeyStroke;
+import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusListener;
 
@@ -49,6 +50,22 @@ public final class EntitySearchInputTest {
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
+
+	@Test
+	void baseline() {
+		EntitySearchModel model = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		EntitySearchInput panel = EntitySearchInput.builder()
+						.model(model)
+						.editPanel(() -> null)
+						.build();
+		Dimension size = panel.getPreferredSize();
+		assertEquals(panel.searchField().getBaseline(size.width, size.height), panel.getBaseline(size.width, size.height));
+		assertTrue(panel.getBaseline(size.width, size.height) >= 0);
+		assertEquals(panel.searchField().getBaselineResizeBehavior(), panel.getBaselineResizeBehavior());
+	}
 
 	@Test
 	void test() {

@@ -132,6 +132,15 @@ include::{dir-source}/is/codion/manual/swing/framework/ui/EntityEditPanelDemo.ja
 include::{dir-source}/is/codion/manual/swing/framework/ui/EntityEditPanelDemo.java[tags=panelLabel]
 ----
 
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#form(is.codion.framework.domain.entity.attribute.Attribute...)[form(attributes)]
+
+A form lays out the components in the horizontal style, the label beside its input, with *columns(int)* label/input pairs per row and a component added via *span(component)* occupying a row of its own. The label column of each pair column is as wide as its widest label, the input columns absorb the horizontal slack and a label aligns with the baseline of its input, or with its top in case the input has none.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/framework/ui/EntityEditPanelDemo.java[tags=form]
+----
+
 == Advanced Patterns
 
 === Configuration Options

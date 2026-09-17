@@ -79,6 +79,17 @@ public final class FileInput extends JPanel {
 		add(browseButton, BorderLayout.EAST);
 	}
 
+	// The baseline of the field, which spans the full height of this panel, the button beside it
+	@Override
+	public int getBaseline(int width, int height) {
+		return filePathField.getBaseline(width, height);
+	}
+
+	@Override
+	public BaselineResizeBehavior getBaselineResizeBehavior() {
+		return filePathField.getBaselineResizeBehavior();
+	}
+
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);

@@ -41,6 +41,7 @@ import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlexibleGridLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlowLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.FormBuilder;
 import is.codion.swing.common.ui.component.panel.GridLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.InputPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
@@ -421,6 +422,14 @@ public final class Components {
 	 */
 	public static InputPanelBuilder inputPanel() {
 		return InputPanelBuilder.builder();
+	}
+
+	/**
+	 * @param <B> the builder type
+	 * @return a {@link FormBuilder}
+	 */
+	public static <B extends FormBuilder<B>> FormBuilder<B> form() {
+		return FormBuilder.builder();
 	}
 
 	/**
