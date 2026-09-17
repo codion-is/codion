@@ -33,6 +33,7 @@
  * <li>{@link is.codion.framework.model.ForeignKeyModelLink#CLEAR_VALUE_ON_EMPTY_SELECTION}
  * <li>{@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}
  * <li>{@link is.codion.framework.model.EntitySearchModel#PERSISTENCE_AWARE}
+ * <li>{@link is.codion.framework.model.EntityConditionModel#NEGATION_INCLUDES_NULL}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked
