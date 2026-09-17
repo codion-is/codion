@@ -9,10 +9,10 @@
 
 class FilterTable {
     +FilterTableModel model()
-    +FilterTableConditionPanel filters()
+    +TableConditionPanel filters()
     +TableSummaryModel summaries()
     +FilterTableSearchModel search()
-    +FilterTableColumnModel columnModel()
+    +FilterTableColumnModel columns()
 }
 
 class JTable {}
@@ -23,10 +23,10 @@ interface FilterTableColumnModel {}
 
 interface FilterTableSearchModel {}
 
-class FilterTableConditionPanel {}
+class TableConditionPanel {}
 
 FilterTable --|> JTable
-FilterTable --o FilterTableConditionPanel
+FilterTable --o TableConditionPanel
 FilterTable --o TableSummaryModel
 FilterTable --o FilterTableColumnModel
 FilterTable --o FilterTableSearchModel
@@ -45,6 +45,46 @@ include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTab
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=columns]
+----
+
+=== Filtering
+
+A *FilterTable* comes with a filter panel, available via {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilterTable.html#filters()[filters()], containing a filter component for each column, based on the filters of the underlying table model, see <<manual.adoc#_filters, Filters>>. The filter components keep to the width and position of their columns.
+
+The table displays the filter panel itself when asked to, via {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilterTable.Builder.html#filters(is.codion.swing.common.ui.component.table.FilterTable.Filters)[filters(Filters)], above or below the table header. The default is specified via the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilterTable.html#FILTERS[FilterTable.FILTERS] configuration value, *Filters.NONE* unless configured.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=filters]
+----
+
+NOTE: The table lays claim to the filter panel each time it is added to a scroll pane, so do not lay out the filter panel manually as well unless using *Filters.NONE*, a component having a single parent.
+
+==== Filter view
+
+Whether the filter panel is visible, and in which form, is controlled separately, via the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/TableConditionPanel.html#view()[view()] value of the filter panel: *HIDDEN*, *SIMPLE*, a single field per column, or *ADVANCED*, adding the operator selection. The initial view is specified via {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilterTable.Builder.html#filterView(is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView)[filterView(ConditionView)], *HIDDEN* by default, so a table displaying its filters shows nothing until the view is changed.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=filterView]
+----
+
+==== Filter controls
+
+The filter panel provides ready-made controls for selecting the view and for clearing the filters, via {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/TableConditionPanel.html#controls()[controls()], suitable for a popup menu or a toolbar. Note that these controls have no caption, copy them in order to add one. You are not limited to these controls, the view being a *Value* you can base your own on, as in the check box example above.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=filterControls]
+----
+
+==== Laying out the filter panel manually
+
+A position below the table is not available to the table itself, a scroll pane having a column header but no column footer. For that, or any other position, leave the table at *Filters.NONE* and lay out the filter panel yourself, in a scroll pane following the horizontal scrolling of the one containing the table, see {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/scrollpane/ScrollPaneBuilder.html#followHorizontal(javax.swing.JScrollPane)[followHorizontal(JScrollPane)]. The following is one way, the table scroll pane leads, the filter panel scrolling the table to the column of a filter component gaining focus.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=filterPanelLayout]
 ----
 
 === Search

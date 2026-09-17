@@ -66,18 +66,23 @@ import javax.swing.DropMode;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -107,8 +112,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static is.codion.common.model.summary.TableSummaryModel.tableSummaryModel;
-import static is.codion.common.utilities.Configuration.booleanValue;
-import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.*;
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
@@ -249,6 +253,17 @@ public final class FilterTable<R, C> extends JTable {
 					booleanValue(FilterTable.class.getName() + ".stopEditOnFocusLost", true);
 
 	/**
+	 * Specifies whether and where the table displays its filter panel, in the column header of its enclosing scroll pane.
+	 * <ul>
+	 * <li>Value type: {@link Filters}
+	 * <li>Default value: {@link Filters#NONE}
+	 * </ul>
+	 * @see Builder#filters(Filters)
+	 */
+	public static final PropertyValue<Filters> FILTERS =
+					enumValue(FilterTable.class.getName() + ".filters", Filters.class, Filters.NONE);
+
+	/**
 	 * The controls.
 	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
@@ -315,6 +330,26 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
+	 * Specifies whether and where the table displays its filter panel, in the column header of its enclosing scroll pane.
+	 * Note that a position below the table is not available, a scroll pane having no column footer.
+	 * @see Builder#filters(Filters)
+	 */
+	public enum Filters {
+		/**
+		 * The table does not display the filter panel, lay out {@link FilterTable#filters()} manually.
+		 */
+		NONE,
+		/**
+		 * The filter panel is displayed above the table header.
+		 */
+		ABOVE_HEADER,
+		/**
+		 * The filter panel is displayed below the table header.
+		 */
+		BELOW_HEADER
+	}
+
+	/**
 	 * Specifies whether to center the scrolled to row and or column.
 	 */
 	public enum CenterOnScroll {
@@ -373,12 +408,14 @@ public final class FilterTable<R, C> extends JTable {
 	private final boolean rowsFillViewport;
 	private final int visibleRows;
 	private final boolean fitColumnHeaders;
+	private final Filters filters;
 	final boolean columnToolTips;
 
 	private final ControlMap controlMap;
 
 	private @Nullable TableConditionPanel<C> filterPanel;
 	private @Nullable JTextField searchField;
+	private @Nullable JPanel columnHeader;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
 		super(builder.tableModel, createColumnModel(builder), builder.tableModel.selection());
@@ -388,6 +425,7 @@ public final class FilterTable<R, C> extends JTable {
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.filterPanelFactory = builder.filterPanelFactory;
 		this.filterComponents = builder.filterComponents;
+		this.filters = builder.filters;
 		this.centerOnScroll = Value.builder()
 						.nonNull(CenterOnScroll.NEITHER)
 						.value(builder.centerOnScroll)
@@ -472,11 +510,31 @@ public final class FilterTable<R, C> extends JTable {
 	@Override
 	public void updateUI() {
 		super.updateUI();
-		Utilities.updateUI(getTableHeader(), searchField, filterPanel);
+		Utilities.updateUI(getTableHeader(), searchField, filterPanel, columnHeader);
 		Utilities.updateUI(columns().hidden().columns().stream()
 						.flatMap(FilterTable::columnComponents)
 						.collect(toList()));
 		updateCellEditorUI();
+	}
+
+	/**
+	 * Configures the enclosing scroll pane, displaying the filter panel below the table header
+	 * in the column header of the scroll pane, in case this table displays its filters.
+	 * @see Builder#filters(Filters)
+	 */
+	@Override
+	protected void configureEnclosingScrollPane() {
+		super.configureEnclosingScrollPane();
+		if (filters != Filters.NONE) {
+			Container parent = SwingUtilities.getUnwrappedParent(this);
+			if (parent instanceof JViewport && parent.getParent() instanceof JScrollPane) {
+				JScrollPane scrollPane = (JScrollPane) parent.getParent();
+				JViewport viewport = scrollPane.getViewport();
+				if (viewport != null && SwingUtilities.getUnwrappedView(viewport) == this) {
+					scrollPane.setColumnHeaderView(columnHeader());
+				}
+			}
+		}
 	}
 
 	@Override
@@ -1136,6 +1194,22 @@ public final class FilterTable<R, C> extends JTable {
 		filterConditionPanel.panels().forEach(this::configureFilterPanel);
 	}
 
+	// The table header, which the scroll pane was just handed as its column header view, with the filter panel above
+	// or below it. The panel is reused, the table being configured each time it is added to a scroll pane,
+	// the header and the filter panel each time reclaimed from wherever they were.
+	private JPanel columnHeader() {
+		if (columnHeader == null) {
+			columnHeader = new JPanel(new BorderLayout());
+		}
+		JTableHeader header = getTableHeader();
+		if (header != null) {
+			columnHeader.add(header, BorderLayout.CENTER);
+		}
+		columnHeader.add(filters(), filters == Filters.ABOVE_HEADER ? BorderLayout.NORTH : BorderLayout.SOUTH);
+
+		return columnHeader;
+	}
+
 	private void configureFilterPanel(C identifier, ConditionPanel<?> filterPanel) {
 		filterPanel.focusGained().ifPresent(focusGained ->
 						focusGained.addListener(() -> scrollTo.column(identifier)));
@@ -1721,6 +1795,22 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterView(ConditionView filterView);
 
 		/**
+		 * Specifies whether and where the table displays its filter panel itself, in the column header of its enclosing
+		 * scroll pane, above or below the table header, where it follows the horizontal scrolling of the table.
+		 * <p>Only applies when the table is the view of a {@link javax.swing.JScrollPane}. Below the table
+		 * is not available, a scroll pane having no column footer, in which case lay out {@link FilterTable#filters()}
+		 * manually, see {@link is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder#followHorizontal(javax.swing.JScrollPane)}.
+		 * <p>Note that unless {@link Filters#NONE}, the table lays claim to the filter panel each time it is added to a scroll
+		 * pane, so {@link FilterTable#filters()} must not be laid out manually as well, a component having a single parent.
+		 * <p>Whether the filter panel is visible is controlled separately, see {@link #filterView(ConditionView)}.
+		 * @param filters specifies whether and where the table displays its filter panel
+		 * @return this builder instance
+		 * @see #FILTERS
+		 * @see #filterView(ConditionView)
+		 */
+		Builder<R, C> filters(Filters filters);
+
+		/**
 		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
@@ -1864,6 +1954,7 @@ public final class FilterTable<R, C> extends JTable {
 		private int autoResizeMode = AUTO_RESIZE_MODE.getOrThrow();
 		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.getOrThrow();
 		private ConditionView filterView = ConditionView.HIDDEN;
+		private Filters filters = FILTERS.getOrThrow();
 		private @Nullable Integer rowHeight;
 		private boolean rowHeightFromFontSize = ROW_HEIGHT_FROM_FONT_SIZE.getOrThrow();
 		private int rowHeightFontPadding = ROW_HEIGHT_FONT_PADDING.getOrThrow();
@@ -2097,6 +2188,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> filterView(ConditionView filterView) {
 			this.filterView = requireNonNull(filterView);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> filters(Filters filters) {
+			this.filters = requireNonNull(filters);
 			return this;
 		}
 

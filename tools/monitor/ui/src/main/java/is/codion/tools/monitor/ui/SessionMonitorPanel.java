@@ -21,16 +21,15 @@ package is.codion.tools.monitor.ui;
 import is.codion.common.reactive.state.State;
 import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTable.Filters;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.tools.monitor.model.SessionInstanceMonitor;
 import is.codion.tools.monitor.model.SessionMonitor;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -45,8 +44,6 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.tools.monitor.model.SessionMonitor.RemoteSessionColumns.CREATION_TIME;
-import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
 /**
  * A SessionMonitorPanel
@@ -62,7 +59,6 @@ public final class SessionMonitorPanel extends JPanel {
 
 	private final SessionMonitor model;
 	private final FilterTable<RemoteSession, String> sessionTable;
-	private final JScrollPane filterScrollPane;
 	private final JScrollPane sessionScroller;
 	private final State advancedFilterState = State.builder()
 					.consumer(this::toggleAdvancedFilters)
@@ -81,12 +77,12 @@ public final class SessionMonitorPanel extends JPanel {
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.filterView(ConditionView.SIMPLE)
+						.filters(Filters.ABOVE_HEADER)
 						.build();
 		sessionScroller = scrollPane()
 						.view(sessionTable)
 						.border(BorderFactory.createTitledBorder("Sessions"))
 						.build();
-		filterScrollPane = createLinkedScrollPane(sessionScroller, sessionTable.filters());
 		initializeUI();
 	}
 
@@ -100,7 +96,6 @@ public final class SessionMonitorPanel extends JPanel {
 
 	private void initializeUI() {
 		JPanel clientInstanceBase = borderLayoutPanel()
-						.north(filterScrollPane)
 						.center(sessionScroller)
 						.south(borderLayoutPanel()
 										.south(borderLayoutPanel()
@@ -168,14 +163,5 @@ public final class SessionMonitorPanel extends JPanel {
 		sessionTable.filters().view().set(advanced ?
 						ConditionView.ADVANCED : ConditionView.SIMPLE);
 		revalidate();
-	}
-
-	private static JScrollPane createLinkedScrollPane(JScrollPane parentScrollPane, JComponent componentToScroll) {
-		return Components.scrollPane()
-						.view(componentToScroll)
-						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
-						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-						.followHorizontal(parentScrollPane)
-						.build();
 	}
 }
