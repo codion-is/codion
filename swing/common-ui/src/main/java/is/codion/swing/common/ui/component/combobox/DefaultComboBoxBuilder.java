@@ -193,8 +193,8 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 	}
 
 	@Override
-	protected void setName(String name, C component) {
-		super.setName(name, component);
+	protected void setName(C component, String name) {
+		super.setName(component, name);
 		component.getEditor().getEditorComponent().setName(name);
 	}
 

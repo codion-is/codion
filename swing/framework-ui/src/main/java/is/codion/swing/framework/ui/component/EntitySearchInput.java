@@ -430,8 +430,8 @@ public final class EntitySearchInput extends JPanel {
 		}
 
 		@Override
-		protected void setName(String name, EntitySearchInput component) {
-			super.setName(name, component);
+		protected void setName(EntitySearchInput component, String name) {
+			super.setName(component, name);
 			component.searchField.setName(name);
 		}
 

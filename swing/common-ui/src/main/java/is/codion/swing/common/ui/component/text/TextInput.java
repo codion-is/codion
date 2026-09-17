@@ -427,8 +427,8 @@ public final class TextInput extends JPanel {
 		}
 
 		@Override
-		protected void setName(String name, TextInput component) {
-			super.setName(name, component);
+		protected void setName(TextInput component, String name) {
+			super.setName(component, name);
 			component.textField.setName(name);
 		}
 	}

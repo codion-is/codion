@@ -128,8 +128,8 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 	}
 
 	@Override
-	protected void setName(String name, JSpinner component) {
-		super.setName(name, component);
+	protected void setName(JSpinner component, String name) {
+		super.setName(component, name);
 		JComponent editor = component.getEditor();
 		if (editor instanceof JSpinner.DefaultEditor) {
 			((JSpinner.DefaultEditor) editor).getTextField().setName(name);

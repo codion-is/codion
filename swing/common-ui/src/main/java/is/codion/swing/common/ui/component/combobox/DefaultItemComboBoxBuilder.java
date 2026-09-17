@@ -193,8 +193,8 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	}
 
 	@Override
-	protected void setName(String name, JComboBox<Item<T>> component) {
-		super.setName(name, component);
+	protected void setName(JComboBox<Item<T>> component, String name) {
+		super.setName(component, name);
 		component.getEditor().getEditorComponent().setName(name);
 	}
 

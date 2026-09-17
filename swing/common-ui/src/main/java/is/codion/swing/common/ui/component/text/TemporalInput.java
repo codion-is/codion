@@ -306,8 +306,8 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		protected void setName(String name, TemporalInput<T> component) {
-			super.setName(name, component);
+		protected void setName(TemporalInput<T> component, String name) {
+			super.setName(component, name);
 			component.temporalField.setName(name);
 		}
 
