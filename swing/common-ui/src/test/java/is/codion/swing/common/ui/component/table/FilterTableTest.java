@@ -27,15 +27,18 @@ import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.ui.component.table.FilterTable.CenterOnScroll;
+import is.codion.swing.common.ui.component.table.FilterTable.Filters;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.text.NumberField;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -121,6 +124,61 @@ public class FilterTableTest {
 						})
 						.items(() -> ITEMS)
 						.build();
+	}
+
+	@Test
+	void filters() {
+		FilterTable<TestRow, Integer> table = FilterTable.builder()
+						.model(createTestModel(null))
+						.filterView(ConditionView.SIMPLE)
+						.filters(Filters.ABOVE_HEADER)
+						.build();
+		JScrollPane scrollPane = new JScrollPane(table);
+		// what addNotify() does
+		table.configureEnclosingScrollPane();
+		JComponent columnHeader = (JComponent) scrollPane.getColumnHeader().getView();
+		// the table header with the filter panel above it
+		assertSame(columnHeader, table.getTableHeader().getParent());
+		assertSame(columnHeader, table.filters().getParent());
+		assertEquals(BorderLayout.NORTH, ((BorderLayout) columnHeader.getLayout()).getConstraints(table.filters()));
+		// removed, the scroll pane is released
+		table.removeNotify();
+		assertNull(scrollPane.getColumnHeader().getView());
+		// the column header is reused, the table header and the filter panel reclaimed, when added again
+		table.configureEnclosingScrollPane();
+		assertSame(columnHeader, scrollPane.getColumnHeader().getView());
+		assertSame(columnHeader, table.getTableHeader().getParent());
+		assertSame(columnHeader, table.filters().getParent());
+
+		// below the header
+		FilterTable<TestRow, Integer> below = FilterTable.builder()
+						.model(createTestModel(null))
+						.filters(Filters.BELOW_HEADER)
+						.build();
+		JScrollPane belowScrollPane = new JScrollPane(below);
+		below.configureEnclosingScrollPane();
+		JComponent belowColumnHeader = (JComponent) belowScrollPane.getColumnHeader().getView();
+		assertSame(belowColumnHeader, below.getTableHeader().getParent());
+		assertEquals(BorderLayout.SOUTH, ((BorderLayout) belowColumnHeader.getLayout()).getConstraints(below.filters()));
+
+		// none by default, the table header alone
+		FilterTable<TestRow, Integer> plain = FilterTable.builder()
+						.model(createTestModel(null))
+						.build();
+		JScrollPane plainScrollPane = new JScrollPane(plain);
+		plain.configureEnclosingScrollPane();
+		assertSame(plain.getTableHeader(), plainScrollPane.getColumnHeader().getView());
+		assertNull(plain.filters().getParent());
+
+		// headerless, the filter panel alone
+		FilterTable<TestRow, Integer> headerless = FilterTable.builder()
+						.model(createTestModel(null))
+						.headerless(true)
+						.filters(Filters.BELOW_HEADER)
+						.build();
+		JScrollPane headerlessScrollPane = new JScrollPane(headerless);
+		headerless.configureEnclosingScrollPane();
+		assertSame(headerlessScrollPane.getColumnHeader().getView(), headerless.filters().getParent());
 	}
 
 	@Test

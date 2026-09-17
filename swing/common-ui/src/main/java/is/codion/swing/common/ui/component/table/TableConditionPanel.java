@@ -113,7 +113,13 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * @return the controls provided by this condition panel, for example clearing the condition and changing the condition view
+	 * Note that the {@link Controls} instance returned has no caption defined, copy it to add a caption.
+	 * {@snippet :
+	 * Controls conditionControls = conditionPanel.controls().copy()
+	 *          .caption("Filters")
+	 *          .build();
+	 * }
+	 * @return the controls provided by this condition panel, for clearing the condition and changing the condition view
 	 */
 	public Controls controls() {
 		return Controls.builder()

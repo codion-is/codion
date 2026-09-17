@@ -58,6 +58,7 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionC
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTable.Filters;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -2741,7 +2742,10 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private FilterTable<Entity, Attribute<?>> buildTable() {
-			FilterTable<Entity, Attribute<?>> filterTable = tableBuilder.build();
+			FilterTable<Entity, Attribute<?>> filterTable = tableBuilder
+							// this panel lays out the filter panel itself, below the table
+							.filters(Filters.NONE)
+							.build();
 			filterTable.addFocusListener(new TableFocusedListener(tablePanel));
 			configureConditionIndicator(filterTable);
 			tableBuilder = null;
