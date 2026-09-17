@@ -18,7 +18,6 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.common.reactive.state.State;
 import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
@@ -60,9 +59,6 @@ public final class SessionMonitorPanel extends JPanel {
 	private final SessionMonitor model;
 	private final FilterTable<RemoteSession, String> sessionTable;
 	private final JScrollPane sessionScroller;
-	private final State advancedFilterState = State.builder()
-					.consumer(this::toggleAdvancedFilters)
-					.build();
 
 	/**
 	 * Instantiates a new SessionMonitorPanel
@@ -100,13 +96,9 @@ public final class SessionMonitorPanel extends JPanel {
 						.south(borderLayoutPanel()
 										.south(borderLayoutPanel()
 														.center(sessionTable.searchField())
-														.east(flexibleGridLayoutPanel(1, 2)
-																		.add(checkBox()
-																						.link(advancedFilterState)
-																						.text("Advanced filters"))
-																		.add(button()
-																						.control(command(this::refresh))
-																						.text("Refresh")))))
+														.east(button()
+																		.control(command(this::refresh))
+																		.text("Refresh"))))
 						.build();
 
 		JPanel sessionInstancePanel = borderLayoutPanel().build();
@@ -144,6 +136,9 @@ public final class SessionMonitorPanel extends JPanel {
 														.caption("Disconnect")
 														.enabled(model.sessionTableModel().selection().present()))
 										.separator()
+										.control(table.filters().controls().copy()
+														.caption("Filters"))
+										.separator()
 										.control(Controls.builder()
 														.caption("Columns")
 														.control(table.createToggleColumnsControls())
@@ -157,11 +152,5 @@ public final class SessionMonitorPanel extends JPanel {
 			model.server().disconnect(session.id());
 			model.sessionTableModel().items().remove(session);
 		}
-	}
-
-	private void toggleAdvancedFilters(boolean advanced) {
-		sessionTable.filters().view().set(advanced ?
-						ConditionView.ADVANCED : ConditionView.SIMPLE);
-		revalidate();
 	}
 }
