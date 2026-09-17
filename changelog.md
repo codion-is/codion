@@ -38,6 +38,8 @@ Codion Change Log
 - EditorComponents.TEXT_FIELD_COLUMNS and ComponentDefaults.textFieldColumns(), 0 now disables the default columns, the fields sizing to their contents.
 - EditorComponents.ComponentFactory.form() added, providing an AttributeFormBuilder, a FormBuilder extension adding the components associated with attributes.
 - EntitySearchInput and EntityComboBoxInput now report the baseline of their field, aligning with a label beside them.
+### is.codion.tools.monitor.ui
+- SessionMonitorPanel filter config moved to popup menu.
 
 ## 0.18.86
 ### is.codion.common.reactive
