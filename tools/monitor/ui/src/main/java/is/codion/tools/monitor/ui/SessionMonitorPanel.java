@@ -30,7 +30,6 @@ import is.codion.tools.monitor.model.SessionInstanceMonitor;
 import is.codion.tools.monitor.model.SessionMonitor;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoundedRangeModel;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -176,25 +175,7 @@ public final class SessionMonitorPanel extends JPanel {
 						.view(componentToScroll)
 						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-						.onBuild(scrollPane -> new ScrollPaneSynchronizer(parentScrollPane, scrollPane))
+						.followHorizontal(parentScrollPane)
 						.build();
-	}
-
-	private static final class ScrollPaneSynchronizer {
-
-		private final BoundedRangeModel mainModel;
-		private final BoundedRangeModel linkedModel;
-
-		private ScrollPaneSynchronizer(JScrollPane main, JScrollPane linked) {
-			mainModel = main.getHorizontalScrollBar().getModel();
-			linkedModel = linked.getHorizontalScrollBar().getModel();
-			mainModel.addChangeListener(e -> synchronize());
-			linked.addHierarchyListener(e -> synchronize());
-		}
-
-		private void synchronize() {
-			linkedModel.setRangeProperties(mainModel.getValue(), mainModel.getExtent(),
-							mainModel.getMinimum(), mainModel.getMaximum(), mainModel.getValueIsAdjusting());
-		}
 	}
 }

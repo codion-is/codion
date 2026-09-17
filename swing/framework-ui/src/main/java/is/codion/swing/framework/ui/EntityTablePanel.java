@@ -90,7 +90,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BoundedRangeModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -3015,7 +3014,7 @@ public class EntityTablePanel extends JPanel {
 							.view(componentToScroll)
 							.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 							.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-							.onBuild(scrollPane -> new ScrollPaneSynchronizer(tableScrollPane, scrollPane))
+							.followHorizontal(tableScrollPane)
 							.build();
 		}
 
@@ -3271,24 +3270,6 @@ public class EntityTablePanel extends JPanel {
 			else if (action.isEnabled()) {
 				action.actionPerformed(e);
 			}
-		}
-	}
-
-	private static final class ScrollPaneSynchronizer {
-
-		private final BoundedRangeModel mainModel;
-		private final BoundedRangeModel linkedModel;
-
-		private ScrollPaneSynchronizer(JScrollPane main, JScrollPane linked) {
-			mainModel = main.getHorizontalScrollBar().getModel();
-			linkedModel = linked.getHorizontalScrollBar().getModel();
-			mainModel.addChangeListener(e -> synchronize());
-			linked.addHierarchyListener(e -> synchronize());
-		}
-
-		private void synchronize() {
-			linkedModel.setRangeProperties(mainModel.getValue(), mainModel.getExtent(),
-							mainModel.getMinimum(), mainModel.getMaximum(), mainModel.getValueIsAdjusting());
 		}
 	}
 
