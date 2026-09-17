@@ -459,13 +459,6 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	protected abstract C createComponent();
 
 	/**
-	 * @return true if this component can be linked with a nullable value
-	 */
-	protected boolean supportsNull() {
-		return true;
-	}
-
-	/**
 	 * Enables focus transfer on Enter, override for composite components or special handling
 	 * @param transferFocusOnEnter the transfer focus on enter to enable
 	 * @param component the component
