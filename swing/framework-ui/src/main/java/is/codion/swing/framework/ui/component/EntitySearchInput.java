@@ -425,7 +425,7 @@ public final class EntitySearchInput extends JPanel {
 		}
 
 		@Override
-		protected JComponent field(EntitySearchInput component) {
+		protected JComponent input(EntitySearchInput component) {
 			return component.searchField;
 		}
 

@@ -553,7 +553,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 
 		@Override
-		protected JComponent field(MultiInput<C, T> component) {
+		protected JComponent input(MultiInput<C, T> component) {
 			return component.component();
 		}
 	}

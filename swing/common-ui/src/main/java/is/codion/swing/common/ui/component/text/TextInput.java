@@ -422,7 +422,7 @@ public final class TextInput extends JPanel {
 		}
 
 		@Override
-		protected JComponent field(TextInput component) {
+		protected JComponent input(TextInput component) {
 			return component.textField;
 		}
 
