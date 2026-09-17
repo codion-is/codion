@@ -233,6 +233,13 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	 */
 	protected abstract ComponentValue<C, T> createValue(C component);
 
+	/**
+	 * @return true if this component can be linked with a nullable value
+	 */
+	protected boolean supportsNull() {
+		return true;
+	}
+
 	private void configureValue(ComponentValue<C, T> componentValue) {
 		C component = componentValue.component();
 		component.putClientProperty(COMPONENT_VALUE, componentValue);
