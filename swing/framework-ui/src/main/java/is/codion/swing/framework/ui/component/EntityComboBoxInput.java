@@ -290,7 +290,7 @@ public final class EntityComboBoxInput extends JPanel {
 		}
 
 		@Override
-		protected JComponent field(EntityComboBoxInput component) {
+		protected JComponent input(EntityComboBoxInput component) {
 			return component.comboBox;
 		}
 

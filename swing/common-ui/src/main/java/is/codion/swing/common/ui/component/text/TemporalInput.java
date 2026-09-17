@@ -301,7 +301,7 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		protected JComponent field(TemporalInput<T> component) {
+		protected JComponent input(TemporalInput<T> component) {
 			return component.temporalField;
 		}
 
