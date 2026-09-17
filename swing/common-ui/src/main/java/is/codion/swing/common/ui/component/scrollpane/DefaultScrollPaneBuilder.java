@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -41,6 +42,7 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<JScrollPan
 	private int verticalBlockIncrement;
 	private int horizontalBlockIncrement;
 	private @Nullable LayoutManager layout;
+	private @Nullable JScrollPane followHorizontal;
 
 	DefaultScrollPaneBuilder() {}
 
@@ -104,6 +106,12 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<JScrollPan
 	}
 
 	@Override
+	public ScrollPaneBuilder followHorizontal(@Nullable JScrollPane scrollPane) {
+		this.followHorizontal = scrollPane;
+		return this;
+	}
+
+	@Override
 	protected JScrollPane createComponent() {
 		JScrollPane scrollPane = new JScrollPane(view != null ? view.get() : null, vsbPolicy, hsbPolicy);
 		scrollPane.setWheelScrollingEnabled(wheelScrollingEnabled);
@@ -122,7 +130,32 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<JScrollPan
 		if (layout != null) {
 			scrollPane.setLayout(layout);
 		}
+		if (followHorizontal != null) {
+			new HorizontalFollower(followHorizontal, scrollPane);
+		}
 
 		return scrollPane;
+	}
+
+	// Copies the range properties of the leader's horizontal scroll bar model to the follower's, one way.
+	// Sharing the model is not an option, each scroll pane keeps writing the extent and maximum
+	// of its own viewport to the model of its scroll bar, the two fighting over a shared one.
+	private static final class HorizontalFollower {
+
+		private final BoundedRangeModel leaderModel;
+		private final BoundedRangeModel followerModel;
+
+		private HorizontalFollower(JScrollPane leader, JScrollPane follower) {
+			leaderModel = leader.getHorizontalScrollBar().getModel();
+			followerModel = follower.getHorizontalScrollBar().getModel();
+			leaderModel.addChangeListener(e -> follow());
+			// catches up when the follower is added or shown, the leader possibly scrolled in the meantime
+			follower.addHierarchyListener(e -> follow());
+		}
+
+		private void follow() {
+			followerModel.setRangeProperties(leaderModel.getValue(), leaderModel.getExtent(),
+							leaderModel.getMinimum(), leaderModel.getMaximum(), leaderModel.getValueIsAdjusting());
+		}
 	}
 }

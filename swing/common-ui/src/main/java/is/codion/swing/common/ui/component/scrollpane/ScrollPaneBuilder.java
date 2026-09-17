@@ -100,6 +100,25 @@ public interface ScrollPaneBuilder extends ComponentBuilder<JScrollPane, ScrollP
 	ScrollPaneBuilder layout(@Nullable LayoutManager layout);
 
 	/**
+	 * The resulting scroll pane follows the horizontal scrolling of the given one, the way a filter
+	 * or summary panel follows the columns of a table, typically without scroll bars of its own, see
+	 * {@link javax.swing.ScrollPaneConstants#HORIZONTAL_SCROLLBAR_NEVER}.
+	 * <p>Note that:
+	 * <ul>
+	 * <li>The following is one way, the given scroll pane leads. Scrolling the follower directly, such as via
+	 * {@link JComponent#scrollRectToVisible(java.awt.Rectangle)} from within its view, is not reflected in the leader,
+	 * the two ending up misaligned until the leader is next scrolled, so scroll the leader instead.
+	 * <li>The view of the follower must be as wide as the view of the leader, plus the width of the vertical
+	 * scroll bar of the leader, in case it is displayed, the follower being that much wider than the leader's
+	 * viewport, the two otherwise ending up misaligned when scrolled to the end.
+	 * <li>The leader holds on to the follower, the two are expected to share a lifetime.
+	 * </ul>
+	 * @param scrollPane the scroll pane which horizontal scrolling to follow, null for none
+	 * @return this builder instance
+	 */
+	ScrollPaneBuilder followHorizontal(@Nullable JScrollPane scrollPane);
+
+	/**
 	 * @return a new {@link ScrollPaneBuilder} instance
 	 */
 	static ScrollPaneBuilder builder() {
