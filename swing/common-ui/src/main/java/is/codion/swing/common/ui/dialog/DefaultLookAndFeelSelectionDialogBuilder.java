@@ -32,6 +32,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -145,7 +146,9 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 	private static boolean darkLookAndFeelsAvailable() {
 		return LookAndFeelProvider.lookAndFeels().stream()
-						.anyMatch(LookAndFeelEnabler::dark);
+						.map(LookAndFeelEnabler::dark)
+						.filter(Optional::isPresent)
+						.anyMatch(Optional::get);
 	}
 
 	private static boolean auxiliaryLookAndFeelsAvailable() {

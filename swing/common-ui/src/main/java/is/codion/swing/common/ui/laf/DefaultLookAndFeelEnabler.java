@@ -22,11 +22,14 @@ import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.scaler.Scaler;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -46,21 +49,21 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	private final LookAndFeelInfo lookAndFeelInfo;
 	private final Consumer<LookAndFeelInfo> enabler;
 	private final boolean platform;
-	private final boolean dark;
+	private final @Nullable Boolean dark;
 
 	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo) {
-		this(lookAndFeelInfo, DEFAULT_ENABLER, false);
+		this(lookAndFeelInfo, DEFAULT_ENABLER, null);
 	}
 
-	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean dark) {
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, @Nullable Boolean dark) {
 		this(lookAndFeelInfo, enabler, false, dark);
 	}
 
-	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean platform, boolean dark) {
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean platform, @Nullable Boolean dark) {
 		this(lookAndFeelInfo, DEFAULT_ENABLER, platform, dark);
 	}
 
-	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean platform, boolean dark) {
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean platform, @Nullable Boolean dark) {
 		this.lookAndFeelInfo = requireNonNull(lookAndFeelInfo);
 		this.enabler = requireNonNull(enabler);
 		this.platform = platform;
@@ -78,8 +81,8 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	}
 
 	@Override
-	public boolean dark() {
-		return dark;
+	public Optional<Boolean> dark() {
+		return Optional.ofNullable(dark);
 	}
 
 	@Override

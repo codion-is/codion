@@ -22,6 +22,7 @@ Codion Change Log
 - AbstractComponentBuilder.supportsNull() moved to AbstractComponentValueBuilder.
 - AbstractComponentBuilder.setName() parameters reordered.
 - AbstractComponentBuilder.field(component) renamed input().
+- LookAndFeelEnabler.dark() now returns Optional, empty when dark is unspecified.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).
