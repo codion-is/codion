@@ -22,7 +22,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.Text;
 import is.codion.swing.common.model.component.list.SwingFilterListModel;
-import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
@@ -39,24 +38,29 @@ import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,15 +84,17 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
 
 /**
  * A field collecting a set of values through a wrapped component: the wrapped component, untouched, beside a button
- * showing how many values have been collected, the button opening a non-modal, undecorated dialog listing them
- * under the field, the caption as its border's title, gone when the focus goes elsewhere as a drop-down is.
+ * showing how many values have been collected, the button toggling a non-modal, undecorated dialog listing them
+ * under the field, the caption as its border's title. The dialog stays when the focus goes elsewhere, so that the
+ * values collected remain on display while more are added, follows the field around and goes when the field does.
  * <ul>
  * <li>{@link KeyEvent#VK_INSERT} adds the wrapped component's value to the set and clears the component, as does
  * {@link KeyEvent#VK_ENTER} while the component holds a value, see {@link Builder#addOnEnter(boolean)}; an Enter the
  * field does not use is the wrapped component's.
- * <li>{@link KeyEvent#VK_DOWN} with Alt held, or the button, opens the dialog, the list in it focused.
+ * <li>{@link KeyEvent#VK_DOWN} with Alt held, or the button, opens the dialog, the list in it focused, or moves the focus
+ * to the list in case the dialog is already open. {@link KeyEvent#VK_UP} with Alt held, or the button, closes it.
  * <li>In the dialog {@link KeyEvent#VK_DELETE} removes the selected values, the Clear button clears the set, and
- * {@link KeyEvent#VK_ESCAPE} or {@link KeyEvent#VK_ENTER} closes it.
+ * {@link KeyEvent#VK_ESCAPE}, {@link KeyEvent#VK_ENTER} or {@link KeyEvent#VK_UP} with Alt held closes it.
  * </ul>
  * The value is the set collected, sorted, see {@link Builder#comparator(Comparator)}, plus whatever the wrapped
  * component holds, last, so a single value typed into the component counts without being added. Setting the value
@@ -110,10 +116,17 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	private final @Nullable String caption;
 	private final State enabled = State.state(true);
 	private final State present = State.state();
-	private final JButton membersButton;
+	// The single source of truth for whether the members list is displayed, the members button being
+	// a true toggle on it, with every way of closing the list reporting back, see closeMembers()
+	private final State membersVisible = State.builder()
+					.consumer(this::onMembersVisibleChanged)
+					.build();
+	private final JToggleButton membersButton;
 
 	private @Nullable JDialog dialog;
 	private @Nullable JList<T> list;
+	private @Nullable JComponent membersContent;
+	private final FollowField followField = new FollowField();
 
 	private MultiInput(DefaultBuilder<C, T> builder) {
 		super(new BorderLayout());
@@ -274,13 +287,13 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.build();
 	}
 
-	private JButton createMembersButton(JComponent component) {
+	private JToggleButton createMembersButton(JComponent component) {
 		int height = component.getPreferredSize().height;
 		int width = Math.max(height, component.getFontMetrics(component.getFont()).stringWidth(WIDEST_COUNT) + 10);
 
-		return button()
-						.control(Control.builder()
-										.command(this::showMembers)
+		return toggleButton()
+						.toggle(Control.builder()
+										.toggle(membersVisible)
 										.enabled(State.and(enabled, present))
 										.build())
 						.margin(new Insets(0, 2, 0, 2))
@@ -296,13 +309,20 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.action(command(this::addValue))
 						.enable(component);
-		// Alt-Down, the convention for opening a drop-down; not Ctrl-Down, which the condition panel uses for the next operator
+		// Alt-Down and Alt-Up, the convention for opening and closing a drop-down; not Ctrl-Down, which the condition
+		// panel uses for the next operator, and not Escape for closing, which the field may well have other uses for
 		KeyEvents.builder()
 						.keyCode(VK_DOWN)
 						.modifiers(ALT_DOWN_MASK)
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.action(command(this::showMembers))
-						.enable(component);
+						.action(command(this::showOrFocusMembers))
+						.enable(component, membersButton);
+		KeyEvents.builder()
+						.keyCode(VK_UP)
+						.modifiers(ALT_DOWN_MASK)
+						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.action(command(this::closeMembers))
+						.enable(component, membersButton);
 		if (addOnEnter) {
 			// A key listener rather than a key binding, so that Enter on an empty component is left unconsumed for
 			// whoever binds it further up, the condition panel's refresh say
@@ -333,17 +353,35 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 
 	private void clearMembers() {
 		members.items().clear();
-		dialog.dispose();
+		closeMembers();
+	}
+
+	private void onMembersVisibleChanged(boolean visible) {
+		if (!visible) {
+			closeMembers();
+		}
+		else if (present.is() && enabled.is()) {
+			showMembers();
+		}
+		else {
+			// Not to be displayed after all. Reset once this change notification has finished, resetting from
+			// within it leaves the members button selected, it being notified of this change, not the reset.
+			SwingUtilities.invokeLater(() -> membersVisible.set(false));
+		}
+	}
+
+	// The list stays when the focus goes elsewhere, so with it already displayed this is the way back into it from the keyboard
+	private void showOrFocusMembers() {
+		if (dialog != null && list != null) {
+			dialog.toFront();
+			list.requestFocusInWindow();
+		}
+		else {
+			membersVisible.set(true);
+		}
 	}
 
 	private void showMembers() {
-		if (!present.is() || !enabled.is()) {
-			return;
-		}
-		if (dialog != null) {
-			dialog.toFront();
-			return;
-		}
 		list = createList();
 		JPanel content = borderLayoutPanel()
 						.center(scrollPane()
@@ -358,31 +396,43 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 														.name("MultiInput:clearMembers" + caption())))
 						.border(caption == null ? null : createTitledBorder(caption))
 						.build();
-		Point location = getLocationOnScreen();
+		membersContent = content;
 		dialog = Dialogs.builder()
 						.component(content)
 						.owner(this)
 						.modal(false)
 						.resizable(false)
 						.disposeOnEscape(true)
+						// Under the field, as a drop-down would be, following it around, see FollowField
 						.size(dialogSize(content))
-						// Under the field, as a drop-down would be
-						.location(new Point(location.x, location.y + getHeight()))
-						// No title bar and no close button: like a drop-down, it goes when the focus goes elsewhere
+						.location(dialogLocation())
+						// No title bar and no close button, closed via the members button, Escape or Enter. It stays
+						// when the focus goes elsewhere, the members remaining on display while more are added.
 						.undecorated(true)
-						.windowFocusListener(new DisposeOnFocusLost())
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ENTER)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(Control.action(e ->
-														Ancestor.window().of((JComponent) e.getSource()).dispose())))
+														closeMembers())))
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_UP)
+										.modifiers(ALT_DOWN_MASK)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(command(this::closeMembers)))
 						.onShown(this::onMembersShown)
-						.onClosed(this::onMembersClosed)
+						// Escape, which disposes the dialog without going through closeMembers()
+						.onClosed(event -> closeMembers())
 						.show();
 	}
 
 	private String caption() {
 		return caption != null ? ":" + caption : "";
+	}
+
+	private Point dialogLocation() {
+		Point location = getLocationOnScreen();
+
+		return new Point(location.x, location.y + getHeight());
 	}
 
 	private Dimension dialogSize(JComponent content) {
@@ -392,16 +442,28 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		return new Dimension(Math.max(Math.max(size.width, getWidth()), titleWidth), size.height);
 	}
 
+	// Every way of closing the members list ends up here, so that the members button follows
 	private void closeMembers() {
 		if (dialog != null) {
-			dialog.dispose();
+			JDialog closing = dialog;
 			dialog = null;
+			followField.uninstall();
+			membersContent = null;
+			closing.dispose();
 		}
+		membersVisible.set(false);
 	}
 
 	private void onMembersChanged() {
 		List<T> included = members.items().included().get();
 		present.set(!included.isEmpty());
+		if (included.isEmpty() && dialog != null) {
+			// Nothing left to display, and the members button is disabled, so it could not be closed from there.
+			// Disabled it can not take the focus back either, in case it had it when the list was opened, which would
+			// send the focus to the first component in the window, so the wrapped component gets it.
+			closeMembers();
+			componentValue.component().requestFocusInWindow();
+		}
 		membersButton.setText(String.valueOf(included.size()));
 		membersButton.setToolTipText(included.isEmpty() ? null : included.stream()
 						.map(this::format)
@@ -409,14 +471,9 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	}
 
 	private void onMembersShown(JDialog dialog) {
-		membersButton.setSelected(true);
+		followField.install();
 		list.setSelectedIndex(0);
 		list.requestFocusInWindow();
-	}
-
-	private void onMembersClosed(WindowEvent event) {
-		membersButton.setSelected(false);
-		dialog = null;
 	}
 
 	private String format(@Nullable T value) {
@@ -427,11 +484,54 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		return format == null ? value.toString() : format.format(value);
 	}
 
-	private static final class DisposeOnFocusLost extends WindowAdapter {
+	// The list stays when the focus goes elsewhere, so it follows the field around instead, when the field is moved or
+	// resized or any of its ancestors are, a table column or the window say, and goes when the field stops showing, a
+	// tab being switched say
+	private final class FollowField extends ComponentAdapter implements HierarchyListener, HierarchyBoundsListener {
+
+		private void install() {
+			addComponentListener(this);
+			addHierarchyListener(this);
+			addHierarchyBoundsListener(this);
+		}
+
+		private void uninstall() {
+			removeComponentListener(this);
+			removeHierarchyListener(this);
+			removeHierarchyBoundsListener(this);
+		}
 
 		@Override
-		public void windowLostFocus(WindowEvent e) {
-			e.getWindow().dispose();
+		public void hierarchyChanged(HierarchyEvent e) {
+			if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && !isShowing()) {
+				closeMembers();
+			}
+		}
+
+		@Override
+		public void componentMoved(ComponentEvent e) {
+			positionMembers();
+		}
+
+		@Override
+		public void componentResized(ComponentEvent e) {
+			positionMembers();
+		}
+
+		@Override
+		public void ancestorMoved(HierarchyEvent e) {
+			positionMembers();
+		}
+
+		@Override
+		public void ancestorResized(HierarchyEvent e) {
+			positionMembers();
+		}
+
+		private void positionMembers() {
+			if (dialog != null && membersContent != null && isShowing()) {
+				dialog.setBounds(new Rectangle(dialogLocation(), dialogSize(membersContent)));
+			}
 		}
 	}
 

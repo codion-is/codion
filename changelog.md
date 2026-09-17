@@ -25,6 +25,7 @@ Codion Change Log
 - LookAndFeelEnabler.dark() now returns Optional, empty when dark is unspecified.
 - ScrollPaneBuilder.followHorizontal() added, the scroll pane following the horizontal scrolling of another.
 - FilterTable.Filters, Builder.filters() and FilterTable.FILTERS added, the table displaying its filter panel above or below the table header, in the column header of its enclosing scroll pane.
+- MultiInput, the members button now a toggle, the members dialog no longer closed on focus lost, following the field instead and closed when the field is hidden, ALT-UP closing it and ALT-DOWN focusing it when displayed, the wrapped component receiving the focus when the last member is removed.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).
