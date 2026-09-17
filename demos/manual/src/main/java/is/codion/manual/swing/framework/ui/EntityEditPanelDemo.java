@@ -48,6 +48,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static javax.swing.SwingConstants.TRAILING;
 
 public final class EntityEditPanelDemo {
 
@@ -251,6 +252,17 @@ public final class EntityEditPanelDemo {
 							.label(new JLabel("Label"))
 							.build();
 			// end::panelLabel[]
+		}
+
+		private void form() {
+			// tag::form[]
+			JPanel form = create()
+							.form()
+							.add(Demo.TEXT, Demo.INTEGER, Demo.LOCAL_DATE, Demo.BOOLEAN)
+							.columns(2) // label/input pairs per row
+							.labelAlignment(TRAILING)
+							.build();
+			// end::form[]
 		}
 
 		private EntityEditPanel createEditPanel() {

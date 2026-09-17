@@ -40,6 +40,8 @@ import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
+import is.codion.swing.common.ui.component.panel.DefaultFormBuilder;
+import is.codion.swing.common.ui.component.panel.FormBuilder;
 import is.codion.swing.common.ui.component.panel.InputPanelBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
@@ -986,19 +988,35 @@ public final class EditorComponents {
 		 */
 		public InputPanelBuilder inputPanel(Attribute<?> attribute) {
 			JComponent component = components.component(attribute).get();
-			JComponent label = (JComponent) component.getClientProperty(LABELED_BY);
-			if (label == null) {
-				AttributeDefinition<?> attributeDefinition = components.editor().entities()
-								.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
-				label = Components.label(attributeDefinition.caption())
-								.displayedMnemonic(attributeDefinition.mnemonic())
-								.labelFor(component)
-								.build();
-			}
 
 			return Components.inputPanel()
-							.label(label)
+							.label(label(attribute, component))
 							.component(component);
+		}
+
+		/**
+		 * Creates a form containing the components associated with a set of attributes, one label/input pair each,
+		 * the label text being the caption defined for the attribute.
+		 * @return an attribute based form builder
+		 * @see Components#form()
+		 */
+		public AttributeFormBuilder form() {
+			return new AttributeFormBuilder();
+		}
+
+		// The label the component was built with, otherwise a caption based one
+		private JComponent label(Attribute<?> attribute, JComponent component) {
+			JComponent label = (JComponent) component.getClientProperty(LABELED_BY);
+			if (label != null) {
+				return label;
+			}
+			AttributeDefinition<?> attributeDefinition = components.editor().entities()
+							.definition(attribute.entityType()).attributes().definition(attribute);
+
+			return Components.label(attributeDefinition.caption())
+							.displayedMnemonic(attributeDefinition.mnemonic())
+							.labelFor(component)
+							.build();
 		}
 
 		/**
@@ -1047,6 +1065,30 @@ public final class EditorComponents {
 
 				return components.component(attribute).set(builderFactory.selectedItem()
 								.toolTipText(attributeDefinition.description().orElse(null)));
+			}
+		}
+
+		/**
+		 * An attribute based {@link FormBuilder} extension.
+		 */
+		public final class AttributeFormBuilder extends DefaultFormBuilder<AttributeFormBuilder> {
+
+			private AttributeFormBuilder() {}
+
+			/**
+			 * Adds the components associated with the given attributes, one label/input pair each,
+			 * the label text being the caption defined for the attribute.
+			 * @param attributes the attributes which components to add
+			 * @return this builder instance
+			 * @throws IllegalStateException in case no component has been associated with one of the attributes
+			 */
+			public AttributeFormBuilder add(Attribute<?>... attributes) {
+				for (Attribute<?> attribute : requireNonNull(attributes)) {
+					JComponent component = components.component(attribute).get();
+					add(ComponentFactory.this.label(attribute, component), component);
+				}
+
+				return this;
 			}
 		}
 

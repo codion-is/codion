@@ -125,6 +125,39 @@ public final class EditorComponentsTest {
 	}
 
 	@Test
+	void form() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
+		ComponentFactory create = components.create();
+		create.textField(Employee.NAME);
+		create.textField(Employee.JOB);
+		// a component set directly comes without a label, the form supplies the caption based one
+		JTextField salaryField = new JTextField();
+		components.component(Employee.SALARY).set(salaryField);
+		// the attribute based add() is available after an inherited builder method, the builder being self-typed,
+		// and attribute based inputs mix with plain ones
+		JTextField plainField = new JTextField();
+		JPanel form = create.form()
+						.name("form")
+						.add(Employee.NAME, Employee.JOB)
+						.add(new JLabel("Plain"), plainField)
+						.add(Employee.SALARY)
+						.columns(2)
+						.build();
+		assertEquals("form", form.getName());
+		assertTrue(form.isAncestorOf(plainField));
+		assertTrue(form.isAncestorOf(components.component(Employee.NAME).get()));
+		assertTrue(form.isAncestorOf(components.component(Employee.NAME).label()));
+		assertTrue(form.isAncestorOf(components.component(Employee.JOB).get()));
+		JLabel salaryLabel = components.component(Employee.SALARY).label();
+		assertEquals(editModel.entityDefinition().attributes().definition(Employee.SALARY).caption(), salaryLabel.getText());
+		assertSame(salaryField, salaryLabel.getLabelFor());
+		assertTrue(form.isAncestorOf(salaryLabel));
+		// no component associated with the attribute
+		assertThrows(IllegalStateException.class, () -> create.form().add(Employee.HIREDATE));
+	}
+
+	@Test
 	void derived() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION);
 		EditorComponents components = EditorComponents.editorComponents(editModel.editor());

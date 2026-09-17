@@ -69,6 +69,17 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		return temporalField;
 	}
 
+	// The baseline of the field, which spans the full height of this panel, the button beside it
+	@Override
+	public int getBaseline(int width, int height) {
+		return temporalField.getBaseline(width, height);
+	}
+
+	@Override
+	public BaselineResizeBehavior getBaselineResizeBehavior() {
+		return temporalField.getBaselineResizeBehavior();
+	}
+
 	/**
 	 * @return the calendar button
 	 */

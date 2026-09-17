@@ -79,6 +79,17 @@ public final class EntitySearchInput extends JPanel {
 		return searchField;
 	}
 
+	// The baseline of the field, which spans the full height of this panel, the buttons beside it
+	@Override
+	public int getBaseline(int width, int height) {
+		return searchField.getBaseline(width, height);
+	}
+
+	@Override
+	public BaselineResizeBehavior getBaselineResizeBehavior() {
+		return searchField.getBaselineResizeBehavior();
+	}
+
 	/**
 	 * @return a {@link Builder.ModelStep}
 	 */

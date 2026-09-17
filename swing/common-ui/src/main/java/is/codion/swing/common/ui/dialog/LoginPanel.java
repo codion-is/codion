@@ -56,7 +56,6 @@ import static java.awt.BorderLayout.WEST;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.SwingConstants.CENTER;
-import static javax.swing.SwingConstants.LEADING;
 
 /**
  * A JPanel for retrieving login information.
@@ -148,12 +147,9 @@ final class LoginPanel extends JPanel {
 
 	private void initializeUI(@Nullable JComponent southComponent) {
 		BorderLayoutPanelBuilder credentialsPanel = borderLayoutPanel()
-						.west(gridLayoutPanel(2, 1)
-										.add(new JLabel(Messages.username(), LEADING))
-										.add(new JLabel(Messages.password(), LEADING)))
-						.center(gridLayoutPanel(2, 1)
-										.add(usernameField)
-										.add(passwordProgressPanel));
+						.center(form()
+										.add(new JLabel(Messages.username()), usernameField)
+										.add(new JLabel(Messages.password()), passwordProgressPanel));
 		if (southComponent != null) {
 			credentialsPanel.south(southComponent);
 		}

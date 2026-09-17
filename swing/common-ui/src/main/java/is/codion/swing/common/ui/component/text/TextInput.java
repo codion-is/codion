@@ -132,6 +132,17 @@ public final class TextInput extends JPanel {
 		return textField;
 	}
 
+	// The baseline of the field, which spans the full height of this panel, the button beside it
+	@Override
+	public int getBaseline(int width, int height) {
+		return textField.getBaseline(width, height);
+	}
+
+	@Override
+	public BaselineResizeBehavior getBaselineResizeBehavior() {
+		return textField.getBaselineResizeBehavior();
+	}
+
 	/**
 	 * @return the input dialog button
 	 */

@@ -75,6 +75,17 @@ public final class EntityComboBoxInput extends JPanel {
 		return comboBox;
 	}
 
+	// The baseline of the combo box, which spans the full height of this panel, the buttons beside it
+	@Override
+	public int getBaseline(int width, int height) {
+		return comboBox.getBaseline(width, height);
+	}
+
+	@Override
+	public BaselineResizeBehavior getBaselineResizeBehavior() {
+		return comboBox.getBaselineResizeBehavior();
+	}
+
 	/**
 	 * @return a {@link Builder.ModelStep}
 	 */

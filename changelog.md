@@ -16,6 +16,9 @@ Codion Change Log
 - EntitySearchModel.filter() added, foreign key filters applied when searching, a strict one without keys excluding all without a query, a non-strict one including entities with a null reference, along with Builder.filter(ForeignKey, EntityComboBoxModel) and filter(ForeignKey, EntitySearchModel).
 - EntityComboBoxModel.Builder.filter(ForeignKey, EntitySearchModel) added.
 - ForeignKeyConditionModel.link() added, linking a condition to a master condition, the referenced entities offered by the models restricted to the ones the master condition refers to, via a foreign key of the referenced entity, the operands no longer referred to dropped, along with Link, controlling the strictness.
+### is.codion.swing.common.ui
+- FormBuilder added, building a form panel, label/input pairs in rows, the label beside its input, over a GridBagLayout, along with DefaultFormBuilder, for extending, and Components.form(), LoginPanel now based on it.
+- TemporalInput, TextInput and FileInput now report the baseline of their field, aligning with a label beside them.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).
@@ -27,6 +30,8 @@ Codion Change Log
 - EditorComponents.ComponentSettings renamed ComponentDefaults, settings() renamed defaults().
 - EntityEditPanel.Config.TEXT_FIELD_COLUMNS moved to EditorComponents, Config.textFieldColumns() removed, unused.
 - EditorComponents.TEXT_FIELD_COLUMNS and ComponentDefaults.textFieldColumns(), 0 now disables the default columns, the fields sizing to their contents.
+- EditorComponents.ComponentFactory.form() added, providing an AttributeFormBuilder, a FormBuilder extension adding the components associated with attributes.
+- EntitySearchInput and EntityComboBoxInput now report the baseline of their field, aligning with a label beside them.
 
 ## 0.18.86
 ### is.codion.common.reactive
