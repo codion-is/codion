@@ -37,7 +37,8 @@ public class MariaDBDatabaseTest {
 
 	@Test
 	void sequenceQuery() {
-		assertThrows(UnsupportedOperationException.class, () -> new MariaDBDatabase(URL).sequenceQuery("seq"));
+		assertEquals("SELECT NEXT VALUE FOR seq", new MariaDBDatabase(URL).sequenceQuery("seq"));
+		assertThrows(NullPointerException.class, () -> new MariaDBDatabase(URL).sequenceQuery(null));
 	}
 
 	@Test

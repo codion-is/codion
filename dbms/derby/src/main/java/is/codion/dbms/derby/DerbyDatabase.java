@@ -56,6 +56,11 @@ final class DerbyDatabase extends AbstractDatabase {
 	}
 
 	@Override
+	public String sequenceQuery(String sequenceName) {
+		return "VALUES NEXT VALUE FOR " + requireNonNull(sequenceName);
+	}
+
+	@Override
 	public String selectForUpdateClause() {
 		return FOR_UPDATE;
 	}
