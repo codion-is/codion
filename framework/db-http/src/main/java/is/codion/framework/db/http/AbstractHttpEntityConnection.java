@@ -22,7 +22,6 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.exceptions.Exceptions;
-import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
@@ -52,21 +51,16 @@ import java.util.UUID;
 
 import static is.codion.common.utilities.Serializer.deserialize;
 import static is.codion.common.utilities.Serializer.serialize;
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractHttpEntityConnection.class);
-
-	private static final MessageBundle MESSAGES =
-					messageBundle(HttpEntityConnection.class, getBundle(HttpEntityConnection.class.getName()));
 
 	private static final String ITERATOR_ERROR_MESSAGE = "EntityConnection.iterator() is not supported on HTTP connections";
 	private static final String AUTHORIZATION = "Authorization";
@@ -199,10 +193,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	public final Entity selectSingle(Select select) {
 		List<Entity> selected = select(select);
 		if (selected.isEmpty()) {
-			throw new EntityNotFoundException(MESSAGES.getString("record_not_found"));
+			throw new EntityNotFoundException();
 		}
 		if (selected.size() > 1) {
-			throw new MultipleEntitiesFoundException(MESSAGES.getString("multiple_records_found"));
+			throw new MultipleEntitiesFoundException();
 		}
 
 		return selected.get(0);

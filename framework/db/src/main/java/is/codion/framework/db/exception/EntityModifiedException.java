@@ -18,6 +18,7 @@
  */
 package is.codion.framework.db.exception;
 
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column;
 
@@ -27,17 +28,32 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * An exception indicating that an entity, being updated, has been modified or deleted since it was loaded.
  */
 public final class EntityModifiedException extends UpdateEntityException {
 
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityModifiedException.class, getBundle(EntityModifiedException.class.getName()));
+
 	private final Entity entity;
 	private final @Nullable Entity modified;
 	private final Collection<Column<?>> columns;
+
+	/**
+	 * Instantiates a new EntityModifiedException with a default message, describing the modification
+	 * @param entity the entity being updated
+	 * @param modified the current (modified) version of the entity, null if it has been deleted
+	 * @param columns the modified columns, an empty collection in case the entity has been deleted
+	 */
+	public EntityModifiedException(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns) {
+		this(entity, modified, columns, message(requireNonNull(entity), modified, requireNonNull(columns)));
+	}
 
 	/**
 	 * Instantiates a new EntityModifiedException
@@ -72,5 +88,22 @@ public final class EntityModifiedException extends UpdateEntityException {
 	 */
 	public Collection<Column<?>> columns() {
 		return columns;
+	}
+
+	private static String message(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns) {
+		if (modified == null) {
+			Entity original = entity.copy().mutable();
+			original.revert();
+
+			return MESSAGES.getString("record_modified") + ", " + original + " " + MESSAGES.getString("has_been_deleted");
+		}
+		StringBuilder builder = new StringBuilder(MESSAGES.getString("record_modified")).append(": ").append(entity.type());
+		for (Column<?> column : columns) {
+			builder.append("\n").append(column)
+							.append(": ").append(entity.original(column))
+							.append(" -> ").append(modified.get(column));
+		}
+
+		return builder.toString();
 	}
 }

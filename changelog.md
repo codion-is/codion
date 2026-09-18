@@ -10,12 +10,15 @@ Codion Change Log
 - AbstractDatabase.ErrorType.ACCOUNT_LOCKED and PASSWORD_EXPIRED added, reported as authentication errors, with their own messages.
 - AbstractDatabase.databaseOrHost() added.
 - Database.selectForUpdateTableHint() added, for databases locking rows via a table hint instead of a select for update clause.
+- AbstractDatabase.ErrorType.VIEW_HAS_ERRORS removed, Oracle specific.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
 ### is.codion.common.rmi
 - ConnectionRequest.Builder.locale() and timeZone() added, for a request built on behalf of a client in another JVM.
 - ConnectionRequest.copy() bug fixed, the locale, time zone and framework version now those of the client, no longer captured again from the JVM making the copy, the server, the session monitor displaying the server values for all clients.
+### is.codion.framework.db
+- EntityNotFoundException, MultipleEntitiesFoundException and EntityModifiedException now provide their default messages, constructors without a message added, resource bundles moved from framework.db.local and framework.db.http.
 ### is.codion.framework.db.http
 - HttpEntityConnection now sends the client locale and time zone.
 ### is.codion.framework.servlet
@@ -78,6 +81,7 @@ Codion Change Log
 - OracleDatabase.errorMessage() bug fixed, no longer throws in case of an unexpected exception message.
 - OracleDatabase, a locked account (ORA-28000) and an expired password (ORA-28001) now reported as authentication errors.
 - OracleDatabase.name() now handles connect descriptors, the server mode, oci and credentials in the url.
+- OracleDatabase, a view with errors (ORA-04063) no longer has a specific error message.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase now based on AbstractDatabase.ErrorType, resource bundle removed, lock not available, numeric overflow and undefined table errors now recognized.
 - PostgreSQLDatabase bug fixed, updating a referenced key no longer reported as a missing parent.
