@@ -20,8 +20,7 @@ package is.codion.dbms.derby;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DerbyDatabaseTest {
 
@@ -60,5 +59,17 @@ public class DerbyDatabaseTest {
 	@Test
 	void constructorNullUrl() {
 		assertThrows(NullPointerException.class, () -> new DerbyDatabase(null));
+	}
+
+	@Test
+	void supports() {
+		DerbyDatabaseFactory factory = new DerbyDatabaseFactory();
+		// 10.14 and earlier
+		assertTrue(factory.supports("org.apache.derby.jdbc.AutoloadedDriver"));
+		assertTrue(factory.supports("org.apache.derby.jdbc.ClientDriver"));
+		// 10.15 and later
+		assertTrue(factory.supports("org.apache.derby.iapi.jdbc.AutoloadedDriver"));
+		assertTrue(factory.supports("org.apache.derby.client.ClientAutoloadedDriver"));
+		assertFalse(factory.supports("org.h2.Driver"));
 	}
 }

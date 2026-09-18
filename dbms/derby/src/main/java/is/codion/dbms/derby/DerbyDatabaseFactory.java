@@ -31,7 +31,11 @@ import static java.util.Objects.requireNonNull;
  */
 public final class DerbyDatabaseFactory implements DatabaseFactory {
 
-	private static final String DRIVER_PACKAGE = "org.apache.derby.jdbc";
+	/**
+	 * The drivers having moved from {@code org.apache.derby.jdbc} in 10.15,
+	 * the embedded one to {@code org.apache.derby.iapi.jdbc} and the client one to {@code org.apache.derby.client}
+	 */
+	private static final String DRIVER_PACKAGE = "org.apache.derby.";
 	private static final String SHUTDOWN_ERROR_CODE = "08006";
 
 	@Override

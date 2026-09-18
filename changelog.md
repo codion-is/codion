@@ -27,6 +27,7 @@ Codion Change Log
 ### is.codion.dbms.derby
 - DerbyDatabase.autoIncrementQuery() now based on VALUES, no longer returning a row for each row in the table.
 - DerbyDatabase.sequenceQuery() implemented.
+- DerbyDatabaseFactory.supports() bug fixed, the drivers from version 10.15 and later now recognized.
 ### is.codion.dbms.h2
 - H2Database.autoIncrementQuery() now throws UnsupportedOperationException, IDENTITY() having been removed in H2 2.0, Generator.identity() being the alternative.
 - H2Database bug fixed, a database with a mixed case url now initialized again after having been closed.
