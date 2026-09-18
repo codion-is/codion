@@ -20,6 +20,8 @@ package is.codion.framework.servlet;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
+import is.codion.common.rmi.client.ConnectionRequest;
+import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.utilities.Serializer;
@@ -56,11 +58,13 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -132,6 +136,50 @@ public class EntityServiceTest {
 
 		response = HTTP_CLIENT.send(createJsonRequest("close"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
+	}
+
+	@Test
+	void clientLocaleAndTimeZone() throws Exception {
+		// the connection request is built by the service, the locale and time zone must be the client's, not the server's
+		// separate clients, the connection id being tied to the http session
+		HttpClient firstClient = createHttpClient();
+		HttpClient secondClient = createHttpClient();
+		UUID connectionId = UUID.randomUUID();
+		HttpRequest request = HttpRequest.newBuilder()
+						.uri(URI.create(SERVER_JSON_BASEURL + "isTransactionOpen"))
+						.POST(BodyPublishers.noBody())
+						.headers(new String[] {
+										EntityService.DOMAIN_TYPE, TestDomain.DOMAIN.name(),
+										EntityService.CLIENT_TYPE, "EntityJavalinTest",
+										EntityService.CONNECTION_ID, connectionId.toString(),
+										EntityService.CLIENT_LOCALE, "fo-FO",
+										EntityService.CLIENT_TIME_ZONE, "Atlantic/Faroe",
+										"Authorization", createAuthorizationHeader()
+						})
+						.build();
+		assertEquals(OK, firstClient.send(request, BodyHandlers.ofByteArray()).statusCode());
+		ConnectionRequest connectionRequest = server.admin(User.parse("scott:tiger")).sessions().stream()
+						.map(RemoteSession::request)
+						.filter(sessionRequest -> sessionRequest.connectionId().equals(connectionId))
+						.findFirst()
+						.orElseThrow();
+		assertEquals(Locale.forLanguageTag("fo-FO"), connectionRequest.locale());
+		assertEquals(ZoneId.of("Atlantic/Faroe"), connectionRequest.timeZone());
+
+		// an unknown time zone is ignored, not an error
+		UUID secondConnectionId = UUID.randomUUID();
+		request = HttpRequest.newBuilder()
+						.uri(URI.create(SERVER_JSON_BASEURL + "isTransactionOpen"))
+						.POST(BodyPublishers.noBody())
+						.headers(new String[] {
+										EntityService.DOMAIN_TYPE, TestDomain.DOMAIN.name(),
+										EntityService.CLIENT_TYPE, "EntityJavalinTest",
+										EntityService.CONNECTION_ID, secondConnectionId.toString(),
+										EntityService.CLIENT_TIME_ZONE, "Nowhere/Land",
+										"Authorization", createAuthorizationHeader()
+						})
+						.build();
+		assertEquals(OK, secondClient.send(request, BodyHandlers.ofByteArray()).statusCode());
 	}
 
 	@Test

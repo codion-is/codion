@@ -52,12 +52,12 @@ public sealed interface ConnectionRequest permits DefaultConnectionRequest {
 	String clientType();
 
 	/**
-	 * @return the client locale, captured from the client JVM default when the request is built
+	 * @return the client locale, by default captured from the JVM default when the request is built
 	 */
 	Locale locale();
 
 	/**
-	 * @return the client time zone, captured from the client JVM default when the request is built
+	 * @return the client time zone, by default captured from the JVM default when the request is built
 	 */
 	ZoneId timeZone();
 
@@ -128,6 +128,22 @@ public sealed interface ConnectionRequest permits DefaultConnectionRequest {
 		 * @return this Builder instance
 		 */
 		Builder version(@Nullable Version version);
+
+		/**
+		 * Specifies the client locale, for a request built on behalf of a client running in another JVM,
+		 * by default the locale of the JVM building the request.
+		 * @param locale the client locale
+		 * @return this Builder instance
+		 */
+		Builder locale(Locale locale);
+
+		/**
+		 * Specifies the client time zone, for a request built on behalf of a client running in another JVM,
+		 * by default the time zone of the JVM building the request.
+		 * @param timeZone the client time zone
+		 * @return this Builder instance
+		 */
+		Builder timeZone(ZoneId timeZone);
 
 		/**
 		 * @param key the key

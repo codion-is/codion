@@ -13,6 +13,13 @@ Codion Change Log
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
+### is.codion.common.rmi
+- ConnectionRequest.Builder.locale() and timeZone() added, for a request built on behalf of a client in another JVM.
+- ConnectionRequest.copy() bug fixed, the locale, time zone and framework version now those of the client, no longer captured again from the JVM making the copy, the server, the session monitor displaying the server values for all clients.
+### is.codion.framework.db.http
+- HttpEntityConnection now sends the client locale and time zone.
+### is.codion.framework.servlet
+- EntityService now uses the locale and time zone sent by the client, instead of those of the server.
 ### is.codion.framework.model
 - EntityQueryModel.entityQueryModel() removed, replaced by AbstractEntityTableModel.entityQueryModel(), protected, a query model being created by the table model.
 - ForeignKeyConditionModel.models() added, providing the combo box and search models the operand components are based on, one of each per operand, created on first access from the builder recipes, the four Optional based model accessors removed along with the respective builder methods, ForeignKeyConditionModel.builder() now a step builder, with a connection step.
