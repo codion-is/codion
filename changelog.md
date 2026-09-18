@@ -25,6 +25,7 @@ Codion Change Log
 ### is.codion.dbms.db2
 - Db2Database.limitOffsetClause() now based on OFFSET and FETCH NEXT, an offset without a limit no longer invalid.
 - Db2Database.sequenceQuery() and autoIncrementQuery() bug fixed, now based on VALUES, SELECT requiring a FROM clause.
+- Db2Database now based on AbstractDatabase.ErrorType, updating a referenced key, null value, check constraint, value too large, missing privileges and undefined table errors now recognized, a deadlock or lock timeout now reported as a locked row instead of a query timeout.
 ### is.codion.dbms.derby
 - DerbyDatabase.autoIncrementQuery() now based on VALUES, no longer returning a row for each row in the table.
 - DerbyDatabase.sequenceQuery() implemented.
