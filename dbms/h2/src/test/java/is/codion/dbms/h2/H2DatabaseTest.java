@@ -18,6 +18,12 @@
  */
 package is.codion.dbms.h2;
 
+import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.AuthenticationException;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.QueryTimeoutException;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.utilities.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +36,10 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ResourceBundle;
 
+import static is.codion.common.db.database.Database.Operation.*;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -179,5 +188,90 @@ public class H2DatabaseTest {
 		finally {
 			serverClass.getMethod("stop").invoke(server);
 		}
+	}
+
+	@Test
+	void exceptions() throws SQLException {
+		// the driver being available, the actual exceptions are used
+		H2Database database = new H2Database("jdbc:h2:mem:exceptions");
+		try (Connection connection = database.createConnection(User.user("sa"));
+				 Connection connection2 = database.createConnection(User.user("sa"))) {
+			execute(connection, "create table parent (id int primary key, name varchar(10) not null, code varchar(5), amount decimal(5,2), "
+							+ "constraint parent_uk unique (code), constraint parent_ck check (amount >= 0))");
+			execute(connection, "create table child (id int primary key, parent_id int not null, "
+							+ "constraint child_fk foreign key (parent_id) references parent(id))");
+			execute(connection, "insert into parent (id, name, code, amount) values (1, 'a', 'A', 1)");
+			execute(connection, "insert into child (id, parent_id) values (1, 1)");
+
+			SQLException unique = failure(connection, "insert into parent (id, name, code) values (2, 'b', 'A')");
+			assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
+			assertEquals(message("unique_constraint"), database.errorMessage(unique, INSERT));
+
+			SQLException parentMissing = failure(connection, "insert into child (id, parent_id) values (2, 99)");
+			assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
+			assertEquals(message("parent_missing"), database.errorMessage(parentMissing, INSERT));
+			SQLException childExists = failure(connection, "delete from parent where id = 1");
+			assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
+			assertEquals(message("child_exists"), database.errorMessage(childExists, DELETE));
+			SQLException referencedKey = failure(connection, "update parent set id = 5 where id = 1");
+			assertEquals(message("child_exists"), database.errorMessage(referencedKey, UPDATE));
+
+			assertEquals(message("null_value") + ": NAME", database.errorMessage(
+							failure(connection, "insert into parent (id, name) values (3, null)"), INSERT));
+			// quoted identifiers in the statement, which is appended to the message
+			assertEquals(message("null_value") + ": NAME", database.errorMessage(
+							failure(connection, "insert into \"PARENT\" (\"ID\", \"NAME\") values (3, null)"), INSERT));
+			assertEquals(message("check_constraint"), database.errorMessage(
+							failure(connection, "update parent set amount = -1 where id = 1"), UPDATE));
+			assertEquals(message("value_too_large") + ": NAME", database.errorMessage(
+							failure(connection, "update parent set name = 'abcdefghijklmnop' where id = 1"), UPDATE));
+			assertEquals(message("value_too_large") + ": AMOUNT", database.errorMessage(
+							failure(connection, "update parent set amount = 123456.78 where id = 1"), UPDATE));
+			assertEquals(message("table_not_found"), database.errorMessage(failure(connection, "select * from missing"), SELECT));
+
+			// unrecognized, without the statement
+			SQLException syntax = failure(connection, "selec * from parent");
+			assertSame(DatabaseException.class, database.exception(syntax, SELECT).getClass());
+			assertFalse(database.errorMessage(syntax, SELECT).contains("; SQL statement:"));
+
+			// a locked row, which the driver reports as a timeout when NOWAIT is used
+			connection.setAutoCommit(false);
+			connection2.setAutoCommit(false);
+			String selectForUpdate = "select id from parent where id = 1 " + database.selectForUpdateClause();
+			execute(connection, selectForUpdate);
+			SQLException locked = failure(connection2, selectForUpdate);
+			assertSame(DatabaseException.class, database.exception(locked, SELECT).getClass());
+			assertEquals(message("row_locked"), database.errorMessage(locked, SELECT));
+			connection.rollback();
+			connection2.rollback();
+
+			execute(connection, "create user scott password 'tiger'");
+			connection.commit();
+			AuthenticationException authentication = assertThrows(AuthenticationException.class,
+							() -> database.createConnection(User.parse("scott:wrong")));
+			assertEquals(message("authentication"), authentication.getMessage());
+		}
+		finally {
+			database.close();
+		}
+		// a translated or missing message must not throw, replacing the actual exception
+		assertEquals(message("null_value"), DATABASE.errorMessage(new SQLException("NULL nicht zul\u00E4ssig f\u00FCr Feld NAME", "23502", 23502), INSERT));
+		assertEquals(message("null_value"), DATABASE.errorMessage(new SQLException(null, "23502", 23502), INSERT));
+		assertInstanceOf(QueryTimeoutException.class, DATABASE.exception(new SQLException("Statement was canceled", "57014", 57014), SELECT));
+	}
+
+	private static void execute(Connection connection, String sql) throws SQLException {
+		try (Statement statement = connection.createStatement()) {
+			statement.execute(sql);
+		}
+	}
+
+	private static SQLException failure(Connection connection, String sql) {
+		return assertThrows(SQLException.class, () -> execute(connection, sql));
+	}
+
+	// independent of the default locale
+	private static String message(String key) {
+		return ResourceBundle.getBundle(Database.class.getName()).getString(key);
 	}
 }
