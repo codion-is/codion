@@ -55,4 +55,13 @@ public class Db2DatabaseTest {
 	void constructorNullUrl() {
 		assertThrows(NullPointerException.class, () -> new Db2Database(null));
 	}
+
+	@Test
+	void limitOffsetClause() {
+		Db2Database database = new Db2Database(URL);
+		assertEquals("", database.limitOffsetClause(null, null, false));
+		assertEquals("FETCH NEXT 10 ROWS ONLY", database.limitOffsetClause(10, null, false));
+		assertEquals("OFFSET 5 ROWS", database.limitOffsetClause(null, 5, false));
+		assertEquals("OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY", database.limitOffsetClause(10, 5, true));
+	}
 }

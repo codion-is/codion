@@ -32,6 +32,11 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
 	private static final int FOREIGN_KEY_ERROR = 787;
 
+	/**
+	 * An offset requires a limit, a negative one meaning no limit
+	 */
+	private static final String NO_LIMIT = "-1";
+
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlite:";
 
 	SQLiteDatabase(String url) {
@@ -54,8 +59,8 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset) {
-		return createLimitOffsetClause(limit, offset);
+	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+		return createLimitOffsetClause(limit, offset, NO_LIMIT);
 	}
 
 	/**

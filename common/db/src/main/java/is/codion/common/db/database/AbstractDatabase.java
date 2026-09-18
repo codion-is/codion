@@ -377,9 +377,25 @@ public abstract class AbstractDatabase implements Database {
 	 * @return a limit/offset clause
 	 */
 	protected static String createLimitOffsetClause(@Nullable Integer limit, @Nullable Integer offset) {
+		return createLimitOffsetClause(limit, offset, null);
+	}
+
+	/**
+	 * Creates a limit/offset clause of the form {@code LIMIT {limit} OFFSET {offset}},
+	 * for databases which do not accept an offset without a limit.
+	 * If both values are null, an empty string is returned.
+	 * @param limit the limit, may be null
+	 * @param offset the offset, may be null
+	 * @param noLimit the limit to use in case only the offset is specified, null for none
+	 * @return a limit/offset clause
+	 */
+	protected static String createLimitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, @Nullable String noLimit) {
 		StringBuilder builder = new StringBuilder();
 		if (limit != null) {
 			builder.append(LIMIT).append(limit);
+		}
+		else if (offset != null && noLimit != null) {
+			builder.append(LIMIT).append(noLimit);
 		}
 		if (offset != null) {
 			builder.append(builder.isEmpty() ? "" : " ").append(OFFSET).append(offset);

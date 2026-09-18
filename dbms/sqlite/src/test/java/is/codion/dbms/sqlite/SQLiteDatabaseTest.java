@@ -37,4 +37,13 @@ public class SQLiteDatabaseTest {
 		SQLiteDatabase database = new SQLiteDatabase("test");
 		assertEquals("SELECT LAST_INSERT_ROWID()", database.autoIncrementQuery(null));
 	}
+
+	@Test
+	void limitOffsetClause() {
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
+		assertEquals("", database.limitOffsetClause(null, null, false));
+		assertEquals("LIMIT 10", database.limitOffsetClause(10, null, false));
+		assertEquals("LIMIT 10 OFFSET 5", database.limitOffsetClause(10, 5, true));
+		assertEquals("LIMIT -1 OFFSET 5", database.limitOffsetClause(null, 5, false));
+	}
 }

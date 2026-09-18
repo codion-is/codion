@@ -50,4 +50,13 @@ public class MySQLDatabaseTest {
 	void constructorNullUrl() {
 		assertThrows(NullPointerException.class, () -> new MySQLDatabase(null));
 	}
+
+	@Test
+	void limitOffsetClause() {
+		MySQLDatabase database = new MySQLDatabase(URL);
+		assertEquals("", database.limitOffsetClause(null, null, false));
+		assertEquals("LIMIT 10", database.limitOffsetClause(10, null, false));
+		assertEquals("LIMIT 10 OFFSET 5", database.limitOffsetClause(10, 5, true));
+		assertEquals("LIMIT 18446744073709551615 OFFSET 5", database.limitOffsetClause(null, 5, false));
+	}
 }

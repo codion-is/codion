@@ -36,6 +36,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 	private static final int UNIQUE_CONSTRAINT_ERROR1 = 2601;
 	private static final int UNIQUE_CONSTRAINT_ERROR2 = 2627;
 
+	private static final String UNORDERED = "ORDER BY (SELECT NULL) ";
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlserver://";
 	/**
 	 * The server accepts 2100 parameters per request, the driver using two of those for the statement itself
@@ -65,8 +66,14 @@ final class SQLServerDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset) {
-		return createOffsetFetchNextClause(limit, offset);
+	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+		if (limit == null && offset == null) {
+			return "";
+		}
+		// OFFSET and FETCH are a part of the ORDER BY clause, which is thereby required, as is the OFFSET when fetching
+		String offsetFetchNext = createOffsetFetchNextClause(limit, offset == null ? Integer.valueOf(0) : offset);
+
+		return ordered ? offsetFetchNext : UNORDERED + offsetFetchNext;
 	}
 
 	/**

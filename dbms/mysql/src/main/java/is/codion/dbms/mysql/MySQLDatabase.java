@@ -35,6 +35,11 @@ final class MySQLDatabase extends AbstractDatabase {
 
 	private static final String JDBC_URL_PREFIX = "jdbc:mysql://";
 
+	/**
+	 * An offset requires a limit, this being the maximum one
+	 */
+	private static final String NO_LIMIT = "18446744073709551615";
+
 	static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ID() FROM DUAL";
 
 	MySQLDatabase(String url) {
@@ -62,8 +67,8 @@ final class MySQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset) {
-		return createLimitOffsetClause(limit, offset);
+	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+		return createLimitOffsetClause(limit, offset, NO_LIMIT);
 	}
 
 	@Override
