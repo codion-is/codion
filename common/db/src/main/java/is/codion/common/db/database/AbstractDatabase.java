@@ -119,7 +119,7 @@ public abstract class AbstractDatabase implements Database {
 			return connection;
 		}
 		catch (SQLException e) {
-			throw new DatabaseException(e, errorMessage(e, Operation.OTHER));
+			throw exception(e, Operation.OTHER);
 		}
 	}
 
@@ -134,10 +134,7 @@ public abstract class AbstractDatabase implements Database {
 			return connection;
 		}
 		catch (SQLException e) {
-			if (isAuthenticationException(e)) {
-				throw new AuthenticationException(errorMessage(e, Operation.OTHER));
-			}
-			throw new DatabaseException(e, errorMessage(e, Operation.OTHER));
+			throw exception(e, Operation.OTHER);
 		}
 	}
 
@@ -258,63 +255,34 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	/**
-	 * Returns the message associated with the {@link ErrorType} of the given exception, see {@link #errorType(SQLException)},
-	 * along with the detail, if any, see {@link #errorDetail(SQLException, ErrorType)}, or the exception
-	 * message in case the error type is not recognized, see {@link #message(SQLException)}.
+	 * Returns an exception based on the {@link ErrorType} of the given exception, see {@link #errorType(SQLException)},
+	 * its message the one associated with the error type, along with the detail, if any, see
+	 * {@link #errorDetail(SQLException, ErrorType)}, or the exception message in case the error type
+	 * is not recognized, see {@link #message(SQLException)}.
 	 */
 	@Override
-	public @Nullable String errorMessage(SQLException exception, Operation operation) {
+	public final DatabaseException exception(SQLException exception, Operation operation) {
 		requireNonNull(exception, "exception");
 		requireNonNull(operation, "operation");
 		ErrorType errorType = recognize(exception);
 		if (errorType == null) {
-			return cleanMessage(exception);
+			return new DatabaseException(exception, cleanMessage(exception));
 		}
-		String message = MESSAGES.getString(messageKey(errorType, operation));
-		String detail = detail(exception, errorType);
-
-		return detail == null ? message : message + ": " + detail;
-	}
-
-	@Override
-	public boolean isAuthenticationException(SQLException exception) {
-		return recognize(requireNonNull(exception)) == ErrorType.AUTHENTICATION;
-	}
-
-	@Override
-	public boolean isReferentialIntegrityException(SQLException exception) {
-		ErrorType errorType = recognize(requireNonNull(exception));
-
-		return errorType == ErrorType.REFERENTIAL_INTEGRITY ||
-						errorType == ErrorType.PARENT_MISSING ||
-						errorType == ErrorType.CHILD_EXISTS;
-	}
-
-	@Override
-	public boolean isUniqueConstraintException(SQLException exception) {
-		return recognize(requireNonNull(exception)) == ErrorType.UNIQUE_CONSTRAINT;
-	}
-
-	@Override
-	public boolean isTimeoutException(SQLException exception) {
-		return recognize(requireNonNull(exception)) == ErrorType.TIMEOUT;
-	}
-
-	@Override
-	public DatabaseException exception(SQLException exception, Operation operation) {
-		requireNonNull(exception, "exception");
-		requireNonNull(operation, "operation");
-		if (isUniqueConstraintException(exception)) {
-			return new UniqueConstraintException(exception, errorMessage(exception, operation));
+		String message = errorMessage(exception, errorType, operation);
+		switch (errorType) {
+			case UNIQUE_CONSTRAINT:
+				return new UniqueConstraintException(exception, message);
+			case REFERENTIAL_INTEGRITY:
+			case PARENT_MISSING:
+			case CHILD_EXISTS:
+				return new ReferentialIntegrityException(exception, message, operation);
+			case TIMEOUT:
+				return new QueryTimeoutException(exception, message);
+			case AUTHENTICATION:
+				return new AuthenticationException(message);
+			default:
+				return new DatabaseException(exception, message);
 		}
-		else if (isReferentialIntegrityException(exception)) {
-			return new ReferentialIntegrityException(exception, errorMessage(exception, operation), operation);
-		}
-		else if (isTimeoutException(exception)) {
-			return new QueryTimeoutException(exception, errorMessage(exception, operation));
-		}
-
-		return new DatabaseException(exception, errorMessage(exception, operation));
 	}
 
 	@Override
@@ -535,6 +503,13 @@ public abstract class AbstractDatabase implements Database {
 			LOG.debug("Unable to determine the error type", e);
 			return null;
 		}
+	}
+
+	private String errorMessage(SQLException exception, ErrorType errorType, Operation operation) {
+		String message = MESSAGES.getString(messageKey(errorType, operation));
+		String detail = detail(exception, errorType);
+
+		return detail == null ? message : message + ": " + detail;
 	}
 
 	private @Nullable String detail(SQLException exception, ErrorType errorType) {

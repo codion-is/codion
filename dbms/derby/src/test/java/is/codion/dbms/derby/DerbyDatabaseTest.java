@@ -19,6 +19,7 @@
 package is.codion.dbms.derby;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -91,31 +92,31 @@ public class DerbyDatabaseTest {
 		SQLException unique = new SQLException("The statement was aborted because it would have caused a duplicate key value in a unique or "
 						+ "primary key constraint or unique index identified by 'PARENT_UK' defined on 'PARENT'.", "23505", 30000);
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-		assertEquals(message("unique_constraint"), database.errorMessage(unique, INSERT));
+		assertEquals(message("unique_constraint"), database.exception(unique, INSERT).getMessage());
 		// which way is not reported, the operation deciding
 		SQLException parentMissing = new SQLException("INSERT on table 'CHILD' caused a violation of foreign key constraint 'CHILD_FK' for key (99).  "
 						+ "The statement has been rolled back.", "23503", 30000);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-		assertEquals(message("parent_missing"), database.errorMessage(parentMissing, INSERT));
+		assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
 		SQLException childExists = new SQLException("DELETE on table 'PARENT' caused a violation of foreign key constraint 'CHILD_FK' for key (1).  "
 						+ "The statement has been rolled back.", "23503", 30000);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.errorMessage(childExists, DELETE));
-		assertEquals(message("referential_integrity"), database.errorMessage(childExists, UPDATE));
-		assertEquals(message("null_value") + ": NAME", database.errorMessage(new SQLException("Column 'NAME'  cannot accept a NULL value.", "23502", 30000), INSERT));
-		assertEquals(message("null_value"), database.errorMessage(new SQLException(null, "23502", 30000), INSERT));
-		assertEquals(message("check_constraint"), database.errorMessage(new SQLException(
-						"The check constraint 'PARENT_CK' was violated while performing an INSERT or UPDATE on table '\"APP\".\"PARENT\"'.", "23513", 30000), UPDATE));
-		assertEquals(message("value_too_large"), database.errorMessage(new SQLException(
-						"A truncation error was encountered trying to shrink VARCHAR 'abcdefghijklmnop' to length 10.", "22001", 30000), UPDATE));
-		assertEquals(message("table_not_found"), database.errorMessage(new SQLException("Table/View 'MISSING' does not exist.", "42X05", 30000), SELECT));
-		assertEquals(message("row_locked"), database.errorMessage(new SQLException("A lock could not be obtained within the time requested", "40XL1", 30000), UPDATE));
+		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("referential_integrity"), database.exception(childExists, UPDATE).getMessage());
+		assertEquals(message("null_value") + ": NAME", database.exception(new SQLException("Column 'NAME'  cannot accept a NULL value.", "23502", 30000), INSERT).getMessage());
+		assertEquals(message("null_value"), database.exception(new SQLException(null, "23502", 30000), INSERT).getMessage());
+		assertEquals(message("check_constraint"), database.exception(new SQLException(
+						"The check constraint 'PARENT_CK' was violated while performing an INSERT or UPDATE on table '\"APP\".\"PARENT\"'.", "23513", 30000), UPDATE).getMessage());
+		assertEquals(message("value_too_large"), database.exception(new SQLException(
+						"A truncation error was encountered trying to shrink VARCHAR 'abcdefghijklmnop' to length 10.", "22001", 30000), UPDATE).getMessage());
+		assertEquals(message("table_not_found"), database.exception(new SQLException("Table/View 'MISSING' does not exist.", "42X05", 30000), SELECT).getMessage());
+		assertEquals(message("row_locked"), database.exception(new SQLException("A lock could not be obtained within the time requested", "40XL1", 30000), UPDATE).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLException("The statement has been cancelled or timed out.", "XCL52", 30000), SELECT));
 		assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLTimeoutException("timeout"), SELECT));
-		assertTrue(database.isAuthenticationException(new SQLException("Connection authentication failure occurred.  Reason: Invalid authentication..", "08004", 40000)));
+		assertInstanceOf(AuthenticationException.class, database.exception(new SQLException("Connection authentication failure occurred.  Reason: Invalid authentication..", "08004", 40000), OTHER));
 		SQLException unknown = new SQLException("Syntax error: Encountered \"selec\" at line 1, column 1.", "42X01", 30000);
 		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());
-		assertEquals(unknown.getMessage(), database.errorMessage(unknown, SELECT));
+		assertEquals(unknown.getMessage(), database.exception(unknown, SELECT).getMessage());
 	}
 
 	// independent of the default locale

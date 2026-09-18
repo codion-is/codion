@@ -205,34 +205,34 @@ public class H2DatabaseTest {
 
 			SQLException unique = failure(connection, "insert into parent (id, name, code) values (2, 'b', 'A')");
 			assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-			assertEquals(message("unique_constraint"), database.errorMessage(unique, INSERT));
+			assertEquals(message("unique_constraint"), database.exception(unique, INSERT).getMessage());
 
 			SQLException parentMissing = failure(connection, "insert into child (id, parent_id) values (2, 99)");
 			assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-			assertEquals(message("parent_missing"), database.errorMessage(parentMissing, INSERT));
+			assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
 			SQLException childExists = failure(connection, "delete from parent where id = 1");
 			assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-			assertEquals(message("child_exists"), database.errorMessage(childExists, DELETE));
+			assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
 			SQLException referencedKey = failure(connection, "update parent set id = 5 where id = 1");
-			assertEquals(message("child_exists"), database.errorMessage(referencedKey, UPDATE));
+			assertEquals(message("child_exists"), database.exception(referencedKey, UPDATE).getMessage());
 
-			assertEquals(message("null_value") + ": NAME", database.errorMessage(
-							failure(connection, "insert into parent (id, name) values (3, null)"), INSERT));
+			assertEquals(message("null_value") + ": NAME", database.exception(
+							failure(connection, "insert into parent (id, name) values (3, null)"), INSERT).getMessage());
 			// quoted identifiers in the statement, which is appended to the message
-			assertEquals(message("null_value") + ": NAME", database.errorMessage(
-							failure(connection, "insert into \"PARENT\" (\"ID\", \"NAME\") values (3, null)"), INSERT));
-			assertEquals(message("check_constraint"), database.errorMessage(
-							failure(connection, "update parent set amount = -1 where id = 1"), UPDATE));
-			assertEquals(message("value_too_large") + ": NAME", database.errorMessage(
-							failure(connection, "update parent set name = 'abcdefghijklmnop' where id = 1"), UPDATE));
-			assertEquals(message("value_too_large") + ": AMOUNT", database.errorMessage(
-							failure(connection, "update parent set amount = 123456.78 where id = 1"), UPDATE));
-			assertEquals(message("table_not_found"), database.errorMessage(failure(connection, "select * from missing"), SELECT));
+			assertEquals(message("null_value") + ": NAME", database.exception(
+							failure(connection, "insert into \"PARENT\" (\"ID\", \"NAME\") values (3, null)"), INSERT).getMessage());
+			assertEquals(message("check_constraint"), database.exception(
+							failure(connection, "update parent set amount = -1 where id = 1"), UPDATE).getMessage());
+			assertEquals(message("value_too_large") + ": NAME", database.exception(
+							failure(connection, "update parent set name = 'abcdefghijklmnop' where id = 1"), UPDATE).getMessage());
+			assertEquals(message("value_too_large") + ": AMOUNT", database.exception(
+							failure(connection, "update parent set amount = 123456.78 where id = 1"), UPDATE).getMessage());
+			assertEquals(message("table_not_found"), database.exception(failure(connection, "select * from missing"), SELECT).getMessage());
 
 			// unrecognized, without the statement
 			SQLException syntax = failure(connection, "selec * from parent");
 			assertSame(DatabaseException.class, database.exception(syntax, SELECT).getClass());
-			assertFalse(database.errorMessage(syntax, SELECT).contains("; SQL statement:"));
+			assertFalse(database.exception(syntax, SELECT).getMessage().contains("; SQL statement:"));
 
 			// a locked row, which the driver reports as a timeout when NOWAIT is used
 			connection.setAutoCommit(false);
@@ -241,7 +241,7 @@ public class H2DatabaseTest {
 			execute(connection, selectForUpdate);
 			SQLException locked = failure(connection2, selectForUpdate);
 			assertSame(DatabaseException.class, database.exception(locked, SELECT).getClass());
-			assertEquals(message("row_locked"), database.errorMessage(locked, SELECT));
+			assertEquals(message("row_locked"), database.exception(locked, SELECT).getMessage());
 			connection.rollback();
 			connection2.rollback();
 
@@ -255,8 +255,8 @@ public class H2DatabaseTest {
 			database.close();
 		}
 		// a translated or missing message must not throw, replacing the actual exception
-		assertEquals(message("null_value"), DATABASE.errorMessage(new SQLException("NULL nicht zul\u00E4ssig f\u00FCr Feld NAME", "23502", 23502), INSERT));
-		assertEquals(message("null_value"), DATABASE.errorMessage(new SQLException(null, "23502", 23502), INSERT));
+		assertEquals(message("null_value"), DATABASE.exception(new SQLException("NULL nicht zul\u00E4ssig f\u00FCr Feld NAME", "23502", 23502), INSERT).getMessage());
+		assertEquals(message("null_value"), DATABASE.exception(new SQLException(null, "23502", 23502), INSERT).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, DATABASE.exception(new SQLException("Statement was canceled", "57014", 57014), SELECT));
 	}
 

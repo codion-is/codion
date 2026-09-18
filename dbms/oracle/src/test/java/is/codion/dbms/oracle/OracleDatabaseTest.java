@@ -19,6 +19,7 @@
 package is.codion.dbms.oracle;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -88,54 +89,54 @@ public class OracleDatabaseTest {
 		OracleDatabase database = new OracleDatabase(URL);
 		SQLException unique = exception("ORA-00001: unique constraint (SCOTT.PARENT_UK) violated", "23000", 1);
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-		assertEquals(message("unique_constraint"), database.errorMessage(unique, INSERT));
+		assertEquals(message("unique_constraint"), database.exception(unique, INSERT).getMessage());
 
 		SQLException parentMissing = exception("ORA-02291: integrity constraint (SCOTT.CHILD_FK) violated - parent key not found", "23000", 2291);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-		assertEquals(message("parent_missing"), database.errorMessage(parentMissing, INSERT));
+		assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
 
 		SQLException childExists = exception("ORA-02292: integrity constraint (SCOTT.CHILD_FK) violated - child record found", "23000", 2292);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.errorMessage(childExists, DELETE));
-		assertEquals(message("child_exists"), database.errorMessage(childExists, UPDATE));
+		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("child_exists"), database.exception(childExists, UPDATE).getMessage());
 
-		assertEquals(message("null_value") + ": NAME", database.errorMessage(
-						exception("ORA-01400: cannot insert NULL into (\"SCOTT\".\"PARENT\".\"NAME\")", "23000", 1400), INSERT));
-		assertEquals(message("null_value") + ": NAME", database.errorMessage(
-						exception("ORA-01407: cannot update (\"SCOTT\".\"PARENT\".\"NAME\") to NULL", "72000", 1407), UPDATE));
+		assertEquals(message("null_value") + ": NAME", database.exception(
+						exception("ORA-01400: cannot insert NULL into (\"SCOTT\".\"PARENT\".\"NAME\")", "23000", 1400), INSERT).getMessage());
+		assertEquals(message("null_value") + ": NAME", database.exception(
+						exception("ORA-01407: cannot update (\"SCOTT\".\"PARENT\".\"NAME\") to NULL", "72000", 1407), UPDATE).getMessage());
 		// an unexpected or missing message must not throw, replacing the actual exception
-		assertEquals(message("null_value"), database.errorMessage(new SQLException("ORA-01400: unexpected", "23000", 1400), INSERT));
-		assertEquals(message("null_value"), database.errorMessage(new SQLException(null, "23000", 1400), INSERT));
+		assertEquals(message("null_value"), database.exception(new SQLException("ORA-01400: unexpected", "23000", 1400), INSERT).getMessage());
+		assertEquals(message("null_value"), database.exception(new SQLException(null, "23000", 1400), INSERT).getMessage());
 
-		assertEquals(message("value_too_large") + ": NAME", database.errorMessage(
-						exception("ORA-12899: value too large for column \"SCOTT\".\"PARENT\".\"NAME\" (actual: 16, maximum: 10)", "72000", 12899), UPDATE));
-		assertEquals(message("value_too_large"), database.errorMessage(
-						exception("ORA-01438: value larger than specified precision allowed for this column", "22003", 1438), UPDATE));
-		assertEquals(message("check_constraint"), database.errorMessage(
-						exception("ORA-02290: check constraint (SCOTT.PARENT_CK) violated", "23000", 2290), UPDATE));
-		assertEquals(message("missing_privileges"), database.errorMessage(exception("ORA-01031: insufficient privileges", "42000", 1031), SELECT));
-		assertEquals(message("missing_privileges"), database.errorMessage(
-						exception("ORA-01045: user SCOTT lacks CREATE SESSION privilege; logon denied", "72000", 1045), OTHER));
-		assertEquals(message("table_not_found"), database.errorMessage(exception("ORA-00942: table or view does not exist", "42000", 942), SELECT));
-		assertEquals(message("view_has_errors"), database.errorMessage(exception("ORA-04063: view \"SCOTT.V\" has errors", "72000", 4063), SELECT));
-		assertEquals(message("row_locked"), database.errorMessage(
-						exception("ORA-00054: resource busy and acquire with NOWAIT specified or timeout expired", "61000", 54), SELECT));
+		assertEquals(message("value_too_large") + ": NAME", database.exception(
+						exception("ORA-12899: value too large for column \"SCOTT\".\"PARENT\".\"NAME\" (actual: 16, maximum: 10)", "72000", 12899), UPDATE).getMessage());
+		assertEquals(message("value_too_large"), database.exception(
+						exception("ORA-01438: value larger than specified precision allowed for this column", "22003", 1438), UPDATE).getMessage());
+		assertEquals(message("check_constraint"), database.exception(
+						exception("ORA-02290: check constraint (SCOTT.PARENT_CK) violated", "23000", 2290), UPDATE).getMessage());
+		assertEquals(message("missing_privileges"), database.exception(exception("ORA-01031: insufficient privileges", "42000", 1031), SELECT).getMessage());
+		assertEquals(message("missing_privileges"), database.exception(
+						exception("ORA-01045: user SCOTT lacks CREATE SESSION privilege; logon denied", "72000", 1045), OTHER).getMessage());
+		assertEquals(message("table_not_found"), database.exception(exception("ORA-00942: table or view does not exist", "42000", 942), SELECT).getMessage());
+		assertEquals(message("view_has_errors"), database.exception(exception("ORA-04063: view \"SCOTT.V\" has errors", "72000", 4063), SELECT).getMessage());
+		assertEquals(message("row_locked"), database.exception(
+						exception("ORA-00054: resource busy and acquire with NOWAIT specified or timeout expired", "61000", 54), SELECT).getMessage());
 
 		SQLException timeout = new SQLTimeoutException("ORA-01013: user requested cancel of current operation", "72000", 1013);
 		assertInstanceOf(QueryTimeoutException.class, database.exception(timeout, SELECT));
-		assertEquals(message("timeout"), database.errorMessage(timeout, SELECT));
+		assertEquals(message("timeout"), database.exception(timeout, SELECT).getMessage());
 		// cancelled, not timed out
 		assertSame(DatabaseException.class, database.exception(exception("ORA-01013: user requested cancel of current operation", "72000", 1013), SELECT).getClass());
 
 		SQLException authentication = exception("ORA-01017: invalid username/password; logon denied", "72000", 1017);
-		assertTrue(database.isAuthenticationException(authentication));
-		assertEquals(message("authentication"), database.errorMessage(authentication, OTHER));
+		assertInstanceOf(AuthenticationException.class, database.exception(authentication, OTHER));
+		assertEquals(message("authentication"), database.exception(authentication, OTHER).getMessage());
 
 		// unrecognized, without the link to the documentation
 		SQLException unknown = exception("ORA-00904: \"NMAE\": invalid identifier", "42000", 904);
 		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());
-		assertEquals("ORA-00904: \"NMAE\": invalid identifier", database.errorMessage(unknown, SELECT));
-		assertEquals("no link", database.errorMessage(new SQLException("no link", "72000", 904), SELECT));
+		assertEquals("ORA-00904: \"NMAE\": invalid identifier", database.exception(unknown, SELECT).getMessage());
+		assertEquals("no link", database.exception(new SQLException("no link", "72000", 904), SELECT).getMessage());
 	}
 
 	/**

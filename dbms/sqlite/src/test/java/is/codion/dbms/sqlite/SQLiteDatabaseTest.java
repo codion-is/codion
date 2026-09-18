@@ -70,30 +70,30 @@ public class SQLiteDatabaseTest {
 		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
 		SQLException unique = new SQLException("[SQLITE_CONSTRAINT_UNIQUE] A UNIQUE constraint failed (UNIQUE constraint failed: parent.code)", null, 19);
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-		assertEquals(message("unique_constraint"), database.errorMessage(unique, INSERT));
+		assertEquals(message("unique_constraint"), database.exception(unique, INSERT).getMessage());
 		assertInstanceOf(UniqueConstraintException.class, database.exception(new SQLException(
 						"[SQLITE_CONSTRAINT_PRIMARYKEY] A PRIMARY KEY constraint failed (UNIQUE constraint failed: parent.id)", null, 19), INSERT));
 		// which way is not reported, the operation deciding
 		SQLException foreignKey = new SQLException("[SQLITE_CONSTRAINT_FOREIGNKEY] A foreign key constraint failed (FOREIGN KEY constraint failed)", null, 19);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(foreignKey, DELETE));
-		assertEquals(message("parent_missing"), database.errorMessage(foreignKey, INSERT));
-		assertEquals(message("child_exists"), database.errorMessage(foreignKey, DELETE));
-		assertEquals(message("referential_integrity"), database.errorMessage(foreignKey, UPDATE));
-		assertEquals(message("null_value") + ": name", database.errorMessage(new SQLException(
-						"[SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: parent.name)", null, 19), INSERT));
-		assertEquals(message("null_value"), database.errorMessage(new SQLException("[SQLITE_CONSTRAINT_NOTNULL] unexpected", null, 19), INSERT));
+		assertEquals(message("parent_missing"), database.exception(foreignKey, INSERT).getMessage());
+		assertEquals(message("child_exists"), database.exception(foreignKey, DELETE).getMessage());
+		assertEquals(message("referential_integrity"), database.exception(foreignKey, UPDATE).getMessage());
+		assertEquals(message("null_value") + ": name", database.exception(new SQLException(
+						"[SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: parent.name)", null, 19), INSERT).getMessage());
+		assertEquals(message("null_value"), database.exception(new SQLException("[SQLITE_CONSTRAINT_NOTNULL] unexpected", null, 19), INSERT).getMessage());
 		SQLException check = new SQLException("[SQLITE_CONSTRAINT_CHECK] A CHECK constraint failed (CHECK constraint failed: parent_ck)", null, 19);
 		assertSame(DatabaseException.class, database.exception(check, UPDATE).getClass());
-		assertEquals(message("check_constraint"), database.errorMessage(check, UPDATE));
-		assertEquals(message("table_not_found"), database.errorMessage(new SQLException(
-						"[SQLITE_ERROR] SQL error or missing database (no such table: missing)", null, 1), SELECT));
-		assertEquals(message("row_locked"), database.errorMessage(new SQLException(
-						"[SQLITE_BUSY] The database file is locked (database is locked)", null, 5), UPDATE));
+		assertEquals(message("check_constraint"), database.exception(check, UPDATE).getMessage());
+		assertEquals(message("table_not_found"), database.exception(new SQLException(
+						"[SQLITE_ERROR] SQL error or missing database (no such table: missing)", null, 1), SELECT).getMessage());
+		assertEquals(message("row_locked"), database.exception(new SQLException(
+						"[SQLITE_BUSY] The database file is locked (database is locked)", null, 5), UPDATE).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLTimeoutException("timeout"), SELECT));
 		SQLException unknown = new SQLException("[SQLITE_ERROR] SQL error or missing database (near \"selec\": syntax error)", null, 1);
 		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());
-		assertEquals(unknown.getMessage(), database.errorMessage(unknown, SELECT));
-		assertNull(database.errorMessage(new SQLException(), OTHER));
+		assertEquals(unknown.getMessage(), database.exception(unknown, SELECT).getMessage());
+		assertNull(database.exception(new SQLException(), OTHER).getMessage());
 	}
 
 	// independent of the default locale

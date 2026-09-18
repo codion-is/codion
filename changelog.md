@@ -6,6 +6,7 @@ Codion Change Log
 - DatabaseException.statement() removed, unused.
 - Database.limitOffsetClause() ordered parameter added, AbstractDatabase.createLimitOffsetClause() overloaded with a limit to use when only an offset is specified.
 - AbstractDatabase.ErrorType added along with errorType(), errorDetail() and message(), errors now recognized by SQL state and SQLTimeoutException by default, the error messages provided by a single resource bundle, exceptions thrown while handling an exception now logged and ignored.
+- Database.errorMessage(), isAuthenticationException(), isReferentialIntegrityException(), isUniqueConstraintException() and isTimeoutException() removed, Database.exception() now returns AuthenticationException in case of an authentication error, AbstractDatabase.exception() now final.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
