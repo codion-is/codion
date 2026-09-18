@@ -38,12 +38,17 @@ public class Db2DatabaseTest {
 	@Test
 	void autoIncrementQuery() {
 		Db2Database database = new Db2Database("test");
-		assertEquals("SELECT PREVIOUS VALUE FOR seq", database.autoIncrementQuery("seq"));
+		assertEquals("VALUES PREVIOUS VALUE FOR seq", database.autoIncrementQuery("seq"));
 	}
 
 	@Test
 	void sequenceSQLNullSequence() {
 		assertThrows(NullPointerException.class, () -> new Db2Database(URL).sequenceQuery(null));
+	}
+
+	@Test
+	void sequenceQuery() {
+		assertEquals("VALUES NEXT VALUE FOR seq", new Db2Database(URL).sequenceQuery("seq"));
 	}
 
 	@Test

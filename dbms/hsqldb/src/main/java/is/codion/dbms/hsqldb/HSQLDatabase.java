@@ -39,8 +39,8 @@ final class HSQLDatabase extends AbstractDatabase {
 	private static final String SHUTDOWN = "SHUTDOWN";
 	private static final String SYSADMIN_USERNAME = "sa";
 
-	static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
-	static final String SEQUENCE_VALUE_QUERY = "SELECT NEXT VALUE FOR ";
+	static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
+	static final String SEQUENCE_VALUE_QUERY = "CALL NEXT VALUE FOR ";
 
 	HSQLDatabase(String url) {
 		super(url);

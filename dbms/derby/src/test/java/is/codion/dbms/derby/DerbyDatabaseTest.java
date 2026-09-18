@@ -53,8 +53,7 @@ public class DerbyDatabaseTest {
 	@Test
 	void autoIncrementQuery() {
 		DerbyDatabase db = new DerbyDatabase(URL);
-		final String idSource = "id_source";
-		assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.autoIncrementQuery(idSource));
+		assertEquals("VALUES IDENTITY_VAL_LOCAL()", db.autoIncrementQuery("id_source"));
 	}
 
 	@Test
