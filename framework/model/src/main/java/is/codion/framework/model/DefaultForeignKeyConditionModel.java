@@ -281,14 +281,6 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 			return condition;
 		}
 
-		/**
-		 * Applies the shared condition to the given model condition, now if set, and whenever set from now on
-		 */
-		private void restrict(Value<Supplier<Condition>> modelCondition) {
-			condition.optional().ifPresent(modelCondition::set);
-			condition.addConsumer(modelCondition::set);
-		}
-
 		private Link link(ForeignKeyConditionModel master, ForeignKey foreignKey) {
 			synchronized (this) {
 				if (links.stream().anyMatch(link -> link.foreignKey.equals(foreignKey))) {
@@ -351,6 +343,14 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 
 			private DefaultOperand other() {
 				return this == equal ? in : equal;
+			}
+
+			/**
+			 * Applies the shared condition to the given model condition, now if set, and whenever set from now on
+			 */
+			private void restrict(Value<Supplier<Condition>> modelCondition) {
+				condition.optional().ifPresent(modelCondition::set);
+				condition.addConsumer(modelCondition::set);
 			}
 		}
 
