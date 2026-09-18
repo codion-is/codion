@@ -56,13 +56,14 @@ public class H2DatabaseTest {
 
 	@Test
 	void autoIncrementQuery() {
-		assertEquals(H2Database.AUTO_INCREMENT_QUERY, DATABASE.autoIncrementQuery(null));
+		// IDENTITY() was removed in H2 2.0
+		assertThrows(UnsupportedOperationException.class, () -> DATABASE.autoIncrementQuery("table"));
 	}
 
 	@Test
 	void sequenceQuery() {
 		final String idSource = "seq";
-		assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, DATABASE.sequenceQuery(idSource));
+		assertEquals("select next value for " + idSource, DATABASE.sequenceQuery(idSource));
 	}
 
 	@Test

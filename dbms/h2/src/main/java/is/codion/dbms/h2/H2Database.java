@@ -75,7 +75,6 @@ final class H2Database extends AbstractDatabase {
 	private static final String FILE_SUFFIX_MVSTORE = ".mv.db";
 	private static final String SHUTDOWN = "SHUTDOWN";
 
-	static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
 	static final String SEQUENCE_VALUE_QUERY = "select next value for ";
 	static final String SYSADMIN_USERNAME = "sa";
 
@@ -131,7 +130,8 @@ final class H2Database extends AbstractDatabase {
 
 	@Override
 	public String autoIncrementQuery(String idSource) {
-		return AUTO_INCREMENT_QUERY;
+		throw new UnsupportedOperationException("H2 provides no function for querying the last generated value, " +
+						"use an identity based generator, relying on Statement.getGeneratedKeys(), instead of an automatic one");
 	}
 
 	@Override

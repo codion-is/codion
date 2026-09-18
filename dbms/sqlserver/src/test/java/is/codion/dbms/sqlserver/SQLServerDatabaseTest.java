@@ -43,7 +43,7 @@ public class SQLServerDatabaseTest {
 	@Test
 	void autoIncrementQuery() {
 		SQLServerDatabase db = new SQLServerDatabase(URL);
-		assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
+		assertThrows(UnsupportedOperationException.class, () -> db.autoIncrementQuery("table"));
 	}
 
 	@Test

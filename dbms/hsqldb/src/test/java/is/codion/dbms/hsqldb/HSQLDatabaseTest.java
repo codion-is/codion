@@ -47,14 +47,14 @@ public class HSQLDatabaseTest {
 	@Test
 	void autoIncrementQuery() {
 		HSQLDatabase db = new HSQLDatabase(URL);
-		assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
+		assertEquals("CALL IDENTITY()", db.autoIncrementQuery(null));
 	}
 
 	@Test
 	void sequenceQuery() {
 		HSQLDatabase db = new HSQLDatabase(URL);
 		final String idSource = "seq";
-		assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.sequenceQuery(idSource));
+		assertEquals("CALL NEXT VALUE FOR " + idSource, db.sequenceQuery(idSource));
 	}
 
 	@Test

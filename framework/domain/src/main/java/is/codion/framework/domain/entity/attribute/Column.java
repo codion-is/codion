@@ -465,6 +465,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Instantiates a generator which fetches automatically incremented column values after insert.
+		 * Note that H2 and SQL Server do not support this, use {@link #identity()} for those.
 		 * @param <T> the generated column type
 		 * @param valueSource the value source, whether a sequence or a table name
 		 * @return an auto-increment based column value generator
