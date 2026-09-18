@@ -211,6 +211,18 @@ public final class AbstractDatabaseTest {
 	class UrlPrefixTests {
 
 		@Test
+		@DisplayName("Database or host from a url without prefix, options and parameters")
+		void databaseOrHost_shouldReturnDatabaseOrHost() {
+			assertEquals("db", AbstractDatabase.databaseOrHost("//host:1234/db"));
+			assertEquals("db", AbstractDatabase.databaseOrHost("//host1:1234,host2:1234/db"));
+			assertEquals("db", AbstractDatabase.databaseOrHost("db"));
+			assertEquals("host:1234", AbstractDatabase.databaseOrHost("//host:1234/"));
+			assertEquals("host:1234", AbstractDatabase.databaseOrHost("//host:1234"));
+			assertEquals("", AbstractDatabase.databaseOrHost("/"));
+			assertEquals("", AbstractDatabase.databaseOrHost(""));
+		}
+
+		@Test
 		@DisplayName("An upper case url matches its prefix on a Turkish machine")
 		void removeUrlPrefix_upperCaseUrlTurkishLocale_shouldMatch() {
 			// Both sides are lower-cased, which looks symmetric and is not: the prefix is a lower case literal

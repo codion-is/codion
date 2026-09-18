@@ -48,6 +48,14 @@ public class OracleDatabaseTest {
 		assertEquals("sid", database.name());
 		database = new OracleDatabase("jdbc:oracle:thin:/@sid");
 		assertEquals("sid", database.name());
+		assertEquals("service", new OracleDatabase("jdbc:oracle:thin:@//host.com:1234/service").name());
+		assertEquals("service", new OracleDatabase("jdbc:oracle:thin:@host.com:1234/service:dedicated").name());
+		assertEquals("service", new OracleDatabase("jdbc:oracle:thin:@tcps://host.com:1234/service?wallet_location=/path/to/wallet").name());
+		assertEquals("alias", new OracleDatabase("jdbc:oracle:thin:@alias").name());
+		assertEquals("alias", new OracleDatabase("jdbc:oracle:oci:@alias").name());
+		assertEquals("sid", new OracleDatabase("jdbc:oracle:thin:scott/tiger@host.com:1234:sid").name());
+		assertEquals("service", new OracleDatabase("jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=host.com)(PORT=1234))(CONNECT_DATA=(SERVICE_NAME=service)))").name());
+		assertEquals("sid", new OracleDatabase("jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=host.com)(port=1234))(connect_data=(sid = sid)))").name());
 	}
 
 	@Test

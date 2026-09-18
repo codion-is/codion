@@ -47,6 +47,12 @@ public class PostgreSQLDatabaseTest {
 		assertEquals("sid", database.name());
 		database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid?parameters;options", true);
 		assertEquals("sid", database.name());
+		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql:sid", true).name());
+		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql:sid?parameters", true).name());
+		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql://host1:1234,host2:1234/sid", true).name());
+		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql://[::1]:1234/sid", true).name());
+		assertEquals("host.db:1234", new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/", true).name());
+		assertEquals("host.db", new PostgreSQLDatabase("jdbc:postgresql://host.db", true).name());
 	}
 
 	@Test

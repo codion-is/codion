@@ -44,6 +44,9 @@ public class Db2DatabaseTest {
 		assertEquals("database", database.name());
 		database = new Db2Database(URL + ";options");
 		assertEquals("database", database.name());
+		assertEquals("database", new Db2Database("jdbc:db2://server:6789/database:user=scott;password=tiger;").name());
+		assertEquals("database", new Db2Database("jdbc:db2://server:6789/database:retrieveMessagesFromServerOnGetMessage=true;").name());
+		assertEquals("database", new Db2Database("jdbc:db2:database").name());
 	}
 
 	@Test

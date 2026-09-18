@@ -44,6 +44,12 @@ public class MySQLDatabaseTest {
 		assertEquals("dbname", database.name());
 		database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname;option=true;option2=false");
 		assertEquals("dbname", database.name());
+		assertEquals("dbname", new MySQLDatabase("jdbc:mysql://host.com:1234/dbname?useSSL=false").name());
+		assertEquals("dbname", new MySQLDatabase("jdbc:mysql://host1:1234,host2:1234/dbname").name());
+		assertEquals("dbname", new MySQLDatabase("jdbc:mysql:loadbalance://host1,host2/dbname").name());
+		assertEquals("dbname", new MySQLDatabase("jdbc:mysql+srv://host.com/dbname").name());
+		assertEquals("host.com:1234", new MySQLDatabase("jdbc:mysql://host.com:1234/").name());
+		assertEquals("host.com:1234", new MySQLDatabase("jdbc:mysql://host.com:1234").name());
 	}
 
 	@Test
