@@ -30,9 +30,12 @@ import static java.util.Objects.requireNonNull;
  */
 final class DerbyDatabase extends AbstractDatabase {
 
-	private static final String TIMEOUT_ERROR_CODE = "XCL52";
 	private static final String SHUTDOWN = "08006";
-	private static final int FOREIGN_KEY_ERROR = 23503;
+	private static final String STATEMENT_TIMEOUT = "XCL52";
+	private static final String LOCK_TIMEOUT = "40XL1";
+	private static final String DEADLOCK = "40001";
+	private static final String AUTHENTICATION_FAILURE = "08004";
+	private static final String TABLE_NOT_FOUND = "42X05";
 
 	private static final String JDBC_URL_PREFIX_TCP = "jdbc:derby://";
 	private static final String JDBC_URL_PREFIX_FILE = "jdbc:derby:";
@@ -75,25 +78,64 @@ final class DerbyDatabase extends AbstractDatabase {
 		return AUTO_INCREMENT_QUERY;
 	}
 
+	/**
+	 * The error code is a severity, the sql state identifying the error, most being covered by the defaults
+	 */
 	@Override
-	public boolean isReferentialIntegrityException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == FOREIGN_KEY_ERROR;
+	protected ErrorType errorType(SQLException exception) {
+		String sqlState = exception.getSQLState();
+		if (sqlState == null) {
+			return super.errorType(exception);
+		}
+		switch (sqlState) {
+			case STATEMENT_TIMEOUT:
+				return ErrorType.TIMEOUT;
+			case LOCK_TIMEOUT:
+			case DEADLOCK:
+				return ErrorType.ROW_LOCKED;
+			case AUTHENTICATION_FAILURE:
+				return ErrorType.AUTHENTICATION;
+			case TABLE_NOT_FOUND:
+				return ErrorType.TABLE_NOT_FOUND;
+			default:
+				return super.errorType(exception);
+		}
 	}
 
 	@Override
-	public boolean isTimeoutException(SQLException exception) {
-		return TIMEOUT_ERROR_CODE.equals(requireNonNull(exception).getSQLState());
+	protected String errorDetail(SQLException exception, ErrorType errorType) {
+		String message = exception.getMessage();
+		if (errorType == ErrorType.NULL_VALUE && message != null) {
+			// Column 'NAME'  cannot accept a NULL value.
+			return between(message, "'", "'");
+		}
+
+		return null;
 	}
 
 	@Override
 	protected void closeDatabase() throws SQLException {
+		if (url().startsWith(JDBC_URL_PREFIX_TCP)) {
+			return;// shutting down a database on a server closes it for all its clients
+		}
 		try {
 			DriverManager.getConnection(url() + ";shutdown=true");
 		}
 		catch (SQLException e) {
-			if (!e.getSQLState().equals(SHUTDOWN)) {
+			if (!SHUTDOWN.equals(e.getSQLState())) {
 				throw e;
 			}
 		}
+	}
+
+	private static String between(String message, String prefix, String suffix) {
+		int prefixIndex = message.indexOf(prefix);
+		if (prefixIndex == -1) {
+			return null;
+		}
+		int beginIndex = prefixIndex + prefix.length();
+		int endIndex = message.indexOf(suffix, beginIndex);
+
+		return endIndex == -1 ? null : message.substring(beginIndex, endIndex);
 	}
 }
