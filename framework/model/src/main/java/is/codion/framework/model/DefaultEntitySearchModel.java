@@ -22,8 +22,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.Value.Notify;
-import is.codion.common.reactive.value.ValueSet;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
@@ -157,13 +155,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private final class DefaultSearch implements Search {
 
-		private final ValueSet<String> strings = ValueSet.<String>builder()
-						.notify(Notify.SET)
+		private final Value<String> string = Value.builder()
+						.nonNull("")
 						.build();
 
 		@Override
-		public ValueSet<String> strings() {
-			return strings;
+		public Value<String> string() {
+			return string;
 		}
 
 		@Override
@@ -186,15 +184,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			Collection<Condition> conditions = new ArrayList<>();
 			for (Column<String> column : columns) {
 				Settings columnSettings = settings.get(column);
-				for (String rawSearchString : strings.get()) {
-					String preparedSearchString = prepareSearchString(rawSearchString, columnSettings);
-					boolean containsWildcards = containsWildcards(preparedSearchString);
-					if (columnSettings.caseSensitive().is()) {
-						conditions.add(containsWildcards ? column.like(preparedSearchString) : column.equalTo(preparedSearchString));
-					}
-					else {
-						conditions.add(containsWildcards ? column.likeIgnoreCase(preparedSearchString) : column.equalToIgnoreCase(preparedSearchString));
-					}
+				String preparedSearchString = prepareSearchString(string.getOrThrow(), columnSettings);
+				boolean containsWildcards = containsWildcards(preparedSearchString);
+				if (columnSettings.caseSensitive().is()) {
+					conditions.add(containsWildcards ? column.like(preparedSearchString) : column.equalTo(preparedSearchString));
+				}
+				else {
+					conditions.add(containsWildcards ? column.likeIgnoreCase(preparedSearchString) : column.equalToIgnoreCase(preparedSearchString));
 				}
 			}
 
