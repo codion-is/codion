@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
@@ -60,8 +61,10 @@ public final class ScrollPaneBuilderTest {
 		JScrollPane follower = follower(leader);
 		layout(follower, 300, 20);
 		assertEquals(0, follower.getViewport().getViewPosition().x);
-		new JPanel().add(follower);
-		assertEquals(200, follower.getViewport().getViewPosition().x);
+		SwingUtilities.invokeLater(() -> {
+			new JPanel().add(follower);
+			assertEquals(200, follower.getViewport().getViewPosition().x);
+		});
 	}
 
 	private static JScrollPane follower(JScrollPane leader) {

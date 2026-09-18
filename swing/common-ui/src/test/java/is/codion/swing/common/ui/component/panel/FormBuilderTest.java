@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -187,8 +188,8 @@ public final class FormBuilderTest {
 		assertEquals(textInput.getPreferredSize().height, textInput.getHeight());
 		// the label at the top of the stretched panel, on the baseline of the single line inputs
 		assertEquals(shortPanel.getY(), shortLabel.getY());
-		assertTrue(Math.abs(labelOf(field).getY() - field.getY()) <= 3);
-		assertTrue(Math.abs(textLabel.getY() - textInput.getY()) <= 3);
+		assertEquals(baseline(field), baseline(labelOf(field)));
+		assertEquals(baseline(textInput), baseline(textLabel));
 	}
 
 	@Test
@@ -260,6 +261,10 @@ public final class FormBuilderTest {
 		assertThrows(IllegalArgumentException.class, () -> Components.form().columns(0));
 		assertThrows(IllegalArgumentException.class, () -> Components.form().labelAlignment(CENTER));
 		assertThrows(NullPointerException.class, () -> Components.form().add((JComponent) null));
+	}
+
+	private static int baseline(Component component) {
+		return component.getY() + component.getBaseline(component.getWidth(), component.getHeight());
 	}
 
 	private static JPanel tallPanel() {

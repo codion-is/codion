@@ -207,26 +207,22 @@ public final class KeyEvents {
 
 		@Override
 		public Builder keyCode(int keyCode) {
-			this.keyStroke = getKeyStroke(keyCode, keyStroke.getModifiers(), keyStroke.isOnKeyRelease());
-			return this;
+			return keyStroke(getKeyStroke(keyCode, keyStroke.getModifiers(), keyStroke.isOnKeyRelease()));
 		}
 
 		@Override
 		public Builder keyChar(char keyChar) {
-			this.keyStroke = getKeyStroke(keyChar, keyStroke.getModifiers(), keyStroke.isOnKeyRelease());
-			return this;
+			return keyStroke(getKeyStroke(keyChar, keyStroke.getModifiers(), keyStroke.isOnKeyRelease()));
 		}
 
 		@Override
 		public Builder modifiers(int modifiers) {
-			this.keyStroke = getKeyStroke(keyStroke.getKeyCode(), modifiers, keyStroke.isOnKeyRelease());
-			return this;
+			return keyStroke(getKeyStroke(keyStroke.getKeyCode(), modifiers, keyStroke.isOnKeyRelease()));
 		}
 
 		@Override
 		public Builder onKeyRelease(boolean onKeyRelease) {
-			this.keyStroke = getKeyStroke(keyStroke.getKeyCode(), keyStroke.getModifiers(), onKeyRelease);
-			return this;
+			return keyStroke(getKeyStroke(keyStroke.getKeyCode(), keyStroke.getModifiers(), onKeyRelease));
 		}
 
 		@Override

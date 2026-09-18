@@ -42,8 +42,7 @@ public final class Text {
 
 	/**
 	 * Specifies the default collator locale, as an IETF BCP 47 language tag - {@code is}, {@code zh-TW},
-	 * {@code pt-BR}. A bare language is a valid tag, so the values this accepted when it took only a language
-	 * still do.
+	 * {@code pt-BR}. A bare language is a valid tag.
 	 * <p>Note that the default is resolved when this class is loaded, so an application setting
 	 * {@link Locale#setDefault(Locale)} must do so before anything touches {@link Text}.
 	 * <ul>
