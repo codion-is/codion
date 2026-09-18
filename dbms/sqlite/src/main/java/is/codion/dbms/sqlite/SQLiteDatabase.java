@@ -22,15 +22,23 @@ import is.codion.common.db.database.AbstractDatabase;
 
 import java.sql.SQLException;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A SQLite embedded database implementation, quite experimental, based on the xerial/sqlite-jdbc driver.
  */
 final class SQLiteDatabase extends AbstractDatabase {
 
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
-	private static final int FOREIGN_KEY_ERROR = 787;
+	// the driver reports the primary result code only, SQLITE_CONSTRAINT for all constraints,
+	// the extended one being available as the name the message starts with
+	private static final String UNIQUE = "[SQLITE_CONSTRAINT_UNIQUE]";
+	private static final String PRIMARY_KEY = "[SQLITE_CONSTRAINT_PRIMARYKEY]";
+	private static final String FOREIGN_KEY = "[SQLITE_CONSTRAINT_FOREIGNKEY]";
+	private static final String NOT_NULL = "[SQLITE_CONSTRAINT_NOTNULL]";
+	private static final String CHECK = "[SQLITE_CONSTRAINT_CHECK]";
+	private static final String BUSY = "[SQLITE_BUSY";// along with its extended codes
+	private static final String LOCKED = "[SQLITE_LOCKED";
+	private static final String NO_SUCH_TABLE = "(no such table: ";
+	private static final String NOT_NULL_FAILED = "NOT NULL constraint failed: ";
 
 	/**
 	 * An offset requires a limit, a negative one meaning no limit
@@ -63,12 +71,49 @@ final class SQLiteDatabase extends AbstractDatabase {
 		return createLimitOffsetClause(limit, offset, NO_LIMIT);
 	}
 
-	/**
-	 * @param exception the exception
-	 * @return true if this exception is a referential integrity error
-	 */
 	@Override
-	public boolean isReferentialIntegrityException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == FOREIGN_KEY_ERROR;
+	protected ErrorType errorType(SQLException exception) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return super.errorType(exception);
+		}
+		if (message.startsWith(UNIQUE) || message.startsWith(PRIMARY_KEY)) {
+			return ErrorType.UNIQUE_CONSTRAINT;
+		}
+		if (message.startsWith(FOREIGN_KEY)) {
+			// which way is not reported
+			return ErrorType.REFERENTIAL_INTEGRITY;
+		}
+		if (message.startsWith(NOT_NULL)) {
+			return ErrorType.NULL_VALUE;
+		}
+		if (message.startsWith(CHECK)) {
+			return ErrorType.CHECK_CONSTRAINT;
+		}
+		if (message.startsWith(BUSY) || message.startsWith(LOCKED)) {
+			return ErrorType.ROW_LOCKED;
+		}
+		if (message.contains(NO_SUCH_TABLE)) {
+			return ErrorType.TABLE_NOT_FOUND;
+		}
+
+		return super.errorType(exception);
+	}
+
+	@Override
+	protected String errorDetail(SQLException exception, ErrorType errorType) {
+		String message = exception.getMessage();
+		if (errorType == ErrorType.NULL_VALUE && message != null) {
+			// [SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: table.column)
+			int beginIndex = message.indexOf(NOT_NULL_FAILED);
+			int endIndex = message.lastIndexOf(')');
+			if (beginIndex != -1 && endIndex > beginIndex) {
+				String column = message.substring(beginIndex + NOT_NULL_FAILED.length(), endIndex);
+
+				return column.substring(column.lastIndexOf('.') + 1);
+			}
+		}
+
+		return null;
 	}
 }

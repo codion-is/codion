@@ -30,6 +30,9 @@ Codion Change Log
 - DerbyDatabase.autoIncrementQuery() now based on VALUES, no longer returning a row for each row in the table.
 - DerbyDatabase.sequenceQuery() implemented.
 - DerbyDatabaseFactory.supports() bug fixed, the drivers from version 10.15 and later now recognized.
+- DerbyDatabase now based on AbstractDatabase.ErrorType, unique constraint, null value, check constraint, value too large, lock timeout, authentication and table not found errors now recognized.
+- DerbyDatabase bug fixed, referential integrity errors now recognized, the error code, being a severity, was compared to the sql state.
+- DerbyDatabase no longer shuts down a database on a server when closed.
 ### is.codion.dbms.h2
 - H2Database.autoIncrementQuery() now throws UnsupportedOperationException, IDENTITY() having been removed in H2 2.0, Generator.identity() being the alternative.
 - H2Database bug fixed, a database with a mixed case url now initialized again after having been closed.
@@ -40,6 +43,8 @@ Codion Change Log
 ### is.codion.dbms.hsqldb
 - HSQLDatabase.selectForUpdateClause() bug fixed, NOWAIT not being supported.
 - HSQLDatabase.sequenceQuery() and autoIncrementQuery() bug fixed, now based on CALL.
+- HSQLDatabase now based on AbstractDatabase.ErrorType, unique constraint, referential integrity, null value, check constraint, value too large and authentication errors now recognized.
+- HSQLDatabase no longer shuts down a database on a server when closed.
 ### is.codion.dbms.mariadb
 - MariaDBDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 - MariaDBDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
@@ -61,6 +66,8 @@ Codion Change Log
 ### is.codion.dbms.sqlite
 - SQLiteDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 - SQLiteDatabase.selectForUpdateClause() bug fixed, now empty, FOR UPDATE not being supported.
+- SQLiteDatabase now based on AbstractDatabase.ErrorType, unique constraint, null value, check constraint, locked database and table not found errors now recognized.
+- SQLiteDatabase bug fixed, referential integrity errors now recognized, the driver reporting the primary result code, not the extended one.
 ### is.codion.dbms.sqlserver
 - SQLServerDatabase.maximumParameters() now 2.098, selecting or deleting by more keys no longer failing.
 - SQLServerDatabase.limitOffsetClause() bug fixed, a limit without an offset or an order by clause no longer invalid.

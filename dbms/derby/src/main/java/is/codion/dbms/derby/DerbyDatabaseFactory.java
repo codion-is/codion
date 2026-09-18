@@ -58,7 +58,7 @@ public final class DerbyDatabaseFactory implements DatabaseFactory {
 			DriverManager.getConnection(database.url() + ";shutdown=true").close();
 		}
 		catch (SQLException e) {
-			if (!e.getSQLState().equals(SHUTDOWN_ERROR_CODE)) {//08006 is expected on Derby shutdown
+			if (!SHUTDOWN_ERROR_CODE.equals(e.getSQLState())) {//08006 is expected on Derby shutdown
 				System.err.println("Embedded Derby database did not successfully shut down: " + e.getMessage());
 			}
 		}
