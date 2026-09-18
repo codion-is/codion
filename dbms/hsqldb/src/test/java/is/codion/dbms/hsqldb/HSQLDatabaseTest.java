@@ -61,4 +61,10 @@ public class HSQLDatabaseTest {
 	void constructorNullUrl() {
 		assertThrows(NullPointerException.class, () -> new HSQLDatabase(null));
 	}
+
+	@Test
+	void selectForUpdateClause() {
+		// NOWAIT is not supported
+		assertEquals("FOR UPDATE", new HSQLDatabase(URL).selectForUpdateClause());
+	}
 }

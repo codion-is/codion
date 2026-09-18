@@ -55,7 +55,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 
 	@Override
 	public String selectForUpdateClause() {
-		return FOR_UPDATE;
+		return "";
 	}
 
 	@Override

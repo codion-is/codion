@@ -46,4 +46,10 @@ public class SQLiteDatabaseTest {
 		assertEquals("LIMIT 10 OFFSET 5", database.limitOffsetClause(10, 5, true));
 		assertEquals("LIMIT -1 OFFSET 5", database.limitOffsetClause(null, 5, false));
 	}
+
+	@Test
+	void selectForUpdateClause() {
+		// not supported, the database being locked as a whole when written to
+		assertEquals("", new SQLiteDatabase("jdbc:sqlite:/path/to/file.db").selectForUpdateClause());
+	}
 }
