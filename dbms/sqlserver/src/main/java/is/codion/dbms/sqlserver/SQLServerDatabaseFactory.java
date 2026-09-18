@@ -38,6 +38,6 @@ public final class SQLServerDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public Database create(String url) {
-		return new SQLServerDatabase(url);
+		return new SQLServerDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.getOrThrow());
 	}
 }

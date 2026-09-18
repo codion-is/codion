@@ -225,8 +225,18 @@ public interface Database extends ConnectionFactory {
 	/**
 	 * Returns a select for update clause, an empty string if not supported.
 	 * @return a select for update clause
+	 * @see #selectForUpdateTableHint()
 	 */
 	String selectForUpdateClause();
+
+	/**
+	 * Returns a table hint for locking the selected rows, appended to the table name in the from clause of a select for update query,
+	 * for databases which lock rows via a table hint instead of a select for update clause, an empty string if not applicable.
+	 * Note that the hint is not applied when selecting from a custom from clause, there being no single table to apply it to.
+	 * @return a select for update table hint
+	 * @see #selectForUpdateClause()
+	 */
+	String selectForUpdateTableHint();
 
 	/**
 	 * Returns a limit/offset clause variation for this database, based on the given limit and offset values.

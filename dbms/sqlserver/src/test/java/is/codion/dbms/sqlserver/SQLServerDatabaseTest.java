@@ -91,6 +91,14 @@ public class SQLServerDatabaseTest {
 	}
 
 	@Test
+	void selectForUpdate() {
+		// rows are locked via a table hint, not a clause
+		assertEquals("", new SQLServerDatabase(URL).selectForUpdateClause());
+		assertEquals("WITH (UPDLOCK, ROWLOCK, NOWAIT)", new SQLServerDatabase(URL, true).selectForUpdateTableHint());
+		assertEquals("WITH (UPDLOCK, ROWLOCK)", new SQLServerDatabase(URL, false).selectForUpdateTableHint());
+	}
+
+	@Test
 	void exceptions() {
 		// codes, states and messages as reported by SQL Server 2022, mssql-jdbc 12.2
 		SQLServerDatabase database = new SQLServerDatabase(URL);

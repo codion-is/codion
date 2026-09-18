@@ -41,6 +41,8 @@ import is.codion.framework.domain.entity.condition.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -240,6 +242,40 @@ public final class SelectQueriesTest {
 		String query = builder.build();
 		// Different databases have different syntax
 		assertTrue(query.contains("10") || query.contains("20"));
+	}
+
+	@Test
+	void forUpdateTableHint() {
+		// a database locking rows via a table hint instead of a clause
+		Database instance = Database.instance();
+		Database hinting = (Database) Proxy.newProxyInstance(Database.class.getClassLoader(), new Class<?>[] {Database.class},
+						(proxy, method, args) -> {
+							switch (method.getName()) {
+								case "selectForUpdateTableHint":
+									return "WITH (UPDLOCK)";
+								case "selectForUpdateClause":
+									return "";
+								default:
+									return method.invoke(instance, args);
+							}
+						});
+		SelectQueries hintingQueries = new SelectQueries(hinting);
+		String query = hintingQueries.builder(employeeDefinition)
+						.select(Select.all(Employee.TYPE).forUpdate().build())
+						.build();
+		assertTrue(query.endsWith("FROM employees.employee WITH (UPDLOCK)"));
+		assertFalse(query.contains("FOR UPDATE"));
+		// not for update, no hint
+		query = hintingQueries.builder(employeeDefinition)
+						.select(Select.all(Employee.TYPE).build())
+						.build();
+		assertFalse(query.contains("UPDLOCK"));
+		// a custom from clause, no single table to apply the hint to
+		query = hintingQueries.builder(employeeDefinition)
+						.select(Select.all(Employee.TYPE).forUpdate().build())
+						.from("employees.employee e join employees.department d on e.deptno = d.deptno")
+						.build();
+		assertFalse(query.contains("UPDLOCK"));
 	}
 
 	@Test
