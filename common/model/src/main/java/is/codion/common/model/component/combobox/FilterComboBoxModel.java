@@ -233,6 +233,12 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		B selected(Item<T> selected);
 
 		/**
+		 * @param item receives the selected item
+		 * @return this builder instance
+		 */
+		B onSelectedItem(Consumer<Item<T>> item);
+
+		/**
 		 * @return a new {@link FilterComboBoxModel}
 		 */
 		FilterComboBoxModel<Item<T>> build();
