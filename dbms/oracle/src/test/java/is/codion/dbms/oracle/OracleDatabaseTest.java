@@ -66,4 +66,9 @@ public class OracleDatabaseTest {
 	void constructorNullUrl() {
 		assertThrows(NullPointerException.class, () -> new OracleDatabase(null));
 	}
+
+	@Test
+	void maximumParameters() {
+		assertEquals(65_535, new OracleDatabase(URL).maximumParameters());
+	}
 }

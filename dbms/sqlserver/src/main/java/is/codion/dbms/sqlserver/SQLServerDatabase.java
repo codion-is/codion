@@ -37,6 +37,10 @@ final class SQLServerDatabase extends AbstractDatabase {
 	private static final int UNIQUE_CONSTRAINT_ERROR2 = 2627;
 
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlserver://";
+	/**
+	 * The server accepts 2100 parameters per request, the driver using two of those for the statement itself
+	 */
+	private static final int MAXIMUM_STATEMENT_PARAMETERS = 2098;
 
 	SQLServerDatabase(String url) {
 		super(url);
@@ -71,6 +75,11 @@ final class SQLServerDatabase extends AbstractDatabase {
 	@Override
 	public boolean subqueryRequiresAlias() {
 		return true;
+	}
+
+	@Override
+	public int maximumParameters() {
+		return MAXIMUM_STATEMENT_PARAMETERS;
 	}
 
 	@Override
