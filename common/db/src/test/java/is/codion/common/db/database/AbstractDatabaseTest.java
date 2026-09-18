@@ -19,6 +19,10 @@
 package is.codion.common.db.database;
 
 import is.codion.common.db.database.Database.Operation;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.QueryTimeoutException;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.utilities.user.User;
 
@@ -30,7 +34,9 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -81,6 +87,89 @@ public final class AbstractDatabaseTest {
 			// Just verify it doesn't throw
 			assertDoesNotThrow(() ->
 							database.errorMessage(new SQLException("Test error"), Operation.OTHER));
+		}
+	}
+
+	@Nested
+	@DisplayName("Error handling tests")
+	class ErrorHandlingTests {
+
+		// independent of the default locale
+		private static String message(String key) {
+			return ResourceBundle.getBundle(Database.class.getName()).getString(key);
+		}
+
+		@Test
+		@DisplayName("Errors are recognized by SQL state by default")
+		void exception_sqlState_shouldReturnTypedException() {
+			assertInstanceOf(UniqueConstraintException.class, database.exception(new SQLException("unique", "23505"), Operation.INSERT));
+			assertInstanceOf(ReferentialIntegrityException.class, database.exception(new SQLException("fk", "23503"), Operation.DELETE));
+			assertInstanceOf(ReferentialIntegrityException.class, database.exception(new SQLException("fk", "23504"), Operation.DELETE));
+			assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLTimeoutException("timeout"), Operation.SELECT));
+			assertTrue(database.isAuthenticationException(new SQLException("login", "28000")));
+			assertFalse(database.isAuthenticationException(new SQLException("login")));
+			DatabaseException exception = database.exception(new SQLException("unknown", "XX000"), Operation.OTHER);
+			assertSame(DatabaseException.class, exception.getClass());
+			assertEquals("unknown", exception.getMessage());
+		}
+
+		@Test
+		@DisplayName("Recognized errors get a message, unrecognized ones the exception message")
+		void errorMessage_shouldBeBasedOnErrorType() {
+			assertEquals(message("unique_constraint"),
+							database.errorMessage(new SQLException("unique", "23505"), Operation.INSERT));
+			assertEquals(message("null_value"), database.errorMessage(new SQLException("null", "23502"), Operation.INSERT));
+			assertEquals("unknown", database.errorMessage(new SQLException("unknown", "XX000"), Operation.OTHER));
+			assertNull(database.errorMessage(new SQLException(), Operation.OTHER));
+		}
+
+		@Test
+		@DisplayName("The operation decides the message when the database does not report which way a foreign key was violated")
+		void errorMessage_referentialIntegrity_shouldDependOnOperation() {
+			SQLException exception = new SQLException("fk", "23503");
+			assertEquals(message("parent_missing"), database.errorMessage(exception, Operation.INSERT));
+			assertEquals(message("child_exists"), database.errorMessage(exception, Operation.DELETE));
+			assertEquals(message("referential_integrity"), database.errorMessage(exception, Operation.UPDATE));
+		}
+
+		@Test
+		@DisplayName("The detail is appended to the message")
+		void errorMessage_detail_shouldBeAppended() {
+			Database detailed = new TestDatabase() {
+				@Override
+				protected String errorDetail(SQLException exception, ErrorType errorType) {
+					return errorType == ErrorType.NULL_VALUE ? "NAME" : null;
+				}
+			};
+			assertEquals(message("null_value") + ": NAME", detailed.errorMessage(new SQLException("null", "23502"), Operation.INSERT));
+			assertEquals(message("unique_constraint"), detailed.errorMessage(new SQLException("unique", "23505"), Operation.INSERT));
+		}
+
+		@Test
+		@DisplayName("An exception thrown while handling an exception never replaces it")
+		void errorHandling_throwingImplementation_shouldBeIgnored() {
+			Database throwing = new TestDatabase() {
+				@Override
+				protected ErrorType errorType(SQLException exception) {
+					if ("23505".equals(exception.getSQLState())) {
+						return ErrorType.UNIQUE_CONSTRAINT;
+					}
+					throw new StringIndexOutOfBoundsException();
+				}
+
+				@Override
+				protected String errorDetail(SQLException exception, ErrorType errorType) {
+					throw new StringIndexOutOfBoundsException();
+				}
+
+				@Override
+				protected String message(SQLException exception) {
+					throw new StringIndexOutOfBoundsException();
+				}
+			};
+			assertEquals(message("unique_constraint"), throwing.errorMessage(new SQLException("unique", "23505"), Operation.INSERT));
+			assertEquals("unknown", throwing.errorMessage(new SQLException("unknown", "XX000"), Operation.OTHER));
+			assertSame(DatabaseException.class, throwing.exception(new SQLException("unknown", "XX000"), Operation.OTHER).getClass());
 		}
 	}
 
@@ -273,7 +362,7 @@ public final class AbstractDatabaseTest {
 	/**
 	 * Test implementation of AbstractDatabase
 	 */
-	private static final class TestDatabase extends AbstractDatabase {
+	private static class TestDatabase extends AbstractDatabase {
 
 		private TestDatabase() {
 			super(H2_URL);
