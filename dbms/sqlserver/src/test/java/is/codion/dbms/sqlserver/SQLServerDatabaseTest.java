@@ -18,10 +18,20 @@
  */
 package is.codion.dbms.sqlserver;
 
+import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.QueryTimeoutException;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.exception.UniqueConstraintException;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
+import java.util.ResourceBundle;
+
+import static is.codion.common.db.database.Database.Operation.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLServerDatabaseTest {
 
@@ -68,5 +78,69 @@ public class SQLServerDatabaseTest {
 		assertEquals("ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY", database.limitOffsetClause(10, null, false));
 		assertEquals("ORDER BY (SELECT NULL) OFFSET 5 ROWS", database.limitOffsetClause(null, 5, false));
 		assertEquals("ORDER BY (SELECT NULL) OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY", database.limitOffsetClause(10, 5, false));
+	}
+
+	@Test
+	void exceptions() {
+		// codes, states and messages as reported by SQL Server 2022, mssql-jdbc 12.2
+		SQLServerDatabase database = new SQLServerDatabase(URL);
+		SQLException unique = new SQLException("Violation of UNIQUE KEY constraint 'parent_uk'. Cannot insert duplicate key in object 'dbo.parent'. "
+						+ "The duplicate key value is (A, b).", "23000", 2627);
+		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
+		assertEquals(message("unique_constraint") + ": (A, b)", database.errorMessage(unique, INSERT));
+		SQLException uniqueIndex = new SQLException("Cannot insert duplicate key row in object 'dbo.parent' with unique index 'parent_idx'. "
+						+ "The duplicate key value is (A).", "23000", 2601);
+		assertInstanceOf(UniqueConstraintException.class, database.exception(uniqueIndex, INSERT));
+
+		// the same error code for foreign key, reference and check constraints
+		SQLException parentMissing = new SQLException("The INSERT statement conflicted with the FOREIGN KEY constraint \"child_fk\". "
+						+ "The conflict occurred in database \"db\", table \"dbo.parent\", column 'id'.", "23000", 547);
+		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
+		assertEquals(message("parent_missing"), database.errorMessage(parentMissing, INSERT));
+		SQLException childExists = new SQLException("The DELETE statement conflicted with the REFERENCE constraint \"child_fk\". "
+						+ "The conflict occurred in database \"db\", table \"dbo.child\", column 'parent_id'.", "23000", 547);
+		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
+		assertEquals(message("child_exists"), database.errorMessage(childExists, DELETE));
+		assertEquals(message("child_exists"), database.errorMessage(childExists, UPDATE));
+		SQLException selfReference = new SQLException("The DELETE statement conflicted with the SAME TABLE REFERENCE constraint \"parent_fk\". "
+						+ "The conflict occurred in database \"db\", table \"dbo.parent\", column 'parent_id'.", "23000", 547);
+		assertEquals(message("child_exists"), database.errorMessage(selfReference, DELETE));
+		SQLException check = new SQLException("The UPDATE statement conflicted with the CHECK constraint \"REFERENCE_CK\". "
+						+ "The conflict occurred in database \"db\", table \"dbo.parent\", column 'amount'.", "23000", 547);
+		assertSame(DatabaseException.class, database.exception(check, UPDATE).getClass());
+		assertEquals(message("check_constraint"), database.errorMessage(check, UPDATE));
+		// not recognizable
+		assertSame(DatabaseException.class, database.exception(new SQLException("conflict", "23000", 547), UPDATE).getClass());
+		assertSame(DatabaseException.class, database.exception(new SQLException(null, "23000", 547), UPDATE).getClass());
+
+		assertEquals(message("null_value") + ": name", database.errorMessage(new SQLException(
+						"Cannot insert the value NULL into column 'name', table 'db.dbo.parent'; column does not allow nulls. INSERT fails.", "23000", 515), INSERT));
+		assertEquals(message("value_too_large") + ": name", database.errorMessage(new SQLException(
+						"String or binary data would be truncated in table 'db.dbo.parent', column 'name'. Truncated value: 'abcdefghij'.", "S0001", 2628), UPDATE));
+		assertEquals(message("value_too_large"), database.errorMessage(new SQLException("String or binary data would be truncated.", "22001", 8152), UPDATE));
+		assertEquals(message("value_too_large"), database.errorMessage(new SQLException(
+						"Arithmetic overflow error converting numeric to data type numeric.", "S0008", 8115), UPDATE));
+		assertEquals(message("table_not_found"), database.errorMessage(new SQLException("Invalid object name 'missing'.", "S0002", 208), SELECT));
+		assertEquals(message("missing_privileges"), database.errorMessage(new SQLException(
+						"The SELECT permission was denied on the object 'parent', database 'db', schema 'dbo'.", "S0005", 229), SELECT));
+		assertEquals(message("row_locked"), database.errorMessage(new SQLException("Lock request time out period exceeded.", "S0001", 1222), SELECT));
+
+		// reported with error code 0
+		SQLException timeout = new SQLTimeoutException("The query has timed out.", "HY008", 0);
+		assertInstanceOf(QueryTimeoutException.class, database.exception(timeout, SELECT));
+		assertEquals(message("timeout"), database.errorMessage(timeout, SELECT));
+
+		SQLException authentication = new SQLException("Login failed for user 'scott'. ClientConnectionId:cdfadf91-a88b-4170-8dee-4ec0a4b62b68", "S0001", 18456);
+		assertTrue(database.isAuthenticationException(authentication));
+		assertEquals(message("authentication"), database.errorMessage(authentication, OTHER));
+
+		SQLException unknown = new SQLException("Incorrect syntax near 'selec'.", "S0001", 102);
+		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());
+		assertEquals(unknown.getMessage(), database.errorMessage(unknown, SELECT));
+	}
+
+	// independent of the default locale
+	private static String message(String key) {
+		return ResourceBundle.getBundle(Database.class.getName()).getString(key);
 	}
 }

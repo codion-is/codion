@@ -21,18 +21,41 @@ package is.codion.dbms.sqlserver;
 import is.codion.common.db.database.AbstractDatabase;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Database implementation based on the SQL Server (2000 or higher) database.
+ * A Database implementation based on the SQL Server (2012 or higher) database.
  */
 final class SQLServerDatabase extends AbstractDatabase {
 
-	private static final int AUTHENTICATION_ERROR = 18456;
-	private static final int REFERENTIAL_INTEGRITY_ERROR = 547;
-	private static final int UNIQUE_CONSTRAINT_ERROR1 = 2601;
-	private static final int UNIQUE_CONSTRAINT_ERROR2 = 2627;
+	/**
+	 * Reported for foreign key, reference and check constraints alike, the message naming the type
+	 */
+	private static final int CONSTRAINT_CONFLICT = 547;
+	private static final String FOREIGN_KEY = "FOREIGN KEY";
+	private static final String REFERENCE = "REFERENCE";
+	private static final String CHECK = "CHECK";
+	private static final String COLUMN = "column '";
+	private static final String DUPLICATE_KEY_VALUE = "The duplicate key value is ";
+
+	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
+
+	static {
+		ERROR_TYPES.put(2601, ErrorType.UNIQUE_CONSTRAINT);// unique index
+		ERROR_TYPES.put(2627, ErrorType.UNIQUE_CONSTRAINT);// unique or primary key constraint
+		ERROR_TYPES.put(515, ErrorType.NULL_VALUE);
+		ERROR_TYPES.put(2628, ErrorType.VALUE_TOO_LARGE);// string or binary data would be truncated, naming the column, 2019 and later
+		ERROR_TYPES.put(8152, ErrorType.VALUE_TOO_LARGE);// string or binary data would be truncated
+		ERROR_TYPES.put(8115, ErrorType.VALUE_TOO_LARGE);// arithmetic overflow
+		ERROR_TYPES.put(229, ErrorType.MISSING_PRIVILEGES);// permission denied on object
+		ERROR_TYPES.put(230, ErrorType.MISSING_PRIVILEGES);// permission denied on column
+		ERROR_TYPES.put(18456, ErrorType.AUTHENTICATION);
+		ERROR_TYPES.put(1222, ErrorType.ROW_LOCKED);// lock request time out period exceeded
+		ERROR_TYPES.put(208, ErrorType.TABLE_NOT_FOUND);// invalid object name
+	}
 
 	private static final String UNORDERED = "ORDER BY (SELECT NULL) ";
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlserver://";
@@ -100,17 +123,73 @@ final class SQLServerDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public boolean isAuthenticationException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == AUTHENTICATION_ERROR;
+	protected ErrorType errorType(SQLException exception) {
+		if (exception.getErrorCode() == CONSTRAINT_CONFLICT) {
+			return constraintConflict(exception);
+		}
+		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
+
+		return errorType == null ? super.errorType(exception) : errorType;
 	}
 
 	@Override
-	public boolean isReferentialIntegrityException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
+	protected String errorDetail(SQLException exception, ErrorType errorType) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return null;
+		}
+		switch (errorType) {
+			case NULL_VALUE:
+				// Cannot insert the value NULL into column 'name', table 'db.dbo.table'; column does not allow nulls. INSERT fails.
+			case VALUE_TOO_LARGE:
+				// String or binary data would be truncated in table 'db.dbo.table', column 'name'. Truncated value: 'abc'.
+				return between(message, COLUMN, "'");
+			case UNIQUE_CONSTRAINT:
+				// Violation of UNIQUE KEY constraint 'name'. Cannot insert duplicate key in object 'dbo.table'. The duplicate key value is (A).
+				return between(message, DUPLICATE_KEY_VALUE, ").", 1);
+			default:
+				return null;
+		}
 	}
 
-	@Override
-	public boolean isUniqueConstraintException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
+	/**
+	 * The statement conflicted with the FOREIGN KEY, REFERENCE or CHECK constraint "name", the type preceding the quoted name
+	 */
+	private static ErrorType constraintConflict(SQLException exception) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return null;
+		}
+		int nameIndex = message.indexOf('"');
+		String beforeName = nameIndex == -1 ? message : message.substring(0, nameIndex);
+		if (beforeName.contains(FOREIGN_KEY)) {
+			return ErrorType.PARENT_MISSING;
+		}
+		if (beforeName.contains(REFERENCE)) {
+			return ErrorType.CHILD_EXISTS;
+		}
+		if (beforeName.contains(CHECK)) {
+			return ErrorType.CHECK_CONSTRAINT;
+		}
+
+		return null;
+	}
+
+	private static String between(String message, String prefix, String suffix) {
+		return between(message, prefix, suffix, 0);
+	}
+
+	/**
+	 * @param suffixIncluded the number of suffix characters to include
+	 */
+	private static String between(String message, String prefix, String suffix, int suffixIncluded) {
+		int prefixIndex = message.indexOf(prefix);
+		if (prefixIndex == -1) {
+			return null;
+		}
+		int beginIndex = prefixIndex + prefix.length();
+		int endIndex = message.indexOf(suffix, beginIndex);
+
+		return endIndex == -1 ? null : message.substring(beginIndex, endIndex + suffixIncluded);
 	}
 }
