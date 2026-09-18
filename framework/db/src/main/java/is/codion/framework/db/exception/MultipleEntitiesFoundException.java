@@ -19,11 +19,25 @@
 package is.codion.framework.db.exception;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.utilities.resource.MessageBundle;
+
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * Exception used when one entity was expected but many were found.
  */
 public class MultipleEntitiesFoundException extends DatabaseException {
+
+	private static final MessageBundle MESSAGES =
+					messageBundle(MultipleEntitiesFoundException.class, getBundle(MultipleEntitiesFoundException.class.getName()));
+
+	/**
+	 * Instantiates a new MultipleEntitiesFoundException with a default message
+	 */
+	public MultipleEntitiesFoundException() {
+		this(MESSAGES.getString("multiple_records_found"));
+	}
 
 	/**
 	 * Instantiates a new MultipleEntitiesFoundException

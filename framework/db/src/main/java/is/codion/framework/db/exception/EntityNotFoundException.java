@@ -19,11 +19,25 @@
 package is.codion.framework.db.exception;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.utilities.resource.MessageBundle;
+
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * Exception used when an expected entity was not found.
  */
 public class EntityNotFoundException extends DatabaseException {
+
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityNotFoundException.class, getBundle(EntityNotFoundException.class.getName()));
+
+	/**
+	 * Instantiates a new EntityNotFoundException with a default message
+	 */
+	public EntityNotFoundException() {
+		this(MESSAGES.getString("record_not_found"));
+	}
 
 	/**
 	 * Instantiates a new EntityNotFoundException

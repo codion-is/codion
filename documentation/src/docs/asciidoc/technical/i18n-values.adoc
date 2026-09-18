@@ -30,7 +30,6 @@ is/codion/common/db/database/Database_is_IS.properties
 |timeout|The operation timed out|Aðgerðin rann út á tíma
 |unique_constraint|This combination of values already exists|Þessi samsetning gilda er nú þegar til í töflunni
 |value_too_large|The value entered is larger than the maximum defined for the column|Gildi er of stórt fyrir dálk
-|view_has_errors|View has errors|Villur eru í undirliggjandi sýn (view)
 |===
 
 == codion-common-i18n
@@ -160,32 +159,14 @@ is/codion/common/utilities/Operator_is_IS.properties
 |not_in|Not in|Ekki í mengi
 |===
 
-== codion-framework-db-http
+== codion-framework-db
 
-=== is/codion/framework/db/http/HttpEntityConnection.java
-
-[source]
-----
-is/codion/framework/db/http/HttpEntityConnection.properties
-is/codion/framework/db/http/HttpEntityConnection_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|multiple_records_found|Multiple records found when one was expected|Margar færslur fundust þegar einungis var gert ráð fyrir einni
-|record_not_found|Record not found|Engin færsla fannst
-|===
-
-== codion-framework-db-local
-
-=== is/codion/framework/db/local/LocalEntityConnection.java
+=== is/codion/framework/db/exception/EntityModifiedException.java
 
 [source]
 ----
-is/codion/framework/db/local/LocalEntityConnection.properties
-is/codion/framework/db/local/LocalEntityConnection_is_IS.properties
+is/codion/framework/db/exception/EntityModifiedException.properties
+is/codion/framework/db/exception/EntityModifiedException_is_IS.properties
 ----
 
 [cols="1,1,1"]
@@ -193,9 +174,37 @@ is/codion/framework/db/local/LocalEntityConnection_is_IS.properties
 |key|default|is_IS
 
 |has_been_deleted|has been deleted|hefur verið eytt
-|multiple_records_found|Multiple records found when one was expected|Margar færslur fundust þegar einungis var gert ráð fyrir einni
 |record_modified|This record has been modified|Þessari færslu hefur verið breytt
+|===
+
+=== is/codion/framework/db/exception/EntityNotFoundException.java
+
+[source]
+----
+is/codion/framework/db/exception/EntityNotFoundException.properties
+is/codion/framework/db/exception/EntityNotFoundException_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
 |record_not_found|Record not found|Engin færsla fannst
+|===
+
+=== is/codion/framework/db/exception/MultipleEntitiesFoundException.java
+
+[source]
+----
+is/codion/framework/db/exception/MultipleEntitiesFoundException.properties
+is/codion/framework/db/exception/MultipleEntitiesFoundException_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|multiple_records_found|Multiple records found when one was expected|Margar færslur fundust þegar einungis var gert ráð fyrir einni
 |===
 
 == codion-framework-domain

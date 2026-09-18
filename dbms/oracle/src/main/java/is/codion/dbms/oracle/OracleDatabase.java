@@ -60,7 +60,6 @@ final class OracleDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(28001, ErrorType.PASSWORD_EXPIRED);
 		ERROR_TYPES.put(54, ErrorType.ROW_LOCKED);// resource busy and acquire with NOWAIT specified
 		ERROR_TYPES.put(942, ErrorType.TABLE_NOT_FOUND);
-		ERROR_TYPES.put(4063, ErrorType.VIEW_HAS_ERRORS);
 	}
 
 	private final boolean nowait;

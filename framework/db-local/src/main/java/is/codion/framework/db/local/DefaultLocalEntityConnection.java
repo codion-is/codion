@@ -25,7 +25,6 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.exceptions.Exceptions;
-import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityResultIterator;
@@ -80,7 +79,6 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.db.database.Database.Operation.*;
 import static is.codion.common.db.exception.DatabaseException.SQL_STATE_NO_DATA;
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entity.Key;
@@ -94,7 +92,6 @@ import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.lang.String.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
@@ -102,12 +99,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
 
-	private static final MessageBundle MESSAGES =
-					messageBundle(LocalEntityConnection.class, getBundle(LocalEntityConnection.class.getName()));
 	private static final Map<String, User> META_DATA_USERS = new ConcurrentHashMap<>();
 	private static final String EXECUTE_UPDATE = "executeUpdate";
 	private static final String EXECUTE_QUERY = "executeQuery";
-	private static final String RECORD_MODIFIED = "record_modified";
 	private static final String ENTITIES = "entities may not be null";
 	private static final String ENTITY = "entity may not be null";
 	private static final String SELECT_MAY_NOT_BE_NULL = "select may not be null";
@@ -475,10 +469,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	public Entity selectSingle(Select select) {
 		List<Entity> entities = select(select);
 		if (entities.isEmpty()) {
-			throw new EntityNotFoundException(MESSAGES.getString("record_not_found"));
+			throw new EntityNotFoundException();
 		}
 		if (entities.size() > 1) {
-			throw new MultipleEntitiesFoundException(MESSAGES.getString("multiple_records_found"));
+			throw new MultipleEntitiesFoundException();
 		}
 
 		return entities.get(0);
@@ -1053,15 +1047,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		for (Entity entity : entities) {
 			Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
 			if (current == null) {
-				Entity original = entity.copy().mutable();
-				original.revert();
-
-				throw new EntityModifiedException(entity, null, emptyList(), MESSAGES.getString(RECORD_MODIFIED)
-								+ ", " + original + " " + MESSAGES.getString("has_been_deleted"));
+				throw new EntityModifiedException(entity, null, emptyList());
 			}
 			Collection<Column<?>> modifiedColumns = modifiedColumns(entity, current);
 			if (!modifiedColumns.isEmpty()) {
-				throw new EntityModifiedException(entity, current, modifiedColumns, createModifiedExceptionMessage(entity, current, modifiedColumns));
+				throw new EntityModifiedException(entity, current, modifiedColumns);
 			}
 		}
 	}
@@ -1846,18 +1836,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				statementValues.add(entity.get(columnDefinition.attribute()));
 			}
 		}
-	}
-
-	private static String createModifiedExceptionMessage(Entity entity, Entity modified,
-																											 Collection<Column<?>> modifiedColumns) {
-		StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED)).append(": ").append(entity.type());
-		for (Column<?> column : modifiedColumns) {
-			builder.append("\n").append(column)
-							.append(": ").append(entity.original(column))
-							.append(" -> ").append(modified.get(column));
-		}
-
-		return builder.toString();
 	}
 
 	private static boolean containsReferencedColumns(Entity entity, List<Reference<?>> references) {

@@ -643,11 +643,7 @@ public abstract class AbstractDatabase implements Database {
 		/**
 		 * A table or view does not exist
 		 */
-		TABLE_NOT_FOUND,
-		/**
-		 * A view is invalid
-		 */
-		VIEW_HAS_ERRORS;
+		TABLE_NOT_FOUND;
 
 		private String messageKey() {
 			return name().toLowerCase(Locale.ROOT);

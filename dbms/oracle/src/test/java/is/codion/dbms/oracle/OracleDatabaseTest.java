@@ -126,7 +126,8 @@ public class OracleDatabaseTest {
 		assertEquals(message("missing_privileges"), database.exception(
 						exception("ORA-01045: user SCOTT lacks CREATE SESSION privilege; logon denied", "72000", 1045), OTHER).getMessage());
 		assertEquals(message("table_not_found"), database.exception(exception("ORA-00942: table or view does not exist", "42000", 942), SELECT).getMessage());
-		assertEquals(message("view_has_errors"), database.exception(exception("ORA-04063: view \"SCOTT.V\" has errors", "72000", 4063), SELECT).getMessage());
+		// not recognized, an Oracle only error
+		assertEquals("ORA-04063: view \"SCOTT.V\" has errors", database.exception(exception("ORA-04063: view \"SCOTT.V\" has errors", "72000", 4063), SELECT).getMessage());
 		assertEquals(message("row_locked"), database.exception(
 						exception("ORA-00054: resource busy and acquire with NOWAIT specified or timeout expired", "61000", 54), SELECT).getMessage());
 
