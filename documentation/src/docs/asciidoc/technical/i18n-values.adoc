@@ -2,6 +2,35 @@
 
 Overview of the available i18n properties files and their keys and values.
 
+== codion-common-db
+
+=== is/codion/common/db/database/Database.java
+
+[source]
+----
+is/codion/common/db/database/Database.properties
+is/codion/common/db/database/Database_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|authentication|Invalid username or password|Rangt notendanafn eða lykilorð
+|check_constraint|The value or values attempted to be entered in a field or fields violate a defined check constraint|Óleyfilegt gildi
+|child_exists|This record is referenced by records in other tables, delete those first|Vísað er í þessa færslu úr öðrum töflum, eyddu þeim færslum fyrst
+|missing_privileges|You are not authorized to perform this action|Þig vantar réttindi til að framkvæma umbeðna aðgerð
+|null_value|Value missing|Gildi vantar
+|parent_missing|A foreign key value has no matching primary key value|Reynt var að vísa í færslu sem ekki er til
+|referential_integrity|The operation violates a foreign key constraint|Aðgerðin uppfyllir ekki kröfur um tengingar milli færsnla
+|row_locked|This record is being modified by another user|Annar notandi er að breyta þessari færslu
+|table_not_found|Table or view does not exist|Tafla eða view finnst ekki
+|timeout|The operation timed out|Aðgerðin rann út á tíma
+|unique_constraint|This combination of values already exists|Þessi samsetning gilda er nú þegar til í töflunni
+|value_too_large|The value entered is larger than the maximum defined for the column|Gildi er of stórt fyrir dálk
+|view_has_errors|View has errors|Villur eru í undirliggjandi sýn (view)
+|===
+
 == codion-common-i18n
 
 === is/codion/common/i18n/Messages.java

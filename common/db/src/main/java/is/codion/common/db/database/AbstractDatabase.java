@@ -26,6 +26,7 @@ import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.utilities.exceptions.Exceptions;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 
 import org.jspecify.annotations.Nullable;
@@ -37,6 +38,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,8 +47,10 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A default abstract implementation of the Database interface.
@@ -54,6 +58,9 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractDatabase implements Database {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractDatabase.class);
+
+	private static final MessageBundle MESSAGES =
+					messageBundle(Database.class, getBundle(Database.class.getName()));
 
 	/**
 	 * {@code FOR UPDATE}
@@ -250,36 +257,47 @@ public abstract class AbstractDatabase implements Database {
 						". Use auto-increment columns or implement sequenceQuery() method.");
 	}
 
+	/**
+	 * Returns the message associated with the {@link ErrorType} of the given exception, see {@link #errorType(SQLException)},
+	 * along with the detail, if any, see {@link #errorDetail(SQLException, ErrorType)}, or the exception
+	 * message in case the error type is not recognized, see {@link #message(SQLException)}.
+	 */
 	@Override
 	public @Nullable String errorMessage(SQLException exception, Operation operation) {
 		requireNonNull(exception, "exception");
 		requireNonNull(operation, "operation");
+		ErrorType errorType = recognize(exception);
+		if (errorType == null) {
+			return cleanMessage(exception);
+		}
+		String message = MESSAGES.getString(messageKey(errorType, operation));
+		String detail = detail(exception, errorType);
 
-		return exception.getMessage();
+		return detail == null ? message : message + ": " + detail;
 	}
 
 	@Override
 	public boolean isAuthenticationException(SQLException exception) {
-		requireNonNull(exception);
-		return false;
+		return recognize(requireNonNull(exception)) == ErrorType.AUTHENTICATION;
 	}
 
 	@Override
 	public boolean isReferentialIntegrityException(SQLException exception) {
-		requireNonNull(exception);
-		return false;
+		ErrorType errorType = recognize(requireNonNull(exception));
+
+		return errorType == ErrorType.REFERENTIAL_INTEGRITY ||
+						errorType == ErrorType.PARENT_MISSING ||
+						errorType == ErrorType.CHILD_EXISTS;
 	}
 
 	@Override
 	public boolean isUniqueConstraintException(SQLException exception) {
-		requireNonNull(exception);
-		return false;
+		return recognize(requireNonNull(exception)) == ErrorType.UNIQUE_CONSTRAINT;
 	}
 
 	@Override
 	public boolean isTimeoutException(SQLException exception) {
-		requireNonNull(exception);
-		return false;
+		return recognize(requireNonNull(exception)) == ErrorType.TIMEOUT;
 	}
 
 	@Override
@@ -318,6 +336,67 @@ public abstract class AbstractDatabase implements Database {
 				LOG.error("Error closing database", e);
 			}
 		}
+	}
+
+	/**
+	 * Returns the type of error the given exception represents, null if it is not recognized.
+	 * This default implementation is based on the SQL states databases agree on, and on {@link SQLTimeoutException}.
+	 * Databases reporting their own error codes override, falling back on this one for the ones not recognized.
+	 * Note that this is called while an exception is being handled, an exception thrown here is logged and ignored.
+	 * @param exception the exception
+	 * @return the error type, null if not recognized
+	 */
+	protected @Nullable ErrorType errorType(SQLException exception) {
+		if (exception instanceof SQLTimeoutException) {
+			return ErrorType.TIMEOUT;
+		}
+		String sqlState = exception.getSQLState();
+		if (sqlState == null) {
+			return null;
+		}
+		switch (sqlState) {
+			case "23505":
+				return ErrorType.UNIQUE_CONSTRAINT;
+			case "23503":
+				return ErrorType.REFERENTIAL_INTEGRITY;
+			case "23504":
+				return ErrorType.CHILD_EXISTS;
+			case "23502":
+				return ErrorType.NULL_VALUE;
+			case "23513":
+			case "23514":
+				return ErrorType.CHECK_CONSTRAINT;
+			case "22001":
+			case "22003":
+				return ErrorType.VALUE_TOO_LARGE;
+			case "28000":
+				return ErrorType.AUTHENTICATION;
+			default:
+				return null;
+		}
+	}
+
+	/**
+	 * Returns the detail to append to the message associated with the given error type, the name of the
+	 * column missing a value for example, null if none is available, which is the default.
+	 * Note that this is called while an exception is being handled, an exception thrown here is logged and ignored.
+	 * @param exception the exception
+	 * @param errorType the error type
+	 * @return the detail, null if none is available
+	 */
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
+		return null;
+	}
+
+	/**
+	 * Returns the message to present for an exception of an unrecognized type, by default the exception message.
+	 * Override to remove what the driver or database adds to it, the statement or links to documentation for example.
+	 * Note that this is called while an exception is being handled, an exception thrown here is logged and ignored.
+	 * @param exception the exception
+	 * @return the message
+	 */
+	protected @Nullable String message(SQLException exception) {
+		return exception.getMessage();
 	}
 
 	/**
@@ -448,6 +527,52 @@ public abstract class AbstractDatabase implements Database {
 		return result;
 	}
 
+	private @Nullable ErrorType recognize(SQLException exception) {
+		try {
+			return errorType(exception);
+		}
+		catch (RuntimeException e) {
+			LOG.debug("Unable to determine the error type", e);
+			return null;
+		}
+	}
+
+	private @Nullable String detail(SQLException exception, ErrorType errorType) {
+		try {
+			return errorDetail(exception, errorType);
+		}
+		catch (RuntimeException e) {
+			LOG.debug("Unable to extract the error detail", e);
+			return null;
+		}
+	}
+
+	private @Nullable String cleanMessage(SQLException exception) {
+		try {
+			return message(exception);
+		}
+		catch (RuntimeException e) {
+			LOG.debug("Unable to clean the exception message", e);
+			return exception.getMessage();
+		}
+	}
+
+	private static String messageKey(ErrorType errorType, Operation operation) {
+		if (errorType == ErrorType.REFERENTIAL_INTEGRITY) {
+			// the database does not report which way, the operation does in all cases but an update
+			switch (operation) {
+				case INSERT:
+					return ErrorType.PARENT_MISSING.messageKey();
+				case DELETE:
+					return ErrorType.CHILD_EXISTS.messageKey();
+				default:
+					break;
+			}
+		}
+
+		return errorType.messageKey();
+	}
+
 	private static Database cleanupAndCreateInstance(String databaseUrl, Database previousInstance) throws SQLException {
 		Database instance = DatabaseFactory.instance().create(databaseUrl);
 		if (previousInstance != null) {
@@ -455,6 +580,70 @@ public abstract class AbstractDatabase implements Database {
 		}
 
 		return instance;
+	}
+
+	/**
+	 * The types of errors a database implementation can recognize, each associated with a user-friendly message.
+	 * @see #errorType(SQLException)
+	 */
+	protected enum ErrorType {
+		/**
+		 * A unique or primary key constraint was violated
+		 */
+		UNIQUE_CONSTRAINT,
+		/**
+		 * A foreign key constraint was violated, for databases which do not report which way,
+		 * see {@link #PARENT_MISSING} and {@link #CHILD_EXISTS}, the message then being based on the operation
+		 */
+		REFERENTIAL_INTEGRITY,
+		/**
+		 * A foreign key constraint was violated, the referenced row does not exist
+		 */
+		PARENT_MISSING,
+		/**
+		 * A foreign key constraint was violated, the row being deleted or updated is referenced
+		 */
+		CHILD_EXISTS,
+		/**
+		 * A value is missing for a column which does not allow null
+		 */
+		NULL_VALUE,
+		/**
+		 * A check constraint was violated
+		 */
+		CHECK_CONSTRAINT,
+		/**
+		 * A value is too long or too large for its column
+		 */
+		VALUE_TOO_LARGE,
+		/**
+		 * The user lacks the privileges required
+		 */
+		MISSING_PRIVILEGES,
+		/**
+		 * The login credentials are incorrect
+		 */
+		AUTHENTICATION,
+		/**
+		 * A row is locked by another transaction
+		 */
+		ROW_LOCKED,
+		/**
+		 * A statement timed out
+		 */
+		TIMEOUT,
+		/**
+		 * A table or view does not exist
+		 */
+		TABLE_NOT_FOUND,
+		/**
+		 * A view is invalid
+		 */
+		VIEW_HAS_ERRORS;
+
+		private String messageKey() {
+			return name().toLowerCase(Locale.ROOT);
+		}
 	}
 
 	private static final class DefaultQueryCounter implements QueryCounter {
