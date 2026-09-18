@@ -121,6 +121,13 @@ public class MariaDBDatabaseTest {
 		SQLException authentication = new SQLException("(conn=3) Access denied for user 'scott'@'172.17.0.1' (using password: YES)", "28000", 1045);
 		assertInstanceOf(AuthenticationException.class, database.exception(authentication, OTHER));
 		assertEquals(message("authentication"), database.exception(authentication, OTHER).getMessage());
+		SQLException accountLocked = new SQLException("(conn=4) Access denied, this account is locked", "HY000", 4151);
+		assertInstanceOf(AuthenticationException.class, database.exception(accountLocked, OTHER));
+		assertEquals(message("account_locked"), database.exception(accountLocked, OTHER).getMessage());
+		// logging in is allowed by default, the first statement failing
+		SQLException passwordExpired = new SQLException("(conn=7) You must SET PASSWORD before executing this statement", "HY000", 1820);
+		assertInstanceOf(AuthenticationException.class, database.exception(passwordExpired, OTHER));
+		assertEquals(message("password_expired"), database.exception(passwordExpired, OTHER).getMessage());
 
 		SQLException unknown = new SQLException("(conn=3) You have an error in your SQL syntax", "42000", 1064);
 		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());

@@ -125,6 +125,12 @@ public class MySQLDatabaseTest {
 		SQLException authentication = new SQLException("Access denied for user 'scott'@'172.17.0.1' (using password: YES)", "28000", 1045);
 		assertInstanceOf(AuthenticationException.class, database.exception(authentication, OTHER));
 		assertEquals(message("authentication"), database.exception(authentication, OTHER).getMessage());
+		SQLException accountLocked = new SQLException("Access denied for user 'scott'@'172.17.0.1'. Account is locked.", "HY000", 3118);
+		assertInstanceOf(AuthenticationException.class, database.exception(accountLocked, OTHER));
+		assertEquals(message("account_locked"), database.exception(accountLocked, OTHER).getMessage());
+		SQLException passwordExpired = new SQLException("Your password has expired. To log in you must change it using a client that supports expired passwords.", "S1000", 1862);
+		assertInstanceOf(AuthenticationException.class, database.exception(passwordExpired, OTHER));
+		assertEquals(message("password_expired"), database.exception(passwordExpired, OTHER).getMessage());
 
 		SQLException unknown = new SQLException("You have an error in your SQL syntax", "42000", 1064);
 		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());

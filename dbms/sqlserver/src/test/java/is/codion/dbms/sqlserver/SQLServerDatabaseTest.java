@@ -134,6 +134,12 @@ public class SQLServerDatabaseTest {
 		SQLException authentication = new SQLException("Login failed for user 'scott'. ClientConnectionId:cdfadf91-a88b-4170-8dee-4ec0a4b62b68", "S0001", 18456);
 		assertInstanceOf(AuthenticationException.class, database.exception(authentication, OTHER));
 		assertEquals(message("authentication"), database.exception(authentication, OTHER).getMessage());
+		SQLException accountDisabled = new SQLException("Login failed for user 'scott'. Reason: The account is disabled.", "S0001", 18470);
+		assertInstanceOf(AuthenticationException.class, database.exception(accountDisabled, OTHER));
+		assertEquals(message("account_locked"), database.exception(accountDisabled, OTHER).getMessage());
+		SQLException mustChange = new SQLException("Login failed for user 'scott'.  Reason: The password of the account must be changed.", "S0001", 18488);
+		assertInstanceOf(AuthenticationException.class, database.exception(mustChange, OTHER));
+		assertEquals(message("password_expired"), database.exception(mustChange, OTHER).getMessage());
 
 		SQLException unknown = new SQLException("Incorrect syntax near 'selec'.", "S0001", 102);
 		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());

@@ -49,6 +49,9 @@ final class MariaDBDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(1142, ErrorType.MISSING_PRIVILEGES);// command denied for table
 		ERROR_TYPES.put(1143, ErrorType.MISSING_PRIVILEGES);// command denied for column
 		ERROR_TYPES.put(1045, ErrorType.AUTHENTICATION);// access denied for user
+		ERROR_TYPES.put(4151, ErrorType.ACCOUNT_LOCKED);
+		ERROR_TYPES.put(1862, ErrorType.PASSWORD_EXPIRED);// when logging in, disconnect_on_expired_password being enabled
+		ERROR_TYPES.put(1820, ErrorType.PASSWORD_EXPIRED);// when executing a statement, logging in being allowed by default
 		ERROR_TYPES.put(1205, ErrorType.ROW_LOCKED);// lock wait timeout exceeded
 		ERROR_TYPES.put(1969, ErrorType.TIMEOUT);// max_statement_time exceeded
 		ERROR_TYPES.put(1146, ErrorType.TABLE_NOT_FOUND);
