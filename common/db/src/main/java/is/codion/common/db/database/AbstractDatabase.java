@@ -279,6 +279,8 @@ public abstract class AbstractDatabase implements Database {
 			case TIMEOUT:
 				return new QueryTimeoutException(exception, message);
 			case AUTHENTICATION:
+			case ACCOUNT_LOCKED:
+			case PASSWORD_EXPIRED:
 				return new AuthenticationException(message);
 			default:
 				return new DatabaseException(exception, message);
@@ -599,6 +601,14 @@ public abstract class AbstractDatabase implements Database {
 		 * The login credentials are incorrect
 		 */
 		AUTHENTICATION,
+		/**
+		 * The account is locked or disabled, an authentication error
+		 */
+		ACCOUNT_LOCKED,
+		/**
+		 * The password has expired or must be changed, an authentication error
+		 */
+		PASSWORD_EXPIRED,
 		/**
 		 * A row is locked by another transaction
 		 */

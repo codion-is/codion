@@ -131,6 +131,12 @@ public class OracleDatabaseTest {
 		SQLException authentication = exception("ORA-01017: invalid username/password; logon denied", "72000", 1017);
 		assertInstanceOf(AuthenticationException.class, database.exception(authentication, OTHER));
 		assertEquals(message("authentication"), database.exception(authentication, OTHER).getMessage());
+		SQLException accountLocked = exception("ORA-28000: The account is locked.", "99999", 28000);
+		assertInstanceOf(AuthenticationException.class, database.exception(accountLocked, OTHER));
+		assertEquals(message("account_locked"), database.exception(accountLocked, OTHER).getMessage());
+		SQLException passwordExpired = exception("ORA-28001: the password has expired", "99999", 28001);
+		assertInstanceOf(AuthenticationException.class, database.exception(passwordExpired, OTHER));
+		assertEquals(message("password_expired"), database.exception(passwordExpired, OTHER).getMessage());
 
 		// unrecognized, without the link to the documentation
 		SQLException unknown = exception("ORA-00904: \"NMAE\": invalid identifier", "42000", 904);

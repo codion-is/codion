@@ -47,6 +47,9 @@ final class MySQLDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(1142, ErrorType.MISSING_PRIVILEGES);// command denied for table
 		ERROR_TYPES.put(1143, ErrorType.MISSING_PRIVILEGES);// command denied for column
 		ERROR_TYPES.put(1045, ErrorType.AUTHENTICATION);// access denied for user
+		ERROR_TYPES.put(3118, ErrorType.ACCOUNT_LOCKED);
+		ERROR_TYPES.put(1862, ErrorType.PASSWORD_EXPIRED);// when logging in
+		ERROR_TYPES.put(1820, ErrorType.PASSWORD_EXPIRED);// when executing a statement, logging in being allowed
 		ERROR_TYPES.put(1205, ErrorType.ROW_LOCKED);// lock wait timeout exceeded
 		ERROR_TYPES.put(3572, ErrorType.ROW_LOCKED);// lock could not be acquired immediately and NOWAIT is set
 		ERROR_TYPES.put(3024, ErrorType.TIMEOUT);// max_execution_time exceeded

@@ -53,6 +53,10 @@ final class SQLServerDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(229, ErrorType.MISSING_PRIVILEGES);// permission denied on object
 		ERROR_TYPES.put(230, ErrorType.MISSING_PRIVILEGES);// permission denied on column
 		ERROR_TYPES.put(18456, ErrorType.AUTHENTICATION);
+		ERROR_TYPES.put(18470, ErrorType.ACCOUNT_LOCKED);// the account is disabled
+		ERROR_TYPES.put(18486, ErrorType.ACCOUNT_LOCKED);// the account is locked out
+		ERROR_TYPES.put(18487, ErrorType.PASSWORD_EXPIRED);
+		ERROR_TYPES.put(18488, ErrorType.PASSWORD_EXPIRED);// the password must be changed
 		ERROR_TYPES.put(1222, ErrorType.ROW_LOCKED);// lock request time out period exceeded
 		ERROR_TYPES.put(208, ErrorType.TABLE_NOT_FOUND);// invalid object name
 	}

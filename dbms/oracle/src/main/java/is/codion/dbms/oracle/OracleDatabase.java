@@ -56,6 +56,8 @@ final class OracleDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(1031, ErrorType.MISSING_PRIVILEGES);
 		ERROR_TYPES.put(1045, ErrorType.MISSING_PRIVILEGES);// user lacks CREATE SESSION privilege
 		ERROR_TYPES.put(1017, ErrorType.AUTHENTICATION);
+		ERROR_TYPES.put(28000, ErrorType.ACCOUNT_LOCKED);
+		ERROR_TYPES.put(28001, ErrorType.PASSWORD_EXPIRED);
 		ERROR_TYPES.put(54, ErrorType.ROW_LOCKED);// resource busy and acquire with NOWAIT specified
 		ERROR_TYPES.put(942, ErrorType.TABLE_NOT_FOUND);
 		ERROR_TYPES.put(4063, ErrorType.VIEW_HAS_ERRORS);
