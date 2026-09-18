@@ -253,7 +253,7 @@ final class SelectQueries {
 			if (orderBy != null) {
 				builder.append(NEWLINE).append(ORDER_BY).append(orderBy);
 			}
-			String limitOffsetClause = database.limitOffsetClause(limit, offset);
+			String limitOffsetClause = database.limitOffsetClause(limit, offset, orderBy != null);
 			if (!limitOffsetClause.isEmpty()) {
 				builder.append(NEWLINE).append(limitOffsetClause);
 			}

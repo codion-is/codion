@@ -171,10 +171,19 @@ public final class AbstractDatabaseTest {
 		@Test
 		@DisplayName("Limit offset clause variations")
 		void limitOffsetClause_variations_shouldReturnCorrectClauses() {
-			assertEquals("", database.limitOffsetClause(null, null));
-			assertEquals("OFFSET 5", database.limitOffsetClause(null, OFFSET_5));
-			assertEquals("LIMIT 10", database.limitOffsetClause(LIMIT_10, null));
-			assertEquals("LIMIT 10 OFFSET 5", database.limitOffsetClause(LIMIT_10, OFFSET_5));
+			assertEquals("", database.limitOffsetClause(null, null, false));
+			assertEquals("OFFSET 5", database.limitOffsetClause(null, OFFSET_5, false));
+			assertEquals("LIMIT 10", database.limitOffsetClause(LIMIT_10, null, false));
+			assertEquals("LIMIT 10 OFFSET 5", database.limitOffsetClause(LIMIT_10, OFFSET_5, false));
+		}
+
+		@Test
+		@DisplayName("Limit offset clause for databases requiring a limit with an offset")
+		void limitOffsetClause_noLimit_shouldSubstituteTheLimit() {
+			assertEquals("", AbstractDatabase.createLimitOffsetClause(null, null, "-1"));
+			assertEquals("LIMIT -1 OFFSET 5", AbstractDatabase.createLimitOffsetClause(null, OFFSET_5, "-1"));
+			assertEquals("LIMIT 10", AbstractDatabase.createLimitOffsetClause(LIMIT_10, null, "-1"));
+			assertEquals("LIMIT 10 OFFSET 5", AbstractDatabase.createLimitOffsetClause(LIMIT_10, OFFSET_5, "-1"));
 		}
 	}
 
@@ -286,7 +295,7 @@ public final class AbstractDatabaseTest {
 		}
 
 		@Override
-		public String limitOffsetClause(Integer limit, Integer offset) {
+		public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
 			return createLimitOffsetClause(limit, offset);
 		}
 	}

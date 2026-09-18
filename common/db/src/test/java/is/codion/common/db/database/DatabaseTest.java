@@ -60,7 +60,7 @@ public class DatabaseTest {
 		}
 
 		@Override
-		public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset) {
+		public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 			return createLimitOffsetClause(limit, offset);
 		}
 

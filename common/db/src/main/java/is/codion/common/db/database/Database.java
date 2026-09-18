@@ -231,9 +231,11 @@ public interface Database extends ConnectionFactory {
 	 * If both are null an empty string is returned.
 	 * @param limit the limit
 	 * @param offset the offset
+	 * @param ordered true if the query the clause is being appended to has an order by clause,
+	 * some databases requiring one in order to limit the result
 	 * @return a limit/offset clause
 	 */
-	String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset);
+	String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered);
 
 	/**
 	 * Returns true if this database requires that subqueries by aliased.

@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.87
 ### is.codion.common.db
 - DatabaseException.statement() removed, unused.
+- Database.limitOffsetClause() ordered parameter added, AbstractDatabase.createLimitOffsetClause() overloaded with a limit to use when only an offset is specified.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
@@ -20,10 +21,19 @@ Codion Change Log
 - EntityConditionModel.NEGATION_INCLUDES_NULL and Builder.negationIncludesNull() added, default true, the NOT_EQUAL and NOT_IN conditions of nullable columns and foreign keys now including null values, as the filters do.
 - EntitySearchModel.Search.strings() replaced with string(), multiple search strings no longer supported.
 - AbstractEntityTableModel.EntityFilters now excludes byte array attributes.
+### is.codion.dbms.db2
+- Db2Database.limitOffsetClause() now based on OFFSET and FETCH NEXT, an offset without a limit no longer invalid.
+### is.codion.dbms.mariadb
+- MariaDBDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
+### is.codion.dbms.mysql
+- MySQLDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 ### is.codion.dbms.oracle
 - OracleDatabase.maximumParameters() now 65.535.
+### is.codion.dbms.sqlite
+- SQLiteDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 ### is.codion.dbms.sqlserver
 - SQLServerDatabase.maximumParameters() now 2.098, selecting or deleting by more keys no longer failing.
+- SQLServerDatabase.limitOffsetClause() bug fixed, a limit without an offset or an order by clause no longer invalid.
 ### is.codion.swing.common.ui
 - FormBuilder added, building a form panel, label/input pairs in rows, the label beside its input, over a GridBagLayout, along with DefaultFormBuilder, for extending, and Components.form(), LoginPanel now based on it.
 - TemporalInput, TextInput and FileInput now report the baseline of their field, aligning with a label beside them.

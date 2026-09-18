@@ -125,7 +125,7 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset) {
+	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
 		return createLimitOffsetClause(limit, offset);
 	}
 

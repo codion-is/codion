@@ -55,4 +55,17 @@ public class SQLServerDatabaseTest {
 	void maximumParameters() {
 		assertEquals(2098, new SQLServerDatabase(URL).maximumParameters());
 	}
+
+	@Test
+	void limitOffsetClause() {
+		SQLServerDatabase database = new SQLServerDatabase(URL);
+		assertEquals("", database.limitOffsetClause(null, null, false));
+		assertEquals("", database.limitOffsetClause(null, null, true));
+		assertEquals("OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY", database.limitOffsetClause(10, null, true));
+		assertEquals("OFFSET 5 ROWS", database.limitOffsetClause(null, 5, true));
+		assertEquals("OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY", database.limitOffsetClause(10, 5, true));
+		assertEquals("ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY", database.limitOffsetClause(10, null, false));
+		assertEquals("ORDER BY (SELECT NULL) OFFSET 5 ROWS", database.limitOffsetClause(null, 5, false));
+		assertEquals("ORDER BY (SELECT NULL) OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY", database.limitOffsetClause(10, 5, false));
+	}
 }

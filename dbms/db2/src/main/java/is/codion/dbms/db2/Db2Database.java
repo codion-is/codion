@@ -74,8 +74,8 @@ final class Db2Database extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset) {
-		return createLimitOffsetClause(limit, offset);
+	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+		return createOffsetFetchNextClause(limit, offset);
 	}
 
 	/**
