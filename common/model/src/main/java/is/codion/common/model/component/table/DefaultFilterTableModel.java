@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -74,7 +73,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 	DefaultFilterTableModel(AbstractFilterTableModelBuilder<R, C, ?> builder,
 													Function<IncludedItems<R>, MultiSelection<R>> selectionFactory, @Nullable ItemsListener listener) {
 		this.columns = builder.columns;
-		this.filters = tableConditionModel(builder.filters.get());
+		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
 		Items.Builder<R> itemsBuilder = Items.builder()
 						.selection(selectionFactory)
@@ -171,29 +170,19 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 	}
 
-	static final class DefaultColumnFilterFactory<C> implements Supplier<Map<C, ConditionModel<?>>> {
-
-		private final TableColumns<?, C> columns;
-
-		DefaultColumnFilterFactory(TableColumns<?, C> columns) {
-			this.columns = columns;
-		}
-
-		@Override
-		public Map<C, ConditionModel<?>> get() {
-			Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
-			for (C identifier : columns.identifiers()) {
-				Class<?> columnClass = columns.columnClass(requireNonNull(identifier));
-				if (Comparable.class.isAssignableFrom(columnClass)) {
-					columnFilterModels.put(identifier, ConditionModel.builder()
-									.valueClass(columnClass)
-									.caption(columns.caption(identifier))
-									.build());
-				}
+	static <C> Map<C, ConditionModel<?>> createFilters(TableColumns<?, C> columns) {
+		Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
+		for (C identifier : columns.identifiers()) {
+			Class<?> columnClass = columns.columnClass(requireNonNull(identifier));
+			if (Comparable.class.isAssignableFrom(columnClass)) {
+				columnFilterModels.put(identifier, ConditionModel.builder()
+								.valueClass(columnClass)
+								.caption(columns.caption(identifier))
+								.build());
 			}
-
-			return unmodifiableMap(columnFilterModels);
 		}
+
+		return unmodifiableMap(columnFilterModels);
 	}
 
 	private static final class DefaultInclude<R, C>

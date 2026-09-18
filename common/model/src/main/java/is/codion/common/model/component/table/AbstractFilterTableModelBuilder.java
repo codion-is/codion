@@ -62,7 +62,7 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 
 	@Nullable Supplier<Collection<R>> supplier;
 	Predicate<R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
-	Supplier<Map<C, ConditionModel<?>>> filters;
+	Map<C, ConditionModel<?>> filters;
 	@Nullable Consumer<Exception> onRefreshException;
 	@Nullable Predicate<R> included;
 
@@ -77,11 +77,11 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 			throw new IllegalArgumentException("TableColumns does not specify any column identifiers");
 		}
 		this.columns = validateIdentifiers(columns);
-		this.filters = new DefaultFilterTableModel.DefaultColumnFilterFactory<>(columns);
+		this.filters = DefaultFilterTableModel.createFilters(columns);
 	}
 
 	@Override
-	public final B filters(Supplier<Map<C, ConditionModel<?>>> filters) {
+	public final B filters(Map<C, ConditionModel<?>> filters) {
 		this.filters = requireNonNull(filters);
 		return self();
 	}

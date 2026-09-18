@@ -155,10 +155,10 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		}
 
 		/**
-		 * @param filters the column filter model factory
+		 * @param filters the column filter models
 		 * @return this builder instance
 		 */
-		B filters(Supplier<Map<C, ConditionModel<?>>> filters);
+		B filters(Map<C, ConditionModel<?>> filters);
 
 		/**
 		 * @param items supplies the items
