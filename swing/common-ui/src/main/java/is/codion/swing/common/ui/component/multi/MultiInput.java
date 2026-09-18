@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.multi;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.Text;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
@@ -49,7 +51,6 @@ import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
@@ -62,7 +63,6 @@ import java.awt.event.HierarchyListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.Format;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -73,6 +73,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.i18n.Messages.clear;
 import static is.codion.common.i18n.Messages.clearMnemonic;
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -105,6 +106,16 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  */
 public final class MultiInput<C extends JComponent, T> extends JPanel {
 
+	/**
+	 * Specifies whether the member button is focusable by default.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> BUTTON_FOCUSABLE =
+					booleanValue(MultiInput.class.getName() + ".buttonFocusable", false);
+
 	private static final int MAXIMUM_VISIBLE_ROWS = 8;
 	private static final int MINIMUM_VISIBLE_ROWS = 3;
 	private static final String WIDEST_COUNT = "00";
@@ -121,6 +132,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	private final State membersVisible = State.builder()
 					.consumer(this::onMembersVisibleChanged)
 					.build();
+	private final Control closeMembers = command(this::closeMembers);
 	private final JToggleButton membersButton;
 
 	private @Nullable JDialog dialog;
@@ -135,7 +147,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		this.caption = builder.caption;
 		JComponent component = componentValue.component();
 		component.setInheritsPopupMenu(true);
-		this.membersButton = createMembersButton(component);
+		membersButton = createMembersButton(component, builder.buttonFocusable);
 		add(component, BorderLayout.CENTER);
 		add(membersButton, BorderLayout.EAST);
 		addFocusListener(new InputFocusAdapter(component));
@@ -249,6 +261,13 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		Builder<C, T> addOnEnter(boolean addOnEnter);
 
 		/**
+		 * @param buttonFocusable true if the members button should be focusable
+		 * @return this builder instance
+		 * @see #BUTTON_FOCUSABLE
+		 */
+		Builder<C, T> buttonFocusable(boolean buttonFocusable);
+
+		/**
 		 * Provides a {@link Builder}
 		 */
 		interface ComponentStep {
@@ -281,13 +300,12 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.visibleRowCount(Math.max(MINIMUM_VISIBLE_ROWS, Math.min(MAXIMUM_VISIBLE_ROWS, members.getSize())))
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_DELETE)
-										.action(Control.action(e ->
-														removeSelected((FilterList<T>) e.getSource()))))
+										.action(command(this::removeSelected)))
 						.name("MultiInput:memberList" + caption())
 						.build();
 	}
 
-	private JToggleButton createMembersButton(JComponent component) {
+	private JToggleButton createMembersButton(JComponent component, boolean focusable) {
 		int height = component.getPreferredSize().height;
 		int width = Math.max(height, component.getFontMetrics(component.getFont()).stringWidth(WIDEST_COUNT) + 10);
 
@@ -296,9 +314,9 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 										.toggle(membersVisible)
 										.enabled(State.and(enabled, present))
 										.build())
-						.margin(new Insets(0, 2, 0, 2))
 						.preferredSize(new Dimension(width, height))
 						.name("MultiInput:membersButton" + caption())
+						.focusable(focusable)
 						.build();
 	}
 
@@ -321,7 +339,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.keyCode(VK_UP)
 						.modifiers(ALT_DOWN_MASK)
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.action(command(this::closeMembers))
+						.action(closeMembers)
 						.enable(component, membersButton);
 		if (addOnEnter) {
 			// A key listener rather than a key binding, so that Enter on an empty component is left unconsumed for
@@ -340,13 +358,13 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 	}
 
-	private void removeSelected(FilterList<T> list) {
-		List<T> selected = new ArrayList<>(list.getSelectedValuesList());
-		if (!selected.isEmpty()) {
-			int index = list.getSelectedIndex();
-			members.items().remove(selected);
-			if (members.getSize() > 0) {
-				list.setSelectedIndex(Math.min(index, members.getSize() - 1));
+	private void removeSelected() {
+		FilterListSelection<T> selection = members.selection();
+		if (selection.present().is()) {
+			int index = selection.index().getOrThrow();
+			members.items().remove(selection.items().get());
+			if (members.items().size() > 0) {
+				selection.index().set(Math.min(index, members.items().size() - 1));
 			}
 		}
 	}
@@ -412,13 +430,12 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ENTER)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(Control.action(e ->
-														closeMembers())))
+										.action(closeMembers))
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_UP)
 										.modifiers(ALT_DOWN_MASK)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(command(this::closeMembers)))
+										.action(closeMembers))
 						.onShown(this::onMembersShown)
 						// Escape, which disposes the dialog without going through closeMembers()
 						.onClosed(event -> closeMembers())
@@ -597,6 +614,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		private @Nullable Format format;
 		private @Nullable String caption;
 		private @Nullable Boolean addOnEnter;
+		private boolean buttonFocusable = BUTTON_FOCUSABLE.getOrThrow();
 
 		private DefaultBuilder(ComponentValue<C, T> componentValue) {
 			this.componentValue = componentValue;
@@ -623,6 +641,12 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		@Override
 		public Builder<C, T> addOnEnter(boolean addOnEnter) {
 			this.addOnEnter = addOnEnter;
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> buttonFocusable(boolean buttonFocusable) {
+			this.buttonFocusable = buttonFocusable;
 			return this;
 		}
 
@@ -676,9 +700,9 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 
 		@Override
-		protected void setComponentValue(@Nullable Set<T> value) {
+		protected void setComponentValue(Set<T> value) {
 			MultiInput<C, T> field = super.component();
-			field.members.items().set(value == null ? emptySet() : value);
+			field.members.items().set(value);
 			// otherwise a value pending in the component would remain, and be part of the value on the next change
 			field.componentValue.clear();
 		}
