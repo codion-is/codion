@@ -589,7 +589,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		}
 
 		private static boolean include(AttributeDefinition<?> definition) {
-			return !definition.hidden() && (definition instanceof ForeignKeyDefinition || definition instanceof ValueAttributeDefinition<?>);
+			return !definition.hidden() && !definition.attribute().type().isByteArray() &&
+							(definition instanceof ForeignKeyDefinition || definition instanceof ValueAttributeDefinition<?>);
 		}
 
 		private static boolean useStringCondition(AttributeDefinition<?> definition) {
