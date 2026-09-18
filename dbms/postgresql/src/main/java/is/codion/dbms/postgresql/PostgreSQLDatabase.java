@@ -20,51 +20,34 @@ package is.codion.dbms.postgresql;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.ClientInfo;
-import is.codion.common.utilities.resource.MessageBundle;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 
 /**
  * A Database implementation based on the PostgreSQL database.
  */
 final class PostgreSQLDatabase extends AbstractDatabase {
 
-	private static final MessageBundle MESSAGES =
-					messageBundle(PostgreSQLDatabase.class, getBundle(PostgreSQLDatabase.class.getName()));
-
-	private static final Map<String, String> ERROR_CODE_MAP = new HashMap<>();
-
-	private static final String INVALID_PASS = "28P01";
+	private static final String INVALID_PASSWORD = "28P01";
 	private static final String FOREIGN_KEY_VIOLATION = "23503";
-	private static final String FOREIGN_KEY_VIOLATION_DELETE = "23503_delete";
-	private static final String UNIQUE_CONSTRAINT_ERROR = "23505";
-	private static final String TIMEOUT_ERROR = "57014";//query_cancelled
-	private static final String NULL_VALUE_ERROR = "23502";
-	private static final String CHECK_CONSTRAINT_ERROR = "23514";
-	private static final String VALUE_TOO_LARGE_ERROR = "22001";
-	private static final String MISSING_PRIVS_ERROR = "42501";
+	private static final String QUERY_CANCELED = "57014";
+	private static final String LOCK_NOT_AVAILABLE = "55P03";
+	private static final String INSUFFICIENT_PRIVILEGE = "42501";
+	private static final String UNDEFINED_TABLE = "42P01";
 
 	private static final String APPLICATION_NAME = "ApplicationName";
 	private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
-	private static final String UNIQUE_KEY_ERROR = "unique_key_error";
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
-	static {
-		ERROR_CODE_MAP.put(UNIQUE_CONSTRAINT_ERROR, MESSAGES.getString(UNIQUE_KEY_ERROR));
-		ERROR_CODE_MAP.put(FOREIGN_KEY_VIOLATION, MESSAGES.getString("foreign_key_violation"));
-		ERROR_CODE_MAP.put(FOREIGN_KEY_VIOLATION_DELETE, MESSAGES.getString("foreign_key_violation_delete"));
-		ERROR_CODE_MAP.put(NULL_VALUE_ERROR, MESSAGES.getString("null_value_error"));
-		ERROR_CODE_MAP.put(CHECK_CONSTRAINT_ERROR, MESSAGES.getString("check_constraint_error"));
-		ERROR_CODE_MAP.put(MISSING_PRIVS_ERROR, MESSAGES.getString("missing_privileges_error"));
-		ERROR_CODE_MAP.put(VALUE_TOO_LARGE_ERROR, MESSAGES.getString("value_too_large_for_column_error"));
-	}
+	// The messages are subject to the lc_messages server setting, only the english ones are parsed
+	private static final String STILL_REFERENCED = "is still referenced from";
+	private static final String NOT_PRESENT = "is not present in";
+	private static final String COLUMN = "column \"";
+	private static final String DETAIL_KEY = "Detail: Key ";
+	private static final String ALREADY_EXISTS = " already exists.";
 
 	private final boolean nowait;
 
@@ -107,26 +90,6 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 		return "SELECT NEXTVAL('" + requireNonNull(sequenceName) + "')";
 	}
 
-	@Override
-	public boolean isAuthenticationException(SQLException exception) {
-		return INVALID_PASS.equals(requireNonNull(exception).getSQLState());
-	}
-
-	@Override
-	public boolean isReferentialIntegrityException(SQLException exception) {
-		return FOREIGN_KEY_VIOLATION.equals(requireNonNull(exception).getSQLState());
-	}
-
-	@Override
-	public boolean isUniqueConstraintException(SQLException exception) {
-		return UNIQUE_CONSTRAINT_ERROR.equals(requireNonNull(exception).getSQLState());
-	}
-
-	@Override
-	public boolean isTimeoutException(SQLException exception) {
-		return TIMEOUT_ERROR.equals(requireNonNull(exception).getSQLState());
-	}
-
 	/**
 	 * <p>The driver honours {@code ApplicationName} alone, so the user is folded into it, landing in
 	 * {@code application_name}: visible in {@code pg_stat_activity} and readable from a trigger via
@@ -152,57 +115,73 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String errorMessage(SQLException exception, Operation operation) {
-		requireNonNull(exception);
-		requireNonNull(operation);
+	protected ErrorType errorType(SQLException exception) {
 		String sqlState = exception.getSQLState();
-		if (NULL_VALUE_ERROR.equals(sqlState)) {
-			return createNullValueErrorMessage(exception.getMessage());
+		if (sqlState == null) {
+			return super.errorType(exception);
 		}
-		if (UNIQUE_CONSTRAINT_ERROR.equals(sqlState)) {
-			return createUniqueConstraintErrorMessage(exception.getMessage());
+		switch (sqlState) {
+			case FOREIGN_KEY_VIOLATION:
+				return foreignKeyViolation(exception);
+			case INVALID_PASSWORD:
+				return ErrorType.AUTHENTICATION;
+			case QUERY_CANCELED:
+				return ErrorType.TIMEOUT;
+			case LOCK_NOT_AVAILABLE:
+				return ErrorType.ROW_LOCKED;
+			case INSUFFICIENT_PRIVILEGE:
+				return ErrorType.MISSING_PRIVILEGES;
+			case UNDEFINED_TABLE:
+				return ErrorType.TABLE_NOT_FOUND;
+			default:
+				return super.errorType(exception);
 		}
-		if (FOREIGN_KEY_VIOLATION.equals(sqlState)) {
-			return createForeignKeyViolationErrorMessage(operation);
-		}
-		if (ERROR_CODE_MAP.containsKey(sqlState)) {
-			return ERROR_CODE_MAP.get(sqlState);
-		}
-
-		return super.errorMessage(exception, operation);
 	}
 
-	private static String createNullValueErrorMessage(String exceptionMessage) {
-		int indexOfColumn = exceptionMessage.indexOf("column \"");
-		int indexOfRelation = exceptionMessage.indexOf("\" of relation");
-		if (indexOfColumn != -1 && indexOfRelation != -1) {
-			//null value in column "column_name" of relation "table_name" violates not-null constraint
-			String columnName = exceptionMessage.substring(indexOfColumn + 8, indexOfRelation);
-
-			return MESSAGES.getString("value_missing") + ": " + columnName;
+	@Override
+	protected String errorDetail(SQLException exception, ErrorType errorType) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return null;
 		}
-
-		return exceptionMessage;
+		switch (errorType) {
+			case NULL_VALUE:
+				//null value in column "column_name" of relation "table_name" violates not-null constraint
+				return between(message, COLUMN, "\"");
+			case UNIQUE_CONSTRAINT:
+				//Detail: Key (col1, col2)=(val1, val2) already exists.
+				return between(message, DETAIL_KEY, ALREADY_EXISTS);
+			default:
+				return null;
+		}
 	}
 
-	private static String createUniqueConstraintErrorMessage(String exceptionMessage) {
-		int indexOfDetail = exceptionMessage.indexOf("Detail: Key");
-		int indexOfAlreadyExists = exceptionMessage.indexOf(" already exists.");
-		if (indexOfDetail != -1 && indexOfAlreadyExists != -1) {
-			//Detail: Key (col1, col2)=(val1, val2) already exists.
-			String values = exceptionMessage.substring(indexOfDetail + 11, indexOfAlreadyExists);
-
-			return MESSAGES.getString(UNIQUE_KEY_ERROR) + ": " + values;
+	/**
+	 * The same state is reported whether the referenced row is missing or the row being updated or deleted
+	 * is referenced, the detail telling the two apart.
+	 */
+	private ErrorType foreignKeyViolation(SQLException exception) {
+		String message = exception.getMessage();
+		if (message != null) {
+			if (message.contains(STILL_REFERENCED)) {
+				return ErrorType.CHILD_EXISTS;
+			}
+			if (message.contains(NOT_PRESENT)) {
+				return ErrorType.PARENT_MISSING;
+			}
 		}
 
-		return MESSAGES.getString(UNIQUE_KEY_ERROR);
+		return ErrorType.REFERENTIAL_INTEGRITY;
 	}
 
-	private static String createForeignKeyViolationErrorMessage(Operation operation) {
-		if (operation == Operation.DELETE) {
-			return ERROR_CODE_MAP.get(FOREIGN_KEY_VIOLATION_DELETE);
+	private static String between(String message, String prefix, String suffix) {
+		int prefixIndex = message.indexOf(prefix);
+		if (prefixIndex == -1) {
+			return null;
 		}
+		int beginIndex = prefixIndex + prefix.length();
+		int endIndex = message.indexOf(suffix, beginIndex);
 
-		return ERROR_CODE_MAP.get(FOREIGN_KEY_VIOLATION);
+		return endIndex == -1 ? null : message.substring(beginIndex, endIndex);
 	}
 }
