@@ -50,4 +50,9 @@ public class SQLServerDatabaseTest {
 	void constructorNullHost() {
 		assertThrows(NullPointerException.class, () -> new SQLServerDatabase(null));
 	}
+
+	@Test
+	void maximumParameters() {
+		assertEquals(2098, new SQLServerDatabase(URL).maximumParameters());
+	}
 }

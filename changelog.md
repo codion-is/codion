@@ -20,6 +20,10 @@ Codion Change Log
 - EntityConditionModel.NEGATION_INCLUDES_NULL and Builder.negationIncludesNull() added, default true, the NOT_EQUAL and NOT_IN conditions of nullable columns and foreign keys now including null values, as the filters do.
 - EntitySearchModel.Search.strings() replaced with string(), multiple search strings no longer supported.
 - AbstractEntityTableModel.EntityFilters now excludes byte array attributes.
+### is.codion.dbms.oracle
+- OracleDatabase.maximumParameters() now 65.535.
+### is.codion.dbms.sqlserver
+- SQLServerDatabase.maximumParameters() now 2.098, selecting or deleting by more keys no longer failing.
 ### is.codion.swing.common.ui
 - FormBuilder added, building a form panel, label/input pairs in rows, the label beside its input, over a GridBagLayout, along with DefaultFormBuilder, for extending, and Components.form(), LoginPanel now based on it.
 - TemporalInput, TextInput and FileInput now report the baseline of their field, aligning with a label beside them.

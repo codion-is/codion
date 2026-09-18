@@ -60,6 +60,7 @@ final class OracleDatabase extends AbstractDatabase {
 	private static final int VALUE_TOO_LARGE_ERROR = 1401;
 	private static final int VIEW_HAS_ERRORS_ERROR = 4063;
 	private static final int TIMEOUT_ERROR = 17016;
+	private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
 	static {
 		ERROR_CODE_MAP.put(UNIQUE_KEY_ERROR, MESSAGES.getString("unique_key_error"));
@@ -119,6 +120,11 @@ final class OracleDatabase extends AbstractDatabase {
 	@Override
 	public String limitOffsetClause(Integer limit, Integer offset) {
 		return createOffsetFetchNextClause(limit, offset);
+	}
+
+	@Override
+	public int maximumParameters() {
+		return MAXIMUM_STATEMENT_PARAMETERS;
 	}
 
 	@Override
