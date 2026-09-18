@@ -37,6 +37,6 @@ public final class MySQLDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public Database create(String url) {
-		return new MySQLDatabase(url);
+		return new MySQLDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.getOrThrow());
 	}
 }

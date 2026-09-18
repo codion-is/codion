@@ -37,6 +37,6 @@ public final class MariaDBDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public Database create(String url) {
-		return new MariaDBDatabase(url);
+		return new MariaDBDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.getOrThrow());
 	}
 }

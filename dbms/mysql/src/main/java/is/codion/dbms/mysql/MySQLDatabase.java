@@ -42,8 +42,15 @@ final class MySQLDatabase extends AbstractDatabase {
 
 	static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ID() FROM DUAL";
 
+	private final boolean nowait;
+
 	MySQLDatabase(String url) {
+		this(url, true);
+	}
+
+	MySQLDatabase(String url, boolean nowait) {
 		super(url);
+		this.nowait = nowait;
 	}
 
 	@Override
@@ -63,6 +70,10 @@ final class MySQLDatabase extends AbstractDatabase {
 
 	@Override
 	public String selectForUpdateClause() {
+		if (nowait) {
+			return FOR_UPDATE_NOWAIT;
+		}
+
 		return FOR_UPDATE;
 	}
 

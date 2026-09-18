@@ -42,15 +42,8 @@ final class HSQLDatabase extends AbstractDatabase {
 	static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
 	static final String SEQUENCE_VALUE_QUERY = "SELECT NEXT VALUE FOR ";
 
-	private final boolean nowait;
-
 	HSQLDatabase(String url) {
-		this(url, true);
-	}
-
-	HSQLDatabase(String url, boolean nowait) {
 		super(url);
-		this.nowait = nowait;
 	}
 
 	@Override
@@ -63,10 +56,6 @@ final class HSQLDatabase extends AbstractDatabase {
 
 	@Override
 	public String selectForUpdateClause() {
-		if (nowait) {
-			return FOR_UPDATE_NOWAIT;
-		}
-
 		return FOR_UPDATE;
 	}
 

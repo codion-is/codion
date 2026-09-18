@@ -23,14 +23,19 @@ Codion Change Log
 - AbstractEntityTableModel.EntityFilters now excludes byte array attributes.
 ### is.codion.dbms.db2
 - Db2Database.limitOffsetClause() now based on OFFSET and FETCH NEXT, an offset without a limit no longer invalid.
+### is.codion.dbms.hsqldb
+- HSQLDatabase.selectForUpdateClause() bug fixed, NOWAIT not being supported.
 ### is.codion.dbms.mariadb
 - MariaDBDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
+- MariaDBDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
 ### is.codion.dbms.mysql
 - MySQLDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
+- MySQLDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
 ### is.codion.dbms.oracle
 - OracleDatabase.maximumParameters() now 65.535.
 ### is.codion.dbms.sqlite
 - SQLiteDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
+- SQLiteDatabase.selectForUpdateClause() bug fixed, now empty, FOR UPDATE not being supported.
 ### is.codion.dbms.sqlserver
 - SQLServerDatabase.maximumParameters() now 2.098, selecting or deleting by more keys no longer failing.
 - SQLServerDatabase.limitOffsetClause() bug fixed, a limit without an offset or an order by clause no longer invalid.

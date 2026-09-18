@@ -59,4 +59,10 @@ public class MariaDBDatabaseTest {
 		assertEquals("LIMIT 10 OFFSET 5", database.limitOffsetClause(10, 5, true));
 		assertEquals("LIMIT 18446744073709551615 OFFSET 5", database.limitOffsetClause(null, 5, false));
 	}
+
+	@Test
+	void selectForUpdateClause() {
+		assertEquals("FOR UPDATE NOWAIT", new MariaDBDatabase(URL, true).selectForUpdateClause());
+		assertEquals("FOR UPDATE", new MariaDBDatabase(URL, false).selectForUpdateClause());
+	}
 }
