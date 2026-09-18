@@ -50,7 +50,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import static java.util.Collections.*;
@@ -240,10 +239,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 	/**
 	 * @param entityDefinition the entity definition
-	 * @return a {@link Supplier} providing the filter condition models based on the given entity definition
+	 * @return the filter condition models based on the given entity definition
 	 */
-	protected static Supplier<Map<Attribute<?>, ConditionModel<?>>> filterConditions(EntityDefinition entityDefinition) {
-		return new EntityFilters(entityDefinition);
+	protected static Map<Attribute<?>, ConditionModel<?>> filterConditions(EntityDefinition entityDefinition) {
+		return EntityFilters.createFilters(entityDefinition);
 	}
 
 	/**
@@ -551,16 +550,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		}
 	}
 
-	private static final class EntityFilters implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
+	private static final class EntityFilters {
 
-		private final EntityDefinition entityDefinition;
-
-		private EntityFilters(EntityDefinition entityDefinition) {
-			this.entityDefinition = requireNonNull(entityDefinition);
-		}
-
-		@Override
-		public Map<Attribute<?>, ConditionModel<?>> get() {
+		private static Map<Attribute<?>, ConditionModel<?>> createFilters(EntityDefinition entityDefinition) {
 			return unmodifiableMap(entityDefinition.attributes().definitions().stream()
 							.filter(EntityFilters::include)
 							.collect(toMap(AttributeDefinition::attribute, EntityFilters::condition)));
