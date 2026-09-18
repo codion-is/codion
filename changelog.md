@@ -41,9 +41,13 @@ Codion Change Log
 - MariaDBDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 - MariaDBDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
 - MariaDBDatabase.sequenceQuery() implemented.
+- MariaDBDatabase now based on AbstractDatabase.ErrorType, null value, check constraint, value too large, missing privileges, lock wait timeout and unknown table errors now recognized, the connection id removed from messages.
+- MariaDBDatabase bug fixed, deleting a referenced row now reported as a referential integrity error and an incorrect password as an authentication error.
 ### is.codion.dbms.mysql
 - MySQLDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 - MySQLDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
+- MySQLDatabase now based on AbstractDatabase.ErrorType, null value, check constraint, value too large, missing privileges, lock not acquired, query timeout and unknown table errors now recognized.
+- MySQLDatabase bug fixed, deleting a referenced row now reported as a referential integrity error and an incorrect password as an authentication error.
 ### is.codion.dbms.oracle
 - OracleDatabase.maximumParameters() now 65.535.
 - OracleDatabase now based on AbstractDatabase.ErrorType, resource bundle removed, resource busy (ORA-00054), value too large (ORA-12899, ORA-01438) and query timeout errors now recognized, the documentation link removed from messages.
