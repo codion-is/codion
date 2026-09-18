@@ -23,6 +23,8 @@ import is.codion.common.db.database.ClientInfo;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -31,13 +33,18 @@ import static java.util.Objects.requireNonNull;
  */
 final class Db2Database extends AbstractDatabase {
 
-	private static final int REFERENTIAL_INTEGRITY_INSERT_UPDATE = -530;
-	private static final int REFERENTIAL_INTEGRITY_DELETE_1 = -532;
-	private static final int REFERENTIAL_INTEGRITY_DELETE_2 = -536;
-	private static final int UNIQUE_CONSTRAINT = -803;
-	private static final int AUTHENTICATION_ERROR = -4214;
-	private static final int TIMEOUT_ERROR_1 = -911;
-	private static final int TIMEOUT_ERROR_2 = -913;
+	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
+
+	static {
+		// the error codes not covered by the sql state defaults
+		ERROR_TYPES.put(-530, ErrorType.PARENT_MISSING);// 23503, a child row being referenced reported with 23504
+		ERROR_TYPES.put(-911, ErrorType.ROW_LOCKED);// rolled back due to a deadlock or lock timeout
+		ERROR_TYPES.put(-913, ErrorType.ROW_LOCKED);// unsuccessful due to a deadlock or lock timeout
+		ERROR_TYPES.put(-952, ErrorType.TIMEOUT);// processing cancelled due to an interrupt
+		ERROR_TYPES.put(-551, ErrorType.MISSING_PRIVILEGES);
+		ERROR_TYPES.put(-30082, ErrorType.AUTHENTICATION);// security processing failed, -4214 being covered by its sql state
+		ERROR_TYPES.put(-204, ErrorType.TABLE_NOT_FOUND);
+	}
 
 	private static final String APPLICATION_NAME = "ApplicationName";
 	private static final String CLIENT_USER = "ClientUser";
@@ -93,30 +100,14 @@ final class Db2Database extends AbstractDatabase {
 		clientInfoProperty(connection, CLIENT_HOSTNAME, clientInfo.host().orElse(""));
 	}
 
+	/**
+	 * Note that the messages contain tokens only, {@code SQLCODE=-407, SQLSTATE=23502, SQLERRMC=TBSPACEID=2, TABLEID=4, COLNO=1},
+	 * unless the {@code retrieveMessagesFromServerOnGetMessage} driver property is enabled, so no detail is provided.
+	 */
 	@Override
-	public boolean isReferentialIntegrityException(SQLException exception) {
-		int errorCode = requireNonNull(exception).getErrorCode();
+	protected ErrorType errorType(SQLException exception) {
+		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
 
-		return errorCode == REFERENTIAL_INTEGRITY_INSERT_UPDATE ||
-						errorCode == REFERENTIAL_INTEGRITY_DELETE_1 ||
-						errorCode == REFERENTIAL_INTEGRITY_DELETE_2;
-	}
-
-	@Override
-	public boolean isUniqueConstraintException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == UNIQUE_CONSTRAINT;
-	}
-
-	@Override
-	public boolean isAuthenticationException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == AUTHENTICATION_ERROR;
-	}
-
-	@Override
-	public boolean isTimeoutException(SQLException exception) {
-		int errorCode = requireNonNull(exception).getErrorCode();
-
-		return errorCode == TIMEOUT_ERROR_1 ||
-						errorCode == TIMEOUT_ERROR_2;
+		return errorType == null ? super.errorType(exception) : errorType;
 	}
 }
