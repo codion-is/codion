@@ -39,7 +39,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	private static final String UNDEFINED_TABLE = "42P01";
 
 	private static final String APPLICATION_NAME = "ApplicationName";
-	private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
+	private static final String JDBC_URL_PREFIX = "jdbc:postgresql:";
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
 	// The messages are subject to the lc_messages server setting, only the english ones are parsed
@@ -58,12 +58,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
 	@Override
 	public String name() {
-		String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX);
-		if (name.contains("/")) {
-			name = name.substring(name.lastIndexOf('/') + 1);
-		}
-
-		return name;
+		// jdbc:postgresql://host:port/database or jdbc:postgresql:database
+		return databaseOrHost(removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX));
 	}
 
 	@Override

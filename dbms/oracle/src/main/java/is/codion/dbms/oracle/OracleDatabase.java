@@ -25,6 +25,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,11 +35,9 @@ import static java.util.Objects.requireNonNull;
  */
 final class OracleDatabase extends AbstractDatabase {
 
-	private static final String JDBC_URL_DRIVER_PREFIX = "jdbc:oracle:thin:";
 	private static final String CLIENT_IDENTIFIER = "OCSID.CLIENTID";
 	private static final String MODULE = "OCSID.MODULE";
-	private static final String JDBC_URL_PREFIX = JDBC_URL_DRIVER_PREFIX + "@";
-	private static final String JDBC_URL_WALLET_PREFIX = JDBC_URL_DRIVER_PREFIX + "/@";
+	private static final Pattern DESCRIPTOR_NAME = Pattern.compile("\\(\\s*(?:SERVICE_NAME|SID)\\s*=\\s*([^)\\s]+)", Pattern.CASE_INSENSITIVE);
 
 	private static final String DOCUMENTATION_LINK = "https://docs.oracle.com/error-help";
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
@@ -76,11 +76,23 @@ final class OracleDatabase extends AbstractDatabase {
 
 	@Override
 	public String name() {
-		String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX, JDBC_URL_WALLET_PREFIX);
-		if (name.contains("/")) {//pluggable database
+		// what follows the @, being preceded by the driver type and optionally the credentials
+		String name = url().substring(url().indexOf('@') + 1);
+		if (name.startsWith("(")) {
+			// (DESCRIPTION=(ADDRESS=...)(CONNECT_DATA=(SERVICE_NAME=service)))
+			Matcher matcher = DESCRIPTOR_NAME.matcher(name);
+
+			return matcher.find() ? matcher.group(1) : name;
+		}
+		name = removeUrlPrefixOptionsAndParameters(name);
+		if (name.contains("/")) {
+			// //host:port/service:server mode
 			name = name.substring(name.lastIndexOf('/') + 1);
+
+			return name.contains(":") ? name.substring(0, name.indexOf(':')) : name;
 		}
 
+		// host:port:sid or a tns alias
 		return name.substring(name.lastIndexOf(':') + 1);
 	}
 

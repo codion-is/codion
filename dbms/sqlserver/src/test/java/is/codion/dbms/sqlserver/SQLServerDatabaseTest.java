@@ -44,6 +44,15 @@ public class SQLServerDatabaseTest {
 		assertEquals("instance", database.name());
 		database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234;options");
 		assertEquals("instance", database.name());
+		assertEquals("dbname", new SQLServerDatabase("jdbc:sqlserver://host.db:1234;databaseName=dbname;encrypt=false").name());
+		assertEquals("dbname", new SQLServerDatabase("jdbc:sqlserver://host.db:1234;DATABASE=dbname").name());
+		assertEquals("dbname", new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234;databaseName=dbname").name());
+		assertEquals("host.db", new SQLServerDatabase("jdbc:sqlserver://host.db:1234").name());
+		assertEquals("dbname", new SQLServerDatabase("jdbc:sqlserver://;serverName=host.db;databaseName=dbname").name());
+		assertEquals("host.db", new SQLServerDatabase("jdbc:sqlserver://;serverName=host.db").name());
+		assertEquals("dbname", new SQLServerDatabase("jdbc:jtds:sqlserver://host.db:1234/dbname;instance=instance").name());
+		assertEquals("instance", new SQLServerDatabase("jdbc:jtds:sqlserver://host.db:1234;instance=instance").name());
+		assertEquals("host.db", new SQLServerDatabase("jdbc:jtds:sqlserver://host.db:1234").name());
 	}
 
 	@Test

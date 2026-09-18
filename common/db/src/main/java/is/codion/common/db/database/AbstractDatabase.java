@@ -497,6 +497,24 @@ public abstract class AbstractDatabase implements Database {
 		return result;
 	}
 
+	/**
+	 * Returns the database from a url of the form {@code //host:port/database}, stripped of prefix, options and parameters,
+	 * see {@link #removeUrlPrefixOptionsAndParameters(String, String...)}, that is, what follows the last slash.
+	 * In case no database is specified, {@code //host:port/} or {@code //host:port}, the host and port are returned.
+	 * @param url the url, without prefix, options and parameters
+	 * @return the database, or the host in case no database is specified
+	 */
+	protected static String databaseOrHost(String url) {
+		int slashIndex = url.lastIndexOf('/');
+		String database = url.substring(slashIndex + 1);
+		if (!database.isEmpty() || slashIndex == -1) {
+			return database;
+		}
+		String host = url.substring(0, slashIndex);
+
+		return host.substring(host.lastIndexOf('/') + 1);
+	}
+
 	private @Nullable ErrorType recognize(SQLException exception) {
 		try {
 			return errorType(exception);

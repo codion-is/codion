@@ -82,12 +82,7 @@ final class MariaDBDatabase extends AbstractDatabase {
 
 	@Override
 	public String name() {
-		String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX);
-		if (name.contains("/")) {
-			name = name.substring(name.lastIndexOf('/') + 1);
-		}
-
-		return name;
+		return databaseOrHost(removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX));
 	}
 
 	@Override

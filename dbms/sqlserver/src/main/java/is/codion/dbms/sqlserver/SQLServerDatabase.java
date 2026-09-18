@@ -63,6 +63,11 @@ final class SQLServerDatabase extends AbstractDatabase {
 
 	private static final String UNORDERED = "ORDER BY (SELECT NULL) ";
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlserver://";
+	private static final String JTDS_URL_PREFIX = "jdbc:jtds:sqlserver://";
+	private static final String DATABASE_NAME = "databaseName";
+	private static final String DATABASE = "database";
+	private static final String INSTANCE = "instance";
+	private static final String SERVER_NAME = "serverName";
 	/**
 	 * The server accepts 2100 parameters per request, the driver using two of those for the statement itself
 	 */
@@ -74,15 +79,46 @@ final class SQLServerDatabase extends AbstractDatabase {
 
 	@Override
 	public String name() {
-		String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX);
+		// jdbc:sqlserver://[host[\instance][:port]][;property=value] or jdbc:jtds:sqlserver://host[:port][/database][;property=value]
+		String database = property(DATABASE_NAME);
+		if (database == null) {
+			database = property(DATABASE);
+		}
+		if (database != null) {
+			return database;
+		}
+		String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX, JTDS_URL_PREFIX);
+		if (name.contains("/")) {
+			return name.substring(name.lastIndexOf('/') + 1);
+		}
+		String instance = property(INSTANCE);
+		if (instance != null) {
+			return instance;
+		}
 		if (name.contains("\\")) {
 			name = name.substring(name.lastIndexOf('\\') + 1);
-			if (name.contains(":")) {
-				name = name.substring(0, name.indexOf(':'));
+		}
+		if (name.contains(":")) {
+			name = name.substring(0, name.indexOf(':'));
+		}
+		String serverName = property(SERVER_NAME);
+
+		return name.isEmpty() && serverName != null ? serverName : name;
+	}
+
+	/**
+	 * @return the value of the given url property, the names being case-insensitive, null if not specified
+	 */
+	private String property(String property) {
+		String[] properties = url().split(";");
+		for (int i = 1; i < properties.length; i++) {
+			int valueIndex = properties[i].indexOf('=');
+			if (valueIndex != -1 && properties[i].substring(0, valueIndex).trim().equalsIgnoreCase(property)) {
+				return properties[i].substring(valueIndex + 1).trim();
 			}
 		}
 
-		return name;
+		return null;
 	}
 
 	@Override

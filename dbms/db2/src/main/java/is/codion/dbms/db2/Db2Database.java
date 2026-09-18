@@ -57,12 +57,11 @@ final class Db2Database extends AbstractDatabase {
 
 	@Override
 	public String name() {
-		String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX);
-		if (name.contains("/")) {
-			name = name.substring(name.lastIndexOf('/') + 1);
-		}
+		// jdbc:db2://host:port/database:property=value; or jdbc:db2:database
+		String name = databaseOrHost(removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX));
+		int propertiesIndex = name.indexOf(':');
 
-		return name;
+		return propertiesIndex == -1 ? name : name.substring(0, propertiesIndex);
 	}
 
 	@Override

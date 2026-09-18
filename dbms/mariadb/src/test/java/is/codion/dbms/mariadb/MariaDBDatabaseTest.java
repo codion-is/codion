@@ -44,6 +44,10 @@ public class MariaDBDatabaseTest {
 		assertEquals("dbname", database.name());
 		database = new MariaDBDatabase("jdbc:mariadb://host.com:1234/dbname;option=true;option2=false");
 		assertEquals("dbname", database.name());
+		assertEquals("dbname", new MariaDBDatabase("jdbc:mariadb://host.com:1234/dbname?useSSL=false").name());
+		assertEquals("dbname", new MariaDBDatabase("jdbc:mariadb:replication://host1,host2/dbname").name());
+		assertEquals("host.com:1234", new MariaDBDatabase("jdbc:mariadb://host.com:1234/").name());
+		assertEquals("host.com", new MariaDBDatabase("jdbc:mariadb://host.com").name());
 	}
 
 	@Test
