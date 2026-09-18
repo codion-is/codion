@@ -46,6 +46,9 @@ Codion Change Log
 - MySQLDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
 ### is.codion.dbms.oracle
 - OracleDatabase.maximumParameters() now 65.535.
+### is.codion.dbms.postgresql
+- PostgreSQLDatabase now based on AbstractDatabase.ErrorType, resource bundle removed, lock not available, numeric overflow and undefined table errors now recognized.
+- PostgreSQLDatabase bug fixed, updating a referenced key no longer reported as a missing parent.
 ### is.codion.dbms.sqlite
 - SQLiteDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 - SQLiteDatabase.selectForUpdateClause() bug fixed, now empty, FOR UPDATE not being supported.
