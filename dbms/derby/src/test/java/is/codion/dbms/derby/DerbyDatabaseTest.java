@@ -41,7 +41,8 @@ public class DerbyDatabaseTest {
 
 	@Test
 	void sequenceQuery() {
-		assertThrows(UnsupportedOperationException.class, () -> new DerbyDatabase(URL).sequenceQuery("seq"));
+		assertEquals("VALUES NEXT VALUE FOR seq", new DerbyDatabase(URL).sequenceQuery("seq"));
+		assertThrows(NullPointerException.class, () -> new DerbyDatabase(URL).sequenceQuery(null));
 	}
 
 	@Test

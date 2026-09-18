@@ -70,6 +70,11 @@ final class MariaDBDatabase extends AbstractDatabase {
 	}
 
 	@Override
+	public String sequenceQuery(String sequenceName) {
+		return "SELECT NEXT VALUE FOR " + requireNonNull(sequenceName);
+	}
+
+	@Override
 	public String selectForUpdateClause() {
 		if (nowait) {
 			return FOR_UPDATE_NOWAIT;

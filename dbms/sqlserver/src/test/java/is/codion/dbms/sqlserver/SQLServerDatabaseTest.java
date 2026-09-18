@@ -37,7 +37,8 @@ public class SQLServerDatabaseTest {
 
 	@Test
 	void sequenceQuery() {
-		assertThrows(UnsupportedOperationException.class, () -> new SQLServerDatabase(URL).sequenceQuery("seq"));
+		assertEquals("SELECT NEXT VALUE FOR seq", new SQLServerDatabase(URL).sequenceQuery("seq"));
+		assertThrows(NullPointerException.class, () -> new SQLServerDatabase(URL).sequenceQuery(null));
 	}
 
 	@Test

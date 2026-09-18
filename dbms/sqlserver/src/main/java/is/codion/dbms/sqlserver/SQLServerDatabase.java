@@ -59,6 +59,11 @@ final class SQLServerDatabase extends AbstractDatabase {
 	}
 
 	@Override
+	public String sequenceQuery(String sequenceName) {
+		return "SELECT NEXT VALUE FOR " + requireNonNull(sequenceName);
+	}
+
+	@Override
 	public String selectForUpdateClause() {
 		return "";
 	}
