@@ -29,6 +29,9 @@ Codion Change Log
 - DerbyDatabase.sequenceQuery() implemented.
 ### is.codion.dbms.h2
 - H2Database.autoIncrementQuery() now throws UnsupportedOperationException, IDENTITY() having been removed in H2 2.0, Generator.identity() being the alternative.
+- H2Database bug fixed, a database with a mixed case url now initialized again after having been closed.
+- H2Database no longer initializes or shuts down a database on a server, or initializes one in a zip file.
+- H2Database init script paths may now contain parent directory references.
 ### is.codion.dbms.hsqldb
 - HSQLDatabase.selectForUpdateClause() bug fixed, NOWAIT not being supported.
 - HSQLDatabase.sequenceQuery() and autoIncrementQuery() bug fixed, now based on CALL.

@@ -90,6 +90,7 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	private final boolean nowait;
+	private final boolean server;
 
 	H2Database(String url) {
 		this(url, emptyList());
@@ -102,9 +103,13 @@ final class H2Database extends AbstractDatabase {
 	H2Database(String url, List<String> scriptPaths, boolean nowait) {
 		super(url);
 		this.nowait = nowait;
-		synchronized (INITIALIZED_DATABASES) {
-			if (!INITIALIZED_DATABASES.contains(url.toLowerCase(Locale.ROOT))) {
-				initializeEmbeddedDatabase(scriptPaths);
+		this.server = startsWith(url, JDBC_URL_PREFIX_TCP) || startsWith(url, JDBC_URL_PREFIX_SSL);
+		if (!server && !startsWith(url, JDBC_URL_PREFIX_ZIP)) {
+			// a database on a server is not ours to initialize and one in a zip file is read only
+			synchronized (INITIALIZED_DATABASES) {
+				if (!INITIALIZED_DATABASES.contains(initializedKey())) {
+					initializeEmbeddedDatabase(scriptPaths);
+				}
 			}
 		}
 	}
@@ -179,13 +184,16 @@ final class H2Database extends AbstractDatabase {
 
 	@Override
 	protected void closeDatabase() throws SQLException {
+		if (server) {
+			return;
+		}
 		synchronized (INITIALIZED_DATABASES) {
 			try (Connection connection = createConnection(user(SYSADMIN_USERNAME));
 					 Statement statement = connection.createStatement()) {
 				statement.execute(SHUTDOWN);
 			}
 			finally {
-				INITIALIZED_DATABASES.remove(url());
+				INITIALIZED_DATABASES.remove(initializedKey());
 			}
 		}
 	}
@@ -217,11 +225,6 @@ final class H2Database extends AbstractDatabase {
 			throw new SecurityException("Script path contains potentially dangerous characters: " + scriptPath);
 		}
 
-		// Check for path traversal attempts
-		if (trimmedPath.contains("../") || trimmedPath.contains("..\\")) {
-			throw new SecurityException("Script path contains path traversal sequences: " + scriptPath);
-		}
-
 		// Normalize path separators for consistency
 		return trimmedPath.replace("\\", "/");
 	}
@@ -240,7 +243,11 @@ final class H2Database extends AbstractDatabase {
 				}
 			}
 		}
-		INITIALIZED_DATABASES.add(url().toLowerCase(Locale.ROOT));
+		INITIALIZED_DATABASES.add(initializedKey());
+	}
+
+	private String initializedKey() {
+		return url().toLowerCase(Locale.ROOT);
 	}
 
 	private String databasePath() {
@@ -248,12 +255,16 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	private boolean isEmbeddedInMemory() {
-		return url().startsWith(JDBC_URL_PREFIX_MEM);
+		return startsWith(url(), JDBC_URL_PREFIX_MEM);
 	}
 
 	private boolean databaseFileExists() {
 		return Files.exists(Paths.get(databasePath() + FILE_SUFFIX_PAGESTORE)) ||
 						Files.exists(Paths.get(databasePath() + FILE_SUFFIX_MVSTORE));
+	}
+
+	private static boolean startsWith(String url, String prefix) {
+		return url.regionMatches(true, 0, prefix, 0, prefix.length());
 	}
 
 	private void initialize(Properties properties, String appendToUrl) {

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static java.util.Collections.singletonList;
@@ -123,5 +124,60 @@ public class H2DatabaseTest {
 		File parentDir = dbFile.getParentFile();
 		dbFile.delete();
 		parentDir.delete();
+	}
+
+	@Test
+	void closeMixedCaseUrl() throws SQLException {
+		// the database must be initialized again after having been closed, whatever the case of the url
+		for (String url : new String[] {"jdbc:h2:mem:closelowercase", "jdbc:h2:mem:CloseMixedCase"}) {
+			for (int i = 0; i < 2; i++) {
+				H2Database database = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
+				try (Connection connection = database.createConnection(User.parse("scott:tiger"))) {
+					connection.prepareStatement("select id from test.test_table").execute();
+				}
+				finally {
+					database.close();
+				}
+			}
+		}
+	}
+
+	@Test
+	void relativeScriptPath() throws SQLException {
+		H2Database database = new H2Database("jdbc:h2:mem:relativescriptpath", singletonList("../h2/src/test/resources/create_schema.sql"));
+		try (Connection connection = database.createConnection(User.parse("scott:tiger"))) {
+			connection.prepareStatement("select id from test.test_table").execute();
+		}
+		finally {
+			database.close();
+		}
+		assertThrows(SecurityException.class, () -> new H2Database("jdbc:h2:mem:scriptinjection", singletonList("script.sql';drop all objects")));
+	}
+
+	@Test
+	void server() throws Exception {
+		// the driver is a runtime dependency only
+		Class<?> serverClass = Class.forName("org.h2.tools.Server");
+		Object server = serverClass.getMethod("createTcpServer", String[].class)
+						.invoke(null, (Object) new String[] {"-tcpPort", "0", "-ifNotExists"});
+		serverClass.getMethod("start").invoke(server);
+		try {
+			String url = "jdbc:h2:tcp://localhost:" + serverClass.getMethod("getPort").invoke(server) + "/mem:served";
+			// a password protected sysadmin, which the embedded initialization would fail to log in as
+			try (Connection connection = DriverManager.getConnection(url + ";DB_CLOSE_DELAY=-1", "sa", "secret")) {
+				connection.prepareStatement("create user scott password 'tiger'").execute();
+			}
+			H2Database database = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
+			try (Connection connection = database.createConnection(User.parse("scott:tiger"))) {
+				// not initialized
+				assertThrows(SQLException.class, () -> connection.prepareStatement("select id from test.test_table").execute());
+			}
+			database.close();
+			// not shut down, in which case the in-memory database would be gone along with its users
+			DriverManager.getConnection(url + ";IFEXISTS=TRUE", "scott", "tiger").close();
+		}
+		finally {
+			serverClass.getMethod("stop").invoke(server);
+		}
 	}
 }
