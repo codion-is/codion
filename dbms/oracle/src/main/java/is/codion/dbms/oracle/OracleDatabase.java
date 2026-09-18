@@ -20,24 +20,18 @@ package is.codion.dbms.oracle;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.ClientInfo;
-import is.codion.common.utilities.resource.MessageBundle;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 
 /**
  * A Database implementation based on the Oracle database.
  */
 final class OracleDatabase extends AbstractDatabase {
-
-	private static final MessageBundle MESSAGES =
-					messageBundle(OracleDatabase.class, getBundle(OracleDatabase.class.getName()));
 
 	private static final String JDBC_URL_DRIVER_PREFIX = "jdbc:oracle:thin:";
 	private static final String CLIENT_IDENTIFIER = "OCSID.CLIENTID";
@@ -45,36 +39,26 @@ final class OracleDatabase extends AbstractDatabase {
 	private static final String JDBC_URL_PREFIX = JDBC_URL_DRIVER_PREFIX + "@";
 	private static final String JDBC_URL_WALLET_PREFIX = JDBC_URL_DRIVER_PREFIX + "/@";
 
-	private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<>();
-
-	private static final int UNIQUE_KEY_ERROR = 1;
-	private static final int CHILD_RECORD_ERROR = 2292;
-	private static final int NULL_VALUE_ERROR = 1400;
-	private static final int INTEGRITY_CONSTRAINT_ERROR = 2291;
-	private static final int NULL_VALUE_ERROR_2 = 1407;
-	private static final int CHECK_CONSTRAINT_ERROR = 2290;
-	private static final int MISSING_PRIVS_ERROR = 1031;
-	private static final int LOGIN_CREDS_ERROR = 1017;
-	private static final int TABLE_NOT_FOUND_ERROR = 942;
-	private static final int UNABLE_TO_CONNECT_ERROR = 1045;
-	private static final int VALUE_TOO_LARGE_ERROR = 1401;
-	private static final int VIEW_HAS_ERRORS_ERROR = 4063;
-	private static final int TIMEOUT_ERROR = 17016;
+	private static final String DOCUMENTATION_LINK = "https://docs.oracle.com/error-help";
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
+	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
+
 	static {
-		ERROR_CODE_MAP.put(UNIQUE_KEY_ERROR, MESSAGES.getString("unique_key_error"));
-		ERROR_CODE_MAP.put(CHILD_RECORD_ERROR, MESSAGES.getString("child_record_error"));
-		ERROR_CODE_MAP.put(NULL_VALUE_ERROR, MESSAGES.getString("null_value_error"));
-		ERROR_CODE_MAP.put(INTEGRITY_CONSTRAINT_ERROR, MESSAGES.getString("integrity_constraint_error"));
-		ERROR_CODE_MAP.put(NULL_VALUE_ERROR_2, MESSAGES.getString("null_value_error"));
-		ERROR_CODE_MAP.put(CHECK_CONSTRAINT_ERROR, MESSAGES.getString("check_constraint_error"));
-		ERROR_CODE_MAP.put(MISSING_PRIVS_ERROR, MESSAGES.getString("missing_privileges_error"));
-		ERROR_CODE_MAP.put(LOGIN_CREDS_ERROR, MESSAGES.getString("login_credentials_error"));
-		ERROR_CODE_MAP.put(TABLE_NOT_FOUND_ERROR, MESSAGES.getString("table_not_found_error"));
-		ERROR_CODE_MAP.put(UNABLE_TO_CONNECT_ERROR, MESSAGES.getString("user_cannot_connect"));
-		ERROR_CODE_MAP.put(VALUE_TOO_LARGE_ERROR, MESSAGES.getString("value_too_large_for_column_error"));
-		ERROR_CODE_MAP.put(VIEW_HAS_ERRORS_ERROR, MESSAGES.getString("view_has_errors_error"));
+		ERROR_TYPES.put(1, ErrorType.UNIQUE_CONSTRAINT);
+		ERROR_TYPES.put(2291, ErrorType.PARENT_MISSING);
+		ERROR_TYPES.put(2292, ErrorType.CHILD_EXISTS);
+		ERROR_TYPES.put(1400, ErrorType.NULL_VALUE);// cannot insert NULL
+		ERROR_TYPES.put(1407, ErrorType.NULL_VALUE);// cannot update to NULL
+		ERROR_TYPES.put(2290, ErrorType.CHECK_CONSTRAINT);
+		ERROR_TYPES.put(12899, ErrorType.VALUE_TOO_LARGE);// value too large for column
+		ERROR_TYPES.put(1438, ErrorType.VALUE_TOO_LARGE);// value larger than specified precision
+		ERROR_TYPES.put(1031, ErrorType.MISSING_PRIVILEGES);
+		ERROR_TYPES.put(1045, ErrorType.MISSING_PRIVILEGES);// user lacks CREATE SESSION privilege
+		ERROR_TYPES.put(1017, ErrorType.AUTHENTICATION);
+		ERROR_TYPES.put(54, ErrorType.ROW_LOCKED);// resource busy and acquire with NOWAIT specified
+		ERROR_TYPES.put(942, ErrorType.TABLE_NOT_FOUND);
+		ERROR_TYPES.put(4063, ErrorType.VIEW_HAS_ERRORS);
 	}
 
 	private final boolean nowait;
@@ -127,41 +111,48 @@ final class OracleDatabase extends AbstractDatabase {
 		return MAXIMUM_STATEMENT_PARAMETERS;
 	}
 
+	/**
+	 * A query timeout is reported as {@code ORA-01013: user requested cancel of current operation},
+	 * which is not mapped, the driver throwing a {@link java.sql.SQLTimeoutException} for a timeout only.
+	 */
 	@Override
-	public String errorMessage(SQLException exception, Operation operation) {
-		requireNonNull(exception);
-		if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALUE_ERROR_2) {
-			String exceptionMessage = exception.getMessage();
-			int newlineIndex = exception.getMessage().indexOf('\n');
-			if (newlineIndex != -1) {
-				exceptionMessage = exceptionMessage.substring(0, newlineIndex);
-			}
-			String errorMsg = exceptionMessage;
-			String columnName = errorMsg.substring(errorMsg.lastIndexOf('.') + 2, errorMsg.lastIndexOf(')') - 1);
+	protected ErrorType errorType(SQLException exception) {
+		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
 
-			return MESSAGES.getString("value_missing") + ": " + columnName;
+		return errorType == null ? super.errorType(exception) : errorType;
+	}
+
+	@Override
+	protected String errorDetail(SQLException exception, ErrorType errorType) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return null;
 		}
-
-		if (ERROR_CODE_MAP.containsKey(exception.getErrorCode())) {
-			return ERROR_CODE_MAP.get(exception.getErrorCode());
+		switch (errorType) {
+			case NULL_VALUE:
+				// ORA-01400: cannot insert NULL into ("SCHEMA"."TABLE"."COLUMN")
+				// ORA-01407: cannot update ("SCHEMA"."TABLE"."COLUMN") to NULL
+				return lastQuoted(message, "\")");
+			case VALUE_TOO_LARGE:
+				// ORA-12899: value too large for column "SCHEMA"."TABLE"."COLUMN" (actual: 16, maximum: 10)
+				return lastQuoted(message, "\" (");
+			default:
+				return null;
 		}
-
-		return exception.getMessage();
 	}
 
+	/**
+	 * The driver appends a link to the documentation of the error in question
+	 */
 	@Override
-	public boolean isAuthenticationException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == LOGIN_CREDS_ERROR;
-	}
+	protected String message(SQLException exception) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return null;
+		}
+		int linkIndex = message.indexOf(DOCUMENTATION_LINK);
 
-	@Override
-	public boolean isReferentialIntegrityException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == CHILD_RECORD_ERROR || exception.getErrorCode() == INTEGRITY_CONSTRAINT_ERROR;
-	}
-
-	@Override
-	public boolean isUniqueConstraintException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == UNIQUE_KEY_ERROR;
+		return linkIndex == -1 ? message : message.substring(0, linkIndex).trim();
 	}
 
 	/**
@@ -179,8 +170,16 @@ final class OracleDatabase extends AbstractDatabase {
 		clientInfoProperty(connection, MODULE, clientInfo.clientType());
 	}
 
-	@Override
-	public boolean isTimeoutException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == TIMEOUT_ERROR;
+	/**
+	 * @return the quoted text ending at the given suffix, which starts with the closing quote, null if not found
+	 */
+	private static String lastQuoted(String message, String suffix) {
+		int endIndex = message.indexOf(suffix);
+		if (endIndex == -1) {
+			return null;
+		}
+		int beginIndex = message.lastIndexOf('"', endIndex - 1);
+
+		return beginIndex == -1 ? null : message.substring(beginIndex + 1, endIndex);
 	}
 }

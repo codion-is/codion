@@ -46,6 +46,8 @@ Codion Change Log
 - MySQLDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
 ### is.codion.dbms.oracle
 - OracleDatabase.maximumParameters() now 65.535.
+- OracleDatabase now based on AbstractDatabase.ErrorType, resource bundle removed, resource busy (ORA-00054), value too large (ORA-12899, ORA-01438) and query timeout errors now recognized, the documentation link removed from messages.
+- OracleDatabase.errorMessage() bug fixed, no longer throws in case of an unexpected exception message.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase now based on AbstractDatabase.ErrorType, resource bundle removed, lock not available, numeric overflow and undefined table errors now recognized.
 - PostgreSQLDatabase bug fixed, updating a referenced key no longer reported as a missing parent.
