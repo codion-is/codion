@@ -20,7 +20,6 @@ package is.codion.dbms.h2;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.utilities.resource.MessageBundle;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,31 +35,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.common.utilities.user.User.user;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 
 /**
  * A Database implementation based on the H2 database.
  */
 final class H2Database extends AbstractDatabase {
-
-	private static final MessageBundle MESSAGES =
-					messageBundle(H2Database.class, getBundle(H2Database.class.getName()));
-
-	/**
-	 * The error code representing incorrect login credentials
-	 */
-	private static final int AUTHENTICATION_ERROR = 28000;
-	private static final int REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS = 23503;
-	private static final int REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING = 23506;
-	private static final int UNIQUE_CONSTRAINT_ERROR = 23505;
-	private static final int TIMEOUT_ERROR = 57014;
-	private static final int NULL_NOT_ALLOWED = 23502;
-	private static final int CHECK_CONSTRAINT_INVALID = 23514;
-	private static final int WRONG_USER_OR_PASSWORD = 28000;
 
 	private static final Set<String> INITIALIZED_DATABASES = new HashSet<>();
 
@@ -78,15 +60,20 @@ final class H2Database extends AbstractDatabase {
 	static final String SEQUENCE_VALUE_QUERY = "select next value for ";
 	static final String SYSADMIN_USERNAME = "sa";
 
-	private static final Map<Integer, String> ERROR_MESSAGES = new HashMap<>();
+	private static final String COLUMN = "column \"";
+	private static final String SQL_STATEMENT = "; SQL statement:";
+
+	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
 
 	static {
-		ERROR_MESSAGES.put(UNIQUE_CONSTRAINT_ERROR, MESSAGES.getString("unique_key_error"));
-		ERROR_MESSAGES.put(REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS, MESSAGES.getString("child_record_error"));
-		ERROR_MESSAGES.put(REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING, MESSAGES.getString("integrity_constraint_error"));
-		ERROR_MESSAGES.put(NULL_NOT_ALLOWED, MESSAGES.getString("value_missing"));
-		ERROR_MESSAGES.put(CHECK_CONSTRAINT_INVALID, MESSAGES.getString("check_constraint_invalid"));
-		ERROR_MESSAGES.put(WRONG_USER_OR_PASSWORD, MESSAGES.getString("wrong_user_or_password"));
+		// the error codes not covered by the sql state defaults
+		ERROR_TYPES.put(23503, ErrorType.CHILD_EXISTS);// referential integrity violated, child exists
+		ERROR_TYPES.put(23506, ErrorType.PARENT_MISSING);// referential integrity violated, parent missing
+		ERROR_TYPES.put(50200, ErrorType.ROW_LOCKED);// lock timeout, a timeout exception when NOWAIT is used
+		ERROR_TYPES.put(57014, ErrorType.TIMEOUT);// statement was canceled
+		ERROR_TYPES.put(42102, ErrorType.TABLE_NOT_FOUND);
+		ERROR_TYPES.put(42104, ErrorType.TABLE_NOT_FOUND);// the database being empty
+		ERROR_TYPES.put(90096, ErrorType.MISSING_PRIVILEGES);// not enough rights for object
 	}
 
 	private final boolean nowait;
@@ -145,41 +132,44 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	@Override
-	public boolean isAuthenticationException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == AUTHENTICATION_ERROR;
+	protected ErrorType errorType(SQLException exception) {
+		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
+
+		return errorType == null ? super.errorType(exception) : errorType;
 	}
 
 	@Override
-	public boolean isReferentialIntegrityException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS ||
-						exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING;
-	}
-
-	@Override
-	public boolean isUniqueConstraintException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == UNIQUE_CONSTRAINT_ERROR;
-	}
-
-	@Override
-	public boolean isTimeoutException(SQLException exception) {
-		return requireNonNull(exception).getErrorCode() == TIMEOUT_ERROR;
-	}
-
-	@Override
-	public String errorMessage(SQLException exception, Operation operation) {
-		if (exception.getErrorCode() == NULL_NOT_ALLOWED) {
-			// NULL not allowed for column "NAME;"
-			String exceptionMessage = exception.getMessage();
-			String columnName = exceptionMessage.substring(exceptionMessage.indexOf('"') + 1, exceptionMessage.lastIndexOf('"'));
-
-			return MESSAGES.getString("value_missing") + ": " + columnName;
+	protected String errorDetail(SQLException exception, ErrorType errorType) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return null;
 		}
+		switch (errorType) {
+			case NULL_VALUE:
+				// NULL not allowed for column "NAME"; SQL statement: ...
+				return between(message, COLUMN, "\"");
+			case VALUE_TOO_LARGE:
+				// Value too long for column "NAME CHARACTER VARYING(10)": "'abcdefghijklmnop' (16)"; SQL statement: ...
+				String column = between(message, COLUMN, "\"");
 
-		if (ERROR_MESSAGES.containsKey(exception.getErrorCode())) {
-			return ERROR_MESSAGES.get(exception.getErrorCode());
+				return column == null || column.indexOf(' ') == -1 ? column : column.substring(0, column.indexOf(' '));
+			default:
+				return null;
 		}
+	}
 
-		return exception.getMessage();
+	/**
+	 * The statement is appended to each message
+	 */
+	@Override
+	protected String message(SQLException exception) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return null;
+		}
+		int statementIndex = message.indexOf(SQL_STATEMENT);
+
+		return statementIndex == -1 ? message : message.substring(0, statementIndex);
 	}
 
 	@Override
@@ -265,6 +255,17 @@ final class H2Database extends AbstractDatabase {
 
 	private static boolean startsWith(String url, String prefix) {
 		return url.regionMatches(true, 0, prefix, 0, prefix.length());
+	}
+
+	private static String between(String message, String prefix, String suffix) {
+		int prefixIndex = message.indexOf(prefix);
+		if (prefixIndex == -1) {
+			return null;
+		}
+		int beginIndex = prefixIndex + prefix.length();
+		int endIndex = message.indexOf(suffix, beginIndex);
+
+		return endIndex == -1 ? null : message.substring(beginIndex, endIndex);
 	}
 
 	private void initialize(Properties properties, String appendToUrl) {

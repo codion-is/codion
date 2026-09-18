@@ -34,6 +34,8 @@ Codion Change Log
 - H2Database bug fixed, a database with a mixed case url now initialized again after having been closed.
 - H2Database no longer initializes or shuts down a database on a server, or initializes one in a zip file.
 - H2Database init script paths may now contain parent directory references.
+- H2Database now based on AbstractDatabase.ErrorType, resource bundle removed, value too large, lock timeout, table not found and missing privileges errors now recognized, the statement removed from messages.
+- H2Database bug fixed, check constraint violations now recognized, errorMessage() no longer throws in case of an unexpected exception message, or includes the statement in the column name.
 ### is.codion.dbms.hsqldb
 - HSQLDatabase.selectForUpdateClause() bug fixed, NOWAIT not being supported.
 - HSQLDatabase.sequenceQuery() and autoIncrementQuery() bug fixed, now based on CALL.
