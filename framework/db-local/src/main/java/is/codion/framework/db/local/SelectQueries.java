@@ -324,10 +324,16 @@ final class SelectQueries {
 				// For a FOR UPDATE select we select from the base table, otherwise from the (possibly view based) select table.
 				// Note that this means an entity combining optimistic locking with a select table must keep its column
 				// expressions valid against the base table as well, since the FROM switches but the column clause does not.
-				return forUpdate ? definition.table() : definition.selectTable();
+				return forUpdate ? forUpdateTable() : definition.selectTable();
 			}
 
 			return from;
+		}
+
+		private String forUpdateTable() {
+			String tableHint = database.selectForUpdateTableHint();
+
+			return tableHint.isEmpty() ? definition.table() : definition.table() + " " + tableHint;
 		}
 
 		private List<ColumnDefinition<?>> columnsToSelect(Select select) {

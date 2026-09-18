@@ -62,6 +62,8 @@ final class SQLServerDatabase extends AbstractDatabase {
 	}
 
 	private static final String UNORDERED = "ORDER BY (SELECT NULL) ";
+	private static final String UPDATE_LOCK = "WITH (UPDLOCK, ROWLOCK)";
+	private static final String UPDATE_LOCK_NOWAIT = "WITH (UPDLOCK, ROWLOCK, NOWAIT)";
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlserver://";
 	private static final String JTDS_URL_PREFIX = "jdbc:jtds:sqlserver://";
 	private static final String DATABASE_NAME = "databaseName";
@@ -73,8 +75,15 @@ final class SQLServerDatabase extends AbstractDatabase {
 	 */
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 2098;
 
+	private final boolean nowait;
+
 	SQLServerDatabase(String url) {
+		this(url, true);
+	}
+
+	SQLServerDatabase(String url, boolean nowait) {
 		super(url);
+		this.nowait = nowait;
 	}
 
 	@Override
@@ -126,9 +135,20 @@ final class SQLServerDatabase extends AbstractDatabase {
 		return "SELECT NEXT VALUE FOR " + requireNonNull(sequenceName);
 	}
 
+	/**
+	 * @return an empty string, the rows being locked via {@link #selectForUpdateTableHint()}
+	 */
 	@Override
 	public String selectForUpdateClause() {
 		return "";
+	}
+
+	/**
+	 * An update lock does not block readers, only others requesting an update lock, which with NOWAIT fail with a lock request timeout.
+	 */
+	@Override
+	public String selectForUpdateTableHint() {
+		return nowait ? UPDATE_LOCK_NOWAIT : UPDATE_LOCK;
 	}
 
 	@Override

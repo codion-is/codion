@@ -9,6 +9,7 @@ Codion Change Log
 - Database.errorMessage(), isAuthenticationException(), isReferentialIntegrityException(), isUniqueConstraintException() and isTimeoutException() removed, Database.exception() now returns AuthenticationException in case of an authentication error, AbstractDatabase.exception() now final.
 - AbstractDatabase.ErrorType.ACCOUNT_LOCKED and PASSWORD_EXPIRED added, reported as authentication errors, with their own messages.
 - AbstractDatabase.databaseOrHost() added.
+- Database.selectForUpdateTableHint() added, for databases locking rows via a table hint instead of a select for update clause.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
@@ -88,6 +89,7 @@ Codion Change Log
 - SQLServerDatabase bug fixed, a check constraint violation no longer reported as a referential integrity error.
 - SQLServerDatabase, a disabled or locked out account and an expired password now reported as authentication errors.
 - SQLServerDatabase.name() now the database name, if specified in the url, otherwise the instance or the host without port, jTDS urls now handled.
+- SQLServerDatabase.selectForUpdateTableHint() implemented, rows now locked when selecting for update, respecting Database.SELECT_FOR_UPDATE_NOWAIT, concurrent updates no longer able to overwrite each other.
 ### is.codion.swing.common.ui
 - FormBuilder added, building a form panel, label/input pairs in rows, the label beside its input, over a GridBagLayout, along with DefaultFormBuilder, for extending, and Components.form(), LoginPanel now based on it.
 - TemporalInput, TextInput and FileInput now report the baseline of their field, aligning with a label beside them.

@@ -239,6 +239,11 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
+	public String selectForUpdateTableHint() {
+		return "";
+	}
+
+	@Override
 	public boolean subqueryRequiresAlias() {
 		return false;
 	}

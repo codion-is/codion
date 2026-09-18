@@ -80,6 +80,7 @@ public final class AbstractDatabaseTest {
 		@DisplayName("Select for update clause returns expected value")
 		void selectForUpdateClause_shouldReturnExpectedValue() {
 			assertEquals(AbstractDatabase.FOR_UPDATE_NOWAIT, database.selectForUpdateClause());
+			assertEquals("", database.selectForUpdateTableHint());
 		}
 
 		@Test
