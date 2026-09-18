@@ -18,15 +18,18 @@
  */
 package is.codion.common.model.component.combobox;
 
+import is.codion.common.model.component.combobox.DefaultFilterComboBoxModel.SelectedItemTranslator;
 import is.codion.common.model.component.combobox.FilterComboBoxModel.ItemComboBoxModelBuilder;
 import is.codion.common.utilities.item.Item;
 
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,6 +44,7 @@ public abstract class AbstractItemComboBoxModelBuilder<T, B extends ItemComboBox
 
 	private final List<Item<T>> items;
 	private final @Nullable Item<T> nullItem;
+	private final Collection<Consumer<Item<T>>> onSelectedItem = new ArrayList<>(1);
 
 	private boolean sorted = false;
 	private @Nullable Comparator<Item<T>> comparator;
@@ -87,22 +91,26 @@ public abstract class AbstractItemComboBoxModelBuilder<T, B extends ItemComboBox
 	}
 
 	@Override
+	public final B onSelectedItem(Consumer<Item<T>> item) {
+		this.onSelectedItem.add(requireNonNull(item));
+		return self();
+	}
+
+	@Override
 	public FilterComboBoxModel<Item<T>> build() {
 		FilterComboBoxModel.Builder<Item<T>, ?> builder = DefaultFilterComboBoxModel.builder(items)
-						.translator(new DefaultFilterComboBoxModel.SelectedItemTranslator<>(items))
+						.translator(new SelectedItemTranslator<>(items))
+						.select(selected)
 						.nullItem(nullItem);
+		onSelectedItem.forEach(builder::onSelectedItem);
 		if (!sorted) {
 			builder.comparator(null);
 		}
 		if (comparator != null) {
 			builder.comparator(comparator);
 		}
-		FilterComboBoxModel<Item<T>> comboBoxModel = builder.build();
-		if (selected != null) {
-			comboBoxModel.selection().item().set(selected);
-		}
 
-		return comboBoxModel;
+		return builder.build();
 	}
 
 	/**
