@@ -21,7 +21,6 @@ package is.codion.framework.model;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
@@ -143,9 +142,9 @@ public interface EntitySearchModel {
 	interface Search {
 
 		/**
-		 * @return the {@link ValueSet} representing the search strings
+		 * @return the {@link Value} representing the search string
 		 */
-		ValueSet<String> strings();
+		Value<String> string();
 
 		/**
 		 * Performs a query based on the current search configuration and returns the result.
@@ -153,7 +152,7 @@ public interface EntitySearchModel {
 		 * @return a list containing the entities fulfilling the current condition
 		 * @throws IllegalStateException in case no search columns are specified
 		 * @see #limit()
-		 * @see #strings()
+		 * @see #string()
 		 */
 		List<Entity> perform();
 	}

@@ -31,7 +31,6 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.ListSelectionModel;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -100,19 +99,6 @@ public class EntitySearchFieldTest {
 		searchModel.selection().clear();
 		assertEquals("", searchField.getText());
 		assertNull(searchField.getToolTipText());
-	}
-
-	@Test
-	void theTextIsASingleSearchString() {
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Employee.TYPE)
-						.connection(CONNECTION)
-						.build();
-		EntitySearchField field = EntitySearchField.builder()
-						.model(searchModel)
-						.build();
-		field.setText("foo, bar");
-		assertEquals(Set.of("foo, bar"), searchModel.search().strings().get());
 	}
 
 	@Test

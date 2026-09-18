@@ -90,7 +90,7 @@ public final class DefaultEntitySearchModelTest {
 	void selection() {
 		assertFalse(searchModel.selection().present().is());
 
-		searchModel.search().strings().set(singleton("joh"));
+		searchModel.search().string().set("joh");
 		List<Entity> result = searchModel.search().perform();
 
 		List<Entity> notified = new ArrayList<>();
@@ -113,7 +113,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void searchModel() {
-		searchModel.search().strings().set(singleton("joh"));
+		searchModel.search().string().set("joh");
 		assertFalse(searchModel.selection().present().is());
 		List<Entity> result = searchModel.search().perform();
 		assertFalse(result.isEmpty());
@@ -121,42 +121,10 @@ public final class DefaultEntitySearchModelTest {
 		assertTrue(contains(result, "johnson"));
 		assertFalse(contains(result, "Andy"));
 		assertFalse(contains(result, "Andrew"));
-		assertEquals(singleton("joh"), searchModel.search().strings().get());
 		searchModel.selection().entity().set(result.get(0));
 		assertTrue(searchModel.selection().present().is());
 
-		searchModel.search().strings().set(asList("joh", "and"));
-		result = searchModel.search().perform();
-		assertFalse(result.isEmpty());
-		assertTrue(contains(result, "John"));
-		assertTrue(contains(result, "johnson"));
-		assertTrue(contains(result, "Andy"));
-		assertTrue(contains(result, "Andrew"));
-
-		searchModel.search().strings().set(singleton("jo"));
-		result = searchModel.search().perform();
-		assertTrue(contains(result, "John"));
-		assertTrue(contains(result, "johnson"));
-		assertFalse(contains(result, "Andy"));
-		assertFalse(contains(result, "Andrew"));
-
-		searchModel.search().strings().set(singleton("le"));
-		result = searchModel.search().perform();
-		assertTrue(contains(result, "John"));
-		assertFalse(contains(result, "johnson"));
-		assertTrue(contains(result, "Andy"));
-		assertFalse(contains(result, "Andrew"));
-
-		searchModel.settings().get(Employee.NAME).wildcardPrefix().set(false);
-		searchModel.settings().get(Employee.JOB).wildcardPrefix().set(false);
-		searchModel.search().strings().set(asList("jo", "cl"));
-		result = searchModel.search().perform();
-		assertTrue(contains(result, "John"));
-		assertTrue(contains(result, "johnson"));
-		assertTrue(contains(result, "Andy"));
-		assertFalse(contains(result, "Andrew"));
-
-		searchModel.search().strings().set(singleton("Joh"));
+		searchModel.search().string().set("Joh");
 		searchModel.settings().get(Employee.NAME).caseSensitive().set(true);
 		searchModel.settings().get(Employee.JOB).caseSensitive().set(true);
 		result = searchModel.search().perform();
@@ -173,30 +141,27 @@ public final class DefaultEntitySearchModelTest {
 		assertFalse(contains(result, "Andy"));
 		assertFalse(contains(result, "Andrew"));
 
-		searchModel.search().strings().set(asList("andy ", " Andrew "));//spaces should be trimmed away
+		searchModel.search().string().set(" Andrew ");//spaces should be trimmed away
 		result = searchModel.search().perform();
-		assertEquals(2, result.size());
-		assertTrue(contains(result, "Andy"));
+		assertEquals(1, result.size());
 		assertTrue(contains(result, "Andrew"));
 
-		searchModel.search().strings().set(asList("andy", "Andrew"));
+		searchModel.search().string().set("andy");
 		result = searchModel.search().perform();
-		assertEquals(2, result.size());
+		assertEquals(1, result.size());
 		assertTrue(contains(result, "Andy"));
-		assertTrue(contains(result, "Andrew"));
 		searchModel.selection().entity().set(result.get(0));
 
-		searchModel.search().strings().set(asList("and", " rew"));
+		searchModel.search().string().set(" rew");
 		searchModel.settings().get(Employee.NAME).wildcardPrefix().set(true);
 		searchModel.settings().get(Employee.JOB).wildcardPrefix().set(true);
 		searchModel.settings().get(Employee.NAME).wildcardPostfix().set(false);
 		searchModel.settings().get(Employee.JOB).wildcardPostfix().set(false);
 		result = searchModel.search().perform();
 		assertEquals(1, result.size());
-		assertFalse(contains(result, "Andy"));
 		assertTrue(contains(result, "Andrew"));
 
-		searchModel.search().strings().set(singleton("Joh"));
+		searchModel.search().string().set("Joh");
 		searchModel.settings().get(Employee.NAME).caseSensitive().set(true);
 		searchModel.settings().get(Employee.JOB).caseSensitive().set(true);
 		searchModel.settings().get(Employee.NAME).wildcardPostfix().set(true);
@@ -208,7 +173,7 @@ public final class DefaultEntitySearchModelTest {
 
 		searchModel.condition().clear();
 		searchModel.settings().get(Employee.NAME).caseSensitive().set(false);
-		searchModel.search().strings().set(singleton("jo on"));// space as wildcard
+		searchModel.search().string().set("jo on");// space as wildcard
 		result = searchModel.search().perform();
 		assertEquals(1, result.size());
 		assertTrue(contains(result, "johnson"));
@@ -222,7 +187,7 @@ public final class DefaultEntitySearchModelTest {
 		int all = CONNECTION.select(Condition.all(Employee.TYPE)).size();
 		int inSales = CONNECTION.select(Employee.DEPARTMENT_FK.equalTo(sales)).size();
 		// everything matches, the filter decides
-		searchModel.search().strings().set(singleton("%"));
+		searchModel.search().string().set("%");
 		assertEquals(all, searchModel.search().perform().size());
 
 		assertThrows(IllegalArgumentException.class, () -> searchModel.filter().get(Detail.MASTER_FK));
@@ -266,7 +231,7 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals(4, searchModel.search().perform().size());
 
 		// AND'ed to the search condition and the additional condition
-		searchModel.search().strings().set(singleton("joh"));
+		searchModel.search().string().set("joh");
 		assertEquals(2, searchModel.search().perform().size());
 		searchModel.condition().set(() -> Employee.JOB.equalTo("MANAGER"));
 		assertEquals(1, searchModel.search().perform().size());
@@ -275,7 +240,7 @@ public final class DefaultEntitySearchModelTest {
 		filter.clear();
 		assertTrue(filter.get().isEmpty());
 		assertEquals(2, searchModel.search().perform().size());
-		searchModel.search().strings().set(singleton("%"));
+		searchModel.search().string().set("%");
 		assertEquals(all, searchModel.search().perform().size());
 	}
 
@@ -296,7 +261,7 @@ public final class DefaultEntitySearchModelTest {
 						.build();
 		assertThrows(IllegalArgumentException.class, () -> searchModel.filter().get(Employee.DEPARTMENT_FK).link(employees));
 
-		searchModel.search().strings().set(singleton("%"));
+		searchModel.search().string().set("%");
 		ForeignKeyFilter filter = searchModel.filter().get(Employee.DEPARTMENT_FK);
 		filter.link(departments);
 		// the master selection filters
@@ -321,7 +286,7 @@ public final class DefaultEntitySearchModelTest {
 						.search(searchable)
 						.filter(Employee.DEPARTMENT_FK, departments)
 						.build();
-		built.search().strings().set(singleton("%"));
+		built.search().string().set("%");
 		assertEquals(4, built.search().perform().size());
 		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION)
 						.filter(Employee.DEPARTMENT_FK, employees));
@@ -334,7 +299,7 @@ public final class DefaultEntitySearchModelTest {
 						.search(searchable)
 						.filter(Employee.DEPARTMENT_FK, departmentSearch)
 						.build();
-		bySearch.search().strings().set(singleton("%"));
+		bySearch.search().string().set("%");
 		// strict, no master selection, nothing
 		assertTrue(bySearch.search().perform().isEmpty());
 		departmentSearch.selection().entity().set(accounting);
@@ -349,7 +314,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void condition() {
-		searchModel.search().strings().set(singleton("johnson"));
+		searchModel.search().string().set("johnson");
 		List<Entity> result = searchModel.search().perform();
 		assertEquals(1, result.size());
 		searchModel.selection().entity().set(result.get(0));
@@ -366,7 +331,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void limit() {
-		searchModel.search().strings().set(singleton("j"));
+		searchModel.search().string().set("j");
 		assertEquals(4, searchModel.search().perform().size());
 		searchModel.limit().set(3);
 		assertEquals(3, searchModel.search().perform().size());
@@ -383,7 +348,7 @@ public final class DefaultEntitySearchModelTest {
 						.search(searchable)
 						.attributes(singleton(Employee.NAME))
 						.build();
-		model.search().strings().set(singleton("John"));
+		model.search().string().set("John");
 		Entity john = model.search().perform().get(0);
 		assertTrue(john.contains(Employee.ID));
 		assertTrue(john.contains(Employee.NAME));
@@ -400,7 +365,7 @@ public final class DefaultEntitySearchModelTest {
 		EntitySearchModel model = builder
 						.orderBy(OrderBy.descending(Employee.NAME))
 						.build();
-		model.search().strings().set(singleton("Jo"));
+		model.search().string().set("Jo");
 		List<Entity> result = model.search().perform();
 		assertEquals(3, result.size());
 		assertEquals("John", result.get(0).get(Employee.NAME));

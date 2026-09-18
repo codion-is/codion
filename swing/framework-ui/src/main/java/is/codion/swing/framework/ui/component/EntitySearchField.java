@@ -115,7 +115,6 @@ import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.event.FocusEvent.Cause.ACTIVATION;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -451,7 +450,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void bindEvents() {
 		getDocument().addDocumentListener((DocumentAdapter) e -> updateSearchStrings());
-		model.search().strings().addListener(this::updateSearchReady);
+		model.search().string().addListener(this::updateSearchReady);
 		// notified when an updated entity replaces the selected one as well, updating the text
 		model.selection().entity().addListener(this::onSelectionChanged);
 		addFocusListener(new FocusListener());
@@ -461,10 +460,10 @@ public final class EntitySearchField extends HintTextField {
 	private void updateSearchStrings() {
 		String text = getText();
 		if (text.isEmpty() || text.equals(selectionString())) {
-			model.search().strings().clear();
+			model.search().string().clear();
 		}
 		else {
-			model.search().strings().set(singleton(text));
+			model.search().string().set(text);
 		}
 	}
 
@@ -523,7 +522,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void performSearch(boolean promptUser) {
-		if (model.search().strings().isEmpty()) {
+		if (model.search().string().getOrThrow().isEmpty()) {
 			model.selection().clear();
 		}
 		else {

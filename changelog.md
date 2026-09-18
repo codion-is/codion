@@ -17,6 +17,7 @@ Codion Change Log
 - EntityComboBoxModel.Builder.filter(ForeignKey, EntitySearchModel) added.
 - ForeignKeyConditionModel.link() added, linking a condition to a master condition, the referenced entities offered by the models restricted to the ones the master condition refers to, via a foreign key of the referenced entity, the operands no longer referred to dropped, along with Link, controlling the strictness.
 - EntityConditionModel.NEGATION_INCLUDES_NULL and Builder.negationIncludesNull() added, default true, the NOT_EQUAL and NOT_IN conditions of nullable columns and foreign keys now including null values, as the filters do.
+- EntitySearchModel.Search.strings() replaced with string(), multiple search strings no longer supported.
 ### is.codion.swing.common.ui
 - FormBuilder added, building a form panel, label/input pairs in rows, the label beside its input, over a GridBagLayout, along with DefaultFormBuilder, for extending, and Components.form(), LoginPanel now based on it.
 - TemporalInput, TextInput and FileInput now report the baseline of their field, aligning with a label beside them.
