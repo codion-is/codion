@@ -88,10 +88,14 @@ import java.io.ObjectInputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
+import java.time.DateTimeException;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -206,6 +210,8 @@ public final class EntityService implements AuxiliaryServer {
 	static final String CLIENT_TYPE = "clientType";
 	static final String CONNECTION_ID = "connectionId";
 	static final String CLIENT_VERSION = "clientVersion";
+	static final String CLIENT_LOCALE = "clientLocale";
+	static final String CLIENT_TIME_ZONE = "clientTimeZone";
 
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BASIC_PREFIX = "basic ";
@@ -893,14 +899,18 @@ public final class EntityService implements AuxiliaryServer {
 		User user = user(context);
 		Version version = clientVersion(context);
 
-		return server.connect(ConnectionRequest.builder()
+		ConnectionRequest.Builder request = ConnectionRequest.builder()
 						.user(user)
 						.clientType(clientType)
 						.connectionId(connectionId)
 						.version(version)
 						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
-						.parameter(Server.CLIENT_HOST, remoteHost(context.req()))
-						.build());
+						.parameter(Server.CLIENT_HOST, remoteHost(context.req()));
+		// the request is built here, on the server, the locale and time zone otherwise being the server's
+		clientLocale(context).ifPresent(request::locale);
+		clientTimeZone(context).ifPresent(request::timeZone);
+
+		return server.connect(request.build());
 	}
 
 	private final class JavalinConfigurer implements Consumer<JavalinConfig> {
@@ -1052,6 +1062,29 @@ public final class EntityService implements AuxiliaryServer {
 		}
 		catch (IllegalArgumentException e) {
 			throw new ServerAuthenticationException("Invalid " + CONNECTION_ID + " header parameter");
+		}
+	}
+
+	private static Optional<Locale> clientLocale(Context context) {
+		String clientLocale = context.header(CLIENT_LOCALE);
+
+		return nullOrEmpty(clientLocale) ? Optional.empty() : Optional.of(Locale.forLanguageTag(clientLocale));
+	}
+
+	/**
+	 * Informational only, an unknown time zone, from a client with different time zone data for example, is ignored
+	 */
+	private static Optional<ZoneId> clientTimeZone(Context context) {
+		String clientTimeZone = context.header(CLIENT_TIME_ZONE);
+		if (nullOrEmpty(clientTimeZone)) {
+			return Optional.empty();
+		}
+		try {
+			return Optional.of(ZoneId.of(clientTimeZone));
+		}
+		catch (DateTimeException e) {
+			LOG.debug("Unknown client time zone: {}", clientTimeZone);
+			return Optional.empty();
 		}
 	}
 

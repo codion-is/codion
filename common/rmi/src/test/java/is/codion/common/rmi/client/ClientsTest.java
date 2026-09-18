@@ -26,6 +26,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZoneId;
+import java.util.Locale;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,6 +82,39 @@ public final class ClientsTest {
 
 			assertTrue(request.version().isPresent());
 			assertEquals(clientVersion, request.version().get());
+		}
+
+		@Test
+		@DisplayName("Builder defaults to the locale and time zone of the JVM, which a request built on behalf of a client overrides")
+		void builder_withLocaleAndTimeZone_createsRequestWithThose() {
+			ConnectionRequest request = ConnectionRequest.builder()
+							.user(User.user("scott"))
+							.clientType("test")
+							.build();
+			assertEquals(Locale.getDefault(), request.locale());
+			assertEquals(ZoneId.systemDefault(), request.timeZone());
+
+			request = ConnectionRequest.builder()
+							.user(User.user("scott"))
+							.clientType("test")
+							.locale(Locale.forLanguageTag("is-IS"))
+							.timeZone(ZoneId.of("Atlantic/Reykjavik"))
+							.build();
+			assertEquals(Locale.forLanguageTag("is-IS"), request.locale());
+			assertEquals(ZoneId.of("Atlantic/Reykjavik"), request.timeZone());
+
+			// a copy, made by the server, in its JVM, must not capture these again
+			Locale locale = Locale.getDefault();
+			try {
+				Locale.setDefault(Locale.forLanguageTag("fo-FO"));
+				ConnectionRequest copy = request.copy();
+				assertEquals(Locale.forLanguageTag("is-IS"), copy.locale());
+				assertEquals(ZoneId.of("Atlantic/Reykjavik"), copy.timeZone());
+				assertEquals(request.frameworkVersion(), copy.frameworkVersion());
+			}
+			finally {
+				Locale.setDefault(locale);
+			}
 		}
 
 		@Test

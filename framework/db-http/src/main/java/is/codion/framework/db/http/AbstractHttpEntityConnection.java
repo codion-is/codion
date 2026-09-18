@@ -41,10 +41,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -73,6 +75,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	private static final String CLIENT_TYPE = "clientType";
 	private static final String CONNECTION_ID = "connectionId";
 	private static final String CLIENT_VERSION = "clientVersion";
+	private static final String CLIENT_LOCALE = "clientLocale";
+	private static final String CLIENT_TIME_ZONE = "clientTimeZone";
 	private static final String HTTP = "http://";
 	private static final String HTTPS = "https://";
 	private static final int HTTP_STATUS_OK = 200;
@@ -441,6 +445,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 						DOMAIN_TYPE, requireNonNull(builder.domainType, "domainType must be specified").name(),
 						CLIENT_TYPE, requireNonNull(builder.clientType, "clientType must be specified"),
 						CONNECTION_ID, requireNonNull(builder.connectionId, "connectionId must be specified").toString(),
+						CLIENT_LOCALE, Locale.getDefault().toLanguageTag(),
+						CLIENT_TIME_ZONE, ZoneId.systemDefault().getId(),
 						AUTHORIZATION, createAuthorizationHeader(user)
 		));
 		if (builder.clientVersion != null) {

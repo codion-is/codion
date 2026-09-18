@@ -46,16 +46,19 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	private final User user;
 	private final UUID connectionId;
 	private final String clientType;
-	private final Locale locale = Locale.getDefault();
-	private final ZoneId timeZone = ZoneId.systemDefault();
+	private final Locale locale;
+	private final ZoneId timeZone;
 	private final @Nullable Version version;
-	private final Version frameworkVersion = Version.version();
+	private final Version frameworkVersion;
 	private final @Nullable Map<String, Object> parameters;
 
 	private DefaultConnectionRequest(DefaultBuilder builder) {
 		this.user = builder.user;
 		this.clientType = builder.clientType;
 		this.connectionId = builder.connectionId == null ? UUID.randomUUID() : builder.connectionId;
+		this.locale = builder.locale;
+		this.timeZone = builder.timeZone;
+		this.frameworkVersion = builder.frameworkVersion;
 		this.version = builder.version;
 		this.parameters = builder.parameters == null ? null : unmodifiableMap(builder.parameters);
 	}
@@ -102,8 +105,12 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
 	@Override
 	public ConnectionRequest copy() {
-		Builder builder = new DefaultBuilder(user.copy(), clientType)
-						.connectionId(connectionId)
+		// what was captured from the client JVM when the request was built must not be captured again, from the JVM copying it
+		DefaultBuilder builder = new DefaultBuilder(user.copy(), clientType);
+		builder.frameworkVersion = frameworkVersion;
+		builder.connectionId(connectionId)
+						.locale(locale)
+						.timeZone(timeZone)
 						.version(version);
 		if (parameters != null) {
 			parameters.forEach(builder::parameter);
@@ -156,6 +163,9 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		private final User user;
 		private final String clientType;
 
+		private Locale locale = Locale.getDefault();
+		private ZoneId timeZone = ZoneId.systemDefault();
+		private Version frameworkVersion = Version.version();
 		private @Nullable UUID connectionId;
 		private @Nullable Version version;
 		private @Nullable Map<String, Object> parameters;
@@ -174,6 +184,18 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		@Override
 		public Builder version(@Nullable Version version) {
 			this.version = version;
+			return this;
+		}
+
+		@Override
+		public Builder locale(Locale locale) {
+			this.locale = requireNonNull(locale);
+			return this;
+		}
+
+		@Override
+		public Builder timeZone(ZoneId timeZone) {
+			this.timeZone = requireNonNull(timeZone);
 			return this;
 		}
 
