@@ -19,6 +19,7 @@
 package is.codion.dbms.mysql;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -82,52 +83,52 @@ public class MySQLDatabaseTest {
 		MySQLDatabase database = new MySQLDatabase(URL);
 		SQLException unique = new SQLException("Duplicate entry 'A-b' for key 'parent_uk'", "23000", 1062);
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-		assertEquals(message("unique_constraint") + ": 'A-b'", database.errorMessage(unique, INSERT));
+		assertEquals(message("unique_constraint") + ": 'A-b'", database.exception(unique, INSERT).getMessage());
 
 		SQLException parentMissing = new SQLException("Cannot add or update a child row: a foreign key constraint fails "
 						+ "(`db`.`child`, CONSTRAINT `child_fk` FOREIGN KEY (`parent_id`) REFERENCES `parent` (`id`))", "23000", 1452);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-		assertEquals(message("parent_missing"), database.errorMessage(parentMissing, INSERT));
+		assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
 		// deleting a referenced row
 		SQLException childExists = new SQLException("Cannot delete or update a parent row: a foreign key constraint fails "
 						+ "(`db`.`child`, CONSTRAINT `child_fk` FOREIGN KEY (`parent_id`) REFERENCES `parent` (`id`))", "23000", 1451);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.errorMessage(childExists, DELETE));
-		assertEquals(message("child_exists"), database.errorMessage(childExists, UPDATE));
+		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("child_exists"), database.exception(childExists, UPDATE).getMessage());
 
-		assertEquals(message("null_value") + ": name", database.errorMessage(
-						new SQLException("Column 'name' cannot be null", "23000", 1048), INSERT));
-		assertEquals(message("null_value") + ": name", database.errorMessage(
-						new SQLException("Field 'name' doesn't have a default value", "HY000", 1364), INSERT));
-		assertEquals(message("null_value"), database.errorMessage(new SQLException(null, "23000", 1048), INSERT));
-		assertEquals(message("check_constraint"), database.errorMessage(new SQLException("Check constraint 'parent_ck' is violated.", "HY000", 3819), UPDATE));
-		assertEquals(message("value_too_large") + ": name", database.errorMessage(
-						new SQLException("Data too long for column 'name' at row 1", "22001", 1406), UPDATE));
-		assertEquals(message("value_too_large") + ": amount", database.errorMessage(
-						new SQLException("Out of range value for column 'amount' at row 1", "22003", 1264), UPDATE));
-		assertEquals(message("table_not_found"), database.errorMessage(
-						new SQLException("Table 'db.missing' doesn't exist", "42S02", 1146), SELECT));
-		assertEquals(message("missing_privileges"), database.errorMessage(
-						new SQLException("SELECT command denied to user 'scott'@'localhost' for table 'parent'", "42000", 1142), SELECT));
+		assertEquals(message("null_value") + ": name", database.exception(
+						new SQLException("Column 'name' cannot be null", "23000", 1048), INSERT).getMessage());
+		assertEquals(message("null_value") + ": name", database.exception(
+						new SQLException("Field 'name' doesn't have a default value", "HY000", 1364), INSERT).getMessage());
+		assertEquals(message("null_value"), database.exception(new SQLException(null, "23000", 1048), INSERT).getMessage());
+		assertEquals(message("check_constraint"), database.exception(new SQLException("Check constraint 'parent_ck' is violated.", "HY000", 3819), UPDATE).getMessage());
+		assertEquals(message("value_too_large") + ": name", database.exception(
+						new SQLException("Data too long for column 'name' at row 1", "22001", 1406), UPDATE).getMessage());
+		assertEquals(message("value_too_large") + ": amount", database.exception(
+						new SQLException("Out of range value for column 'amount' at row 1", "22003", 1264), UPDATE).getMessage());
+		assertEquals(message("table_not_found"), database.exception(
+						new SQLException("Table 'db.missing' doesn't exist", "42S02", 1146), SELECT).getMessage());
+		assertEquals(message("missing_privileges"), database.exception(
+						new SQLException("SELECT command denied to user 'scott'@'localhost' for table 'parent'", "42000", 1142), SELECT).getMessage());
 		// NOWAIT
-		assertEquals(message("row_locked"), database.errorMessage(new SQLException(
-						"Statement aborted because lock(s) could not be acquired immediately and NOWAIT is set.", "HY000", 3572), SELECT));
-		assertEquals(message("row_locked"), database.errorMessage(
-						new SQLException("Lock wait timeout exceeded; try restarting transaction", "HY000", 1205), SELECT));
+		assertEquals(message("row_locked"), database.exception(new SQLException(
+						"Statement aborted because lock(s) could not be acquired immediately and NOWAIT is set.", "HY000", 3572), SELECT).getMessage());
+		assertEquals(message("row_locked"), database.exception(
+						new SQLException("Lock wait timeout exceeded; try restarting transaction", "HY000", 1205), SELECT).getMessage());
 		// the driver reports neither an error code nor a state for a query timeout
 		SQLException timeout = new SQLTimeoutException("Statement cancelled due to timeout or client request");
 		assertInstanceOf(QueryTimeoutException.class, database.exception(timeout, SELECT));
-		assertEquals(message("timeout"), database.errorMessage(timeout, SELECT));
+		assertEquals(message("timeout"), database.exception(timeout, SELECT).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, database.exception(
 						new SQLException("Query execution was interrupted, maximum statement execution time exceeded", "HY000", 3024), SELECT));
 
 		SQLException authentication = new SQLException("Access denied for user 'scott'@'172.17.0.1' (using password: YES)", "28000", 1045);
-		assertTrue(database.isAuthenticationException(authentication));
-		assertEquals(message("authentication"), database.errorMessage(authentication, OTHER));
+		assertInstanceOf(AuthenticationException.class, database.exception(authentication, OTHER));
+		assertEquals(message("authentication"), database.exception(authentication, OTHER).getMessage());
 
 		SQLException unknown = new SQLException("You have an error in your SQL syntax", "42000", 1064);
 		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());
-		assertEquals("You have an error in your SQL syntax", database.errorMessage(unknown, SELECT));
+		assertEquals("You have an error in your SQL syntax", database.exception(unknown, SELECT).getMessage());
 	}
 
 	// independent of the default locale

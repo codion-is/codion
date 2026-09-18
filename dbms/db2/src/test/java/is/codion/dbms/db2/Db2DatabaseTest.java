@@ -19,6 +19,7 @@
 package is.codion.dbms.db2;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -86,40 +87,40 @@ public class Db2DatabaseTest {
 		Db2Database database = new Db2Database(URL);
 		SQLException unique = exception(-803, "23505", "2;DB2INST1.PARENT");
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-		assertEquals(message("unique_constraint"), database.errorMessage(unique, INSERT));
+		assertEquals(message("unique_constraint"), database.exception(unique, INSERT).getMessage());
 
 		SQLException parentMissing = exception(-530, "23503", "DB2INST1.CHILD.CHILD_FK");
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, UPDATE));
-		assertEquals(message("parent_missing"), database.errorMessage(parentMissing, UPDATE));
+		assertEquals(message("parent_missing"), database.exception(parentMissing, UPDATE).getMessage());
 		SQLException childExists = exception(-532, "23504", "DB2INST1.CHILD.CHILD_FK");
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.errorMessage(childExists, DELETE));
+		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
 		// updating a referenced key
 		SQLException referencedKey = exception(-531, "23504", "DB2INST1.CHILD.CHILD_FK");
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(referencedKey, UPDATE));
-		assertEquals(message("child_exists"), database.errorMessage(referencedKey, UPDATE));
+		assertEquals(message("child_exists"), database.exception(referencedKey, UPDATE).getMessage());
 
-		assertEquals(message("null_value"), database.errorMessage(exception(-407, "23502", "TBSPACEID=2, TABLEID=4, COLNO=1"), INSERT));
-		assertEquals(message("check_constraint"), database.errorMessage(exception(-545, "23513", "DB2INST1.PARENT.PARENT_CK"), UPDATE));
-		assertEquals(message("value_too_large"), database.errorMessage(exception(-433, "22001", "abcdefghijklmnop"), UPDATE));
-		assertEquals(message("value_too_large"), database.errorMessage(exception(-413, "22003", "null"), UPDATE));
-		assertEquals(message("table_not_found"), database.errorMessage(exception(-204, "42704", "DB2INST1.MISSING"), SELECT));
-		assertEquals(message("missing_privileges"), database.errorMessage(exception(-551, "42501", "SCOTT;SELECT;DB2INST1.PARENT"), SELECT));
+		assertEquals(message("null_value"), database.exception(exception(-407, "23502", "TBSPACEID=2, TABLEID=4, COLNO=1"), INSERT).getMessage());
+		assertEquals(message("check_constraint"), database.exception(exception(-545, "23513", "DB2INST1.PARENT.PARENT_CK"), UPDATE).getMessage());
+		assertEquals(message("value_too_large"), database.exception(exception(-433, "22001", "abcdefghijklmnop"), UPDATE).getMessage());
+		assertEquals(message("value_too_large"), database.exception(exception(-413, "22003", "null"), UPDATE).getMessage());
+		assertEquals(message("table_not_found"), database.exception(exception(-204, "42704", "DB2INST1.MISSING"), SELECT).getMessage());
+		assertEquals(message("missing_privileges"), database.exception(exception(-551, "42501", "SCOTT;SELECT;DB2INST1.PARENT"), SELECT).getMessage());
 		// a lock timeout or deadlock, no longer a query timeout
 		assertSame(DatabaseException.class, database.exception(exception(-911, "40001", "68"), UPDATE).getClass());
-		assertEquals(message("row_locked"), database.errorMessage(exception(-911, "40001", "68"), UPDATE));
-		assertEquals(message("row_locked"), database.errorMessage(exception(-913, "57033", "68"), UPDATE));
+		assertEquals(message("row_locked"), database.exception(exception(-911, "40001", "68"), UPDATE).getMessage());
+		assertEquals(message("row_locked"), database.exception(exception(-913, "57033", "68"), UPDATE).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, database.exception(exception(-952, "57014", "null"), SELECT));
 		assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLTimeoutException("timeout"), SELECT));
 
 		SQLException authentication = new SQLException("[jcc][t4][2013][11249][4.33.31] Connection authorization failure occurred.  "
 						+ "Reason: User ID or Password invalid. ERRORCODE=-4214, SQLSTATE=28000", "28000", -4214);
-		assertTrue(database.isAuthenticationException(authentication));
-		assertEquals(message("authentication"), database.errorMessage(authentication, OTHER));
+		assertInstanceOf(AuthenticationException.class, database.exception(authentication, OTHER));
+		assertEquals(message("authentication"), database.exception(authentication, OTHER).getMessage());
 
 		SQLException unknown = exception(-104, "42601", "END-OF-STATEMENT");
 		assertSame(DatabaseException.class, database.exception(unknown, SELECT).getClass());
-		assertEquals(unknown.getMessage(), database.errorMessage(unknown, SELECT));
+		assertEquals(unknown.getMessage(), database.exception(unknown, SELECT).getMessage());
 	}
 
 	private static SQLException exception(int sqlCode, String sqlState, String tokens) {

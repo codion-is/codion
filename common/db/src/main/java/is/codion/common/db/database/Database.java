@@ -253,59 +253,18 @@ public interface Database extends ConnectionFactory {
 	int maximumParameters();
 
 	/**
-	 * Returns a user-friendly error message for the given exception,
-	 * otherwise simply return the message from {@code exception}
-	 * @param exception the underlying SQLException
-	 * @param operation the operation resulting in the exception
-	 * @return the message assigned to the given exception
-	 * @throws NullPointerException in case {@code exception} or {@code operation} is null
-	 */
-	@Nullable String errorMessage(SQLException exception, Operation operation);
-
-	/**
-	 * Wraps the given SQLException in a relevant {@link DatabaseException}.
+	 * Wraps the given SQLException in a relevant {@link DatabaseException}, with a user-friendly
+	 * message in case the error is recognized, otherwise the message from {@code exception}.
 	 * @param exception the SQL exception
 	 * @param operation the current operation
 	 * @return a {@link DatabaseException}
 	 * @throws NullPointerException in case {@code exception} or {@code operation} is null
-	 * @see #errorMessage(SQLException, Operation)
+	 * @see is.codion.common.db.exception.AuthenticationException
 	 * @see is.codion.common.db.exception.UniqueConstraintException
 	 * @see is.codion.common.db.exception.ReferentialIntegrityException
 	 * @see is.codion.common.db.exception.QueryTimeoutException
 	 */
 	DatabaseException exception(SQLException exception, Operation operation);
-
-	/**
-	 * Returns true if this exception represents a login credentials failure
-	 * @param exception the exception
-	 * @return true if this exception represents a login credentials failure
-	 * @throws NullPointerException in case {@code exception} is null
-	 */
-	boolean isAuthenticationException(SQLException exception);
-
-	/**
-	 * Returns true if this exception is a referential integrity exception
-	 * @param exception the exception
-	 * @return true if this exception is a referential integrity exception
-	 * @throws NullPointerException in case {@code exception} is null
-	 */
-	boolean isReferentialIntegrityException(SQLException exception);
-
-	/**
-	 * Returns true if this exception is a unique key exception
-	 * @param exception the exception
-	 * @return true if this exception is a unique key exception
-	 * @throws NullPointerException in case {@code exception} is null
-	 */
-	boolean isUniqueConstraintException(SQLException exception);
-
-	/**
-	 * Returns true if this exception is a timeout exception
-	 * @param exception the exception
-	 * @return true if this exception is a timeout exception
-	 * @throws NullPointerException in case {@code exception} is null
-	 */
-	boolean isTimeoutException(SQLException exception);
 
 	/**
 	 * <p>Stamps the given connection with the identity of the client about to use it, so that the database
