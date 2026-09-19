@@ -21,6 +21,7 @@ Codion Change Log
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
 - FilterComboBoxModel.ItemComboBoxModelBuilder.onSelectedItem() added.
+- ProgressWorker.Builder.onWorking() and Handler.onWorking() added, called with true before the task starts and with false when it is done.
 ### is.codion.common.rmi
 - ConnectionRequest.Builder.locale() and timeZone() added, for a request built on behalf of a client in another JVM.
 - ConnectionRequest.copy() bug fixed, the locale, time zone and framework version now those of the client, no longer captured again from the JVM making the copy, the server, the session monitor displaying the server values for all clients.

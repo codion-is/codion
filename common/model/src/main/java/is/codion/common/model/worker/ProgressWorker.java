@@ -96,6 +96,7 @@ public final class ProgressWorker<T, V> {
 	private final WorkerTask task;
 	private final List<Runnable> onStarted;
 	private final List<Runnable> onDone;
+	private final List<Consumer<Boolean>> onWorking;
 	private final List<Runnable> onSuccess;
 	private final List<Consumer<T>> onResult;
 	private final List<Consumer<Integer>> onProgress;
@@ -106,6 +107,7 @@ public final class ProgressWorker<T, V> {
 	private final Dispatcher dispatcher;
 
 	private Executor dispatchExecutor = Runnable::run;
+	private volatile boolean working = false;// set and read by the handlers only, which are all run by the dispatch executor
 	private final FutureTask<T> future = new FutureTask<>(this::doInBackground) {
 		@Override
 		protected void done() {
@@ -117,6 +119,7 @@ public final class ProgressWorker<T, V> {
 		this.task = builder.task;
 		this.onStarted = builder.onStarted();
 		this.onDone = builder.onDone();
+		this.onWorking = builder.onWorking();
 		this.onSuccess = builder.onSuccess();
 		this.onResult = builder.onResult();
 		this.onProgress = builder.onProgress();
@@ -206,6 +209,10 @@ public final class ProgressWorker<T, V> {
 
 	private void finished() {
 		onDone.forEach(Runnable::run);
+		if (working) {
+			working = false;
+			onWorking.forEach(handler -> handler.accept(false));
+		}
 		try {
 			T result = get();
 			onSuccess.forEach(Runnable::run);
@@ -232,11 +239,13 @@ public final class ProgressWorker<T, V> {
 	}
 
 	private void runOnStarted() throws InterruptedException {
-		if (!onStarted.isEmpty()) {
+		if (!onStarted.isEmpty() || !onWorking.isEmpty()) {
 			AtomicReference<RuntimeException> exception = new AtomicReference<>();
 			CountDownLatch startedLatch = new CountDownLatch(1);
 			dispatchExecutor.execute(() -> {
 				try {
+					working = true;
+					onWorking.forEach(handler -> handler.accept(true));
 					onStarted.forEach(Runnable::run);
 				}
 				catch (RuntimeException e) {
@@ -399,6 +408,15 @@ public final class ProgressWorker<T, V> {
 		default void onDone() {}
 
 		/**
+		 * Called using the {@link Dispatcher} with {@code true} before {@link #onStarted()} and
+		 * with {@code false} after {@link #onDone()}, that is, before the result, exception or cancellation
+		 * is handled. Only called with {@code false} in case it was called with {@code true},
+		 * which is not the case for a task cancelled before it started.
+		 * @param working true when the task is about to start, false when it is done
+		 */
+		default void onWorking(boolean working) {}
+
+		/**
 		 * Called using the {@link Dispatcher} after a successful task execution,
 		 * before {@link ResultTaskHandler#onResult(Object)} or
 		 * {@link ProgressResultTaskHandler#onResult(Object)} for result-producing tasks.
@@ -545,6 +563,19 @@ public final class ProgressWorker<T, V> {
 		Builder<T, V> onDone(Runnable onDone);
 
 		/**
+		 * Adds a handler called using the {@link Dispatcher} with {@code true} before any {@link #onStarted(Runnable)}
+		 * handlers and with {@code false} after any {@link #onDone(Runnable)} handlers, that is, before the result,
+		 * exception or cancellation is handled, convenient for a state indicating that work is being performed:
+		 * {@code onWorking(working::set)}. Only called with {@code false} in case it was called with {@code true},
+		 * which is not the case for a task cancelled before it started.
+		 * <p>Note that this represents a single worker, a state shared by workers which
+		 * may overlap is reset when the first one is done, the others still working.
+		 * @param onWorking the handler to add
+		 * @return this builder instance
+		 */
+		Builder<T, V> onWorking(Consumer<Boolean> onWorking);
+
+		/**
 		 * Adds a handler called using the {@link Dispatcher} after a successful task run,
 		 * before any {@link #onResult(Consumer)} handlers.
 		 * @param onSuccess the handler to add
@@ -645,6 +676,7 @@ public final class ProgressWorker<T, V> {
 				TaskHandler handler = (TaskHandler) task;
 				builder.onStarted(handler::onStarted)
 								.onDone(handler::onDone)
+								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
@@ -661,6 +693,7 @@ public final class ProgressWorker<T, V> {
 				ResultTaskHandler<T> handler = (ResultTaskHandler<T>) task;
 				builder.onStarted(handler::onStarted)
 								.onDone(handler::onDone)
+								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
 								.onException(handler::onException)
@@ -680,6 +713,7 @@ public final class ProgressWorker<T, V> {
 								.onProgress(handler::onProgress)
 								.onPublish(handler::onPublish)
 								.onDone(handler::onDone)
+								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
@@ -698,6 +732,7 @@ public final class ProgressWorker<T, V> {
 								.onProgress(handler::onProgress)
 								.onPublish(handler::onPublish)
 								.onDone(handler::onDone)
+								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
 								.onException(handler::onException)
@@ -718,6 +753,7 @@ public final class ProgressWorker<T, V> {
 
 		private @Nullable List<Runnable> onStarted;
 		private @Nullable List<Runnable> onDone;
+		private @Nullable List<Consumer<Boolean>> onWorking;
 		private @Nullable List<Runnable> onSuccess;
 		private @Nullable List<Consumer<T>> onResult;
 		private @Nullable List<Consumer<Integer>> onProgress;
@@ -754,6 +790,13 @@ public final class ProgressWorker<T, V> {
 		public Builder<T, V> onDone(Runnable onDone) {
 			this.onDone = initialize(this.onDone);
 			this.onDone.add(requireNonNull(onDone));
+			return this;
+		}
+
+		@Override
+		public Builder<T, V> onWorking(Consumer<Boolean> onWorking) {
+			this.onWorking = initialize(this.onWorking);
+			this.onWorking.add(requireNonNull(onWorking));
 			return this;
 		}
 
@@ -831,6 +874,10 @@ public final class ProgressWorker<T, V> {
 
 		private List<Runnable> onDone() {
 			return onDone == null ? emptyList() : onDone;
+		}
+
+		private List<Consumer<Boolean>> onWorking() {
+			return onWorking == null ? emptyList() : onWorking;
 		}
 
 		private List<Runnable> onSuccess() {
