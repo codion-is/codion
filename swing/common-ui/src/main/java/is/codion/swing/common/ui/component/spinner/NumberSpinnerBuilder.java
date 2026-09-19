@@ -38,6 +38,13 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
 	NumberSpinnerBuilder<T> maximum(@Nullable T maximum);
 
 	/**
+	 * @param minimum the minimum value, null for none
+	 * @param maximum the maximum value, null for none
+	 * @return this builder instance
+	 */
+	NumberSpinnerBuilder<T> range(@Nullable T minimum, @Nullable T maximum);
+
+	/**
 	 * @param stepSize the step size
 	 * @return this builder instance
 	 */

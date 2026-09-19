@@ -72,6 +72,13 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 	}
 
 	@Override
+	public NumberSpinnerBuilder<T> range(@Nullable T minimum, @Nullable T maximum) {
+		this.minimum = minimum;
+		this.maximum = maximum;
+		return this;
+	}
+
+	@Override
 	public NumberSpinnerBuilder<T> stepSize(@Nullable T stepSize) {
 		this.stepSize = stepSize;
 		return this;

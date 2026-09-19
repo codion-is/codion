@@ -160,6 +160,21 @@ public final class AttributeDefinitionTest {
 	void minimumMaximum() {
 		ColumnDefinition.Builder<Double, ?> builder = ENTITY_TYPE.doubleColumn("attribute").as().column();
 		assertThrows(IllegalArgumentException.class, () -> builder.range(5, 4));
+		// minimum and maximum are independent, neither one resets the other
+		ColumnDefinition<Double> definition = (ColumnDefinition<Double>) ENTITY_TYPE.doubleColumn("attribute").as().column()
+						.minimum(1)
+						.maximum(10)
+						.build();
+		assertEquals(1, definition.minimum().orElseThrow());
+		assertEquals(10, definition.maximum().orElseThrow());
+		definition = (ColumnDefinition<Double>) ENTITY_TYPE.doubleColumn("attribute").as().column()
+						.maximum(10)
+						.minimum(1)
+						.build();
+		assertEquals(1, definition.minimum().orElseThrow());
+		assertEquals(10, definition.maximum().orElseThrow());
+		assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.doubleColumn("attribute").as().column().minimum(5).maximum(4));
+		assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.doubleColumn("attribute").as().column().maximum(4).minimum(5));
 	}
 
 	@Test

@@ -365,12 +365,12 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 
 		@Override
 		public final B minimum(Number minimum) {
-			return range(requireNonNull(minimum), null);
+			return range(requireNonNull(minimum), maximum);
 		}
 
 		@Override
 		public final B maximum(Number maximum) {
-			return range(null, requireNonNull(maximum));
+			return range(minimum, requireNonNull(maximum));
 		}
 
 		@Override
