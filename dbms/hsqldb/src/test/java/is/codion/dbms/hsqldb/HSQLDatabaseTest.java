@@ -84,17 +84,17 @@ public class HSQLDatabaseTest {
 		HSQLDatabase database = new HSQLDatabase(URL);
 		SQLException unique = new SQLException("integrity constraint violation: unique constraint or index violation ; PARENT_UK table: PARENT", "23505", -104);
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-		assertEquals(message("unique_constraint"), database.exception(unique, INSERT).getMessage());
+		assertEquals(message("unique_constraint") + ": PARENT_UK", database.exception(unique, INSERT).getMessage());
 		SQLException parentMissing = new SQLException("integrity constraint violation: foreign key no parent ; CHILD_FK table: CHILD value: 99", "23503", -177);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, UPDATE));
-		assertEquals(message("parent_missing"), database.exception(parentMissing, UPDATE).getMessage());
+		assertEquals(message("parent_missing") + ": CHILD_FK", database.exception(parentMissing, UPDATE).getMessage());
 		SQLException childExists = new SQLException("integrity constraint violation: foreign key no action ; CHILD_FK table: CHILD", "23504", -8);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.exception(childExists, UPDATE).getMessage());
+		assertEquals(message("child_exists") + ": CHILD_FK", database.exception(childExists, UPDATE).getMessage());
 		assertEquals(message("null_value") + ": NAME", database.exception(new SQLException(
 						"integrity constraint violation: NOT NULL check constraint ; SYS_CT_10093 table: PARENT column: NAME", "23502", -10), INSERT).getMessage());
 		assertEquals(message("null_value"), database.exception(new SQLException(null, "23502", -10), INSERT).getMessage());
-		assertEquals(message("check_constraint"), database.exception(new SQLException(
+		assertEquals(message("check_constraint") + ": PARENT_CK", database.exception(new SQLException(
 						"integrity constraint violation: check constraint ; PARENT_CK table: PARENT", "23513", -157), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(new SQLException("data exception: string data, right truncation", "22001", -3401), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(new SQLException("data exception: numeric value out of range", "22003", -3403), UPDATE).getMessage());

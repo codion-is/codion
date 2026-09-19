@@ -517,6 +517,25 @@ public abstract class AbstractDatabase implements Database {
 		return host.substring(host.lastIndexOf('/') + 1);
 	}
 
+	/**
+	 * Returns the text found between the given prefix and the suffix following it, for picking the name of a
+	 * constraint or column from an exception message, see {@link #errorDetail(SQLException, ErrorType)}.
+	 * @param text the text
+	 * @param prefix the prefix
+	 * @param suffix the suffix
+	 * @return the text between the first occurrence of the prefix and the suffix following it, null if either is not found
+	 */
+	protected static @Nullable String between(String text, String prefix, String suffix) {
+		int prefixIndex = requireNonNull(text).indexOf(requireNonNull(prefix));
+		if (prefixIndex == -1) {
+			return null;
+		}
+		int beginIndex = prefixIndex + prefix.length();
+		int endIndex = text.indexOf(requireNonNull(suffix), beginIndex);
+
+		return endIndex == -1 ? null : text.substring(beginIndex, endIndex);
+	}
+
 	private @Nullable ErrorType recognize(SQLException exception) {
 		try {
 			return errorType(exception);

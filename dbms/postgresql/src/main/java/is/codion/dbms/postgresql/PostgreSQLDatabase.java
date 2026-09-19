@@ -47,6 +47,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	private static final String STILL_REFERENCED = "is still referenced from";
 	private static final String NOT_PRESENT = "is not present in";
 	private static final String COLUMN = "column \"";
+	private static final String CONSTRAINT = "constraint \"";
 	private static final String DETAIL_KEY = "Detail: Key ";
 	private static final String ALREADY_EXISTS = " already exists.";
 
@@ -148,6 +149,14 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 			case UNIQUE_CONSTRAINT:
 				//Detail: Key (col1, col2)=(val1, val2) already exists.
 				return between(message, DETAIL_KEY, ALREADY_EXISTS);
+			case REFERENTIAL_INTEGRITY:
+			case PARENT_MISSING:
+			case CHILD_EXISTS:
+				//insert or update on table "child" violates foreign key constraint "child_fk"
+				//update or delete on table "parent" violates foreign key constraint "child_fk" on table "child"
+			case CHECK_CONSTRAINT:
+				//new row for relation "table_name" violates check constraint "table_name_ck"
+				return between(message, CONSTRAINT, "\"");
 			default:
 				return null;
 		}
@@ -169,16 +178,5 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 		}
 
 		return ErrorType.REFERENTIAL_INTEGRITY;
-	}
-
-	private static String between(String message, String prefix, String suffix) {
-		int prefixIndex = message.indexOf(prefix);
-		if (prefixIndex == -1) {
-			return null;
-		}
-		int beginIndex = prefixIndex + prefix.length();
-		int endIndex = message.indexOf(suffix, beginIndex);
-
-		return endIndex == -1 ? null : message.substring(beginIndex, endIndex);
 	}
 }

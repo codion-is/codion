@@ -62,6 +62,7 @@ final class H2Database extends AbstractDatabase {
 	static final String SYSADMIN_USERNAME = "sa";
 
 	private static final String COLUMN = "column \"";
+	private static final String CONSTRAINT_VIOLATION = "constraint violation: \"";
 	private static final String SQL_STATEMENT = "; SQL statement:";
 
 	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
@@ -154,6 +155,12 @@ final class H2Database extends AbstractDatabase {
 				String column = between(message, COLUMN, "\"");
 
 				return column == null || column.indexOf(' ') == -1 ? column : column.substring(0, column.indexOf(' '));
+			case PARENT_MISSING:
+			case CHILD_EXISTS:
+				// Referential integrity constraint violation: "CHILD_FK: PUBLIC.CHILD FOREIGN KEY(PARENT_ID) REFERENCES PUBLIC.PARENT(ID) (99)"; SQL statement: ...
+			case CHECK_CONSTRAINT:
+				// Check constraint violation: "TABLE_CK: "; SQL statement: ...
+				return between(message, CONSTRAINT_VIOLATION, ":");
 			default:
 				return null;
 		}
@@ -256,17 +263,6 @@ final class H2Database extends AbstractDatabase {
 
 	private static boolean startsWith(String url, String prefix) {
 		return url.regionMatches(true, 0, prefix, 0, prefix.length());
-	}
-
-	private static String between(String message, String prefix, String suffix) {
-		int prefixIndex = message.indexOf(prefix);
-		if (prefixIndex == -1) {
-			return null;
-		}
-		int beginIndex = prefixIndex + prefix.length();
-		int endIndex = message.indexOf(suffix, beginIndex);
-
-		return endIndex == -1 ? null : message.substring(beginIndex, endIndex);
 	}
 
 	private void initialize(Properties properties, String appendToUrl) {

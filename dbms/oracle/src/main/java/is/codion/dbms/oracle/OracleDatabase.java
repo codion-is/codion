@@ -150,6 +150,15 @@ final class OracleDatabase extends AbstractDatabase {
 			case VALUE_TOO_LARGE:
 				// ORA-12899: value too large for column "SCHEMA"."TABLE"."COLUMN" (actual: 16, maximum: 10)
 				return lastQuoted(message, "\" (");
+			case UNIQUE_CONSTRAINT:
+				// ORA-00001: unique constraint (SCHEMA.CONSTRAINT) violated
+			case PARENT_MISSING:
+				// ORA-02291: integrity constraint (SCHEMA.CONSTRAINT) violated - parent key not found
+			case CHILD_EXISTS:
+				// ORA-02292: integrity constraint (SCHEMA.CONSTRAINT) violated - child record found
+			case CHECK_CONSTRAINT:
+				// ORA-02290: check constraint (SCHEMA.CONSTRAINT) violated
+				return constraint(message);
 			default:
 				return null;
 		}
@@ -187,6 +196,12 @@ final class OracleDatabase extends AbstractDatabase {
 	/**
 	 * @return the quoted text ending at the given suffix, which starts with the closing quote, null if not found
 	 */
+	private static String constraint(String message) {
+		String constraint = between(message, "constraint (", ")");
+
+		return constraint == null ? null : constraint.substring(constraint.lastIndexOf('.') + 1);
+	}
+
 	private static String lastQuoted(String message, String suffix) {
 		int endIndex = message.indexOf(suffix);
 		if (endIndex == -1) {

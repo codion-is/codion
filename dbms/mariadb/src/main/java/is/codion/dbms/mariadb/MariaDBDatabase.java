@@ -60,6 +60,7 @@ final class MariaDBDatabase extends AbstractDatabase {
 
 	private static final String DUPLICATE_ENTRY = "Duplicate entry ";
 	private static final String FOR_KEY = " for key";
+	private static final String CONSTRAINT = "CONSTRAINT `";
 	private static final String CONNECTION_PREFIX = "(conn=";
 	private static final String JDBC_URL_PREFIX = "jdbc:mariadb://";
 
@@ -134,6 +135,13 @@ final class MariaDBDatabase extends AbstractDatabase {
 			case UNIQUE_CONSTRAINT:
 				// Duplicate entry 'A-b' for key 'name'
 				return between(message, DUPLICATE_ENTRY, FOR_KEY);
+			case PARENT_MISSING:
+			case CHILD_EXISTS:
+				// Cannot add or update a child row: a foreign key constraint fails (`db`.`child`, CONSTRAINT `child_fk` FOREIGN KEY ...
+				// Cannot delete or update a parent row: a foreign key constraint fails (`db`.`child`, CONSTRAINT `child_fk` FOREIGN KEY ...
+			case CHECK_CONSTRAINT:
+				// CONSTRAINT `table_ck` failed for `db`.`table`
+				return between(message, CONSTRAINT, "`");
 			default:
 				return null;
 		}
@@ -152,16 +160,5 @@ final class MariaDBDatabase extends AbstractDatabase {
 		}
 
 		return message;
-	}
-
-	private static String between(String message, String prefix, String suffix) {
-		int prefixIndex = message.indexOf(prefix);
-		if (prefixIndex == -1) {
-			return null;
-		}
-		int beginIndex = prefixIndex + prefix.length();
-		int endIndex = message.indexOf(suffix, beginIndex);
-
-		return endIndex == -1 ? null : message.substring(beginIndex, endIndex);
 	}
 }

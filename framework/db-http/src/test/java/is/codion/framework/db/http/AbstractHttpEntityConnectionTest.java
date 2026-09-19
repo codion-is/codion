@@ -445,7 +445,8 @@ abstract class AbstractHttpEntityConnectionTest {
 		ReferentialIntegrityException referential = assertThrows(ReferentialIntegrityException.class,
 						() -> connection.delete(key(department.primaryKey())));
 		assertEquals(ErrorType.CHILD_EXISTS, referential.errorType().orElseThrow());
-		assertEquals(messages.getString("child_exists"), referential.message(icelandic));
+		assertEquals("EMP_DEPT_FK", referential.detail().orElseThrow());
+		assertEquals(messages.getString("child_exists") + ": EMP_DEPT_FK", referential.message(icelandic));
 
 		Entity duplicate = connection.entities().entity(Department.TYPE)
 						.with(Department.ID, department.get(Department.ID))

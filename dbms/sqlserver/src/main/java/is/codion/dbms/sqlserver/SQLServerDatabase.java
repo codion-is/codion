@@ -40,6 +40,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 	private static final String REFERENCE = "REFERENCE";
 	private static final String CHECK = "CHECK";
 	private static final String COLUMN = "column '";
+	private static final String CONSTRAINT = "constraint \"";
 	private static final String DUPLICATE_KEY_VALUE = "The duplicate key value is ";
 
 	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
@@ -208,6 +209,13 @@ final class SQLServerDatabase extends AbstractDatabase {
 			case UNIQUE_CONSTRAINT:
 				// Violation of UNIQUE KEY constraint 'name'. Cannot insert duplicate key in object 'dbo.table'. The duplicate key value is (A).
 				return between(message, DUPLICATE_KEY_VALUE, ").", 1);
+			case PARENT_MISSING:
+				// The INSERT statement conflicted with the FOREIGN KEY constraint "child_fk". The conflict occurred in ...
+			case CHILD_EXISTS:
+				// The DELETE statement conflicted with the REFERENCE constraint "child_fk". The conflict occurred in ...
+			case CHECK_CONSTRAINT:
+				// The UPDATE statement conflicted with the CHECK constraint "table_ck". The conflict occurred in ...
+				return between(message, CONSTRAINT, "\"");
 			default:
 				return null;
 		}
@@ -234,10 +242,6 @@ final class SQLServerDatabase extends AbstractDatabase {
 		}
 
 		return null;
-	}
-
-	private static String between(String message, String prefix, String suffix) {
-		return between(message, prefix, suffix, 0);
 	}
 
 	/**

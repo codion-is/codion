@@ -40,6 +40,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final String LOCKED = "[SQLITE_LOCKED";
 	private static final String NO_SUCH_TABLE = "(no such table: ";
 	private static final String NOT_NULL_FAILED = "NOT NULL constraint failed: ";
+	private static final String CHECK_FAILED = "CHECK constraint failed: ";
 
 	/**
 	 * An offset requires a limit, a negative one meaning no limit
@@ -113,6 +114,10 @@ final class SQLiteDatabase extends AbstractDatabase {
 
 				return column.substring(column.lastIndexOf('.') + 1);
 			}
+		}
+		if (errorType == ErrorType.CHECK_CONSTRAINT && message != null) {
+			// [SQLITE_CONSTRAINT_CHECK] A CHECK constraint failed (CHECK constraint failed: parent_ck)
+			return between(message, CHECK_FAILED, ")");
 		}
 
 		return null;
