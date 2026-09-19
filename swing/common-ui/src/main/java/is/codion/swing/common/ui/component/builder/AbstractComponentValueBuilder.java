@@ -234,6 +234,29 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	protected abstract ComponentValue<C, T> createValue(C component);
 
 	/**
+	 * Enables the validation indicator on the given component, over both severities, using the given
+	 * {@link ValidationIndicator}. Override for composite components or special handling.
+	 * @param validationIndicator the {@link ValidationIndicator} to use
+	 * @param component the component
+	 * @param valid the valid state to indicate
+	 * @param warned the warned state to indicate
+	 */
+	protected void enable(ValidationIndicator validationIndicator, C component, ObservableState valid, ObservableState warned) {
+		validationIndicator.enable(component, valid, warned);
+	}
+
+	/**
+	 * Enables a modified indicator on the given component, based on the given modified state instance
+	 * using the given {@link ModifiedIndicator}, override for composite components or special handling.
+	 * @param modifiedIndicator the {@link ModifiedIndicator} to use
+	 * @param component the component
+	 * @param modified the modified state to indicate
+	 */
+	protected void enable(ModifiedIndicator modifiedIndicator, C component, ObservableState modified) {
+		modifiedIndicator.enable(component, modified);
+	}
+
+	/**
 	 * @return true if this component can be linked with a nullable value
 	 */
 	protected boolean supportsNull() {
