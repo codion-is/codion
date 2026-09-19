@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -132,6 +133,34 @@ public class ServerExceptionTest {
 			ServerAuthenticationException exception = new ServerAuthenticationException(NULL_MESSAGE);
 
 			assertNull(exception.getMessage());
+		}
+
+		@Test
+		@DisplayName("A login failure with a cause presents the message of its cause, as read")
+		void constructor_withCause_presentsTheMessageOfTheCause() throws IOException, ClassNotFoundException {
+			AtomicReference<String> causeMessage = new AtomicReference<>("as thrown");
+			RuntimeException cause = new RuntimeException() {
+				@Override
+				public String getMessage() {
+					return causeMessage.get();
+				}
+			};
+			ServerAuthenticationException exception = new ServerAuthenticationException(cause);
+			assertSame(cause, exception.getCause());
+			assertEquals("as thrown", exception.getMessage());
+			// read, not copied when thrown
+			causeMessage.set("as read");
+			assertEquals("as read", exception.getMessage());
+			// a cause without a message
+			causeMessage.set(null);
+			assertEquals("as thrown", exception.getMessage());
+			assertThrows(NullPointerException.class, () -> new ServerAuthenticationException((Throwable) null));
+
+			// the cause travels
+			ServerAuthenticationException deserialized = (ServerAuthenticationException)
+							serializeAndDeserialize(new ServerAuthenticationException(new IllegalStateException("cause")));
+			assertInstanceOf(IllegalStateException.class, deserialized.getCause());
+			assertEquals("cause", deserialized.getMessage());
 		}
 
 		@Test

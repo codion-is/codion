@@ -15,6 +15,7 @@ Codion Change Log
 - AbstractDatabase.ErrorType moved to is.codion.common.db.exception.ErrorType, now public.
 - DatabaseException.errorType(), detail() and message(Locale) added, along with constructors based on an error type, in UniqueConstraintException, ReferentialIntegrityException, QueryTimeoutException and AuthenticationException as well, the message of an exception based on an error type now put together when read, in the language of the reader, a client no longer presented with error messages in the language of the server, DatabaseException.getMessage() now final.
 - Database resource bundle moved and renamed DatabaseException.
+- AbstractConnectionPoolWrapper, wrong connection pool credentials now reported as ErrorType.AUTHENTICATION, the message no longer in english only.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
@@ -23,6 +24,7 @@ Codion Change Log
 - ConnectionRequest.Builder.locale() and timeZone() added, for a request built on behalf of a client in another JVM.
 - ConnectionRequest.copy() bug fixed, the locale, time zone and framework version now those of the client, no longer captured again from the JVM making the copy, the server, the session monitor displaying the server values for all clients.
 - ConnectionNotAvailableException, the message now looked up when read, in the language of the reader, serialVersionUID declared, the one computed for previous versions.
+- ServerAuthenticationException(Throwable cause) constructor added, the exception presenting the message of its cause, as read.
 ### is.codion.framework.db
 - EntityNotFoundException, MultipleEntitiesFoundException and EntityModifiedException now provide their default messages, constructors without a message added, resource bundles moved from framework.db.local and framework.db.http.
 - EntityNotFoundException, MultipleEntitiesFoundException and EntityModifiedException, the default message now put together when read, in the language of the reader, serialVersionUID declared, the one computed for previous versions.
@@ -35,6 +37,9 @@ Codion Change Log
 ### is.codion.framework.servlet
 - EntityService now uses the locale and time zone sent by the client, instead of those of the server.
 - EntityService, the json error envelope now carries the error type and error detail of a database exception.
+- EntityService, the json error envelope of a login failure now carries the error type of the database authentication error causing it.
+### is.codion.framework.server
+- EntityServer, a login failure now carries the database authentication error as its cause, the client presented with the message in its own language.
 ### is.codion.framework.model
 - EntityQueryModel.entityQueryModel() removed, replaced by AbstractEntityTableModel.entityQueryModel(), protected, a query model being created by the table model.
 - ForeignKeyConditionModel.models() added, providing the combo box and search models the operand components are based on, one of each per operand, created on first access from the builder recipes, the four Optional based model accessors removed along with the respective builder methods, ForeignKeyConditionModel.builder() now a step builder, with a connection step.

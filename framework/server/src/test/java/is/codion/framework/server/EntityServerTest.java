@@ -19,6 +19,8 @@
 package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.AuthenticationException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.RemoteSession;
@@ -139,10 +141,14 @@ public class EntityServerTest {
 
 	@Test
 	void testWrongPassword() {
-		assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
+		ServerAuthenticationException exception = assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
 						.user(User.user(UNIT_TEST_USER.username(), "foobar".toCharArray()))
 						.clientType(getClass().getSimpleName())
 						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build()));
+		// the database authentication error is the cause, providing the message in the language of the client reading it
+		AuthenticationException cause = assertInstanceOf(AuthenticationException.class, exception.getCause());
+		assertEquals(ErrorType.AUTHENTICATION, cause.errorType().orElseThrow());
+		assertEquals(cause.getMessage(), exception.getMessage());
 	}
 
 	@Test

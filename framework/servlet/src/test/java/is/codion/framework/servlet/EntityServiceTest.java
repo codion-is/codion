@@ -499,6 +499,26 @@ public class EntityServiceTest {
 	}
 
 	@Test
+	void loginFailureCarriesErrorType() throws Exception {
+		//a new connection id and a client of its own, the connection id being tied to the http session
+		String wrongPassword = "Basic " + Base64.getEncoder().encodeToString((UNIT_TEST_USER.username() + ":wrong").getBytes());
+		HttpResponse<byte[]> response = createHttpClient().send(createRequest(SERVER_JSON_BASEURL, "isTransactionOpen",
+						BodyPublishers.noBody(), UUID.randomUUID().toString(), Version.version().toString(), wrongPassword),
+						BodyHandlers.ofByteArray());
+		assertEquals(UNAUTHORIZED, response.statusCode());
+		ErrorEnvelope envelope = ErrorEnvelope.fromJson(response.body());
+		assertEquals(ErrorKind.AUTHENTICATION, envelope.errorKind().orElseThrow());
+		//the database authentication error being the cause of the login failure
+		assertEquals("AUTHENTICATION", envelope.errorType());
+
+		//not a database error, no error type
+		response = createHttpClient().send(createRequest(SERVER_JSON_BASEURL, "isTransactionOpen",
+						BodyPublishers.noBody(), UUID.randomUUID().toString(), Version.version().toString(), "Basic not!base64"),
+						BodyHandlers.ofByteArray());
+		assertNull(ErrorEnvelope.fromJson(response.body()).errorType());
+	}
+
+	@Test
 	void databaseErrorCarriesErrorType() throws Exception {
 		//the department name is not nullable
 		List<Entity> entities = singletonList(ENTITIES.entity(Department.TYPE)
