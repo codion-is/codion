@@ -1,5 +1,67 @@
 = Swing Common UI
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
 :basedir: ..
+
+The Swing Common UI module is a toolkit for building Swing user interfaces. It is what the entity based UI is built with, but it knows nothing of entities, databases or servers, and can be used by itself, in any Swing application.
+
+It does not replace Swing, wrap it in another component model or take over painting. A builder produces a plain Swing component, a *JTextField*, a *JSpinner*, a *JTable* subclass, and is then done with it, everything known about Swing components applies to the result, as do look and feels and layout managers.
+
+What it adds:
+
+* <<_value, Value>> and <<_state, State>>, observable values and boolean states, a model consisting of those, with no reference to Swing.
+* <<_input_components, Component builders>>, for the standard input components and a few additional ones, linking a component to a *Value* in a single call, no listeners involved.
+* <<_control, Control>>, an action enabled by a *State*, a <<_state_composition, combination>> of states if need be, used for buttons, menus, toolbars and key bindings alike.
+* <<_progressworker, ProgressWorker>>, for performing a task in a background thread, handling the result on the Event Dispatch Thread.
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilterTable.html[FilterTable], a table with sorting, filtering, searching and selection, based on a typed row and column model.
+* <<_dialogs, Dialogs>>, for input, selection, progress, exceptions and more.
+* Keyboard navigation throughout, with configurable {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/key/KeyEvents.html[key bindings].
+
+[#_swing_common_ui_standalone]
+== Using it by itself
+
+A single dependency, with the versions managed by the common BOM.
+
+[source,kotlin,subs=attributes]
+----
+dependencies {
+    implementation(platform("is.codion:codion-common-bom:{codion-version}"))
+
+    implementation("is.codion:codion-swing-common-ui")
+}
+----
+
+This brings along the *is.codion.common.reactive*, *utilities*, *model* and *i18n* modules and *is.codion.swing.common.model*, about 1.5 MB combined, plus https://github.com/weisJ/jsvg[jsvg], https://github.com/stleary/JSON-java[org.json], https://www.slf4j.org[slf4j-api] and https://jspecify.dev[jspecify], another 1 MB. No database or server related modules are involved.
+
+The https://www.formdev.com/flatlaf[Flat Look and Feel] is optional, available via the *codion-plugin-flatlaf-themes* and *codion-plugin-flatlaf-intellij-themes* plugin modules. The application below uses one of the standard themes.
+
+[source,kotlin]
+----
+    implementation("is.codion:codion-plugin-flatlaf-themes")
+----
+
+=== A complete application
+
+The model consists of values and states, the state of the action is derived from those. Nothing in it refers to Swing, it can be unit tested as is.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/GreeterDemo.java[tags=model]
+----
+
+The view builds plain Swing components linked to the model, the factory methods of {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/Components.html[Components] being statically imported. No listeners are added by hand: typing a name enables the button, the button is disabled while the task is running, and the label displays the result when it arrives.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/GreeterDemo.java[tags=view]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/GreeterDemo.java[tags=main]
+----
+
+For a full application built this way, see the link:{basedir}/tutorials/sdkboy/sdkboy.html[SDKBOY tutorial] (https://github.com/codion-is/sdkboy[Github]), a https://sdkman.io[SDKMAN] desktop client.
 
 include::{basedir}/manual/swing-common-ui-table.adoc[leveloffset=+1]
 
