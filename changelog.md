@@ -27,6 +27,8 @@ Codion Change Log
 - ConnectionRequest.copy() bug fixed, the locale, time zone and framework version now those of the client, no longer captured again from the JVM making the copy, the server, the session monitor displaying the server values for all clients.
 - ConnectionNotAvailableException, the message now looked up when read, in the language of the reader, serialVersionUID declared, the one computed for previous versions.
 - ServerAuthenticationException(Throwable cause) constructor added, the exception presenting the message of its cause, as read.
+### is.codion.framework.domain
+- ValueAttributeDefinition.Builder.minimum() and maximum() bug fixed, each one no longer resets the other.
 ### is.codion.framework.db
 - EntityNotFoundException, MultipleEntitiesFoundException and EntityModifiedException now provide their default messages, constructors without a message added, resource bundles moved from framework.db.local and framework.db.http.
 - EntityNotFoundException, MultipleEntitiesFoundException and EntityModifiedException, the default message now put together when read, in the language of the reader, serialVersionUID declared, the one computed for previous versions.
@@ -144,6 +146,7 @@ Codion Change Log
 - AbstractComponentBuilder.enable(ValidationIndicator) and enable(ModifiedIndicator) moved to AbstractComponentValueBuilder.
 - ValidationIndicator.enable() now takes an invalid state instead of a valid one.
 - swing-common-ui java.rmi module dependency removed, unused.
+- NumberSpinnerBuilder.range() added.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).

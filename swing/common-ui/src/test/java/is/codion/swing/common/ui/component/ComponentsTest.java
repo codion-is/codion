@@ -67,6 +67,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
@@ -811,6 +812,23 @@ public final class ComponentsTest {
 		assertEquals("12:34", value.get());
 		field.setText("");
 		assertNull(value.get());
+	}
+
+	@Test
+	void integerSpinnerRange() {
+		SpinnerNumberModel model = (SpinnerNumberModel) Components.integerSpinner()
+						.range(1, 5)
+						.build()
+						.getModel();
+		assertEquals(1, model.getMinimum());
+		assertEquals(5, model.getMaximum());
+		// one sided
+		model = (SpinnerNumberModel) Components.integerSpinner()
+						.range(null, 5)
+						.build()
+						.getModel();
+		assertNull(model.getMinimum());
+		assertEquals(5, model.getMaximum());
 	}
 
 	@Test
