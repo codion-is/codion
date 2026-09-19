@@ -104,8 +104,8 @@ public class TemporalInputTest {
 	}
 
 	@Test
-	void enabledState() {
-		SwingUtilities.invokeLater(() -> {
+	void enabledState() throws Exception {
+		SwingUtilities.invokeAndWait(() -> {
 			State enabledState = State.state();
 			TemporalInput<LocalDate> inputPanel = TemporalInput.builder()
 							.temporalClass(LocalDate.class)

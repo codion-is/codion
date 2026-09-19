@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class ScrollPaneBuilderTest {
 
 	@Test
-	void followHorizontal() {
+	void followHorizontal() throws Exception {
 		JScrollPane leader = ScrollPaneBuilder.builder()
 						.view(view(1000, 100))
 						.build();
@@ -40,18 +40,20 @@ public final class ScrollPaneBuilderTest {
 		layout(leader, 300, 120);
 		layout(follower, 300, 20);
 
-		leader.getHorizontalScrollBar().setValue(200);
-		assertEquals(200, follower.getViewport().getViewPosition().x);
-		leader.getHorizontalScrollBar().setValue(0);
-		assertEquals(0, follower.getViewport().getViewPosition().x);
+		SwingUtilities.invokeAndWait(() -> {
+			leader.getHorizontalScrollBar().setValue(200);
+			assertEquals(200, follower.getViewport().getViewPosition().x);
+			leader.getHorizontalScrollBar().setValue(0);
+			assertEquals(0, follower.getViewport().getViewPosition().x);
 
-		// one way, the leader does not follow the follower
-		follower.getHorizontalScrollBar().setValue(100);
-		assertEquals(0, leader.getViewport().getViewPosition().x);
+			// one way, the leader does not follow the follower
+			follower.getHorizontalScrollBar().setValue(100);
+			assertEquals(0, leader.getViewport().getViewPosition().x);
+		});
 	}
 
 	@Test
-	void followerCatchesUpWhenAdded() {
+	void followerCatchesUpWhenAdded() throws Exception {
 		JScrollPane leader = ScrollPaneBuilder.builder()
 						.view(view(1000, 100))
 						.build();
@@ -61,7 +63,7 @@ public final class ScrollPaneBuilderTest {
 		JScrollPane follower = follower(leader);
 		layout(follower, 300, 20);
 		assertEquals(0, follower.getViewport().getViewPosition().x);
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			new JPanel().add(follower);
 			assertEquals(200, follower.getViewport().getViewPosition().x);
 		});
