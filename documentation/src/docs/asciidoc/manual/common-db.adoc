@@ -44,3 +44,13 @@ A Database instance provides *java.sql.Connection* instances via the *createConn
 ----
 include::{dir-source}/is/codion/manual/common/db/database/DatabaseDemo.java[tags=connection]
 ----
+
+== Exceptions
+
+A *java.sql.SQLException* is turned into a {url-javadoc}{common-db}/is/codion/common/db/exception/DatabaseException.html[DatabaseException] by *Database.exception()*. The DBMS modules recognize the most common errors, each represented by an {url-javadoc}{common-db}/is/codion/common/db/exception/ErrorType.html[ErrorType], a unique constraint violation, a missing value or a locked row for example. Some error types have their own exception class, *UniqueConstraintException*, *ReferentialIntegrityException*, *QueryTimeoutException* and *AuthenticationException*, the others result in a plain *DatabaseException*.
+
+An exception based on an error type does not carry a message, it carries the error type along with the detail provided by the database, if any, usually the name of the constraint, column or table involved, see *errorType()* and *detail()*. The message, a user-friendly description of the error type followed by the detail, is put together each time it is read. An exception travelling from a server to a client thereby presents its message in the language of the client, regardless of the language of the server.
+
+*getMessage()* uses the default locale, *message(Locale)* a given one, for a web server serving users of different languages, where the default locale is not that of the reader.
+
+An error the DBMS module does not recognize results in a *DatabaseException* without an error type, its message the one from the database.

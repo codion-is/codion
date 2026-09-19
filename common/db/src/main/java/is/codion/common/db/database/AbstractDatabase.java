@@ -20,6 +20,7 @@ package is.codion.common.db.database;
 
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -27,7 +28,6 @@ import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.utilities.exceptions.Exceptions;
-import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 
 import org.jspecify.annotations.Nullable;
@@ -48,10 +48,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 
 /**
  * A default abstract implementation of the Database interface.
@@ -59,9 +57,6 @@ import static java.util.ResourceBundle.getBundle;
 public abstract class AbstractDatabase implements Database {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractDatabase.class);
-
-	private static final MessageBundle MESSAGES =
-					messageBundle(Database.class, getBundle(Database.class.getName()));
 
 	/**
 	 * {@code FOR UPDATE}
@@ -262,8 +257,9 @@ public abstract class AbstractDatabase implements Database {
 
 	/**
 	 * Returns an exception based on the {@link ErrorType} of the given exception, see {@link #errorType(SQLException)},
-	 * its message the one associated with the error type, along with the detail, if any, see
-	 * {@link #errorDetail(SQLException, ErrorType)}, or the exception message in case the error type
+	 * carrying the error type along with the detail, if any, see {@link #errorDetail(SQLException, ErrorType)},
+	 * its message the one associated with the error type, in the language of the one reading it, see
+	 * {@link DatabaseException#getMessage()}, or the exception message in case the error type
 	 * is not recognized, see {@link #message(SQLException)}.
 	 */
 	@Override
@@ -274,22 +270,22 @@ public abstract class AbstractDatabase implements Database {
 		if (errorType == null) {
 			return new DatabaseException(exception, cleanMessage(exception));
 		}
-		String message = errorMessage(exception, errorType, operation);
+		String detail = detail(exception, errorType);
 		switch (errorType) {
 			case UNIQUE_CONSTRAINT:
-				return new UniqueConstraintException(exception, message);
+				return new UniqueConstraintException(exception, errorType, detail);
 			case REFERENTIAL_INTEGRITY:
 			case PARENT_MISSING:
 			case CHILD_EXISTS:
-				return new ReferentialIntegrityException(exception, message, operation);
+				return new ReferentialIntegrityException(exception, errorType, detail, operation);
 			case TIMEOUT:
-				return new QueryTimeoutException(exception, message);
+				return new QueryTimeoutException(exception, errorType, detail);
 			case AUTHENTICATION:
 			case ACCOUNT_LOCKED:
 			case PASSWORD_EXPIRED:
-				return new AuthenticationException(message);
+				return new AuthenticationException(errorType, detail);
 			default:
-				return new DatabaseException(exception, message);
+				return new DatabaseException(exception, errorType, detail);
 		}
 	}
 
@@ -531,13 +527,6 @@ public abstract class AbstractDatabase implements Database {
 		}
 	}
 
-	private String errorMessage(SQLException exception, ErrorType errorType, Operation operation) {
-		String message = MESSAGES.getString(messageKey(errorType, operation));
-		String detail = detail(exception, errorType);
-
-		return detail == null ? message : message + ": " + detail;
-	}
-
 	private @Nullable String detail(SQLException exception, ErrorType errorType) {
 		try {
 			return errorDetail(exception, errorType);
@@ -558,22 +547,6 @@ public abstract class AbstractDatabase implements Database {
 		}
 	}
 
-	private static String messageKey(ErrorType errorType, Operation operation) {
-		if (errorType == ErrorType.REFERENTIAL_INTEGRITY) {
-			// the database does not report which way, the operation does in all cases but an update
-			switch (operation) {
-				case INSERT:
-					return ErrorType.PARENT_MISSING.messageKey();
-				case DELETE:
-					return ErrorType.CHILD_EXISTS.messageKey();
-				default:
-					break;
-			}
-		}
-
-		return errorType.messageKey();
-	}
-
 	private static Database cleanupAndCreateInstance(String databaseUrl, Database previousInstance) throws SQLException {
 		Database instance = DatabaseFactory.instance().create(databaseUrl);
 		if (previousInstance != null) {
@@ -581,74 +554,6 @@ public abstract class AbstractDatabase implements Database {
 		}
 
 		return instance;
-	}
-
-	/**
-	 * The types of errors a database implementation can recognize, each associated with a user-friendly message.
-	 * @see #errorType(SQLException)
-	 */
-	protected enum ErrorType {
-		/**
-		 * A unique or primary key constraint was violated
-		 */
-		UNIQUE_CONSTRAINT,
-		/**
-		 * A foreign key constraint was violated, for databases which do not report which way,
-		 * see {@link #PARENT_MISSING} and {@link #CHILD_EXISTS}, the message then being based on the operation
-		 */
-		REFERENTIAL_INTEGRITY,
-		/**
-		 * A foreign key constraint was violated, the referenced row does not exist
-		 */
-		PARENT_MISSING,
-		/**
-		 * A foreign key constraint was violated, the row being deleted or updated is referenced
-		 */
-		CHILD_EXISTS,
-		/**
-		 * A value is missing for a column which does not allow null
-		 */
-		NULL_VALUE,
-		/**
-		 * A check constraint was violated
-		 */
-		CHECK_CONSTRAINT,
-		/**
-		 * A value is too long or too large for its column
-		 */
-		VALUE_TOO_LARGE,
-		/**
-		 * The user lacks the privileges required
-		 */
-		MISSING_PRIVILEGES,
-		/**
-		 * The login credentials are incorrect
-		 */
-		AUTHENTICATION,
-		/**
-		 * The account is locked or disabled, an authentication error
-		 */
-		ACCOUNT_LOCKED,
-		/**
-		 * The password has expired or must be changed, an authentication error
-		 */
-		PASSWORD_EXPIRED,
-		/**
-		 * A row is locked by another transaction
-		 */
-		ROW_LOCKED,
-		/**
-		 * A statement timed out
-		 */
-		TIMEOUT,
-		/**
-		 * A table or view does not exist
-		 */
-		TABLE_NOT_FOUND;
-
-		private String messageKey() {
-			return name().toLowerCase(Locale.ROOT);
-		}
 	}
 
 	private static final class DefaultQueryCounter implements QueryCounter {

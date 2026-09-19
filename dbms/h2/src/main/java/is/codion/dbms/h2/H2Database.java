@@ -20,6 +20,7 @@ package is.codion.dbms.h2;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

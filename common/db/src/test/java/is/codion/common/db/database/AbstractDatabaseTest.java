@@ -20,6 +20,7 @@ package is.codion.common.db.database;
 
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -97,7 +98,7 @@ public final class AbstractDatabaseTest {
 
 		// independent of the default locale
 		private static String message(String key) {
-			return ResourceBundle.getBundle(Database.class.getName()).getString(key);
+			return ResourceBundle.getBundle(DatabaseException.class.getName()).getString(key);
 		}
 
 		@Test
@@ -142,7 +143,12 @@ public final class AbstractDatabaseTest {
 					return errorType == ErrorType.NULL_VALUE ? "NAME" : null;
 				}
 			};
-			assertEquals(message("null_value") + ": NAME", detailed.exception(new SQLException("null", "23502"), Operation.INSERT).getMessage());
+			DatabaseException nullValue = detailed.exception(new SQLException("null", "23502"), Operation.INSERT);
+			assertEquals(message("null_value") + ": NAME", nullValue.getMessage());
+			// the exception carries what the message is put together from
+			assertEquals(ErrorType.NULL_VALUE, nullValue.errorType().orElseThrow());
+			assertEquals("NAME", nullValue.detail().orElseThrow());
+			assertFalse(detailed.exception(new SQLException("unknown", "XX000"), Operation.OTHER).errorType().isPresent());
 			assertEquals(message("unique_constraint"), detailed.exception(new SQLException("unique", "23505"), Operation.INSERT).getMessage());
 		}
 

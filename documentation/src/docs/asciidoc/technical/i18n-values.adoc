@@ -4,12 +4,12 @@ Overview of the available i18n properties files and their keys and values.
 
 == codion-common-db
 
-=== is/codion/common/db/database/Database.java
+=== is/codion/common/db/exception/DatabaseException.java
 
 [source]
 ----
-is/codion/common/db/database/Database.properties
-is/codion/common/db/database/Database_is_IS.properties
+is/codion/common/db/exception/DatabaseException.properties
+is/codion/common/db/exception/DatabaseException_is_IS.properties
 ----
 
 [cols="1,1,1"]

@@ -19,6 +19,7 @@
 package is.codion.dbms.sqlserver;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.exception.ErrorType;
 
 import java.sql.SQLException;
 import java.util.HashMap;
