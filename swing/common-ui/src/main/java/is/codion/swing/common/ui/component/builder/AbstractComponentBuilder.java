@@ -23,8 +23,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Sizes;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
-import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
-import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -465,29 +463,6 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	 */
 	protected void enable(TransferFocusOnEnter transferFocusOnEnter, C component) {
 		transferFocusOnEnter.enable(component);
-	}
-
-	/**
-	 * Enables the validation indicator on the given component, over both severities, using the given
-	 * {@link ValidationIndicator}. Override for composite components or special handling.
-	 * @param validationIndicator the {@link ValidationIndicator} to use
-	 * @param component the component
-	 * @param valid the valid state to indicate
-	 * @param warned the warned state to indicate
-	 */
-	protected void enable(ValidationIndicator validationIndicator, C component, ObservableState valid, ObservableState warned) {
-		validationIndicator.enable(component, valid, warned);
-	}
-
-	/**
-	 * Enables a modified indicator on the given component, based on the given modified state instance
-	 * using the given {@link ModifiedIndicator}, override for composite components or special handling.
-	 * @param modifiedIndicator the {@link ModifiedIndicator} to use
-	 * @param component the component
-	 * @param modified the modified state to indicate
-	 */
-	protected void enable(ModifiedIndicator modifiedIndicator, C component, ObservableState modified) {
-		modifiedIndicator.enable(component, modified);
 	}
 
 	/**
