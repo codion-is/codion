@@ -296,8 +296,8 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, TemporalInput<T> component, ObservableState valid, ObservableState warned) {
-			validationIndicator.enable(component.temporalField, valid, warned);
+		protected void enable(ValidationIndicator validationIndicator, TemporalInput<T> component, ObservableState invalid, ObservableState warned) {
+			validationIndicator.enable(component.temporalField, invalid, warned);
 		}
 
 		@Override

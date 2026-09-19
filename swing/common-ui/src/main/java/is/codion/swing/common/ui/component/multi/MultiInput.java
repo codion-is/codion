@@ -667,8 +667,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, MultiInput<C, T> component, ObservableState valid, ObservableState warned) {
-			validationIndicator.enable(component.component(), valid, warned);
+		protected void enable(ValidationIndicator validationIndicator, MultiInput<C, T> component, ObservableState invalid, ObservableState warned) {
+			validationIndicator.enable(component.component(), invalid, warned);
 		}
 
 		@Override

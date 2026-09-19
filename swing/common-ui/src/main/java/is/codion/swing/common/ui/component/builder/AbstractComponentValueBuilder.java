@@ -238,11 +238,11 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	 * {@link ValidationIndicator}. Override for composite components or special handling.
 	 * @param validationIndicator the {@link ValidationIndicator} to use
 	 * @param component the component
-	 * @param valid the valid state to indicate
+	 * @param invalid the invalid state to indicate
 	 * @param warned the warned state to indicate
 	 */
-	protected void enable(ValidationIndicator validationIndicator, C component, ObservableState valid, ObservableState warned) {
-		validationIndicator.enable(component, valid, warned);
+	protected void enable(ValidationIndicator validationIndicator, C component, ObservableState invalid, ObservableState warned) {
+		validationIndicator.enable(component, invalid, warned);
 	}
 
 	/**
@@ -285,13 +285,13 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 		// state stands in where the caller set no warning, rather than the indicator having to cope with its absence.
 		ObservableState warned = warnedObservable == null ? State.state().observable() : warnedObservable;
 		if (validObservable != null) {
-			enable(validationIndicator, componentValue.component(), validObservable, warned);
+			enable(validationIndicator, componentValue.component(), validObservable.not(), warned);
 		}
 		else if (validPredicate != null) {
-			enable(validationIndicator, componentValue.component(), createValidState(componentValue, validPredicate), warned);
+			enable(validationIndicator, componentValue.component(), createInvalidState(componentValue, validPredicate), warned);
 		}
 		else if (warnedObservable != null) {
-			enable(validationIndicator, componentValue.component(), State.state(true).observable(), warned);
+			enable(validationIndicator, componentValue.component(), State.state().observable(), warned);
 		}
 	}
 
@@ -301,28 +301,28 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 		}
 	}
 
-	private static <C extends JComponent, T> ObservableState createValidState(ComponentValue<C, T> componentValue,
+	private static <C extends JComponent, T> ObservableState createInvalidState(ComponentValue<C, T> componentValue,
 																																						Predicate<T> validator) {
-		ValidationConsumer<T> validationConsumer = new ValidationConsumer<>(componentValue.get(), validator);
-		componentValue.addConsumer(validationConsumer);
+		InvalidConsumer<T> invalidConsumer = new InvalidConsumer<>(componentValue.get(), validator);
+		componentValue.addConsumer(invalidConsumer);
 
-		return validationConsumer.valid.observable();
+		return invalidConsumer.invalid.observable();
 	}
 
-	private static final class ValidationConsumer<T> implements Consumer<T> {
+	private static final class InvalidConsumer<T> implements Consumer<T> {
 
 		private final Predicate<@Nullable T> validator;
-		private final State valid;
+		private final State invalid;
 
-		private ValidationConsumer(@Nullable T initialValue, Predicate<T> validator) {
+		private InvalidConsumer(@Nullable T initialValue, Predicate<T> validator) {
 			this.validator = validator;
-			this.valid = State.state();
+			this.invalid = State.state();
 			accept(initialValue);
 		}
 
 		@Override
 		public void accept(@Nullable T value) {
-			valid.set(validator.test(value));
+			invalid.set(!validator.test(value));
 		}
 	}
 }

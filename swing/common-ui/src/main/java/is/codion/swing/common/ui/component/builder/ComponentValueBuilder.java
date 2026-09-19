@@ -83,7 +83,7 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	B validationIndicator(@Nullable ValidationIndicator validationIndicator);
 
 	/**
-	 * Enables a valid indicator based on the given valid state.
+	 * Enables the validation indicator based on the given valid state, the value indicated as invalid while it is false.
 	 * Takes precedence over {@link #valid(Predicate)}.
 	 * @param valid the valid state
 	 * @return this builder instance
@@ -103,7 +103,7 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	B warned(@Nullable ObservableState warned);
 
 	/**
-	 * <p>Enables a valid indicator based on the given validator. Note that this
+	 * <p>Enables the validation indicator based on the given validator. Note that this
 	 * is overridden by {@link #valid(ObservableState)}.
 	 * <p>The validator gets called each time the value changes and
 	 * should return true as long as the value is valid.

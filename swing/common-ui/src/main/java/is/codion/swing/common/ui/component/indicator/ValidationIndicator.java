@@ -48,11 +48,11 @@ public interface ValidationIndicator {
 	/**
 	 * Enables the validation indicator for the given component
 	 * @param component the component
-	 * @param valid the valid state observer, false while the value may not be saved
-	 * @param warned the warned state observer, true while the value carries a warning. Independent of [valid] — a value
-	 * can be both, in which case the invalid presentation wins
+	 * @param invalid the invalid state observer, true while the value may not be saved
+	 * @param warned the warned state observer, true while the value carries a warning. Independent of {@code invalid},
+	 * a value can be both, in which case the invalid presentation wins
 	 */
-	void enable(JComponent component, ObservableState valid, ObservableState warned);
+	void enable(JComponent component, ObservableState invalid, ObservableState warned);
 
 	/**
 	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #INDICATOR_CLASS}

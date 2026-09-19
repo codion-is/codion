@@ -285,8 +285,8 @@ public final class EntityComboBoxInput extends JPanel {
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, EntityComboBoxInput component, ObservableState valid, ObservableState warned) {
-			validationIndicator.enable(component.comboBox, valid, warned);
+		protected void enable(ValidationIndicator validationIndicator, EntityComboBoxInput component, ObservableState invalid, ObservableState warned) {
+			validationIndicator.enable(component.comboBox, invalid, warned);
 		}
 
 		@Override

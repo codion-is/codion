@@ -442,8 +442,8 @@ public final class EntitySearchInput extends JPanel {
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, EntitySearchInput component, ObservableState valid, ObservableState warned) {
-			validationIndicator.enable(component.searchField, valid, warned);
+		protected void enable(ValidationIndicator validationIndicator, EntitySearchInput component, ObservableState invalid, ObservableState warned) {
+			validationIndicator.enable(component.searchField, invalid, warned);
 		}
 
 		private EntitySearchField createSearchField() {

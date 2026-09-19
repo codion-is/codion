@@ -76,10 +76,10 @@ final class DurationPanelBuilder extends AbstractComponentValueBuilder<DurationP
 	}
 
 	@Override
-	protected void enable(ValidationIndicator validationIndicator, DurationPanel component, ObservableState valid, ObservableState warned) {
-		validationIndicator.enable(component.minutesField, valid, warned);
-		validationIndicator.enable(component.secondsField, valid, warned);
-		validationIndicator.enable(component.millisecondsField, valid, warned);
+	protected void enable(ValidationIndicator validationIndicator, DurationPanel component, ObservableState invalid, ObservableState warned) {
+		validationIndicator.enable(component.minutesField, invalid, warned);
+		validationIndicator.enable(component.secondsField, invalid, warned);
+		validationIndicator.enable(component.millisecondsField, invalid, warned);
 	}
 
 	@Override
