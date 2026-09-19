@@ -89,7 +89,7 @@ public class DefaultToggleControlTest {
 	}
 
 	@Test
-	void stateToggleControl() {
+	void stateToggleControl() throws Exception {
 		State state = State.state();
 		State enabledState = State.state(false);
 		ToggleControl control = Control.builder()
@@ -103,7 +103,7 @@ public class DefaultToggleControlTest {
 						.getModel();
 		assertFalse(control.isEnabled());
 		assertFalse(buttonModel.isEnabled());
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabledState.set(true);
 			assertTrue(control.isEnabled());
 			assertTrue(buttonModel.isEnabled());
@@ -175,7 +175,7 @@ public class DefaultToggleControlTest {
 	}
 
 	@Test
-	void copy() {
+	void copy() throws Exception {
 		State state = State.state();
 		State enabled = State.state();
 		ToggleControl control = Control.builder()
@@ -195,7 +195,7 @@ public class DefaultToggleControlTest {
 		assertFalse(control.isEnabled());
 		assertFalse(copy.isEnabled());
 
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabled.set(true);
 
 			assertTrue(control.isEnabled());

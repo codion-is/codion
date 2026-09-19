@@ -53,7 +53,7 @@ public final class DefaultCommandControlTest {
 	}
 
 	@Test
-	void test() {
+	void test() throws Exception {
 		State enabledState = State.state();
 		Font font = new JButton().getFont().deriveFont(Font.ITALIC);
 		Control control = Control.builder()
@@ -65,7 +65,7 @@ public final class DefaultCommandControlTest {
 						.build();
 		JButton button = button().control(control).build();
 		assertFalse(button.isEnabled());
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabledState.set(true);
 			assertTrue(button.isEnabled());
 			button.doClick();
@@ -105,13 +105,13 @@ public final class DefaultCommandControlTest {
 	}
 
 	@Test
-	void setEnabled() {
+	void setEnabled() throws Exception {
 		State enabledState = State.state();
 		Control control = Control.builder().command(this::doNothing).caption("control").enabled(enabledState.observable()).build();
 		assertEquals("control", control.caption().orElse(null));
 		assertSame(enabledState.observable(), control.enabled().orElse(null));
 		assertFalse(control.isEnabled());
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabledState.set(true);
 			assertTrue(control.isEnabled());
 			enabledState.set(false);
@@ -144,7 +144,7 @@ public final class DefaultCommandControlTest {
 	}
 
 	@Test
-	void copy() {
+	void copy() throws Exception {
 		State enabled = State.state();
 		Control control = Control.builder()
 						.command(() -> {})
@@ -163,7 +163,7 @@ public final class DefaultCommandControlTest {
 		assertFalse(control.isEnabled());
 		assertFalse(copy.isEnabled());
 
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabled.set(true);
 
 			assertTrue(control.isEnabled());

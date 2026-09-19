@@ -136,7 +136,7 @@ public final class ControlComponentIntegrationTest {
 	}
 
 	@Test
-	void controlCopyPreservesProperties() {
+	void controlCopyPreservesProperties() throws Exception {
 		State originalEnabled = State.state(true);
 
 		Control original = Control.builder()
@@ -165,7 +165,7 @@ public final class ControlComponentIntegrationTest {
 		assertTrue(copy.isEnabled());
 
 		// Changing the shared state affects both
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			originalEnabled.set(false);// Updates the control enabled state on the EDT
 			assertFalse(original.isEnabled());
 			assertFalse(copy.isEnabled()); // Copy shares the enabled state

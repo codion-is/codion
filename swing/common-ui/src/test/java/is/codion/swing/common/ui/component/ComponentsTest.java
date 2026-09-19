@@ -331,7 +331,7 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void checkBox() {
+	void checkBox() throws Exception {
 		Value<Boolean> value = Value.builder()
 						.nonNull(false)
 						.value(true)
@@ -369,7 +369,7 @@ public final class ComponentsTest {
 		toggleControl.value().set(false);
 		assertFalse(state.is());
 
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabledState.set(false);
 			assertFalse(checkBox.isEnabled());
 			enabledState.set(true);
@@ -399,7 +399,7 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void toggleButton() {
+	void toggleButton() throws Exception {
 		Value<Boolean> value = Value.builder()
 						.nonNull(false)
 						.value(true)
@@ -437,7 +437,7 @@ public final class ComponentsTest {
 		toggleControl.value().set(false);
 		assertFalse(state.is());
 
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabledState.set(false);
 			assertFalse(toggleButton.isEnabled());
 			enabledState.set(true);
@@ -456,7 +456,7 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void radioButton() {
+	void radioButton() throws Exception {
 		assertThrows(IllegalArgumentException.class, () -> Components.radioButton()
 						.link((Value.nullable())));
 
@@ -497,7 +497,7 @@ public final class ComponentsTest {
 		toggleControl.value().set(false);
 		assertFalse(state.is());
 
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabledState.set(false);
 			assertFalse(radioButton.isEnabled());
 			enabledState.set(true);
@@ -513,7 +513,7 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void checkBoxMenuItem() {
+	void checkBoxMenuItem() throws Exception {
 		assertThrows(IllegalArgumentException.class, () -> Components.checkBoxMenuItem().link(Value.nullable()));
 
 		State enabledState = State.state(true);
@@ -531,7 +531,7 @@ public final class ComponentsTest {
 		checkBox.setSelected(true);
 		assertTrue(state.is());
 
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabledState.set(false);
 			assertFalse(checkBox.isEnabled());
 			enabledState.set(true);
@@ -547,7 +547,7 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void radioButtonMenuItem() {
+	void radioButtonMenuItem() throws Exception {
 		assertThrows(IllegalArgumentException.class, () -> Components.radioButtonMenuItem()
 						.link(Value.nullable()));
 
@@ -567,7 +567,7 @@ public final class ComponentsTest {
 		button.setSelected(true);
 		assertTrue(state.is());
 
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeAndWait(() -> {
 			enabledState.set(false);
 			assertFalse(button.isEnabled());
 			enabledState.set(true);
