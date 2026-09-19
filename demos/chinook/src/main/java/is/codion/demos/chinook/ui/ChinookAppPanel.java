@@ -31,6 +31,7 @@ import is.codion.demos.chinook.model.EmployeeModel;
 import is.codion.demos.chinook.model.GenreModel;
 import is.codion.demos.chinook.model.PlaylistModel;
 import is.codion.framework.db.EntityConnection;
+import is.codion.plugin.flatlaf.indicator.FlatValidationIndicator;
 import is.codion.plugin.flatlaf.intellij.FlatLookAndFeelIntelliJThemes;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
@@ -278,7 +279,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR.set(true);
-		ValidationIndicator.INDICATOR_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidationIndicator");
+		ValidationIndicator.INDICATOR_CLASS.set(FlatValidationIndicator.class.getName());
 		CalendarPanel.WEEK_NUMBERS.set(true);
 		ReferentialIntegrityErrorHandling.HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);

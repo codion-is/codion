@@ -24,6 +24,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
+import is.codion.plugin.flatlaf.indicator.FlatValidationIndicator;
 import is.codion.plugin.flatlaf.intellij.FlatLookAndFeelIntelliJThemes;
 import is.codion.plugin.flatlaf.intellij.themes.dracula.Dracula;
 import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
@@ -456,7 +457,7 @@ public final class ApplicationPanel extends JPanel {
 		findLookAndFeel(Dracula.class)
 						.ifPresent(LookAndFeelEnabler::enable);
 
-		ValidationIndicator.INDICATOR_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidationIndicator");
+		ValidationIndicator.INDICATOR_CLASS.set(FlatValidationIndicator.class.getName());
 
 		ApplicationModel applicationModel = new ApplicationModel();
 
