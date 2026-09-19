@@ -22,8 +22,11 @@ Codion Change Log
 ### is.codion.common.rmi
 - ConnectionRequest.Builder.locale() and timeZone() added, for a request built on behalf of a client in another JVM.
 - ConnectionRequest.copy() bug fixed, the locale, time zone and framework version now those of the client, no longer captured again from the JVM making the copy, the server, the session monitor displaying the server values for all clients.
+- ConnectionNotAvailableException, the message now looked up when read, in the language of the reader, serialVersionUID declared, the one computed for previous versions.
 ### is.codion.framework.db
 - EntityNotFoundException, MultipleEntitiesFoundException and EntityModifiedException now provide their default messages, constructors without a message added, resource bundles moved from framework.db.local and framework.db.http.
+- EntityNotFoundException, MultipleEntitiesFoundException and EntityModifiedException, the default message now put together when read, in the language of the reader, serialVersionUID declared, the one computed for previous versions.
+- EntityModifiedException constructor with a message parameter removed, the message always based on the entity, its current state and the modified columns.
 ### is.codion.framework.db.http
 - HttpEntityConnection now sends the client locale and time zone.
 - JsonHttpEntityConnection now bases database exceptions on the error type sent by the server, error messages now in the language of the client.

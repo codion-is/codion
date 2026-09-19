@@ -18,55 +18,46 @@
  */
 package is.codion.framework.db.exception;
 
-import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column;
 
 import org.jspecify.annotations.Nullable;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Optional;
 
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 
 /**
  * An exception indicating that an entity, being updated, has been modified or deleted since it was loaded.
+ * <p>The message, describing the modification, is put together when read, in the language of the reader,
+ * see {@link #getMessage()} and {@link #message(Locale)}.
  */
 public final class EntityModifiedException extends UpdateEntityException {
 
-	private static final MessageBundle MESSAGES =
-					messageBundle(EntityModifiedException.class, getBundle(EntityModifiedException.class.getName()));
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	private final Entity entity;
 	private final @Nullable Entity modified;
 	private final Collection<Column<?>> columns;
 
 	/**
-	 * Instantiates a new EntityModifiedException with a default message, describing the modification
+	 * Instantiates a new EntityModifiedException
 	 * @param entity the entity being updated
 	 * @param modified the current (modified) version of the entity, null if it has been deleted
 	 * @param columns the modified columns, an empty collection in case the entity has been deleted
 	 */
 	public EntityModifiedException(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns) {
-		this(entity, modified, columns, message(requireNonNull(entity), modified, requireNonNull(columns)));
-	}
-
-	/**
-	 * Instantiates a new EntityModifiedException
-	 * @param entity the entity being updated
-	 * @param modified the current (modified) version of the entity, null if it has been deleted
-	 * @param columns the modified columns, an empty collection in case the entity has been deleted
-	 * @param message a message describing the modification
-	 */
-	public EntityModifiedException(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns, String message) {
-		super(message);
-		this.entity = requireNonNull(entity);
+		// the message in the language of the one throwing, for a reader not putting the message together itself
+		super(message(requireNonNull(entity), modified, requireNonNull(columns), Locale.getDefault()));
+		this.entity = entity;
 		this.modified = modified;
-		this.columns = unmodifiableSet(new HashSet<>(requireNonNull(columns)));
+		this.columns = unmodifiableSet(new HashSet<>(columns));
 	}
 
 	/**
@@ -90,14 +81,26 @@ public final class EntityModifiedException extends UpdateEntityException {
 		return columns;
 	}
 
-	private static String message(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns) {
+	@Override
+	public @Nullable String message(Locale locale) {
+		try {
+			return message(entity, modified, columns, requireNonNull(locale));
+		}
+		catch (RuntimeException e) {
+			// reading a message must never throw
+			return super.message(locale);
+		}
+	}
+
+	private static String message(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns, Locale locale) {
+		String recordModified = Messages.message(EntityModifiedException.class, "record_modified", locale);
 		if (modified == null) {
 			Entity original = entity.copy().mutable();
 			original.revert();
 
-			return MESSAGES.getString("record_modified") + ", " + original + " " + MESSAGES.getString("has_been_deleted");
+			return recordModified + ", " + original + " " + Messages.message(EntityModifiedException.class, "has_been_deleted", locale);
 		}
-		StringBuilder builder = new StringBuilder(MESSAGES.getString("record_modified")).append(": ").append(entity.type());
+		StringBuilder builder = new StringBuilder(recordModified).append(": ").append(entity.type());
 		for (Column<?> column : columns) {
 			builder.append("\n").append(column)
 							.append(": ").append(entity.original(column))

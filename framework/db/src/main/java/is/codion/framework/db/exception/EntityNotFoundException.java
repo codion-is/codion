@@ -19,24 +19,33 @@
 package is.codion.framework.db.exception;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.utilities.resource.MessageBundle;
 
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static java.util.ResourceBundle.getBundle;
+import org.jspecify.annotations.Nullable;
+
+import java.io.Serial;
+import java.util.Locale;
 
 /**
  * Exception used when an expected entity was not found.
+ * <p>The default message is put together when read, in the language of the reader,
+ * see {@link #getMessage()} and {@link #message(Locale)}.
  */
 public class EntityNotFoundException extends DatabaseException {
 
-	private static final MessageBundle MESSAGES =
-					messageBundle(EntityNotFoundException.class, getBundle(EntityNotFoundException.class.getName()));
+	@Serial
+	private static final long serialVersionUID = 1L;
+
+	private static final String MESSAGE_KEY = "record_not_found";
+
+	private final boolean defaultMessage;
 
 	/**
 	 * Instantiates a new EntityNotFoundException with a default message
 	 */
 	public EntityNotFoundException() {
-		this(MESSAGES.getString("record_not_found"));
+		// the message in the language of the one throwing, for a reader not knowing the default message flag
+		super(Messages.message(EntityNotFoundException.class, MESSAGE_KEY, Locale.getDefault()));
+		this.defaultMessage = true;
 	}
 
 	/**
@@ -45,5 +54,20 @@ public class EntityNotFoundException extends DatabaseException {
 	 */
 	public EntityNotFoundException(String message) {
 		super(message);
+		this.defaultMessage = false;
+	}
+
+	@Override
+	public @Nullable String message(Locale locale) {
+		if (defaultMessage) {
+			try {
+				return Messages.message(EntityNotFoundException.class, MESSAGE_KEY, locale);
+			}
+			catch (RuntimeException e) {
+				// reading a message must never throw
+			}
+		}
+
+		return super.message(locale);
 	}
 }

@@ -449,7 +449,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 			return new EntityModifiedException(objectMapper.readValue(detail.get(ErrorEnvelope.ENTITY).toString(), Entity.class),
 							detail.get(ErrorEnvelope.MODIFIED).isNull() ? null
 											: objectMapper.readValue(detail.get(ErrorEnvelope.MODIFIED).toString(), Entity.class),
-							columns(detail.get(ErrorEnvelope.COLUMNS)), message);
+							columns(detail.get(ErrorEnvelope.COLUMNS)));
 		}
 		catch (Exception e) {
 			//not only IOException, a column or entity type named by a newer server's domain

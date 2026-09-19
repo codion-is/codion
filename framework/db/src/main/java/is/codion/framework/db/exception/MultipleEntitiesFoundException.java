@@ -19,24 +19,33 @@
 package is.codion.framework.db.exception;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.utilities.resource.MessageBundle;
 
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static java.util.ResourceBundle.getBundle;
+import org.jspecify.annotations.Nullable;
+
+import java.io.Serial;
+import java.util.Locale;
 
 /**
  * Exception used when one entity was expected but many were found.
+ * <p>The default message is put together when read, in the language of the reader,
+ * see {@link #getMessage()} and {@link #message(Locale)}.
  */
 public class MultipleEntitiesFoundException extends DatabaseException {
 
-	private static final MessageBundle MESSAGES =
-					messageBundle(MultipleEntitiesFoundException.class, getBundle(MultipleEntitiesFoundException.class.getName()));
+	@Serial
+	private static final long serialVersionUID = 1L;
+
+	private static final String MESSAGE_KEY = "multiple_records_found";
+
+	private final boolean defaultMessage;
 
 	/**
 	 * Instantiates a new MultipleEntitiesFoundException with a default message
 	 */
 	public MultipleEntitiesFoundException() {
-		this(MESSAGES.getString("multiple_records_found"));
+		// the message in the language of the one throwing, for a reader not knowing the default message flag
+		super(Messages.message(MultipleEntitiesFoundException.class, MESSAGE_KEY, Locale.getDefault()));
+		this.defaultMessage = true;
 	}
 
 	/**
@@ -45,5 +54,20 @@ public class MultipleEntitiesFoundException extends DatabaseException {
 	 */
 	public MultipleEntitiesFoundException(String message) {
 		super(message);
+		this.defaultMessage = false;
+	}
+
+	@Override
+	public @Nullable String message(Locale locale) {
+		if (defaultMessage) {
+			try {
+				return Messages.message(MultipleEntitiesFoundException.class, MESSAGE_KEY, locale);
+			}
+			catch (RuntimeException e) {
+				// reading a message must never throw
+			}
+		}
+
+		return super.message(locale);
 	}
 }
