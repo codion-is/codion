@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * Flat Look and Feel service utilities, valid indicator and scaler
+ * Flat Look and Feel service utilities, validation indicator and scaler
  */
 module is.codion.plugin.flatlaf {
 	requires transitive is.codion.swing.common.ui;
@@ -26,7 +26,7 @@ module is.codion.plugin.flatlaf {
 	exports is.codion.plugin.flatlaf.indicator;
 
 	provides is.codion.swing.common.ui.component.indicator.ValidationIndicator
-					with is.codion.plugin.flatlaf.indicator.FlatLafValidationIndicator;
+					with is.codion.plugin.flatlaf.indicator.FlatValidationIndicator;
 	provides is.codion.swing.common.ui.scaler.Scaler
 					with is.codion.plugin.flatlaf.scaler.UIScaler;
 }
