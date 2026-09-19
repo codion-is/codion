@@ -153,7 +153,8 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 			return connection;
 		}
 		catch (AuthenticationException e) {
-			throw new ServerAuthenticationException(e.getMessage());
+			// as the cause, which provides its message in the language of the one reading it, the client
+			throw new ServerAuthenticationException(e);
 		}
 		catch (RemoteException e) {
 			throw e;

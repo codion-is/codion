@@ -21,6 +21,7 @@ package is.codion.common.db.pool;
 import is.codion.common.db.database.ConnectionFactory;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.common.utilities.user.User;
@@ -187,7 +188,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	 */
 	private void checkConnectionPoolCredentials(User user) throws AuthenticationException {
 		if (!this.user.username().equalsIgnoreCase(user.username()) || !Arrays.equals(this.user.password(), user.password())) {
-			throw new AuthenticationException("Wrong username or password");
+			throw new AuthenticationException(ErrorType.AUTHENTICATION, null);
 		}
 	}
 

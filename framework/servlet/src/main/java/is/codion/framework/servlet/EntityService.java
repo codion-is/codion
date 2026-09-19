@@ -1249,21 +1249,31 @@ public final class EntityService implements AuxiliaryServer {
 	 * With the error type the client puts the message together in its own language, the message being in ours.
 	 */
 	private static @Nullable String errorType(Exception exception) {
-		if (exception instanceof DatabaseException) {
-			return ((DatabaseException) exception).errorType()
-							.map(Enum::name)
-							.orElse(null);
-		}
-
-		return null;
+		return databaseException(exception)
+						.flatMap(DatabaseException::errorType)
+						.map(Enum::name)
+						.orElse(null);
 	}
 
 	private static @Nullable String errorDetail(Exception exception) {
-		if (exception instanceof DatabaseException && ((DatabaseException) exception).errorType().isPresent()) {
-			return ((DatabaseException) exception).detail().orElse(null);
+		return databaseException(exception)
+						.filter(databaseException -> databaseException.errorType().isPresent())
+						.flatMap(DatabaseException::detail)
+						.orElse(null);
+	}
+
+	/**
+	 * A login failure carries the database authentication error as its cause.
+	 */
+	private static Optional<DatabaseException> databaseException(Exception exception) {
+		if (exception instanceof DatabaseException) {
+			return Optional.of((DatabaseException) exception);
+		}
+		if (exception instanceof ServerAuthenticationException && exception.getCause() instanceof DatabaseException) {
+			return Optional.of((DatabaseException) exception.getCause());
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
 	private @Nullable JsonNode detail(ErrorKind kind, Exception exception) {
