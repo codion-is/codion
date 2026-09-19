@@ -20,13 +20,21 @@ package is.codion.common.rmi.server.exception;
 
 import is.codion.common.utilities.resource.MessageBundle;
 
+import java.io.Serial;
+
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**
- * An exception indicating that the server is not accepting new connections
+ * An exception indicating that the server is not accepting new connections.
+ * <p>The message is looked up when read, in the language of the reader, a client that is, not the server.
  */
 public final class ConnectionNotAvailableException extends ServerException {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
+
+	private static final String MESSAGE_KEY = "connection_not_available";
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(ConnectionNotAvailableException.class, getBundle(ConnectionNotAvailableException.class.getName()));
@@ -35,6 +43,11 @@ public final class ConnectionNotAvailableException extends ServerException {
 	 * Instantiates a new {@link ConnectionNotAvailableException}
 	 */
 	public ConnectionNotAvailableException() {
-		super(MESSAGES.getString("connection_not_available"));
+		super(MESSAGES.getString(MESSAGE_KEY));
+	}
+
+	@Override
+	public String getMessage() {
+		return MESSAGES.getString(MESSAGE_KEY);
 	}
 }
