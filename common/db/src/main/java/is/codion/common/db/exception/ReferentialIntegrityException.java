@@ -54,9 +54,44 @@ public final class ReferentialIntegrityException extends DatabaseException {
 	}
 
 	/**
+	 * Instantiates a new {@link ReferentialIntegrityException}, its message the one associated with the error type.
+	 * For {@link ErrorType#REFERENTIAL_INTEGRITY}, which does not specify which way the constraint
+	 * was violated, the message is based on the operation.
+	 * @param cause the underlying cause, if any
+	 * @param errorType the error type
+	 * @param detail the detail, null if none
+	 * @param operation the operation causing this exception
+	 */
+	public ReferentialIntegrityException(@Nullable SQLException cause, ErrorType errorType, @Nullable String detail, Operation operation) {
+		super(cause, errorType, detail, messageKey(requireNonNull(errorType), requireNonNull(operation)));
+		this.operation = operation;
+	}
+
+	/**
 	 * @return the {@link Operation} causing this exception
 	 */
 	public Operation operation() {
 		return operation;
+	}
+
+	@Override
+	String messageKey() {
+		return messageKey(errorType().orElseThrow(), operation);
+	}
+
+	private static String messageKey(ErrorType errorType, Operation operation) {
+		if (errorType == ErrorType.REFERENTIAL_INTEGRITY) {
+			// the database does not report which way, the operation does in all cases but an update
+			switch (operation) {
+				case INSERT:
+					return ErrorType.PARENT_MISSING.messageKey();
+				case DELETE:
+					return ErrorType.CHILD_EXISTS.messageKey();
+				default:
+					break;
+			}
+		}
+
+		return errorType.messageKey();
 	}
 }

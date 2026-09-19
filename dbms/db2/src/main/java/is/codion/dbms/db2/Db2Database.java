@@ -20,6 +20,7 @@ package is.codion.dbms.db2;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.ClientInfo;
+import is.codion.common.db.exception.ErrorType;
 
 import java.sql.Connection;
 import java.sql.SQLException;

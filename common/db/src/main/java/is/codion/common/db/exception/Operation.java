@@ -14,30 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2015 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 package is.codion.common.db.exception;
 
-import org.jspecify.annotations.Nullable;
-
 /**
- * An exception indicating an authentication failure
+ * Specifies common database operations, the operation being performed when a database error occurred.
+ * @see ReferentialIntegrityException#operation()
  */
-public final class AuthenticationException extends DatabaseException {
-
+public enum Operation {
 	/**
-	 * @param message the error message
+	 * Select
 	 */
-	public AuthenticationException(@Nullable String message) {
-		super(message);
-	}
-
+	SELECT,
 	/**
-	 * Instantiates a new AuthenticationException, its message the one associated with the error type
-	 * @param errorType the error type
-	 * @param detail the detail, null if none
+	 * Update
 	 */
-	public AuthenticationException(ErrorType errorType, @Nullable String detail) {
-		super(errorType, detail);
-	}
+	UPDATE,
+	/**
+	 * Insert
+	 */
+	INSERT,
+	/**
+	 * Delete
+	 */
+	DELETE,
+	/**
+	 * Other
+	 */
+	OTHER
 }

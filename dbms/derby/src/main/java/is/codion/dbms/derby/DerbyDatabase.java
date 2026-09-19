@@ -19,6 +19,7 @@
 package is.codion.dbms.derby;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.exception.ErrorType;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

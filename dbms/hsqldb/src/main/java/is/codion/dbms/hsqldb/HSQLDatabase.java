@@ -19,6 +19,7 @@
 package is.codion.dbms.hsqldb;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.exception.ErrorType;
 
 import java.sql.Connection;
 import java.sql.SQLException;

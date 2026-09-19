@@ -12,6 +12,9 @@ Codion Change Log
 - Database.selectForUpdateTableHint() added, for databases locking rows via a table hint instead of a select for update clause.
 - AbstractDatabase.ErrorType.VIEW_HAS_ERRORS removed, Oracle specific.
 - Database.Operation moved to is.codion.common.db.exception.Operation, the exception package no longer depending on the database package.
+- AbstractDatabase.ErrorType moved to is.codion.common.db.exception.ErrorType, now public.
+- DatabaseException.errorType(), detail() and message(Locale) added, along with constructors based on an error type, in UniqueConstraintException, ReferentialIntegrityException, QueryTimeoutException and AuthenticationException as well, the message of an exception based on an error type now put together when read, in the language of the reader, a client no longer presented with error messages in the language of the server, DatabaseException.getMessage() now final.
+- Database resource bundle moved and renamed DatabaseException.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.

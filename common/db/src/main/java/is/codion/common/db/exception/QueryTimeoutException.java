@@ -44,4 +44,14 @@ public final class QueryTimeoutException extends DatabaseException {
 	public QueryTimeoutException(@Nullable String message) {
 		super(message);
 	}
+
+	/**
+	 * Instantiates a new QueryTimeoutException, its message the one associated with the error type
+	 * @param cause the underlying cause, if any
+	 * @param errorType the error type
+	 * @param detail the detail, null if none
+	 */
+	public QueryTimeoutException(@Nullable SQLException cause, ErrorType errorType, @Nullable String detail) {
+		super(cause, errorType, detail);
+	}
 }

@@ -18,7 +18,6 @@
  */
 package is.codion.dbms.postgresql;
 
-import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -137,6 +136,6 @@ public class PostgreSQLDatabaseTest {
 
 	// independent of the default locale
 	private static String message(String key) {
-		return ResourceBundle.getBundle(Database.class.getName()).getString(key);
+		return ResourceBundle.getBundle(DatabaseException.class.getName()).getString(key);
 	}
 }
