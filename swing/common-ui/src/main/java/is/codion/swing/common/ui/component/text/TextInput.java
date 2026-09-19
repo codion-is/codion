@@ -417,8 +417,8 @@ public final class TextInput extends JPanel {
 		}
 
 		@Override
-		protected void enable(ValidationIndicator validationIndicator, TextInput component, ObservableState valid, ObservableState warned) {
-			validationIndicator.enable(component.textField, valid, warned);
+		protected void enable(ValidationIndicator validationIndicator, TextInput component, ObservableState invalid, ObservableState warned) {
+			validationIndicator.enable(component.textField, invalid, warned);
 		}
 
 		@Override

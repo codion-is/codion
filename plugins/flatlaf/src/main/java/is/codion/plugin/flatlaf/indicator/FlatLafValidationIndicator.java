@@ -32,28 +32,27 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>A FlatLaf based {@link ValidationIndicator} implementation, using the FlatLaf 'outline' client property.
  * <p>FlatLaf carries a value for each of the two severities — {@link FlatClientProperties#OUTLINE_ERROR} and
- * {@link FlatClientProperties#OUTLINE_WARNING} — so both are drawn as the outline they should be, rather than
- * borrowing the background the way the look and feel agnostic fallback has to.
+ * {@link FlatClientProperties#OUTLINE_WARNING}.
  */
 public final class FlatLafValidationIndicator implements ValidationIndicator {
 
 	@Override
-	public void enable(JComponent component, ObservableState valid, ObservableState warned) {
-		new Indicator(requireNonNull(component), requireNonNull(valid), requireNonNull(warned));
+	public void enable(JComponent component, ObservableState invalid, ObservableState warned) {
+		new Indicator(requireNonNull(component), requireNonNull(invalid), requireNonNull(warned));
 	}
 
 	private static final class Indicator {
 
 		private final JComponent component;
-		private final ObservableState valid;
+		private final ObservableState invalid;
 		private final ObservableState warned;
 
-		private Indicator(JComponent component, ObservableState valid, ObservableState warned) {
+		private Indicator(JComponent component, ObservableState invalid, ObservableState warned) {
 			this.component = component;
-			this.valid = valid;
+			this.invalid = invalid;
 			this.warned = warned;
-			valid.addConsumer(state -> update());
-			warned.addConsumer(state -> update());
+			invalid.addListener(this::update);
+			warned.addListener(this::update);
 			update();
 		}
 
@@ -64,7 +63,7 @@ public final class FlatLafValidationIndicator implements ValidationIndicator {
 		}
 
 		private @Nullable String outline() {
-			if (!valid.is()) {
+			if (invalid.is()) {
 				return FlatClientProperties.OUTLINE_ERROR;
 			}
 

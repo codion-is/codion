@@ -114,6 +114,7 @@ Codion Change Log
 - MultiInput, the members button now a toggle, the members dialog no longer closed on focus lost, following the field instead and closed when the field is hidden, ALT-UP closing it and ALT-DOWN focusing it when displayed, the wrapped component receiving the focus when the last member is removed.
 - MultiInput.Builder.buttonFocusable() added along with BUTTON_FOCUSABLE configuration value, minor refactoring.
 - AbstractComponentBuilder.enable(ValidationIndicator) and enable(ModifiedIndicator) moved to AbstractComponentValueBuilder.
+- ValidationIndicator.enable() now takes an invalid state instead of a valid one.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).

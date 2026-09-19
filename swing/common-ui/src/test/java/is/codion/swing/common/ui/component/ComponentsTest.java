@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.model.filter.FilterModel.IncludedItems;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueList;
@@ -117,6 +118,46 @@ public final class ComponentsTest {
 						.link(value)
 						.buildValue();
 		assertThrows(IllegalStateException.class, () -> componentValue.link(value));
+	}
+
+	@Test
+	void validationIndicator() {
+		ObservableState[] states = new ObservableState[2];
+		State valid = State.state(true);
+		State warned = State.state();
+		Components.stringField()
+						.validationIndicator((component, invalidState, warnedState) -> {
+							states[0] = invalidState;
+							states[1] = warnedState;
+						})
+						.valid(valid)
+						.warned(warned)
+						.build();
+		// the indicator receives an invalid state, the reverse of the valid one
+		assertFalse(states[0].is());
+		assertFalse(states[1].is());
+		valid.set(false);
+		warned.set(true);
+		assertTrue(states[0].is());
+		assertTrue(states[1].is());
+		// a validator, invalid while it returns false
+		ComponentValue<JTextField, String> componentValue = Components.stringField()
+						.validationIndicator((component, invalidState, warnedState) -> {
+							states[0] = invalidState;
+							states[1] = warnedState;
+						})
+						.valid(string -> string != null)
+						.buildValue();
+		assertTrue(states[0].is());
+		assertFalse(states[1].is());
+		componentValue.set("valid");
+		assertFalse(states[0].is());
+		// warned only, never invalid
+		Components.stringField()
+						.validationIndicator((component, invalidState, warnedState) -> states[0] = invalidState)
+						.warned(warned)
+						.build();
+		assertFalse(states[0].is());
 	}
 
 	@Test
