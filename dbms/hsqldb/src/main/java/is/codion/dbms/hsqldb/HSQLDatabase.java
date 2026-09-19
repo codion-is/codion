@@ -97,14 +97,27 @@ final class HSQLDatabase extends AbstractDatabase {
 	@Override
 	protected String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
-		if (errorType == ErrorType.NULL_VALUE && message != null) {
-			// integrity constraint violation: NOT NULL check constraint ; SYS_CT_10093 table: PARENT column: NAME
-			int columnIndex = message.indexOf(COLUMN);
-
-			return columnIndex == -1 ? null : message.substring(columnIndex + COLUMN.length()).trim();
+		if (message == null) {
+			return null;
 		}
+		switch (errorType) {
+			case NULL_VALUE:
+				// integrity constraint violation: NOT NULL check constraint ; SYS_CT_10093 table: PARENT column: NAME
+				int columnIndex = message.indexOf(COLUMN);
 
-		return null;
+				return columnIndex == -1 ? null : message.substring(columnIndex + COLUMN.length()).trim();
+			case UNIQUE_CONSTRAINT:
+				// integrity constraint violation: unique constraint or index violation ; PARENT_UK table: PARENT
+			case PARENT_MISSING:
+				// integrity constraint violation: foreign key no parent ; CHILD_FK table: CHILD value: 99
+			case CHILD_EXISTS:
+				// integrity constraint violation: foreign key no action ; CHILD_FK table: CHILD
+			case CHECK_CONSTRAINT:
+				// integrity constraint violation: check constraint ; PARENT_CK table: PARENT
+				return between(message, " ; ", " table:");
+			default:
+				return null;
+		}
 	}
 
 	@Override

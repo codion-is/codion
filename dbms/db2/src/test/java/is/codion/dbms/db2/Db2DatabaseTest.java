@@ -93,17 +93,17 @@ public class Db2DatabaseTest {
 
 		SQLException parentMissing = exception(-530, "23503", "DB2INST1.CHILD.CHILD_FK");
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, UPDATE));
-		assertEquals(message("parent_missing"), database.exception(parentMissing, UPDATE).getMessage());
+		assertEquals(message("parent_missing") + ": CHILD_FK", database.exception(parentMissing, UPDATE).getMessage());
 		SQLException childExists = exception(-532, "23504", "DB2INST1.CHILD.CHILD_FK");
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("child_exists") + ": CHILD_FK", database.exception(childExists, DELETE).getMessage());
 		// updating a referenced key
 		SQLException referencedKey = exception(-531, "23504", "DB2INST1.CHILD.CHILD_FK");
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(referencedKey, UPDATE));
-		assertEquals(message("child_exists"), database.exception(referencedKey, UPDATE).getMessage());
+		assertEquals(message("child_exists") + ": CHILD_FK", database.exception(referencedKey, UPDATE).getMessage());
 
 		assertEquals(message("null_value"), database.exception(exception(-407, "23502", "TBSPACEID=2, TABLEID=4, COLNO=1"), INSERT).getMessage());
-		assertEquals(message("check_constraint"), database.exception(exception(-545, "23513", "DB2INST1.PARENT.PARENT_CK"), UPDATE).getMessage());
+		assertEquals(message("check_constraint") + ": PARENT_CK", database.exception(exception(-545, "23513", "DB2INST1.PARENT.PARENT_CK"), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(exception(-433, "22001", "abcdefghijklmnop"), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(exception(-413, "22003", "null"), UPDATE).getMessage());
 		assertEquals(message("table_not_found"), database.exception(exception(-204, "42704", "DB2INST1.MISSING"), SELECT).getMessage());

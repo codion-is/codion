@@ -48,6 +48,7 @@ final class Db2Database extends AbstractDatabase {
 	}
 
 	private static final String APPLICATION_NAME = "ApplicationName";
+	private static final String MESSAGE_TOKENS = "SQLERRMC=";
 	private static final String CLIENT_USER = "ClientUser";
 	private static final String CLIENT_HOSTNAME = "ClientHostname";
 	private static final String JDBC_URL_PREFIX = "jdbc:db2:";
@@ -100,14 +101,35 @@ final class Db2Database extends AbstractDatabase {
 		clientInfoProperty(connection, CLIENT_HOSTNAME, clientInfo.host().orElse(""));
 	}
 
-	/**
-	 * Note that the messages contain tokens only, {@code SQLCODE=-407, SQLSTATE=23502, SQLERRMC=TBSPACEID=2, TABLEID=4, COLNO=1},
-	 * unless the {@code retrieveMessagesFromServerOnGetMessage} driver property is enabled, so no detail is provided.
-	 */
 	@Override
 	protected ErrorType errorType(SQLException exception) {
 		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
 
 		return errorType == null ? super.errorType(exception) : errorType;
+	}
+
+	/**
+	 * Note that the messages contain tokens only, unless the {@code retrieveMessagesFromServerOnGetMessage} driver property
+	 * is enabled. The token names the constraint in case of a foreign key or check constraint violation,
+	 * {@code SQLCODE=-530, SQLSTATE=23503, SQLERRMC=SCHEMA.TABLE.CONSTRAINT}, but not the column missing a value,
+	 * {@code SQLCODE=-407, SQLSTATE=23502, SQLERRMC=TBSPACEID=2, TABLEID=4, COLNO=1}, for which no detail is provided.
+	 */
+	@Override
+	protected String errorDetail(SQLException exception, ErrorType errorType) {
+		String message = exception.getMessage();
+		if (message == null) {
+			return null;
+		}
+		switch (errorType) {
+			case REFERENTIAL_INTEGRITY:
+			case PARENT_MISSING:
+			case CHILD_EXISTS:
+			case CHECK_CONSTRAINT:
+				String constraint = between(message, MESSAGE_TOKENS, ",");
+
+				return constraint == null ? null : constraint.substring(constraint.lastIndexOf('.') + 1);
+			default:
+				return null;
+		}
 	}
 }

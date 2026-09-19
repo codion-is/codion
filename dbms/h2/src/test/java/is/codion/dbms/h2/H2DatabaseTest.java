@@ -208,19 +208,19 @@ public class H2DatabaseTest {
 
 			SQLException parentMissing = failure(connection, "insert into child (id, parent_id) values (2, 99)");
 			assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-			assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
+			assertEquals(message("parent_missing") + ": CHILD_FK", database.exception(parentMissing, INSERT).getMessage());
 			SQLException childExists = failure(connection, "delete from parent where id = 1");
 			assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-			assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
+			assertEquals(message("child_exists") + ": CHILD_FK", database.exception(childExists, DELETE).getMessage());
 			SQLException referencedKey = failure(connection, "update parent set id = 5 where id = 1");
-			assertEquals(message("child_exists"), database.exception(referencedKey, UPDATE).getMessage());
+			assertEquals(message("child_exists") + ": CHILD_FK", database.exception(referencedKey, UPDATE).getMessage());
 
 			assertEquals(message("null_value") + ": NAME", database.exception(
 							failure(connection, "insert into parent (id, name) values (3, null)"), INSERT).getMessage());
 			// quoted identifiers in the statement, which is appended to the message
 			assertEquals(message("null_value") + ": NAME", database.exception(
 							failure(connection, "insert into \"PARENT\" (\"ID\", \"NAME\") values (3, null)"), INSERT).getMessage());
-			assertEquals(message("check_constraint"), database.exception(
+			assertEquals(message("check_constraint") + ": PARENT_CK", database.exception(
 							failure(connection, "update parent set amount = -1 where id = 1"), UPDATE).getMessage());
 			assertEquals(message("value_too_large") + ": NAME", database.exception(
 							failure(connection, "update parent set name = 'abcdefghijklmnop' where id = 1"), UPDATE).getMessage());

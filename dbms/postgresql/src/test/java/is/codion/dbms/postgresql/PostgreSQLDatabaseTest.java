@@ -88,14 +88,14 @@ public class PostgreSQLDatabaseTest {
 		SQLException parentMissing = new SQLException("ERROR: insert or update on table \"child\" violates foreign key constraint \"child_fk\"\n"
 						+ "  Detail: Key (parent_id)=(99) is not present in table \"parent\".", "23503");
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, UPDATE));
-		assertEquals(message("parent_missing"), database.exception(parentMissing, UPDATE).getMessage());
+		assertEquals(message("parent_missing") + ": child_fk", database.exception(parentMissing, UPDATE).getMessage());
 
 		SQLException childExists = new SQLException("ERROR: update or delete on table \"parent\" violates foreign key constraint \"child_fk\" on table \"child\"\n"
 						+ "  Detail: Key (id)=(1) is still referenced from table \"child\".", "23503");
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("child_exists") + ": child_fk", database.exception(childExists, DELETE).getMessage());
 		// updating a referenced key, not a missing parent
-		assertEquals(message("child_exists"), database.exception(childExists, UPDATE).getMessage());
+		assertEquals(message("child_exists") + ": child_fk", database.exception(childExists, UPDATE).getMessage());
 
 		// a server with translated messages, the operation then deciding
 		SQLException translated = new SQLException("FEHLER: Aktualisieren oder L\u00F6schen in Tabelle \u00BBparent\u00AB verletzt Fremdschl\u00FCssel-Constraint", "23503");
@@ -113,6 +113,9 @@ public class PostgreSQLDatabaseTest {
 						new SQLException("FEHLER: NULL-Wert in Spalte \u00BBname\u00AB verletzt Not-Null-Constraint", "23502"), INSERT).getMessage());
 		assertEquals(message("null_value"), database.exception(new SQLException(null, "23502"), INSERT).getMessage());
 
+		assertEquals(message("check_constraint") + ": parent_ck", database.exception(
+						new SQLException("ERROR: new row for relation \"parent\" violates check constraint \"parent_ck\"\n"
+										+ "  Detail: Failing row contains (1, a, A, -1.00).", "23514"), UPDATE).getMessage());
 		assertEquals(message("check_constraint"), database.exception(new SQLException("check", "23514"), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(new SQLException("too long", "22001"), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(new SQLException("numeric field overflow", "22003"), UPDATE).getMessage());

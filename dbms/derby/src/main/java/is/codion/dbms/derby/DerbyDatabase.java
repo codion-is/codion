@@ -106,12 +106,24 @@ final class DerbyDatabase extends AbstractDatabase {
 	@Override
 	protected String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
-		if (errorType == ErrorType.NULL_VALUE && message != null) {
-			// Column 'NAME'  cannot accept a NULL value.
-			return between(message, "'", "'");
+		if (message == null) {
+			return null;
 		}
-
-		return null;
+		switch (errorType) {
+			case NULL_VALUE:
+				// Column 'NAME'  cannot accept a NULL value.
+				return between(message, "'", "'");
+			case UNIQUE_CONSTRAINT:
+				// ... a duplicate key value in a unique or primary key constraint or unique index identified by 'PARENT_UK' defined on 'PARENT'.
+				return between(message, "identified by '", "'");
+			case REFERENTIAL_INTEGRITY:
+				// DELETE on table 'PARENT' caused a violation of foreign key constraint 'CHILD_FK' for key (1).
+			case CHECK_CONSTRAINT:
+				// The check constraint 'PARENT_CK' was violated while performing an INSERT or UPDATE on table '"APP"."PARENT"'.
+				return between(message, "constraint '", "'");
+			default:
+				return null;
+		}
 	}
 
 	@Override
@@ -127,16 +139,5 @@ final class DerbyDatabase extends AbstractDatabase {
 				throw e;
 			}
 		}
-	}
-
-	private static String between(String message, String prefix, String suffix) {
-		int prefixIndex = message.indexOf(prefix);
-		if (prefixIndex == -1) {
-			return null;
-		}
-		int beginIndex = prefixIndex + prefix.length();
-		int endIndex = message.indexOf(suffix, beginIndex);
-
-		return endIndex == -1 ? null : message.substring(beginIndex, endIndex);
 	}
 }

@@ -92,20 +92,20 @@ public class MariaDBDatabaseTest {
 		SQLException parentMissing = new SQLException("(conn=3) Cannot add or update a child row: a foreign key constraint fails "
 						+ "(`db`.`child`, CONSTRAINT `child_fk` FOREIGN KEY (`parent_id`) REFERENCES `parent` (`id`))", "23000", 1452);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-		assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
+		assertEquals(message("parent_missing") + ": child_fk", database.exception(parentMissing, INSERT).getMessage());
 		// deleting a referenced row
 		SQLException childExists = new SQLException("(conn=3) Cannot delete or update a parent row: a foreign key constraint fails "
 						+ "(`db`.`child`, CONSTRAINT `child_fk` FOREIGN KEY (`parent_id`) REFERENCES `parent` (`id`))", "23000", 1451);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
-		assertEquals(message("child_exists"), database.exception(childExists, UPDATE).getMessage());
+		assertEquals(message("child_exists") + ": child_fk", database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("child_exists") + ": child_fk", database.exception(childExists, UPDATE).getMessage());
 
 		assertEquals(message("null_value") + ": name", database.exception(
 						new SQLException("(conn=3) Column 'name' cannot be null", "23000", 1048), INSERT).getMessage());
 		assertEquals(message("null_value") + ": name", database.exception(
 						new SQLException("(conn=3) Field 'name' doesn't have a default value", "HY000", 1364), INSERT).getMessage());
 		assertEquals(message("null_value"), database.exception(new SQLException(null, "23000", 1048), INSERT).getMessage());
-		assertEquals(message("check_constraint"), database.exception(new SQLException("(conn=3) CONSTRAINT `parent_ck` failed for `db`.`parent`", "23000", 4025), UPDATE).getMessage());
+		assertEquals(message("check_constraint") + ": parent_ck", database.exception(new SQLException("(conn=3) CONSTRAINT `parent_ck` failed for `db`.`parent`", "23000", 4025), UPDATE).getMessage());
 		assertEquals(message("value_too_large") + ": name", database.exception(
 						new SQLException("(conn=3) Data too long for column 'name' at row 1", "22001", 1406), UPDATE).getMessage());
 		assertEquals(message("value_too_large") + ": amount", database.exception(

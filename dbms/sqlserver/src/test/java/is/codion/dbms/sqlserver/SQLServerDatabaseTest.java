@@ -113,19 +113,19 @@ public class SQLServerDatabaseTest {
 		SQLException parentMissing = new SQLException("The INSERT statement conflicted with the FOREIGN KEY constraint \"child_fk\". "
 						+ "The conflict occurred in database \"db\", table \"dbo.parent\", column 'id'.", "23000", 547);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-		assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
+		assertEquals(message("parent_missing") + ": child_fk", database.exception(parentMissing, INSERT).getMessage());
 		SQLException childExists = new SQLException("The DELETE statement conflicted with the REFERENCE constraint \"child_fk\". "
 						+ "The conflict occurred in database \"db\", table \"dbo.child\", column 'parent_id'.", "23000", 547);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
-		assertEquals(message("child_exists"), database.exception(childExists, UPDATE).getMessage());
+		assertEquals(message("child_exists") + ": child_fk", database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("child_exists") + ": child_fk", database.exception(childExists, UPDATE).getMessage());
 		SQLException selfReference = new SQLException("The DELETE statement conflicted with the SAME TABLE REFERENCE constraint \"parent_fk\". "
 						+ "The conflict occurred in database \"db\", table \"dbo.parent\", column 'parent_id'.", "23000", 547);
-		assertEquals(message("child_exists"), database.exception(selfReference, DELETE).getMessage());
+		assertEquals(message("child_exists") + ": parent_fk", database.exception(selfReference, DELETE).getMessage());
 		SQLException check = new SQLException("The UPDATE statement conflicted with the CHECK constraint \"REFERENCE_CK\". "
 						+ "The conflict occurred in database \"db\", table \"dbo.parent\", column 'amount'.", "23000", 547);
 		assertSame(DatabaseException.class, database.exception(check, UPDATE).getClass());
-		assertEquals(message("check_constraint"), database.exception(check, UPDATE).getMessage());
+		assertEquals(message("check_constraint") + ": REFERENCE_CK", database.exception(check, UPDATE).getMessage());
 		// not recognizable
 		assertSame(DatabaseException.class, database.exception(new SQLException("conflict", "23000", 547), UPDATE).getClass());
 		assertSame(DatabaseException.class, database.exception(new SQLException(null, "23000", 547), UPDATE).getClass());

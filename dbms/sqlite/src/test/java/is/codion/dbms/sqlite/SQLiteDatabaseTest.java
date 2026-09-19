@@ -83,7 +83,7 @@ public class SQLiteDatabaseTest {
 		assertEquals(message("null_value"), database.exception(new SQLException("[SQLITE_CONSTRAINT_NOTNULL] unexpected", null, 19), INSERT).getMessage());
 		SQLException check = new SQLException("[SQLITE_CONSTRAINT_CHECK] A CHECK constraint failed (CHECK constraint failed: parent_ck)", null, 19);
 		assertSame(DatabaseException.class, database.exception(check, UPDATE).getClass());
-		assertEquals(message("check_constraint"), database.exception(check, UPDATE).getMessage());
+		assertEquals(message("check_constraint") + ": parent_ck", database.exception(check, UPDATE).getMessage());
 		assertEquals(message("table_not_found"), database.exception(new SQLException(
 						"[SQLITE_ERROR] SQL error or missing database (no such table: missing)", null, 1), SELECT).getMessage());
 		assertEquals(message("row_locked"), database.exception(new SQLException(

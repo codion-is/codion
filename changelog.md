@@ -16,6 +16,7 @@ Codion Change Log
 - DatabaseException.errorType(), detail() and message(Locale) added, along with constructors based on an error type, in UniqueConstraintException, ReferentialIntegrityException, QueryTimeoutException and AuthenticationException as well, the message of an exception based on an error type now put together when read, in the language of the reader, a client no longer presented with error messages in the language of the server, DatabaseException.getMessage() now final.
 - Database resource bundle moved and renamed DatabaseException.
 - AbstractConnectionPoolWrapper, wrong connection pool credentials now reported as ErrorType.AUTHENTICATION, the message no longer in english only.
+- AbstractDatabase.between() added, for picking the detail from an exception message.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
@@ -58,6 +59,7 @@ Codion Change Log
 - Db2Database.sequenceQuery() and autoIncrementQuery() bug fixed, now based on VALUES, SELECT requiring a FROM clause.
 - Db2Database now based on AbstractDatabase.ErrorType, updating a referenced key, null value, check constraint, value too large, missing privileges and undefined table errors now recognized, a deadlock or lock timeout now reported as a locked row instead of a query timeout.
 - Db2Database.name() bug fixed, url properties no longer included.
+- Db2Database, the constraint name now provided as the error detail for foreign key and check constraint violations.
 ### is.codion.dbms.derby
 - DerbyDatabase.autoIncrementQuery() now based on VALUES, no longer returning a row for each row in the table.
 - DerbyDatabase.sequenceQuery() implemented.
@@ -65,6 +67,7 @@ Codion Change Log
 - DerbyDatabase now based on AbstractDatabase.ErrorType, unique constraint, null value, check constraint, value too large, lock timeout, authentication and table not found errors now recognized.
 - DerbyDatabase bug fixed, referential integrity errors now recognized, the error code, being a severity, was compared to the sql state.
 - DerbyDatabase no longer shuts down a database on a server when closed.
+- DerbyDatabase, the constraint name now provided as the error detail for unique, foreign key and check constraint violations.
 ### is.codion.dbms.h2
 - H2Database.autoIncrementQuery() now throws UnsupportedOperationException, IDENTITY() having been removed in H2 2.0, Generator.identity() being the alternative.
 - H2Database bug fixed, a database with a mixed case url now initialized again after having been closed.
@@ -72,11 +75,13 @@ Codion Change Log
 - H2Database init script paths may now contain parent directory references.
 - H2Database now based on AbstractDatabase.ErrorType, resource bundle removed, value too large, lock timeout, table not found and missing privileges errors now recognized, the statement removed from messages.
 - H2Database bug fixed, check constraint violations now recognized, errorMessage() no longer throws in case of an unexpected exception message, or includes the statement in the column name.
+- H2Database, the constraint name now provided as the error detail for foreign key and check constraint violations.
 ### is.codion.dbms.hsqldb
 - HSQLDatabase.selectForUpdateClause() bug fixed, NOWAIT not being supported.
 - HSQLDatabase.sequenceQuery() and autoIncrementQuery() bug fixed, now based on CALL.
 - HSQLDatabase now based on AbstractDatabase.ErrorType, unique constraint, referential integrity, null value, check constraint, value too large and authentication errors now recognized.
 - HSQLDatabase no longer shuts down a database on a server when closed.
+- HSQLDatabase, the constraint name now provided as the error detail for unique, foreign key and check constraint violations.
 ### is.codion.dbms.mariadb
 - MariaDBDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 - MariaDBDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
@@ -85,6 +90,7 @@ Codion Change Log
 - MariaDBDatabase bug fixed, deleting a referenced row now reported as a referential integrity error and an incorrect password as an authentication error.
 - MariaDBDatabase, a locked account and an expired password now reported as authentication errors.
 - MariaDBDatabase.name() now the host in case the url does not specify a database.
+- MariaDBDatabase, the constraint name now provided as the error detail for foreign key and check constraint violations.
 ### is.codion.dbms.mysql
 - MySQLDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 - MySQLDatabase.selectForUpdateClause() now respects Database.SELECT_FOR_UPDATE_NOWAIT.
@@ -92,6 +98,7 @@ Codion Change Log
 - MySQLDatabase bug fixed, deleting a referenced row now reported as a referential integrity error and an incorrect password as an authentication error.
 - MySQLDatabase, a locked account and an expired password now reported as authentication errors.
 - MySQLDatabase.name() now the host in case the url does not specify a database.
+- MySQLDatabase, the constraint name now provided as the error detail for foreign key and check constraint violations.
 ### is.codion.dbms.oracle
 - OracleDatabase.maximumParameters() now 65.535.
 - OracleDatabase now based on AbstractDatabase.ErrorType, resource bundle removed, resource busy (ORA-00054), value too large (ORA-12899, ORA-01438) and query timeout errors now recognized, the documentation link removed from messages.
@@ -99,15 +106,18 @@ Codion Change Log
 - OracleDatabase, a locked account (ORA-28000) and an expired password (ORA-28001) now reported as authentication errors.
 - OracleDatabase.name() now handles connect descriptors, the server mode, oci and credentials in the url.
 - OracleDatabase, a view with errors (ORA-04063) no longer has a specific error message.
+- OracleDatabase, the constraint name now provided as the error detail for unique, foreign key and check constraint violations.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase now based on AbstractDatabase.ErrorType, resource bundle removed, lock not available, numeric overflow and undefined table errors now recognized.
 - PostgreSQLDatabase bug fixed, updating a referenced key no longer reported as a missing parent.
 - PostgreSQLDatabase.name() now handles a url without a host, now the host in case the url does not specify a database.
+- PostgreSQLDatabase, the constraint name now provided as the error detail for foreign key and check constraint violations.
 ### is.codion.dbms.sqlite
 - SQLiteDatabase.limitOffsetClause() bug fixed, an offset without a limit no longer invalid.
 - SQLiteDatabase.selectForUpdateClause() bug fixed, now empty, FOR UPDATE not being supported.
 - SQLiteDatabase now based on AbstractDatabase.ErrorType, unique constraint, null value, check constraint, locked database and table not found errors now recognized.
 - SQLiteDatabase bug fixed, referential integrity errors now recognized, the driver reporting the primary result code, not the extended one.
+- SQLiteDatabase, the constraint name now provided as the error detail for check constraint violations.
 ### is.codion.dbms.sqlserver
 - SQLServerDatabase.maximumParameters() now 2.098, selecting or deleting by more keys no longer failing.
 - SQLServerDatabase.limitOffsetClause() bug fixed, a limit without an offset or an order by clause no longer invalid.
@@ -118,6 +128,7 @@ Codion Change Log
 - SQLServerDatabase, a disabled or locked out account and an expired password now reported as authentication errors.
 - SQLServerDatabase.name() now the database name, if specified in the url, otherwise the instance or the host without port, jTDS urls now handled.
 - SQLServerDatabase.selectForUpdateTableHint() implemented, rows now locked when selecting for update, respecting Database.SELECT_FOR_UPDATE_NOWAIT, concurrent updates no longer able to overwrite each other.
+- SQLServerDatabase, the constraint name now provided as the error detail for foreign key and check constraint violations.
 ### is.codion.swing.common.ui
 - FormBuilder added, building a form panel, label/input pairs in rows, the label beside its input, over a GridBagLayout, along with DefaultFormBuilder, for extending, and Components.form(), LoginPanel now based on it.
 - TemporalInput, TextInput and FileInput now report the baseline of their field, aligning with a label beside them.

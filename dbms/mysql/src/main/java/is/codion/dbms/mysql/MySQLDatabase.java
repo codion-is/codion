@@ -59,6 +59,8 @@ final class MySQLDatabase extends AbstractDatabase {
 
 	private static final String DUPLICATE_ENTRY = "Duplicate entry ";
 	private static final String FOR_KEY = " for key";
+	private static final String CONSTRAINT = "CONSTRAINT `";
+	private static final String CHECK_CONSTRAINT = "Check constraint '";
 	private static final String JDBC_URL_PREFIX = "jdbc:mysql://";
 
 	/**
@@ -127,19 +129,16 @@ final class MySQLDatabase extends AbstractDatabase {
 			case UNIQUE_CONSTRAINT:
 				// Duplicate entry 'A-b' for key 'name'
 				return between(message, DUPLICATE_ENTRY, FOR_KEY);
+			case PARENT_MISSING:
+			case CHILD_EXISTS:
+				// Cannot add or update a child row: a foreign key constraint fails (`db`.`child`, CONSTRAINT `child_fk` FOREIGN KEY ...
+				// Cannot delete or update a parent row: a foreign key constraint fails (`db`.`child`, CONSTRAINT `child_fk` FOREIGN KEY ...
+				return between(message, CONSTRAINT, "`");
+			case CHECK_CONSTRAINT:
+				// Check constraint 'table_ck' is violated.
+				return between(message, CHECK_CONSTRAINT, "'");
 			default:
 				return null;
 		}
-	}
-
-	private static String between(String message, String prefix, String suffix) {
-		int prefixIndex = message.indexOf(prefix);
-		if (prefixIndex == -1) {
-			return null;
-		}
-		int beginIndex = prefixIndex + prefix.length();
-		int endIndex = message.indexOf(suffix, beginIndex);
-
-		return endIndex == -1 ? null : message.substring(beginIndex, endIndex);
 	}
 }

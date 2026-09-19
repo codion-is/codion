@@ -96,16 +96,16 @@ public class OracleDatabaseTest {
 		OracleDatabase database = new OracleDatabase(URL);
 		SQLException unique = exception("ORA-00001: unique constraint (SCOTT.PARENT_UK) violated", "23000", 1);
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-		assertEquals(message("unique_constraint"), database.exception(unique, INSERT).getMessage());
+		assertEquals(message("unique_constraint") + ": PARENT_UK", database.exception(unique, INSERT).getMessage());
 
 		SQLException parentMissing = exception("ORA-02291: integrity constraint (SCOTT.CHILD_FK) violated - parent key not found", "23000", 2291);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-		assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
+		assertEquals(message("parent_missing") + ": CHILD_FK", database.exception(parentMissing, INSERT).getMessage());
 
 		SQLException childExists = exception("ORA-02292: integrity constraint (SCOTT.CHILD_FK) violated - child record found", "23000", 2292);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
-		assertEquals(message("child_exists"), database.exception(childExists, UPDATE).getMessage());
+		assertEquals(message("child_exists") + ": CHILD_FK", database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("child_exists") + ": CHILD_FK", database.exception(childExists, UPDATE).getMessage());
 
 		assertEquals(message("null_value") + ": NAME", database.exception(
 						exception("ORA-01400: cannot insert NULL into (\"SCOTT\".\"PARENT\".\"NAME\")", "23000", 1400), INSERT).getMessage());
@@ -119,7 +119,7 @@ public class OracleDatabaseTest {
 						exception("ORA-12899: value too large for column \"SCOTT\".\"PARENT\".\"NAME\" (actual: 16, maximum: 10)", "72000", 12899), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(
 						exception("ORA-01438: value larger than specified precision allowed for this column", "22003", 1438), UPDATE).getMessage());
-		assertEquals(message("check_constraint"), database.exception(
+		assertEquals(message("check_constraint") + ": PARENT_CK", database.exception(
 						exception("ORA-02290: check constraint (SCOTT.PARENT_CK) violated", "23000", 2290), UPDATE).getMessage());
 		assertEquals(message("missing_privileges"), database.exception(exception("ORA-01031: insufficient privileges", "42000", 1031), SELECT).getMessage());
 		assertEquals(message("missing_privileges"), database.exception(

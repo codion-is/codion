@@ -91,20 +91,20 @@ public class DerbyDatabaseTest {
 		SQLException unique = new SQLException("The statement was aborted because it would have caused a duplicate key value in a unique or "
 						+ "primary key constraint or unique index identified by 'PARENT_UK' defined on 'PARENT'.", "23505", 30000);
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));
-		assertEquals(message("unique_constraint"), database.exception(unique, INSERT).getMessage());
+		assertEquals(message("unique_constraint") + ": PARENT_UK", database.exception(unique, INSERT).getMessage());
 		// which way is not reported, the operation deciding
 		SQLException parentMissing = new SQLException("INSERT on table 'CHILD' caused a violation of foreign key constraint 'CHILD_FK' for key (99).  "
 						+ "The statement has been rolled back.", "23503", 30000);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(parentMissing, INSERT));
-		assertEquals(message("parent_missing"), database.exception(parentMissing, INSERT).getMessage());
+		assertEquals(message("parent_missing") + ": CHILD_FK", database.exception(parentMissing, INSERT).getMessage());
 		SQLException childExists = new SQLException("DELETE on table 'PARENT' caused a violation of foreign key constraint 'CHILD_FK' for key (1).  "
 						+ "The statement has been rolled back.", "23503", 30000);
 		assertInstanceOf(ReferentialIntegrityException.class, database.exception(childExists, DELETE));
-		assertEquals(message("child_exists"), database.exception(childExists, DELETE).getMessage());
-		assertEquals(message("referential_integrity"), database.exception(childExists, UPDATE).getMessage());
+		assertEquals(message("child_exists") + ": CHILD_FK", database.exception(childExists, DELETE).getMessage());
+		assertEquals(message("referential_integrity") + ": CHILD_FK", database.exception(childExists, UPDATE).getMessage());
 		assertEquals(message("null_value") + ": NAME", database.exception(new SQLException("Column 'NAME'  cannot accept a NULL value.", "23502", 30000), INSERT).getMessage());
 		assertEquals(message("null_value"), database.exception(new SQLException(null, "23502", 30000), INSERT).getMessage());
-		assertEquals(message("check_constraint"), database.exception(new SQLException(
+		assertEquals(message("check_constraint") + ": PARENT_CK", database.exception(new SQLException(
 						"The check constraint 'PARENT_CK' was violated while performing an INSERT or UPDATE on table '\"APP\".\"PARENT\"'.", "23513", 30000), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(new SQLException(
 						"A truncation error was encountered trying to shrink VARCHAR 'abcdefghijklmnop' to length 10.", "22001", 30000), UPDATE).getMessage());
