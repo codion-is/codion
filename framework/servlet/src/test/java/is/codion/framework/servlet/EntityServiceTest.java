@@ -499,6 +499,24 @@ public class EntityServiceTest {
 	}
 
 	@Test
+	void databaseErrorCarriesErrorType() throws Exception {
+		//the department name is not nullable
+		List<Entity> entities = singletonList(ENTITIES.entity(Department.TYPE)
+						.with(Department.ID, -30)
+						.build());
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("insert",
+						BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entities))), BodyHandlers.ofByteArray());
+
+		ErrorEnvelope envelope = ErrorEnvelope.fromJson(response.body());
+		assertEquals(ErrorKind.DATABASE, envelope.errorKind().orElseThrow());
+		//the message in the language of the server, for a client not knowing the error type,
+		//the error type and detail for a client putting the message together in its own
+		assertEquals("NULL_VALUE", envelope.errorType());
+		assertEquals("DNAME", envelope.errorDetail());
+		assertTrue(envelope.message().endsWith(": DNAME"), envelope.message());
+	}
+
+	@Test
 	void internalErrorIsGeneric() throws Exception {
 		//no entityType node, the handler dereferences null; nothing about it is the client's business
 		ObjectNode node = OBJECT_MAPPER.createObjectNode();
@@ -514,6 +532,8 @@ public class EntityServiceTest {
 		assertEquals("Internal server error", envelope.message());
 		assertFalse(envelope.correlationId().isEmpty());
 		assertNull(envelope.detail());
+		assertNull(envelope.errorType());
+		assertNull(envelope.errorDetail());
 
 		//neither the exception type, its message nor a stack frame crosses the wire
 		String body = new String(response.body(), UTF_8);

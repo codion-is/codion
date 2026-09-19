@@ -20,6 +20,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -50,6 +51,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -364,9 +366,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	private Exception exception(ErrorKind kind, ErrorEnvelope envelope) {
 		String message = envelope.message();
+		// an exception based on an error type puts its message together in the language of this client
+		ErrorType errorType = errorType(envelope);
+		String errorDetail = envelope.errorDetail();
 		switch (kind) {
 			case AUTHENTICATION:
-				return new AuthenticationException(message);
+				return errorType == null ? new AuthenticationException(message) : new AuthenticationException(errorType, errorDetail);
 			case BAD_REQUEST:
 				return new IllegalArgumentException(message);
 			case ILLEGAL_STATE:
@@ -374,9 +379,9 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 			case CONFLICT_MODIFIED:
 				return entityModified(envelope, message);
 			case CONFLICT_REFERENTIAL:
-				return referentialIntegrity(envelope, message);
+				return referentialIntegrity(envelope, message, errorType);
 			case CONFLICT_UNIQUE:
-				return new UniqueConstraintException(message);
+				return errorType == null ? new UniqueConstraintException(message) : new UniqueConstraintException(null, errorType, errorDetail);
 			case NOT_FOUND:
 				return new EntityNotFoundException(message);
 			case MULTIPLE_FOUND:
@@ -388,12 +393,29 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 			case DELETE:
 				return new DeleteEntityException(message);
 			case QUERY_TIMEOUT:
-				return new QueryTimeoutException(message);
+				return errorType == null ? new QueryTimeoutException(message) : new QueryTimeoutException(null, errorType, errorDetail);
 			case REPORT:
 				return new ReportException(message);
 			default:
 				//CONNECTION_UNAVAILABLE, DATABASE and INTERNAL, none of which the client has a type for
-				return new DatabaseException(message);
+				return errorType == null ? new DatabaseException(message) : new DatabaseException(errorType, errorDetail);
+		}
+	}
+
+	/**
+	 * @return the error type, null if the envelope carries none or one unknown here, named by a newer server,
+	 * the exception then being based on the message, which is in the language of the server
+	 */
+	private static @Nullable ErrorType errorType(ErrorEnvelope envelope) {
+		String errorType = envelope.errorType();
+		if (errorType == null) {
+			return null;
+		}
+		try {
+			return ErrorType.valueOf(errorType);
+		}
+		catch (IllegalArgumentException e) {
+			return null;
 		}
 	}
 
@@ -401,13 +423,16 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	 * Decoding an error must never throw, its job being to return the exception to throw. A detail this client
 	 * cannot make sense of, an Operation named by a newer server, degrades to the generic exception.
 	 */
-	private static Exception referentialIntegrity(ErrorEnvelope envelope, String message) {
+	private static Exception referentialIntegrity(ErrorEnvelope envelope, String message, @Nullable ErrorType errorType) {
 		JsonNode detail = envelope.detail();
 		if (detail == null || !detail.has(ErrorEnvelope.OPERATION)) {
 			return new DatabaseException(message);
 		}
 		try {
-			return new ReferentialIntegrityException(message, Operation.valueOf(detail.get(ErrorEnvelope.OPERATION).asText()));
+			Operation operation = Operation.valueOf(detail.get(ErrorEnvelope.OPERATION).asText());
+
+			return errorType == null ? new ReferentialIntegrityException(message, operation) :
+							new ReferentialIntegrityException(null, errorType, envelope.errorDetail(), operation);
 		}
 		catch (IllegalArgumentException e) {
 			return new DatabaseException(message);

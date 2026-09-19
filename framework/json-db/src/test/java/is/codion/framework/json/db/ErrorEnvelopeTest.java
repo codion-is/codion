@@ -44,13 +44,15 @@ public final class ErrorEnvelopeTest {
 						.build();
 		ObjectNode detail = JsonNodeFactory.instance.objectNode()
 						.put(ErrorEnvelope.OPERATION, "DELETE");
-		ErrorEnvelope envelope = new ErrorEnvelope(ErrorKind.CONFLICT_REFERENTIAL.name(), "Delete failed", "id", detail);
+		ErrorEnvelope envelope = new ErrorEnvelope(ErrorKind.CONFLICT_REFERENTIAL.name(), "Delete failed", "id", detail, "CHILD_EXISTS", "EMP_DEPT_FK");
 
 		ErrorEnvelope parsed = fieldless.readValue(fieldless.writeValueAsString(envelope), ErrorEnvelope.class);
 		assertEquals(ErrorKind.CONFLICT_REFERENTIAL.name(), parsed.kind());
 		assertEquals("Delete failed", parsed.message());
 		assertEquals("id", parsed.correlationId());
 		assertEquals("DELETE", parsed.detail().get(ErrorEnvelope.OPERATION).asText());
+		assertEquals("CHILD_EXISTS", parsed.errorType());
+		assertEquals("EMP_DEPT_FK", parsed.errorDetail());
 	}
 
 	@Test
@@ -58,19 +60,24 @@ public final class ErrorEnvelopeTest {
 		ObjectNode detail = JsonNodeFactory.instance.objectNode()
 						.put(ErrorEnvelope.OPERATION, "DELETE");
 		ErrorEnvelope envelope = new ErrorEnvelope(ErrorKind.CONFLICT_REFERENTIAL.name(),
-						"Delete failed", "correlation-id", detail);
+						"Delete failed", "correlation-id", detail, "CHILD_EXISTS", null);
 
 		ErrorEnvelope parsed = ErrorEnvelope.fromJson(envelope.toJson().getBytes(UTF_8));
 		assertEquals(ErrorKind.CONFLICT_REFERENTIAL, parsed.errorKind().orElseThrow());
 		assertEquals("Delete failed", parsed.message());
 		assertEquals("correlation-id", parsed.correlationId());
 		assertEquals("DELETE", parsed.detail().get(ErrorEnvelope.OPERATION).asText());
+		assertEquals("CHILD_EXISTS", parsed.errorType());
+		assertNull(parsed.errorDetail());
 	}
 
 	@Test
 	void detailIsOmittedWhenAbsent() throws IOException {
-		ErrorEnvelope envelope = new ErrorEnvelope(ErrorKind.INTERNAL.name(), "Internal server error", "id", null);
+		ErrorEnvelope envelope = new ErrorEnvelope(ErrorKind.INTERNAL.name(), "Internal server error", "id", null, null, null);
 		assertFalse(envelope.toJson().contains("detail"));
+		assertFalse(envelope.toJson().contains("errorType"));
+		assertFalse(envelope.toJson().contains("errorDetail"));
+		assertNull(ErrorEnvelope.fromJson(envelope.toJson().getBytes(UTF_8)).errorType());
 		assertNull(ErrorEnvelope.fromJson(envelope.toJson().getBytes(UTF_8)).detail());
 	}
 

@@ -1221,7 +1221,8 @@ public final class EntityService implements AuxiliaryServer {
 
 	private String envelope(ErrorKind kind, Exception exception, String correlationId) {
 		try {
-			return new ErrorEnvelope(kind.name(), message(kind, exception), correlationId, detail(kind, exception)).toJson();
+			return new ErrorEnvelope(kind.name(), message(kind, exception), correlationId, detail(kind, exception),
+							errorType(exception), errorDetail(exception)).toJson();
 		}
 		catch (JsonProcessingException e) {
 			LOG.error(e.getMessage(), e);
@@ -1242,6 +1243,27 @@ public final class EntityService implements AuxiliaryServer {
 		String message = exception.getMessage();
 
 		return message == null ? kind.name() : message;
+	}
+
+	/**
+	 * With the error type the client puts the message together in its own language, the message being in ours.
+	 */
+	private static @Nullable String errorType(Exception exception) {
+		if (exception instanceof DatabaseException) {
+			return ((DatabaseException) exception).errorType()
+							.map(Enum::name)
+							.orElse(null);
+		}
+
+		return null;
+	}
+
+	private static @Nullable String errorDetail(Exception exception) {
+		if (exception instanceof DatabaseException && ((DatabaseException) exception).errorType().isPresent()) {
+			return ((DatabaseException) exception).detail().orElse(null);
+		}
+
+		return null;
 	}
 
 	private @Nullable JsonNode detail(ErrorKind kind, Exception exception) {
