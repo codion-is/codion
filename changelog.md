@@ -26,8 +26,12 @@ Codion Change Log
 - EntityNotFoundException, MultipleEntitiesFoundException and EntityModifiedException now provide their default messages, constructors without a message added, resource bundles moved from framework.db.local and framework.db.http.
 ### is.codion.framework.db.http
 - HttpEntityConnection now sends the client locale and time zone.
+- JsonHttpEntityConnection now bases database exceptions on the error type sent by the server, error messages now in the language of the client.
+### is.codion.framework.json.db
+- ErrorEnvelope.errorType() and errorDetail() added, along with the associated constructor parameters.
 ### is.codion.framework.servlet
 - EntityService now uses the locale and time zone sent by the client, instead of those of the server.
+- EntityService, the json error envelope now carries the error type and error detail of a database exception.
 ### is.codion.framework.model
 - EntityQueryModel.entityQueryModel() removed, replaced by AbstractEntityTableModel.entityQueryModel(), protected, a query model being created by the table model.
 - ForeignKeyConditionModel.models() added, providing the combo box and search models the operand components are based on, one of each per operand, created on first access from the builder recipes, the four Optional based model accessors removed along with the respective builder methods, ForeignKeyConditionModel.builder() now a step builder, with a connection step.

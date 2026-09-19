@@ -40,14 +40,19 @@ import static java.util.Objects.requireNonNull;
  * The body of a JSON error response, the wire form of a server side exception.
  * <p>Carries a closed {@link ErrorKind}, a message, a correlation id linking the response to a server log entry,
  * and a kind specific {@code detail} node for the kinds whose exception cannot be reconstructed from a message alone.
+ * <p>A database exception based on an error type carries the name of the {@code errorType} and the {@code errorDetail},
+ * if any, with which the client puts the message together in its own language, the {@code message} being in the language
+ * of the server.
  * <p>Neither a stack trace nor a cause chain is ever carried, in either direction. A client reconstructing an
  * exception from an envelope maps the {@link #kind()} to a known constructor; nothing on the wire names a class.
  * {@snippet :
  * {
  *   "kind" : "CONFLICT_REFERENTIAL",
- *   "message" : "Delete failed, the record is referenced by another record",
+ *   "message" : "This record is referenced by records in other tables, delete those first: EMP_DEPT_FK",
  *   "correlationId" : "b1f4c8e2-3a1d-4f0b-9c5e-7d2a6f8b1c3e",
- *   "detail" : { "operation" : "DELETE" }
+ *   "detail" : { "operation" : "DELETE" },
+ *   "errorType" : "CHILD_EXISTS",
+ *   "errorDetail" : "EMP_DEPT_FK"
  * }
  *}
  * @see ErrorKind
@@ -90,22 +95,31 @@ public final class ErrorEnvelope {
 	private final String message;
 	private final String correlationId;
 	private final @Nullable JsonNode detail;
+	private final @Nullable String errorType;
+	private final @Nullable String errorDetail;
 
 	/**
 	 * @param kind the {@link ErrorKind} name, a string rather than the enum so an unknown kind does not fail to parse
 	 * @param message the error message
 	 * @param correlationId identifies the server log entry describing this error
 	 * @param detail kind specific detail, null if the kind carries none
+	 * @param errorType the name of the {@link is.codion.common.db.exception.ErrorType} a database exception is based on,
+	 * a string rather than the enum so an unknown error type does not fail to parse, null if it is not based on one
+	 * @param errorDetail the error detail of a database exception based on an error type, null if none
 	 */
 	@JsonCreator
 	public ErrorEnvelope(@JsonProperty("kind") String kind,
 											 @JsonProperty("message") String message,
 											 @JsonProperty("correlationId") String correlationId,
-											 @JsonProperty("detail") @Nullable JsonNode detail) {
+											 @JsonProperty("detail") @Nullable JsonNode detail,
+											 @JsonProperty("errorType") @Nullable String errorType,
+											 @JsonProperty("errorDetail") @Nullable String errorDetail) {
 		this.kind = requireNonNull(kind);
 		this.message = requireNonNull(message);
 		this.correlationId = requireNonNull(correlationId);
 		this.detail = detail;
+		this.errorType = errorType;
+		this.errorDetail = errorDetail;
 	}
 
 	/**
@@ -138,6 +152,27 @@ public final class ErrorEnvelope {
 	@JsonProperty("detail")
 	public @Nullable JsonNode detail() {
 		return detail;
+	}
+
+	/**
+	 * Returns the name of the error type a database exception is based on. With it the client puts the message together
+	 * in its own language, {@link #message()} being in the language of the server. A client not knowing the error type,
+	 * one older than the server, or one not written in Java and not localizing, uses {@link #message()}.
+	 * @return the name of the {@link is.codion.common.db.exception.ErrorType}, null if the exception is not based on one
+	 * @see is.codion.common.db.exception.DatabaseException#errorType()
+	 */
+	@JsonProperty("errorType")
+	public @Nullable String errorType() {
+		return errorType;
+	}
+
+	/**
+	 * @return the error detail, the name of a constraint, column or table for example, null if none
+	 * @see is.codion.common.db.exception.DatabaseException#detail()
+	 */
+	@JsonProperty("errorDetail")
+	public @Nullable String errorDetail() {
+		return errorDetail;
 	}
 
 	/**

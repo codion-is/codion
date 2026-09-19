@@ -19,8 +19,11 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.report.Report;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
@@ -47,8 +50,10 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import static is.codion.framework.db.EntityConnection.Count.all;
 import static is.codion.framework.db.EntityConnection.Count.where;
@@ -427,6 +432,37 @@ abstract class AbstractHttpEntityConnectionTest {
 						() -> connection.delete(key(department.primaryKey())));
 		//EntityEditPanel.onReferentialIntegrityException branches on the operation, so it must survive the wire
 		assertEquals(Operation.DELETE, exception.operation());
+	}
+
+	@Test
+	void errorTypeSurvivesTheWire() {
+		//the exception carries the error type and detail, not only the message the server put
+		//together in its language, the client thereby presenting the message in its own
+		Locale icelandic = new Locale("is", "IS");
+		ResourceBundle messages = ResourceBundle.getBundle(DatabaseException.class.getName(), icelandic);
+
+		Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
+		ReferentialIntegrityException referential = assertThrows(ReferentialIntegrityException.class,
+						() -> connection.delete(key(department.primaryKey())));
+		assertEquals(ErrorType.CHILD_EXISTS, referential.errorType().orElseThrow());
+		assertEquals(messages.getString("child_exists"), referential.message(icelandic));
+
+		Entity duplicate = connection.entities().entity(Department.TYPE)
+						.with(Department.ID, department.get(Department.ID))
+						.with(Department.NAME, "DUPLICATE")
+						.build();
+		UniqueConstraintException unique = assertThrows(UniqueConstraintException.class, () -> connection.insert(duplicate));
+		assertEquals(ErrorType.UNIQUE_CONSTRAINT, unique.errorType().orElseThrow());
+		assertTrue(unique.message(icelandic).startsWith(messages.getString("unique_constraint")));
+
+		//an error type without an exception class or an error kind of its own
+		Entity nameless = connection.entities().entity(Department.TYPE)
+						.with(Department.ID, 9999L)
+						.build();
+		DatabaseException nullValue = assertThrows(DatabaseException.class, () -> connection.insert(nameless));
+		assertEquals(ErrorType.NULL_VALUE, nullValue.errorType().orElseThrow());
+		assertEquals("DNAME", nullValue.detail().orElseThrow());
+		assertEquals(messages.getString("null_value") + ": DNAME", nullValue.message(icelandic));
 	}
 
 	@Test
