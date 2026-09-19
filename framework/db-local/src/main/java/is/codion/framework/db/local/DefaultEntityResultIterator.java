@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.NoSuchElementException;
 
-import static is.codion.common.db.database.Database.Operation.SELECT;
+import static is.codion.common.db.exception.Operation.SELECT;
 
 final class DefaultEntityResultIterator implements EntityResultIterator {
 

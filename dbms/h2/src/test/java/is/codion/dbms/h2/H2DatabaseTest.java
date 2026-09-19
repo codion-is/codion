@@ -39,7 +39,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
-import static is.codion.common.db.database.Database.Operation.*;
+import static is.codion.common.db.exception.Operation.*;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 

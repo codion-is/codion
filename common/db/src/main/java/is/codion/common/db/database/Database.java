@@ -19,6 +19,7 @@
 package is.codion.common.db.database;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.Operation;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.utilities.property.PropertyValue;
@@ -45,32 +46,6 @@ import static is.codion.common.utilities.Configuration.*;
  * @see DatabaseFactory#create(String)
  */
 public interface Database extends ConnectionFactory {
-
-	/**
-	 * Specifies common database operations.
-	 */
-	enum Operation {
-		/**
-		 * Select
-		 */
-		SELECT,
-		/**
-		 * Update
-		 */
-		UPDATE,
-		/**
-		 * Insert
-		 */
-		INSERT,
-		/**
-		 * Delete
-		 */
-		DELETE,
-		/**
-		 * Other
-		 */
-		OTHER
-	}
 
 	/**
 	 * Specifies the jdbc url of the database.

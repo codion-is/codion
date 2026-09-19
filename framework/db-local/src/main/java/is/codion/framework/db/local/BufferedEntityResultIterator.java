@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static is.codion.common.db.database.Database.Operation.SELECT;
+import static is.codion.common.db.exception.Operation.SELECT;
 
 /**
  * An {@link EntityResultIterator} wrapper that buffers entities in batches and populates

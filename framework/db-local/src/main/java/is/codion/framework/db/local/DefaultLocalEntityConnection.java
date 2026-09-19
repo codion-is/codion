@@ -19,8 +19,8 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.Operation;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
@@ -77,8 +77,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static is.codion.common.db.database.Database.Operation.*;
 import static is.codion.common.db.exception.DatabaseException.SQL_STATE_NO_DATA;
+import static is.codion.common.db.exception.Operation.*;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entity.Key;

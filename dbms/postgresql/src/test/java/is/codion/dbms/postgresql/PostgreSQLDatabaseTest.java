@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import static is.codion.common.db.database.Database.Operation.*;
+import static is.codion.common.db.exception.Operation.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PostgreSQLDatabaseTest {
