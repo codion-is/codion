@@ -142,6 +142,7 @@ Codion Change Log
 - MultiInput.Builder.buttonFocusable() added along with BUTTON_FOCUSABLE configuration value, minor refactoring.
 - AbstractComponentBuilder.enable(ValidationIndicator) and enable(ModifiedIndicator) moved to AbstractComponentValueBuilder.
 - ValidationIndicator.enable() now takes an invalid state instead of a valid one.
+- swing-common-ui java.rmi module dependency removed, unused.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).
