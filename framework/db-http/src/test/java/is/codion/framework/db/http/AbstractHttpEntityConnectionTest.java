@@ -19,7 +19,7 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Database.Operation;
+import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.report.Report;
 import is.codion.common.rmi.client.Clients;

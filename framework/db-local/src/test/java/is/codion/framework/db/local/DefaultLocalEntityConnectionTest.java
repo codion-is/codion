@@ -20,8 +20,8 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.database.ConnectionProvider;
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.utilities.user.User;

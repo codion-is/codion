@@ -11,6 +11,7 @@ Codion Change Log
 - AbstractDatabase.databaseOrHost() added.
 - Database.selectForUpdateTableHint() added, for databases locking rows via a table hint instead of a select for update clause.
 - AbstractDatabase.ErrorType.VIEW_HAS_ERRORS removed, Oracle specific.
+- Database.Operation moved to is.codion.common.db.exception.Operation, the exception package no longer depending on the database package.
 ### is.codion.common.model
 - TableConditionModel.tableConditionModel() factory method parameter no longer a supplier.
 - FilterTableModel.Builder.filters() parameter no longer Supplier.
