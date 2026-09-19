@@ -188,7 +188,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 						.onClosing(windowEvent -> exit())
 						.size(screenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))
-						.centerFrame(true)
+						.center(true)
 						.show();
 	}
 

@@ -113,7 +113,7 @@ public interface FrameBuilder {
 	FrameBuilder focusableWindowState(boolean focusableWindowState);
 
 	/**
-	 * Overrides {@link #locationRelativeTo(Component)} and {@link #centerFrame(boolean)}.
+	 * Overrides {@link #locationRelativeTo(Component)} and {@link #center(boolean)}.
 	 * @param location the frame location
 	 * @return this builder instance
 	 */
@@ -165,10 +165,10 @@ public interface FrameBuilder {
 
 	/**
 	 * This is overridden by {@link #location(Point)} or by setting the {@link #locationRelativeTo(Component)} component.
-	 * @param centerFrame true if the frame should be centered in on the screen
+	 * @param center true if the frame should be centered in on the screen
 	 * @return this builder instance
 	 */
-	FrameBuilder centerFrame(boolean centerFrame);
+	FrameBuilder center(boolean center);
 
 	/**
 	 * @param undecorated true if the frame should be undecorated

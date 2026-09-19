@@ -128,7 +128,7 @@ public final class GreeterDemo {
 						.component(createPanel(new GreeterModel()))
 						.title("Greeter")
 						.defaultCloseOperation(EXIT_ON_CLOSE)
-						.centerFrame(true)
+						.center(true)
 						.show();
 	}
 	// end::main[]
