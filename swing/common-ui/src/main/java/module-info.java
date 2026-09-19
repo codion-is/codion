@@ -38,7 +38,6 @@
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.swing.common.ui {
-	requires java.rmi;
 	requires com.github.weisj.jsvg;
 	requires transitive is.codion.swing.common.model;
 
