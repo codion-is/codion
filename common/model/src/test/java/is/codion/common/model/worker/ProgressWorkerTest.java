@@ -34,6 +34,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.synchronizedList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ProgressWorkerTest {
@@ -222,6 +224,82 @@ public final class ProgressWorkerTest {
 		assertTrue(onDoneCalled.get());
 		// Either onInterrupted or onCancelled should be called, depending on SwingWorker implementation
 		assertTrue(onInterruptedCalled.get() || onCancelledCalled.get());
+	}
+
+	@Test
+	void progressWorkerWorking() throws Exception {
+		// true before started, false after done, before the result is handled
+		List<String> calls = synchronizedList(new ArrayList<>());
+		CountDownLatch latch = new CountDownLatch(1);
+		ProgressWorker.builder()
+						.task(() -> "result")
+						.onStarted(() -> calls.add("started"))
+						.onWorking(working -> calls.add("working " + working))
+						.onDone(() -> calls.add("done"))
+						.onResult(result -> {
+							calls.add(result);
+							latch.countDown();
+						})
+						.execute();
+		assertTrue(latch.await(10, TimeUnit.SECONDS));
+		assertEquals(asList("working true", "started", "done", "working false", "result"), calls);
+
+		// without an onStarted handler, and with an exception
+		calls.clear();
+		CountDownLatch exceptionLatch = new CountDownLatch(1);
+		ProgressWorker.builder()
+						.task(() -> {
+							throw new IllegalStateException("failed");
+						})
+						.onWorking(working -> calls.add("working " + working))
+						.onException(exception -> {
+							calls.add(exception.getMessage());
+							exceptionLatch.countDown();
+						})
+						.execute();
+		assertTrue(exceptionLatch.await(10, TimeUnit.SECONDS));
+		assertEquals(asList("working true", "working false", "failed"), calls);
+
+		// a handler based task
+		calls.clear();
+		CountDownLatch handlerLatch = new CountDownLatch(1);
+		ProgressWorker.builder()
+						.task(new ProgressWorker.ResultTaskHandler<String>() {
+							@Override
+							public String execute() {
+								return "handled";
+							}
+
+							@Override
+							public void onWorking(boolean working) {
+								calls.add("working " + working);
+							}
+
+							@Override
+							public void onResult(String result) {
+								calls.add(result);
+								handlerLatch.countDown();
+							}
+						})
+						.execute();
+		assertTrue(handlerLatch.await(10, TimeUnit.SECONDS));
+		assertEquals(asList("working true", "working false", "handled"), calls);
+
+		// cancelled before it started, never working
+		calls.clear();
+		CountDownLatch cancelledLatch = new CountDownLatch(1);
+		ProgressWorker<String, ?> cancelled = ProgressWorker.builder()
+						.task(() -> "never")
+						.onWorking(working -> calls.add("working " + working))
+						.onCancelled(() -> {
+							calls.add("cancelled");
+							cancelledLatch.countDown();
+						})
+						.build();
+		cancelled.cancel(true);
+		cancelled.execute();
+		assertTrue(cancelledLatch.await(10, TimeUnit.SECONDS));
+		assertEquals(asList("cancelled"), calls);
 	}
 
 	@Test

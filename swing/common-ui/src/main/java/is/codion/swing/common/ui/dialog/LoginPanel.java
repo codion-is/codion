@@ -212,21 +212,19 @@ final class LoginPanel extends JPanel {
 		}
 
 		@Override
-		public void onStarted() {
-			validating.set(true);
+		public void onWorking(boolean working) {
+			validating.set(working);
 		}
 
 		@Override
 		public void onResult(User result) {
 			user.set(result);
-			validating.set(false);
 			closeDialog();
 		}
 
 		@Override
 		public void onException(Exception exception) {
 			user.clear();
-			validating.set(false);
 			new DefaultExceptionDialogBuilder()
 							.owner(Ancestor.window().of(LoginPanel.this).get())
 							.show(exception);
