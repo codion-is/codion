@@ -70,7 +70,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	private int defaultCloseOperation = WindowConstants.HIDE_ON_CLOSE;
 	private @Nullable JMenuBar menuBar;
 	private int extendedState = Frame.NORMAL;
-	private boolean centerFrame;
+	private boolean center;
 	private boolean undecorated;
 
 	@Override
@@ -191,8 +191,8 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
-	public FrameBuilder centerFrame(boolean centerFrame) {
-		this.centerFrame = centerFrame;
+	public FrameBuilder center(boolean center) {
+		this.center = center;
 		return this;
 	}
 
@@ -259,7 +259,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 		else if (locationRelativeTo != null) {
 			frame.setLocationRelativeTo(locationRelativeTo);
 		}
-		else if (centerFrame) {
+		else if (center) {
 			frame.setLocationRelativeTo(null);
 		}
 		frame.setExtendedState(extendedState);

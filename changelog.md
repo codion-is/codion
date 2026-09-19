@@ -147,6 +147,7 @@ Codion Change Log
 - ValidationIndicator.enable() now takes an invalid state instead of a valid one.
 - swing-common-ui java.rmi module dependency removed, unused.
 - NumberSpinnerBuilder.range() added.
+- FrameBuilder.centerFrame() renamed center().
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).

@@ -543,7 +543,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.controls(createMainMenuControls())
 										.buildMenuBar())
 						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
-						.centerFrame(true)
+						.center(true)
 						.show();
 	}
 

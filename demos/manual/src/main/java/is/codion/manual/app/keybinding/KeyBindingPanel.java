@@ -90,7 +90,7 @@ public final class KeyBindingPanel extends JPanel {
 						.component(new KeyBindingPanel())
 						.title("Key Bindings")
 						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
-						.centerFrame(true)
+						.center(true)
 						.show());
 	}
 }
