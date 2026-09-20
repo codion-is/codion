@@ -256,6 +256,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		icons.put("plus", ChinookAppPanel.class.getResource("plus.svg"));
 		icons.put("minus", ChinookAppPanel.class.getResource("minus.svg"));
 		icons.put("graph-pie", ChinookAppPanel.class.getResource("graph-pie.svg"));
+		// tag::configuration[]
 		Completion.COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
 		EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
 		EntityApplicationPanel.SQL_TRACING.set(true);
@@ -263,6 +264,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		EntityPanel.Config.WINDOW_TYPE.set(WindowType.FRAME);
 		EntityEditPanel.Config.MODIFIED_WARNING.set(true);
 		EntityEditPanel.Config.INCLUDE_INSPECTOR.set(true);
+		// end::configuration[]
 		// tag::keyStroke[]
 		// Add a CTRL modifier to the DELETE key shortcut for table panels
 		EntityTablePanel.ControlKeys.DELETE.defaultKeystroke().update(keyStroke ->

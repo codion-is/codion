@@ -166,7 +166,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	 * The same state is reported whether the referenced row is missing or the row being updated or deleted
 	 * is referenced, the detail telling the two apart.
 	 */
-	private ErrorType foreignKeyViolation(SQLException exception) {
+	private static ErrorType foreignKeyViolation(SQLException exception) {
 		String message = exception.getMessage();
 		if (message != null) {
 			if (message.contains(STILL_REFERENCED)) {

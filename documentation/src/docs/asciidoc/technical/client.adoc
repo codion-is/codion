@@ -1,6 +1,7 @@
 = Client
 :dir-source: ../../../../../demos/chinook/src/main/java
 :url-help: link:../help
+:url-javadoc: link:../api
 :imagesdir: ../images
 :basedir: ..
 
@@ -116,7 +117,35 @@ include::{dir-source}/is/codion/demos/chinook/tutorial/ClientArchitecture.java[l
 [#_client_configuration]
 == Configuration
 
-=== Example configuration file
+The framework is configured via configuration values, static {url-javadoc}{common-utilities}/is/codion/common/utilities/property/PropertyValue.html[PropertyValue] constants found in the classes they configure, each with a default value, specified in its javadoc along with the value type. The manual refers to a configuration value by its constant, linking to the javadoc.
+
+A configuration value typically provides the default for a setting which can also be specified for an individual model or component, via a builder or otherwise.
+
+=== In code
+
+Configuration values are usually set in code, in the application main method.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/demos/chinook/ui/ChinookAppPanel.java[tags=configuration]
+----
+
+NOTE: Most configuration values are read when the class they configure is loaded or instantiated, they must be set before that happens, which is why this is done first thing in the main method.
+
+=== System properties
+
+Each configuration value is backed by a system property, which can be specified on the command line, via `-D`, or in a configuration file. A value set in code replaces the one from the command line, which in turn replaces the one from the configuration file.
+
+There are two kinds of property names.
+
+* Values concerning the deployment, the database, the server and how the client connects to it, have property names starting with `codion.`, such as `codion.db.url` and `codion.client.connectionType`. These are typically specified on the command line or in a configuration file, and the documentation refers to them by property name.
+* All other values are named after the class containing them, by convention the fully qualified class name followed by the name of the constant in camel case, the property name of {url-javadoc}{framework-model}/is/codion/framework/model/EntitySearchModel.html#WILDCARD_PREFIX[EntitySearchModel.WILDCARD_PREFIX] being `is.codion.framework.model.EntitySearchModel.wildcardPrefix`. A few names differ from the convention, *PropertyValue.name()* returns the exact one.
+
+=== Configuration file
+
+The configuration file is a property file, specified via the `codion.configurationFile` system property, prefixed with `classpath:` in case it is located on the classpath, in which case it must be in the classpath root. If no file is specified `codion.config` in the user home directory is used, if it exists. A missing configuration file is not an error unless `codion.configurationFileRequired` is set to `true`.
+
+==== Example configuration file
 
 [source]
 ----
