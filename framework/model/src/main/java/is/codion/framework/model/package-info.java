@@ -33,6 +33,10 @@
  * <li>{@link is.codion.framework.model.ForeignKeyModelLink#CLEAR_VALUE_ON_EMPTY_SELECTION}
  * <li>{@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}
  * <li>{@link is.codion.framework.model.EntitySearchModel#PERSISTENCE_AWARE}
+ * <li>{@link is.codion.framework.model.EntitySearchModel#WILDCARD_PREFIX}
+ * <li>{@link is.codion.framework.model.EntitySearchModel#WILDCARD_POSTFIX}
+ * <li>{@link is.codion.framework.model.EntitySearchModel#SPACE_AS_WILDCARD}
+ * <li>{@link is.codion.framework.model.EntitySearchModel#CASE_SENSITIVE}
  * <li>{@link is.codion.framework.model.EntityConditionModel#NEGATION_INCLUDES_NULL}
  * </ul>
  */

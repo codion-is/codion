@@ -340,6 +340,39 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
+	void settingsDefaults() {
+		EntitySearchModel.Settings settings = new DefaultBuilder(Employee.TYPE, CONNECTION)
+						.search(searchable)
+						.build()
+						.settings().get(Employee.NAME);
+		assertTrue(settings.wildcardPrefix().is());
+		assertTrue(settings.wildcardPostfix().is());
+		assertTrue(settings.spaceAsWildcard().is());
+		assertFalse(settings.caseSensitive().is());
+
+		EntitySearchModel.WILDCARD_PREFIX.set(false);
+		EntitySearchModel.WILDCARD_POSTFIX.set(false);
+		EntitySearchModel.SPACE_AS_WILDCARD.set(false);
+		EntitySearchModel.CASE_SENSITIVE.set(true);
+		try {
+			settings = new DefaultBuilder(Employee.TYPE, CONNECTION)
+							.search(searchable)
+							.build()
+							.settings().get(Employee.NAME);
+			assertFalse(settings.wildcardPrefix().is());
+			assertFalse(settings.wildcardPostfix().is());
+			assertFalse(settings.spaceAsWildcard().is());
+			assertTrue(settings.caseSensitive().is());
+		}
+		finally {
+			EntitySearchModel.WILDCARD_PREFIX.clear();
+			EntitySearchModel.WILDCARD_POSTFIX.clear();
+			EntitySearchModel.SPACE_AS_WILDCARD.clear();
+			EntitySearchModel.CASE_SENSITIVE.clear();
+		}
+	}
+
+	@Test
 	void attributes() {
 		DefaultBuilder builder = new DefaultBuilder(Employee.TYPE, CONNECTION);
 		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singleton(Department.NAME)));
