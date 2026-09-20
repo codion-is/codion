@@ -12,7 +12,7 @@ The editor exposes two things: the *entity* being edited, via {url-javadoc}{fram
 == The entity
 
 {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorEntity.html[EditorEntity] represents the entity being edited: *set()* populates the editor, *defaults()* initializes a new entity with default values, *clear()* empties it, *revert()* reverts all modifications.
-Its {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.Exists.html[exists()], {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.Modified.html[modified()] and *valid()* observable states drive the UI — an insert control is enabled while the entity does not exist, an update control while it exists and is modified and valid.
+Its {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.Exists.html[exists()], {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.Modified.html[modified()] and *valid()* observable states drive the UI — an update control is enabled while the entity exists and is modified.
 
 The example below shows the full life cycle: defaults, setting values, insert, modify, update and delete.
 

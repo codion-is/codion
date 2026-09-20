@@ -56,7 +56,7 @@ public final class Configuration {
 	 * (not in subdirectories) to ensure accessibility across module boundaries.
 	 * <ul>
 	 * <li>Value type: String
-	 * <li>Default value: null
+	 * <li>Default value: ~/codion.config
 	 * </ul>
 	 */
 	public static final String CONFIGURATION_FILE = "codion.configurationFile";

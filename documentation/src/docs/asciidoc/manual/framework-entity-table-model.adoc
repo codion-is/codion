@@ -50,10 +50,3 @@ include::{dir-chinook-source}/is/codion/demos/chinook/model/TrackTableModel.java
 ----
 
 The task above is a *ResultTaskHandler*, prepared by the model and executed by the UI on a background thread, with the result applied on the UI thread.
-
-Functions returning new entities follow the same pattern — here wrapped in a transaction:
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/model/PlaylistTableModel.java[tags=randomPlaylist]
-----
