@@ -10,7 +10,6 @@ It provides entity search functionality with support for multi-column text searc
 `EntitySearchModel` provides:
 
 * Multi-column text searching with configurable wildcards
-* Single or multi-entity selection management
 * Result limiting to prevent excessive data retrieval
 * Case-sensitive or insensitive search options
 * The model component for `EntitySearchField` UI component
@@ -38,10 +37,10 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.
 
 The search model supports different wildcard configurations:
 
-* **Prefix search** (autocomplete style): `wildcardPrefix(false)`, `wildcardPostfix(true)` - "joh" → "joh%"
-* **Contains search**: `wildcardPrefix(true)`, `wildcardPostfix(true)` - "ohn" → "%ohn%"
-* **Exact search**: `wildcardPrefix(false)`, `wildcardPostfix(false)` - "john" → "john"
-* **Multi-word search**: `spaceAsWildcard(true)` - "john reyk" → "%john%reyk%"
+* **Prefix search** (autocomplete style): `wildcardPrefix().set(false)`, `wildcardPostfix().set(true)` - "joh" → "joh%"
+* **Contains search**: `wildcardPrefix().set(true)`, `wildcardPostfix().set(true)` - "ohn" → "%ohn%"
+* **Exact search**: `wildcardPrefix().set(false)`, `wildcardPostfix().set(false)` - "john" → "john"
+* **Multi-word search**: `spaceAsWildcard().set(true)` - "john reyk" → "%john%reyk%"
 
 == Selection Management
 
@@ -57,31 +56,31 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.
 == Configuration Properties
 
 .EntitySearchModel Configuration
-[cols="3,2,5"]
+[cols="3,1,5"]
 |===
-|Property |Default |Description
+|Configuration value |Default |Description
 
-|`is.codion.framework.model.EntitySearchModel.PERSISTENCE_AWARE`
+|{url-javadoc}{framework-model}/is/codion/framework/model/EntitySearchModel.html#PERSISTENCE_AWARE[EntitySearchModel.PERSISTENCE_AWARE]
 |true
-|Whether search models react to entity persistence events
+|Whether search models react to entity persistence events, replacing the selected entity when updated and clearing it when deleted
 
-|`is.codion.framework.model.EntitySearchModel.DEFAULT_LIMIT`
-|100
-|Default result limit for search models
+|{url-javadoc}{framework-model}/is/codion/framework/model/EntitySearchModel.html#DEFAULT_LIMIT[EntitySearchModel.DEFAULT_LIMIT]
+|none
+|The default search result limit
 
-|`is.codion.framework.model.EntitySearchModel.WILDCARD_PREFIX`
-|false
-|Default wildcard prefix setting
-
-|`is.codion.framework.model.EntitySearchModel.WILDCARD_POSTFIX`
+|{url-javadoc}{framework-model}/is/codion/framework/model/EntitySearchModel.html#WILDCARD_PREFIX[EntitySearchModel.WILDCARD_PREFIX]
 |true
-|Default wildcard postfix setting
+|Whether a wildcard is prepended to the search string by default
 
-|`is.codion.framework.model.EntitySearchModel.SPACE_AS_WILDCARD`
-|false
-|Default space replacement setting
+|{url-javadoc}{framework-model}/is/codion/framework/model/EntitySearchModel.html#WILDCARD_POSTFIX[EntitySearchModel.WILDCARD_POSTFIX]
+|true
+|Whether a wildcard is appended to the search string by default
 
-|`is.codion.framework.model.EntitySearchModel.CASE_SENSITIVE`
+|{url-javadoc}{framework-model}/is/codion/framework/model/EntitySearchModel.html#SPACE_AS_WILDCARD[EntitySearchModel.SPACE_AS_WILDCARD]
+|true
+|Whether spaces in the search string are replaced with wildcards by default
+
+|{url-javadoc}{framework-model}/is/codion/framework/model/EntitySearchModel.html#CASE_SENSITIVE[EntitySearchModel.CASE_SENSITIVE]
 |false
-|Default case sensitivity setting
+|Whether searching is case-sensitive by default
 |===

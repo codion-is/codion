@@ -57,6 +57,7 @@ Codion Change Log
 - EntityConditionModel.NEGATION_INCLUDES_NULL and Builder.negationIncludesNull() added, default true, the NOT_EQUAL and NOT_IN conditions of nullable columns and foreign keys now including null values, as the filters do.
 - EntitySearchModel.Search.strings() replaced with string(), multiple search strings no longer supported.
 - AbstractEntityTableModel.EntityFilters now excludes byte array attributes.
+- EntitySearchModel.WILDCARD_PREFIX, WILDCARD_POSTFIX, SPACE_AS_WILDCARD and CASE_SENSITIVE configuration values added, providing the default search settings.
 ### is.codion.dbms.db2
 - Db2Database.limitOffsetClause() now based on OFFSET and FETCH NEXT, an offset without a limit no longer invalid.
 - Db2Database.sequenceQuery() and autoIncrementQuery() bug fixed, now based on VALUES, SELECT requiring a FROM clause.

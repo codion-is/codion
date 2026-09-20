@@ -367,8 +367,8 @@ public final class FrameworkModelDemo {
 						.limit(50)
 						.build();
 
-		// Perform search
-		searchModel.condition().set(() -> Customer.FIRSTNAME.equalTo("john"));
+		// Add a base condition
+		searchModel.condition().set(Customer.EMAIL::isNotNull);
 
 		// Get search result
 		List<Entity> result = searchModel.search().perform();

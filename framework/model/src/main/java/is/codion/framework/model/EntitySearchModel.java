@@ -70,6 +70,50 @@ public interface EntitySearchModel {
 	PropertyValue<Integer> DEFAULT_LIMIT = integerValue(EntitySearchModel.class.getName() + ".defaultLimit");
 
 	/**
+	 * Specifies whether a wildcard is prepended to the search string by default
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see Settings#wildcardPrefix()
+	 */
+	PropertyValue<Boolean> WILDCARD_PREFIX =
+					booleanValue(EntitySearchModel.class.getName() + ".wildcardPrefix", true);
+
+	/**
+	 * Specifies whether a wildcard is appended to the search string by default
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see Settings#wildcardPostfix()
+	 */
+	PropertyValue<Boolean> WILDCARD_POSTFIX =
+					booleanValue(EntitySearchModel.class.getName() + ".wildcardPostfix", true);
+
+	/**
+	 * Specifies whether spaces in the search string are replaced with wildcards by default
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see Settings#spaceAsWildcard()
+	 */
+	PropertyValue<Boolean> SPACE_AS_WILDCARD =
+					booleanValue(EntitySearchModel.class.getName() + ".spaceAsWildcard", true);
+
+	/**
+	 * Specifies whether searching is case-sensitive by default
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see Settings#caseSensitive()
+	 */
+	PropertyValue<Boolean> CASE_SENSITIVE =
+					booleanValue(EntitySearchModel.class.getName() + ".caseSensitive", false);
+
+	/**
 	 * @return the underlying {@link EntityDefinition}
 	 */
 	EntityDefinition entityDefinition();
@@ -187,21 +231,25 @@ public interface EntitySearchModel {
 
 		/**
 		 * @return a State representing whether a wildcard is automatically prepended to the search string
+		 * @see #WILDCARD_PREFIX
 		 */
 		State wildcardPrefix();
 
 		/**
 		 * @return a State representing whether a wildcard is automatically appended to the search string
+		 * @see #WILDCARD_POSTFIX
 		 */
 		State wildcardPostfix();
 
 		/**
 		 * @return a State representing whether spaces in the search string are automatically replaced with wildcards
+		 * @see #SPACE_AS_WILDCARD
 		 */
 		State spaceAsWildcard();
 
 		/**
 		 * @return a State representing whether the search is case-sensitive
+		 * @see #CASE_SENSITIVE
 		 */
 		State caseSensitive();
 	}

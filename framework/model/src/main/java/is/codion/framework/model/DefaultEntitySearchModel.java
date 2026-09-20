@@ -472,10 +472,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private static final class DefaultSettings implements Settings {
 
-		private final State wildcardPrefixState = State.state(true);
-		private final State wildcardPostfixState = State.state(true);
-		private final State caseSensitiveState = State.state(false);
-		private final State spaceAsWildcard = State.state(true);
+		private final State wildcardPrefixState = State.state(WILDCARD_PREFIX.getOrThrow());
+		private final State wildcardPostfixState = State.state(WILDCARD_POSTFIX.getOrThrow());
+		private final State caseSensitiveState = State.state(CASE_SENSITIVE.getOrThrow());
+		private final State spaceAsWildcard = State.state(SPACE_AS_WILDCARD.getOrThrow());
 
 		@Override
 		public State wildcardPrefix() {
