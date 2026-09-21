@@ -31,16 +31,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ScrollPaneBuilderTest {
 
+	// Entirely on the Event Dispatch Thread, laying out a scroll pane queues component events, handled on that thread,
+	// which sync the scroll bar with the viewport, racing a scroll bar value set from the test thread
+
 	@Test
 	void followHorizontal() throws Exception {
-		JScrollPane leader = ScrollPaneBuilder.builder()
-						.view(view(1000, 100))
-						.build();
-		JScrollPane follower = follower(leader);
-		layout(leader, 300, 120);
-		layout(follower, 300, 20);
-
 		SwingUtilities.invokeAndWait(() -> {
+			JScrollPane leader = ScrollPaneBuilder.builder()
+							.view(view(1000, 100))
+							.build();
+			JScrollPane follower = follower(leader);
+			layout(leader, 300, 120);
+			layout(follower, 300, 20);
+
 			leader.getHorizontalScrollBar().setValue(200);
 			assertEquals(200, follower.getViewport().getViewPosition().x);
 			leader.getHorizontalScrollBar().setValue(0);
@@ -54,16 +57,16 @@ public final class ScrollPaneBuilderTest {
 
 	@Test
 	void followerCatchesUpWhenAdded() throws Exception {
-		JScrollPane leader = ScrollPaneBuilder.builder()
-						.view(view(1000, 100))
-						.build();
-		layout(leader, 300, 120);
-		leader.getHorizontalScrollBar().setValue(200);
-		// a follower created after the leader was scrolled catches up when added to a parent
-		JScrollPane follower = follower(leader);
-		layout(follower, 300, 20);
-		assertEquals(0, follower.getViewport().getViewPosition().x);
 		SwingUtilities.invokeAndWait(() -> {
+			JScrollPane leader = ScrollPaneBuilder.builder()
+							.view(view(1000, 100))
+							.build();
+			layout(leader, 300, 120);
+			leader.getHorizontalScrollBar().setValue(200);
+			// a follower created after the leader was scrolled catches up when added to a parent
+			JScrollPane follower = follower(leader);
+			layout(follower, 300, 20);
+			assertEquals(0, follower.getViewport().getViewPosition().x);
 			new JPanel().add(follower);
 			assertEquals(200, follower.getViewport().getViewPosition().x);
 		});
