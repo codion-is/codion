@@ -149,6 +149,7 @@ Codion Change Log
 - swing-common-ui java.rmi module dependency removed, unused.
 - NumberSpinnerBuilder.range() added.
 - FrameBuilder.centerFrame() renamed center().
+- MultiInput, ALT-UP in the members dialog now moves the focus to the field, leaving the dialog open, for adding further values, ALT-UP in the field closing it.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).
