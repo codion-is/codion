@@ -94,8 +94,10 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  * field does not use is the wrapped component's.
  * <li>{@link KeyEvent#VK_DOWN} with Alt held, or the button, opens the dialog, the list in it focused, or moves the focus
  * to the list in case the dialog is already open. {@link KeyEvent#VK_UP} with Alt held, or the button, closes it.
- * <li>In the dialog {@link KeyEvent#VK_DELETE} removes the selected values, the Clear button clears the set, and
- * {@link KeyEvent#VK_ESCAPE}, {@link KeyEvent#VK_ENTER} or {@link KeyEvent#VK_UP} with Alt held closes it.
+ * <li>In the dialog {@link KeyEvent#VK_DELETE} removes the selected values, the Clear button clears the set,
+ * {@link KeyEvent#VK_UP} with Alt held moves the focus back to the field, leaving the dialog open, for adding further
+ * values, and {@link KeyEvent#VK_ESCAPE} or {@link KeyEvent#VK_ENTER} closes it. Alt held, Down and Up thereby step
+ * from the field, into the list, and back out again, opening the dialog on the way in and closing it on the way out.
  * </ul>
  * The value is the set collected, sorted, see {@link Builder#comparator(Comparator)}, plus whatever the wrapped
  * component holds, last, so a single value typed into the component counts without being added. Setting the value
@@ -399,6 +401,11 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 	}
 
+	private void focusField() {
+		// Not requestFocusInWindow(), the dialog being the focused window at this point
+		componentValue.component().requestFocus();
+	}
+
 	private void showMembers() {
 		list = createList();
 		JPanel content = borderLayoutPanel()
@@ -424,18 +431,20 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						// Under the field, as a drop-down would be, following it around, see FollowField
 						.size(dialogSize(content))
 						.location(dialogLocation())
-						// No title bar and no close button, closed via the members button, Escape or Enter. It stays
-						// when the focus goes elsewhere, the members remaining on display while more are added.
+						// No title bar and no close button, closed via the members button, Escape, Enter or Alt-Up
+						// in the field. It stays when the focus goes elsewhere, the members remaining on display
+						// while more are added.
 						.undecorated(true)
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ENTER)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(closeMembers))
+						// Back to the field, the dialog staying, Alt-Up in the field then closing it
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_UP)
 										.modifiers(ALT_DOWN_MASK)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(closeMembers))
+										.action(command(this::focusField)))
 						.onShown(this::onMembersShown)
 						// Escape, which disposes the dialog without going through closeMembers()
 						.onClosed(event -> closeMembers())
