@@ -361,6 +361,22 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 				members.items().add(value);
 			}
 			componentValue.clear();
+			displayMember(value);
+		}
+	}
+
+	// The members are sorted, so a value added may end up anywhere, outside the visible rows for one. It is selected and
+	// scrolled to, one already among the members as well, that being the reason nothing seemed to happen.
+	private void displayMember(T value) {
+		if (list != null) {
+			// Later, the list has not been laid out with the added row yet, and the last row could then not be scrolled to
+			SwingUtilities.invokeLater(() -> {
+				int index = members.items().included().get().indexOf(value);
+				if (list != null && index != -1) {
+					list.setSelectedIndex(index);
+					list.ensureIndexIsVisible(index);
+				}
+			});
 		}
 	}
 
