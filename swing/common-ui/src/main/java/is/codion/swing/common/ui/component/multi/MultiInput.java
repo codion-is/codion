@@ -299,12 +299,16 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.model(members)
 						.items()
 						.cellRenderer(new Renderer<>(this::format))
-						.visibleRowCount(Math.max(MINIMUM_VISIBLE_ROWS, Math.min(MAXIMUM_VISIBLE_ROWS, members.getSize())))
+						.visibleRowCount(visibleRowCount())
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_DELETE)
 										.action(command(this::removeSelected)))
 						.name("MultiInput:memberList" + caption())
 						.build();
+	}
+
+	private int visibleRowCount() {
+		return Math.max(MINIMUM_VISIBLE_ROWS, Math.min(MAXIMUM_VISIBLE_ROWS, members.getSize()));
 	}
 
 	private JToggleButton createMembersButton(JComponent component, boolean focusable) {
@@ -490,6 +494,13 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 			closeMembers();
 			componentValue.component().requestFocusInWindow();
 		}
+		else if (dialog != null && list != null && list.getVisibleRowCount() != visibleRowCount()) {
+			// The list grows and shrinks with its members while displayed, within the row limits
+			list.setVisibleRowCount(visibleRowCount());
+			// the preferred size of the content is cached, all the way up from the list
+			list.invalidate();
+			followField.positionMembers();
+		}
 		membersButton.setText(String.valueOf(included.size()));
 		membersButton.setToolTipText(included.isEmpty() ? null : included.stream()
 						.map(this::format)
@@ -557,6 +568,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		private void positionMembers() {
 			if (dialog != null && membersContent != null && isShowing()) {
 				dialog.setBounds(new Rectangle(dialogLocation(), dialogSize(membersContent)));
+				dialog.validate();
 			}
 		}
 	}

@@ -150,6 +150,7 @@ Codion Change Log
 - NumberSpinnerBuilder.range() added.
 - FrameBuilder.centerFrame() renamed center().
 - MultiInput, ALT-UP in the members dialog now moves the focus to the field, leaving the dialog open, for adding further values, ALT-UP in the field closing it.
+- MultiInput, the members dialog now grows and shrinks with the members while displayed, within the row limits.
 ### is.codion.swing.framework.model
 - SwingEntityConditions removed, the default EntityConditions now serving all toolkits, the combo box vs search field decision moved to EntityConditionComponents.
 - SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(EntityQueryModel) constructors removed, SwingEntityTableModel(SwingEntityEditModel, EntityQueryModel) now (SwingEntityEditModel, EntityConditionModel).
