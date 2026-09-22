@@ -32,9 +32,9 @@ import static java.util.Objects.requireNonNull;
 final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinnerBuilder<T, NumberSpinnerBuilder<T>>
 				implements NumberSpinnerBuilder<T> {
 
-	static final NumberClassStep NUMBER_CLASS = new DefaultNumberClassStep();
+	static final NumberTypeStep NUMBER_TYPE = new DefaultNumberTypeStep();
 
-	private final Class<T> valueClass;
+	private final Class<T> type;
 
 	private @Nullable T minimum;
 	private @Nullable T maximum;
@@ -43,11 +43,11 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 	private @Nullable String decimalFormatPattern;
 	boolean commitOnValidEdit = true;
 
-	DefaultNumberSpinnerBuilder(Class<T> valueClass) {
+	DefaultNumberSpinnerBuilder(Class<T> type) {
 		super(new SpinnerNumberModel());
-		this.valueClass = requireNonNull(valueClass);
-		if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
-			throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
+		this.type = requireNonNull(type);
+		if (!type.equals(Integer.class) && !type.equals(Double.class)) {
+			throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + type);
 		}
 	}
 
@@ -104,11 +104,11 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 
 	@Override
 	protected ComponentValue<JSpinner, T> createValue(JSpinner component) {
-		if (valueClass.equals(Integer.class) || valueClass.equals(Double.class)) {
-			return new SpinnerNumberValue<>(component, valueClass);
+		if (type.equals(Integer.class) || type.equals(Double.class)) {
+			return new SpinnerNumberValue<>(component, type);
 		}
 
-		throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
+		throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + type);
 	}
 
 	@Override
@@ -135,11 +135,11 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 		return spinner;
 	}
 
-	private static final class DefaultNumberClassStep implements NumberClassStep {
+	private static final class DefaultNumberTypeStep implements NumberTypeStep {
 
 		@Override
-		public <T extends Number> NumberSpinnerBuilder<T> numberClass(Class<T> numberClass) {
-			return new DefaultNumberSpinnerBuilder<>(numberClass);
+		public <T extends Number> NumberSpinnerBuilder<T> type(Class<T> type) {
+			return new DefaultNumberSpinnerBuilder<>(type);
 		}
 	}
 }

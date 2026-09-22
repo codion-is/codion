@@ -34,9 +34,9 @@ import static java.util.Objects.requireNonNull;
 class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilder<C, T, B>> extends AbstractTextComponentBuilder<C, T, B>
 				implements TextFieldBuilder<C, T, B> {
 
-	static final ValueClassStep VALUE_CLASS = new DefaultValueClassStep();
+	static final ValueTypeStep VALUE_TYPE = new DefaultValueTypeStep();
 
-	private final Class<T> valueClass;
+	private final Class<T> type;
 
 	private int columns = -1;
 	private @Nullable Action action;
@@ -45,8 +45,8 @@ class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilde
 	private int horizontalAlignment = SwingConstants.LEADING;
 	private @Nullable String hint;
 
-	DefaultTextFieldBuilder(Class<T> valueClass) {
-		this.valueClass = requireNonNull(valueClass);
+	DefaultTextFieldBuilder(Class<T> type) {
+		this.type = requireNonNull(type);
 		selectAllOnFocusGained(SELECT_ALL_ON_FOCUS_GAINED.getOrThrow());
 	}
 
@@ -115,7 +115,7 @@ class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilde
 	 * @return the {@link javax.swing.text.JTextField} built by this builder.
 	 */
 	protected C createTextField() {
-		if (valueClass.equals(Character.class)) {
+		if (type.equals(Character.class)) {
 			return (C) new HintTextField(new CharacterDocument());
 		}
 
@@ -125,7 +125,7 @@ class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilde
 	@Override
 	protected ComponentValue<C, T> createValue(C component) {
 		requireNonNull(component);
-		if (valueClass.equals(Character.class)) {
+		if (type.equals(Character.class)) {
 			return (ComponentValue<C, T>) new CharacterFieldValue(component, updateOn());
 		}
 
@@ -136,11 +136,11 @@ class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilde
 		return format;
 	}
 
-	private static final class DefaultValueClassStep implements ValueClassStep {
+	private static final class DefaultValueTypeStep implements ValueTypeStep {
 
 		@Override
-		public <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> valueClass(Class<T> valueClass) {
-			return new DefaultTextFieldBuilder<>(valueClass);
+		public <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> type(Class<T> type) {
+			return new DefaultTextFieldBuilder<>(type);
 		}
 	}
 }

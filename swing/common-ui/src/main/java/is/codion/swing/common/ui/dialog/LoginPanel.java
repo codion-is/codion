@@ -89,7 +89,7 @@ final class LoginPanel extends JPanel {
 		this.validationProgressDelay = validationProgressDelay;
 		Value<String> username = Value.nullable(defaultUser == null ? null : defaultUser.username());
 		this.usernameField = TextFieldBuilder.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.link(username)
 						.columns(inputFieldColumns)
 						.selectAllOnFocusGained(true)

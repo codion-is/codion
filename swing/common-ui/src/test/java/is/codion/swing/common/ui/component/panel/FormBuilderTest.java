@@ -276,7 +276,7 @@ public final class FormBuilderTest {
 
 	private static JTextField field(String label) {
 		return TextFieldBuilder.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.label(label)
 						.build();
 	}

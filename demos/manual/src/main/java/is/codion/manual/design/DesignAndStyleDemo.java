@@ -66,7 +66,7 @@ public final class DesignAndStyleDemo {
 
 		TemporalField<LocalDate> field =
 						TemporalField.builder()
-										.temporalClass(LocalDate.class)
+										.type(LocalDate.class)
 										.dateTimePattern("dd.MM.yyyy")
 										.columns(12)
 										.border(createTitledBorder("Date"))

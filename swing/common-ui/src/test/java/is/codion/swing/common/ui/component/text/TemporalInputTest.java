@@ -45,7 +45,7 @@ public class TemporalInputTest {
 	@Test
 	void baseline() {
 		TemporalInput<LocalDate> panel = TemporalInput.builder()
-						.temporalClass(LocalDate.class)
+						.type(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		Dimension size = panel.getPreferredSize();
@@ -57,7 +57,7 @@ public class TemporalInputTest {
 	@Test
 	void setText() {
 		TemporalInput<LocalDate> panel = TemporalInput.builder()
-						.temporalClass(LocalDate.class)
+						.type(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		panel.temporalField().setText("01.03.2010");
@@ -68,7 +68,7 @@ public class TemporalInputTest {
 	void set() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		TemporalInput<LocalDate> panel = TemporalInput.builder()
-						.temporalClass(LocalDate.class)
+						.type(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		panel.set(LocalDate.parse("03.04.2010", formatter));
@@ -80,7 +80,7 @@ public class TemporalInputTest {
 	@Test
 	void get() {
 		TemporalInput<LocalDate> panel = TemporalInput.builder()
-						.temporalClass(LocalDate.class)
+						.type(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		assertFalse(panel.optional().isPresent());
@@ -95,7 +95,7 @@ public class TemporalInputTest {
 	@Test
 	void unsupportedType() {
 		assertThrows(IllegalArgumentException.class, () -> TemporalInput.builder()
-						.temporalClass(LocalTime.class));
+						.type(LocalTime.class));
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class TemporalInputTest {
 		SwingUtilities.invokeAndWait(() -> {
 			State enabledState = State.state();
 			TemporalInput<LocalDate> inputPanel = TemporalInput.builder()
-							.temporalClass(LocalDate.class)
+							.type(LocalDate.class)
 							.dateTimePattern("dd.MM.yyyy")
 							.build();
 			enabled(enabledState, inputPanel);
@@ -124,7 +124,7 @@ public class TemporalInputTest {
 	void keyEventsAndListenersLandOnTheTemporalField() {
 		FocusListener focusListener = new FocusAdapter() {};
 		TemporalInput<LocalDate> panel = TemporalInput.builder()
-						.temporalClass(LocalDate.class)
+						.type(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_F5)

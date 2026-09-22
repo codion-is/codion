@@ -185,9 +185,9 @@ public final class Components {
 	}
 
 	/**
-	 * @return a {@link TemporalInput.Builder.TemporalClassStep} builder
+	 * @return a {@link TemporalInput.Builder.TemporalTypeStep} builder
 	 */
-	public static TemporalInput.Builder.TemporalClassStep temporalInput() {
+	public static TemporalInput.Builder.TemporalTypeStep temporalInput() {
 		return TemporalInput.builder();
 	}
 
@@ -195,21 +195,21 @@ public final class Components {
 	 * @return a {@link LocalTime} based {@link TemporalInput} builder
 	 */
 	public static TemporalInput.Builder<LocalTime> localTimeInput() {
-		return temporalInput().temporalClass(LocalTime.class);
+		return temporalInput().type(LocalTime.class);
 	}
 
 	/**
 	 * @return a {@link LocalDate} based {@link TemporalInput} builder
 	 */
 	public static TemporalInput.Builder<LocalDate> localDateInput() {
-		return temporalInput().temporalClass(LocalDate.class);
+		return temporalInput().type(LocalDate.class);
 	}
 
 	/**
 	 * @return a {@link LocalDateTime} based {@link TemporalInput} builder
 	 */
 	public static TemporalInput.Builder<LocalDateTime> localDateTimeInput() {
-		return temporalInput().temporalClass(LocalDateTime.class);
+		return temporalInput().type(LocalDateTime.class);
 	}
 
 	/**
@@ -238,7 +238,7 @@ public final class Components {
 	 * @return a JTextField builder
 	 */
 	public static <B extends TextFieldBuilder<JTextField, String, B>> TextFieldBuilder<JTextField, String, B> stringField() {
-		return TextFieldBuilder.builder().valueClass(String.class);
+		return TextFieldBuilder.builder().type(String.class);
 	}
 
 	/**
@@ -246,13 +246,13 @@ public final class Components {
 	 * @return a JTextField builder
 	 */
 	public static <B extends TextFieldBuilder<JTextField, Character, B>> TextFieldBuilder<JTextField, Character, B> characterField() {
-		return TextFieldBuilder.builder().valueClass(Character.class);
+		return TextFieldBuilder.builder().type(Character.class);
 	}
 
 	/**
 	 * @return a JTextField builder
 	 */
-	public static TextFieldBuilder.ValueClassStep textField() {
+	public static TextFieldBuilder.ValueTypeStep textField() {
 		return TextFieldBuilder.builder();
 	}
 
@@ -260,34 +260,34 @@ public final class Components {
 	 * @return a {@link LocalTime} based {@link TemporalField} builder
 	 */
 	public static TemporalField.Builder<LocalTime> localTimeField() {
-		return TemporalField.builder().temporalClass(LocalTime.class);
+		return TemporalField.builder().type(LocalTime.class);
 	}
 
 	/**
 	 * @return a {@link LocalDate} based {@link TemporalField} builder
 	 */
 	public static TemporalField.Builder<LocalDate> localDateField() {
-		return TemporalField.builder().temporalClass(LocalDate.class);
+		return TemporalField.builder().type(LocalDate.class);
 	}
 
 	/**
 	 * @return a {@link LocalDateTime} based {@link TemporalField} builder
 	 */
 	public static TemporalField.Builder<LocalDateTime> localDateTimeField() {
-		return TemporalField.builder().temporalClass(LocalDateTime.class);
+		return TemporalField.builder().type(LocalDateTime.class);
 	}
 
 	/**
 	 * @return a {@link OffsetDateTime} based {@link TemporalField} builder
 	 */
 	public static TemporalField.Builder<OffsetDateTime> offsetDateTimeField() {
-		return TemporalField.builder().temporalClass(OffsetDateTime.class);
+		return TemporalField.builder().type(OffsetDateTime.class);
 	}
 
 	/**
 	 * @return a {@link TemporalField} builder
 	 */
-	public static TemporalField.Builder.TemporalClassStep temporalField() {
+	public static TemporalField.Builder.TemporalTypeStep temporalField() {
 		return TemporalField.builder();
 	}
 
@@ -295,42 +295,42 @@ public final class Components {
 	 * @return a Short based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Short> shortField() {
-		return NumberField.builder().numberClass(Short.class);
+		return NumberField.builder().type(Short.class);
 	}
 
 	/**
 	 * @return an Integer based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Integer> integerField() {
-		return NumberField.builder().numberClass(Integer.class);
+		return NumberField.builder().type(Integer.class);
 	}
 
 	/**
 	 * @return a BigInteger based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<BigInteger> bigIntegerField() {
-		return NumberField.builder().numberClass(BigInteger.class);
+		return NumberField.builder().type(BigInteger.class);
 	}
 
 	/**
 	 * @return a Long based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Long> longField() {
-		return NumberField.builder().numberClass(Long.class);
+		return NumberField.builder().type(Long.class);
 	}
 
 	/**
 	 * @return a Double based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Double> doubleField() {
-		return NumberField.builder().numberClass(Double.class);
+		return NumberField.builder().type(Double.class);
 	}
 
 	/**
 	 * @return a BigDecimal based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<BigDecimal> bigDecimalField() {
-		return NumberField.builder().numberClass(BigDecimal.class);
+		return NumberField.builder().type(BigDecimal.class);
 	}
 
 	/**
@@ -352,7 +352,7 @@ public final class Components {
 	 */
 	public static NumberSpinnerBuilder<Double> doubleSpinner() {
 		return NumberSpinnerBuilder.builder()
-						.numberClass(Double.class);
+						.type(Double.class);
 	}
 
 	/**
@@ -360,7 +360,7 @@ public final class Components {
 	 */
 	public static NumberSpinnerBuilder<Integer> integerSpinner() {
 		return NumberSpinnerBuilder.builder()
-						.numberClass(Integer.class);
+						.type(Integer.class);
 	}
 
 	/**

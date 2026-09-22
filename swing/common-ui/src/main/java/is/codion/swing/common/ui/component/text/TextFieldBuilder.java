@@ -95,22 +95,22 @@ public interface TextFieldBuilder<C extends JTextField, T, B extends TextFieldBu
 	/**
 	 * Provides a {@link TextFieldBuilder}
 	 */
-	interface ValueClassStep {
+	interface ValueTypeStep {
 
 		/**
 		 * @param <T> the value type
 		 * @param <C> the text field type
 		 * @param <B> the builder type
-		 * @param valueClass the value class
+		 * @param type the value type class
 		 * @return a builder for a text field
 		 */
-		<T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> valueClass(Class<T> valueClass);
+		<T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> type(Class<T> type);
 	}
 
 	/**
-	 * @return a {@link ValueClassStep}
+	 * @return a {@link ValueTypeStep}
 	 */
-	static ValueClassStep builder() {
-		return DefaultTextFieldBuilder.VALUE_CLASS;
+	static ValueTypeStep builder() {
+		return DefaultTextFieldBuilder.VALUE_TYPE;
 	}
 }

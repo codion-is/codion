@@ -300,7 +300,7 @@ public final class ComponentsTest {
 		Value<LocalDate> value = Value.nullable();
 		ComponentValue<TemporalInput<LocalDate>, LocalDate> componentValue =
 						Components.temporalInput()
-										.temporalClass(LocalDate.class)
+										.type(LocalDate.class)
 										.link(value)
 										.dateTimePattern("dd-MM-yyyy")
 										.columns(8)
@@ -1186,19 +1186,19 @@ public final class ComponentsTest {
 			}
 		};
 		assertThrows(IllegalArgumentException.class, () -> Components.textField()
-						.valueClass(String.class)
+						.type(String.class)
 						.value("test")
 						.validator(validator)
 						.build());
 
 		Value<String> stringValue = Value.nullable("test");
 		assertThrows(IllegalArgumentException.class, () -> Components.textField()
-						.valueClass(String.class)
+						.type(String.class)
 						.link(stringValue)
 						.validator(validator)
 						.build());
 		assertThrows(IllegalArgumentException.class, () -> Components.textField()
-						.valueClass(String.class)
+						.type(String.class)
 						.link(stringValue.observable())
 						.validator(validator)
 						.build());
