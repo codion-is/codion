@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.88
+
 ## 0.18.87
 ### is.codion.common.db
 - DatabaseException.statement() removed, unused.
