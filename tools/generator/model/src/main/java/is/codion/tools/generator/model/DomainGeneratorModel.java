@@ -562,7 +562,7 @@ public final class DomainGeneratorModel {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			if (identifier.equals(POPULATED)) {
 				return Boolean.class;
 			}
@@ -599,7 +599,7 @@ public final class DomainGeneratorModel {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			if (identifier.equals(DTO)) {
 				return Boolean.class;
 			}

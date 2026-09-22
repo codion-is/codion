@@ -2289,8 +2289,8 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public <T extends Number> Optional<SummaryValues<T>> create(C identifier, Format format) {
-			Class<?> columnClass = tableModel.columns().columnClass(identifier);
-			if (Number.class.isAssignableFrom(columnClass)) {
+			Class<?> type = tableModel.columns().type(identifier);
+			if (Number.class.isAssignableFrom(type)) {
 				return Optional.of(new DefaultSummaryValues<>(identifier, tableModel, format));
 			}
 

@@ -246,9 +246,9 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 
 		/**
 		 * @param identifier the column identifier
-		 * @return the column class for the given column
+		 * @return the class representing the type of the given column
 		 */
-		Class<?> columnClass(C identifier);
+		Class<?> type(C identifier);
 
 		/**
 		 * Returns a value for the given row and identifier
@@ -329,10 +329,10 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		 * @see Text#collator()
 		 */
 		default Comparator<?> comparator(C identifier) {
-			if (String.class.equals(columnClass(identifier))) {
+			if (String.class.equals(type(identifier))) {
 				return LEXICAL_COMPARATOR;
 			}
-			if (Comparable.class.isAssignableFrom(columnClass(identifier))) {
+			if (Comparable.class.isAssignableFrom(type(identifier))) {
 				return COMPARABLE_COMPARATOR;
 			}
 

@@ -572,7 +572,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			switch (identifier) {
 				case ApplicationRow.NAME:
 					return String.class;

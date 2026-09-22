@@ -636,7 +636,7 @@ public final class ServerMonitor {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			return String.class;
 		}
 
@@ -687,7 +687,7 @@ public final class ServerMonitor {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			if (identifier.equals(CACHED)) {
 				return Boolean.class;
 			}
@@ -741,7 +741,7 @@ public final class ServerMonitor {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			return String.class;
 		}
 

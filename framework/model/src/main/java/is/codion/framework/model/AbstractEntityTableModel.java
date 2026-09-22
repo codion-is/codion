@@ -526,7 +526,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		}
 
 		@Override
-		public Class<?> columnClass(Attribute<?> identifier) {
+		public Class<?> type(Attribute<?> identifier) {
 			return requireNonNull(identifier).type().valueClass();
 		}
 

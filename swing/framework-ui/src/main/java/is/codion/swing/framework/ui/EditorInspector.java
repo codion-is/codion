@@ -268,7 +268,7 @@ final class EditorInspector extends JPanel {
 			}
 
 			@Override
-			public Class<?> columnClass(AttributeColumn identifier) {
+			public Class<?> type(AttributeColumn identifier) {
 				switch (identifier) {
 					case ATTRIBUTE:
 					case VALUE:

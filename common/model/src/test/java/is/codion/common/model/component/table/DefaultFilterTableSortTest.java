@@ -41,7 +41,7 @@ public class DefaultFilterTableSortTest {
 		}
 
 		@Override
-		public Class<?> columnClass(Integer identifier) {
+		public Class<?> type(Integer identifier) {
 			return Integer.class;
 		}
 
@@ -153,7 +153,7 @@ public class DefaultFilterTableSortTest {
 			}
 
 			@Override
-			public Class<?> columnClass(Integer identifier) {
+			public Class<?> type(Integer identifier) {
 				return String.class;
 			}
 
@@ -179,7 +179,7 @@ public class DefaultFilterTableSortTest {
 			}
 
 			@Override
-			public Class<?> columnClass(Integer identifier) {
+			public Class<?> type(Integer identifier) {
 				return ArrayList.class;
 			}
 

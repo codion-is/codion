@@ -48,7 +48,7 @@ public class FilterListSelectionTest {
 											}
 
 											@Override
-											public Class<?> columnClass(Integer identifier) {
+											public Class<?> type(Integer identifier) {
 												return String.class;
 											}
 

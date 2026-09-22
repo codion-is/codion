@@ -100,7 +100,7 @@ public class FilterTableTest {
 							}
 
 							@Override
-							public Class<?> columnClass(Integer integer) {
+							public Class<?> type(Integer integer) {
 								return String.class;
 							}
 
@@ -195,7 +195,7 @@ public class FilterTableTest {
 			}
 
 			@Override
-			public Class<?> columnClass(Integer integer) {
+			public Class<?> type(Integer integer) {
 				return String.class;
 			}
 
@@ -287,7 +287,7 @@ public class FilterTableTest {
 											}
 
 											@Override
-											public Class<?> columnClass(Integer identifier) {
+											public Class<?> type(Integer identifier) {
 												return String.class;
 											}
 
@@ -515,7 +515,7 @@ public class FilterTableTest {
 			}
 
 			@Override
-			public Class<?> columnClass(Integer identifier) {
+			public Class<?> type(Integer identifier) {
 				return Integer.class;
 			}
 
@@ -645,7 +645,7 @@ public class FilterTableTest {
 		}
 
 		class Row {
-			private static final List<Class<?>> COLUMN_CLASSES = asList(
+			private static final List<Class<?>> COLUMN_TYPES = asList(
 							LocalTime.class, LocalDate.class, LocalDateTime.class, OffsetDateTime.class,
 							String.class, Short.class, Integer.class, Long.class, Double.class, BigInteger.class,
 							BigDecimal.class, Boolean.class, TestEnum.class, Character.class);
@@ -695,13 +695,13 @@ public class FilterTableTest {
 			}
 
 			@Override
-			public Class<?> columnClass(Integer identifier) {
-				return Row.COLUMN_CLASSES.get(identifier);
+			public Class<?> type(Integer identifier) {
+				return Row.COLUMN_TYPES.get(identifier);
 			}
 
 			@Override
 			public String caption(Integer identifier) {
-				return Row.COLUMN_CLASSES.get(identifier).getSimpleName();
+				return Row.COLUMN_TYPES.get(identifier).getSimpleName();
 			}
 
 			@Override

@@ -284,7 +284,7 @@ public final class SessionUserMonitor {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			switch (identifier) {
 				case USERNAME:
 					return String.class;
