@@ -757,7 +757,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			requireNonNull(identifier);
 			requireNonNull(table);
 
-			return (FilterTableCellRenderer<R, C, ?>) new DefaultBuilder<>(table.model().columns().columnClass(identifier)).build();
+			return (FilterTableCellRenderer<R, C, ?>) new DefaultBuilder<>(table.model().columns().type(identifier)).build();
 		}
 	}
 

@@ -126,7 +126,7 @@ final class ScenarioPanel<T> extends JPanel {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			switch (identifier) {
 				case SCENARIO:
 					return String.class;

@@ -97,7 +97,7 @@ public final class DefaultSwingFilterTableModelTest {
 		}
 
 		@Override
-		public Class<?> columnClass(Integer identifier) {
+		public Class<?> type(Integer identifier) {
 			return String.class;
 		}
 
@@ -228,7 +228,7 @@ public final class DefaultSwingFilterTableModelTest {
 							}
 
 							@Override
-							public Class<?> columnClass(Object o) {
+							public Class<?> type(Object o) {
 								return Object.class;
 							}
 
@@ -293,7 +293,7 @@ public final class DefaultSwingFilterTableModelTest {
 							}
 
 							@Override
-							public Class<?> columnClass(Integer integer) {
+							public Class<?> type(Integer integer) {
 								return null;
 							}
 
@@ -1120,7 +1120,7 @@ public final class DefaultSwingFilterTableModelTest {
 		}
 
 		@Override
-		public Class<?> columnClass(Integer identifier) {
+		public Class<?> type(Integer identifier) {
 			return String.class;
 		}
 

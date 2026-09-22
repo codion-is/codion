@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.88
+### is.codion.common.model
+- FilterTableModel.TableColumns.columnClass() renamed type().
 
 ## 0.18.87
 ### is.codion.common.db

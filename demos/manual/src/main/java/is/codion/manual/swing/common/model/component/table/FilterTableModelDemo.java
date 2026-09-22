@@ -62,7 +62,7 @@ public final class FilterTableModelDemo {
 		}
 
 		@Override
-		public Class<?> columnClass(String column) {
+		public Class<?> type(String column) {
 			return switch (column) {
 				case NAME -> String.class;
 				case AGE -> Integer.class;

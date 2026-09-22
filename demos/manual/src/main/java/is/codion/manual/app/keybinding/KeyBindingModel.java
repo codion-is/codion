@@ -110,7 +110,7 @@ final class KeyBindingModel {
 		}
 
 		@Override
-		public Class<?> columnClass(String columnId) {
+		public Class<?> type(String columnId) {
 			return String.class;
 		}
 

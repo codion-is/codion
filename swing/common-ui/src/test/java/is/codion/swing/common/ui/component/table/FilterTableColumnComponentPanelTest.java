@@ -42,7 +42,7 @@ public class FilterTableColumnComponentPanelTest {
 		}
 
 		@Override
-		public Class<?> columnClass(Integer integer) {
+		public Class<?> type(Integer integer) {
 			return Object.class;
 		}
 

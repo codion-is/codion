@@ -108,7 +108,7 @@ public final class SessionMonitor {
 		}
 
 		@Override
-		public Class<?> columnClass(String identifier) {
+		public Class<?> type(String identifier) {
 			if (identifier.equals(CREATION_TIME)) {
 				return LocalDateTime.class;
 			}

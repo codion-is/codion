@@ -357,49 +357,49 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 		@Override
 		public Optional<FilterTableCellEditor<?, ?>> create(C identifier, FilterTable<R, C> table) {
-			Class<?> columnClass = table.model().columns().columnClass(identifier);
+			Class<?> type = table.model().columns().type(identifier);
 			FilterTableCellEditor<?, ?> cellEditor = null;
-			if (columnClass.equals(LocalTime.class)) {
+			if (type.equals(LocalTime.class)) {
 				cellEditor = COMPONENT_STEP.component(new LocalTimeFieldSupplier()).build();
 			}
-			else if (columnClass.equals(LocalDate.class)) {
+			else if (type.equals(LocalDate.class)) {
 				cellEditor = COMPONENT_STEP.component(new LocalDateFieldSupplier()).build();
 			}
-			else if (columnClass.equals(LocalDateTime.class)) {
+			else if (type.equals(LocalDateTime.class)) {
 				cellEditor = COMPONENT_STEP.component(new LocalDateTimeFieldSupplier()).build();
 			}
-			else if (columnClass.equals(OffsetDateTime.class)) {
+			else if (type.equals(OffsetDateTime.class)) {
 				cellEditor = COMPONENT_STEP.component(new OffsetDateTimeFieldSupplier()).build();
 			}
-			else if (columnClass.equals(String.class)) {
+			else if (type.equals(String.class)) {
 				cellEditor = COMPONENT_STEP.component(new StringFieldSupplier()).build();
 			}
-			else if (columnClass.equals(Character.class)) {
+			else if (type.equals(Character.class)) {
 				cellEditor = COMPONENT_STEP.component(new CharacterFieldSupplier()).build();
 			}
-			else if (columnClass.equals(Short.class)) {
+			else if (type.equals(Short.class)) {
 				cellEditor = COMPONENT_STEP.component(new ShortFieldSupplier()).build();
 			}
-			else if (columnClass.equals(Integer.class)) {
+			else if (type.equals(Integer.class)) {
 				cellEditor = COMPONENT_STEP.component(new IntegerFieldSupplier()).build();
 			}
-			else if (columnClass.equals(Long.class)) {
+			else if (type.equals(Long.class)) {
 				cellEditor = COMPONENT_STEP.component(new LongFieldSupplier()).build();
 			}
-			else if (columnClass.equals(BigInteger.class)) {
+			else if (type.equals(BigInteger.class)) {
 				cellEditor = COMPONENT_STEP.component(new BigIntegerFieldSupplier()).build();
 			}
-			else if (columnClass.equals(Double.class)) {
+			else if (type.equals(Double.class)) {
 				cellEditor = COMPONENT_STEP.component(new DoubleFieldSupplier()).build();
 			}
-			else if (columnClass.equals(BigDecimal.class)) {
+			else if (type.equals(BigDecimal.class)) {
 				cellEditor = COMPONENT_STEP.component(new BigDecimalFieldSupplier()).build();
 			}
-			else if (columnClass.equals(Boolean.class)) {
+			else if (type.equals(Boolean.class)) {
 				cellEditor = COMPONENT_STEP.component(new CheckBoxSupplier()).build();
 			}
-			else if (columnClass.isEnum()) {
-				cellEditor = COMPONENT_STEP.component(new EnumComboBoxSupplier<>(columnClass)).build();
+			else if (type.isEnum()) {
+				cellEditor = COMPONENT_STEP.component(new EnumComboBoxSupplier<>(type)).build();
 			}
 
 			return Optional.ofNullable(cellEditor);

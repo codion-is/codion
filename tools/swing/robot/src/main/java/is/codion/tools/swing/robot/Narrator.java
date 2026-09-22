@@ -288,7 +288,7 @@ public final class Narrator {
 		}
 
 		@Override
-		public Class<?> columnClass(Integer identifier) {
+		public Class<?> type(Integer identifier) {
 			return String.class;
 		}
 

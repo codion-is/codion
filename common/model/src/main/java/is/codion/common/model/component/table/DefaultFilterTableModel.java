@@ -173,10 +173,10 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 	static <C> Map<C, ConditionModel<?>> createFilters(TableColumns<?, C> columns) {
 		Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
 		for (C identifier : columns.identifiers()) {
-			Class<?> columnClass = columns.columnClass(requireNonNull(identifier));
-			if (Comparable.class.isAssignableFrom(columnClass)) {
+			Class<?> type = columns.type(requireNonNull(identifier));
+			if (Comparable.class.isAssignableFrom(type)) {
 				columnFilterModels.put(identifier, ConditionModel.builder()
-								.valueClass(columnClass)
+								.valueClass(type)
 								.caption(columns.caption(identifier))
 								.build());
 			}

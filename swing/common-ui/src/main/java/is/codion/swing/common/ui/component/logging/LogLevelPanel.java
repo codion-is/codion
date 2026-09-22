@@ -275,7 +275,7 @@ public final class LogLevelPanel extends JPanel {
 		}
 
 		@Override
-		public Class<?> columnClass(LogLevelColumn identifier) {
+		public Class<?> type(LogLevelColumn identifier) {
 			switch (identifier) {
 				case LOGGER:
 					return String.class;
