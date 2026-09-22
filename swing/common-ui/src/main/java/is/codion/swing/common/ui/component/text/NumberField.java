@@ -126,9 +126,9 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	/**
-	 * @return a {@link Builder.NumberClassStep}
+	 * @return a {@link Builder.NumberTypeStep}
 	 */
-	public static Builder.NumberClassStep builder() {
+	public static Builder.NumberTypeStep builder() {
 		return AbstractNumberFieldBuilder.VALUE_CLASS;
 	}
 
@@ -149,14 +149,14 @@ public final class NumberField<T extends Number> extends HintTextField {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface NumberClassStep {
+		interface NumberTypeStep {
 
 			/**
-			 * @param numberClass the number class
+			 * @param type the number type class
 			 * @param <T> the value type
 			 * @return a {@link Builder}
 			 */
-			<T extends Number> Builder<T> numberClass(Class<T> numberClass);
+			<T extends Number> Builder<T> type(Class<T> type);
 		}
 
 		/**
@@ -270,38 +270,38 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 	}
 
-	private static final class DefaultNumberClassStep implements Builder.NumberClassStep {
+	private static final class DefaultNumberTypeStep implements Builder.NumberTypeStep {
 
 		@Override
-		public <T extends Number> Builder<T> numberClass(Class<T> numberClass) {
-			requireNonNull(numberClass);
-			if (numberClass.equals(Short.class)) {
+		public <T extends Number> Builder<T> type(Class<T> type) {
+			requireNonNull(type);
+			if (type.equals(Short.class)) {
 				return (Builder<T>) new DefaultShortFieldBuilder();
 			}
-			if (numberClass.equals(Integer.class)) {
+			if (type.equals(Integer.class)) {
 				return (Builder<T>) new DefaultIntegerFieldBuilder();
 			}
-			if (numberClass.equals(BigInteger.class)) {
+			if (type.equals(BigInteger.class)) {
 				return (Builder<T>) new DefaultBigIntegerFieldBuilder();
 			}
-			if (numberClass.equals(Long.class)) {
+			if (type.equals(Long.class)) {
 				return (Builder<T>) new DefaultLongFieldBuilder();
 			}
-			if (numberClass.equals(Double.class)) {
+			if (type.equals(Double.class)) {
 				return (Builder<T>) new DefaultDoubleFieldBuilder();
 			}
-			if (numberClass.equals(BigDecimal.class)) {
+			if (type.equals(BigDecimal.class)) {
 				return (Builder<T>) new DefaultBigDecimalFieldBuilder();
 			}
 
-			throw new IllegalArgumentException("Unsupported number type: " + numberClass);
+			throw new IllegalArgumentException("Unsupported number type: " + type);
 		}
 	}
 
 	private abstract static class AbstractNumberFieldBuilder<T extends Number>
 					extends DefaultTextFieldBuilder<NumberField<T>, T, Builder<T>> implements Builder<T> {
 
-		private static final Builder.NumberClassStep VALUE_CLASS = new DefaultNumberClassStep();
+		private static final NumberTypeStep VALUE_CLASS = new DefaultNumberTypeStep();
 
 		protected boolean nullable = true;
 

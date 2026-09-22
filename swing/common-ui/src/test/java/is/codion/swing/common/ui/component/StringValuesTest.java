@@ -114,7 +114,7 @@ public class StringValuesTest {
 	@Test
 	void characterValue() {
 		ComponentValue<JTextField, Character> value = Components.textField()
-						.valueClass(Character.class)
+						.type(Character.class)
 						.buildValue();
 		assertNull(value.get());
 		value.component().setText("2");

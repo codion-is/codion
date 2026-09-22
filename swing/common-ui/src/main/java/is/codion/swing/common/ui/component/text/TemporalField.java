@@ -121,7 +121,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	private static final char MINUTE = 'm';
 	private static final char SECOND = 's';
 
-	private final Class<T> temporalClass;
+	private final Class<T> type;
 	private final DateTimeFormatter formatter;
 	private final DateTimeParser<T> dateTimeParser;
 	private final Value<T> value = Value.nullable();
@@ -132,7 +132,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	private TemporalField(DefaultBuilder<T> builder) {
 		super(createFormatter(builder.mask));
 		setToolTipText(builder.dateTimePattern);
-		this.temporalClass = builder.temporalClass;
+		this.type = builder.type;
 		this.formatter = builder.dateTimeFormatter;
 		this.dateTimeParser = builder.dateTimeParser;
 		this.dateTimePattern = builder.dateTimePattern;
@@ -167,10 +167,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	/**
-	 * @return the Temporal class this field is based on
+	 * @return the temporal type class this field is based on
 	 */
-	public Class<T> temporalClass() {
-		return temporalClass;
+	public Class<T> type() {
+		return type;
 	}
 
 	/**
@@ -208,10 +208,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	/**
-	 * @return a {@link Builder.TemporalClassStep}
+	 * @return a {@link Builder.TemporalTypeStep}
 	 */
-	public static Builder.TemporalClassStep builder() {
-		return DefaultBuilder.TEMPORAL_CLASS;
+	public static Builder.TemporalTypeStep builder() {
+		return DefaultBuilder.TEMPORAL_TYPE;
 	}
 
 	private void increment() {
@@ -257,7 +257,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	private @Nullable CommandControl createCalendarControl() {
-		if (CalendarPanel.supports(temporalClass)) {
+		if (CalendarPanel.supports(type)) {
 			return Control.builder()
 							.command(this::displayCalendar)
 							.caption(calendarIcon == null ? "..." : null)
@@ -278,7 +278,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	private void displayCalendar() {
-		if (LocalDate.class.equals(temporalClass())) {
+		if (LocalDate.class.equals(type())) {
 			Dialogs.calendar()
 							.owner(this)
 							.icon(calendarIcon)
@@ -286,7 +286,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 							.selectLocalDate()
 							.ifPresent(this::set);
 		}
-		else if (LocalDateTime.class.equals(temporalClass())) {
+		else if (LocalDateTime.class.equals(type())) {
 			Dialogs.calendar()
 							.owner(this)
 							.icon(calendarIcon)
@@ -295,7 +295,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 							.ifPresent(this::set);
 		}
 		else {
-			throw new IllegalArgumentException("Unsupported temporal type: " + temporalClass());
+			throw new IllegalArgumentException("Unsupported temporal type: " + type());
 		}
 	}
 
@@ -322,17 +322,17 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface TemporalClassStep {
+		interface TemporalTypeStep {
 
 			/**
 			 * A builder for {@link TemporalField}.
 			 * This builder supports: {@link LocalTime}, {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},<br>
 			 * for other {@link Temporal} types use {@link Builder#dateTimeParser} to supply a {@link DateTimeParser} instance.
-			 * @param temporalClass the temporal class
+			 * @param type the temporal type class
 			 * @param <T> the temporal type
 			 * @return a new builder
 			 */
-			<T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass);
+			<T extends Temporal> Builder<T> type(Class<T> type);
 		}
 
 		/**
@@ -404,20 +404,20 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		T parse(CharSequence text, DateTimeFormatter formatter);
 	}
 
-	private static final class DefaultTemporalClassStep implements Builder.TemporalClassStep {
+	private static final class DefaultTemporalTypeStep implements Builder.TemporalTypeStep {
 
 		@Override
-		public <T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass) {
-			return new DefaultBuilder<>(temporalClass);
+		public <T extends Temporal> Builder<T> type(Class<T> type) {
+			return new DefaultBuilder<>(type);
 		}
 	}
 
 	private static final class DefaultBuilder<T extends Temporal>
 					extends DefaultTextFieldBuilder<TemporalField<T>, T, Builder<T>> implements Builder<T> {
 
-		private static final Builder.TemporalClassStep TEMPORAL_CLASS = new DefaultTemporalClassStep();
+		private static final TemporalTypeStep TEMPORAL_TYPE = new DefaultTemporalTypeStep();
 
-		private final Class<T> temporalClass;
+		private final Class<T> type;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private String dateTimePattern;
@@ -428,10 +428,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private @Nullable ImageIcon calendarIcon;
 		private boolean adjustable = ADJUSTABLE.getOrThrow();
 
-		private DefaultBuilder(Class<T> temporalClass) {
-			super(temporalClass);
-			this.temporalClass = requireNonNull(temporalClass);
-			this.dateTimeParser = createDateTimeParser(temporalClass);
+		private DefaultBuilder(Class<T> type) {
+			super(type);
+			this.type = requireNonNull(type);
+			this.dateTimeParser = createDateTimeParser(type);
 			dateTimePattern(defaultDateTimePattern());
 		}
 
@@ -496,31 +496,31 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 
 		private String defaultDateTimePattern() {
-			if (temporalClass.equals(LocalTime.class)) {
+			if (type.equals(LocalTime.class)) {
 				return LocaleDateTimePattern.TIME_PATTERN.getOrThrow();
 			}
-			else if (temporalClass.equals(LocalDate.class)) {
+			else if (type.equals(LocalDate.class)) {
 				return LocaleDateTimePattern.DATE_PATTERN.getOrThrow();
 			}
 
 			return LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow();
 		}
 
-		private static <T extends Temporal> DateTimeParser<T> createDateTimeParser(Class<T> valueClass) {
-			if (valueClass.equals(LocalTime.class)) {
+		private static <T extends Temporal> DateTimeParser<T> createDateTimeParser(Class<T> type) {
+			if (type.equals(LocalTime.class)) {
 				return (DateTimeParser<T>) new LocalTimeParser();
 			}
-			else if (valueClass.equals(LocalDate.class)) {
+			else if (type.equals(LocalDate.class)) {
 				return (DateTimeParser<T>) new LocalDateParser();
 			}
-			else if (valueClass.equals(LocalDateTime.class)) {
+			else if (type.equals(LocalDateTime.class)) {
 				return (DateTimeParser<T>) new LocalDateTimeParser();
 			}
-			else if (valueClass.equals(OffsetDateTime.class)) {
+			else if (type.equals(OffsetDateTime.class)) {
 				return (DateTimeParser<T>) new OffsetDateTimeParser();
 			}
 
-			throw new IllegalArgumentException("Unsupported temporal class: " + valueClass);
+			throw new IllegalArgumentException("Unsupported temporal class: " + type);
 		}
 
 		/**

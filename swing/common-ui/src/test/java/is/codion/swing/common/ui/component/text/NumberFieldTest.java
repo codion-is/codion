@@ -46,7 +46,7 @@ public final class NumberFieldTest {
 	@Test
 	void integerFieldTest() {
 		NumberField<Integer> integerField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.grouping(false)
 						.build();
 		integerField.set(42);
@@ -60,7 +60,7 @@ public final class NumberFieldTest {
 		assertEquals("100000000", integerField.getText());
 
 		NumberField<Integer> zeroToTen = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.range(0, 10)
 						.build();
 
@@ -74,7 +74,7 @@ public final class NumberFieldTest {
 		assertEquals("9", zeroToTen.getText());
 
 		NumberField<Integer> zeroToMax = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.range(0, Integer.MAX_VALUE)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
@@ -101,7 +101,7 @@ public final class NumberFieldTest {
 	@Test
 	void skipGroupingSeparator() {
 		NumberField<Integer> integerField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.grouping(true)
@@ -121,7 +121,7 @@ public final class NumberFieldTest {
 	@Test
 	void longFieldTest() {
 		NumberField<Long> longField = NumberField.builder()
-						.numberClass(Long.class)
+						.type(Long.class)
 						.grouping(false)
 						.build();
 		longField.set(42L);
@@ -135,7 +135,7 @@ public final class NumberFieldTest {
 		assertEquals("1000000000000", longField.getText());
 
 		longField = NumberField.builder()
-						.numberClass(Long.class)
+						.type(Long.class)
 						.grouping(true)
 						.groupingSeparator(',')
 						.build();
@@ -143,7 +143,7 @@ public final class NumberFieldTest {
 		assertEquals("1,000,000,000", longField.getText());
 
 		NumberField<Long> rangedField = NumberField.builder()
-						.numberClass(Long.class)
+						.type(Long.class)
 						.range(0, 10)
 						.build();
 
@@ -160,7 +160,7 @@ public final class NumberFieldTest {
 	@Test
 	void bigIntegerFieldTest() {
 		NumberField<BigInteger> bigIntegerField = NumberField.builder()
-						.numberClass(BigInteger.class)
+						.type(BigInteger.class)
 						.build();
 		BigInteger value = new BigInteger("123456789012345678901234567890");
 		bigIntegerField.set(value);
@@ -173,7 +173,7 @@ public final class NumberFieldTest {
 	@Test
 	void set() {
 		NumberField<Integer> integerField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		integerField.set(3);
 		List<Integer> values = new ArrayList<>();
@@ -186,7 +186,7 @@ public final class NumberFieldTest {
 	void validator() throws BadLocationException {
 		Value<Integer> value = Value.nullable();
 		NumberField<Integer> integerField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.validator(number -> {
 							if (number != null && number == 13) {
 								throw new IllegalArgumentException();
@@ -203,7 +203,7 @@ public final class NumberFieldTest {
 	@Test
 	void range() {
 		NumberField<Integer> integerField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.range(0, 10)
 						.range(20, 30)
 						.build();
@@ -211,7 +211,7 @@ public final class NumberFieldTest {
 		integerField.set(25);
 		assertEquals(25, integerField.get());
 		assertThrows(IllegalArgumentException.class, () -> NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.range(30, 20));
 	}
 
@@ -219,17 +219,17 @@ public final class NumberFieldTest {
 	void exactRange() {
 		// 2^53 + 1 equals 2^53 as a double
 		NumberField<Long> longField = NumberField.builder()
-						.numberClass(Long.class)
+						.type(Long.class)
 						.maximum(9007199254740992L)
 						.build();
 		longField.set(9007199254740992L);
 		assertThrows(IllegalArgumentException.class, () -> longField.set(9007199254740993L));
 		assertThrows(IllegalArgumentException.class, () -> NumberField.builder()
-						.numberClass(Long.class)
+						.type(Long.class)
 						.range(9007199254740993L, 9007199254740992L));
 
 		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
-						.numberClass(BigDecimal.class)
+						.type(BigDecimal.class)
 						.range(0.1, new BigDecimal("1.00000000000000001"))
 						.build();
 		bigDecimalField.set(new BigDecimal("0.1"));
@@ -240,7 +240,7 @@ public final class NumberFieldTest {
 	@Test
 	void infinityAndNaN() throws BadLocationException {
 		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
-						.numberClass(BigDecimal.class)
+						.type(BigDecimal.class)
 						.build();
 		DecimalFormatSymbols bigDecimalSymbols = ((DecimalFormat) bigDecimalField.document().format()).getDecimalFormatSymbols();
 		bigDecimalField.getDocument().insertString(0, bigDecimalSymbols.getInfinity(), null);
@@ -249,7 +249,7 @@ public final class NumberFieldTest {
 		assertEquals("", bigDecimalField.getText());
 
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.build();
 		DecimalFormatSymbols doubleSymbols = ((DecimalFormat) doubleField.document().format()).getDecimalFormatSymbols();
 		doubleField.getDocument().insertString(0, doubleSymbols.getInfinity(), null);
@@ -261,7 +261,7 @@ public final class NumberFieldTest {
 	@Test
 	void minusSign() throws BadLocationException {
 		NumberField<Integer> integerField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		integerField.getDocument().insertString(0, "-", null);
 		assertEquals("-", integerField.getText());
@@ -271,14 +271,14 @@ public final class NumberFieldTest {
 		assertEquals(-5, integerField.get());
 
 		NumberField<Integer> nonNegative = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.range(0, 100)
 						.build();
 		nonNegative.getDocument().insertString(0, "-", null);
 		assertEquals("", nonNegative.getText());
 
 		NumberField<Integer> swedish = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.format(NumberFormat.getIntegerInstance(Locale.forLanguageTag("sv-SE")))
 						.build();
 		swedish.getDocument().insertString(0, "-", null);
@@ -292,7 +292,7 @@ public final class NumberFieldTest {
 	@Test
 	void overflow() throws BadLocationException {
 		NumberField<Short> shortField = NumberField.builder()
-						.numberClass(Short.class)
+						.type(Short.class)
 						.build();
 		shortField.setText("3276");
 		shortField.getDocument().insertString(4, "8", null);
@@ -301,7 +301,7 @@ public final class NumberFieldTest {
 		assertEquals(Short.MAX_VALUE, shortField.get());
 
 		NumberField<Integer> integerField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		integerField.setText("-2147483648");
 		assertEquals(Integer.MIN_VALUE, integerField.get());
@@ -310,7 +310,7 @@ public final class NumberFieldTest {
 		assertEquals("-2147483648", integerField.getText());
 
 		NumberField<Long> longField = NumberField.builder()
-						.numberClass(Long.class)
+						.type(Long.class)
 						.build();
 		longField.setText("9223372036854775807");
 		assertEquals(Long.MAX_VALUE, longField.get());
@@ -321,7 +321,7 @@ public final class NumberFieldTest {
 	@Test
 	void bigDecimalNegativeZero() throws BadLocationException {
 		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
-						.numberClass(BigDecimal.class)
+						.type(BigDecimal.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
@@ -342,7 +342,7 @@ public final class NumberFieldTest {
 	@Test
 	void testNoGrouping() {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.grouping(false)
@@ -361,7 +361,7 @@ public final class NumberFieldTest {
 		assertEquals(Double.valueOf(22.3), doubleField.get());
 
 		doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.grouping(false)
@@ -383,7 +383,7 @@ public final class NumberFieldTest {
 	void testGrouping() {
 		DecimalFormat decimalFormat = new DecimalFormat();
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.format(decimalFormat)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
@@ -409,7 +409,7 @@ public final class NumberFieldTest {
 		assertEquals(Double.valueOf(22123123.123), doubleField.get());
 
 		doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.format(decimalFormat)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
@@ -443,7 +443,7 @@ public final class NumberFieldTest {
 	@Test
 	void caretPosition() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.grouping(true)
@@ -520,11 +520,11 @@ public final class NumberFieldTest {
 	@Test
 	void setSeparatorsSameCharacter() {
 		assertThrows(IllegalArgumentException.class, () -> NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator('.')
 						.groupingSeparator('.'));
 		assertThrows(IllegalArgumentException.class, () -> NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.groupingSeparator('.')
 						.decimalSeparator('.'));
 	}
@@ -532,7 +532,7 @@ public final class NumberFieldTest {
 	@Test
 	void fractionDigits() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.fractionDigits(2)
@@ -553,7 +553,7 @@ public final class NumberFieldTest {
 		assertEquals("5,12", doubleField.getText());
 
 		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
-						.numberClass(BigDecimal.class)
+						.type(BigDecimal.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.fractionDigits(2)
@@ -563,7 +563,7 @@ public final class NumberFieldTest {
 		assertEquals(new BigDecimal("5.12"), bigDecimalField.get());
 
 		doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.fractionDigits(0)
@@ -575,7 +575,7 @@ public final class NumberFieldTest {
 		assertEquals("", doubleField.getText());
 
 		doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.fractionDigits(3)
@@ -584,7 +584,7 @@ public final class NumberFieldTest {
 		assertEquals("5,123", doubleField.getText());//no rounding should occur
 
 		doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.build();
@@ -595,7 +595,7 @@ public final class NumberFieldTest {
 	@Test
 	void decimalSeparators() {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.grouping(false)
 						.decimalSeparator('.')
 						.build();
@@ -610,7 +610,7 @@ public final class NumberFieldTest {
 		assertEquals(Double.valueOf(1.5), doubleField.get());
 
 		doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.grouping(false)
 						.decimalSeparator(',')
 						.build();
@@ -623,7 +623,7 @@ public final class NumberFieldTest {
 	@Test
 	void trailingDecimalSeparator() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
@@ -641,7 +641,7 @@ public final class NumberFieldTest {
 	@Test
 	void leadingDecimalSeparator() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
@@ -655,7 +655,7 @@ public final class NumberFieldTest {
 	@Test
 	void negativeLeadingDecimalSeparator() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
@@ -668,7 +668,7 @@ public final class NumberFieldTest {
 		assertEquals(Double.valueOf(-0.5), doubleField.get());
 
 		NumberField<BigDecimal> bigDecimalField = NumberField.builder()
-						.numberClass(BigDecimal.class)
+						.type(BigDecimal.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
@@ -683,7 +683,7 @@ public final class NumberFieldTest {
 	@Test
 	void setSeparators() {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.grouping(true)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
@@ -692,7 +692,7 @@ public final class NumberFieldTest {
 		assertEquals("12,345,678.9", doubleField.getText());
 
 		doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.value(12345678.9)
 						.grouping(true)
 						.decimalSeparator(',')
@@ -701,7 +701,7 @@ public final class NumberFieldTest {
 		assertEquals("12.345.678,9", doubleField.getText());
 
 		doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.grouping(true)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
@@ -714,7 +714,7 @@ public final class NumberFieldTest {
 	@Test
 	void trailingDecimalZeros() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
@@ -759,7 +759,7 @@ public final class NumberFieldTest {
 	@Test
 	void rangeValidation() throws BadLocationException {
 		NumberField<Integer> integerField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.range(10, 100)
 						.build();
 		NumberDocument<Integer> document = integerField.document();
@@ -780,7 +780,7 @@ public final class NumberFieldTest {
 		assertEquals(15, integerField.get());
 
 		NumberField<Double> doubleField = NumberField.builder()
-						.numberClass(Double.class)
+						.type(Double.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.range(0.5, 1)
@@ -794,7 +794,7 @@ public final class NumberFieldTest {
 		assertTrue(exception.getMessage().endsWith(": 1"));
 
 		NumberField<Integer> negativeField = NumberField.builder()
-						.numberClass(Integer.class)
+						.type(Integer.class)
 						.range(-100, -10)
 						.build();
 		NumberDocument<Integer> negativeDocument = negativeField.document();

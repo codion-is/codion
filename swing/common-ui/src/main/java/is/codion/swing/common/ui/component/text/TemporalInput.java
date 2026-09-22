@@ -121,10 +121,10 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 	}
 
 	/**
-	 * @return a {@link Builder.TemporalClassStep}
+	 * @return a {@link Builder.TemporalTypeStep}
 	 */
-	public static Builder.TemporalClassStep builder() {
-		return DefaultBuilder.TEMPORAL_CLASS;
+	public static Builder.TemporalTypeStep builder() {
+		return DefaultBuilder.TEMPORAL_TYPE;
 	}
 
 	/**
@@ -136,14 +136,14 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		/**
 		 * Provides a {@link TemporalInput.Builder}
 		 */
-		interface TemporalClassStep {
+		interface TemporalTypeStep {
 
 			/**
 			 * @param <T> the value type
-			 * @param temporalClass the temporal class
+			 * @param type the temporal type class
 			 * @return a builder for a temporal panel
 			 */
-			<T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass);
+			<T extends Temporal> Builder<T> type(Class<T> type);
 		}
 
 		/**
@@ -212,17 +212,17 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		return Components.button()
 						.control(temporalField.calendarControl().orElseThrow(() ->
 										new IllegalArgumentException("TemporalField does not support a calendar for: " +
-														temporalField.temporalClass())))
+														temporalField.type())))
 						.focusable(builder.buttonFocusable)
 						.preferredSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height))
 						.build();
 	}
 
-	private static final class DefaultTemporalClassStep implements Builder.TemporalClassStep {
+	private static final class DefaultTemporalTypeStep implements Builder.TemporalTypeStep {
 
 		@Override
-		public <T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass) {
-			return new DefaultBuilder<>(temporalClass);
+		public <T extends Temporal> Builder<T> type(Class<T> type) {
+			return new DefaultBuilder<>(type);
 		}
 	}
 
@@ -230,17 +230,17 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 					extends AbstractComponentValueBuilder<TemporalInput<T>, T, Builder<T>>
 					implements Builder<T> {
 
-		private static final Builder.TemporalClassStep TEMPORAL_CLASS = new DefaultTemporalClassStep();
+		private static final TemporalTypeStep TEMPORAL_TYPE = new DefaultTemporalTypeStep();
 
 		private final TemporalField.Builder<T> temporalFieldBuilder;
 
 		private boolean buttonFocusable;
 
-		private DefaultBuilder(Class<T> valueClass) {
-			if (!CalendarPanel.supports(valueClass)) {
-				throw new IllegalArgumentException("CalendarPanel does not support temporal type: " + valueClass);
+		private DefaultBuilder(Class<T> type) {
+			if (!CalendarPanel.supports(type)) {
+				throw new IllegalArgumentException("CalendarPanel does not support temporal type: " + type);
 			}
-			temporalFieldBuilder = TemporalField.builder().temporalClass(valueClass);
+			temporalFieldBuilder = TemporalField.builder().type(type);
 		}
 
 		@Override

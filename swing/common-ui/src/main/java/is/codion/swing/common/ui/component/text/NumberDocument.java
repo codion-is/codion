@@ -597,9 +597,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			private @Nullable Number minimumValue;
 			private @Nullable Number maximumValue;
 
-			private NumberRangeValidator(Class<? extends Number> numberClass) {
-				this.typeMinimum = typeMinimum(numberClass);
-				this.typeMaximum = typeMaximum(numberClass);
+			private NumberRangeValidator(Class<? extends Number> type) {
+				this.typeMinimum = typeMinimum(type);
+				this.typeMaximum = typeMaximum(type);
 			}
 
 			/**
@@ -683,28 +683,28 @@ class NumberDocument<T extends Number> extends PlainDocument {
 								&& (maximum == null || compare(value, maximum) <= 0);
 			}
 
-			private static @Nullable Number typeMinimum(Class<? extends Number> numberClass) {
-				if (numberClass.equals(Short.class)) {
+			private static @Nullable Number typeMinimum(Class<? extends Number> type) {
+				if (type.equals(Short.class)) {
 					return Short.MIN_VALUE;
 				}
-				if (numberClass.equals(Integer.class)) {
+				if (type.equals(Integer.class)) {
 					return Integer.MIN_VALUE;
 				}
-				if (numberClass.equals(Long.class)) {
+				if (type.equals(Long.class)) {
 					return Long.MIN_VALUE;
 				}
 
 				return null;
 			}
 
-			private static @Nullable Number typeMaximum(Class<? extends Number> numberClass) {
-				if (numberClass.equals(Short.class)) {
+			private static @Nullable Number typeMaximum(Class<? extends Number> type) {
+				if (type.equals(Short.class)) {
 					return Short.MAX_VALUE;
 				}
-				if (numberClass.equals(Integer.class)) {
+				if (type.equals(Integer.class)) {
 					return Integer.MAX_VALUE;
 				}
-				if (numberClass.equals(Long.class)) {
+				if (type.equals(Long.class)) {
 					return Long.MAX_VALUE;
 				}
 

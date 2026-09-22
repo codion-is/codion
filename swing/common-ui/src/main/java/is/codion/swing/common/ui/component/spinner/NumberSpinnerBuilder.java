@@ -72,20 +72,20 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
 	/**
 	 * Provides a {@link NumberSpinnerBuilder}
 	 */
-	interface NumberClassStep {
+	interface NumberTypeStep {
 
 		/**
-		 * @param numberClass the number class
+		 * @param type the number type class
 		 * @param <T> the number type
 		 * @return a new {@link NumberSpinnerBuilder} instance
 		 */
-		<T extends Number> NumberSpinnerBuilder<T> numberClass(Class<T> numberClass);
+		<T extends Number> NumberSpinnerBuilder<T> type(Class<T> type);
 	}
 
 	/**
-	 * @return a {@link NumberClassStep}
+	 * @return a {@link NumberTypeStep}
 	 */
-	static NumberClassStep builder() {
-		return DefaultNumberSpinnerBuilder.NUMBER_CLASS;
+	static NumberTypeStep builder() {
+		return DefaultNumberSpinnerBuilder.NUMBER_TYPE;
 	}
 }

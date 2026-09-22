@@ -25,8 +25,8 @@ import javax.swing.SpinnerNumberModel;
 
 final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<JSpinner, T> {
 
-	SpinnerNumberValue(JSpinner spinner, Class<T> valueClass) {
-		super(spinner, nullValue((SpinnerNumberModel) spinner.getModel(), valueClass));
+	SpinnerNumberValue(JSpinner spinner, Class<T> type) {
+		super(spinner, nullValue((SpinnerNumberModel) spinner.getModel(), type));
 		set(null);
 		addValidator(new SpinnerModelValidator<>((SpinnerNumberModel) component().getModel()));
 		spinner.getModel().addChangeListener(e -> notifyObserver());
@@ -42,7 +42,7 @@ final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<
 		component().setValue(value);
 	}
 
-	private static <T extends Number> T nullValue(SpinnerNumberModel model, Class<T> valueClass) {
+	private static <T extends Number> T nullValue(SpinnerNumberModel model, Class<T> type) {
 		Comparable<T> minimumValue = (Comparable<T>) model.getMinimum();
 		Comparable<T> maximumValue = (Comparable<T>) model.getMaximum();
 		if (minimumValue != null) {
@@ -51,14 +51,14 @@ final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<
 		if (maximumValue != null) {
 			return (T) maximumValue;
 		}
-		if (valueClass.equals(Integer.class)) {
+		if (type.equals(Integer.class)) {
 			return (T) Integer.valueOf(0);
 		}
-		if (valueClass.equals(Double.class)) {
+		if (type.equals(Double.class)) {
 			return (T) Double.valueOf(0);
 		}
 
-		throw new IllegalArgumentException("Cannot create null value for valueClass: " + valueClass);
+		throw new IllegalArgumentException("Cannot create null value for type: " + type);
 	}
 
 	private static final class SpinnerModelValidator<T> implements Validator<T> {

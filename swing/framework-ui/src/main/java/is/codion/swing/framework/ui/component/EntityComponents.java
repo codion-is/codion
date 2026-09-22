@@ -296,7 +296,7 @@ public final class EntityComponents {
 		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
 
 		return (TextFieldBuilder<JTextField, Entity, B>) Components.textField()
-						.valueClass(Entity.class)
+						.type(Entity.class)
 						.toolTipText(foreignKeyDefinition.description().orElse(null))
 						.format(new EntityReadOnlyFormat())
 						.editable(false)
@@ -352,7 +352,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return Components.temporalInput()
-						.temporalClass(attribute.type().valueClass())
+						.type(attribute.type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(() -> dateTimePatternMissing(attributeDefinition)))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar().large());
@@ -402,7 +402,7 @@ public final class EntityComponents {
 
 		if (itemBased(attributeDefinition)) {
 			return (TextFieldBuilder<C, T, B>) Components.textField()
-							.valueClass(attribute.type().valueClass())
+							.type(attribute.type().valueClass())
 							.format(new ItemReadOnlyFormat(attributeDefinition))
 							.toolTipText(attributeDefinition.description().orElse(null))
 							.editable(false)
@@ -416,13 +416,13 @@ public final class EntityComponents {
 		}
 		if (attribute.type().isNumeric()) {
 			return (TextFieldBuilder<C, T, B>) NumberField.builder()
-							.numberClass((Class<Number>) attribute.type().valueClass())
+							.type((Class<Number>) attribute.type().valueClass())
 							.format(attributeDefinition.format().orElse(null))
 							.toolTipText(attributeDefinition.description().orElse(null));
 		}
 
 		return (TextFieldBuilder<C, T, B>) Components.textField()
-						.valueClass(attribute.type().valueClass())
+						.type(attribute.type().valueClass())
 						.format(attributeDefinition.format().orElse(null))
 						.maximumLength(maximumLength(attributeDefinition))
 						.toolTipText(attributeDefinition.description().orElse(null));
@@ -438,7 +438,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return Components.temporalField()
-						.temporalClass(attributeDefinition.attribute().type().valueClass())
+						.type(attributeDefinition.attribute().type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(() -> dateTimePatternMissing(attributeDefinition)))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar().large());

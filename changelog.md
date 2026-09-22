@@ -7,6 +7,10 @@ Codion Change Log
 - ConditionModel.valueClass() renamed type().
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.columnClass() renamed type().
+- TextFieldBuilder, valueClass() renamed type().
+- TemporalField, temporalClass() renamed type().
+- NumberSpinnerBuilder, numberClass() renamed type().
+- NumberField, numberClass() renamed type().
 
 ## 0.18.87
 ### is.codion.common.db
