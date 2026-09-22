@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.88
 ### is.codion.common.model
 - FilterTableModel.TableColumns.columnClass() renamed type().
+- ConditionModel.valueClass() renamed type().
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.columnClass() renamed type().
 

@@ -372,8 +372,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		@Override
 		public Builder<T> components(ConditionComponents components) {
-			if (!requireNonNull(components).supports(conditionModel.valueClass())) {
-				throw new IllegalArgumentException("ConditionComponents does not support the value type: " + conditionModel.valueClass());
+			if (!requireNonNull(components).supports(conditionModel.type())) {
+				throw new IllegalArgumentException("ConditionComponents does not support the value type: " + conditionModel.type());
 			}
 
 			this.components = requireNonNull(components);
@@ -410,11 +410,11 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	public interface ConditionComponents {
 
 		/**
-		 * @param valueClass the value class
+		 * @param type the value type
 		 * @return true if the type is supported
 		 */
-		default boolean supports(Class<?> valueClass) {
-			return SUPPORTED_COMPONENT_TYPES.contains(requireNonNull(valueClass));
+		default boolean supports(Class<?> type) {
+			return SUPPORTED_COMPONENT_TYPES.contains(requireNonNull(type));
 		}
 
 		/**
@@ -805,7 +805,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			controlsBuilder.control(Control.builder()
 							.toggle(model().caseSensitive())
 							.caption(MESSAGES.getString("case_sensitive")));
-			if (model().valueClass().equals(String.class)) {
+			if (model().type().equals(String.class)) {
 				controlsBuilder.control(createWildcardControls());
 			}
 			JPopupMenu popupMenu = menu()
@@ -818,7 +818,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private boolean isStringOrCharacter() {
-		return model().valueClass().equals(String.class) || model().valueClass().equals(Character.class);
+		return model().type().equals(String.class) || model().type().equals(Character.class);
 	}
 
 	private Controls createWildcardControls() {
@@ -890,64 +890,64 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private static <T> ComponentValueBuilder<? extends JComponent, T, ?> createField(ConditionModel<T> conditionModel) {
-		Class<T> columnClass = conditionModel.valueClass();
-		if (columnClass.equals(Boolean.class)) {
+		Class<T> type = conditionModel.type();
+		if (type.equals(Boolean.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) nullableCheckBox()
 							.horizontalAlignment(BOOLEAN_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		if (columnClass.equals(Short.class)) {
+		if (type.equals(Short.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) shortField()
 							.format(conditionModel.format().orElse(null))
 							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		if (columnClass.equals(Integer.class)) {
+		if (type.equals(Integer.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) integerField()
 							.format(conditionModel.format().orElse(null))
 							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		else if (columnClass.equals(Double.class)) {
+		else if (type.equals(Double.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) doubleField()
 							.format(conditionModel.format().orElse(null))
 							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		else if (columnClass.equals(BigDecimal.class)) {
+		else if (type.equals(BigDecimal.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) bigDecimalField()
 							.format(conditionModel.format().orElse(null))
 							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		else if (columnClass.equals(Long.class)) {
+		else if (type.equals(Long.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) longField()
 							.format(conditionModel.format().orElse(null))
 							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		else if (columnClass.equals(LocalTime.class)) {
+		else if (type.equals(LocalTime.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) localTimeField()
 							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
 							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		else if (columnClass.equals(LocalDate.class)) {
+		else if (type.equals(LocalDate.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) localDateField()
 							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
 							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		else if (columnClass.equals(LocalDateTime.class)) {
+		else if (type.equals(LocalDateTime.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) localDateTimeField()
 							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
 							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		else if (columnClass.equals(OffsetDateTime.class)) {
+		else if (type.equals(OffsetDateTime.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) offsetDateTimeField()
 							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
 							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
-		else if (columnClass.equals(String.class)) {
+		else if (type.equals(String.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) stringField();
 		}
-		else if (columnClass.equals(Character.class)) {
+		else if (type.equals(Character.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) characterField();
 		}
 
-		throw new IllegalArgumentException("Unsupported type: " + columnClass);
+		throw new IllegalArgumentException("Unsupported type: " + type);
 	}
 
 	private final class EnableWildcard implements Consumer<Boolean> {

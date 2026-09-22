@@ -33,7 +33,7 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 	private DefaultColumnConditionModel(DefaultBuilder<T> builder) {
 		column = builder.columnDefinition.attribute();
 		condition = ConditionModel.builder()
-						.valueClass(column.type().valueClass())
+						.type(column.type().valueClass())
 						.format(builder.columnDefinition.format().orElse(null))
 						.caption(builder.columnDefinition.caption())
 						.dateTimePattern(builder.columnDefinition.dateTimePattern().orElse(null))

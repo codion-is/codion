@@ -72,8 +72,8 @@ public interface AttributeConditionModel<T> extends ConditionModel<T> {
 	}
 
 	@Override
-	default Class<T> valueClass() {
-		return condition().valueClass();
+	default Class<T> type() {
+		return condition().type();
 	}
 
 	@Override

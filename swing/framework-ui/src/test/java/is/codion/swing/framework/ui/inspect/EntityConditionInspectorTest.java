@@ -92,7 +92,7 @@ public final class EntityConditionInspectorTest {
 	void unknownModelDoesNotApply() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, CONNECTION);
 		//a condition model belonging to no column of this table matches neither system
-		ConditionModel<String> orphan = ConditionModel.builder().valueClass(String.class).build();
+		ConditionModel<String> orphan = ConditionModel.builder().type(String.class).build();
 
 		Optional<Map<String, Object>> state = EntityConditionInspector.state(tableModel, orphan);
 		assertFalse(state.isPresent());

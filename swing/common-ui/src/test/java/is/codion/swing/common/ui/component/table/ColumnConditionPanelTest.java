@@ -34,7 +34,7 @@ public class ColumnConditionPanelTest {
 	@Test
 	void test() {
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.build();
 		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder()
 						.model(model)
@@ -49,7 +49,7 @@ public class ColumnConditionPanelTest {
 	@Test
 	void componentNames() {
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.build();
 		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder()
 						.model(model)
@@ -71,7 +71,7 @@ public class ColumnConditionPanelTest {
 	@Test
 	void unnamedByDefault() {
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.build();
 		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder()
 						.model(model)
@@ -84,7 +84,7 @@ public class ColumnConditionPanelTest {
 	@Test
 	void lockedModel() {
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.build();
 		model.locked().set(true);
 		ColumnConditionPanel.builder().model(model).build();

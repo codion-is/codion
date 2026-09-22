@@ -68,7 +68,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void testOperands() {
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.autoEnable(false)
 						.build();
 		model.caseSensitive().set(false);
@@ -122,7 +122,7 @@ public class DefaultConditionModelTest {
 		// regression fence for the isNotEqual ordering bug where the operand's lowercasing was discarded by the
 		// subsequent equalWithWildcards() call, leaving NOT_EQUAL matching everything.
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.build();
 		model.caseSensitive().set(false);
 		model.operator().set(Operator.NOT_EQUAL);
@@ -143,7 +143,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void testMisc() {
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class).build();
+						.type(String.class).build();
 		model.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 		model.set().equalTo("upper");
 		assertEquals("%upper%", model.operands().equalWithWildcards());
@@ -155,16 +155,16 @@ public class DefaultConditionModelTest {
 	@Test
 	void testOperator() {
 		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN))
 						.operator(Operator.IN));
 		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.operator(Operator.IN)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN)));
 
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.LESS_THAN_OR_EQUAL, Operator.NOT_BETWEEN))
 						.build();
 		model.operator().addConsumer(operatorConsumer);
@@ -186,13 +186,13 @@ public class DefaultConditionModelTest {
 	@Test
 	void test() {
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class).build();
+						.type(String.class).build();
 		assertTrue(model.autoEnable().is());
 		model.operands().equal().set("test");
 		assertTrue(model.enabled().is());
 		model.caseSensitive().set(false);
 		assertFalse(model.caseSensitive().is());
-		assertEquals(String.class, model.valueClass());
+		assertEquals(String.class, model.type());
 
 		model.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 		assertEquals(Wildcard.PREFIX_AND_POSTFIX, model.operands().wildcard().get());
@@ -209,7 +209,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void lockedModelPreventsModification() {
 		ConditionModel<String> model = ConditionModel.builder()
-						.valueClass(String.class).build();
+						.type(String.class).build();
 		model.locked().set(true);
 
 		// Verify all modification attempts throw IllegalStateException when locked
@@ -225,7 +225,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void multiConditionString() {
 		ConditionModel<String> condition = ConditionModel.builder()
-						.valueClass(String.class).build();
+						.type(String.class).build();
 		condition.caseSensitive().set(false);
 		condition.operands().wildcard().set(Wildcard.NONE);
 
@@ -238,7 +238,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_equal_enablesWithEqualValue() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.EQUAL);
 		Operands<Integer> operands = condition.operands();
@@ -259,7 +259,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_notEqual_enablesWithEqualValue() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.NOT_EQUAL);
 		Operands<Integer> operands = condition.operands();
@@ -280,7 +280,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_lessThan_enablesWithUpperValue() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.LESS_THAN);
 		Operands<Integer> operands = condition.operands();
@@ -299,7 +299,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_lessThanOrEqual_enablesWithUpperValue() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.LESS_THAN_OR_EQUAL);
 		Operands<Integer> operands = condition.operands();
@@ -318,7 +318,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_greaterThan_enablesWithLowerValue() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.GREATER_THAN);
 		Operands<Integer> operands = condition.operands();
@@ -337,7 +337,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_greaterThanOrEqual_enablesWithLowerValue() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.GREATER_THAN_OR_EQUAL);
 		Operands<Integer> operands = condition.operands();
@@ -356,7 +356,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_between_enablesWithBothBounds() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.BETWEEN);
 		Operands<Integer> operands = condition.operands();
@@ -386,7 +386,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_betweenExclusive_enablesWithBothBounds() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.BETWEEN_EXCLUSIVE);
 		Operands<Integer> operands = condition.operands();
@@ -416,7 +416,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_notBetween_enablesWithBothBounds() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.NOT_BETWEEN);
 		Operands<Integer> operands = condition.operands();
@@ -446,7 +446,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void autoEnable_notBetweenExclusive_enablesWithBothBounds() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.build();
 		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
 		Operands<Integer> operands = condition.operands();
@@ -476,14 +476,14 @@ public class DefaultConditionModelTest {
 	@Test
 	void noOperators() {
 		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.operators(emptyList()));
 	}
 
 	@Test
 	void includeInteger() {
 		ConditionModel<Integer> condition = ConditionModel.builder()
-						.valueClass(Integer.class)
+						.type(Integer.class)
 						.autoEnable(false)
 						.operator(Operator.EQUAL)
 						.build();
@@ -613,7 +613,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void acceptsString() {
 		ConditionModel<String> condition = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.autoEnable(false)
 						.build();
 		condition.enabled().set(true);
@@ -679,7 +679,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void acceptCharacter() {
 		ConditionModel<Character> condition = ConditionModel.builder()
-						.valueClass(Character.class)
+						.type(Character.class)
 						.build();
 		condition.autoEnable().set(false);
 		condition.enabled().set(true);
@@ -703,7 +703,7 @@ public class DefaultConditionModelTest {
 		@BeforeEach
 		void setUp() {
 			condition = ConditionModel.builder()
-							.valueClass(Integer.class)
+							.type(Integer.class)
 							.autoEnable(false)
 							.build();
 		}
@@ -1106,28 +1106,28 @@ public class DefaultConditionModelTest {
 		LocalTime localTime = LocalTime.of(10, 30, 15, 541_000_000);
 
 		ConditionModel<LocalTime> timeModel = ConditionModel.builder()
-						.valueClass(LocalTime.class)
+						.type(LocalTime.class)
 						.dateTimePattern("HH:mm:ss.SSS")
 						.build();
 		timeModel.set().equalTo(localTime);
 		assertTrue(timeModel.accepts(localTime));
 
 		timeModel = ConditionModel.builder()
-						.valueClass(LocalTime.class)
+						.type(LocalTime.class)
 						.dateTimePattern("HH:mm:ss")
 						.build();
 		timeModel.set().equalTo(LocalTime.of(10, 30, 15));
 		assertTrue(timeModel.accepts(localTime));
 
 		timeModel = ConditionModel.builder()
-						.valueClass(LocalTime.class)
+						.type(LocalTime.class)
 						.dateTimePattern("HH:mm")
 						.build();
 		timeModel.set().equalTo(LocalTime.of(10, 30));
 		assertTrue(timeModel.accepts(localTime));
 
 		timeModel = ConditionModel.builder()
-						.valueClass(LocalTime.class)
+						.type(LocalTime.class)
 						.dateTimePattern("HH")
 						.build();
 		timeModel.set().equalTo(LocalTime.of(10, 0));
@@ -1138,14 +1138,14 @@ public class DefaultConditionModelTest {
 						LocalTime.of(10, 30, 15, 541_000_000), ZoneOffset.UTC);
 
 		ConditionModel<OffsetDateTime> dateTimeModel = ConditionModel.builder()
-						.valueClass(OffsetDateTime.class)
+						.type(OffsetDateTime.class)
 						.dateTimePattern("dd-MM-yyyy HH:mm:ss.SSS")
 						.build();
 		dateTimeModel.set().equalTo(offsetDateTime);
 		assertTrue(dateTimeModel.accepts(offsetDateTime));
 
 		dateTimeModel = ConditionModel.builder()
-						.valueClass(OffsetDateTime.class)
+						.type(OffsetDateTime.class)
 						.dateTimePattern("dd-MM-yyyy HH:mm:ss")
 						.build();
 		dateTimeModel.set().equalTo(OffsetDateTime.of(
@@ -1154,7 +1154,7 @@ public class DefaultConditionModelTest {
 		assertTrue(dateTimeModel.accepts(offsetDateTime));
 
 		dateTimeModel = ConditionModel.builder()
-						.valueClass(OffsetDateTime.class)
+						.type(OffsetDateTime.class)
 						.dateTimePattern("dd-MM-yyyy HH:mm")
 						.build();
 		dateTimeModel.set().equalTo(OffsetDateTime.of(
@@ -1163,7 +1163,7 @@ public class DefaultConditionModelTest {
 		assertTrue(dateTimeModel.accepts(offsetDateTime));
 
 		dateTimeModel = ConditionModel.builder()
-						.valueClass(OffsetDateTime.class)
+						.type(OffsetDateTime.class)
 						.dateTimePattern("dd-MM-yyyy HH")
 						.build();
 		dateTimeModel.set().equalTo(OffsetDateTime.of(
@@ -1175,7 +1175,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void clearNonNull() {
 		ConditionModel<Boolean> conditionModel = ConditionModel.builder()
-						.valueClass(Boolean.class)
+						.type(Boolean.class)
 						.operands(new Operands<Boolean>() {
 							@Override
 							public Value<Boolean> equal() {
@@ -1192,7 +1192,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void caseInsensitiveWithWildcard() {
 		ConditionModel<String> conditionModel = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.build();
 		conditionModel.caseSensitive().set(false);
 		conditionModel.set().equalTo("B%");
@@ -1202,7 +1202,7 @@ public class DefaultConditionModelTest {
 	@Test
 	void inCaseInsensitive() {
 		ConditionModel<String> conditionModel = ConditionModel.builder()
-						.valueClass(String.class)
+						.type(String.class)
 						.build();
 		conditionModel.caseSensitive().set(false);
 		conditionModel.set().in(asList("Brazil", "USA"));
