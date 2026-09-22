@@ -211,7 +211,7 @@ final class EditorInspector extends JPanel {
 				case VALUE:
 				case ORIGINAL:
 					column.cellRenderer(FilterTableCellRenderer.builder()
-									.columnClass(String.class)
+									.type(String.class)
 									.horizontalAlignment(SwingConstants.CENTER)
 									.toolTip(Objects::toString)
 									.build());
@@ -219,7 +219,7 @@ final class EditorInspector extends JPanel {
 				case ERROR:
 				case WARNING:
 					column.cellRenderer(FilterTableCellRenderer.builder()
-									.columnClass(String.class)
+									.type(String.class)
 									.toolTip(Objects::toString)
 									.build());
 					break;

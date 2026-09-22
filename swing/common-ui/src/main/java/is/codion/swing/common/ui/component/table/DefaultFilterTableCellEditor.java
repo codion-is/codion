@@ -498,16 +498,16 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 		private static final class EnumComboBoxSupplier<T> implements Supplier<ComponentValue<JComboBox<T>, T>> {
 
-			private final Class<T> columnClass;
+			private final Class<T> type;
 
-			private EnumComboBoxSupplier(Class<T> columnClass) {
-				this.columnClass = columnClass;
+			private EnumComboBoxSupplier(Class<T> type) {
+				this.type = type;
 			}
 
 			@Override
 			public ComponentValue<JComboBox<T>, T> get() {
 				return comboBox().model(SwingFilterComboBoxModel.builder()
-								.items(asList(columnClass.getEnumConstants()))
+								.items(asList(type.getEnumConstants()))
 								.build()).buildValue();
 			}
 		}

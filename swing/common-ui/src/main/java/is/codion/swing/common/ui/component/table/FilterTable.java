@@ -1569,12 +1569,12 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * The cell renderer for the given column, overrides {@link #cellRenderers(FilterTableCellRenderer.Factory)}.
 		 * @param identifier the column identifier
-		 * @param columnClass the column class
+		 * @param type the column type
 		 * @param renderer provided with the cell renderer to for the given column
 		 * @param <T> the column type
 		 * @return this builder instance
 		 */
-		<T> Builder<R, C> cellRenderer(C identifier, Class<T> columnClass, Consumer<FilterTableCellRenderer.Builder<R, C, T>> renderer);
+		<T> Builder<R, C> cellRenderer(C identifier, Class<T> type, Consumer<FilterTableCellRenderer.Builder<R, C, T>> renderer);
 
 		/**
 		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer
@@ -2007,11 +2007,11 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public <T> Builder<R, C> cellRenderer(C identifier, Class<T> columnClass, Consumer<FilterTableCellRenderer.Builder<R, C, T>> renderer) {
+		public <T> Builder<R, C> cellRenderer(C identifier, Class<T> type, Consumer<FilterTableCellRenderer.Builder<R, C, T>> renderer) {
 			requireNonNull(identifier);
-			requireNonNull(columnClass);
+			requireNonNull(type);
 			requireNonNull(renderer);
-			FilterTableCellRenderer.Builder<R, C, T> builder = FilterTableCellRenderer.<R, C>builder().columnClass(columnClass);
+			FilterTableCellRenderer.Builder<R, C, T> builder = FilterTableCellRenderer.<R, C>builder().type(type);
 			renderer.accept(builder);
 			this.cellRenderers.put(identifier, builder.build());
 			return this;

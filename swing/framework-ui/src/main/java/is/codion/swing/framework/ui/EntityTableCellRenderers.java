@@ -69,7 +69,7 @@ public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory
 	 */
 	protected <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder(AttributeDefinition<T> attributeDefinition) {
 		return configure(requireNonNull(attributeDefinition), FilterTableCellRenderer.<Entity, Attribute<?>>builder()
-						.columnClass(attributeDefinition.attribute().type().valueClass()));
+						.type(attributeDefinition.attribute().type().valueClass()));
 	}
 
 	static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> configure(AttributeDefinition<T> attributeDefinition,
