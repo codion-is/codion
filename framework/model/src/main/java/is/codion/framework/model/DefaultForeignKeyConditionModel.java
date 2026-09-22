@@ -70,7 +70,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		entities = builder.entities;
 		models = new DefaultModels(builder.comboBoxModel, builder.searchModel);
 		condition = ConditionModel.builder()
-						.valueClass(Entity.class)
+						.type(Entity.class)
 						// the operator before the operators, which must contain it
 						.operator(builder.operator == null ? builder.operators.get(0) : builder.operator)
 						.operators(builder.operators)

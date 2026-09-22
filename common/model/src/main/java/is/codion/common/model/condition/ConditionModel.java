@@ -153,9 +153,9 @@ public interface ConditionModel<T> {
 	State locked();
 
 	/**
-	 * @return the value class this condition model is based on
+	 * @return the value type this condition model is based on
 	 */
-	Class<T> valueClass();
+	Class<T> type();
 
 	/**
 	 * @return the operators available in this condition model
@@ -202,9 +202,9 @@ public interface ConditionModel<T> {
 	Observer<?> changed();
 
 	/**
-	 * @return a {@link Builder.ValueClassStep} instance
+	 * @return a {@link Builder.ValueTypeStep} instance
 	 */
-	static Builder.ValueClassStep builder() {
+	static Builder.ValueTypeStep builder() {
 		return DefaultConditionModel.DefaultBuilder.VALUE_CLASS;
 	}
 
@@ -421,15 +421,15 @@ public interface ConditionModel<T> {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ValueClassStep {
+		interface ValueTypeStep {
 
 			/**
 			 * Returns a new {@link Builder} instance.
-			 * @param valueClass the value class
+			 * @param type the value type
 			 * @param <T> the condition value type
 			 * @return a new {@link Builder} instance
 			 */
-			<T> Builder<T> valueClass(Class<T> valueClass);
+			<T> Builder<T> type(Class<T> type);
 		}
 
 		/**

@@ -30,11 +30,11 @@ public final class DefaultTableConditionModelTest {
 	@Test
 	void persist() {
 		Map<String, ConditionModel<?>> conditions = new HashMap<>();
-		ConditionModel<String> one = ConditionModel.builder().valueClass(String.class).build();
+		ConditionModel<String> one = ConditionModel.builder().type(String.class).build();
 		conditions.put("one", one);
-		ConditionModel<String> two = ConditionModel.builder().valueClass(String.class).build();
+		ConditionModel<String> two = ConditionModel.builder().type(String.class).build();
 		conditions.put("two", two);
-		ConditionModel<String> three = ConditionModel.builder().valueClass(String.class).build();
+		ConditionModel<String> three = ConditionModel.builder().type(String.class).build();
 		conditions.put("three", three);
 		DefaultTableConditionModel<String> model = new DefaultTableConditionModel<>(conditions);
 		one.enabled().set(true);

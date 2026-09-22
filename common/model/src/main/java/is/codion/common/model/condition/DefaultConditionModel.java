@@ -68,7 +68,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 					.listener(conditionChanged)
 					.build();
 
-	private final Class<T> valueClass;
+	private final Class<T> valueType;
 	private final @Nullable Format format;
 	private final @Nullable String dateTimePattern;
 	private final List<Operator> operators;
@@ -93,7 +93,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		this.operands.upper.addListener(conditionChanged);
 		this.operands.lower.addListener(autoEnableListener);
 		this.operands.lower.addListener(conditionChanged);
-		this.valueClass = builder.valueClass;
+		this.valueType = builder.valueType;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
 		this.caption = builder.caption;
@@ -133,8 +133,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	@Override
-	public Class<T> valueClass() {
-		return valueClass;
+	public Class<T> type() {
+		return valueType;
 	}
 
 	@Override
@@ -594,21 +594,21 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 	}
 
-	private static final class DefaultValueClassStep implements Builder.ValueClassStep {
+	private static final class DefaultValueTypeStep implements Builder.ValueTypeStep {
 
 		@Override
-		public <T> Builder<T> valueClass(Class<T> valueClass) {
-			return new DefaultBuilder<>(valueClass);
+		public <T> Builder<T> type(Class<T> type) {
+			return new DefaultBuilder<>(type);
 		}
 	}
 
 	static final class DefaultBuilder<T> implements Builder<T> {
 
-		static final Builder.ValueClassStep VALUE_CLASS = new DefaultValueClassStep();
+		static final ValueTypeStep VALUE_CLASS = new DefaultValueTypeStep();
 
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 
-		private final Class<T> valueClass;
+		private final Class<T> valueType;
 
 		private List<Operator> operators;
 		private Operator operator = Operator.EQUAL;
@@ -624,9 +624,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		private boolean caseSensitive = CASE_SENSITIVE.getOrThrow();
 		private boolean autoEnable = AUTO_ENABLE.getOrThrow();
 
-		private DefaultBuilder(Class<T> valueClass) {
-			this.valueClass = requireNonNull(valueClass);
-			this.operators = valueClass.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
+		private DefaultBuilder(Class<T> valueType) {
+			this.valueType = requireNonNull(valueType);
+			this.operators = valueType.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
 		}
 
 		@Override

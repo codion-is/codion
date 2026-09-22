@@ -176,7 +176,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 			Class<?> type = columns.type(requireNonNull(identifier));
 			if (Comparable.class.isAssignableFrom(type)) {
 				columnFilterModels.put(identifier, ConditionModel.builder()
-								.valueClass(type)
+								.type(type)
 								.caption(columns.caption(identifier))
 								.build());
 			}
@@ -222,7 +222,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 
 		private boolean accepts(R item, ConditionModel<?> condition, C identifier, TableColumns<R, C> columns) {
-			if (condition.valueClass().equals(String.class)) {
+			if (condition.type().equals(String.class)) {
 				String formatted = columns.formatted(item, identifier);
 
 				return ((ConditionModel<String>) condition).accepts(formatted.isEmpty() ? null : formatted);

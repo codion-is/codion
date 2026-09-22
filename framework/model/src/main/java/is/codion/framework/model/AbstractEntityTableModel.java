@@ -562,7 +562,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 			if (useStringCondition(definition)) {
 				// Covers foreign keys
 				return ConditionModel.builder()
-								.valueClass(String.class)
+								.type(String.class)
 								.caption(definition.caption())
 								.build();
 			}
@@ -572,7 +572,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 		private static <T> ConditionModel<T> valueCondition(ValueAttributeDefinition<T> definition) {
 			return ConditionModel.builder()
-							.valueClass(definition.attribute().type().valueClass())
+							.type(definition.attribute().type().valueClass())
 							.format(definition.format().orElse(null))
 							.caption(definition.caption())
 							.dateTimePattern(definition.dateTimePattern().orElse(null))
