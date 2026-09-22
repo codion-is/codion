@@ -133,9 +133,9 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 					booleanValue(FilterTableCellRenderer.class.getName() + ".setBorder", true);
 
 	/**
-	 * @return the column class
+	 * @return the column type
 	 */
-	Class<T> columnClass();
+	Class<T> type();
 
 	/**
 	 * @return the horizontal alignment
@@ -155,10 +155,10 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	/**
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
-	 * @return a {@link Builder.ColumnClassStep} instance
+	 * @return a {@link Builder.ColumnTypeStep} instance
 	 */
-	static <R, C> Builder.ColumnClassStep<R, C> builder() {
-		return new DefaultFilterTableCellRenderer.DefaultColumnClassStep<>();
+	static <R, C> Builder.ColumnTypeStep<R, C> builder() {
+		return new DefaultFilterTableCellRenderer.DefaultColumnTypeStep<>();
 	}
 
 	/**
@@ -222,14 +222,14 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 		 * @param <R> the row type
 		 * @param <C> the column identifier type
 		 */
-		interface ColumnClassStep<R, C> {
+		interface ColumnTypeStep<R, C> {
 
 			/**
 			 * @param <T> the cell value type
-			 * @param columnClass the column class
+			 * @param type the column type
 			 * @return a new {@link Builder} instance
 			 */
-			<T> Builder<R, C, T> columnClass(Class<T> columnClass);
+			<T> Builder<R, C, T> type(Class<T> type);
 		}
 
 		/**

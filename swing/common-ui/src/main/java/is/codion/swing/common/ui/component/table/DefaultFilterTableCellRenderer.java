@@ -62,14 +62,14 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	private static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
 
 	private final Settings<R, C, T> settings;
-	private final Class<T> columnClass;
+	private final Class<T> type;
 	private final @Nullable TableCellRenderer renderer;
 	private final @Nullable ComponentValue<? extends JComponent, T> componentValue;
 
-	DefaultFilterTableCellRenderer(Settings<R, C, T> settings, Class<T> columnClass, @Nullable TableCellRenderer renderer,
+	DefaultFilterTableCellRenderer(Settings<R, C, T> settings, Class<T> type, @Nullable TableCellRenderer renderer,
 																 @Nullable ComponentValue<? extends JComponent, T> componentValue) {
 		this.settings = settings;
-		this.columnClass = columnClass;
+		this.type = type;
 		this.renderer = renderer;
 		this.componentValue = componentValue;
 		this.settings.update();
@@ -91,8 +91,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	}
 
 	@Override
-	public Class<T> columnClass() {
-		return columnClass;
+	public Class<T> type() {
+		return type;
 	}
 
 	@Override
@@ -193,7 +193,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Class<Boolean> columnClass() {
+		public Class<Boolean> type() {
 			return Boolean.class;
 		}
 
@@ -467,9 +467,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private Function<T, String> formatter;
 		private int horizontalAlignment;
 
-		private SettingsBuilder(Class<T> columnClass) {
-			this.horizontalAlignment = defaultHorizontalAlignment(columnClass);
-			this.formatter = defaultFormatter(columnClass);
+		private SettingsBuilder(Class<T> type) {
+			this.horizontalAlignment = defaultHorizontalAlignment(type);
+			this.formatter = defaultFormatter(type);
 		}
 
 		SettingsBuilder<R, C, T> leftPadding(int leftPadding) {
@@ -536,31 +536,31 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return new Settings<>(this);
 		}
 
-		private int defaultHorizontalAlignment(Class<T> columnClass) {
-			if (Boolean.class.equals(columnClass)) {
+		private int defaultHorizontalAlignment(Class<T> type) {
+			if (Boolean.class.equals(type)) {
 				return BOOLEAN_HORIZONTAL_ALIGNMENT.getOrThrow();
 			}
-			if (Number.class.isAssignableFrom(columnClass)) {
+			if (Number.class.isAssignableFrom(type)) {
 				return NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow();
 			}
-			if (Temporal.class.isAssignableFrom(columnClass)) {
+			if (Temporal.class.isAssignableFrom(type)) {
 				return TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow();
 			}
 
 			return HORIZONTAL_ALIGNMENT.getOrThrow();
 		}
 
-		private Function<T, String> defaultFormatter(Class<T> columnClass) {
-			if (columnClass.equals(LocalTime.class)) {
+		private Function<T, String> defaultFormatter(Class<T> type) {
+			if (type.equals(LocalTime.class)) {
 				return (Function<T, String>) TIME_FORMATTER;
 			}
-			else if (columnClass.equals(LocalDate.class)) {
+			else if (type.equals(LocalDate.class)) {
 				return (Function<T, String>) DATE_FORMATTER;
 			}
-			else if (columnClass.equals(LocalDateTime.class)) {
+			else if (type.equals(LocalDateTime.class)) {
 				return (Function<T, String>) DATE_TIME_FORMATTER;
 			}
-			else if (columnClass.equals(OffsetDateTime.class)) {
+			else if (type.equals(OffsetDateTime.class)) {
 				return (Function<T, String>) OFFSET_DATE_TIME_FORMATTER;
 			}
 
@@ -631,27 +631,27 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
-	static final class DefaultColumnClassStep<R, C> implements Builder.ColumnClassStep<R, C> {
+	static final class DefaultColumnTypeStep<R, C> implements Builder.ColumnTypeStep<R, C> {
 
 		@Override
-		public <T> Builder<R, C, T> columnClass(Class<T> columnClass) {
-			return new DefaultBuilder<>(requireNonNull(columnClass));
+		public <T> Builder<R, C, T> type(Class<T> type) {
+			return new DefaultBuilder<>(requireNonNull(type));
 		}
 	}
 
 	private static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
 
 		private final SettingsBuilder<R, C, T> settings;
-		private final Class<T> columnClass;
+		private final Class<T> type;
 
 		private boolean useBooleanRenderer;
 		private @Nullable TableCellRenderer renderer;
 		private @Nullable ComponentValue<? extends JComponent, T> componentValue;
 
-		private DefaultBuilder(Class<T> columnClass) {
-			this.columnClass = requireNonNull(columnClass);
-			this.useBooleanRenderer = Boolean.class.equals(columnClass);
-			this.settings = new SettingsBuilder<>(columnClass);
+		private DefaultBuilder(Class<T> type) {
+			this.type = requireNonNull(type);
+			this.useBooleanRenderer = Boolean.class.equals(type);
+			this.settings = new SettingsBuilder<>(type);
 		}
 
 		@Override
@@ -746,7 +746,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 				return (FilterTableCellRenderer<R, C, T>) new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build());
 			}
 
-			return new DefaultFilterTableCellRenderer<>(settings.build(), columnClass, renderer, componentValue);
+			return new DefaultFilterTableCellRenderer<>(settings.build(), type, renderer, componentValue);
 		}
 	}
 

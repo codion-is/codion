@@ -31,17 +31,17 @@ public final class DefaultFilterTableCellRendererTest {
 	void horizontalAlignment() {
 		assertEquals(BOOLEAN_HORIZONTAL_ALIGNMENT.get(),
 						FilterTableCellRenderer.builder()
-										.columnClass(Boolean.class)
+										.type(Boolean.class)
 										.build()
 										.horizontalAlignment());
 		assertEquals(TEMPORAL_HORIZONTAL_ALIGNMENT.get(),
 						FilterTableCellRenderer.builder()
-										.columnClass(LocalDate.class)
+										.type(LocalDate.class)
 										.build()
 										.horizontalAlignment());
 		assertEquals(NUMERICAL_HORIZONTAL_ALIGNMENT.get(),
 						FilterTableCellRenderer.builder()
-										.columnClass(Double.class)
+										.type(Double.class)
 										.build()
 										.horizontalAlignment());
 	}
