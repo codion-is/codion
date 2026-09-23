@@ -305,8 +305,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		@Override
-		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter) {
-			this.type = sqlType(columnClass);
+		public final <C> B converter(Class<C> columnType, Converter<T, C> converter) {
+			this.type = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = getter(this.type, (Column<Object>) super.attribute());
 			this.setValue = null;
@@ -314,9 +314,9 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		@Override
-		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter,
+		public final <C> B converter(Class<C> columnType, Converter<T, C> converter,
 																 GetValue<C> getValue) {
-			this.type = sqlType(columnClass);
+			this.type = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);
 			this.setValue = null;
@@ -324,9 +324,9 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		@Override
-		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter,
+		public final <C> B converter(Class<C> columnType, Converter<T, C> converter,
 																 SetValue<C> setValue) {
-			this.type = sqlType(columnClass);
+			this.type = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = getter(this.type, (Column<Object>) super.attribute());
 			this.setValue = (SetValue<Object>) requireNonNull(setValue);
@@ -334,9 +334,9 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		@Override
-		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter,
+		public final <C> B converter(Class<C> columnType, Converter<T, C> converter,
 																 GetValue<C> getValue, SetValue<C> setValue) {
-			this.type = sqlType(columnClass);
+			this.type = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);
 			this.setValue = (SetValue<Object>) requireNonNull(setValue);
@@ -411,11 +411,11 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 		/**
 		 * Returns the default sql type for the given class.
-		 * @param clazz the class
+		 * @param columnType the column type class
 		 * @return the corresponding sql type
 		 */
-		private static int sqlType(Class<?> clazz) {
-			return TYPE_MAP.getOrDefault(requireNonNull(clazz), Types.OTHER);
+		private static int sqlType(Class<?> columnType) {
+			return TYPE_MAP.getOrDefault(requireNonNull(columnType), Types.OTHER);
 		}
 
 		// A column-specific getter for the raw column value, or null to resolve the default getter for the SQL type

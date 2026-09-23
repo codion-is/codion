@@ -224,42 +224,42 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
 		 * @param <C> the column type
-		 * @param columnClass the underlying column type class
+		 * @param columnType the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
 		 * @return this instance
 		 */
-		<C> B converter(Class<C> columnClass, Converter<T, C> converter);
+		<C> B converter(Class<C> columnType, Converter<T, C> converter);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
 		 * @param <C> the column type
-		 * @param columnClass the underlying column type class
+		 * @param columnType the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
 		 * @param getValue the getter to use to retrieve the value from a {@link ResultSet}
 		 * @return this instance
 		 */
-		<C> B converter(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue);
+		<C> B converter(Class<C> columnType, Converter<T, C> converter, GetValue<C> getValue);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
 		 * @param <C> the column type
-		 * @param columnClass the underlying column type class
+		 * @param columnType the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
 		 * @param setValue the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B converter(Class<C> columnClass, Converter<T, C> converter, SetValue<C> setValue);
+		<C> B converter(Class<C> columnType, Converter<T, C> converter, SetValue<C> setValue);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
 		 * @param <C> the column type
-		 * @param columnClass the underlying column type class
+		 * @param columnType the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
 		 * @param getValue the getter to use to retrieve the value from a {@link ResultSet}
 		 * @param setValue the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B converter(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue, SetValue<C> setValue);
+		<C> B converter(Class<C> columnType, Converter<T, C> converter, GetValue<C> getValue, SetValue<C> setValue);
 
 		/**
 		 * Sets the actual string used as column name when inserting and updating.

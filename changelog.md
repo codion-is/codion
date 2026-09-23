@@ -11,6 +11,8 @@ Codion Change Log
 - TemporalField, temporalClass() renamed type().
 - NumberSpinnerBuilder, numberClass() renamed type().
 - NumberField, numberClass() renamed type().
+### is.codion.framework.domain
+- ColumnDefinition.Builder.converter() columnClass parameter renamed columnType.
 ### is.codion.framework.domain.db
 - MetaDataColumn.columnClass() and columnName() renamed type() and name().
 
