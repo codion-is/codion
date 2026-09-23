@@ -35,10 +35,10 @@ import static java.util.Objects.requireNonNull;
 
 final class MetaDataColumn {
 
-	private final String columnName;
+	private final String name;
 	private final int dataType;
 	private final String typeName;
-	private final Class<?> columnClass;
+	private final Class<?> type;
 	private final int position;
 	private final int columnSize;
 	private final int decimalDigits;
@@ -50,11 +50,11 @@ final class MetaDataColumn {
 	private final boolean autoIncrement;
 	private final boolean generated;
 
-	private MetaDataColumn(String columnName, int dataType, String typeName, Class<?> columnClass, int position, int columnSize,
+	private MetaDataColumn(String name, int dataType, String typeName, Class<?> type, int position, int columnSize,
 												 int decimalDigits, int nullable, String defaultValue, String comment,
 												 int primaryKeyIndex, boolean foreignKeyColumn, boolean autoIncrement, boolean generated) {
-		this.columnName = requireNonNull(columnName);
-		this.columnClass = requireNonNull(columnClass);
+		this.name = requireNonNull(name);
+		this.type = requireNonNull(type);
 		this.dataType = dataType;
 		this.typeName = typeName;
 		this.position = position;
@@ -69,8 +69,8 @@ final class MetaDataColumn {
 		this.generated = generated;
 	}
 
-	String columnName() {
-		return columnName;
+	String name() {
+		return name;
 	}
 
 	int dataType() {
@@ -97,8 +97,8 @@ final class MetaDataColumn {
 		return foreignKeyColumn;
 	}
 
-	Class<?> columnClass() {
-		return columnClass;
+	Class<?> type() {
+		return type;
 	}
 
 	String defaultValue() {
@@ -131,7 +131,7 @@ final class MetaDataColumn {
 
 	@Override
 	public String toString() {
-		return columnName;
+		return name();
 	}
 
 	@Override
@@ -144,12 +144,12 @@ final class MetaDataColumn {
 		}
 		MetaDataColumn column = (MetaDataColumn) object;
 
-		return columnName.equals(column.columnName);
+		return name.equals(column.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return columnName.hashCode();
+		return name.hashCode();
 	}
 
 	static final class ColumnPacker implements ResultPacker<MetaDataColumn> {
@@ -171,11 +171,11 @@ final class MetaDataColumn {
 			if (resultSet.wasNull()) {
 				decimalDigits = -1;
 			}
-			Class<?> columnClass = columnClass(dataType, decimalDigits);
+			Class<?> columnType = columnType(dataType, decimalDigits);
 			String columnName = resultSet.getString("COLUMN_NAME");
 			String typeName = resultSet.getString("TYPE_NAME");
 			try {
-				return new MetaDataColumn(columnName, dataType, typeName, columnClass,
+				return new MetaDataColumn(columnName, dataType, typeName, columnType,
 								resultSet.getInt("ORDINAL_POSITION"),
 								resultSet.getInt("COLUMN_SIZE"), decimalDigits,
 								resultSet.getInt("NULLABLE"),
@@ -205,7 +205,7 @@ final class MetaDataColumn {
 							.anyMatch(foreignKeyColumn -> foreignKeyColumn.fkColumnName().equals(columnName));
 		}
 
-		private static Class<?> columnClass(int sqlType, int decimalDigits) {
+		private static Class<?> columnType(int sqlType, int decimalDigits) {
 			switch (sqlType) {
 				case Types.BIGINT:
 					return Long.class;
