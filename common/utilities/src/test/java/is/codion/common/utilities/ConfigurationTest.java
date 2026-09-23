@@ -22,11 +22,30 @@ import is.codion.common.utilities.property.PropertyStore;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.common.utilities.Configuration.loadFromClasspath;
-import static is.codion.common.utilities.Configuration.loadFromFile;
+import static is.codion.common.utilities.Configuration.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ConfigurationTest {
+
+	@Test
+	void unspecified() {
+		String file = System.getProperty(CONFIGURATION_FILE);
+		String required = System.getProperty(CONFIGURATION_FILE_REQUIRED);
+		try {
+			System.clearProperty(CONFIGURATION_FILE);
+			System.clearProperty(CONFIGURATION_FILE_REQUIRED);
+			// no default file, hence nothing loaded
+			assertFalse(loadConfiguration().containsProperty("test.property"));
+			System.setProperty(CONFIGURATION_FILE_REQUIRED, "true");
+			assertThrows(IllegalStateException.class, Configuration::loadConfiguration);
+			System.setProperty(CONFIGURATION_FILE, "classpath:config_test.config");
+			assertTrue(loadConfiguration().containsProperty("test.property"));
+		}
+		finally {
+			restore(CONFIGURATION_FILE, file);
+			restore(CONFIGURATION_FILE_REQUIRED, required);
+		}
+	}
 
 	@Test
 	void classpath() {
@@ -68,5 +87,14 @@ public final class ConfigurationTest {
 						loadFromFile("src/test/resources/is/codion/common/utilities/item/item_config_test_non_existing.config", true));
 		assertThrows(RuntimeException.class, () ->
 						loadFromFile("src/test/resources/config_test_non_existing.config", true));
+	}
+
+	private static void restore(String key, String value) {
+		if (value == null) {
+			System.clearProperty(key);
+		}
+		else {
+			System.setProperty(key, value);
+		}
 	}
 }

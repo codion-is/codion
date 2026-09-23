@@ -26,7 +26,6 @@ import org.jspecify.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -39,11 +38,12 @@ import static java.util.Collections.emptyList;
 /**
  * A utility class for central configuration values.
  * <p>
- * Parses a property file on class load, specified by the {@link #CONFIGURATION_FILE} system property.
+ * Parses a property file on class load, if one is specified via the {@link #CONFIGURATION_FILE} system property.
  * System properties set on the command line ({@code -D}) take precedence over values from the configuration file.
  * <p>
  * Note that if {@link #CONFIGURATION_FILE_REQUIRED} is true and the file referenced by {@link #CONFIGURATION_FILE}
- * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.
+ * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded,
+ * an {@link IllegalStateException} in case no file is specified.
  * @see #CONFIGURATION_FILE_REQUIRED
  */
 public final class Configuration {
@@ -56,7 +56,7 @@ public final class Configuration {
 	 * (not in subdirectories) to ensure accessibility across module boundaries.
 	 * <ul>
 	 * <li>Value type: String
-	 * <li>Default value: ~/codion.config
+	 * <li>Default value: none
 	 * </ul>
 	 */
 	public static final String CONFIGURATION_FILE = "codion.configurationFile";
@@ -64,7 +64,8 @@ public final class Configuration {
 	/**
 	 * Specifies whether the application requires a configuration file to run.<br>
 	 * If this is set to true and the file referenced by {@link #CONFIGURATION_FILE}<br>
-	 * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.
+	 * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded,
+	 * an {@link IllegalStateException} in case no file is specified.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
@@ -269,10 +270,17 @@ public final class Configuration {
 		return STORE.value(key, decoder, Objects::toString, defaultValue);
 	}
 
-	private static PropertyStore loadConfiguration() {
+	static PropertyStore loadConfiguration() {
 		boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
-		String configurationFilePath = System.getProperty(CONFIGURATION_FILE,
-						System.getProperty("user.home") + FileSystems.getDefault().getSeparator() + "codion.config");
+		String configurationFilePath = System.getProperty(CONFIGURATION_FILE);
+		if (configurationFilePath == null) {
+			if (configurationFileRequired) {
+				throw new IllegalStateException("No configuration file specified via " + CONFIGURATION_FILE +
+								" while " + CONFIGURATION_FILE_REQUIRED + " is true");
+			}
+
+			return PropertyStore.propertyStore();
+		}
 
 		// Validate configuration file path for security
 		validateConfigurationPath(configurationFilePath);
@@ -335,8 +343,8 @@ public final class Configuration {
 	 * @throws SecurityException if the path is potentially dangerous
 	 */
 	private static void validateConfigurationPath(String filePath) {
-		if (filePath == null || filePath.trim().isEmpty()) {
-			throw new SecurityException("Configuration file path cannot be null or empty");
+		if (filePath.trim().isEmpty()) {
+			throw new SecurityException("Configuration file path cannot be empty");
 		}
 
 		// Normalize path for consistent validation
