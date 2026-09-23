@@ -38,8 +38,8 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 
 	private final Attribute<T> attribute;
 
-	DefaultColumn(String name, Class<T> valueClass, EntityType entityType) {
-		this.attribute = new DefaultAttribute<>(name, valueClass, entityType);
+	DefaultColumn(String name, Class<T> type, EntityType entityType) {
+		this.attribute = new DefaultAttribute<>(name, type, entityType);
 	}
 
 	@Override

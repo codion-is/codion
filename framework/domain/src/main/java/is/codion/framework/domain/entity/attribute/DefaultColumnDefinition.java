@@ -279,7 +279,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		DefaultColumnDefinitionBuilder(Column<T> column, int keyIndex) {
 			super(column, keyIndex < 0);
 			this.keyIndex = keyIndex;
-			this.type = sqlType(column.type().valueClass());
+			this.type = sqlType(column.type().get());
 			this.withDefault = false;
 			this.insertable = true;
 			this.updatable = keyIndex < 0;
@@ -419,10 +419,10 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		// A column-specific getter for the raw column value, or null to resolve the default getter for the SQL type
-		// from the Database at read time. Types.OTHER reads via getObject(index, valueClass), which needs the value class.
+		// from the Database at read time. Types.OTHER reads via getObject(index, type), which needs the value type class.
 		private static <T> @Nullable GetValue<T> getter(int columnType, Column<T> column) {
 			if (columnType == Types.OTHER) {
-				return (GetValue<T>) new GetObject(column.type().valueClass());
+				return (GetValue<T>) new GetObject(column.type().get());
 			}
 
 			return null;
@@ -470,15 +470,15 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	private static final class GetObject implements GetValue<Object> {
 
-		private final Class<?> valueClass;
+		private final Class<?> type;
 
-		private GetObject(Class<?> valueClass) {
-			this.valueClass = valueClass;
+		private GetObject(Class<?> type) {
+			this.type = type;
 		}
 
 		@Override
 		public @Nullable Object get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getObject(index, valueClass);
+			return resultSet.getObject(index, type);
 		}
 	}
 }

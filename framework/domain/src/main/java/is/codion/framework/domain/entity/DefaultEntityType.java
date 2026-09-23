@@ -90,8 +90,8 @@ final class DefaultEntityType implements EntityType, Serializable {
 	}
 
 	@Override
-	public <T> Attribute<T> attribute(String name, Class<T> valueClass) {
-		return Attribute.attribute(this, name, valueClass);
+	public <T> Attribute<T> attribute(String name, Class<T> type) {
+		return Attribute.attribute(this, name, type);
 	}
 
 	@Override
@@ -175,8 +175,8 @@ final class DefaultEntityType implements EntityType, Serializable {
 	}
 
 	@Override
-	public <T> Column<T> column(String name, Class<T> valueClass) {
-		return Column.column(this, name, valueClass);
+	public <T> Column<T> column(String name, Class<T> type) {
+		return Column.column(this, name, type);
 	}
 
 	@Override

@@ -152,7 +152,7 @@ public final class EntityComponents {
 			return (ComponentValueBuilder<C, T, B>) fileByteArrayInput((Attribute<byte[]>) attribute);
 		}
 
-		throw new IllegalArgumentException(ATTRIBUTE + " " + attribute + " (type: " + type.valueClass() + ") not supported");
+		throw new IllegalArgumentException(ATTRIBUTE + " " + attribute + " (type: " + type.get() + ") not supported");
 	}
 
 	/**
@@ -352,7 +352,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return Components.temporalInput()
-						.type(attribute.type().valueClass())
+						.type(attribute.type().get())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(() -> dateTimePatternMissing(attributeDefinition)))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar().large());
@@ -402,7 +402,7 @@ public final class EntityComponents {
 
 		if (itemBased(attributeDefinition)) {
 			return (TextFieldBuilder<C, T, B>) Components.textField()
-							.type(attribute.type().valueClass())
+							.type(attribute.type().get())
 							.format(new ItemReadOnlyFormat(attributeDefinition))
 							.toolTipText(attributeDefinition.description().orElse(null))
 							.editable(false)
@@ -416,13 +416,13 @@ public final class EntityComponents {
 		}
 		if (attribute.type().isNumeric()) {
 			return (TextFieldBuilder<C, T, B>) NumberField.builder()
-							.type((Class<Number>) attribute.type().valueClass())
+							.type((Class<Number>) attribute.type().get())
 							.format(attributeDefinition.format().orElse(null))
 							.toolTipText(attributeDefinition.description().orElse(null));
 		}
 
 		return (TextFieldBuilder<C, T, B>) Components.textField()
-						.type(attribute.type().valueClass())
+						.type(attribute.type().get())
 						.format(attributeDefinition.format().orElse(null))
 						.maximumLength(maximumLength(attributeDefinition))
 						.toolTipText(attributeDefinition.description().orElse(null));
@@ -438,7 +438,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return Components.temporalField()
-						.type(attributeDefinition.attribute().type().valueClass())
+						.type(attributeDefinition.attribute().type().get())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(() -> dateTimePatternMissing(attributeDefinition)))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar().large());
@@ -700,7 +700,7 @@ public final class EntityComponents {
 
 	private static <T> SwingFilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
 		return SwingFilterComboBoxModel.builder()
-						.items(asList(attribute.type().valueClass().getEnumConstants()))
+						.items(asList(attribute.type().get().getEnumConstants()))
 						.includeNull(nullable)
 						.build();
 	}

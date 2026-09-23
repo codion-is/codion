@@ -53,12 +53,12 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 	private final DefaultDataType<T> type;
 	private final int hashCode;
 
-	DefaultAttribute(String name, Class<T> valueClass, EntityType entityType) {
+	DefaultAttribute(String name, Class<T> type, EntityType entityType) {
 		if (nullOrEmpty(name)) {
 			throw new IllegalArgumentException("name must be a non-empty string");
 		}
 		this.name = name;
-		this.type = new DefaultDataType<>(requireNonNull(entityType), requireNonNull(valueClass));
+		this.type = new DefaultDataType<>(requireNonNull(entityType), requireNonNull(type));
 		this.hashCode = Objects.hash(name, entityType);
 	}
 
@@ -116,22 +116,22 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		private static final long serialVersionUID = 1;
 
 		private final EntityType entityType;
-		private final Class<T> valueClass;
+		private final Class<T> type;
 
-		private DefaultDataType(EntityType entityType, Class<T> valueClass) {
+		private DefaultDataType(EntityType entityType, Class<T> type) {
 			this.entityType = entityType;
-			this.valueClass = valueClass;
+			this.type = type;
 		}
 
 		@Override
-		public Class<T> valueClass() {
-			return valueClass;
+		public Class<T> get() {
+			return type;
 		}
 
 		@Override
 		public @Nullable T validate(@Nullable T value) {
-			if (value != null && valueClass != value.getClass() && !valueClass.isAssignableFrom(value.getClass())) {
-				throw new IllegalArgumentException("Value of type " + valueClass +
+			if (value != null && type != value.getClass() && !type.isAssignableFrom(value.getClass())) {
+				throw new IllegalArgumentException("Value of type " + type +
 								" expected for attribute " + DefaultAttribute.this + ", got: " + value.getClass());
 			}
 
@@ -140,12 +140,12 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
 		@Override
 		public boolean isNumeric() {
-			return Number.class.isAssignableFrom(valueClass);
+			return Number.class.isAssignableFrom(type);
 		}
 
 		@Override
 		public boolean isTemporal() {
-			return Temporal.class.isAssignableFrom(valueClass);
+			return Temporal.class.isAssignableFrom(type);
 		}
 
 		@Override
@@ -225,7 +225,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
 		@Override
 		public boolean isEnum() {
-			return valueClass.isEnum();
+			return type.isEnum();
 		}
 
 		@Override
@@ -233,8 +233,8 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 			return isType(Entity.class);
 		}
 
-		private boolean isType(Class<?> valueClass) {
-			return this.valueClass.equals(valueClass);
+		private boolean isType(Class<?> type) {
+			return this.type.equals(type);
 		}
 	}
 

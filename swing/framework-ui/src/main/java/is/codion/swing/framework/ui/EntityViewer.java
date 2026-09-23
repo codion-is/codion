@@ -126,7 +126,7 @@ final class EntityViewer {
 			@Override
 			public final String toString() {
 				return new StringBuilder(attributeDefinition.toString())
-								.append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
+								.append(" [").append(attributeDefinition.attribute().type().get().getSimpleName())
 								.append(attributeDefinition.derived() ? "*" : "").append("]: ")
 								.append(createValueString(entity, attributeDefinition, true)).toString();
 			}

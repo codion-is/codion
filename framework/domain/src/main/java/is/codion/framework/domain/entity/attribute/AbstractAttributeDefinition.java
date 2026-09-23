@@ -287,7 +287,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		if (attribute.type().isString() && LEXICAL_STRING_COMPARATOR.getOrThrow()) {
 			return (Comparator<T>) LEXICAL_COMPARATOR;
 		}
-		if (Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
+		if (Comparable.class.isAssignableFrom(attribute.type().get())) {
 			return (Comparator<T>) COMPARABLE_COMPARATOR;
 		}
 

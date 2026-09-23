@@ -565,7 +565,7 @@ public final class DomainSource {
 
 	private void addRecordField(Attribute<?> attribute, MethodSpec.Builder constructorBuilder) {
 		if (attribute instanceof Column<?>) {
-			constructorBuilder.addParameter(ParameterSpec.builder(((Column<?>) attribute).type().valueClass(),
+			constructorBuilder.addParameter(ParameterSpec.builder(((Column<?>) attribute).type().get(),
 							underscoreToCamelCase(attribute.name().toLowerCase(Locale.ROOT))).build());
 		}
 		else if (attribute instanceof ForeignKey) {
@@ -741,7 +741,7 @@ public final class DomainSource {
 		if (attribute instanceof Column) {
 			Column<?> column = (Column<?>) attribute;
 			FieldSpec.Builder columnBuilder = FieldSpec.builder(ParameterizedTypeName.get(Column.class,
-															column.type().valueClass()),
+															column.type().get()),
 											column.name().toUpperCase(Locale.ROOT))
 							.addModifiers(PUBLIC, STATIC, FINAL);
 			addInitializer(columnBuilder, column);
@@ -762,14 +762,14 @@ public final class DomainSource {
 
 	private static void addInitializer(FieldSpec.Builder columnBuilder,
 																		 Column<?> column) {
-		if (Object.class.equals(column.type().valueClass())) {
+		if (Object.class.equals(column.type().get())) {
 			//special handling for mapping unknown column data types to Object columns
 			columnBuilder.initializer("TYPE.column($S, $L)",
 							column.name().toLowerCase(Locale.ROOT), "Object.class");
 		}
 		else {
 			columnBuilder.initializer("TYPE.$LColumn($S)",
-							attributeTypePrefix(column.type().valueClass().getSimpleName()),
+							attributeTypePrefix(column.type().get().getSimpleName()),
 							column.name().toLowerCase(Locale.ROOT));
 		}
 	}
@@ -784,12 +784,12 @@ public final class DomainSource {
 						.collect(joining(", "));
 	}
 
-	private static String attributeTypePrefix(String valueClassName) {
-		if ("byte[]".equals(valueClassName)) {
+	private static String attributeTypePrefix(String typeName) {
+		if ("byte[]".equals(typeName)) {
 			return "byteArray";
 		}
 
-		return valueClassName.substring(0, 1).toLowerCase(Locale.ROOT) + valueClassName.substring(1);
+		return typeName.substring(0, 1).toLowerCase(Locale.ROOT) + typeName.substring(1);
 	}
 
 	// ========================================

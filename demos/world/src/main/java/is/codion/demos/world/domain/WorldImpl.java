@@ -91,7 +91,7 @@ public final class WorldImpl extends DomainModel {
 														.caption("Population")
 														.nullable(false)
 														.numberGrouping(true),
-										// tag::columnClass[]
+										// tag::converter[]
 										City.LOCATION.as()
 														.column()
 														.caption("Location")
@@ -100,7 +100,7 @@ public final class WorldImpl extends DomainModel {
 														// tag::attributeValidator[]
 														.validator(new LocationValidator()))
 						// end::attributeValidator[]
-						// end::columnClass[]
+						// end::converter[]
 						// tag::validator[]
 						.validator(new CityValidator())
 						// end::validator[]

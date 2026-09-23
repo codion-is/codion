@@ -51,7 +51,7 @@ public final class FilterTableModelDemo {
 
 	// tag::personColumns[]
 	// Implement TableColumns, which specifies the column identifiers,
-	// the column class and how to extract column values from row objects
+	// the column type and how to extract column values from row objects
 	public static final class PersonColumns implements TableColumns<Person, String> {
 
 		private static final List<String> COLUMNS = List.of(NAME, AGE);

@@ -905,7 +905,7 @@ public final class EditorComponents {
 		 */
 		public <T extends Enum<T>, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> enumComboBox(Column<T> column) {
 			return components.component(column).set((B) entityComponents.comboBox(column, SwingFilterComboBoxModel.builder()
-											.items(asList(column.type().valueClass().getEnumConstants()))
+											.items(asList(column.type().get().getEnumConstants()))
 											.includeNull(components.editor().entityDefinition().columns().definition(column).nullable())
 											.build()))
 							.onSetVisible(ComponentFactory::refreshIfCleared);

@@ -897,7 +897,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 			ProxyMethod<Object> nullItemToString = parameters -> FilterComboBoxModel.NULL_CAPTION.getOrThrow();
 
-			return column.type().valueClass().isInterface() ? ProxyBuilder.of(column.type().valueClass())
+			return column.type().get().isInterface() ? ProxyBuilder.of(column.type().get())
 							.method("toString", (ProxyMethod<T>) nullItemToString)
 							.build() : null;
 		}

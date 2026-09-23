@@ -193,7 +193,7 @@ public class DefaultEntityFactory implements EntityFactory {
 			if (attribute.type().isEnum()) {
 				return randomEnum(attribute);
 			}
-			if (attribute.type().valueClass().equals(UUID.class)) {
+			if (attribute.type().get().equals(UUID.class)) {
 				return (T) UUID.randomUUID();
 			}
 
@@ -260,7 +260,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	}
 
 	private static <T> T randomEnum(Attribute<?> attribute) {
-		Object[] enumConstants = attribute.type().valueClass().getEnumConstants();
+		Object[] enumConstants = attribute.type().get().getEnumConstants();
 
 		return (T) enumConstants[RANDOM.nextInt(enumConstants.length)];
 	}
