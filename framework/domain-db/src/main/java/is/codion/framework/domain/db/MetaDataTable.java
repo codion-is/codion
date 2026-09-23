@@ -53,7 +53,7 @@ final class MetaDataTable {
 		this.tableType = requireNonNull(tableType);
 		this.comment = comment == null ? null : comment.trim().replace("\"", "\\\"");
 		this.foreignKeyColumns = requireNonNull(foreignKeyColumns);
-		requireNonNull(columns).forEach(column -> this.columns.put(column.columnName(), column));
+		requireNonNull(columns).forEach(column -> this.columns.put(column.name(), column));
 	}
 
 	String tableName() {

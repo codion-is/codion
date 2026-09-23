@@ -157,7 +157,7 @@ public final class SchemaDomain extends DomainModel {
 		List<AttributeDefinition.Builder<?, ?>> auditColumnBuilders = new ArrayList<>();
 		table.columns().forEach(column -> {
 			ColumnDefinition.Builder<?, ?> columnDefinitionBuilder = columnDefinitionBuilder(column, entityType);
-			if (settings.auditColumnNames().contains(column.columnName().toLowerCase(Locale.ROOT))) {
+			if (settings.auditColumnNames().contains(column.name().toLowerCase(Locale.ROOT))) {
 				columnDefinitionBuilder.readOnly(true);
 				if (settings.hideAuditColumns()) {
 					columnDefinitionBuilder.hidden(true);
@@ -200,7 +200,7 @@ public final class SchemaDomain extends DomainModel {
 	}
 
 	private ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
-		String caption = caption(metadataColumn.columnName());
+		String caption = caption(metadataColumn.name());
 		Column<?> column = column(entityType, metadataColumn);
 		ColumnDefinition.Builder<?, ?> builder;
 		if (metadataColumn.primaryKeyColumn()) {
@@ -233,7 +233,7 @@ public final class SchemaDomain extends DomainModel {
 
 	private <T> Column<T> column(EntityType entityType, MetaDataColumn column) {
 		return (Column<T>) entityType.column(settings.lowerCaseIdentifiers() ?
-						column.columnName().toLowerCase(Locale.ROOT) : column.columnName(), column.columnClass());
+						column.name().toLowerCase(Locale.ROOT) : column.name(), column.type());
 	}
 
 	private static String caption(String name) {
@@ -251,7 +251,7 @@ public final class SchemaDomain extends DomainModel {
 
 	private String createForeignKeyName(MetaDataForeignKeyConstraint foreignKeyConstraint) {
 		return foreignKeyConstraint.references().keySet().stream()
-						.map(MetaDataColumn::columnName)
+						.map(MetaDataColumn::name)
 						.map(String::toUpperCase)
 						.map(this::removePrimaryKeyColumnSuffix)
 						.collect(joining("_"));
