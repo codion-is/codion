@@ -49,7 +49,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	 * <li>Default value: 0
 	 * </ul>
 	 */
-	PropertyValue<Integer> TABLE_CELL_LEFT_PADDING =
+	PropertyValue<Integer> CELL_LEFT_PADDING =
 					integerValue(FilterTableCellRenderer.class.getName() + ".cellLeftPadding", 0);
 
 	/**
@@ -59,7 +59,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	 * <li>Default value: 5
 	 * </ul>
 	 */
-	PropertyValue<Integer> TABLE_CELL_RIGHT_PADDING =
+	PropertyValue<Integer> CELL_RIGHT_PADDING =
 					integerValue(FilterTableCellRenderer.class.getName() + ".cellRightPadding", 5);
 
 	/**

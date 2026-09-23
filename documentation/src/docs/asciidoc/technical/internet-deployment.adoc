@@ -219,9 +219,9 @@ spoof the host recorded against its connection.
 request every row of your largest table. The available bounds are below the framework:
 
 * A database statement timeout.
-* `codion.db.pool.maximumPoolSize` — caps concurrent database work.
-* `codion.server.connectionLimit` — caps concurrent clients.
-* `codion.server.idleConnectionTimeout` — reaps abandoned connections.
+* `codion.db.pool.maximumSize` — caps concurrent database work.
+* `codion.server.connection.limit` — caps concurrent clients.
+* `codion.server.connection.idleTimeout` — reaps abandoned connections.
 
 === 7. Harden the client
 

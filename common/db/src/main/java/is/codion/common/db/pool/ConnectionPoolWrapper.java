@@ -38,10 +38,10 @@ public interface ConnectionPoolWrapper {
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 8
-	 * <li>Property name: codion.db.pool.maximumPoolSize
+	 * <li>Property name: codion.db.pool.maximumSize
 	 * </ul>
 	 */
-	PropertyValue<Integer> MAXIMUM_POOL_SIZE = integerValue("codion.db.pool.maximumPoolSize", 8);
+	PropertyValue<Integer> MAXIMUM_POOL_SIZE = integerValue("codion.db.pool.maximumSize", 8);
 
 	/**
 	 * Specifies the default minimum connection pool size.
@@ -50,10 +50,10 @@ public interface ConnectionPoolWrapper {
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 4
-	 * <li>Property name: codion.db.pool.minimumPoolSize
+	 * <li>Property name: codion.db.pool.minimumSize
 	 * </ul>
 	 */
-	PropertyValue<Integer> MINIMUM_POOL_SIZE = integerValue("codion.db.pool.minimumPoolSize", 4);
+	PropertyValue<Integer> MINIMUM_POOL_SIZE = integerValue("codion.db.pool.minimumSize", 4);
 
 	/**
 	 * Specifies the default idle timeout in milliseconds.

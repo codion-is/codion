@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.indicator;
 
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -50,7 +49,7 @@ public final class UnderlineModifiedIndicator implements ModifiedIndicator {
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> UNDERLINE_STYLE =
-					integerValue(ComponentBuilder.class.getName() + ".underlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
+					integerValue(UnderlineModifiedIndicator.class.getName() + ".underlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
 	@Override
 	public void enable(JComponent component, ObservableState modified) {

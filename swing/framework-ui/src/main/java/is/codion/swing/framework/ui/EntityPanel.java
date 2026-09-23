@@ -1454,7 +1454,7 @@ public class EntityPanel extends JPanel {
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
-						stringValue(EntityPanel.class.getName() + ".controlToolBarConstraints", BorderLayout.WEST);
+						stringValue(EntityPanel.class.getName() + ".controlToolbarConstraints", BorderLayout.WEST);
 
 		/**
 		 * Specifies where the edit panel should be placed in a BorderLayout

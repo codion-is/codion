@@ -186,7 +186,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> USE_VIRTUAL_THREADS =
-					booleanValue("codion.server.http.useVirtualThreads", false);
+					booleanValue("codion.server.http.virtualThreads", false);
 
 	/**
 	 * Specifies whether java serialization based services should be enabled.

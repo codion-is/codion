@@ -44,7 +44,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	 * <li>Default value: -1
 	 * </ul>
 	 */
-	PropertyValue<Integer> CONNECTION_LIMIT = integerValue("codion.server.connectionLimit", -1);
+	PropertyValue<Integer> CONNECTION_LIMIT = integerValue("codion.server.connection.limit", -1);
 
 	/**
 	 * Specifies the class name of the connection pool factory to use.
@@ -54,7 +54,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	 * </ul>
 	 * @see ConnectionPoolFactory
 	 */
-	PropertyValue<String> CONNECTION_POOL_FACTORY = stringValue("codion.server.pooling.poolFactory");
+	PropertyValue<String> CONNECTION_POOL_FACTORY = stringValue("codion.server.pool.factory");
 
 	/**
 	 * Specifies the default client connection timeout (ms) in a comma separated list.
@@ -64,7 +64,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	 * <li>Default value: none
 	 * </ul>
 	 */
-	PropertyValue<String> CLIENT_CONNECTION_TIMEOUT = stringValue("codion.server.clientConnectionTimeout");
+	PropertyValue<String> CLIENT_CONNECTION_TIMEOUT = stringValue("codion.server.connection.clientTimeouts");
 
 	/**
 	 * The initial connection method tracing status on the server, either true (on) or false (off)
@@ -91,7 +91,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	 * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
 	 * Example: scott:tiger,john:foo,paul:bar
 	 */
-	PropertyValue<String> CONNECTION_POOL_USERS = stringValue("codion.server.connectionPoolUsers");
+	PropertyValue<String> CONNECTION_POOL_USERS = stringValue("codion.server.pool.users");
 
 	/**
 	 * Specifies a comma separated list of domain model class names, these classes must be

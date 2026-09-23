@@ -455,8 +455,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private final Collection<Customizer<R, C>> customizers = new ArrayList<>();
 
-		private int leftPadding = TABLE_CELL_LEFT_PADDING.getOrThrow();
-		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
+		private int leftPadding = CELL_LEFT_PADDING.getOrThrow();
+		private int rightPadding = CELL_RIGHT_PADDING.getOrThrow();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
 		private boolean filterIndicator = true;
 		private boolean focusedCellIndicator = FOCUSED_CELL_INDICATOR.getOrThrow();
