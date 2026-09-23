@@ -457,7 +457,7 @@ public final class ApplicationPanel extends JPanel {
 		findLookAndFeel(Dracula.class)
 						.ifPresent(LookAndFeelEnabler::enable);
 
-		ValidationIndicator.INDICATOR_CLASS.set(FlatValidationIndicator.class.getName());
+		ValidationIndicator.IMPLEMENTATION.set(FlatValidationIndicator.class.getName());
 
 		ApplicationModel applicationModel = new ApplicationModel();
 

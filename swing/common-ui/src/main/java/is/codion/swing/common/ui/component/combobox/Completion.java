@@ -74,7 +74,7 @@ public final class Completion {
 	 * <li>Default value: {@link Completion.Mode#MAXIMUM_MATCH}
 	 * </ul>
 	 */
-	public static final PropertyValue<Mode> COMPLETION_MODE =
+	public static final PropertyValue<Mode> MODE =
 					enumValue(Completion.class.getName() + ".mode", Mode.class, Mode.MAXIMUM_MATCH);
 
 	/**
@@ -121,7 +121,7 @@ public final class Completion {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private Mode mode = COMPLETION_MODE.getOrThrow();
+		private Mode mode = MODE.getOrThrow();
 		private boolean normalize = NORMALIZE.getOrThrow();
 
 		@Override

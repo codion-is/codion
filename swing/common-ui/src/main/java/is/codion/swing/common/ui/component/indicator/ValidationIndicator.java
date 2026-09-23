@@ -42,7 +42,7 @@ public interface ValidationIndicator {
 	 * Specified the {@link ValidationIndicator} to use.
 	 * <p>Default {@link BackgroundColorValidationIndicator}
 	 */
-	PropertyValue<String> INDICATOR_CLASS =
+	PropertyValue<String> IMPLEMENTATION =
 					stringValue(ValidationIndicator.class.getName() + ".implementation", BackgroundColorValidationIndicator.class.getName());
 
 	/**
@@ -55,11 +55,11 @@ public interface ValidationIndicator {
 	void enable(JComponent component, ObservableState invalid, ObservableState warned);
 
 	/**
-	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #INDICATOR_CLASS}
+	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #IMPLEMENTATION}
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
 	static Optional<ValidationIndicator> instance() {
-		return instance(INDICATOR_CLASS.getOrThrow());
+		return instance(IMPLEMENTATION.getOrThrow());
 	}
 
 	/**
