@@ -50,7 +50,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	private @Nullable Comparator<Item<T>> comparator;
 	private boolean sorted = false;
 	private boolean nullable;
-	private Completion.Mode completionMode = Completion.COMPLETION_MODE.getOrThrow();
+	private Completion.Mode completionMode = Completion.MODE.getOrThrow();
 	private boolean normalize = true;
 	private boolean mouseWheelScrolling = ComboBoxBuilder.MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingWithWrapAround = false;

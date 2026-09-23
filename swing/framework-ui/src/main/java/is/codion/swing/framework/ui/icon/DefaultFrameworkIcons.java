@@ -218,7 +218,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	}
 
 	private static FrameworkIcons createInstance() {
-		String iconsClassName = FRAMEWORK_ICONS.getOrThrow();
+		String iconsClassName = IMPLEMENTATION.getOrThrow();
 		try {
 			return stream(ServiceLoader.load(FrameworkIcons.class).spliterator(), false)
 							.filter(icons -> icons.getClass().getName().equals(iconsClassName))

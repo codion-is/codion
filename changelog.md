@@ -21,8 +21,11 @@ Codion Change Log
 - NumberField, numberClass() renamed type().
 - UnderlineModifiedIndicator.UNDERLINE_STYLE configuration property now keyed on UnderlineModifiedIndicator instead of ComponentBuilder.
 - FilterTableCellRenderer.TABLE_CELL_LEFT_PADDING and TABLE_CELL_RIGHT_PADDING renamed CELL_LEFT_PADDING and CELL_RIGHT_PADDING.
+- Completion.COMPLETION_MODE renamed MODE.
+- ValidationIndicator.INDICATOR_CLASS and ModifiedIndicator.INDICATOR_CLASS renamed IMPLEMENTATION.
 ### is.codion.swing.framework.ui
 - EntityPanel.CONTROL_TOOLBAR_CONSTRAINTS configuration property key now controlToolbarConstraints.
+- FrameworkIcons.FRAMEWORK_ICONS renamed IMPLEMENTATION.
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.converter() columnClass parameter renamed columnType.
 - Attribute.DataType.valueClass() renamed get().

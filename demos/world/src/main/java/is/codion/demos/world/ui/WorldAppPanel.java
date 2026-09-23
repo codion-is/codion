@@ -82,7 +82,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 		Locale.setDefault(new Locale("en", "EN"));
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-		ValidationIndicator.INDICATOR_CLASS.set(FlatValidationIndicator.class.getName());
+		ValidationIndicator.IMPLEMENTATION.set(FlatValidationIndicator.class.getName());
 		ReferentialIntegrityErrorHandling.HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		FlatLookAndFeelThemes.addAll();

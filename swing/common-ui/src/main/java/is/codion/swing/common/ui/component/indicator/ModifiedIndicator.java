@@ -40,7 +40,7 @@ public interface ModifiedIndicator {
 	 * @see SwapColorsModifiedIndicator
 	 * @see UnderlineModifiedIndicator
 	 */
-	PropertyValue<String> INDICATOR_CLASS =
+	PropertyValue<String> IMPLEMENTATION =
 					stringValue(ModifiedIndicator.class.getName() + ".implementation", UnderlineModifiedIndicator.class.getName());
 
 	/**
@@ -51,11 +51,11 @@ public interface ModifiedIndicator {
 	void enable(JComponent component, ObservableState modified);
 
 	/**
-	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #INDICATOR_CLASS}
+	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #IMPLEMENTATION}
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
 	static Optional<ModifiedIndicator> instance() {
-		return instance(INDICATOR_CLASS.getOrThrow());
+		return instance(IMPLEMENTATION.getOrThrow());
 	}
 
 	/**

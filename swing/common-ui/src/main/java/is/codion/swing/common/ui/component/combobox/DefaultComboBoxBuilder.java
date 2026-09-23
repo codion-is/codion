@@ -50,7 +50,7 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 	private final List<ItemListener> itemListeners = new ArrayList<>();
 
 	private boolean editable = false;
-	private Completion.Mode completionMode = Completion.COMPLETION_MODE.getOrThrow();
+	private Completion.Mode completionMode = Completion.MODE.getOrThrow();
 	private boolean normalize = true;
 	private @Nullable ListCellRenderer<T> renderer;
 	private @Nullable ComboBoxEditor editor;
