@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.88
+### is.codion.common.utilities
+- Configuration, the default configuration file (~/codion.config) removed, no configuration file loaded unless specified.
 ### is.codion.common.model
 - FilterTableModel.TableColumns.columnClass() renamed type().
 - ConditionModel.valueClass() renamed type().
