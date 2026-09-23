@@ -4,6 +4,12 @@ Codion Change Log
 ## 0.18.88
 ### is.codion.common.utilities
 - Configuration, the default configuration file (~/codion.config) removed, no configuration file loaded unless specified.
+- Configuration property codion.configurationFile renamed codion.config.file, codion.configurationFileRequired renamed codion.config.fileRequired.
+### is.codion.common.db
+- Configuration property codion.db.pool.minimumPoolSize renamed codion.db.pool.minimumSize, codion.db.pool.maximumPoolSize renamed codion.db.pool.maximumSize.
+- Configuration property codion.report.cacheReports renamed codion.report.cache.
+### is.codion.common.rmi
+- Configuration property codion.server.connectionMaintenanceInterval renamed codion.server.connection.maintenanceInterval, codion.server.idleConnectionTimeout renamed codion.server.connection.idleTimeout.
 ### is.codion.common.model
 - FilterTableModel.TableColumns.columnClass() renamed type().
 - ConditionModel.valueClass() renamed type().
@@ -13,11 +19,22 @@ Codion Change Log
 - TemporalField, temporalClass() renamed type().
 - NumberSpinnerBuilder, numberClass() renamed type().
 - NumberField, numberClass() renamed type().
+- UnderlineModifiedIndicator.UNDERLINE_STYLE configuration property now keyed on UnderlineModifiedIndicator instead of ComponentBuilder.
+- FilterTableCellRenderer.TABLE_CELL_LEFT_PADDING and TABLE_CELL_RIGHT_PADDING renamed CELL_LEFT_PADDING and CELL_RIGHT_PADDING.
+### is.codion.swing.framework.ui
+- EntityPanel.CONTROL_TOOLBAR_CONSTRAINTS configuration property key now controlToolbarConstraints.
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.converter() columnClass parameter renamed columnType.
 - Attribute.DataType.valueClass() renamed get().
 ### is.codion.framework.domain.db
 - MetaDataColumn.columnClass() and columnName() renamed type() and name().
+### is.codion.framework.db.local
+- Configuration property codion.db.tracing renamed codion.db.tracing.enabled.
+### is.codion.framework.servlet
+- Configuration property codion.server.http.useVirtualThreads renamed codion.server.http.virtualThreads.
+### is.codion.framework.server
+- Configuration property codion.server.connectionLimit renamed codion.server.connection.limit, codion.server.clientConnectionTimeout renamed codion.server.connection.clientTimeouts.
+- Configuration property codion.server.pooling.poolFactory renamed codion.server.pool.factory, codion.server.connectionPoolUsers renamed codion.server.pool.users.
 
 ## 0.18.87
 ### is.codion.common.db

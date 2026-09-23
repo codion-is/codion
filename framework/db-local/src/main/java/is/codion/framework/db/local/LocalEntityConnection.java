@@ -56,7 +56,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * </ul>
 	 * @see #builder()
 	 */
-	PropertyValue<Boolean> TRACING = booleanValue("codion.db.tracing", false);
+	PropertyValue<Boolean> TRACING = booleanValue("codion.db.tracing.enabled", false);
 
 	/**
 	 * Specifies the number of log traces to keep while tracing is enabled.

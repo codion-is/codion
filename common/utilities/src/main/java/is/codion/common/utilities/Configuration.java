@@ -59,7 +59,7 @@ public final class Configuration {
 	 * <li>Default value: none
 	 * </ul>
 	 */
-	public static final String CONFIGURATION_FILE = "codion.configurationFile";
+	public static final String CONFIGURATION_FILE = "codion.config.file";
 
 	/**
 	 * Specifies whether the application requires a configuration file to run.<br>
@@ -71,7 +71,7 @@ public final class Configuration {
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	public static final String CONFIGURATION_FILE_REQUIRED = "codion.configurationFileRequired";
+	public static final String CONFIGURATION_FILE_REQUIRED = "codion.config.fileRequired";
 
 	private static final String CLASSPATH_PREFIX = "classpath:";
 

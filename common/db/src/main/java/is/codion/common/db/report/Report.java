@@ -52,7 +52,7 @@ public interface Report<T, P, R> {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> CACHE_REPORTS = booleanValue("codion.report.cacheReports", true);
+	PropertyValue<Boolean> CACHE_REPORTS = booleanValue("codion.report.cache", true);
 
 	/**
 	 * Loads and fills the report using the given database connection

@@ -179,7 +179,7 @@ public interface ServerConfiguration {
 	 * <li>Default value: 120_000ms (2 minutes)
 	 * </ul>
 	 */
-	PropertyValue<Integer> IDLE_CONNECTION_TIMEOUT = integerValue("codion.server.idleConnectionTimeout", DEFAULT_IDLE_CONNECTION_TIMEOUT);
+	PropertyValue<Integer> IDLE_CONNECTION_TIMEOUT = integerValue("codion.server.connection.idleTimeout", DEFAULT_IDLE_CONNECTION_TIMEOUT);
 
 	/**
 	 * A comma separated list of auxiliary server factories, providing servers to run alongside this Server<br>
@@ -220,7 +220,7 @@ public interface ServerConfiguration {
 	 * <li>Default value: 30_000ms (30 seconds)
 	 * </ul>
 	 */
-	PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL = integerValue("codion.server.connectionMaintenanceInterval", DEFAULT_CONNECTION_MAINTENANCE_INTERVAL);
+	PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL = integerValue("codion.server.connection.maintenanceInterval", DEFAULT_CONNECTION_MAINTENANCE_INTERVAL);
 
 	/**
 	 * Specifies whether the server supplies its system properties via {@link ServerAdmin#systemProperties()}.
