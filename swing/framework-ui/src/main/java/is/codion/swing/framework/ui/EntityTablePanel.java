@@ -1480,7 +1480,7 @@ public class EntityTablePanel extends JPanel {
 			Attribute<?> attribute = conditionEntry.getKey();
 			if (table.columns().contains(attribute)) {
 				ConditionComponents components = configuration.conditionComponents.getOrDefault(attribute, defaultComponents);
-				if (components.supports(attribute.type().valueClass())) {
+				if (components.supports(attribute.type().get())) {
 					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, components));
 				}
 			}
@@ -2602,7 +2602,7 @@ public class EntityTablePanel extends JPanel {
 																													 Consumer<FilterTableCellRenderer.Builder<Entity, Attribute<?>, T>> renderer) {
 			AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 			requireNonNull(renderer);
-			tableBuilder.cellRenderer(attribute, attribute.type().valueClass(), builder -> {
+			tableBuilder.cellRenderer(attribute, attribute.type().get(), builder -> {
 				EntityTableCellRenderers.configure(attributeDefinition, builder);
 				renderer.accept(builder);
 			});

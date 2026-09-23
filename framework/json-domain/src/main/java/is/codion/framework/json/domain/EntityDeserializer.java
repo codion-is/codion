@@ -85,7 +85,7 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
 		for (Map.Entry<String, JsonNode> field : values.properties()) {
 			Attribute<?> attribute = attribute(definition, field.getKey());
 			if (attribute != null) {
-				valueMap.put(attribute, entityObjectMapper.convertValue(field.getValue(), attribute.type().valueClass()));
+				valueMap.put(attribute, entityObjectMapper.convertValue(field.getValue(), attribute.type().get()));
 			}
 		}
 

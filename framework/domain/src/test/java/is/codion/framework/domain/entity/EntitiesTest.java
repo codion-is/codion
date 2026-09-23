@@ -71,22 +71,22 @@ public final class EntitiesTest {
 			EntityDefinition definition = entities.definition(Detail.TYPE);
 
 			// Column types
-			assertEquals(Long.class, definition.columns().definition(Detail.ID).attribute().type().valueClass());
-			assertEquals(Short.class, definition.columns().definition(Detail.SHORT).attribute().type().valueClass());
-			assertEquals(Integer.class, definition.columns().definition(Detail.INT).attribute().type().valueClass());
-			assertEquals(Double.class, definition.columns().definition(Detail.DOUBLE).attribute().type().valueClass());
-			assertEquals(String.class, definition.columns().definition(Detail.STRING).attribute().type().valueClass());
-			assertEquals(LocalDate.class, definition.columns().definition(Detail.DATE).attribute().type().valueClass());
-			assertEquals(LocalDateTime.class, definition.columns().definition(Detail.TIMESTAMP).attribute().type().valueClass());
-			assertEquals(Boolean.class, definition.columns().definition(Detail.BOOLEAN).attribute().type().valueClass());
+			assertEquals(Long.class, definition.columns().definition(Detail.ID).attribute().type().get());
+			assertEquals(Short.class, definition.columns().definition(Detail.SHORT).attribute().type().get());
+			assertEquals(Integer.class, definition.columns().definition(Detail.INT).attribute().type().get());
+			assertEquals(Double.class, definition.columns().definition(Detail.DOUBLE).attribute().type().get());
+			assertEquals(String.class, definition.columns().definition(Detail.STRING).attribute().type().get());
+			assertEquals(LocalDate.class, definition.columns().definition(Detail.DATE).attribute().type().get());
+			assertEquals(LocalDateTime.class, definition.columns().definition(Detail.TIMESTAMP).attribute().type().get());
+			assertEquals(Boolean.class, definition.columns().definition(Detail.BOOLEAN).attribute().type().get());
 
 			// Foreign key types
-			assertEquals(Entity.class, definition.foreignKeys().definition(Detail.MASTER_FK).attribute().type().valueClass());
-			assertEquals(Long.class, definition.columns().definition(Detail.MASTER_ID).attribute().type().valueClass());
+			assertEquals(Entity.class, definition.foreignKeys().definition(Detail.MASTER_FK).attribute().type().get());
+			assertEquals(Long.class, definition.columns().definition(Detail.MASTER_ID).attribute().type().get());
 
 			// Attribute types
-			assertEquals(String.class, definition.attributes().definition(Detail.MASTER_NAME).attribute().type().valueClass());
-			assertEquals(Integer.class, definition.attributes().definition(Detail.MASTER_CODE).attribute().type().valueClass());
+			assertEquals(String.class, definition.attributes().definition(Detail.MASTER_NAME).attribute().type().get());
+			assertEquals(Integer.class, definition.attributes().definition(Detail.MASTER_CODE).attribute().type().get());
 		}
 
 		@Test

@@ -110,11 +110,11 @@ public sealed interface EntityType permits DefaultEntityType {
 	/**
 	 * Creates a new {@link Attribute}, associated with this EntityType.
 	 * @param name the attribute name
-	 * @param valueClass the class representing the attribute value type
+	 * @param type the class representing the attribute value type
 	 * @param <T> the attribute type
 	 * @return a new {@link Attribute}
 	 */
-	<T> Attribute<T> attribute(String name, Class<T> valueClass);
+	<T> Attribute<T> attribute(String name, Class<T> type);
 
 	/**
 	 * Creates a new {@link Attribute}, associated with this EntityType.
@@ -233,11 +233,11 @@ public sealed interface EntityType permits DefaultEntityType {
 	/**
 	 * Creates a new {@link Column}, associated with this EntityType.
 	 * @param name the column name
-	 * @param valueClass the class representing the column value type
+	 * @param type the class representing the column value type
 	 * @param <T> the column type
 	 * @return a new {@link Column}
 	 */
-	<T> Column<T> column(String name, Class<T> valueClass);
+	<T> Column<T> column(String name, Class<T> type);
 
 	/**
 	 * Creates a new {@link Column}, associated with this EntityType.

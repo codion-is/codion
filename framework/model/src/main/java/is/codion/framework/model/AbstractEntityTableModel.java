@@ -527,7 +527,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 		@Override
 		public Class<?> type(Attribute<?> identifier) {
-			return requireNonNull(identifier).type().valueClass();
+			return requireNonNull(identifier).type().get();
 		}
 
 		@Override
@@ -572,7 +572,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 		private static <T> ConditionModel<T> valueCondition(ValueAttributeDefinition<T> definition) {
 			return ConditionModel.builder()
-							.type(definition.attribute().type().valueClass())
+							.type(definition.attribute().type().get())
 							.format(definition.format().orElse(null))
 							.caption(definition.caption())
 							.dateTimePattern(definition.dateTimePattern().orElse(null))
@@ -588,7 +588,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		private static boolean useStringCondition(AttributeDefinition<?> definition) {
 			return definition.attribute().type().isEntity() || // entities
 							itemBased(definition) || // items
-							!Comparable.class.isAssignableFrom(definition.attribute().type().valueClass()); // non-comparables
+							!Comparable.class.isAssignableFrom(definition.attribute().type().get()); // non-comparables
 		}
 
 		private static boolean itemBased(AttributeDefinition<?> definition) {

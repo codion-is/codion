@@ -13,6 +13,7 @@ Codion Change Log
 - NumberField, numberClass() renamed type().
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.converter() columnClass parameter renamed columnType.
+- Attribute.DataType.valueClass() renamed get().
 ### is.codion.framework.domain.db
 - MetaDataColumn.columnClass() and columnName() renamed type() and name().
 

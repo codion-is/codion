@@ -65,6 +65,6 @@ final class UpdateDeserializer extends StdDeserializer<Update> {
 	}
 
 	private <T> void set(Update.Builder updateBuilder, Column<T> column, JsonNode value) {
-		updateBuilder.set(column, entityObjectMapper.convertValue(value, column.type().valueClass()));
+		updateBuilder.set(column, entityObjectMapper.convertValue(value, column.type().get()));
 	}
 }

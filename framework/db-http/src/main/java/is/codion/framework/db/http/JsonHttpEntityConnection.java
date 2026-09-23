@@ -203,7 +203,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("values", node.toString())),
-								objectMapper, objectMapper.getTypeFactory().constructCollectionType(List.class, column.type().valueClass()));
+								objectMapper, objectMapper.getTypeFactory().constructCollectionType(List.class, column.type().get()));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);
@@ -485,10 +485,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		return mapper.readValue(new String(response.body(), UTF_8), typeReference);
 	}
 
-	private <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, Class<T> valueClass) throws Exception {
+	private <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, Class<T> type) throws Exception {
 		throwIfError(response);
 
-		return mapper.readValue(new String(response.body(), UTF_8), valueClass);
+		return mapper.readValue(new String(response.body(), UTF_8), type);
 	}
 
 	private <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, JavaType javaType) throws Exception {

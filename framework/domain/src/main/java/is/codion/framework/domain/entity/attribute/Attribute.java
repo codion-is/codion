@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  * with a specific entity type.
  * <p>
  * Note that attribute names are case-sensitive and Attributes are equal if their
- * names and entityTypes are equal, the valueClass does not factor into equality.
+ * names and entityTypes are equal, the attribute value type does not factor into equality.
  * <p>
  * Attributes are typically created through entity type factory methods and then configured
  * using the {@link #as()} method to create attribute definitions:
@@ -93,7 +93,7 @@ import static java.util.Objects.requireNonNull;
  *                 // Custom typed attribute
  *                 Customer.STATUS.as()
  *                     .column()
- *                     .columnClass(String.class, CustomerStatus::valueOf))
+ *                     .converter(String.class, CustomerStatus::valueOf))
  *             .build();
  *     }
  * }
@@ -111,7 +111,7 @@ import static java.util.Objects.requireNonNull;
  * LocalDate birthDate = customer.get(Customer.BIRTH_DATE); // LocalDate
  *
  * // Attribute type information
- * Class<String> nameType = Customer.NAME.type().valueClass(); // String.class
+ * Class<String> nameType = Customer.NAME.type().get();    // String.class
  * boolean isNumeric = Customer.ID.type().isNumeric();     // true
  * boolean isTemporal = Customer.BIRTH_DATE.type().isTemporal(); // true
  *}
@@ -168,12 +168,12 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 	 * Creates a new {@link Attribute}, associated with the given entityType.
 	 * @param entityType the entityType owning this attribute
 	 * @param name the attribute name
-	 * @param valueClass the class representing the attribute value type
+	 * @param type the class representing the attribute value type
 	 * @param <T> the attribute type
 	 * @return a new {@link Attribute}
 	 */
-	static <T> Attribute<T> attribute(EntityType entityType, String name, Class<T> valueClass) {
-		return new DefaultAttribute<>(name, valueClass, entityType);
+	static <T> Attribute<T> attribute(EntityType entityType, String name, Class<T> type) {
+		return new DefaultAttribute<>(name, type, entityType);
 	}
 
 	/**
@@ -183,15 +183,15 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 	sealed interface DataType<T> permits DefaultDataType {
 
 		/**
-		 * @return the Class representing the attribute value
+		 * @return the Class representing the attribute value type
 		 */
-		Class<T> valueClass();
+		Class<T> get();
 
 		/**
 		 * @param value the value to validate
 		 * @return the validated value
 		 * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
-		 * @see #valueClass()
+		 * @see #get()
 		 */
 		@Nullable T validate(@Nullable T value);
 

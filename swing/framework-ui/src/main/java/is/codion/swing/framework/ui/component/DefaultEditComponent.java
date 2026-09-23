@@ -127,7 +127,7 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 
 	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<C, T> createTemporalComponentValue(A attribute,
 																																																										 EntityComponents inputComponents) {
-		if (CalendarPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
+		if (CalendarPanel.supports((Class<Temporal>) attribute.type().get())) {
 			return (ComponentValue<C, T>) inputComponents.temporalFieldInput((Attribute<Temporal>) attribute).buildValue();
 		}
 

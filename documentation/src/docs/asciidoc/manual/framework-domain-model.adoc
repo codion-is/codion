@@ -713,7 +713,7 @@ When defining a column using a custom data type you must provide a {url-javadoc}
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=columnClass]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=converter]
 ----
 
 [source,java,indent=0]

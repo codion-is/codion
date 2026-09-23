@@ -59,7 +59,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 							definition.columns().definition((Column<Object>) definition.attributes().getOrThrow(field.getKey()));
 			builder.with(columnDefinition.attribute(),
 							entityObjectMapper.readValue(field.getValue().toString(),
-											columnDefinition.attribute().type().valueClass()));
+											columnDefinition.attribute().type().get()));
 		}
 
 		return builder.build();
