@@ -41,6 +41,7 @@ Codion Change Log
 - MetaDataColumn.columnClass() and columnName() renamed type() and name().
 - SchemaDomain column types, decimal columns BigDecimal instead of Double, floating point columns no longer Integer, whole numbers beyond an Integer Long, multi character CHAR columns String, NCHAR, NVARCHAR, CLOB, NCLOB, TINYINT and binary columns now mapped, time zone, UUID and Oracle binary float columns recognized by type name, SQLite columns based on their declared types.
 - SchemaDomain, catalogs used as schemas when a database reports no schemas, MySQL and MariaDB, which previously required the databaseTerm=SCHEMA or useCatalogTerm=Schema driver property.
+- SchemaDomain no longer fails with drivers not reporting IS_GENERATEDCOLUMN, added in JDBC 4.1.
 ### is.codion.framework.db.local
 - Configuration property codion.db.tracing renamed codion.db.tracing.enabled.
 ### is.codion.framework.servlet

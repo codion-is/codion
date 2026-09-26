@@ -20,16 +20,26 @@ package is.codion.framework.domain.db;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.framework.domain.db.MetaDataColumn.columnType;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 // The type codes, names, sizes and digits as reported by the drivers, measured 2026-09-26
 public final class MetaDataColumnTest {
@@ -98,5 +108,42 @@ public final class MetaDataColumnTest {
 		assertEquals(BigDecimal.class, columnType(Types.FLOAT, "DECIMAL(10,2)", 12, 2, true));
 		// not readable by the driver, left as reported
 		assertEquals(String.class, columnType(Types.VARCHAR, "TIMESTAMP WITH TIME ZONE", 2000000000, 10, true));
+	}
+
+	@Test
+	void generatedColumnNotReported() throws SQLException {
+		// IS_GENERATEDCOLUMN was added in JDBC 4.1, mssql-jdbc 6.4 for one does not report it
+		Map<String, Object> row = new LinkedHashMap<>();
+		row.put("COLUMN_NAME", "id");
+		row.put("DATA_TYPE", Types.INTEGER);
+		row.put("TYPE_NAME", "int");
+		row.put("COLUMN_SIZE", 10);
+		row.put("DECIMAL_DIGITS", 0);
+		row.put("ORDINAL_POSITION", 1);
+		row.put("NULLABLE", 0);
+		row.put("COLUMN_DEF", null);
+		row.put("REMARKS", null);
+		row.put("IS_AUTOINCREMENT", "NO");
+		List<String> columnNames = new ArrayList<>(row.keySet());
+		ResultSetMetaData metaData = (ResultSetMetaData) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {ResultSetMetaData.class}, (proxy, method, arguments) ->
+										method.getName().equals("getColumnCount") ? columnNames.size() : columnNames.get((int) arguments[0] - 1));
+		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> {
+							switch (method.getName()) {
+								case "getMetaData":
+									return metaData;
+								case "wasNull":
+									return false;
+								default:
+									if (!row.containsKey(arguments[0])) {
+										throw new SQLException("The column name " + arguments[0] + " is not valid.");
+									}
+									return row.get(arguments[0]);
+							}
+						});
+		MetaDataColumn column = new MetaDataColumn.ColumnPacker(emptyList(), emptyList(), false).get(resultSet);
+		assertEquals(Integer.class, column.type());
+		assertFalse(column.generated());
 	}
 }

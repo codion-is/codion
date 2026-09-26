@@ -23,6 +23,7 @@ import is.codion.common.db.result.ResultPacker;
 import java.math.BigDecimal;
 import java.sql.JDBCType;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
@@ -273,10 +274,13 @@ final class MetaDataColumn {
 	static final class ColumnPacker implements ResultPacker<MetaDataColumn> {
 
 		private static final String YES = "YES";
+		private static final String IS_GENERATEDCOLUMN = "IS_GENERATEDCOLUMN";
 
 		private final Collection<MetaDataPrimaryKeyColumn> primaryKeyColumns;
 		private final List<MetaDataForeignKeyColumn> foreignKeyColumns;
 		private final boolean declaredTypes;
+
+		private Boolean generatedColumnReported;
 
 		ColumnPacker(Collection<MetaDataPrimaryKeyColumn> primaryKeyColumns, List<MetaDataForeignKeyColumn> foreignKeyColumns,
 								 boolean declaredTypes) {
@@ -306,12 +310,31 @@ final class MetaDataColumn {
 								primaryKeyColumnIndex(columnName),
 								foreignKeyColumn(columnName),
 								YES.equals(resultSet.getString("IS_AUTOINCREMENT")),
-								YES.equals(resultSet.getString("IS_GENERATEDCOLUMN")));
+								generated(resultSet));
 			}
 			catch (SQLException e) {
 				System.err.println("Exception fetching column: " + columnName + ", " + e.getMessage());
 				throw e;
 			}
+		}
+
+		// IS_GENERATEDCOLUMN was added in JDBC 4.1, older drivers do not report it, mssql-jdbc 6.4 for one
+		private boolean generated(ResultSet resultSet) throws SQLException {
+			if (generatedColumnReported == null) {
+				generatedColumnReported = reported(resultSet.getMetaData(), IS_GENERATEDCOLUMN);
+			}
+
+			return generatedColumnReported && YES.equals(resultSet.getString(IS_GENERATEDCOLUMN));
+		}
+
+		private static boolean reported(ResultSetMetaData metaData, String columnName) throws SQLException {
+			for (int i = 1; i <= metaData.getColumnCount(); i++) {
+				if (columnName.equalsIgnoreCase(metaData.getColumnLabel(i))) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private int primaryKeyColumnIndex(String columnName) {
