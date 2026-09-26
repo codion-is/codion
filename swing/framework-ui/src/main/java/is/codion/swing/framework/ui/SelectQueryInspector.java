@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.database.Database;
 import is.codion.framework.db.EntityQueries;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.swing.common.ui.component.Components;
@@ -42,12 +41,9 @@ final class SelectQueryInspector extends JPanel {
 	private final EntityQueries queries;
 	private final EntityQueryModel queryModel;
 
-	SelectQueryInspector(EntityQueryModel queryModel) {
-		requireNonNull(queryModel);
-		this.queries = EntityQueries.factory()
-						.orElseThrow(() -> new IllegalStateException("No EntityQueries.Factory available"))
-						.create(Database.instance(), queryModel.connection().entities());
-		this.queryModel = queryModel;
+	SelectQueryInspector(EntityQueries queries, EntityQueryModel queryModel) {
+		this.queries = requireNonNull(queries);
+		this.queryModel = requireNonNull(queryModel);
 		this.queryModel.condition().changed().addListener(this::refreshQuery);
 		this.queryModel.limit().addListener(this::refreshQuery);
 		this.queryModel.orderBy().addListener(this::refreshQuery);

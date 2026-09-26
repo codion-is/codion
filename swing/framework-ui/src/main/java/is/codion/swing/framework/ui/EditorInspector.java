@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.database.Database;
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.reactive.value.Value;
 import is.codion.framework.db.EntityQueries;
@@ -119,7 +118,7 @@ final class EditorInspector extends JPanel {
 	private @Nullable EntityQueries createQueries() {
 		try {
 			return EntityQueries.factory()
-							.map(factory -> factory.create(Database.instance(), editor.connection().entities()))
+							.map(factory -> factory.create(editor.connection()))
 							.orElse(null);
 		}
 		catch (Exception e) {

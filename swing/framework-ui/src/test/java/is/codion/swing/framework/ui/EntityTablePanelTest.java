@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.db.database.Database;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
@@ -33,8 +34,11 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.INSPECT_QUERY;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -159,5 +163,40 @@ public class EntityTablePanelTest {
 		};
 		tablePanel.initialize();
 		assertSame(print, tablePanel.control(PRINT).get());
+	}
+
+	@Test
+	void inspectQueryControl() {
+		EntityTablePanel excluded = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
+		excluded.initialize();
+		assertNull(excluded.control(INSPECT_QUERY).get());
+		EntityTablePanel included = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION),
+						config -> config.includeInspector(true));
+		included.initialize();
+		assertNotNull(included.control(INSPECT_QUERY).get());
+		String url = Database.URL.get();
+		Database.URL.set(null);
+		try {
+			// a connection other than a local one renders via Database.instance(), unavailable without a url
+			EntityTablePanel unavailable = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, nonLocal(CONNECTION)),
+							config -> config.includeInspector(true));
+			unavailable.initialize();
+			assertNull(unavailable.control(INSPECT_QUERY).get());
+		}
+		finally {
+			Database.URL.set(url);
+		}
+	}
+
+	private static EntityConnection nonLocal(EntityConnection connection) {
+		return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
+						new Class<?>[] {EntityConnection.class}, (proxy, method, args) -> {
+							try {
+								return method.invoke(connection, args);
+							}
+							catch (InvocationTargetException e) {
+								throw e.getCause();
+							}
+						});
 	}
 }

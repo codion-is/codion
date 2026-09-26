@@ -18,10 +18,8 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.db.database.Database;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.Optional;
@@ -74,10 +72,9 @@ public interface EntityQueries {
 	interface Factory {
 
 		/**
-		 * @param database the database
-		 * @param entities the entities
-		 * @return a new {@link EntityQueries} instance based on the given database and entities
+		 * @param connection the connection the queries are rendered for
+		 * @return a new {@link EntityQueries} instance based on the given connection
 		 */
-		EntityQueries create(Database database, Entities entities);
+		EntityQueries create(EntityConnection connection);
 	}
 }

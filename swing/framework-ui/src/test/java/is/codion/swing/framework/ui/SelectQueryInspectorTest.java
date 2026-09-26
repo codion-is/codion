@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.database.Database;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityQueries;
@@ -47,10 +46,10 @@ public final class SelectQueryInspectorTest {
 		//the wide table optimization, the very case one opens the inspector to see
 		tableModel.query().attributes().defaults().set(singleton(Employee.NAME));
 
-		String rendered = new SelectQueryInspector(tableModel.query()).createSelectQuery();
-
 		EntityQueries queries = EntityQueries.factory().orElseThrow()
-						.create(Database.instance(), CONNECTION.entities());
+						.create(CONNECTION);
+		String rendered = new SelectQueryInspector(queries, tableModel.query()).createSelectQuery();
+
 		assertEquals(queries.select(tableModel.query().select()), rendered);
 		//the defaults belong in Select.attributes(), an inspector rebuilding the select
 		//via include() rendered every column while the model selected the subset
