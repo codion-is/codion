@@ -18,6 +18,8 @@ Codion Change Log
 - Db2Database reads temporal values via java.sql.Date, Time and Timestamp, drivers before 12 throwing NullPointerException when reading a null value via getObject(index, LocalDate.class).
 ### is.codion.dbms.derby
 - DerbyDatabase reads and writes java.time values via java.sql.Date, Time and Timestamp, Derby not supporting java.time.
+### is.codion.dbms.sqlite
+- SQLiteDatabase reads OffsetDateTime and OffsetTime values by parsing them, the driver not supporting reading them.
 ### is.codion.dbms.oracle
 - OracleDatabase binds Boolean nulls as Types.BIT, since drivers before 23 do not support Types.BOOLEAN.
 ### is.codion.swing.common.ui
