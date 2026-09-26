@@ -20,10 +20,19 @@ package is.codion.dbms.db2;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.ClientInfo;
+import is.codion.common.db.database.GetValue;
 import is.codion.common.db.exception.ErrorType;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +44,7 @@ import static java.util.Objects.requireNonNull;
 final class Db2Database extends AbstractDatabase {
 
 	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
+	private static final Map<Integer, GetValue<?>> GETTERS = new HashMap<>();
 
 	static {
 		// the error codes not covered by the sql state defaults
@@ -45,6 +55,9 @@ final class Db2Database extends AbstractDatabase {
 		ERROR_TYPES.put(-551, ErrorType.MISSING_PRIVILEGES);
 		ERROR_TYPES.put(-30082, ErrorType.AUTHENTICATION);// security processing failed, -4214 being covered by its sql state
 		ERROR_TYPES.put(-204, ErrorType.TABLE_NOT_FOUND);
+		GETTERS.put(Types.DATE, new GetLocalDate());
+		GETTERS.put(Types.TIME, new GetLocalTime());
+		GETTERS.put(Types.TIMESTAMP, new GetLocalDateTime());
 	}
 
 	private static final String APPLICATION_NAME = "ApplicationName";
@@ -101,6 +114,18 @@ final class Db2Database extends AbstractDatabase {
 		clientInfoProperty(connection, CLIENT_HOSTNAME, clientInfo.host().orElse(""));
 	}
 
+	/**
+	 * The temporal values are read via {@link Date}, {@link Time} and {@link Timestamp}, since drivers before 12 throw
+	 * a {@link NullPointerException} when reading a null value via {@code getObject(index, LocalDate.class)} and the like,
+	 * jcc 11.5.9 for one.
+	 */
+	@Override
+	public GetValue<?> getter(int sqlType) {
+		GetValue<?> getter = GETTERS.get(sqlType);
+
+		return getter == null ? super.getter(sqlType) : getter;
+	}
+
 	@Override
 	protected ErrorType errorType(SQLException exception) {
 		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
@@ -130,6 +155,36 @@ final class Db2Database extends AbstractDatabase {
 				return constraint == null ? null : constraint.substring(constraint.lastIndexOf('.') + 1);
 			default:
 				return null;
+		}
+	}
+
+	private static final class GetLocalDate implements GetValue<LocalDate> {
+
+		@Override
+		public LocalDate get(ResultSet resultSet, int index) throws SQLException {
+			Date date = resultSet.getDate(index);
+
+			return date == null ? null : date.toLocalDate();
+		}
+	}
+
+	private static final class GetLocalTime implements GetValue<LocalTime> {
+
+		@Override
+		public LocalTime get(ResultSet resultSet, int index) throws SQLException {
+			Time time = resultSet.getTime(index);
+
+			return time == null ? null : time.toLocalTime();
+		}
+	}
+
+	private static final class GetLocalDateTime implements GetValue<LocalDateTime> {
+
+		@Override
+		public LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
+			Timestamp timestamp = resultSet.getTimestamp(index);
+
+			return timestamp == null ? null : timestamp.toLocalDateTime();
 		}
 	}
 }

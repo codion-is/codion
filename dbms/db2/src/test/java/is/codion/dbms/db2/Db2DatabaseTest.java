@@ -26,8 +26,17 @@ import is.codion.common.db.exception.UniqueConstraintException;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
 
 import static is.codion.common.db.exception.Operation.*;
@@ -67,6 +76,34 @@ public class Db2DatabaseTest {
 	@Test
 	void autoIncrementQueryNullIdSource() {
 		assertThrows(NullPointerException.class, () -> new Db2Database(URL).autoIncrementQuery(null));
+	}
+
+	@Test
+	void temporalValuesViaSqlTypes() throws SQLException {
+		// drivers before 12 throw a NullPointerException from getObject(index, LocalDate.class) for a null value
+		Db2Database database = new Db2Database(URL);
+		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> {
+							if ((int) arguments[0] == 2) {
+								return null;
+							}
+							switch (method.getName()) {
+								case "getDate":
+									return Date.valueOf("2026-09-26");
+								case "getTime":
+									return Time.valueOf("13:45:30");
+								case "getTimestamp":
+									return Timestamp.valueOf("2026-09-26 13:45:30.123456");
+								default:
+									throw new UnsupportedOperationException(method.getName());
+							}
+						});
+		assertEquals(LocalDate.of(2026, 9, 26), database.getter(Types.DATE).get(resultSet, 1));
+		assertEquals(LocalTime.of(13, 45, 30), database.getter(Types.TIME).get(resultSet, 1));
+		assertEquals(LocalDateTime.of(2026, 9, 26, 13, 45, 30, 123_456_000), database.getter(Types.TIMESTAMP).get(resultSet, 1));
+		assertNull(database.getter(Types.DATE).get(resultSet, 2));
+		assertNull(database.getter(Types.TIME).get(resultSet, 2));
+		assertNull(database.getter(Types.TIMESTAMP).get(resultSet, 2));
 	}
 
 	@Test

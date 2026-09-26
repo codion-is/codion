@@ -14,6 +14,8 @@ Codion Change Log
 ### is.codion.common.model
 - FilterTableModel.TableColumns.columnClass() renamed type().
 - ConditionModel.valueClass() renamed type().
+### is.codion.dbms.db2
+- Db2Database reads temporal values via java.sql.Date, Time and Timestamp, drivers before 12 throwing NullPointerException when reading a null value via getObject(index, LocalDate.class).
 ### is.codion.dbms.derby
 - DerbyDatabase reads and writes java.time values via java.sql.Date, Time and Timestamp, Derby not supporting java.time.
 ### is.codion.dbms.oracle
