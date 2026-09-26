@@ -48,12 +48,10 @@ public final class PetstoreImpl extends DomainModel {
 					.nullable(false),
 				Address.LATITUDE.as()
 					.column()
-					.nullable(false)
-					.fractionDigits(2),
+					.nullable(false),
 				Address.LONGITUDE.as()
 					.column()
-					.nullable(false)
-					.fractionDigits(2),
+					.nullable(false),
 				Address.LOCATION.as()
 					.column(),
 				Address.IMAGE.as()

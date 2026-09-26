@@ -39,7 +39,8 @@ Codion Change Log
 - ColumnDefinition, java.util.Date no longer mapped to Types.DATE, java.sql.Date, Time and Timestamp now read and written as such instead of via the java.time based defaults for their types, a value of a column with a converter now read based on the converter column type instead of the attribute type.
 ### is.codion.framework.domain.db
 - MetaDataColumn.columnClass() and columnName() renamed type() and name().
-- SchemaDomain column types, floating point columns no longer Integer, whole numbers beyond an Integer Long, multi character CHAR columns String, NCHAR, NVARCHAR, CLOB, NCLOB, TINYINT and binary columns now mapped, time zone, UUID and Oracle binary float columns recognized by type name, SQLite columns based on their declared types.
+- SchemaDomain column types, decimal columns BigDecimal instead of Double, floating point columns no longer Integer, whole numbers beyond an Integer Long, multi character CHAR columns String, NCHAR, NVARCHAR, CLOB, NCLOB, TINYINT and binary columns now mapped, time zone, UUID and Oracle binary float columns recognized by type name, SQLite columns based on their declared types.
+- SchemaDomain, catalogs used as schemas when a database reports no schemas, MySQL and MariaDB, which previously required the databaseTerm=SCHEMA or useCatalogTerm=Schema driver property.
 ### is.codion.framework.db.local
 - Configuration property codion.db.tracing renamed codion.db.tracing.enabled.
 ### is.codion.framework.servlet
@@ -47,6 +48,8 @@ Codion Change Log
 ### is.codion.framework.server
 - Configuration property codion.server.connectionLimit renamed codion.server.connection.limit, codion.server.clientConnectionTimeout renamed codion.server.connection.clientTimeouts.
 - Configuration property codion.server.pooling.poolFactory renamed codion.server.pool.factory, codion.server.connectionPoolUsers renamed codion.server.pool.users.
+### is.codion.tools.generator.domain
+- DomainSource no longer outputs fractionDigits() when equal to the default.
 
 ## 0.18.87
 ### is.codion.common.db

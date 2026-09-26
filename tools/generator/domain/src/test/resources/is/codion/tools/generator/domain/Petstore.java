@@ -20,6 +20,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public final class Petstore extends DomainModel {
@@ -79,13 +80,11 @@ public final class Petstore extends DomainModel {
 				Address.LATITUDE.as()
 					.column()
 					.caption("Latitude")
-					.nullable(false)
-					.fractionDigits(2),
+					.nullable(false),
 				Address.LONGITUDE.as()
 					.column()
 					.caption("Longitude")
-					.nullable(false)
-					.fractionDigits(2),
+					.nullable(false),
 				Address.LOCATION.as()
 					.column()
 					.caption("Location"),
@@ -350,7 +349,7 @@ public final class Petstore extends DomainModel {
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
 		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
 		Column<String> IMAGE_THUMB_URL = TYPE.stringColumn("image_thumb_url");
-		Column<Double> PRICE = TYPE.doubleColumn("price");
+		Column<BigDecimal> PRICE = TYPE.bigDecimalColumn("price");
 		Column<Integer> ADDRESS_ID = TYPE.integerColumn("address_id");
 		Column<Integer> CONTACT_INFO_ID = TYPE.integerColumn("contact_info_id");
 		Column<Integer> TOTAL_SCORE = TYPE.integerColumn("total_score");
@@ -381,7 +380,7 @@ public final class Petstore extends DomainModel {
 		}
 
 		record Dto(Integer itemId, Product.Dto product, String name, String description, String imageUrl,
-				String imageThumbUrl, Double price, ContactInfo.Dto contactInfo, Integer totalScore,
+				String imageThumbUrl, BigDecimal price, ContactInfo.Dto contactInfo, Integer totalScore,
 				Integer numberOfVotes, Integer disabled, LocalDateTime insertTime, String insertUser) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)

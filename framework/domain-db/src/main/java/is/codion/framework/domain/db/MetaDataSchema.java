@@ -36,17 +36,37 @@ import static java.util.stream.Collectors.toMap;
 
 final class MetaDataSchema {
 
-	static final MetaDataSchema NO_SCHEMA = new MetaDataSchema("NO_SCHEMA");
+	static final MetaDataSchema NO_SCHEMA = new MetaDataSchema("NO_SCHEMA", false);
 
 	private final String name;
+	private final boolean catalog;
 	private final Map<String, MetaDataTable> tables = new HashMap<>();
 
-	MetaDataSchema(String name) {
+	/**
+	 * @param name the schema name
+	 * @param catalog true if this is a catalog, for databases reporting catalogs instead of schemas, MySQL and MariaDB
+	 */
+	MetaDataSchema(String name, boolean catalog) {
 		this.name = requireNonNull(name);
+		this.catalog = catalog;
 	}
 
 	String name() {
 		return name;
+	}
+
+	/**
+	 * @return the catalog argument for the metadata queries, the name if this is a catalog, null otherwise
+	 */
+	String catalog() {
+		return catalog ? name : null;
+	}
+
+	/**
+	 * @return the schema pattern argument for the metadata queries, null if this is a catalog or no schema
+	 */
+	String schemaPattern() {
+		return catalog || none() ? null : name;
 	}
 
 	boolean none() {
@@ -64,8 +84,8 @@ final class MetaDataSchema {
 	private void populate(DatabaseMetaData metaData, Map<String, MetaDataSchema> schemas, Set<String> populatedSchemas) {
 		if (!populatedSchemas.contains(name)) {
 			tables.clear();
-			try (ResultSet resultSet = metaData.getTables(null, none() ? null : name, null, new String[] {"TABLE", "VIEW"})) {
-				tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
+			try (ResultSet resultSet = metaData.getTables(catalog(), schemaPattern(), null, new String[] {"TABLE", "VIEW"})) {
+				tables.putAll(new TablePacker(this, metaData).pack(resultSet).stream()
 								.collect(toMap(MetaDataTable::tableName, Function.identity())));
 				tables.values().stream()
 								.flatMap(table -> table.referencedSchemaNames().stream())

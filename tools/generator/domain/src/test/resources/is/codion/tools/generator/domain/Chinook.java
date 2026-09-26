@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public final class Chinook extends DomainModel {
@@ -554,7 +555,7 @@ public final class Chinook extends DomainModel {
 		Column<String> BILLINGSTATE = TYPE.stringColumn("billingstate");
 		Column<String> BILLINGCOUNTRY = TYPE.stringColumn("billingcountry");
 		Column<String> BILLINGPOSTALCODE = TYPE.stringColumn("billingpostalcode");
-		Column<Double> TOTAL = TYPE.doubleColumn("total");
+		Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
 
 		ForeignKey CUSTOMERID_FK = TYPE.foreignKey("customerid_fk", CUSTOMERID, Customer.CUSTOMERID);
 
@@ -573,7 +574,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long invoiceid, Customer.Dto customerid, LocalDate invoicedate, String billingaddress,
 				String billingcity, String billingstate, String billingcountry, String billingpostalcode,
-				Double total) {
+				BigDecimal total) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(INVOICEID, invoiceid)
@@ -646,7 +647,7 @@ public final class Chinook extends DomainModel {
 		Column<Integer> MILLISECONDS = TYPE.integerColumn("milliseconds");
 		Column<Integer> BYTES = TYPE.integerColumn("bytes");
 		Column<Integer> RATING = TYPE.integerColumn("rating");
-		Column<Integer> UNITPRICE = TYPE.integerColumn("unitprice");
+		Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
 
 		ForeignKey ALBUMID_FK = TYPE.foreignKey("albumid_fk", ALBUMID, Album.ALBUMID);
 		ForeignKey MEDIATYPEID_FK = TYPE.foreignKey("mediatypeid_fk", MEDIATYPEID, Mediatype.MEDIATYPEID);
@@ -668,7 +669,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long trackid, String name, Album.Dto albumid, Mediatype.Dto mediatypeid,
 				Genre.Dto genreid, String composer, Integer milliseconds, Integer bytes, Integer rating,
-				Integer unitprice) {
+				BigDecimal unitprice) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(TRACKID, trackid)
@@ -732,7 +733,8 @@ public final class Chinook extends DomainModel {
 				Track.UNITPRICE.as()
 					.column()
 					.caption("Unitprice")
-					.nullable(false))
+					.nullable(false)
+					.fractionDigits(2))
 			.caption("Track")
 			.build();
 	}
@@ -743,7 +745,7 @@ public final class Chinook extends DomainModel {
 		Column<Long> INVOICELINEID = TYPE.longColumn("invoicelineid");
 		Column<Long> INVOICEID = TYPE.longColumn("invoiceid");
 		Column<Long> TRACKID = TYPE.longColumn("trackid");
-		Column<Integer> UNITPRICE = TYPE.integerColumn("unitprice");
+		Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
 		Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
 
 		ForeignKey INVOICEID_FK = TYPE.foreignKey("invoiceid_fk", INVOICEID, Invoice.INVOICEID);
@@ -758,7 +760,7 @@ public final class Chinook extends DomainModel {
 					invoiceline.get(QUANTITY));
 		}
 
-		record Dto(Long invoicelineid, Invoice.Dto invoiceid, Track.Dto trackid, Integer unitprice,
+		record Dto(Long invoicelineid, Invoice.Dto invoiceid, Track.Dto trackid, BigDecimal unitprice,
 				Integer quantity) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
@@ -793,7 +795,8 @@ public final class Chinook extends DomainModel {
 				Invoiceline.UNITPRICE.as()
 					.column()
 					.caption("Unitprice")
-					.nullable(false),
+					.nullable(false)
+					.fractionDigits(2),
 				Invoiceline.QUANTITY.as()
 					.column()
 					.caption("Quantity")

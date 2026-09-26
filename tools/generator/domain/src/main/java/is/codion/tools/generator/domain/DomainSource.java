@@ -1124,7 +1124,9 @@ public final class DomainSource {
 			if (!column.selected()) {
 				builder.add("\n$L.selected(false)", TRIPLE_INDENT);
 			}
-			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1) {
+			// the default is applied anyway
+			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1
+							&& column.fractionDigits() != AttributeDefinition.FRACTION_DIGITS.getOrThrow()) {
 				builder.add("\n$L.fractionDigits($L)", TRIPLE_INDENT, column.fractionDigits());
 			}
 			if (!column.primaryKey() && column.hidden()) {

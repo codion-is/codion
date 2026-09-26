@@ -20,6 +20,7 @@ package is.codion.framework.domain.db;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,8 +51,8 @@ public final class MetaDataColumnTest {
 		assertEquals(Long.class, columnType(Types.NUMERIC, "NUMBER", 10, 0, false));// Oracle number(10), beyond an Integer
 		assertEquals(Long.class, columnType(Types.NUMERIC, "NUMERIC", 18, 0, false));
 		assertEquals(Long.class, columnType(Types.NUMERIC, "NUMBER", 38, 0, false));// Oracle integer
-		assertEquals(Double.class, columnType(Types.NUMERIC, "NUMBER", 0, -127, false));// Oracle number, unconstrained
-		assertEquals(Double.class, columnType(Types.DECIMAL, "DECIMAL", 10, 2, false));
+		assertEquals(BigDecimal.class, columnType(Types.NUMERIC, "NUMBER", 0, -127, false));// Oracle number, unconstrained
+		assertEquals(BigDecimal.class, columnType(Types.DECIMAL, "DECIMAL", 10, 2, false));
 	}
 
 	@Test
@@ -94,6 +95,7 @@ public final class MetaDataColumnTest {
 		assertEquals(Character.class, columnType(Types.VARCHAR, "CHAR", 1, 0, true));
 		assertEquals(String.class, columnType(Types.VARCHAR, "TEXT", 2000000000, 0, true));
 		assertEquals(Long.class, columnType(Types.FLOAT, "NUMERIC(18,0)", 18, 0, true));
+		assertEquals(BigDecimal.class, columnType(Types.FLOAT, "DECIMAL(10,2)", 12, 2, true));
 		// not readable by the driver, left as reported
 		assertEquals(String.class, columnType(Types.VARCHAR, "TIMESTAMP WITH TIME ZONE", 2000000000, 10, true));
 	}
