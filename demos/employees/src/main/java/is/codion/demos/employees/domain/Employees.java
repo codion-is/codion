@@ -18,7 +18,6 @@
  */
 package is.codion.demos.employees.domain;
 
-import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.DomainModel;
@@ -28,6 +27,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.report.ReportType;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -36,11 +36,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.common.db.report.ReportType.reportType;
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
+import static is.codion.framework.domain.report.ReportType.reportType;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 
 // tag::departmentConstants[]

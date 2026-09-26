@@ -18,9 +18,6 @@
  */
 package is.codion.demos.chinook.domain.api;
 
-import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.TypeReference;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
@@ -35,6 +32,9 @@ import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.operation.FunctionType;
+import is.codion.framework.domain.operation.ProcedureType;
+import is.codion.framework.domain.report.ReportType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -53,10 +53,10 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
-import static is.codion.common.db.operation.FunctionType.functionType;
-import static is.codion.common.db.operation.ProcedureType.procedureType;
-import static is.codion.common.db.report.ReportType.reportType;
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.operation.FunctionType.functionType;
+import static is.codion.framework.domain.operation.ProcedureType.procedureType;
+import static is.codion.framework.domain.report.ReportType.reportType;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 

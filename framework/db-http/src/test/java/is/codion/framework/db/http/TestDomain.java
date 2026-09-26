@@ -18,10 +18,6 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.AbstractReport;
-import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.DomainModel;
@@ -30,6 +26,10 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.operation.FunctionType;
+import is.codion.framework.domain.operation.ProcedureType;
+import is.codion.framework.domain.report.AbstractReport;
+import is.codion.framework.domain.report.ReportType;
 
 import java.io.Serializable;
 import java.sql.Connection;

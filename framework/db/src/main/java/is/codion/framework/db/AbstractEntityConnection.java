@@ -18,9 +18,6 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.domain.Domain;
@@ -30,6 +27,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.operation.FunctionType;
+import is.codion.framework.domain.operation.ProcedureType;
+import is.codion.framework.domain.report.ReportType;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;

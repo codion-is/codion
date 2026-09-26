@@ -14,32 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2020 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2019 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.operation;
+package is.codion.framework.domain.operation;
+
+import org.jspecify.annotations.Nullable;
 
 /**
- * Identifies a database function.
- * @param <C> the connection type
- * @param <P> the function parameter type
- * @param <R> the function result type
+ * A database procedure
+ * @param <C> the connection type required by this procedure
+ * @param <P> the procedure parameter type
  */
-public interface FunctionType<C, P, R> {
+@FunctionalInterface
+public interface DatabaseProcedure<C, P> {
 
 	/**
-	 * @return the function name
+	 * Executes this procedure using the given connection
+	 * @param connection the connection to use
+	 * @param parameter the procedure parameter, if any
 	 */
-	String name();
-
-	/**
-	 * Creates a {@link FunctionType} with the given name.
-	 * @param name the name
-	 * @param <C> the connection type
-	 * @param <P> the function parameter type
-	 * @param <R> the function result type
-	 * @return a new {@link FunctionType}
-	 */
-	static <C, P, R> FunctionType<C, P, R> functionType(String name) {
-		return new DefaultFunctionType<>(name);
-	}
+	void execute(C connection, @Nullable P parameter);
 }

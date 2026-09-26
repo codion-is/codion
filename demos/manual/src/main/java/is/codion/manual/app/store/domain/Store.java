@@ -19,7 +19,6 @@
 package is.codion.manual.app.store.domain;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
@@ -29,6 +28,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.report.ReportType;
 
 import net.sf.jasperreports.engine.JasperPrint;
 

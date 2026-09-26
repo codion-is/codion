@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":codion-common-db"))
+    api(project(":codion-framework-domain"))
 
     api(libs.jasperreports) {
         exclude(group = "xml-apis")

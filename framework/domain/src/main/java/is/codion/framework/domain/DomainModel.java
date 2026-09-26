@@ -18,16 +18,16 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.common.db.operation.DatabaseFunction;
-import is.codion.common.db.operation.DatabaseProcedure;
-import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entities.Configurable;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.operation.DatabaseFunction;
+import is.codion.framework.domain.operation.DatabaseProcedure;
+import is.codion.framework.domain.operation.FunctionType;
+import is.codion.framework.domain.operation.ProcedureType;
+import is.codion.framework.domain.report.Report;
+import is.codion.framework.domain.report.ReportType;
 
 import java.util.Arrays;
 import java.util.Collection;

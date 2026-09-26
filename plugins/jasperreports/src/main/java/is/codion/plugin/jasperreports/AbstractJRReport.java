@@ -18,7 +18,7 @@
  */
 package is.codion.plugin.jasperreports;
 
-import is.codion.common.db.report.AbstractReport;
+import is.codion.framework.domain.report.AbstractReport;
 
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;

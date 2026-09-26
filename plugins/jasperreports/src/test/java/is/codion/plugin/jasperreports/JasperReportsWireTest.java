@@ -19,12 +19,12 @@
 package is.codion.plugin.jasperreports;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.http.HttpEntityConnection;
+import is.codion.framework.domain.report.Report;
+import is.codion.framework.domain.report.ReportException;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityService;

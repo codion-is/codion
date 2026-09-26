@@ -16,21 +16,21 @@
  *
  * Copyright (c) 2020 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.report;
+package is.codion.framework.domain.operation;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultReportType<P, R> implements ReportType<P, R>, Serializable {
+final class DefaultFunctionType<C, P, R> implements FunctionType<C, P, R>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final String name;
 
-	DefaultReportType(String name) {
+	DefaultFunctionType(String name) {
 		this.name = requireNonNull(name);
 	}
 
@@ -40,15 +40,16 @@ final class DefaultReportType<P, R> implements ReportType<P, R>, Serializable {
 	}
 
 	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (object instanceof ReportType) {
-			return name.equals(((ReportType<?, ?>) object).name());
+		if (o == null || getClass() != o.getClass()) {
+			return false;
 		}
+		DefaultFunctionType<?, ?, ?> that = (DefaultFunctionType<?, ?, ?>) o;
 
-		return false;
+		return name.equals(that.name);
 	}
 
 	@Override

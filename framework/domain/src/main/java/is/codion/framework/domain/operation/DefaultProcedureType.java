@@ -16,21 +16,21 @@
  *
  * Copyright (c) 2020 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.operation;
+package is.codion.framework.domain.operation;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFunctionType<C, P, R> implements FunctionType<C, P, R>, Serializable {
+final class DefaultProcedureType<C, P> implements ProcedureType<C, P>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final String name;
 
-	DefaultFunctionType(String name) {
+	DefaultProcedureType(String name) {
 		this.name = requireNonNull(name);
 	}
 
@@ -47,7 +47,7 @@ final class DefaultFunctionType<C, P, R> implements FunctionType<C, P, R>, Seria
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		DefaultFunctionType<?, ?, ?> that = (DefaultFunctionType<?, ?, ?>) o;
+		DefaultProcedureType<?, ?> that = (DefaultProcedureType<?, ?>) o;
 
 		return name.equals(that.name);
 	}

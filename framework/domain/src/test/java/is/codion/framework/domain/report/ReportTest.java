@@ -16,13 +16,13 @@
  *
  * Copyright (c) 2017 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.report;
+package is.codion.framework.domain.report;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
-import static is.codion.common.db.report.ReportType.reportType;
+import static is.codion.framework.domain.report.ReportType.reportType;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportTest {

@@ -20,12 +20,12 @@ package is.codion.framework.db.http;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.report.ReportException;
 
 import org.junit.jupiter.api.Test;
 

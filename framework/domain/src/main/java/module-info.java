@@ -33,6 +33,9 @@
  * <li>{@link is.codion.framework.domain.entity.condition.ColumnCondition}
  * <li>{@link is.codion.framework.domain.entity.condition.ColumnConditions}
  * <li>{@link is.codion.framework.domain.entity.condition.ForeignKeyConditions}
+ * <li>{@link is.codion.framework.domain.operation.DatabaseFunction}
+ * <li>{@link is.codion.framework.domain.operation.DatabaseProcedure}
+ * <li>{@link is.codion.framework.domain.report.Report}
  * </ul>
  * @uses is.codion.framework.domain.Domain
  */
@@ -46,6 +49,8 @@ module is.codion.framework.domain {
 	exports is.codion.framework.domain.entity.condition;
 	exports is.codion.framework.domain.entity.exception;
 	exports is.codion.framework.domain.entity.query;
+	exports is.codion.framework.domain.operation;
+	exports is.codion.framework.domain.report;
 	exports is.codion.framework.domain;
 
 	uses is.codion.framework.domain.Domain;
