@@ -19,9 +19,14 @@
 package is.codion.dbms.sqlite;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.database.GetValue;
 import is.codion.common.db.exception.ErrorType;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 
 /**
  * A SQLite embedded database implementation, quite experimental, based on the xerial/sqlite-jdbc driver.
@@ -29,6 +34,8 @@ import java.sql.SQLException;
 final class SQLiteDatabase extends AbstractDatabase {
 
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
+	private static final GetValue<OffsetDateTime> GET_OFFSET_DATE_TIME = new GetOffsetDateTime();
+	private static final GetValue<OffsetTime> GET_OFFSET_TIME = new GetOffsetTime();
 	// the driver reports the primary result code only, SQLITE_CONSTRAINT for all constraints,
 	// the extended one being available as the name the message starts with
 	private static final String UNIQUE = "[SQLITE_CONSTRAINT_UNIQUE]";
@@ -71,6 +78,23 @@ final class SQLiteDatabase extends AbstractDatabase {
 	@Override
 	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
 		return createLimitOffsetClause(limit, offset, NO_LIMIT);
+	}
+
+	/**
+	 * The driver does not support reading {@link OffsetDateTime} and {@link OffsetTime} via {@code getObject(index, type)},
+	 * these are therefore parsed from the ISO text the driver stores them as, SQLite's own format with a space separating
+	 * the date and time accepted as well.
+	 */
+	@Override
+	public GetValue<?> getter(int sqlType) {
+		switch (sqlType) {
+			case Types.TIMESTAMP_WITH_TIMEZONE:
+				return GET_OFFSET_DATE_TIME;
+			case Types.TIME_WITH_TIMEZONE:
+				return GET_OFFSET_TIME;
+			default:
+				return super.getter(sqlType);
+		}
 	}
 
 	@Override
@@ -121,5 +145,25 @@ final class SQLiteDatabase extends AbstractDatabase {
 		}
 
 		return null;
+	}
+
+	private static final class GetOffsetDateTime implements GetValue<OffsetDateTime> {
+
+		@Override
+		public OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
+			String value = resultSet.getString(index);
+
+			return value == null ? null : OffsetDateTime.parse(value.replace(' ', 'T'));
+		}
+	}
+
+	private static final class GetOffsetTime implements GetValue<OffsetTime> {
+
+		@Override
+		public OffsetTime get(ResultSet resultSet, int index) throws SQLException {
+			String value = resultSet.getString(index);
+
+			return value == null ? null : OffsetTime.parse(value);
+		}
 	}
 }

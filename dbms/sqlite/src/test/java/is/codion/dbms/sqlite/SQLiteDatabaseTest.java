@@ -25,8 +25,14 @@ import is.codion.common.db.exception.UniqueConstraintException;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
+import java.sql.Types;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.ResourceBundle;
 
 import static is.codion.common.db.exception.Operation.*;
@@ -98,5 +104,32 @@ public class SQLiteDatabaseTest {
 	// independent of the default locale
 	private static String message(String key) {
 		return ResourceBundle.getBundle(DatabaseException.class.getName()).getString(key);
+	}
+
+	@Test
+	void offsetValuesParsed() throws SQLException {
+		// the driver does not support getObject(index, OffsetDateTime.class), it stores them as ISO text
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
+		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> {
+							switch ((int) arguments[0]) {
+								case 1:
+									return "2026-09-26T13:45:30.123456+02:00";
+								case 2:
+									return "2026-09-26 13:45:30+02:00";// SQLite's own format
+								case 3:
+									return "13:45+02:00";// the zero seconds omitted by toString()
+								default:
+									return null;
+							}
+						});
+		ZoneOffset offset = ZoneOffset.ofHours(2);
+		assertEquals(OffsetDateTime.of(2026, 9, 26, 13, 45, 30, 123_456_000, offset),
+						database.getter(Types.TIMESTAMP_WITH_TIMEZONE).get(resultSet, 1));
+		assertEquals(OffsetDateTime.of(2026, 9, 26, 13, 45, 30, 0, offset),
+						database.getter(Types.TIMESTAMP_WITH_TIMEZONE).get(resultSet, 2));
+		assertEquals(OffsetTime.of(13, 45, 0, 0, offset), database.getter(Types.TIME_WITH_TIMEZONE).get(resultSet, 3));
+		assertNull(database.getter(Types.TIMESTAMP_WITH_TIMEZONE).get(resultSet, 4));
+		assertNull(database.getter(Types.TIME_WITH_TIMEZONE).get(resultSet, 4));
 	}
 }
