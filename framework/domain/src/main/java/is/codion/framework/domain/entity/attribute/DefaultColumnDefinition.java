@@ -41,7 +41,11 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 import static java.util.Objects.requireNonNull;
 
@@ -52,6 +56,9 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	private static final Converter<Object, Object> DEFAULT_CONVERTER = new DefaultConverter();
 	private static final Map<Class<?>, Integer> TYPE_MAP = createTypeMap();
+	// Share their SQL type with a java.time class, which the database getter and setter for that type handle,
+	// these are therefore read and written as objects
+	private static final Set<Class<?>> JAVA_SQL_TEMPORAL = new HashSet<>(asList(java.sql.Date.class, Time.class, Timestamp.class));
 
 	private final int type;
 	private final int keyIndex;
@@ -239,7 +246,6 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		typeMap.put(LocalDateTime.class, Types.TIMESTAMP);
 		typeMap.put(OffsetTime.class, Types.TIME_WITH_TIMEZONE);
 		typeMap.put(OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE);
-		typeMap.put(java.util.Date.class, Types.DATE);
 		typeMap.put(java.sql.Date.class, Types.DATE);
 		typeMap.put(Time.class, Types.TIME);
 		typeMap.put(Timestamp.class, Types.TIMESTAMP);
@@ -285,8 +291,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 			this.updatable = keyIndex < 0;
 			this.searchable = false;
 			this.name = column.name();
-			this.getValue = (GetValue<Object>) getter(this.type, column);
-			this.setValue = null;
+			this.getValue = getter(column.type().get());
+			this.setValue = setter(column.type().get());
 			this.converter = (Converter<T, Object>) DEFAULT_CONVERTER;
 			this.groupBy = false;
 			this.aggregate = false;
@@ -308,8 +314,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		public final <C> B converter(Class<C> columnType, Converter<T, C> converter) {
 			this.type = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
-			this.getValue = getter(this.type, (Column<Object>) super.attribute());
-			this.setValue = null;
+			this.getValue = getter(columnType);
+			this.setValue = setter(columnType);
 			return self();
 		}
 
@@ -319,7 +325,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 			this.type = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);
-			this.setValue = null;
+			this.setValue = setter(columnType);
 			return self();
 		}
 
@@ -328,7 +334,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 																 SetValue<C> setValue) {
 			this.type = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
-			this.getValue = getter(this.type, (Column<Object>) super.attribute());
+			this.getValue = getter(columnType);
 			this.setValue = (SetValue<Object>) requireNonNull(setValue);
 			return self();
 		}
@@ -419,10 +425,21 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		// A column-specific getter for the raw column value, or null to resolve the default getter for the SQL type
-		// from the Database at read time. Types.OTHER reads via getObject(index, type), which needs the value type class.
-		private static <T> @Nullable GetValue<T> getter(int columnType, Column<T> column) {
-			if (columnType == Types.OTHER) {
-				return (GetValue<T>) new GetObject(column.type().get());
+		// from the Database at read time. A class without an SQL type of its own reads via getObject(index, columnType),
+		// columnType being the class of the raw column value, the converter's if one is used, not the attribute's.
+		private static @Nullable GetValue<Object> getter(Class<?> columnType) {
+			if (sqlType(columnType) == Types.OTHER || JAVA_SQL_TEMPORAL.contains(columnType)) {
+				return new GetObject(columnType);
+			}
+
+			return null;
+		}
+
+		// A column-specific setter for the raw column value, or null to resolve the default setter for the SQL type
+		// from the Database at write time.
+		private static @Nullable SetValue<Object> setter(Class<?> columnType) {
+			if (JAVA_SQL_TEMPORAL.contains(columnType)) {
+				return new SetObject(sqlType(columnType));
 			}
 
 			return null;
@@ -465,6 +482,25 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		@Override
 		public B expression(String expression) {
 			throw new UnsupportedOperationException("Column expression can not be set on a subquery column: " + super.attribute());
+		}
+	}
+
+	private static final class SetObject implements SetValue<Object> {
+
+		private final int type;
+
+		private SetObject(int type) {
+			this.type = type;
+		}
+
+		@Override
+		public void set(PreparedStatement statement, int index, @Nullable Object value) throws SQLException {
+			if (value == null) {
+				statement.setNull(index, type);
+			}
+			else {
+				statement.setObject(index, value);
+			}
 		}
 	}
 
