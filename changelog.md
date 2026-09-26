@@ -8,11 +8,14 @@ Codion Change Log
 ### is.codion.common.db
 - Configuration property codion.db.pool.minimumPoolSize renamed codion.db.pool.minimumSize, codion.db.pool.maximumPoolSize renamed codion.db.pool.maximumSize.
 - Configuration property codion.report.cacheReports renamed codion.report.cache.
+- Database.setter() defaults now based on typed setters instead of setObject(value, type), whose conversion many drivers do not support for some types, byte[] failing on PostgreSQL and Oracle, Character on SQL Server, MySQL, Derby and Db2, java.time on Db2, and Derby truncating decimals.
 ### is.codion.common.rmi
 - Configuration property codion.server.connectionMaintenanceInterval renamed codion.server.connection.maintenanceInterval, codion.server.idleConnectionTimeout renamed codion.server.connection.idleTimeout.
 ### is.codion.common.model
 - FilterTableModel.TableColumns.columnClass() renamed type().
 - ConditionModel.valueClass() renamed type().
+### is.codion.dbms.oracle
+- OracleDatabase binds Boolean nulls as Types.BIT, since drivers before 23 do not support Types.BOOLEAN.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.columnClass() renamed type().
 - TextFieldBuilder, valueClass() renamed type().

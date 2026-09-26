@@ -64,34 +64,178 @@ final class ColumnValues {
 		return getters;
 	}
 
+	// Typed setters rather than setObject(index, value, type), which leaves converting the value to the
+	// given type up to the driver, and drivers differ in which conversions they support. The temporal
+	// types and OTHER use setObject(index, value), the driver inferring the type from the value.
 	static Map<Integer, SetValue<?>> setters() {
 		Map<Integer, SetValue<?>> setters = new HashMap<>();
-		int[] types = {Types.SMALLINT, Types.INTEGER, Types.BIGINT, Types.DOUBLE, Types.DECIMAL, Types.DATE,
-						Types.TIMESTAMP, Types.TIME, Types.TIMESTAMP_WITH_TIMEZONE, Types.TIME_WITH_TIMEZONE, Types.VARCHAR,
-						Types.BOOLEAN, Types.CHAR, Types.BLOB, Types.OTHER};
-		for (int type : types) {
-			setters.put(type, new DefaultSetParameter(type));
+		setters.put(Types.SMALLINT, new SetShort());
+		setters.put(Types.INTEGER, new SetInteger());
+		setters.put(Types.BIGINT, new SetLong());
+		setters.put(Types.DOUBLE, new SetDouble());
+		setters.put(Types.DECIMAL, new SetBigDecimal());
+		setters.put(Types.VARCHAR, new SetString());
+		setters.put(Types.CHAR, new SetCharacter());
+		setters.put(Types.BOOLEAN, new SetBoolean());
+		setters.put(Types.BLOB, new SetByteArray());
+		int[] objectTypes = {Types.DATE, Types.TIME, Types.TIMESTAMP, Types.TIME_WITH_TIMEZONE,
+						Types.TIMESTAMP_WITH_TIMEZONE, Types.OTHER};
+		for (int type : objectTypes) {
+			setters.put(type, new SetObject(type));
 		}
 
 		return setters;
 	}
 
-	private static final class DefaultSetParameter implements SetValue<Object> {
+	private abstract static class AbstractSetValue<T> implements SetValue<T> {
 
-		private final int type;
+		private final int nullType;
 
-		private DefaultSetParameter(int type) {
-			this.type = type;
+		private AbstractSetValue(int nullType) {
+			this.nullType = nullType;
 		}
 
 		@Override
-		public void set(PreparedStatement statement, int index, @Nullable Object value) throws SQLException {
+		public final void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException {
 			if (value == null) {
-				statement.setNull(index, type);
+				setNull(statement, index);
 			}
 			else {
-				statement.setObject(index, value, type);
+				setValue(statement, index, value);
 			}
+		}
+
+		protected void setNull(PreparedStatement statement, int index) throws SQLException {
+			statement.setNull(index, nullType);
+		}
+
+		protected abstract void setValue(PreparedStatement statement, int index, T value) throws SQLException;
+	}
+
+	private static final class SetShort extends AbstractSetValue<Short> {
+
+		private SetShort() {
+			super(Types.SMALLINT);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, Short value) throws SQLException {
+			statement.setShort(index, value);
+		}
+	}
+
+	private static final class SetInteger extends AbstractSetValue<Integer> {
+
+		private SetInteger() {
+			super(Types.INTEGER);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, Integer value) throws SQLException {
+			statement.setInt(index, value);
+		}
+	}
+
+	private static final class SetLong extends AbstractSetValue<Long> {
+
+		private SetLong() {
+			super(Types.BIGINT);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, Long value) throws SQLException {
+			statement.setLong(index, value);
+		}
+	}
+
+	private static final class SetDouble extends AbstractSetValue<Double> {
+
+		private SetDouble() {
+			super(Types.DOUBLE);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, Double value) throws SQLException {
+			statement.setDouble(index, value);
+		}
+	}
+
+	private static final class SetBigDecimal extends AbstractSetValue<BigDecimal> {
+
+		private SetBigDecimal() {
+			super(Types.DECIMAL);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, BigDecimal value) throws SQLException {
+			statement.setBigDecimal(index, value);
+		}
+	}
+
+	private static final class SetString extends AbstractSetValue<String> {
+
+		private SetString() {
+			super(Types.VARCHAR);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, String value) throws SQLException {
+			statement.setString(index, value);
+		}
+	}
+
+	private static final class SetCharacter extends AbstractSetValue<Character> {
+
+		private SetCharacter() {
+			super(Types.CHAR);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, Character value) throws SQLException {
+			statement.setString(index, value.toString());
+		}
+	}
+
+	private static final class SetBoolean extends AbstractSetValue<Boolean> {
+
+		private SetBoolean() {
+			super(Types.BOOLEAN);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, Boolean value) throws SQLException {
+			statement.setBoolean(index, value);
+		}
+	}
+
+	private static final class SetByteArray extends AbstractSetValue<byte[]> {
+
+		private SetByteArray() {
+			super(Types.BLOB);
+		}
+
+		// Leaves the null type up to the driver, a BLOB null being rejected by a PostgreSQL bytea column
+		// and a VARBINARY null by a Derby blob column
+		@Override
+		protected void setNull(PreparedStatement statement, int index) throws SQLException {
+			statement.setBytes(index, null);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, byte[] value) throws SQLException {
+			statement.setBytes(index, value);
+		}
+	}
+
+	private static final class SetObject extends AbstractSetValue<Object> {
+
+		private SetObject(int type) {
+			super(type);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, Object value) throws SQLException {
+			statement.setObject(index, value);
 		}
 	}
 

@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.oracle;
 
+import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -26,8 +27,13 @@ import is.codion.common.db.exception.UniqueConstraintException;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.db.exception.Operation.*;
@@ -83,6 +89,20 @@ public class OracleDatabaseTest {
 	@Test
 	void constructorNullUrl() {
 		assertThrows(NullPointerException.class, () -> new OracleDatabase(null));
+	}
+
+	@Test
+	void booleanNullsAsBit() throws SQLException {
+		List<String> calls = new ArrayList<>();
+		PreparedStatement statement = (PreparedStatement) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {PreparedStatement.class}, (proxy, method, arguments) -> {
+							calls.add(method.getName() + "(" + arguments[0] + ", " + arguments[1] + ")");
+							return null;
+						});
+		SetValue<Boolean> setter = (SetValue<Boolean>) new OracleDatabase(URL).setter(Types.BOOLEAN);
+		setter.set(statement, 1, null);
+		setter.set(statement, 2, true);
+		assertEquals(List.of("setNull(1, " + Types.BIT + ")", "setBoolean(2, true)"), calls);
 	}
 
 	@Test
