@@ -39,6 +39,7 @@ Codion Change Log
 - ColumnDefinition, java.util.Date no longer mapped to Types.DATE, java.sql.Date, Time and Timestamp now read and written as such instead of via the java.time based defaults for their types, a value of a column with a converter now read based on the converter column type instead of the attribute type.
 ### is.codion.framework.domain.db
 - MetaDataColumn.columnClass() and columnName() renamed type() and name().
+- SchemaDomain column types, floating point columns no longer Integer, whole numbers beyond an Integer Long, multi character CHAR columns String, NCHAR, NVARCHAR, CLOB, NCLOB, TINYINT and binary columns now mapped, time zone, UUID and Oracle binary float columns recognized by type name, SQLite columns based on their declared types.
 ### is.codion.framework.db.local
 - Configuration property codion.db.tracing renamed codion.db.tracing.enabled.
 ### is.codion.framework.servlet
