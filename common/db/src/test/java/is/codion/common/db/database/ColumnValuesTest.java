@@ -65,6 +65,8 @@ public final class ColumnValuesTest {
 		assertEquals("setNull(1, " + Types.BOOLEAN + ")", set(Types.BOOLEAN, null));
 		// a null type of the driver's choosing, neither BLOB nor VARBINARY working for every database
 		assertEquals("setBytes(1, null)", set(Types.BLOB, null));
+		// an untyped null, a null of type OTHER being rejected by Oracle and Derby
+		assertEquals("setObject(1, null)", set(Types.OTHER, null));
 	}
 
 	private String set(int sqlType, @Nullable Object value) throws SQLException {

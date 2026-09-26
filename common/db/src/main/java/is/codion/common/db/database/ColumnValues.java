@@ -78,9 +78,9 @@ final class ColumnValues {
 		setters.put(Types.CHAR, new SetCharacter());
 		setters.put(Types.BOOLEAN, new SetBoolean());
 		setters.put(Types.BLOB, new SetByteArray());
-		int[] objectTypes = {Types.DATE, Types.TIME, Types.TIMESTAMP, Types.TIME_WITH_TIMEZONE,
-						Types.TIMESTAMP_WITH_TIMEZONE, Types.OTHER};
-		for (int type : objectTypes) {
+		setters.put(Types.OTHER, new SetOther());
+		int[] temporalTypes = {Types.DATE, Types.TIME, Types.TIMESTAMP, Types.TIME_WITH_TIMEZONE, Types.TIMESTAMP_WITH_TIMEZONE};
+		for (int type : temporalTypes) {
 			setters.put(type, new SetObject(type));
 		}
 
@@ -231,6 +231,24 @@ final class ColumnValues {
 
 		private SetObject(int type) {
 			super(type);
+		}
+
+		@Override
+		protected void setValue(PreparedStatement statement, int index, Object value) throws SQLException {
+			statement.setObject(index, value);
+		}
+	}
+
+	private static final class SetOther extends AbstractSetValue<Object> {
+
+		private SetOther() {
+			super(Types.OTHER);
+		}
+
+		// An untyped null, the database inferring the type, a null of type OTHER being rejected by Oracle and Derby
+		@Override
+		protected void setNull(PreparedStatement statement, int index) throws SQLException {
+			statement.setObject(index, null);
 		}
 
 		@Override
