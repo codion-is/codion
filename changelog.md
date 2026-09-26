@@ -36,6 +36,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityPanel.CONTROL_TOOLBAR_CONSTRAINTS configuration property key now controlToolbarConstraints.
 - FrameworkIcons.FRAMEWORK_ICONS renamed IMPLEMENTATION.
+- EntityTablePanel no longer offers the query inspector when its queries can not be created, a connection other than a local one without codion.db.url specified.
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.converter() columnClass parameter renamed columnType.
 - Attribute.DataType.valueClass() renamed get().
@@ -46,6 +47,8 @@ Codion Change Log
 - SchemaDomain column types, decimal columns BigDecimal instead of Double, floating point columns no longer Integer, whole numbers beyond an Integer Long, multi character CHAR columns String, NCHAR, NVARCHAR, CLOB, NCLOB, TINYINT and binary columns now mapped, time zone, UUID and Oracle binary float columns recognized by type name, SQLite columns based on their declared types.
 - SchemaDomain, catalogs used as schemas when a database reports no schemas, MySQL and MariaDB, which previously required the databaseTerm=SCHEMA or useCatalogTerm=Schema driver property.
 - SchemaDomain no longer fails with drivers not reporting IS_GENERATEDCOLUMN, added in JDBC 4.1.
+### is.codion.framework.db
+- EntityQueries.Factory.create() now based on the connection, a local connection providing its own database, instead of a database and entities.
 ### is.codion.framework.db.local
 - Configuration property codion.db.tracing renamed codion.db.tracing.enabled.
 ### is.codion.framework.servlet

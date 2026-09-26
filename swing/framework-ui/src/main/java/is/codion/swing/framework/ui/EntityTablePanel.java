@@ -1624,8 +1624,9 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includeEntityViewer) {
 			controlMap.control(VIEW_ENTITY).set(command(this::viewEntity));
 		}
-		if (configuration.includeInspector && EntityQueries.factory().isPresent()) {
-			controlMap.control(INSPECT_QUERY).set(command(this::inspectQuery));
+		if (configuration.includeInspector) {
+			createQueries().ifPresent(queries ->
+							controlMap.control(INSPECT_QUERY).set(command(() -> inspectQuery(queries))));
 		}
 		if (configuration.includePopupMenu) {
 			controlMap.control(POPUP_MENU).set(command(this::showPopupMenu));
@@ -1675,9 +1676,20 @@ public class EntityTablePanel extends JPanel {
 						EntityViewer.view(selected.primaryKey(), model.connection(), this));
 	}
 
-	private void inspectQuery() {
+	private Optional<EntityQueries> createQueries() {
+		try {
+			return EntityQueries.factory()
+							.map(factory -> factory.create(model.connection()));
+		}
+		catch (Exception e) {
+			LOG.debug("Unable to initialize EntityQueries", e);
+			return Optional.empty();
+		}
+	}
+
+	private void inspectQuery(EntityQueries queries) {
 		if (queryInspector == null) {
-			queryInspector = new SelectQueryInspector(model.query());
+			queryInspector = new SelectQueryInspector(queries, model.query());
 		}
 		if (queryInspector.isShowing()) {
 			Ancestor.window().of(queryInspector).toFront();

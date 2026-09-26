@@ -19,8 +19,10 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityQueries;
-import is.codion.framework.domain.entity.Entities;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * The default {@link EntityQueries.Factory} implementation, providing {@link DefaultEntityQueries} instances.
@@ -28,12 +30,16 @@ import is.codion.framework.domain.entity.Entities;
 public final class DefaultEntityQueriesFactory implements EntityQueries.Factory {
 
 	/**
-	 * @param database the database
-	 * @param entities the domain entities
+	 * @param connection the connection, a {@link LocalEntityConnection} providing its own database,
+	 * any other the one returned by {@link Database#instance()}
 	 * @return a new {@link EntityQueries} instance
 	 */
 	@Override
-	public EntityQueries create(Database database, Entities entities) {
-		return new DefaultEntityQueries(database, entities);
+	public EntityQueries create(EntityConnection connection) {
+		Database database = requireNonNull(connection) instanceof LocalEntityConnection ?
+						((LocalEntityConnection) connection).database() :
+						Database.instance();
+
+		return new DefaultEntityQueries(database, connection.entities());
 	}
 }
