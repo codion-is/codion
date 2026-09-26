@@ -14,6 +14,8 @@ Codion Change Log
 ### is.codion.common.model
 - FilterTableModel.TableColumns.columnClass() renamed type().
 - ConditionModel.valueClass() renamed type().
+### is.codion.dbms.derby
+- DerbyDatabase reads and writes java.time values via java.sql.Date, Time and Timestamp, Derby not supporting java.time.
 ### is.codion.dbms.oracle
 - OracleDatabase binds Boolean nulls as Types.BIT, since drivers before 23 do not support Types.BOOLEAN.
 ### is.codion.swing.common.ui

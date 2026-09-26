@@ -19,10 +19,22 @@
 package is.codion.dbms.derby;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.database.GetValue;
+import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.ErrorType;
 
+import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,6 +54,15 @@ final class DerbyDatabase extends AbstractDatabase {
 	private static final String JDBC_URL_PREFIX_FILE = "jdbc:derby:";
 
 	static final String AUTO_INCREMENT_QUERY = "VALUES IDENTITY_VAL_LOCAL()";
+
+	private static final Map<Integer, GetValue<?>> GETTERS = Map.of(
+					Types.DATE, new GetLocalDate(),
+					Types.TIME, new GetLocalTime(),
+					Types.TIMESTAMP, new GetLocalDateTime());
+	private static final Map<Integer, SetValue<?>> SETTERS = Map.of(
+					Types.DATE, new SetLocalDate(),
+					Types.TIME, new SetLocalTime(),
+					Types.TIMESTAMP, new SetLocalDateTime());
 
 	DerbyDatabase(String url) {
 		super(url);
@@ -77,6 +98,28 @@ final class DerbyDatabase extends AbstractDatabase {
 	@Override
 	public String autoIncrementQuery(String idSource) {
 		return AUTO_INCREMENT_QUERY;
+	}
+
+	/**
+	 * Derby does not support java.time, the temporal values are read via {@link Date}, {@link Time} and {@link Timestamp}.
+	 * <p>Note that Derby interprets timestamps in the default time zone, a local date time falling into a daylight
+	 * saving gap being moved forward, whichever way it is set.
+	 */
+	@Override
+	public GetValue<?> getter(int sqlType) {
+		GetValue<?> getter = GETTERS.get(sqlType);
+
+		return getter == null ? super.getter(sqlType) : getter;
+	}
+
+	/**
+	 * Derby does not support java.time, the temporal values are set via {@link Date}, {@link Time} and {@link Timestamp}.
+	 */
+	@Override
+	public SetValue<?> setter(int sqlType) {
+		SetValue<?> setter = SETTERS.get(sqlType);
+
+		return setter == null ? super.setter(sqlType) : setter;
 	}
 
 	/**
@@ -138,6 +181,60 @@ final class DerbyDatabase extends AbstractDatabase {
 			if (!SHUTDOWN.equals(e.getSQLState())) {
 				throw e;
 			}
+		}
+	}
+
+	private static final class GetLocalDate implements GetValue<LocalDate> {
+
+		@Override
+		public LocalDate get(ResultSet resultSet, int index) throws SQLException {
+			Date date = resultSet.getDate(index);
+
+			return date == null ? null : date.toLocalDate();
+		}
+	}
+
+	private static final class GetLocalTime implements GetValue<LocalTime> {
+
+		@Override
+		public LocalTime get(ResultSet resultSet, int index) throws SQLException {
+			Time time = resultSet.getTime(index);
+
+			return time == null ? null : time.toLocalTime();
+		}
+	}
+
+	private static final class GetLocalDateTime implements GetValue<LocalDateTime> {
+
+		@Override
+		public LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
+			Timestamp timestamp = resultSet.getTimestamp(index);
+
+			return timestamp == null ? null : timestamp.toLocalDateTime();
+		}
+	}
+
+	private static final class SetLocalDate implements SetValue<LocalDate> {
+
+		@Override
+		public void set(PreparedStatement statement, int index, LocalDate value) throws SQLException {
+			statement.setDate(index, value == null ? null : Date.valueOf(value));
+		}
+	}
+
+	private static final class SetLocalTime implements SetValue<LocalTime> {
+
+		@Override
+		public void set(PreparedStatement statement, int index, LocalTime value) throws SQLException {
+			statement.setTime(index, value == null ? null : Time.valueOf(value));
+		}
+	}
+
+	private static final class SetLocalDateTime implements SetValue<LocalDateTime> {
+
+		@Override
+		public void set(PreparedStatement statement, int index, LocalDateTime value) throws SQLException {
+			statement.setTimestamp(index, value == null ? null : Timestamp.valueOf(value));
 		}
 	}
 }

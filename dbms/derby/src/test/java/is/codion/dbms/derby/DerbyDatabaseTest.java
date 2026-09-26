@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.derby;
 
+import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -26,8 +27,20 @@ import is.codion.common.db.exception.UniqueConstraintException;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.db.exception.Operation.*;
@@ -65,6 +78,37 @@ public class DerbyDatabaseTest {
 	void autoIncrementQuery() {
 		DerbyDatabase db = new DerbyDatabase(URL);
 		assertEquals("VALUES IDENTITY_VAL_LOCAL()", db.autoIncrementQuery("id_source"));
+	}
+
+	@Test
+	void temporalValuesViaSqlTypes() throws SQLException {
+		// Derby does not support java.time
+		DerbyDatabase database = new DerbyDatabase(URL);
+		List<String> calls = new ArrayList<>();
+		PreparedStatement statement = (PreparedStatement) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {PreparedStatement.class}, (proxy, method, arguments) -> {
+							calls.add(method.getName() + "(" + arguments[0] + ", " + arguments[1] + ")");
+							return null;
+						});
+		((SetValue<LocalDate>) database.setter(Types.DATE)).set(statement, 1, LocalDate.of(2026, 9, 26));
+		((SetValue<LocalTime>) database.setter(Types.TIME)).set(statement, 2, LocalTime.of(13, 45, 30));
+		((SetValue<LocalDateTime>) database.setter(Types.TIMESTAMP)).set(statement, 3, LocalDateTime.of(2026, 9, 26, 13, 45, 30, 123_456_000));
+		database.setter(Types.DATE).set(statement, 4, null);
+		((SetValue<Integer>) database.setter(Types.INTEGER)).set(statement, 5, 1);
+		assertEquals(List.of("setDate(1, 2026-09-26)", "setTime(2, 13:45:30)", "setTimestamp(3, 2026-09-26 13:45:30.123456)",
+						"setDate(4, null)", "setInt(5, 1)"), calls);
+
+		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> switch (method.getName()) {
+							case "getDate" -> (int) arguments[0] == 1 ? Date.valueOf("2026-09-26") : null;
+							case "getTime" -> Time.valueOf("13:45:30");
+							case "getTimestamp" -> Timestamp.valueOf("2026-09-26 13:45:30.123456");
+							default -> throw new UnsupportedOperationException(method.getName());
+						});
+		assertEquals(LocalDate.of(2026, 9, 26), database.getter(Types.DATE).get(resultSet, 1));
+		assertNull(database.getter(Types.DATE).get(resultSet, 2));
+		assertEquals(LocalTime.of(13, 45, 30), database.getter(Types.TIME).get(resultSet, 1));
+		assertEquals(LocalDateTime.of(2026, 9, 26, 13, 45, 30, 123_456_000), database.getter(Types.TIMESTAMP).get(resultSet, 1));
 	}
 
 	@Test
