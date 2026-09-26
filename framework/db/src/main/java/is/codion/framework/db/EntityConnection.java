@@ -19,10 +19,6 @@
 package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
@@ -46,6 +42,10 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.operation.FunctionType;
+import is.codion.framework.domain.operation.ProcedureType;
+import is.codion.framework.domain.report.Report;
+import is.codion.framework.domain.report.ReportType;
 
 import org.jspecify.annotations.Nullable;
 
@@ -879,7 +879,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param <R> the report result type
 	 * @return the filled result object
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.report.ReportException in case of a report exception
+	 * @throws is.codion.framework.domain.report.ReportException in case of a report exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
 	<P, R> R report(ReportType<P, R> reportType, @Nullable P parameter);

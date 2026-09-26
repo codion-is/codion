@@ -18,21 +18,21 @@
  */
 package is.codion.plugin.jasperreports;
 
-import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.report.ReportType;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
 import java.time.LocalDate;
 import java.util.Map;
 
-import static is.codion.common.db.report.ReportType.reportType;
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
+import static is.codion.framework.domain.report.ReportType.reportType;
 import static is.codion.plugin.jasperreports.JasperReports.*;
 import static java.util.Arrays.asList;
 

@@ -155,7 +155,7 @@ codion/
 
 6. **License**: GPL-3.0 license. Note: This is "open-source, not open-contribution" - code contributions are not accepted.
 
-7. **Static Factory Methods**: Factory methods are named after the type they return (e.g., `ReportType.reportType()`, `State.state()`) to enable clean static imports: `import static is.codion.common.db.report.ReportType.reportType;` then `ReportType report = reportType("name");`. This pattern is used consistently throughout the framework.
+7. **Static Factory Methods**: Factory methods are named after the type they return (e.g., `ReportType.reportType()`, `State.state()`) to enable clean static imports: `import static is.codion.framework.domain.report.ReportType.reportType;` then `ReportType report = reportType("name");`. This pattern is used consistently throughout the framework.
 
 ### Development Notes
 

@@ -17,12 +17,7 @@
  * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * <p>Report related classes.
- * <p>Package configuration values:
- * <ul>
- * <li>{@link is.codion.common.db.report.Report#REPORT_PATH}
- * <li>{@link is.codion.common.db.report.Report#CACHE_REPORTS}
- * </ul>
+ * <p>Database operations and functions.
  */
 @org.jspecify.annotations.NullMarked
-package is.codion.common.db.report;
+package is.codion.framework.domain.operation;

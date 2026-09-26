@@ -19,11 +19,6 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.AbstractReport;
-import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
@@ -36,6 +31,11 @@ import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
+import is.codion.framework.domain.operation.FunctionType;
+import is.codion.framework.domain.operation.ProcedureType;
+import is.codion.framework.domain.report.AbstractReport;
+import is.codion.framework.domain.report.Report;
+import is.codion.framework.domain.report.ReportType;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

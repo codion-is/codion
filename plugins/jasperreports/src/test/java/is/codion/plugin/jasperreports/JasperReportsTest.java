@@ -19,12 +19,12 @@
 package is.codion.plugin.jasperreports;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
-import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.domain.report.Report;
+import is.codion.framework.domain.report.ReportException;
+import is.codion.framework.domain.report.ReportType;
 import is.codion.plugin.jasperreports.TestDomain.Employee;
 
 import net.sf.jasperreports.engine.JRDataSource;

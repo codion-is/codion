@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.report;
+package is.codion.framework.domain.report;
 
 /**
  * Identifies a report.

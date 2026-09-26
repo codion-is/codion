@@ -18,7 +18,6 @@
  */
 package is.codion.demos.world.domain.api;
 
-import is.codion.common.db.operation.FunctionType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
@@ -30,12 +29,13 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.operation.FunctionType;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import static is.codion.common.db.operation.FunctionType.functionType;
+import static is.codion.framework.domain.operation.FunctionType.functionType;
 
 /**
  * World domain api.

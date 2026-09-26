@@ -18,7 +18,7 @@
  */
 package is.codion.plugin.jasperreports;
 
-import is.codion.common.db.report.Report;
+import is.codion.framework.domain.report.Report;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -27,8 +27,8 @@ import java.util.Map;
 
 /**
  * A JasperReport, producing a result of type {@code R} when filled.
- * <p>Identified by a plain {@link is.codion.common.db.report.ReportType}, created via
- * {@link is.codion.common.db.report.ReportType#reportType(String)}, since a report type names
+ * <p>Identified by a plain {@link is.codion.framework.domain.report.ReportType}, created via
+ * {@link is.codion.framework.domain.report.ReportType#reportType(String)}, since a report type names
  * a report and says nothing of the engine backing it:
  * {@snippet :
  * ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("customer_report");

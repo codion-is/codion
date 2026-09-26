@@ -18,8 +18,8 @@
  */
 package is.codion.plugin.jasperreports;
 
-import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
+import is.codion.framework.domain.report.Report;
+import is.codion.framework.domain.report.ReportException;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;

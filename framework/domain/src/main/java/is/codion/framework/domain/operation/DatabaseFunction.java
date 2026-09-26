@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2019 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.operation;
+package is.codion.framework.domain.operation;
 
 import org.jspecify.annotations.Nullable;
 

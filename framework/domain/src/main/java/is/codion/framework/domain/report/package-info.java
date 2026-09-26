@@ -14,24 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2019 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.operation;
-
-import org.jspecify.annotations.Nullable;
-
 /**
- * A database procedure
- * @param <C> the connection type required by this procedure
- * @param <P> the procedure parameter type
+ * <p>Report related classes.
+ * <p>Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.framework.domain.report.Report#REPORT_PATH}
+ * <li>{@link is.codion.framework.domain.report.Report#CACHE_REPORTS}
+ * </ul>
  */
-@FunctionalInterface
-public interface DatabaseProcedure<C, P> {
-
-	/**
-	 * Executes this procedure using the given connection
-	 * @param connection the connection to use
-	 * @param parameter the procedure parameter, if any
-	 */
-	void execute(C connection, @Nullable P parameter);
-}
+@org.jspecify.annotations.NullMarked
+package is.codion.framework.domain.report;

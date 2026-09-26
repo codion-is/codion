@@ -294,8 +294,8 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === Function
 
-** {url-entity-connection}#execute(is.codion.common.db.operation.FunctionType)[execute(FunctionType functionType)]
-** {url-entity-connection}#execute(is.codion.common.db.operation.FunctionType,P)[execute(FunctionType functionType, P parameter)]
+** {url-entity-connection}#execute(is.codion.framework.domain.operation.FunctionType)[execute(FunctionType functionType)]
+** {url-entity-connection}#execute(is.codion.framework.domain.operation.FunctionType,P)[execute(FunctionType functionType, P parameter)]
 
 [source,java,indent=0]
 ----
@@ -304,8 +304,8 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === Procedure
 
-** {url-entity-connection}#execute(is.codion.common.db.operation.ProcedureType)[execute(ProcedureType procedureType)]
-** {url-entity-connection}#execute(is.codion.common.db.operation.ProcedureType,P)[execute(ProcedureType procedureType, P parameter)]
+** {url-entity-connection}#execute(is.codion.framework.domain.operation.ProcedureType)[execute(ProcedureType procedureType)]
+** {url-entity-connection}#execute(is.codion.framework.domain.operation.ProcedureType,P)[execute(ProcedureType procedureType, P parameter)]
 
 [source,java,indent=0]
 ----
@@ -316,7 +316,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === report
 
-** {url-entity-connection}#report(is.codion.common.db.report.ReportType,P)[report(ReportType reportType, P reportParameters)]
+** {url-entity-connection}#report(is.codion.framework.domain.report.ReportType,P)[report(ReportType reportType, P reportParameters)]
 
 [source,java,indent=0]
 ----

@@ -20,8 +20,6 @@ package is.codion.demos.chinook.domain;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.operation.DatabaseFunction;
-import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.demos.chinook.domain.api.Chinook;
@@ -39,6 +37,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.ColumnTemplate;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
+import is.codion.framework.domain.operation.DatabaseFunction;
+import is.codion.framework.domain.operation.DatabaseProcedure;
 import is.codion.plugin.jasperreports.JRExport;
 
 import java.math.BigDecimal;

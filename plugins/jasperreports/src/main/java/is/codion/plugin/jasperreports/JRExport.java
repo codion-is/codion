@@ -93,7 +93,7 @@ public interface JRExport<R> {
 	 * resource, which is scanned off the classpath, so nothing requires its module and it is neither
 	 * resolved on the module path nor included in a jlink image unless named explicitly, via
 	 * {@code --add-modules net.sf.jasperreports.pdf}. A missing extension surfaces as a
-	 * {@link is.codion.common.db.report.ReportException} when the report is filled.
+	 * {@link is.codion.framework.domain.report.ReportException} when the report is filled.
 	 */
 	JRExport<byte[]> PDF = JasperExportManager::exportReportToPdf;
 

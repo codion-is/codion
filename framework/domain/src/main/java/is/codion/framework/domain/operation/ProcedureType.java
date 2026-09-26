@@ -14,10 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2019 - 2026, Björn Darri Sigurðsson.
  */
+package is.codion.framework.domain.operation;
+
 /**
- * <p>Database operations and functions.
+ * Identifies a database procedure.
+ * @param <C> the connection type
+ * @param <P> the procedure parameter type
  */
-@org.jspecify.annotations.NullMarked
-package is.codion.common.db.operation;
+public interface ProcedureType<C, P> {
+
+	/**
+	 * @return the procedure name
+	 */
+	String name();
+
+	/**
+	 * Creates a {@link ProcedureType} with the given name.
+	 * @param name the name
+	 * @param <C> the connection type
+	 * @param <P> the procedure parameter type
+	 * @return a new {@link ProcedureType}
+	 */
+	static <C, P> ProcedureType<C, P> procedureType(String name) {
+		return new DefaultProcedureType<>(name);
+	}
+}

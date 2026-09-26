@@ -9,16 +9,16 @@ NOTE: All examples are from the Chinook demo
 
 Codion's procedure and function support provides a type-safe abstraction for executing database operations that go beyond simple CRUD. While you can implement procedures and functions by directly calling database stored procedures, Codion encourages implementing business logic in Java using the {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html[EntityConnection] API.
 
-*{url-javadoc}{common-db}/is/codion/common/db/operation/ProcedureType.html[ProcedureType]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/operation/ProcedureType.html[ProcedureType]*::
 A typed identifier for a procedure that performs an operation without returning a value.
 
-*{url-javadoc}{common-db}/is/codion/common/db/operation/DatabaseProcedure.html[DatabaseProcedure]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/operation/DatabaseProcedure.html[DatabaseProcedure]*::
 The implementation interface for procedures, taking a connection and optional argument.
 
-*{url-javadoc}{common-db}/is/codion/common/db/operation/FunctionType.html[FunctionType]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/operation/FunctionType.html[FunctionType]*::
 A typed identifier for a function that performs an operation and returns a result.
 
-*{url-javadoc}{common-db}/is/codion/common/db/operation/DatabaseFunction.html[DatabaseFunction]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/operation/DatabaseFunction.html[DatabaseFunction]*::
 The implementation interface for functions, taking a connection and optional argument, returning a result.
 
 Both procedures and functions are:
@@ -110,7 +110,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[ta
 
 == Usage
 
-Procedures and functions are executed via {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html#execute(is.codion.common.db.operation.FunctionType,P)[EntityConnection.execute()]. The connection is passed to the implementation, which can use it for database operations.
+Procedures and functions are executed via {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html#execute(is.codion.framework.domain.operation.FunctionType,P)[EntityConnection.execute()]. The connection is passed to the implementation, which can use it for database operations.
 
 === Executing a Function
 
