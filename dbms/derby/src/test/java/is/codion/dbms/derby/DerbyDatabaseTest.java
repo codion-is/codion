@@ -24,6 +24,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
+import is.codion.common.utilities.proxy.ProxyBuilder;
 
 import org.junit.jupiter.api.Test;
 
@@ -98,13 +99,11 @@ public class DerbyDatabaseTest {
 		assertEquals(List.of("setDate(1, 2026-09-26)", "setTime(2, 13:45:30)", "setTimestamp(3, 2026-09-26 13:45:30.123456)",
 						"setDate(4, null)", "setInt(5, 1)"), calls);
 
-		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
-						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> switch (method.getName()) {
-							case "getDate" -> (int) arguments[0] == 1 ? Date.valueOf("2026-09-26") : null;
-							case "getTime" -> Time.valueOf("13:45:30");
-							case "getTimestamp" -> Timestamp.valueOf("2026-09-26 13:45:30.123456");
-							default -> throw new UnsupportedOperationException(method.getName());
-						});
+		ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+						.method("getDate", int.class, parameters -> parameters.arguments().get(0).equals(1) ? Date.valueOf("2026-09-26") : null)
+						.method("getTime", int.class, parameters -> Time.valueOf("13:45:30"))
+						.method("getTimestamp", int.class, parameters -> Timestamp.valueOf("2026-09-26 13:45:30.123456"))
+						.build();
 		assertEquals(LocalDate.of(2026, 9, 26), database.getter(Types.DATE).get(resultSet, 1));
 		assertNull(database.getter(Types.DATE).get(resultSet, 2));
 		assertEquals(LocalTime.of(13, 45, 30), database.getter(Types.TIME).get(resultSet, 1));

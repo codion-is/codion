@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -46,8 +47,10 @@ public final class ColumnDefinitionTest {
 	@Test
 	void readsAndWritesTheColumnClass() throws SQLException {
 		Timestamp timestamp = Timestamp.valueOf("2026-09-26 13:45:30.123456");
-		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] {ResultSet.class},
-						(proxy, method, arguments) -> method.getName().equals("getObject") && arguments[1] == Timestamp.class ? timestamp : null);
+		ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+						.method("getObject", Arrays.asList(int.class, Class.class),
+										parameters -> parameters.arguments().get(1) == Timestamp.class ? timestamp : null)
+						.build();
 		// not the LocalDateTime based default getter for the TIMESTAMP type it shares
 		ColumnDefinition<Timestamp> column = (ColumnDefinition<Timestamp>) ENTITY_TYPE.column("timestamp", Timestamp.class).as()
 						.column()

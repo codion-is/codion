@@ -18,9 +18,11 @@
  */
 package is.codion.framework.domain.db;
 
+import is.codion.common.utilities.proxy.ProxyBuilder;
+import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
+
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -125,23 +127,23 @@ public final class MetaDataColumnTest {
 		row.put("REMARKS", null);
 		row.put("IS_AUTOINCREMENT", "NO");
 		List<String> columnNames = new ArrayList<>(row.keySet());
-		ResultSetMetaData metaData = (ResultSetMetaData) Proxy.newProxyInstance(getClass().getClassLoader(),
-						new Class<?>[] {ResultSetMetaData.class}, (proxy, method, arguments) ->
-										method.getName().equals("getColumnCount") ? columnNames.size() : columnNames.get((int) arguments[0] - 1));
-		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
-						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> {
-							switch (method.getName()) {
-								case "getMetaData":
-									return metaData;
-								case "wasNull":
-									return false;
-								default:
-									if (!row.containsKey(arguments[0])) {
-										throw new SQLException("The column name " + arguments[0] + " is not valid.");
-									}
-									return row.get(arguments[0]);
-							}
-						});
+		ResultSetMetaData metaData = ProxyBuilder.of(ResultSetMetaData.class)
+						.method("getColumnCount", parameters -> columnNames.size())
+						.method("getColumnLabel", int.class, parameters -> columnNames.get((int) parameters.arguments().get(0) - 1))
+						.build();
+		ProxyMethod<ResultSet> columnValue = parameters -> {
+			Object columnName = parameters.arguments().get(0);
+			if (!row.containsKey(columnName)) {
+				throw new SQLException("The column name " + columnName + " is not valid.");
+			}
+			return row.get(columnName);
+		};
+		ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+						.method("getMetaData", parameters -> metaData)
+						.method("wasNull", parameters -> false)
+						.method("getInt", String.class, columnValue)
+						.method("getString", String.class, columnValue)
+						.build();
 		MetaDataColumn column = new MetaDataColumn.ColumnPacker(emptyList(), emptyList(), false).get(resultSet);
 		assertEquals(Integer.class, column.type());
 		assertFalse(column.generated());

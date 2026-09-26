@@ -23,10 +23,11 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
+import is.codion.common.utilities.proxy.ProxyBuilder;
+import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
 
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Proxy;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,28 +83,21 @@ public class Db2DatabaseTest {
 	void temporalValuesViaSqlTypes() throws SQLException {
 		// drivers before 12 throw a NullPointerException from getObject(index, LocalDate.class) for a null value
 		Db2Database database = new Db2Database(URL);
-		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
-						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> {
-							if ((int) arguments[0] == 2) {
-								return null;
-							}
-							switch (method.getName()) {
-								case "getDate":
-									return Date.valueOf("2026-09-26");
-								case "getTime":
-									return Time.valueOf("13:45:30");
-								case "getTimestamp":
-									return Timestamp.valueOf("2026-09-26 13:45:30.123456");
-								default:
-									throw new UnsupportedOperationException(method.getName());
-							}
-						});
+		ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+						.method("getDate", int.class, atIndexOne(Date.valueOf("2026-09-26")))
+						.method("getTime", int.class, atIndexOne(Time.valueOf("13:45:30")))
+						.method("getTimestamp", int.class, atIndexOne(Timestamp.valueOf("2026-09-26 13:45:30.123456")))
+						.build();
 		assertEquals(LocalDate.of(2026, 9, 26), database.getter(Types.DATE).get(resultSet, 1));
 		assertEquals(LocalTime.of(13, 45, 30), database.getter(Types.TIME).get(resultSet, 1));
 		assertEquals(LocalDateTime.of(2026, 9, 26, 13, 45, 30, 123_456_000), database.getter(Types.TIMESTAMP).get(resultSet, 1));
 		assertNull(database.getter(Types.DATE).get(resultSet, 2));
 		assertNull(database.getter(Types.TIME).get(resultSet, 2));
 		assertNull(database.getter(Types.TIMESTAMP).get(resultSet, 2));
+	}
+
+	private static ProxyMethod<ResultSet> atIndexOne(Object value) {
+		return parameters -> parameters.arguments().get(0).equals(1) ? value : null;
 	}
 
 	@Test

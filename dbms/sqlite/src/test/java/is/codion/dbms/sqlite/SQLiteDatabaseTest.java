@@ -22,10 +22,10 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
+import is.codion.common.utilities.proxy.ProxyBuilder;
 
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Proxy;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
@@ -110,9 +110,9 @@ public class SQLiteDatabaseTest {
 	void offsetValuesParsed() throws SQLException {
 		// the driver does not support getObject(index, OffsetDateTime.class), it stores them as ISO text
 		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
-		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
-						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> {
-							switch ((int) arguments[0]) {
+		ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+						.method("getString", int.class, parameters -> {
+							switch ((int) parameters.arguments().get(0)) {
 								case 1:
 									return "2026-09-26T13:45:30.123456+02:00";
 								case 2:
@@ -122,7 +122,8 @@ public class SQLiteDatabaseTest {
 								default:
 									return null;
 							}
-						});
+						})
+						.build();
 		ZoneOffset offset = ZoneOffset.ofHours(2);
 		assertEquals(OffsetDateTime.of(2026, 9, 26, 13, 45, 30, 123_456_000, offset),
 						database.getter(Types.TIMESTAMP_WITH_TIMEZONE).get(resultSet, 1));
