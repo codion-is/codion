@@ -36,6 +36,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.converter() columnClass parameter renamed columnType.
 - Attribute.DataType.valueClass() renamed get().
+- ColumnDefinition, java.util.Date no longer mapped to Types.DATE, java.sql.Date, Time and Timestamp now read and written as such instead of via the java.time based defaults for their types, a value of a column with a converter now read based on the converter column type instead of the attribute type.
 ### is.codion.framework.domain.db
 - MetaDataColumn.columnClass() and columnName() renamed type() and name().
 ### is.codion.framework.db.local

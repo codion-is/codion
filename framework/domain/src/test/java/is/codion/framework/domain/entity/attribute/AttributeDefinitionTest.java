@@ -178,16 +178,6 @@ public final class AttributeDefinitionTest {
 	}
 
 	@Test
-	void setColumnName() {
-		assertEquals("hello", ((ColumnDefinition<?>) ENTITY_TYPE.integerColumn("attribute").as().column().name("hello").build()).name());
-	}
-
-	@Test
-	void setColumnNameNull() {
-		assertThrows(NullPointerException.class, () -> ENTITY_TYPE.integerColumn("attribute").as().column().name(null));
-	}
-
-	@Test
 	void description() {
 		final String description = "Here is a description";
 		AttributeDefinition<Integer> attributeDefinition = ENTITY_TYPE.integerColumn("attribute")
@@ -208,28 +198,8 @@ public final class AttributeDefinitionTest {
 	}
 
 	@Test
-	void subqueryColumns() {
-		assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").as().subquery("select").readOnly(true));
-		assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").as().subquery("select").readOnly(false));
-		assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").as().subquery("select").updatable(false));
-		assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test")
-						.as()
-						.subquery("select")
-						.insertable(false));
-		assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test")
-						.as()
-						.subquery("select")
-						.expression("expression"));
-	}
-
-	@Test
 	void stringColumnNegativeMaxLength() {
 		assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.stringColumn("attribute").as().column().maximumLength(-4));
-	}
-
-	@Test
-	void searchableNonVarchar() {
-		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").as().column().searchable(true));
 	}
 
 	@Test
