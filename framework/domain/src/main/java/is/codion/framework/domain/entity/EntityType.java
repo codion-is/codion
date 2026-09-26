@@ -306,6 +306,10 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new LocalDateTime based column, associated with this EntityType.
+	 * <p>Note that some drivers convert a LocalDateTime via {@link java.sql.Timestamp}, in the default time zone,
+	 * a value falling into a daylight saving gap in that zone being moved forward, 02:30 on the day clocks go
+	 * from 02:00 to 03:00 being read back as 03:30. Measured on Derby, which does this internally, Db2, MariaDB
+	 * and Oracle drivers before 23, not on H2, HSQLDB, SQLite, PostgreSQL, MySQL, SQL Server or Oracle drivers from 23.
 	 * @param name the column name.
 	 * @return a new LocalDateTime based column.
 	 */
