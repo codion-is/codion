@@ -38,6 +38,9 @@ import static java.util.stream.Collectors.toSet;
 
 final class MetaDataTable {
 
+	// the driver derives the reported type codes from the declared type names, see MetaDataColumn.columnType()
+	private static final String SQLITE = "SQLite";
+
 	private final MetaDataSchema schema;
 	private final String tableName;
 	private final String tableType;
@@ -182,7 +185,7 @@ final class MetaDataTable {
 																								String tableName, List<MetaDataPrimaryKeyColumn> primaryKeyColumns,
 																								List<MetaDataForeignKeyColumn> foreignKeyColumns) throws SQLException {
 			try (ResultSet resultSet = metaData.getColumns(catalog, schema.name(), tableName, null)) {
-				return new ColumnPacker(primaryKeyColumns, foreignKeyColumns).pack(resultSet);
+				return new ColumnPacker(primaryKeyColumns, foreignKeyColumns, SQLITE.equals(metaData.getDatabaseProductName())).pack(resultSet);
 			}
 		}
 	}

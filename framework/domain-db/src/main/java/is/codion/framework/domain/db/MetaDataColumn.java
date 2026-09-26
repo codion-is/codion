@@ -20,6 +20,7 @@ package is.codion.framework.domain.db;
 
 import is.codion.common.db.result.ResultPacker;
 
+import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -29,11 +30,28 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
 final class MetaDataColumn {
+
+	// Types some drivers report via a vendor type code, or a less specific standard one, keyed by the normalized type name
+	private static final Map<String, Class<?>> TYPE_NAMES = new HashMap<>();
+
+	static {
+		TYPE_NAMES.put("TIMESTAMPTZ", OffsetDateTime.class);// PostgreSQL, reported as TIMESTAMP
+		TYPE_NAMES.put("TIMETZ", OffsetTime.class);// PostgreSQL, reported as TIME
+		TYPE_NAMES.put("TIMESTAMP WITH TIME ZONE", OffsetDateTime.class);// Oracle, a vendor type code
+		TYPE_NAMES.put("DATETIMEOFFSET", OffsetDateTime.class);// SQL Server, a vendor type code
+		TYPE_NAMES.put("UUID", UUID.class);// H2 and HSQLDB report BINARY, PostgreSQL OTHER
+		TYPE_NAMES.put("BINARY_FLOAT", Double.class);// Oracle, a vendor type code
+		TYPE_NAMES.put("BINARY_DOUBLE", Double.class);// Oracle, a vendor type code
+	}
 
 	private final String name;
 	private final int dataType;
@@ -152,16 +170,117 @@ final class MetaDataColumn {
 		return name.hashCode();
 	}
 
+	/**
+	 * @param sqlType the {@link Types} code reported by the driver
+	 * @param typeName the database specific type name
+	 * @param columnSize the column size, the precision of a numeric column
+	 * @param decimalDigits the decimal digits, the scale of a numeric column, -1 if unknown
+	 * @param declaredTypes true if the type is based on the declared type name instead of the type code, which
+	 * for SQLite is derived from the type name by the driver, without the Java type in mind
+	 * @return the Java type for the given column
+	 */
+	static Class<?> columnType(int sqlType, String typeName, int columnSize, int decimalDigits, boolean declaredTypes) {
+		String name = typeName == null ? "" : typeName.toUpperCase(Locale.ROOT)
+						.replaceAll("\\(.*?\\)", "")
+						.replaceAll("\\s+", " ")
+						.trim();
+		if (declaredTypes) {
+			return columnType(declaredType(name, sqlType), columnSize, decimalDigits);
+		}
+		Class<?> type = TYPE_NAMES.get(name);
+
+		return type == null ? columnType(sqlType, columnSize, decimalDigits) : type;
+	}
+
+	private static Class<?> columnType(int sqlType, int columnSize, int decimalDigits) {
+		switch (sqlType) {
+			case Types.BIGINT:
+				return Long.class;
+			case Types.INTEGER:
+				return Integer.class;
+			case Types.SMALLINT:
+			case Types.TINYINT:
+				return Short.class;
+			case Types.DECIMAL:
+			case Types.NUMERIC:
+				return numericType(columnSize, decimalDigits);
+			case Types.DOUBLE:
+			case Types.FLOAT:
+			case Types.REAL:
+				return Double.class;
+			case Types.CHAR:
+			case Types.NCHAR:
+				return columnSize == 1 ? Character.class : String.class;
+			case Types.VARCHAR:
+			case Types.NVARCHAR:
+			case Types.LONGVARCHAR:
+			case Types.LONGNVARCHAR:
+			case Types.CLOB:
+			case Types.NCLOB:
+				return String.class;
+			case Types.DATE:
+				return LocalDate.class;
+			case Types.TIME:
+				return LocalTime.class;
+			case Types.TIME_WITH_TIMEZONE:
+				return OffsetTime.class;
+			case Types.TIMESTAMP:
+				return LocalDateTime.class;
+			case Types.TIMESTAMP_WITH_TIMEZONE:
+				return OffsetDateTime.class;
+			case Types.BINARY:
+			case Types.VARBINARY:
+			case Types.LONGVARBINARY:
+			case Types.BLOB:
+				return byte[].class;
+			case Types.BIT:
+			case Types.BOOLEAN:
+				return Boolean.class;
+			default:
+				return Object.class;
+		}
+	}
+
+	// A whole number is an Integer or a Long depending on its precision, which may exceed that of a Long
+	private static Class<?> numericType(int precision, int scale) {
+		if (scale == 0 && precision > 0) {
+			return precision <= 9 ? Integer.class : Long.class;
+		}
+
+		return Double.class;
+	}
+
+	private static int declaredType(String typeName, int sqlType) {
+		switch (typeName) {
+			case "INT":
+				return Types.INTEGER;
+			case "DATETIME":
+				return Types.TIMESTAMP;
+			case "TEXT":
+				return Types.VARCHAR;
+			default:
+				try {
+					return JDBCType.valueOf(typeName).getVendorTypeNumber();
+				}
+				catch (IllegalArgumentException e) {
+					return sqlType;
+				}
+		}
+	}
+
 	static final class ColumnPacker implements ResultPacker<MetaDataColumn> {
 
 		private static final String YES = "YES";
 
 		private final Collection<MetaDataPrimaryKeyColumn> primaryKeyColumns;
 		private final List<MetaDataForeignKeyColumn> foreignKeyColumns;
+		private final boolean declaredTypes;
 
-		ColumnPacker(Collection<MetaDataPrimaryKeyColumn> primaryKeyColumns, List<MetaDataForeignKeyColumn> foreignKeyColumns) {
+		ColumnPacker(Collection<MetaDataPrimaryKeyColumn> primaryKeyColumns, List<MetaDataForeignKeyColumn> foreignKeyColumns,
+								 boolean declaredTypes) {
 			this.primaryKeyColumns = primaryKeyColumns;
 			this.foreignKeyColumns = foreignKeyColumns;
+			this.declaredTypes = declaredTypes;
 		}
 
 		@Override
@@ -171,13 +290,14 @@ final class MetaDataColumn {
 			if (resultSet.wasNull()) {
 				decimalDigits = -1;
 			}
-			Class<?> columnType = columnType(dataType, decimalDigits);
+			int columnSize = resultSet.getInt("COLUMN_SIZE");
 			String columnName = resultSet.getString("COLUMN_NAME");
 			String typeName = resultSet.getString("TYPE_NAME");
+			Class<?> columnType = columnType(dataType, typeName, columnSize, decimalDigits, declaredTypes);
 			try {
 				return new MetaDataColumn(columnName, dataType, typeName, columnType,
 								resultSet.getInt("ORDINAL_POSITION"),
-								resultSet.getInt("COLUMN_SIZE"), decimalDigits,
+								columnSize, decimalDigits,
 								resultSet.getInt("NULLABLE"),
 								resultSet.getString("COLUMN_DEF"),
 								resultSet.getString("REMARKS"),
@@ -203,46 +323,6 @@ final class MetaDataColumn {
 		private boolean foreignKeyColumn(String columnName) {
 			return foreignKeyColumns.stream()
 							.anyMatch(foreignKeyColumn -> foreignKeyColumn.fkColumnName().equals(columnName));
-		}
-
-		private static Class<?> columnType(int sqlType, int decimalDigits) {
-			switch (sqlType) {
-				case Types.BIGINT:
-					return Long.class;
-				case Types.INTEGER:
-				case Types.ROWID:
-					return Integer.class;
-				case Types.SMALLINT:
-					return Short.class;
-				case Types.CHAR:
-					return Character.class;
-				case Types.DATE:
-					return LocalDate.class;
-				case Types.DECIMAL:
-				case Types.DOUBLE:
-				case Types.FLOAT:
-				case Types.REAL:
-				case Types.NUMERIC:
-					return decimalDigits == 0 ? Integer.class : Double.class;
-				case Types.TIME:
-					return LocalTime.class;
-				case Types.TIME_WITH_TIMEZONE:
-					return OffsetTime.class;
-				case Types.TIMESTAMP:
-					return LocalDateTime.class;
-				case Types.TIMESTAMP_WITH_TIMEZONE:
-					return OffsetDateTime.class;
-				case Types.LONGVARCHAR:
-				case Types.VARCHAR:
-					return String.class;
-				case Types.BLOB:
-					return byte[].class;
-				case Types.BIT:
-				case Types.BOOLEAN:
-					return Boolean.class;
-				default:
-					return Object.class;
-			}
 		}
 	}
 }
