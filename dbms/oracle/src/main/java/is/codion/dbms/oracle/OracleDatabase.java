@@ -20,10 +20,13 @@ package is.codion.dbms.oracle;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.ClientInfo;
+import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.ErrorType;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -42,6 +45,7 @@ final class OracleDatabase extends AbstractDatabase {
 
 	private static final String DOCUMENTATION_LINK = "https://docs.oracle.com/error-help";
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
+	private static final SetValue<Boolean> SET_BOOLEAN = new SetBoolean();
 
 	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
 
@@ -126,6 +130,15 @@ final class OracleDatabase extends AbstractDatabase {
 	}
 
 	/**
+	 * Boolean nulls are bound as {@link Types#BIT}, since drivers before 23 do not support {@link Types#BOOLEAN},
+	 * ojdbc11 21.9 failing with {@code Invalid column type: 16}.
+	 */
+	@Override
+	public SetValue<?> setter(int sqlType) {
+		return sqlType == Types.BOOLEAN ? SET_BOOLEAN : super.setter(sqlType);
+	}
+
+	/**
 	 * A query timeout is reported as {@code ORA-01013: user requested cancel of current operation},
 	 * which is not mapped, the driver throwing a {@link java.sql.SQLTimeoutException} for a timeout only.
 	 */
@@ -200,6 +213,19 @@ final class OracleDatabase extends AbstractDatabase {
 		String constraint = between(message, "constraint (", ")");
 
 		return constraint == null ? null : constraint.substring(constraint.lastIndexOf('.') + 1);
+	}
+
+	private static final class SetBoolean implements SetValue<Boolean> {
+
+		@Override
+		public void set(PreparedStatement statement, int index, Boolean value) throws SQLException {
+			if (value == null) {
+				statement.setNull(index, Types.BIT);
+			}
+			else {
+				statement.setBoolean(index, value);
+			}
+		}
 	}
 
 	private static String lastQuoted(String message, String suffix) {
