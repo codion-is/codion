@@ -123,8 +123,7 @@ public final class World extends DomainModel {
 					.caption("Region"),
 				CountryCityView.SURFACEAREA.as()
 					.column()
-					.caption("Surfacearea")
-					.fractionDigits(2),
+					.caption("Surfacearea"),
 				CountryCityView.INDEPYEAR.as()
 					.column()
 					.caption("Indepyear"),
@@ -133,16 +132,13 @@ public final class World extends DomainModel {
 					.caption("Countrypopulation"),
 				CountryCityView.LIFEEXPECTANCY.as()
 					.column()
-					.caption("Lifeexpectancy")
-					.fractionDigits(1),
+					.caption("Lifeexpectancy"),
 				CountryCityView.GNP.as()
 					.column()
-					.caption("Gnp")
-					.fractionDigits(2),
+					.caption("Gnp"),
 				CountryCityView.GNPOLD.as()
 					.column()
-					.caption("Gnpold")
-					.fractionDigits(2),
+					.caption("Gnpold"),
 				CountryCityView.LOCALNAME.as()
 					.column()
 					.caption("Localname"),
@@ -341,8 +337,7 @@ public final class World extends DomainModel {
 				Country.SURFACEAREA.as()
 					.column()
 					.caption("Surfacearea")
-					.nullable(false)
-					.fractionDigits(2),
+					.nullable(false),
 				Country.INDEPYEAR.as()
 					.column()
 					.caption("Indepyear"),
@@ -352,16 +347,13 @@ public final class World extends DomainModel {
 					.nullable(false),
 				Country.LIFEEXPECTANCY.as()
 					.column()
-					.caption("Lifeexpectancy")
-					.fractionDigits(1),
+					.caption("Lifeexpectancy"),
 				Country.GNP.as()
 					.column()
-					.caption("Gnp")
-					.fractionDigits(2),
+					.caption("Gnp"),
 				Country.GNPOLD.as()
 					.column()
-					.caption("Gnpold")
-					.fractionDigits(2),
+					.caption("Gnpold"),
 				Country.LOCALNAME.as()
 					.column()
 					.caption("Localname")
@@ -443,8 +435,7 @@ public final class World extends DomainModel {
 				Countrylanguage.PERCENTAGE.as()
 					.column()
 					.caption("Percentage")
-					.nullable(false)
-					.fractionDigits(1))
+					.nullable(false))
 			.caption("Countrylanguage")
 			.build();
 	}

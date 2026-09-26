@@ -20,6 +20,7 @@ package is.codion.framework.domain.db;
 
 import is.codion.common.db.result.ResultPacker;
 
+import java.math.BigDecimal;
 import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -241,13 +242,14 @@ final class MetaDataColumn {
 		}
 	}
 
-	// A whole number is an Integer or a Long depending on its precision, which may exceed that of a Long
+	// A whole number is an Integer or a Long depending on its precision, which may exceed that of a Long,
+	// a decimal number, or one of unknown scale, a BigDecimal, the exact type
 	private static Class<?> numericType(int precision, int scale) {
 		if (scale == 0 && precision > 0) {
 			return precision <= 9 ? Integer.class : Long.class;
 		}
 
-		return Double.class;
+		return BigDecimal.class;
 	}
 
 	private static int declaredType(String typeName, int sqlType) {

@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -475,21 +476,33 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<SchemaRow> get() {
-			try (Connection connection = createConnection();
-					 ResultSet resultSet = connection.getMetaData().getSchemas()) {
-				return schemaRows(resultSet);
+			try (Connection connection = createConnection()) {
+				return schemaRows(connection.getMetaData());
 			}
 			catch (Exception e) {
 				throw Exceptions.runtime(e);
 			}
 		}
 
-		private Collection<SchemaRow> schemaRows(ResultSet resultSet) throws SQLException {
+		private Collection<SchemaRow> schemaRows(DatabaseMetaData metaData) throws SQLException {
 			List<SchemaRow> schemaRows = new ArrayList<>();
-			while (resultSet.next()) {
-				String tableSchem = resultSet.getString("TABLE_SCHEM");
-				if (tableSchem != null) {
-					schemaRows.add(new SchemaRow(resultSet.getString("TABLE_CATALOG"), tableSchem, loadSchemaSettings(tableSchem)));
+			try (ResultSet resultSet = metaData.getSchemas()) {
+				while (resultSet.next()) {
+					String tableSchem = resultSet.getString("TABLE_SCHEM");
+					if (tableSchem != null) {
+						schemaRows.add(new SchemaRow(resultSet.getString("TABLE_CATALOG"), tableSchem, loadSchemaSettings(tableSchem)));
+					}
+				}
+			}
+			if (schemaRows.isEmpty()) {
+				// MySQL and MariaDB report catalogs instead of schemas
+				try (ResultSet resultSet = metaData.getCatalogs()) {
+					while (resultSet.next()) {
+						String tableCat = resultSet.getString("TABLE_CAT");
+						if (tableCat != null) {
+							schemaRows.add(new SchemaRow(tableCat, tableCat, loadSchemaSettings(tableCat)));
+						}
+					}
 				}
 			}
 			if (schemaRows.isEmpty()) {

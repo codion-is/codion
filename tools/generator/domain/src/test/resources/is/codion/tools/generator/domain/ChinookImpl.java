@@ -353,7 +353,8 @@ public final class ChinookImpl extends DomainModel {
 				Track.UNITPRICE.as()
 					.column()
 					.caption("Unitprice")
-					.nullable(false))
+					.nullable(false)
+					.fractionDigits(2))
 			.caption("Track")
 			.build();
 	}
@@ -379,7 +380,8 @@ public final class ChinookImpl extends DomainModel {
 				Invoiceline.UNITPRICE.as()
 					.column()
 					.caption("Unitprice")
-					.nullable(false),
+					.nullable(false)
+					.fractionDigits(2),
 				Invoiceline.QUANTITY.as()
 					.column()
 					.caption("Quantity")

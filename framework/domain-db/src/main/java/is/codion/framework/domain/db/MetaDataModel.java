@@ -48,7 +48,18 @@ final class MetaDataModel {
 			while (resultSet.next()) {
 				String tableSchem = resultSet.getString("TABLE_SCHEM");
 				if (tableSchem != null) {
-					schemas.put(tableSchem, new MetaDataSchema(tableSchem));
+					schemas.put(tableSchem, new MetaDataSchema(tableSchem, false));
+				}
+			}
+		}
+		if (schemas.isEmpty()) {
+			// MySQL and MariaDB report catalogs instead of schemas
+			try (ResultSet resultSet = metaData.getCatalogs()) {
+				while (resultSet.next()) {
+					String tableCat = resultSet.getString("TABLE_CAT");
+					if (tableCat != null) {
+						schemas.put(tableCat, new MetaDataSchema(tableCat, true));
+					}
 				}
 			}
 		}
