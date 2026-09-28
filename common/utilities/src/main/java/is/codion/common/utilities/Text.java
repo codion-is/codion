@@ -63,7 +63,7 @@ public final class Text {
 	private static final class SpaceAwareComparatorHolder {
 		// forLanguageTag rather than the Locale constructor, which takes a language alone and so drops the country -
 		// and zh-TW collates by stroke where zh-CN collates by pinyin. It also predates the constructor's deprecation
-		// by a long way, being available since Java 7, which the jdk8 branch still needs.
+		// by a long way, being available since Java 7.
 		private static final Comparator<String> INSTANCE =
 						new SpaceAwareComparator<>(Locale.forLanguageTag(COLLATOR_LOCALE.getOrThrow()));
 	}

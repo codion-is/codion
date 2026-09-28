@@ -52,7 +52,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -68,6 +67,7 @@ import java.util.List;
 
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.CLEAR;
 import static java.util.Collections.emptyList;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 // tag::notes[]
 public final class NotesDemo {
@@ -161,7 +161,7 @@ public final class NotesDemo {
 
 		private void insertDeleteOrUpdate() throws EntityValidationException {
 			SwingEntityEditor editor = editor();
-			if (editor.entity().exists().not().is() && !editor.value(Note.NOTE).isNull()) {
+			if (editor.entity().exists().not().is() && editor.value(Note.NOTE).present().is()) {
 				// A new note with a non-null text
 				commands().insert()
 								.execute();
@@ -187,6 +187,8 @@ public final class NotesDemo {
 
 		private NoteTableModel(EntityConnection connection) {
 			super(new NoteEditModel(connection));
+			sort().descending(Note.CREATED);
+			items().refresh();// Refresh to populate
 		}
 	}
 
@@ -199,7 +201,6 @@ public final class NotesDemo {
 							// Note.CREATED is excluded by default since it is not updatable.
 							.editable(attributes -> attributes.remove(Note.UPDATED)));
 			// Configure the table and columns
-			table().model().sort().descending(Note.CREATED);
 			table().setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 			FilterTableColumnModel<Attribute<?>> columns = table().columns();
 			columns.get(Note.NOTE).setPreferredWidth(280);
@@ -236,8 +237,6 @@ public final class NotesDemo {
 
 		public NotesApplicationModel(EntityConnection connection) {
 			super(connection, List.of(new NoteModel(connection)));
-			// Refresh the table model to populate it
-			models().get(Note.TYPE).tableModel().items().refresh();
 		}
 	}
 
@@ -249,7 +248,7 @@ public final class NotesDemo {
 							List.of(new NotePanel(applicationModel.models().get(Note.TYPE))),
 							// Replace the default JTabbedPane based layout, since we're only
 							// displaying a single panel, simply return our main panel, initialized
-							emptyList(), applicationPanel -> new EntityApplicationPanel.ApplicationLayout() {
+							emptyList(), applicationPanel -> new ApplicationLayout() {
 								@Override
 								public JComponent layout() {
 									return applicationPanel.entityPanel(Note.TYPE).initialize();
@@ -258,7 +257,7 @@ public final class NotesDemo {
 								@Override
 								public void display(EntityPanel entityPanel) {/* Only one panel, always displayed */}
 							});
-			setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+			setBorder(createEmptyBorder(5, 5, 0, 5));
 		}
 	}
 

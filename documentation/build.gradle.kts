@@ -279,6 +279,33 @@ tasks.register("upgradeDemoApps") {
     }
 }
 
+tasks.register("buildDemos") {
+    group = "documentation"
+    description = "Builds the demo projects"
+
+    val execOperations = project.serviceOf<ExecOperations>()
+    doLast {
+        val demoProjects = listOf("sdkboy", "llemmy", "petclinic", "world", "chinook")
+
+        demoProjects.forEach { project ->
+            println("Building $project...")
+
+            val projectDir = file("../../$project")
+
+            val result = execOperations.exec {
+                workingDir(projectDir)
+                commandLine("./gradlew", "build")
+                environment("JAVA_HOME", System.getenv("JAVA_HOME") ?: System.getProperty("java.home"))
+                isIgnoreExitValue = true
+            }
+            if (result.exitValue != 0) {
+                throw GradleException("Demo build failed for $project" +
+                        "in $projectDir exited with ${result.exitValue}, see the output above")
+            }
+        }
+    }
+}
+
 tasks.register("assembleTutorials") {
     group = "documentation"
     description = "Assembles tutorials from demo projects"

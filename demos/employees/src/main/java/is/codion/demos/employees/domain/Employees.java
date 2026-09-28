@@ -22,8 +22,10 @@ import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -35,6 +37,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
@@ -164,7 +167,6 @@ public final class Employees extends DomainModel {
 														.column()
 														.caption("Salary")
 														.nullable(false)
-														.range(900, 10000)
 														.fractionDigits(2),
 										Employee.COMMISSION.as()
 														.column()
@@ -190,9 +192,25 @@ public final class Employees extends DomainModel {
 														.using(Department.LOCATION)
 														.caption("Location"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
+						.validator(new EmployeeValidator())
 						.formatter(Employee.NAME)
 						.caption("Employee")
 						.build();
+	}
+
+	private static class EmployeeValidator implements EntityValidator {
+
+		@Override
+		public Optional<String> warning(Entity entity, Attribute<?> attribute) {
+			if (attribute.equals(Employee.SALARY) && entity.present(Employee.SALARY)) {
+				BigDecimal salary = entity.get(Employee.SALARY);
+				if (salary.doubleValue() < 900 || salary.doubleValue() > 99999) {
+					return Optional.of("Salary is outside of range [900-9999]");
+				}
+			}
+
+			return Optional.empty();
+		}
 	}
 }
 // end::defineEmployee[]
