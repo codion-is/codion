@@ -164,7 +164,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 						.build();
 	}
 
-	static Builder builder(ForeignKey foreignKey, EntityConnection connection) {
+	static DefaultBuilder builder(ForeignKey foreignKey, EntityConnection connection) {
 		return new DefaultBuilder(requireNonNull(foreignKey), requireNonNull(connection));
 	}
 
@@ -178,6 +178,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		private List<Operator> operators = OPERATORS;
 		private @Nullable Operator operator;
 		private @Nullable String caption;
+		private boolean negationIncludesNull = EntityConditionModel.NEGATION_INCLUDES_NULL.getOrThrow();
 
 		private DefaultBuilder(ForeignKey foreignKey, EntityConnection connection) {
 			this.foreignKey = foreignKey;
@@ -217,6 +218,12 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		}
 
 		@Override
+		public Builder negationIncludesNull(boolean negationIncludesNull) {
+			this.negationIncludesNull = negationIncludesNull;
+			return this;
+		}
+
+		@Override
 		public Builder caption(@Nullable String caption) {
 			this.caption = caption;
 			return this;
@@ -229,6 +236,10 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 			}
 
 			return new DefaultForeignKeyConditionModel(this);
+		}
+
+		boolean negationIncludesNull() {
+			return negationIncludesNull;
 		}
 	}
 

@@ -73,7 +73,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnection connection;
-	private final boolean negationIncludesNull;
+	private final Set<Attribute<?>> negationIncludesNull = new HashSet<>();
 	private final TableConditionModel<Attribute<?>> conditionModel;
 	private final Value<Conjunction> conjunction = Value.builder()
 					.nonNull(Conjunction.AND)
@@ -87,7 +87,6 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	DefaultEntityConditionModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.connection.entities().definition(builder.entityType);
 		this.connection = builder.connection;
-		this.negationIncludesNull = builder.negationIncludesNull;
 		this.conditionModel = tableConditionModel(createConditions(builder));
 		this.modified = new DefaultModified();
 		bindEvents();
@@ -484,7 +483,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	 * @see EntityConditionModel#NEGATION_INCLUDES_NULL
 	 */
 	private Condition negation(Condition condition, Attribute<?> attribute) {
-		if (!negationIncludesNull) {
+		if (!negationIncludesNull.contains(attribute)) {
 			return condition;
 		}
 		if (attribute instanceof ForeignKey) {
@@ -511,8 +510,6 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		private final Set<Attribute<?>> excluded = new HashSet<>();
 		private final Map<Column<?>, Consumer<?>> columnConditions = new HashMap<>();
 		private final Map<ForeignKey, Consumer<ForeignKeyConditionModel.Builder>> foreignKeyConditions = new HashMap<>();
-
-		private boolean negationIncludesNull = NEGATION_INCLUDES_NULL.getOrThrow();
 
 		private DefaultBuilder(EntityType entityType, EntityConnection connection) {
 			this.entityType = entityType;
@@ -556,12 +553,6 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		@Override
 		public Builder condition(ForeignKey foreignKey, Consumer<ForeignKeyConditionModel.Builder> condition) {
 			foreignKeyConditions.put(requireNonNull(foreignKey), requireNonNull(condition));
-			return this;
-		}
-
-		@Override
-		public Builder negationIncludesNull(boolean negationIncludesNull) {
-			this.negationIncludesNull = negationIncludesNull;
 			return this;
 		}
 
@@ -678,9 +669,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private <T> ColumnConditionModel<T> columnCondition(Column<T> column, @Nullable Consumer<?> configuration) {
-		ColumnConditionModel.Builder<T> builder = DefaultColumnConditionModel.builder(entityDefinition.columns().definition(column));
+		DefaultColumnConditionModel.DefaultBuilder<T> builder = DefaultColumnConditionModel.builder(entityDefinition.columns().definition(column));
 		if (configuration != null) {
 			((Consumer<ColumnConditionModel.Builder<T>>) configuration).accept(builder);
+		}
+		if (builder.negationIncludesNull()) {
+			negationIncludesNull.add(column);
 		}
 
 		return builder.build();
@@ -688,10 +682,13 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	private ForeignKeyConditionModel foreignKeyCondition(ForeignKey foreignKey,
 																											 @Nullable Consumer<ForeignKeyConditionModel.Builder> configuration) {
-		ForeignKeyConditionModel.Builder builder = DefaultForeignKeyConditionModel.builder(foreignKey, connection)
-						.caption(entityDefinition.foreignKeys().definition(foreignKey).caption());
+		DefaultForeignKeyConditionModel.DefaultBuilder builder = DefaultForeignKeyConditionModel.builder(foreignKey, connection);
+		builder.caption(entityDefinition.foreignKeys().definition(foreignKey).caption());
 		if (configuration != null) {
 			configuration.accept(builder);
+		}
+		if (builder.negationIncludesNull()) {
+			negationIncludesNull.add(foreignKey);
 		}
 
 		return builder.build();

@@ -270,11 +270,12 @@ public class DefaultEntityConditionModelTest {
 		assertFalse(model.where().string(CONNECTION.entities().definition(Employee.TYPE)).contains("IS NULL"));
 		assertQueryAndFilterAgree(15, model, name, employees, Employee.NAME);
 
-		// disabled, the query follows SQL and no longer agrees with the filter
+		// disabled per condition, the query follows SQL and no longer agrees with the filter
 		model = EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
-						.negationIncludesNull(false)
+						.condition(Employee.COMMISSION, condition -> condition.negationIncludesNull(false))
+						.condition(Employee.MGR_FK, condition -> condition.negationIncludesNull(false))
 						.build();
 		commission = model.get(Employee.COMMISSION);
 		commission.set().notEqualTo(0d);
@@ -286,6 +287,40 @@ public class DefaultEntityConditionModelTest {
 		commission.set().notBetween(300d, 1500d);
 		assertEquals(Employee.COMMISSION.notBetween(300d, 1500d), model.where());
 		assertEquals(1, CONNECTION.count(Count.where(model.where())));
+		commission.clear();
+		manager = model.get(Employee.MGR_FK);
+		manager.set().notEqualTo(king);
+		assertEquals(Employee.MGR_FK.notEqualTo(king), model.where());
+		assertEquals(12, CONNECTION.count(Count.where(model.where())));
+		manager.clear();
+		// the other conditions unaffected
+		ConditionModel<Integer> managerId = model.get(Employee.MGR);
+		managerId.set().notEqualTo(king.get(Employee.ID));
+		assertEquals(Condition.or(Employee.MGR.notEqualTo(king.get(Employee.ID)), Employee.MGR.isNull()), model.where());
+		assertQueryAndFilterAgree(13, model, managerId, employees, Employee.MGR);
+	}
+
+	@Test
+	void negationIncludesNullDefault() {
+		EntityConditionModel.NEGATION_INCLUDES_NULL.set(false);
+		try {
+			Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
+			EntityConditionModel model = EntityConditionModel.builder()
+							.entityType(Employee.TYPE)
+							.connection(CONNECTION)
+							.condition(Employee.MGR_FK, condition -> condition.negationIncludesNull(true))
+							.build();
+			ConditionModel<Double> commission = model.get(Employee.COMMISSION);
+			commission.set().notEqualTo(0d);
+			assertEquals(Employee.COMMISSION.notEqualTo(0d), model.where());
+			commission.clear();
+			ForeignKeyConditionModel manager = model.get(Employee.MGR_FK);
+			manager.set().notEqualTo(king);
+			assertEquals(Condition.or(Employee.MGR_FK.notEqualTo(king), Employee.MGR_FK.isNull()), model.where());
+		}
+		finally {
+			EntityConditionModel.NEGATION_INCLUDES_NULL.set(true);
+		}
 	}
 
 	private static <T> void assertQueryAndFilterAgree(int expected, EntityConditionModel model, ConditionModel<T> condition,

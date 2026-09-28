@@ -59,6 +59,7 @@ Codion Change Log
 - ColumnConditionModel.builder() and ForeignKeyConditionModel.builder() removed, the builders now only provided via EntityConditionModel.Builder.condition().
 - EntityConditionModel, a NOT_BETWEEN or NOT_BETWEEN_EXCLUSIVE condition missing a bound now the complement of its BETWEEN or BETWEEN_EXCLUSIVE counterpart, as in the filter, the two having been swapped, including or excluding the remaining bound incorrectly.
 - EntityConditionModel, NOT_BETWEEN and NOT_BETWEEN_EXCLUSIVE conditions based on nullable columns now include null values, as NOT_EQUAL and NOT_IN do, according to NEGATION_INCLUDES_NULL.
+- EntityConditionModel.Builder.negationIncludesNull() replaced with ColumnConditionModel.Builder.negationIncludesNull() and ForeignKeyConditionModel.Builder.negationIncludesNull(), configurable per condition.
 ### is.codion.framework.servlet
 - Configuration property codion.server.http.useVirtualThreads renamed codion.server.http.virtualThreads.
 ### is.codion.framework.server

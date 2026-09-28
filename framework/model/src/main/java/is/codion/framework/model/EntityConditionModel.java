@@ -55,7 +55,8 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see Builder#negationIncludesNull(boolean)
+	 * @see ColumnConditionModel.Builder#negationIncludesNull(boolean)
+	 * @see ForeignKeyConditionModel.Builder#negationIncludesNull(boolean)
 	 */
 	PropertyValue<Boolean> NEGATION_INCLUDES_NULL = booleanValue(EntityConditionModel.class.getName() + ".negationIncludesNull", true);
 
@@ -218,13 +219,6 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 		 * @return this builder
 		 */
 		Builder condition(ForeignKey foreignKey, Consumer<ForeignKeyConditionModel.Builder> condition);
-
-		/**
-		 * @param negationIncludesNull true if the negative operators should include null values
-		 * @return this builder
-		 * @see EntityConditionModel#NEGATION_INCLUDES_NULL
-		 */
-		Builder negationIncludesNull(boolean negationIncludesNull);
 
 		/**
 		 * @return a new {@link EntityConditionModel} instance

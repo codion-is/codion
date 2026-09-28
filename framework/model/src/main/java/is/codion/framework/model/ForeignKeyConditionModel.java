@@ -177,6 +177,15 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 		Builder operator(Operator operator);
 
 		/**
+		 * Specifies whether the negative operators include null values when translated to a query condition,
+		 * matching exactly the rows their positive counterparts do not, instead of following SQL,
+		 * only affecting a nullable foreign key, {@link EntityConditionModel#NEGATION_INCLUDES_NULL} by default.
+		 * @param negationIncludesNull true if the negative operators should include null values
+		 * @return this builder
+		 */
+		Builder negationIncludesNull(boolean negationIncludesNull);
+
+		/**
 		 * @param caption the caption to associate with the condition model, the foreign key caption for example
 		 * @return this builder
 		 * @see ForeignKeyConditionModel#caption()

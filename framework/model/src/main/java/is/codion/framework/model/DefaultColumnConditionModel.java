@@ -76,7 +76,7 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 		return condition.caption();
 	}
 
-	static <T> Builder<T> builder(ColumnDefinition<T> columnDefinition) {
+	static <T> DefaultBuilder<T> builder(ColumnDefinition<T> columnDefinition) {
 		return new DefaultBuilder<>(requireNonNull(columnDefinition));
 	}
 
@@ -86,6 +86,7 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 
 		private @Nullable List<Operator> operators;
 		private @Nullable Operator operator;
+		private boolean negationIncludesNull = EntityConditionModel.NEGATION_INCLUDES_NULL.getOrThrow();
 
 		private DefaultBuilder(ColumnDefinition<T> columnDefinition) {
 			this.columnDefinition = columnDefinition;
@@ -104,6 +105,16 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 		public Builder<T> operator(Operator operator) {
 			this.operator = requireNonNull(operator);
 			return this;
+		}
+
+		@Override
+		public Builder<T> negationIncludesNull(boolean negationIncludesNull) {
+			this.negationIncludesNull = negationIncludesNull;
+			return this;
+		}
+
+		boolean negationIncludesNull() {
+			return negationIncludesNull;
 		}
 
 		@Override

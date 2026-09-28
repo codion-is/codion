@@ -55,6 +55,15 @@ public interface ColumnConditionModel<T> extends AttributeConditionModel<T> {
 		Builder<T> operator(Operator operator);
 
 		/**
+		 * Specifies whether the negative operators include null values when translated to a query condition,
+		 * matching exactly the rows their positive counterparts do not, instead of following SQL,
+		 * only affecting a nullable column, {@link EntityConditionModel#NEGATION_INCLUDES_NULL} by default.
+		 * @param negationIncludesNull true if the negative operators should include null values
+		 * @return this builder
+		 */
+		Builder<T> negationIncludesNull(boolean negationIncludesNull);
+
+		/**
 		 * @return a new {@link ColumnConditionModel} instance
 		 * @throws IllegalArgumentException in case the operators don't contain the initial operator
 		 */
