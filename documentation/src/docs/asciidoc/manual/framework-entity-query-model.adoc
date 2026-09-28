@@ -38,7 +38,7 @@ The condition model therefore treats a negation as the complement of its positiv
 `NOT_EQUAL` and `NOT_IN` without an operand still mean _is not null_, and the positive operators never match a row without a value.
 
 This only applies to the conditions created by the condition model, conditions created via the domain API, `Customer.STATE.notIn("KA", "MH")`, are plain SQL.
-Set `EntityConditionModel.NEGATION_INCLUDES_NULL` to `false`, or use `negationIncludesNull(false)` when building the model, for SQL semantics.
+Set `EntityConditionModel.NEGATION_INCLUDES_NULL` to `false` for SQL semantics, or configure a single condition when building the model, `condition(Customer.STATE, condition -> condition.negationIncludesNull(false))`.
 
 === Additional  Conditions
 
