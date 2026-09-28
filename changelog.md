@@ -56,6 +56,7 @@ Codion Change Log
 - EntityConditions removed, EntityConditionModel.Builder.exclude() and condition() added, for excluding and configuring the condition models of columns and foreign keys.
 - ColumnConditionModel.Builder.operators() and operator() added.
 - ColumnConditionModel.builder() and ForeignKeyConditionModel.builder() removed, the builders now only provided via EntityConditionModel.Builder.condition().
+- EntityConditionModel, a NOT_BETWEEN or NOT_BETWEEN_EXCLUSIVE condition missing a bound now the complement of its BETWEEN or BETWEEN_EXCLUSIVE counterpart, as in the filter, the two having been swapped, including or excluding the remaining bound incorrectly.
 ### is.codion.framework.servlet
 - Configuration property codion.server.http.useVirtualThreads renamed codion.server.http.virtualThreads.
 ### is.codion.framework.server

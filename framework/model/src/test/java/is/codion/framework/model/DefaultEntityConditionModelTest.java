@@ -303,18 +303,62 @@ public class DefaultEntityConditionModelTest {
 		condition.enabled().set(true);
 		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where());
 
+		// the complements of the above
 		condition.set().notBetween(0d, null);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.lessThanOrEqualTo(0d), conditionModel.where());
+		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where());
 		condition.set().notBetween(null, 0d);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.greaterThanOrEqualTo(0d), conditionModel.where());
+		assertEquals(Employee.COMMISSION.greaterThan(0d), conditionModel.where());
 		condition.set().notBetweenExclusive(0d, null);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where());
+		assertEquals(Employee.COMMISSION.lessThanOrEqualTo(0d), conditionModel.where());
 		condition.set().notBetweenExclusive(null, 0d);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.greaterThan(0d), conditionModel.where());
+		assertEquals(Employee.COMMISSION.greaterThanOrEqualTo(0d), conditionModel.where());
+	}
+
+	@Test
+	void betweenComplements() {
+		// 16 employees, 6 without a commission, the rest 0, 300, 500, 1200 (x3), 1400 and 1500 (x3)
+		List<Entity> employees = CONNECTION.select(Condition.all(Employee.TYPE));
+		ConditionModel<Double> commission = conditionModel.get(Employee.COMMISSION);
+
+		commission.set().between(300d, 1500d);
+		assertQueryAndFilterAgree(9, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().notBetween(300d, 1500d);
+		assertQueryAndFilterAgree(1, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().betweenExclusive(300d, 1500d);
+		assertQueryAndFilterAgree(5, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().notBetweenExclusive(300d, 1500d);
+		assertQueryAndFilterAgree(5, conditionModel, commission, employees, Employee.COMMISSION);
+
+		// a missing bound, the value at the remaining bound belonging to exactly one of each pair,
+		// enabled explicitly, a missing bound not auto enabling the condition
+		commission.set().between(1200d, null);
+		commission.enabled().set(true);
+		assertQueryAndFilterAgree(7, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().notBetween(1200d, null);
+		commission.enabled().set(true);
+		assertQueryAndFilterAgree(3, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().between(null, 1200d);
+		commission.enabled().set(true);
+		assertQueryAndFilterAgree(6, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().notBetween(null, 1200d);
+		commission.enabled().set(true);
+		assertQueryAndFilterAgree(4, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().betweenExclusive(1200d, null);
+		commission.enabled().set(true);
+		assertQueryAndFilterAgree(4, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().notBetweenExclusive(1200d, null);
+		commission.enabled().set(true);
+		assertQueryAndFilterAgree(6, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().betweenExclusive(null, 1200d);
+		commission.enabled().set(true);
+		assertQueryAndFilterAgree(3, conditionModel, commission, employees, Employee.COMMISSION);
+		commission.set().notBetweenExclusive(null, 1200d);
+		commission.enabled().set(true);
+		assertQueryAndFilterAgree(7, conditionModel, commission, employees, Employee.COMMISSION);
 	}
 
 	@Test
