@@ -420,23 +420,25 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return column.between(lower, upper);
 	}
 
+	// the complement of betweenExclusiveCondition(), a missing bound included
 	private static <T> ColumnCondition<T> notBetweenExclusiveCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {
-		if (lower == null && upper != null) {
-			return column.greaterThan(upper);
-		}
-		if (upper == null && lower != null) {
-			return column.lessThan(lower);
-		}
-
-		return column.notBetweenExclusive(lower, upper);
-	}
-
-	private static <T> ColumnCondition<T> notBetweenCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {
 		if (lower == null && upper != null) {
 			return column.greaterThanOrEqualTo(upper);
 		}
 		if (upper == null && lower != null) {
 			return column.lessThanOrEqualTo(lower);
+		}
+
+		return column.notBetweenExclusive(lower, upper);
+	}
+
+	// the complement of betweenCondition(), a missing bound included
+	private static <T> ColumnCondition<T> notBetweenCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {
+		if (lower == null && upper != null) {
+			return column.greaterThan(upper);
+		}
+		if (upper == null && lower != null) {
+			return column.lessThan(lower);
 		}
 
 		return column.notBetween(lower, upper);
