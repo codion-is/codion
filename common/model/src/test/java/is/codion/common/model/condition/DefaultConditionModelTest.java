@@ -157,11 +157,24 @@ public class DefaultConditionModelTest {
 		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
 						.type(String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN))
-						.operator(Operator.IN));
+						.operator(Operator.IN)
+						.build());
 		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
 						.type(String.class)
 						.operator(Operator.IN)
-						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN)));
+						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN))
+						.build());
+		// validated when built, regardless of the order
+		assertEquals(Operator.NOT_EQUAL, ConditionModel.builder()
+						.type(Boolean.class)
+						.operators(Arrays.asList(Operator.NOT_EQUAL, Operator.IN))
+						.operator(Operator.NOT_EQUAL)
+						.build()
+						.operator().get());
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
+						.type(String.class)
+						.operators(Arrays.asList(Operator.GREATER_THAN, Operator.LESS_THAN))
+						.build());
 
 		ConditionModel<String> model = ConditionModel.builder()
 						.type(String.class)

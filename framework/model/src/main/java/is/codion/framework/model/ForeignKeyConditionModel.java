@@ -21,11 +21,9 @@ package is.codion.framework.model;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Operator;
-import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.DefaultForeignKeyConditionModel.DefaultBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -39,7 +37,7 @@ import java.util.function.Supplier;
  * these models, a component based on one must be linked to the operand it edits, {@link Operands#equal()}
  * or {@link Operands#in()}. Entities of the referenced type updated or deleted are replaced in, or removed
  * from, the operands, via {@link PersistenceEvents}.
- * @see #builder()
+ * @see EntityConditionModel.Builder#condition(ForeignKey, java.util.function.Consumer)
  */
 public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity> {
 
@@ -139,40 +137,9 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 	}
 
 	/**
-	 * @return a new {@link Builder.ForeignKeyStep}
-	 */
-	static Builder.ForeignKeyStep builder() {
-		return DefaultBuilder.FOREIGN_KEY_STEP;
-	}
-
-	/**
 	 * A builder for a {@link ForeignKeyConditionModel}.
 	 */
 	interface Builder {
-
-		/**
-		 * The first step in building a {@link ForeignKeyConditionModel}
-		 */
-		interface ForeignKeyStep {
-
-			/**
-			 * @param foreignKey the foreign key
-			 * @return the {@link ConnectionStep}
-			 */
-			ConnectionStep foreignKey(ForeignKey foreignKey);
-		}
-
-		/**
-		 * The second step in building a {@link ForeignKeyConditionModel}
-		 */
-		interface ConnectionStep {
-
-			/**
-			 * @param connection the connection, used by the default {@link Models}
-			 * @return the {@link Builder}
-			 */
-			Builder connection(EntityConnection connection);
-		}
 
 		/**
 		 * Supplies the combo box models, called once per operand, on first access, a separate instance per operand.

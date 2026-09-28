@@ -132,7 +132,6 @@ public final class DefaultEntityQueryModelTest {
 		queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Job.TYPE)
 						.connection(CONNECTION)
-						.conditions(new EntityConditions(Job.TYPE, CONNECTION))
 						.build());
 		assertFalse(queryModel.condition().modified().is());
 		queryModel.condition().additional().having().set(Job.ADDITIONAL_HAVING::get);
@@ -356,7 +355,6 @@ public final class DefaultEntityQueryModelTest {
 		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Job.TYPE)
 						.connection(CONNECTION)
-						.conditions(new EntityConditions(Job.TYPE, CONNECTION))
 						.build());
 
 		// Job entity has aggregate columns (MAX_SALARY, MIN_SALARY, etc.)

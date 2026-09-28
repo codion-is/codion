@@ -23,7 +23,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.EntityConditions;
+import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.framework.ui.TestDomain.Department;
@@ -222,6 +222,10 @@ public final class EntityConditionComponentsTest {
 	}
 
 	private static ForeignKeyConditionModel condition(ForeignKey foreignKey) {
-		return (ForeignKeyConditionModel) new EntityConditions(Employee.TYPE, CONNECTION).get().get(foreignKey);
+		return EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build()
+						.get(foreignKey);
 	}
 }

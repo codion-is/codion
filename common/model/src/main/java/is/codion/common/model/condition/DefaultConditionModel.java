@@ -634,15 +634,13 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			if (requireNonNull(operators).isEmpty()) {
 				throw new IllegalArgumentException("One or more operators must be specified");
 			}
-			validateOperators(operators, operator);
 			this.operators = operators;
 			return this;
 		}
 
 		@Override
 		public Builder<T> operator(Operator operator) {
-			validateOperators(operators, operator);
-			this.operator = operator;
+			this.operator = requireNonNull(operator);
 			return this;
 		}
 
@@ -684,13 +682,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public ConditionModel<T> build() {
-			return new DefaultConditionModel<>(this);
-		}
-
-		private static void validateOperators(List<Operator> operators, Operator operator) {
 			if (!operators.contains(operator)) {
 				throw new IllegalArgumentException("Available operators do no not contain the selected operator: " + operator);
 			}
+
+			return new DefaultConditionModel<>(this);
 		}
 	}
 

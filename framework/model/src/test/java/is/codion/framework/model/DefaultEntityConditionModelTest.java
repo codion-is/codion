@@ -42,6 +42,7 @@ import java.time.Month;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,7 +59,6 @@ public class DefaultEntityConditionModelTest {
 	private final EntityConditionModel conditionModel = EntityConditionModel.builder()
 					.entityType(Employee.TYPE)
 					.connection(CONNECTION)
-					.conditions(new EntityConditions(Employee.TYPE, CONNECTION))
 					.build();
 
 	@Test
@@ -78,7 +78,6 @@ public class DefaultEntityConditionModelTest {
 		EntityConditionModel model = EntityConditionModel.builder()
 						.entityType(Detail.TYPE)
 						.connection(CONNECTION)
-						.conditions(new EntityConditions(Detail.TYPE, CONNECTION))
 						.build();
 		//no search columns defined for master entity
 		ForeignKeyConditionModel masterModel = model.get(Detail.MASTER_FK);
@@ -94,6 +93,86 @@ public class DefaultEntityConditionModelTest {
 	@Test
 	void conditionModelNonExisting() {
 		assertThrows(IllegalArgumentException.class, () -> conditionModel.get(Department.ID));
+	}
+
+	@Test
+	void exclude() {
+		EntityConditionModel model = EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.exclude(Employee.COMMISSION, Employee.MGR_FK)
+						.build();
+		assertEquals(9, model.get().size());
+		assertThrows(IllegalArgumentException.class, () -> model.get(Employee.COMMISSION));
+		assertThrows(IllegalArgumentException.class, () -> model.get(Employee.MGR_FK));
+		assertNotNull(model.get(Employee.SALARY));
+	}
+
+	@Test
+	void configure() {
+		EntityConditionModel model = EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.condition(Employee.SALARY, condition -> condition
+										.operators(asList(Operator.GREATER_THAN, Operator.LESS_THAN, Operator.BETWEEN)))
+						.condition(Employee.COMMISSION, condition -> condition
+										.operators(asList(Operator.EQUAL, Operator.NOT_EQUAL))
+										.operator(Operator.NOT_EQUAL))
+						.build();
+		ConditionModel<Double> salary = model.get(Employee.SALARY);
+		assertEquals(asList(Operator.GREATER_THAN, Operator.LESS_THAN, Operator.BETWEEN), salary.operators());
+		// the first of the operators when no operator is specified
+		assertEquals(Operator.GREATER_THAN, salary.operator().get());
+		assertEquals(Operator.NOT_EQUAL, model.get(Employee.COMMISSION).operator().get());
+		salary.operator().set(Operator.BETWEEN);
+		salary.clear();
+		assertEquals(Operator.GREATER_THAN, salary.operator().get());
+		// the column defaults still applied
+		assertEquals(CONNECTION.entities().definition(Employee.TYPE).columns().definition(Employee.SALARY).caption(),
+						salary.caption().orElseThrow());
+		assertTrue(model.get(Employee.NAME).operators().contains(Operator.EQUAL));
+
+		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.condition(Employee.SALARY, condition -> condition
+										.operators(asList(Operator.GREATER_THAN, Operator.LESS_THAN))
+										.operator(Operator.EQUAL))
+						.build());
+	}
+
+	@Test
+	void excludeAndConfigureValidated() {
+		// not part of the entity
+		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.exclude(Department.NAME)
+						.build());
+		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.condition(Department.NAME, condition -> {})
+						.build());
+		// neither a column nor a foreign key
+		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.exclude(Employee.DEPARTMENT_LOCATION)
+						.build());
+		// both excluded and configured
+		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.exclude(Employee.SALARY)
+						.condition(Employee.SALARY, condition -> {})
+						.build());
+		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.condition(Employee.DEPARTMENT_FK, condition -> {})
+						.exclude(Employee.DEPARTMENT_FK)
+						.build());
 	}
 
 	@Test

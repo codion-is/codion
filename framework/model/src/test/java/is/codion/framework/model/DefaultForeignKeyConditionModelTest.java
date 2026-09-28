@@ -186,7 +186,11 @@ public final class DefaultForeignKeyConditionModelTest {
 
 	@Test
 	void caption() {
-		ForeignKeyConditionModel condition = new EntityConditions(Employee.TYPE, CONNECTION).condition(Employee.DEPARTMENT_FK);
+		ForeignKeyConditionModel condition = EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build()
+						.get(Employee.DEPARTMENT_FK);
 		assertEquals(ENTITIES.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK).caption(),
 						condition.caption().orElseThrow());
 		assertFalse(condition().build().caption().isPresent());
@@ -215,16 +219,13 @@ public final class DefaultForeignKeyConditionModelTest {
 	}
 
 	@Test
-	void entityConditionsBuilderInitializedWithTheDefaults() {
-		EntityConditions conditions = new EntityConditions(Employee.TYPE, CONNECTION) {
-			@Override
-			protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
-				return builder(foreignKey)
-								.operators(asList(EQUAL, NOT_EQUAL))
-								.build();
-			}
-		};
-		ForeignKeyConditionModel condition = (ForeignKeyConditionModel) conditions.get().get(Employee.DEPARTMENT_FK);
+	void configuredBuilderInitializedWithTheDefaults() {
+		ForeignKeyConditionModel condition = EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.condition(Employee.DEPARTMENT_FK, builder -> builder.operators(asList(EQUAL, NOT_EQUAL)))
+						.build()
+						.get(Employee.DEPARTMENT_FK);
 		assertEquals(asList(EQUAL, NOT_EQUAL), condition.operators());
 		assertEquals(ENTITIES.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK).caption(),
 						condition.caption().orElseThrow());
@@ -400,9 +401,7 @@ public final class DefaultForeignKeyConditionModelTest {
 	}
 
 	private static ForeignKeyConditionModel.Builder condition(ForeignKey foreignKey) {
-		return ForeignKeyConditionModel.builder()
-						.foreignKey(foreignKey)
-						.connection(CONNECTION);
+		return DefaultForeignKeyConditionModel.builder(foreignKey, CONNECTION);
 	}
 
 	private static EntitySearchModel searchModel() {

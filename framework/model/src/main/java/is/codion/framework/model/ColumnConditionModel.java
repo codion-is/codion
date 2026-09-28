@@ -18,14 +18,15 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
-import static java.util.Objects.requireNonNull;
+import java.util.List;
 
 /**
  * An {@link AttributeConditionModel} associated with a {@link Column}.
  * @param <T> the column type
+ * @see EntityConditionModel.Builder#condition(Column, java.util.function.Consumer)
  */
 public interface ColumnConditionModel<T> extends AttributeConditionModel<T> {
 
@@ -33,20 +34,29 @@ public interface ColumnConditionModel<T> extends AttributeConditionModel<T> {
 	Column<T> attribute();
 
 	/**
-	 * @param columnDefinition the column definition
-	 * @return a new {@link ColumnConditionModel.Builder}
-	 */
-	static <T> ColumnConditionModel.Builder<T> builder(ColumnDefinition<T> columnDefinition) {
-		return new DefaultColumnConditionModel.DefaultBuilder<>(requireNonNull(columnDefinition));
-	}
-
-	/**
 	 * A builder for a {@link ColumnConditionModel}
 	 */
 	interface Builder<T> {
 
 		/**
+		 * Sets the available operators, by default all operators, {@link Operator#EQUAL} only for a boolean column.
+		 * @param operators the available operators
+		 * @return this builder
+		 * @throws IllegalArgumentException in case of an empty list
+		 */
+		Builder<T> operators(List<Operator> operators);
+
+		/**
+		 * Sets the initial operator, the one {@link ColumnConditionModel#clear()} reverts to.
+		 * Defaults to {@link Operator#EQUAL}, or the first of the available {@link #operators(List)} when specified.
+		 * @param operator the initial operator, must be one of the available operators
+		 * @return this builder
+		 */
+		Builder<T> operator(Operator operator);
+
+		/**
 		 * @return a new {@link ColumnConditionModel} instance
+		 * @throws IllegalArgumentException in case the operators don't contain the initial operator
 		 */
 		ColumnConditionModel<T> build();
 	}
