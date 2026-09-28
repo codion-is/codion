@@ -161,8 +161,7 @@ curl -X POST http://localhost:8080/mcp/tools/call -H "Content-Type: application/
   a validation dialog appears rather than the tool erroring). Demo recording still uses `Transport.ROBOT`.
 - **Verification.** The `Controller`'s `KeyboardFocusManager` listeners observe every key event; a requested
   `KeyStroke` is matched to the observed event via `KeyStroke.getKeyStrokeForEvent`, and the post-processor's
-  `isConsumed()` gives the `Delivery`. `Interaction` is a plain class (not a record — the module merges to a
-  JDK 8 branch).
+  `isConsumed()` gives the `Delivery`. `Interaction` is a plain class.
 - **Introspection.** `UiInspector` (common-ui) is a `ServiceLoader` SPI; framework-ui provides
   `EntityEditorInspector` / `EntityTableModelInspector`, which project the `EntityEditor` / `EntityTableModel`
   observables to a map. `model_state` runs the inspectors on the EDT and returns the first that applies.
