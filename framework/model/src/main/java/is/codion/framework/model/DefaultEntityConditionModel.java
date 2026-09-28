@@ -262,9 +262,9 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 			case BETWEEN:
 				return betweenCondition(operands.lower().get(), operands.upper().get(), column);
 			case NOT_BETWEEN_EXCLUSIVE:
-				return notBetweenExclusiveCondition(operands.lower().get(), operands.upper().get(), column);
+				return negation(notBetweenExclusiveCondition(operands.lower().get(), operands.upper().get(), column), column);
 			case NOT_BETWEEN:
-				return notBetweenCondition(operands.lower().get(), operands.upper().get(), column);
+				return negation(notBetweenCondition(operands.lower().get(), operands.upper().get(), column), column);
 			case IN:
 				return inCondition(conditionModel, column);
 			case NOT_IN:

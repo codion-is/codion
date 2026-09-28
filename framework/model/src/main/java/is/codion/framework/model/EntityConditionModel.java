@@ -44,8 +44,9 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
 
 	/**
-	 * Specifies whether the negative operators {@link is.codion.common.utilities.Operator#NOT_EQUAL} and
-	 * {@link is.codion.common.utilities.Operator#NOT_IN} include null values when translated to a query condition,
+	 * Specifies whether the negative operators {@link is.codion.common.utilities.Operator#NOT_EQUAL},
+	 * {@link is.codion.common.utilities.Operator#NOT_IN}, {@link is.codion.common.utilities.Operator#NOT_BETWEEN} and
+	 * {@link is.codion.common.utilities.Operator#NOT_BETWEEN_EXCLUSIVE} include null values when translated to a query condition,
 	 * matching exactly the rows their positive counterparts do not, the way a {@link ConditionModel} used as a filter does.
 	 * If false the condition follows SQL, where no comparison to null holds, excluding rows without a value.
 	 * Note that this only affects conditions based on nullable columns and foreign keys, and only the conditions created
