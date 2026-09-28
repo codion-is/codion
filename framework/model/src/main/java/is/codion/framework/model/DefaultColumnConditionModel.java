@@ -20,10 +20,18 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
+import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 
@@ -32,13 +40,20 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 
 	private DefaultColumnConditionModel(DefaultBuilder<T> builder) {
 		column = builder.columnDefinition.attribute();
-		condition = ConditionModel.builder()
+		ConditionModel.Builder<T> conditionBuilder = ConditionModel.builder()
 						.type(column.type().get())
 						.format(builder.columnDefinition.format().orElse(null))
 						.caption(builder.columnDefinition.caption())
 						.dateTimePattern(builder.columnDefinition.dateTimePattern().orElse(null))
-						.operands(new AttributeOperands<>(builder.columnDefinition))
-						.build();
+						.operands(new AttributeOperands<>(builder.columnDefinition));
+		if (builder.operators != null) {
+			conditionBuilder.operators(builder.operators)
+							.operator(builder.operator == null ? builder.operators.get(0) : builder.operator);
+		}
+		else if (builder.operator != null) {
+			conditionBuilder.operator(builder.operator);
+		}
+		condition = conditionBuilder.build();
 	}
 
 	@Override
@@ -61,12 +76,34 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 		return condition.caption();
 	}
 
+	static <T> Builder<T> builder(ColumnDefinition<T> columnDefinition) {
+		return new DefaultBuilder<>(requireNonNull(columnDefinition));
+	}
+
 	static final class DefaultBuilder<T> implements Builder<T> {
 
 		private final ColumnDefinition<T> columnDefinition;
 
-		DefaultBuilder(ColumnDefinition<T> columnDefinition) {
+		private @Nullable List<Operator> operators;
+		private @Nullable Operator operator;
+
+		private DefaultBuilder(ColumnDefinition<T> columnDefinition) {
 			this.columnDefinition = columnDefinition;
+		}
+
+		@Override
+		public Builder<T> operators(List<Operator> operators) {
+			if (requireNonNull(operators).isEmpty()) {
+				throw new IllegalArgumentException("No operators specified");
+			}
+			this.operators = unmodifiableList(new ArrayList<>(operators));
+			return this;
+		}
+
+		@Override
+		public Builder<T> operator(Operator operator) {
+			this.operator = requireNonNull(operator);
+			return this;
 		}
 
 		@Override

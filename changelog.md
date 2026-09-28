@@ -15,6 +15,7 @@ Codion Change Log
 ### is.codion.common.model
 - FilterTableModel.TableColumns.columnClass() renamed type().
 - ConditionModel.valueClass() renamed type().
+- ConditionModel.Builder, the operators and the initial operator now validated when built instead of when set, no longer depending on the order they are set in.
 ### is.codion.dbms.db2
 - Db2Database reads temporal values via java.sql.Date, Time and Timestamp, drivers before 12 throwing NullPointerException when reading a null value via getObject(index, LocalDate.class).
 ### is.codion.dbms.derby
@@ -51,6 +52,10 @@ Codion Change Log
 - EntityQueries.Factory.create() now based on the connection, a local connection providing its own database, instead of a database and entities.
 ### is.codion.framework.db.local
 - Configuration property codion.db.tracing renamed codion.db.tracing.enabled.
+### is.codion.framework.model
+- EntityConditions removed, EntityConditionModel.Builder.exclude() and condition() added, for excluding and configuring the condition models of columns and foreign keys.
+- ColumnConditionModel.Builder.operators() and operator() added.
+- ColumnConditionModel.builder() and ForeignKeyConditionModel.builder() removed, the builders now only provided via EntityConditionModel.Builder.condition().
 ### is.codion.framework.servlet
 - Configuration property codion.server.http.useVirtualThreads renamed codion.server.http.virtualThreads.
 ### is.codion.framework.server

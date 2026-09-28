@@ -31,7 +31,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 
-import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -193,10 +193,30 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 		}
 
 		/**
-		 * @param conditions supplies the column condition models for this condition model
+		 * Excludes the given columns and foreign keys, no condition model being created for them.
+		 * @param attributes the columns and foreign keys to exclude
 		 * @return this builder
 		 */
-		Builder conditions(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions);
+		Builder exclude(Attribute<?>... attributes);
+
+		/**
+		 * Configures the condition model for the given column, the builder received being initialized with the
+		 * column defaults. Replaces any previous configuration of the given column.
+		 * @param column the column
+		 * @param condition configures the condition model builder
+		 * @param <T> the column type
+		 * @return this builder
+		 */
+		<T> Builder condition(Column<T> column, Consumer<ColumnConditionModel.Builder<T>> condition);
+
+		/**
+		 * Configures the condition model for the given foreign key, the builder received being initialized with the
+		 * foreign key defaults, the caption included. Replaces any previous configuration of the given foreign key.
+		 * @param foreignKey the foreign key
+		 * @param condition configures the condition model builder
+		 * @return this builder
+		 */
+		Builder condition(ForeignKey foreignKey, Consumer<ForeignKeyConditionModel.Builder> condition);
 
 		/**
 		 * @param negationIncludesNull true if the negative operators should include null values
@@ -207,6 +227,8 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 
 		/**
 		 * @return a new {@link EntityConditionModel} instance
+		 * @throws IllegalArgumentException in case an excluded or configured attribute is not a column or foreign key
+		 * of the underlying entity, or is both excluded and configured
 		 */
 		EntityConditionModel build();
 	}

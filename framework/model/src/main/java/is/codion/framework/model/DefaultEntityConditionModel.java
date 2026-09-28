@@ -47,10 +47,13 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -58,6 +61,7 @@ import static is.codion.common.model.condition.TableConditionModel.tableConditio
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.time.temporal.ChronoUnit.*;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -84,7 +88,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		this.entityDefinition = builder.connection.entities().definition(builder.entityType);
 		this.connection = builder.connection;
 		this.negationIncludesNull = builder.negationIncludesNull;
-		this.conditionModel = tableConditionModel(builder.conditions.get());
+		this.conditionModel = tableConditionModel(createConditions(builder));
 		this.modified = new DefaultModified();
 		bindEvents();
 	}
@@ -502,13 +506,15 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		private final EntityType entityType;
 		private final EntityConnection connection;
 
-		private Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions;
+		private final Set<Attribute<?>> excluded = new HashSet<>();
+		private final Map<Column<?>, Consumer<?>> columnConditions = new HashMap<>();
+		private final Map<ForeignKey, Consumer<ForeignKeyConditionModel.Builder>> foreignKeyConditions = new HashMap<>();
+
 		private boolean negationIncludesNull = NEGATION_INCLUDES_NULL.getOrThrow();
 
 		private DefaultBuilder(EntityType entityType, EntityConnection connection) {
 			this.entityType = entityType;
 			this.connection = connection;
-			this.conditions = new EntityConditions(entityType, connection);
 		}
 
 		private static final class DefaultEntityTypeStep implements EntityTypeStep {
@@ -534,8 +540,20 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 
 		@Override
-		public Builder conditions(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions) {
-			this.conditions = requireNonNull(conditions);
+		public Builder exclude(Attribute<?>... attributes) {
+			excluded.addAll(asList(requireNonNull(attributes)));
+			return this;
+		}
+
+		@Override
+		public <T> Builder condition(Column<T> column, Consumer<ColumnConditionModel.Builder<T>> condition) {
+			columnConditions.put(requireNonNull(column), requireNonNull(condition));
+			return this;
+		}
+
+		@Override
+		public Builder condition(ForeignKey foreignKey, Consumer<ForeignKeyConditionModel.Builder> condition) {
+			foreignKeyConditions.put(requireNonNull(foreignKey), requireNonNull(condition));
 			return this;
 		}
 
@@ -637,6 +655,60 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		@Override
 		public int hashCode() {
 			return Objects.hash(where, having);
+		}
+	}
+
+	private Map<Attribute<?>, ConditionModel<?>> createConditions(DefaultBuilder builder) {
+		validate(builder);
+		Map<Attribute<?>, ConditionModel<?>> conditions = new HashMap<>();
+		for (Column<?> column : entityDefinition.columns().get()) {
+			if (!builder.excluded.contains(column)) {
+				conditions.put(column, columnCondition(column, builder.columnConditions.get(column)));
+			}
+		}
+		for (ForeignKey foreignKey : entityDefinition.foreignKeys().get()) {
+			if (!builder.excluded.contains(foreignKey)) {
+				conditions.put(foreignKey, foreignKeyCondition(foreignKey, builder.foreignKeyConditions.get(foreignKey)));
+			}
+		}
+
+		return conditions;
+	}
+
+	private <T> ColumnConditionModel<T> columnCondition(Column<T> column, @Nullable Consumer<?> configuration) {
+		ColumnConditionModel.Builder<T> builder = DefaultColumnConditionModel.builder(entityDefinition.columns().definition(column));
+		if (configuration != null) {
+			((Consumer<ColumnConditionModel.Builder<T>>) configuration).accept(builder);
+		}
+
+		return builder.build();
+	}
+
+	private ForeignKeyConditionModel foreignKeyCondition(ForeignKey foreignKey,
+																											 @Nullable Consumer<ForeignKeyConditionModel.Builder> configuration) {
+		ForeignKeyConditionModel.Builder builder = DefaultForeignKeyConditionModel.builder(foreignKey, connection)
+						.caption(entityDefinition.foreignKeys().definition(foreignKey).caption());
+		if (configuration != null) {
+			configuration.accept(builder);
+		}
+
+		return builder.build();
+	}
+
+	private void validate(DefaultBuilder builder) {
+		builder.excluded.forEach(this::validate);
+		builder.columnConditions.keySet().forEach(this::validate);
+		builder.foreignKeyConditions.keySet().forEach(this::validate);
+		for (Attribute<?> attribute : builder.excluded) {
+			if (builder.columnConditions.containsKey(attribute) || builder.foreignKeyConditions.containsKey(attribute)) {
+				throw new IllegalArgumentException("Attribute " + attribute + " is both excluded and configured");
+			}
+		}
+	}
+
+	private void validate(Attribute<?> attribute) {
+		if (!(attribute instanceof Column || attribute instanceof ForeignKey) || !entityDefinition.attributes().contains(attribute)) {
+			throw new IllegalArgumentException(attribute + " is not a column or foreign key of " + entityDefinition.type());
 		}
 	}
 

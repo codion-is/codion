@@ -435,15 +435,14 @@ public interface ConditionModel<T> {
 		/**
 		 * @param operators the conditional operators available to this condition model
 		 * @return this builder instance
-		 * @throws IllegalArgumentException in case operators don't contain the selected operator
+		 * @throws IllegalArgumentException in case of an empty list
 		 * @see #operator(Operator)
 		 */
 		Builder<T> operators(List<Operator> operators);
 
 		/**
-		 * @param operator the initial operator
+		 * @param operator the initial operator, {@link Operator#EQUAL} by default
 		 * @return this builder instance
-		 * @throws IllegalArgumentException in case the model operators don't contain the given operator
 		 * @see #operators(List)
 		 */
 		Builder<T> operator(Operator operator);
@@ -486,6 +485,7 @@ public interface ConditionModel<T> {
 
 		/**
 		 * @return a new {@link ConditionModel} instance based on this builder
+		 * @throws IllegalArgumentException in case the operators don't contain the initial operator
 		 */
 		ConditionModel<T> build();
 	}

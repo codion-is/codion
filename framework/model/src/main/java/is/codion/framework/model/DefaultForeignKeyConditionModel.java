@@ -164,9 +164,11 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 						.build();
 	}
 
-	static final class DefaultBuilder implements Builder {
+	static Builder builder(ForeignKey foreignKey, EntityConnection connection) {
+		return new DefaultBuilder(requireNonNull(foreignKey), requireNonNull(connection));
+	}
 
-		static final ForeignKeyStep FOREIGN_KEY_STEP = new DefaultForeignKeyStep();
+	static final class DefaultBuilder implements Builder {
 
 		private final ForeignKey foreignKey;
 		private final Entities entities;
@@ -227,28 +229,6 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 			}
 
 			return new DefaultForeignKeyConditionModel(this);
-		}
-
-		private static final class DefaultForeignKeyStep implements ForeignKeyStep {
-
-			@Override
-			public ConnectionStep foreignKey(ForeignKey foreignKey) {
-				return new DefaultConnectionStep(requireNonNull(foreignKey));
-			}
-		}
-
-		private static final class DefaultConnectionStep implements ConnectionStep {
-
-			private final ForeignKey foreignKey;
-
-			private DefaultConnectionStep(ForeignKey foreignKey) {
-				this.foreignKey = foreignKey;
-			}
-
-			@Override
-			public Builder connection(EntityConnection connection) {
-				return new DefaultBuilder(foreignKey, requireNonNull(connection));
-			}
 		}
 	}
 
