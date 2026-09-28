@@ -16,6 +16,7 @@ Codion Change Log
 - FilterTableModel.TableColumns.columnClass() renamed type().
 - ConditionModel.valueClass() renamed type().
 - ConditionModel.Builder, the operators and the initial operator now validated when built instead of when set, no longer depending on the order they are set in.
+- ConditionModel, NOT_BETWEEN and NOT_BETWEEN_EXCLUSIVE now accept null values, as the complements of BETWEEN and BETWEEN_EXCLUSIVE, the way NOT_EQUAL and NOT_IN do.
 ### is.codion.dbms.db2
 - Db2Database reads temporal values via java.sql.Date, Time and Timestamp, drivers before 12 throwing NullPointerException when reading a null value via getObject(index, LocalDate.class).
 ### is.codion.dbms.derby
@@ -57,6 +58,7 @@ Codion Change Log
 - ColumnConditionModel.Builder.operators() and operator() added.
 - ColumnConditionModel.builder() and ForeignKeyConditionModel.builder() removed, the builders now only provided via EntityConditionModel.Builder.condition().
 - EntityConditionModel, a NOT_BETWEEN or NOT_BETWEEN_EXCLUSIVE condition missing a bound now the complement of its BETWEEN or BETWEEN_EXCLUSIVE counterpart, as in the filter, the two having been swapped, including or excluding the remaining bound incorrectly.
+- EntityConditionModel, NOT_BETWEEN and NOT_BETWEEN_EXCLUSIVE conditions based on nullable columns now include null values, as NOT_EQUAL and NOT_IN do, according to NEGATION_INCLUDES_NULL.
 ### is.codion.framework.servlet
 - Configuration property codion.server.http.useVirtualThreads renamed codion.server.http.virtualThreads.
 ### is.codion.framework.server

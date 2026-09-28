@@ -411,7 +411,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		if (comparable == null) {
-			return false;
+			return true;// the complement of the between operators, which never accept null
 		}
 
 		if (lower == null) {
@@ -436,7 +436,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		if (comparable == null) {
-			return false;
+			return true;// the complement of the between operators, which never accept null
 		}
 
 		if (lower == null) {
