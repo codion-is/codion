@@ -284,12 +284,10 @@ public final class ImagePane extends JPanel {
 		autoResize = State.state(builder.autoResize);
 		movable = State.state(builder.movable);
 		navigable = State.state(builder.navigable);
+		navigable.addListener(this::repaint);
 		navigationCorner = builder.navigationCorner;
 		zoom = new ZoomValue();
 		origin = new ImageOriginValue();
-		if (navigable.is() && !image.isNull()) {
-			createNavigationImage();
-		}
 	}
 
 	/**
@@ -678,9 +676,7 @@ public final class ImagePane extends JPanel {
 		scale = initialScale;
 		//An image is initially centered
 		centerImage();
-		if (navigable.is()) {
-			createNavigationImage();
-		}
+		navigationImage = null;
 	}
 
 	private void centerImage() {
@@ -689,18 +685,36 @@ public final class ImagePane extends JPanel {
 		origin.notifyChanged();
 	}
 
-	private void createNavigationImage() {
+	/**
+	 * The navigation image depends on the image and the pane size, it is created when first painted
+	 * and discarded when either changes, or when the view is reset.
+	 * @return the navigation image, null in case the pane size or the image proportions leave no room for one
+	 */
+	private @Nullable BufferedImage navigationImage() {
+		if (navigationImage == null) {
+			navigationImage = createNavigationImage();
+		}
+
+		return navigationImage;
+	}
+
+	private @Nullable BufferedImage createNavigationImage() {
 		BufferedImage bufferedImage = image.getOrThrow();
 		//We keep the original navigation image larger than initially
 		//displayed to allow for zooming into it without pixellation effect.
 		navigationImageWidth = (int) (getWidth() * NAV_IMAGE_FACTOR);
 		navigationImageHeight = navigationImageWidth * bufferedImage.getHeight() / bufferedImage.getWidth();
+		if (navigationImageWidth == 0 || navigationImageHeight == 0) {
+			return null;
+		}
 		int scrNavImageWidth = (int) (getWidth() * SCREEN_NAV_IMAGE_FACTOR);
 		navigationScale = (double) scrNavImageWidth / navigationImageWidth;
 		ColorModel colorModel = bufferedImage.getColorModel();
 		WritableRaster raster = colorModel.createCompatibleWritableRaster(navigationImageWidth, navigationImageHeight);
-		navigationImage = new BufferedImage(colorModel, raster, false, getProperties(bufferedImage));
-		navigationImage.getGraphics().drawImage(bufferedImage, 0, 0, navigationImageWidth, navigationImageHeight, null);
+		BufferedImage navImage = new BufferedImage(colorModel, raster, false, getProperties(bufferedImage));
+		navImage.getGraphics().drawImage(bufferedImage, 0, 0, navigationImageWidth, navigationImageHeight, null);
+
+		return navImage;
 	}
 
 	/**
@@ -709,7 +723,7 @@ public final class ImagePane extends JPanel {
 	 * @return true if the given point is within the navigation image
 	 */
 	private boolean isInNavigationImage(Point panePoint) {
-		if (!navigable.is()) {
+		if (!navigable.is() || navigationImage == null) {
 			return false;
 		}
 		Point navOrigin = navigationImageOrigin();
@@ -833,8 +847,15 @@ public final class ImagePane extends JPanel {
 		}
 
 		if (navigable.is()) {
+			paintNavigationImage(g);
+		}
+	}
+
+	private void paintNavigationImage(Graphics g) {
+		BufferedImage navImage = navigationImage();
+		if (navImage != null) {
 			Point navOrigin = navigationImageOrigin();
-			g.drawImage(navigationImage, navOrigin.x, navOrigin.y, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
+			g.drawImage(navImage, navOrigin.x, navOrigin.y, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
 			drawZoomAreaOutline(g, navOrigin);
 		}
 	}
@@ -1258,9 +1279,7 @@ public final class ImagePane extends JPanel {
 						scaleOrigin();
 					}
 				}
-				if (navigable.is()) {
-					createNavigationImage();
-				}
+				navigationImage = null;
 				repaint();
 			}
 			previousPaneSize = getSize();
