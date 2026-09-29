@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -288,6 +289,68 @@ public final class ImagePaneTest {
 	}
 
 	@Test
+	void zoomNotifications() throws Exception {
+		ImagePane pane = ImagePane.builder()
+						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
+						.build();
+		pane.image().set(image(Color.RED, 400, 400));
+		pane.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		AtomicInteger zoomEvents = new AtomicInteger();
+		pane.zoom().addListener(zoomEvents::incrementAndGet);
+
+		pane.zoom().set(2.0);
+		assertEquals(1, zoomEvents.get());
+		Point origin = pane.origin().getOrThrow();
+		pane.zoom().set(2.0);
+		assertEquals(1, zoomEvents.get());
+		assertEquals(origin, pane.origin().get());
+
+		wheel(pane, -1, 400, 125);
+		assertEquals(2, zoomEvents.get());
+		wheel(pane, 0, 400, 125);
+		assertEquals(2, zoomEvents.get());
+
+		pane.reset();
+		assertEquals(3, zoomEvents.get());
+		assertEquals(1.0, pane.zoom().getOrThrow());
+		pane.reset();
+		assertEquals(3, zoomEvents.get());
+
+		pane.zoom().set(2.0);
+		pane.image().set(image(Color.GREEN, 400, 400));
+		assertEquals(5, zoomEvents.get());
+		assertEquals(1.0, pane.zoom().getOrThrow());
+		pane.image().clear();
+		assertEquals(6, zoomEvents.get());
+		assertEquals(0.0, pane.zoom().getOrThrow());
+	}
+
+	@Test
+	void zoomInAndOut() throws Exception {
+		ImagePane pane = ImagePane.builder()
+						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
+						.build();
+		pane.image().set(image(Color.RED, 411, 397));
+		pane.setSize(803, 251);
+		SwingUtilities.invokeAndWait(() -> {});
+		// larger than 1, zooming out used to multiply by 1 - 1.5
+		pane.zoomIncrement().set(1.5);
+		assertEquals(1.0, pane.zoom().getOrThrow());
+		Point origin = pane.origin().getOrThrow();
+		for (int i = 0; i < 3; i++) {
+			wheel(pane, -1, 451, 123);
+		}
+		for (int i = 0; i < 3; i++) {
+			wheel(pane, 1, 451, 123);
+		}
+		assertEquals(1.0, pane.zoom().getOrThrow(), 1e-9);
+		assertEquals(origin, pane.origin().get());
+		wheel(pane, 1, 451, 123);
+		assertEquals(0.4, pane.zoom().getOrThrow(), 1e-9);
+	}
+
+	@Test
 	void zoomIncrement() {
 		ImagePane panel = ImagePane.builder().build();
 
@@ -323,6 +386,8 @@ public final class ImagePaneTest {
 		assertEquals(1.0, panel.zoom().getOrThrow(), 0.001);
 		panel.zoom().set(2.0);
 		assertEquals(2.0, panel.zoom().getOrThrow(), 0.001);
+		panel.zoom().set(null);
+		assertEquals(1.0, panel.zoom().getOrThrow(), 0.001);
 
 		panel.image().clear();
 		assertEquals(0.0, panel.zoom().getOrThrow(), 0.001);
@@ -355,6 +420,7 @@ public final class ImagePaneTest {
 						.build();
 
 		assertThrows(IllegalArgumentException.class, () -> panel.zoom().set(-1.0));
+		assertThrows(IllegalArgumentException.class, () -> panel.zoom().set(0.0));
 	}
 
 	@Test
@@ -404,6 +470,11 @@ public final class ImagePaneTest {
 		int screenImageHeight = (int) (pane.scale() * image.getHeight());
 		assertEquals(new Point((pane.getWidth() - screenImageWidth) / 2, (pane.getHeight() - screenImageHeight) / 2),
 						pane.origin().getOrThrow(), "at " + pane.getWidth() + "x" + pane.getHeight());
+	}
+
+	private static void wheel(ImagePane pane, int rotation, int x, int y) {
+		pane.dispatchEvent(new MouseWheelEvent(pane, MouseWheelEvent.MOUSE_WHEEL, System.currentTimeMillis(), 0,
+						x, y, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1, rotation));
 	}
 
 	private static BufferedImage paint(ImagePane pane) {

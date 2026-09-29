@@ -7,6 +7,8 @@ Codion Change Log
 - ImagePane, a fully visible image now stays centered when the pane is resized, and the zoom area outline is no longer drawn around the whole navigation image when the whole image is visible.
 - ImagePane, the navigation image and overlays are now painted when zoomed past 100% with the image out of view.
 - ImagePane, the image is now fitted to the pane when first needed rather than when first painted, zoom(), scale() and coordinates() available once an image is set and the pane has a size.
+- ImagePane, zoom() listeners are now notified once per zoom level change, including on reset() and when the image changes, zoom() now rejects zero and translates null to 1.0.
+- ImagePane, zooming out now divides by the factor zooming in multiplies by, zooming in and back out returning to the same zoom level and position, and zoom increments of 1 or more no longer breaking zooming out, a mouse wheel rotation of zero no longer zooming out.
 
 ## 0.18.88
 ### is.codion.common.utilities
