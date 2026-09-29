@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.89
+### is.codion.swing.common.ui
+- ImagePane, the navigation image is now created when painted and navigable() takes effect immediately, fixing a missing navigation image after the image changed while not navigable, and exceptions when built navigable with an image, or when the pane size or image proportions leave no room for a navigation image.
 
 ## 0.18.88
 ### is.codion.common.utilities

@@ -24,6 +24,9 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -188,6 +191,50 @@ public final class ImagePaneTest {
 	}
 
 	@Test
+	void navigationImage() throws Exception {
+		ImagePane pane = ImagePane.builder()
+						.navigable(true)
+						.build();
+		pane.image().set(image(Color.RED, 400, 400));
+		pane.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertEquals(Color.RED, navigationImagePixel(pane));
+		pane.navigable().set(false);
+		assertEquals(pane.getBackground(), navigationImagePixel(pane));
+		// the image changes while not navigable
+		pane.image().set(image(Color.GREEN, 400, 400));
+		assertEquals(pane.getBackground(), navigationImagePixel(pane));
+		pane.navigable().set(true);
+		assertEquals(Color.GREEN, navigationImagePixel(pane));
+	}
+
+	@Test
+	void navigationImageInitialImage() throws Exception {
+		ImagePane pane = ImagePane.builder()
+						.image(image(Color.RED, 400, 400))
+						.navigable(true)
+						.build();
+		pane.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertEquals(Color.RED, navigationImagePixel(pane));
+	}
+
+	@Test
+	void navigationImageTooSmall() throws Exception {
+		ImagePane pane = ImagePane.builder()
+						.navigable(true)
+						.build();
+		pane.image().set(image(Color.RED, 4000, 10));
+		pane.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertEquals(pane.getBackground(), navigationImagePixel(pane));
+		pane.image().set(image(Color.RED, 400, 400));
+		pane.setSize(3, 100);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertDoesNotThrow(() -> paint(pane));
+	}
+
+	@Test
 	void zoomIncrement() {
 		ImagePane panel = ImagePane.builder().build();
 
@@ -234,5 +281,32 @@ public final class ImagePaneTest {
 	void readImageFromFile() throws IOException {
 		ImagePane.readImage(TEST_IMAGE_PATH);
 		assertThrows(IOException.class, () -> ImagePane.readImage("nonexistent.png"));
+	}
+
+	private static BufferedImage image(Color color, int width, int height) {
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics = image.createGraphics();
+		graphics.setColor(color);
+		graphics.fillRect(0, 0, width, height);
+		graphics.dispose();
+
+		return image;
+	}
+
+	/**
+	 * @return the color of a pixel within the navigation image, in the upper left corner,
+	 * clear of the image itself, which is centered
+	 */
+	private static Color navigationImagePixel(ImagePane pane) {
+		return new Color(paint(pane).getRGB(10, 10));
+	}
+
+	private static BufferedImage paint(ImagePane pane) {
+		BufferedImage canvas = new BufferedImage(pane.getWidth(), pane.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics = canvas.createGraphics();
+		pane.paint(graphics);
+		graphics.dispose();
+
+		return canvas;
 	}
 }
