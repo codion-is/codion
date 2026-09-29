@@ -9,6 +9,7 @@ Codion Change Log
 - ImagePane, the image is now fitted to the pane when first needed rather than when first painted, zoom(), scale() and coordinates() available once an image is set and the pane has a size.
 - ImagePane, zoom() listeners are now notified once per zoom level change, including on reset() and when the image changes, zoom() now rejects zero and translates null to 1.0.
 - ImagePane, zooming out now divides by the factor zooming in multiplies by, zooming in and back out returning to the same zoom level and position, and zoom increments of 1 or more no longer breaking zooming out, a mouse wheel rotation of zero no longer zooming out.
+- ImagePane, the navigation image is now recreated instead of stretched when zoomed past the size it was created at, and can no longer be zoomed larger than the pane.
 
 ## 0.18.88
 ### is.codion.common.utilities

@@ -240,7 +240,7 @@ public final class ImagePane extends JPanel {
 	private static final byte[] EMPTY_BYTES = new byte[0];
 
 	private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of pane's width
-	private static final double NAV_IMAGE_FACTOR = 0.3; // 30% of pane's width
+	private static final int NAV_IMAGE_HEADROOM = 2; // navigation image created at twice its displayed size
 	private static final double HIGH_QUALITY_RENDERING_SCALE_THRESHOLD = 1;
 	private static final double DEFAULT_ZOOM_INCREMENT = 0.2;
 	private static final Object INTERPOLATION_TYPE = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
@@ -730,16 +730,23 @@ public final class ImagePane extends JPanel {
 	}
 
 	private @Nullable BufferedImage createNavigationImage() {
+		return createNavigationImage((int) (getWidth() * SCREEN_NAV_IMAGE_FACTOR));
+	}
+
+	/**
+	 * @param displayWidth the width the navigation image is displayed at
+	 * @return the navigation image, null in case the pane size or the image proportions leave no room for one
+	 */
+	private @Nullable BufferedImage createNavigationImage(int displayWidth) {
 		BufferedImage bufferedImage = image.getOrThrow();
-		//We keep the original navigation image larger than initially
-		//displayed to allow for zooming into it without pixellation effect.
-		navigationImageWidth = (int) (getWidth() * NAV_IMAGE_FACTOR);
+		//We keep the navigation image larger than displayed, although no larger than the pane,
+		//to allow for zooming into it without recreating it
+		navigationImageWidth = Math.max(displayWidth, Math.min(displayWidth * NAV_IMAGE_HEADROOM, getWidth()));
 		navigationImageHeight = navigationImageWidth * bufferedImage.getHeight() / bufferedImage.getWidth();
 		if (navigationImageWidth == 0 || navigationImageHeight == 0) {
 			return null;
 		}
-		int scrNavImageWidth = (int) (getWidth() * SCREEN_NAV_IMAGE_FACTOR);
-		navigationScale = (double) scrNavImageWidth / navigationImageWidth;
+		navigationScale = (double) displayWidth / navigationImageWidth;
 		ColorModel colorModel = bufferedImage.getColorModel();
 		WritableRaster raster = colorModel.createCompatibleWritableRaster(navigationImageWidth, navigationImageHeight);
 		BufferedImage navImage = new BufferedImage(colorModel, raster, false, getProperties(bufferedImage));
@@ -801,9 +808,24 @@ public final class ImagePane extends JPanel {
 		zoom.zoom(zoomed(zoom.getOrThrow(), zoomIn), point);
 	}
 
+	/**
+	 * Zooms the navigation image, no larger than the pane, recreating it in case it
+	 * would otherwise be displayed larger than it is, and stretched.
+	 * @param zoomIn true to zoom in, false to zoom out
+	 */
 	private void zoomNavigationImage(boolean zoomIn) {
-		navigationScale = zoomed(navigationScale, zoomIn);
-		repaint();
+		double zoomedScale = zoomed(navigationScale, zoomIn);
+		int displayWidth = (int) (zoomedScale * navigationImageWidth);
+		int displayHeight = (int) (zoomedScale * navigationImageHeight);
+		if (displayWidth <= getWidth() && displayHeight <= getHeight()) {
+			if (zoomedScale > 1) {
+				navigationImage = createNavigationImage(displayWidth);
+			}
+			else {
+				navigationScale = zoomedScale;
+			}
+			repaint();
+		}
 	}
 
 	/**
