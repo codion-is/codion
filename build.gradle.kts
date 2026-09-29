@@ -79,6 +79,17 @@ configure(bomModules()) {
     }
 }
 
+// Publishing to Maven Central must be confirmed by typing YES, so it can't happen by accident
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it is PublishToMavenRepository && it.repository.name == "mavenCentral" }) {
+        print("Publish Codion ${project.version} to Maven Central? Type YES to confirm: ")
+        System.out.flush()
+        if (System.`in`.bufferedReader().readLine()?.trim() != "YES") {
+            throw GradleException("Publishing to Maven Central not confirmed")
+        }
+    }
+}
+
 val junitVersion = libs.versions.junit.get()
 
 configure(subprojects.filter { it.name != "codion-framework-bom" && it.name != "codion-common-bom" }) {
