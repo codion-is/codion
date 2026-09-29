@@ -351,6 +351,39 @@ public final class ImagePaneTest {
 	}
 
 	@Test
+	void navigationImageZoom() throws Exception {
+		// every column a different color
+		BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+		for (int x = 0; x < image.getWidth(); x++) {
+			for (int y = 0; y < image.getHeight(); y++) {
+				image.setRGB(x, y, new Color(x % 256, x / 256 * 50, 128).getRGB());
+			}
+		}
+		ImagePane pane = ImagePane.builder()
+						.navigable(true)
+						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
+						.build();
+		pane.image().set(image);
+		pane.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		paint(pane);
+		// zooming the navigation image past the size it was created at
+		for (int i = 0; i < 4; i++) {
+			wheel(pane, -1, 10, 10);
+		}
+		// not stretched, no two adjacent columns alike
+		BufferedImage canvas = paint(pane);
+		for (int x = 1; x < 240; x++) {
+			assertNotEquals(canvas.getRGB(x - 1, 5), canvas.getRGB(x, 5), "column " + x);
+		}
+		// no larger than the pane, the image being 250 pixels high, starting at x 275
+		for (int i = 0; i < 20; i++) {
+			wheel(pane, -1, 10, 10);
+		}
+		assertEquals(pane.getBackground(), new Color(paint(pane).getRGB(260, 5)));
+	}
+
+	@Test
 	void zoomIncrement() {
 		ImagePane panel = ImagePane.builder().build();
 
