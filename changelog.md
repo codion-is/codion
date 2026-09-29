@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.89
+
 ## 0.18.88
 ### is.codion.common.utilities
 - Configuration, the default configuration file (~/codion.config) removed, no configuration file loaded unless specified.
