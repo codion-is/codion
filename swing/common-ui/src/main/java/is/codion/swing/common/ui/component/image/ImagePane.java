@@ -115,6 +115,8 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * {@snippet :
  * pane.zoom().set(2.0); // Zoom to 200%
  *}
+ * The zoom level, like the coordinate translation, is available once an image is set and the pane has a size,
+ * it need not have been painted.
  * Mouse wheel zooming is always around the point the mouse pointer is currently at, ensuring that
  * the area being zoomed into remains visible. Programmatic zooming via {@code zoom().set()} zooms
  * around the center of the pane.
@@ -286,8 +288,8 @@ public final class ImagePane extends JPanel {
 		navigable = State.state(builder.navigable);
 		navigable.addListener(this::repaint);
 		navigationCorner = builder.navigationCorner;
-		zoom = new ZoomValue();
 		origin = new ImageOriginValue();
+		zoom = new ZoomValue();
 	}
 
 	/**
@@ -338,6 +340,9 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
+	 * Returns the {@link Value} controlling the zoom level, 1.0 being the image fitted to the pane.
+	 * The zoom level is 0 while no image is set or the pane has no size, and setting it then
+	 * throws {@link IllegalStateException}.
 	 * @return the {@link Value} controlling the current zoom level
 	 */
 	public Value<Double> zoom() {
@@ -374,10 +379,10 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
-	 * @return the current scale
+	 * @return the current scale, 0 while no image is set or the pane has no size
 	 */
 	public double scale() {
-		return scale;
+		return viewInitialized() ? scale : 0;
 	}
 
 	/**
@@ -593,12 +598,11 @@ public final class ImagePane extends JPanel {
 		 * Converts this pane's point into the original image coordinates
 		 * @param paneCoordinate the pane coordinates
 		 * @return the image coordinates
+		 * @throws IllegalStateException in case no image is set or the pane has no size
 		 */
 		public Point2D.Double toImage(Point paneCoordinate) {
 			requireNonNull(paneCoordinate);
-			if (Double.compare(scale, 0) == 0) {
-				throw new IllegalStateException("Cannot translate coordinates before image is displayed");
-			}
+			requireViewInitialized();
 			return new Point2D.Double((paneCoordinate.x - origin.x) / scale, (paneCoordinate.y - origin.y) / scale);
 		}
 
@@ -606,12 +610,11 @@ public final class ImagePane extends JPanel {
 		 * Converts the original image point into this pane's coordinates
 		 * @param imageCoordinate the image coordinates
 		 * @return the pane coordinates
+		 * @throws IllegalStateException in case no image is set or the pane has no size
 		 */
 		public Point2D.Double toPane(Point2D.Double imageCoordinate) {
 			requireNonNull(imageCoordinate);
-			if (Double.compare(scale, 0) == 0) {
-				throw new IllegalStateException("Cannot translate coordinates before image is displayed");
-			}
+			requireViewInitialized();
 			return new Point2D.Double((imageCoordinate.x * scale) + origin.x, (imageCoordinate.y * scale) + origin.y);
 		}
 
@@ -619,11 +622,11 @@ public final class ImagePane extends JPanel {
 		/**
 		 * Tests whether a given pane coordinate in the pane falls within the image boundaries.
 		 * @param paneCoordinate the point on the pane
-		 * @return true if an image is available and the given point is within the image
+		 * @return true if an image is set, the pane has a size and the given point is within the image
 		 */
 		public boolean withinImage(Point paneCoordinate) {
 			requireNonNull(paneCoordinate);
-			if (!image.isNull()) {
+			if (viewInitialized()) {
 				BufferedImage bufferedImage = image.getOrThrow();
 				Point2D.Double imagePoint = coordinates.toImage(paneCoordinate);
 				double width = bufferedImage.getWidth();
@@ -646,6 +649,7 @@ public final class ImagePane extends JPanel {
 		/**
 		 * Centers the image on the given image coordinate
 		 * @param coordinate the image coordinate on which to center the image
+		 * @throws IllegalStateException in case no image is set or the pane has no size
 		 */
 		public void onImage(Point2D.Double coordinate) {
 			onPane(toPoint(coordinates.toPane(requireNonNull(coordinate))));
@@ -667,8 +671,30 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
-	 * Called from paintComponent() when a new image is set.
+	 * Initializes the view unless it has been initialized since the image was set or the view reset,
+	 * fitting the image to the pane, centered.
+	 * @return true if the view is initialized, false if no image is set or the pane has no size
 	 */
+	private boolean viewInitialized() {
+		if (image.isNull()) {
+			return false;
+		}
+		if (Double.compare(scale, 0) == 0) {
+			if (getWidth() == 0 || getHeight() == 0) {
+				return false;
+			}
+			initializeParams();
+		}
+
+		return true;
+	}
+
+	private void requireViewInitialized() {
+		if (!viewInitialized()) {
+			throw new IllegalStateException(image.isNull() ? "No image is set" : "The pane has no size");
+		}
+	}
+
 	private void initializeParams() {
 		double xScale = (double) getWidth() / image.getOrThrow().getWidth();
 		double yScale = (double) getHeight() / image.getOrThrow().getHeight();
@@ -817,12 +843,8 @@ public final class ImagePane extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (image.isNull()) {
+		if (!viewInitialized()) {
 			return;
-		}
-
-		if (Double.compare(scale, 0) == 0) {
-			initializeParams();
 		}
 
 		paintImage(g);
@@ -1062,7 +1084,7 @@ public final class ImagePane extends JPanel {
 		protected void setValue(@Nullable BufferedImage bufferedImage) {
 			this.bufferedImage = bufferedImage;
 			navigationImage = null;
-			//Reset scale so that initializeParameters() is called in paintComponent() for the new image.
+			//Reset scale so that the view is initialized for the new image when next needed.
 			scale = 0d;
 			repaint();
 		}
@@ -1125,11 +1147,7 @@ public final class ImagePane extends JPanel {
 
 		@Override
 		protected Double getValue() {
-			if (Double.compare(initialScale, 0) == 0) {
-				return 0d;
-			}
-
-			return scale / initialScale;
+			return viewInitialized() ? scale / initialScale : 0d;
 		}
 
 		@Override

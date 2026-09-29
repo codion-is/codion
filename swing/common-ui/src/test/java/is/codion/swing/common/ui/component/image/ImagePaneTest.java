@@ -306,18 +306,45 @@ public final class ImagePaneTest {
 	}
 
 	@Test
-	void zoomValue() throws IOException {
+	void zoomValue() throws Exception {
 		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
 
-		// Initial zoom is 0 before paint
+		// the pane has no size
 		assertEquals(0.0, panel.zoom().getOrThrow(), 0.001);
+		assertThrows(IllegalStateException.class, () -> panel.zoom().set(2.0));
+		assertThrows(IllegalStateException.class, () -> panel.coordinates().toImage(new Point(0, 0)));
 
-		// Note: zoom().set() requires initialScale > 0, which happens during paint
-		// Without painting (headless tests), we can only verify the Value exists
-		assertNotNull(panel.zoom());
+		panel.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		// fitted when first needed, not painted
+		assertEquals(1.0, panel.zoom().getOrThrow(), 0.001);
+		panel.zoom().set(2.0);
+		assertEquals(2.0, panel.zoom().getOrThrow(), 0.001);
+
+		panel.image().clear();
+		assertEquals(0.0, panel.zoom().getOrThrow(), 0.001);
+		assertThrows(IllegalStateException.class, () -> panel.zoom().set(2.0));
+	}
+
+	@Test
+	void zoomBeforePaint() throws Exception {
+		ImagePane painted = ImagePane.builder().build();
+		painted.image().set(image(Color.RED, 400, 300));
+		painted.setSize(800, 250);
+		ImagePane notPainted = ImagePane.builder().build();
+		notPainted.image().set(image(Color.RED, 400, 300));
+		notPainted.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+
+		paint(painted);
+		painted.zoom().set(2.0);
+		notPainted.zoom().set(2.0);
+
+		assertEquals(painted.scale(), notPainted.scale());
+		assertEquals(painted.origin().get(), notPainted.origin().get());
 	}
 
 	@Test

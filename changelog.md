@@ -6,6 +6,7 @@ Codion Change Log
 - ImagePane, the navigation image is now created when painted and navigable() takes effect immediately, fixing a missing navigation image after the image changed while not navigable, and exceptions when built navigable with an image, or when the pane size or image proportions leave no room for a navigation image.
 - ImagePane, a fully visible image now stays centered when the pane is resized, and the zoom area outline is no longer drawn around the whole navigation image when the whole image is visible.
 - ImagePane, the navigation image and overlays are now painted when zoomed past 100% with the image out of view.
+- ImagePane, the image is now fitted to the pane when first needed rather than when first painted, zoom(), scale() and coordinates() available once an image is set and the pane has a size.
 
 ## 0.18.88
 ### is.codion.common.utilities
