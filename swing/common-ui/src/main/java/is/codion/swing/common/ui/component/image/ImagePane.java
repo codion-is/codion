@@ -106,8 +106,9 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * // Or change reactively
  * pane.zoomDevice().set(ZoomDevice.NONE);
  *}
- * When using {@code ZoomDevice.MOUSE_BUTTON}, the left mouse button toggles between zooming in and out modes,
- * and the right button zooms by one increment (default 20%). The zoom increment can be controlled:
+ * When using {@code ZoomDevice.MOUSE_BUTTON}, the left mouse button zooms in and the right button zooms out.
+ * Each step zooms by one increment (default 20%), zooming in multiplying the zoom level by 1 + increment and
+ * zooming out dividing it, so zooming in and back out returns to the same level. The zoom increment can be controlled:
  * {@snippet :
  * pane.zoomIncrement().set(0.3); // 30% increment
  *}
@@ -244,9 +245,9 @@ public final class ImagePane extends JPanel {
 	private static final double DEFAULT_ZOOM_INCREMENT = 0.2;
 	private static final Object INTERPOLATION_TYPE = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
 	private static final Validator<BufferedImage> IMAGE_VALIDATOR = new ImageValidator();
-	private static final Validator<? super Double> POSITIVE_NUMBER = value -> {
-		if (value != null && value < 0) {
-			throw new IllegalArgumentException("Value must be a positive number");
+	private static final Validator<Double> NON_NEGATIVE = value -> {
+		if (value < 0) {
+			throw new IllegalArgumentException("Value must not be negative");
 		}
 	};
 
@@ -259,15 +260,13 @@ public final class ImagePane extends JPanel {
 	private final NavigationCorner navigationCorner;
 	private final Value<Double> zoomIncrement = Value.builder()
 					.nonNull(DEFAULT_ZOOM_INCREMENT)
-					.validator(POSITIVE_NUMBER)
+					.validator(NON_NEGATIVE)
 					.build();
 	private final ImageOriginValue origin;
 	private final ZoomValue zoom;
 	private final CoordinateTranslator coordinates = new CoordinateTranslator();
 	private final CenterImage centerImage = new CenterImage();
 
-	private double zoomFactor = 1 + zoomIncrement.getOrThrow();
-	private double navZoomFactor = 1 + zoomIncrement.getOrThrow();
 	private @Nullable BufferedImage navigationImage;
 	private int navigationImageWidth;
 	private int navigationImageHeight;
@@ -290,6 +289,7 @@ public final class ImagePane extends JPanel {
 		navigationCorner = builder.navigationCorner;
 		origin = new ImageOriginValue();
 		zoom = new ZoomValue();
+		image.addListener(() -> zoom.notifyIfChanged(image.previousZoom));
 	}
 
 	/**
@@ -333,6 +333,8 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
+	 * Returns the {@link Value} controlling the zoom increment, a non-negative number, zooming in
+	 * multiplying the zoom level by 1 + increment and zooming out dividing it.
 	 * @return the {@link Value} controlling the zoom increment
 	 */
 	public Value<Double> zoomIncrement() {
@@ -341,6 +343,7 @@ public final class ImagePane extends JPanel {
 
 	/**
 	 * Returns the {@link Value} controlling the zoom level, 1.0 being the image fitted to the pane.
+	 * The zoom level must be positive, setting it to null sets it to 1.0.
 	 * The zoom level is 0 while no image is set or the pane has no size, and setting it then
 	 * throws {@link IllegalStateException}.
 	 * @return the {@link Value} controlling the current zoom level
@@ -389,8 +392,10 @@ public final class ImagePane extends JPanel {
 	 * Resets the view so the image is centered and fits the pane
 	 */
 	public void reset() {
+		double previousZoom = zoomLevel();
 		scale = 0.0;
 		repaint();
+		zoom.notifyIfChanged(previousZoom);
 	}
 
 	/**
@@ -792,23 +797,29 @@ public final class ImagePane extends JPanel {
 		return scale > HIGH_QUALITY_RENDERING_SCALE_THRESHOLD;
 	}
 
-	private void zoomImage(Point mousePosition) {
-		if (Double.compare(initialScale, 0) != 0) {
-			Point2D.Double imagePoint = coordinates.toImage(mousePosition);
-			scale *= zoomFactor;
-			Point2D.Double panePoint = coordinates.toPane(imagePoint);
-
-			origin.x += (mousePosition.x - (int) panePoint.x);
-			origin.y += (mousePosition.y - (int) panePoint.y);
-			origin.notifyChanged();
-
-			zoom.set(scale / initialScale);
-		}
+	private void zoomImage(Point point, boolean zoomIn) {
+		zoom.zoom(zoomed(zoom.getOrThrow(), zoomIn), point);
 	}
 
-	private void zoomNavigationImage() {
-		navigationScale *= navZoomFactor;
+	private void zoomNavigationImage(boolean zoomIn) {
+		navigationScale = zoomed(navigationScale, zoomIn);
 		repaint();
+	}
+
+	/**
+	 * Zooming out divides by the factor zooming in multiplies by, so zooming in and back out returns to the same level.
+	 */
+	private double zoomed(double value, boolean zoomIn) {
+		double factor = 1 + zoomIncrement.getOrThrow();
+
+		return zoomIn ? value * factor : value / factor;
+	}
+
+	/**
+	 * @return the zoom level without initializing the view, 0 if not initialized
+	 */
+	private double zoomLevel() {
+		return Double.compare(scale, 0) == 0 ? 0 : scale / initialScale;
 	}
 
 	/**
@@ -985,25 +996,18 @@ public final class ImagePane extends JPanel {
 
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent event) {
+			int rotation = event.getWheelRotation();
+			if (rotation == 0) {
+				// precise scrolling, less than a full notch
+				return;
+			}
 			Point point = event.getPoint();
-			boolean zoomIn = event.getWheelRotation() < 0;
+			boolean zoomIn = rotation < 0;
 			if (isInNavigationImage(point)) {
-				if (zoomIn) {
-					navZoomFactor = 1 + zoomIncrement.getOrThrow();
-				}
-				else {
-					navZoomFactor = 1 - zoomIncrement.getOrThrow();
-				}
-				zoomNavigationImage();
+				zoomNavigationImage(zoomIn);
 			}
 			else if (coordinates.withinImage(point)) {
-				if (zoomIn) {
-					zoomFactor = 1 + zoomIncrement.getOrThrow();
-				}
-				else {
-					zoomFactor = 1 - zoomIncrement.getOrThrow();
-				}
-				zoomImage(point);
+				zoomImage(point, zoomIn);
 			}
 		}
 	}
@@ -1013,25 +1017,12 @@ public final class ImagePane extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent event) {
 			Point point = event.getPoint();
-			if (SwingUtilities.isRightMouseButton(event)) {
-				if (isInNavigationImage(point)) {
-					navZoomFactor = 1 - zoomIncrement.getOrThrow();
-					zoomNavigationImage();
-				}
-				else if (coordinates.withinImage(point)) {
-					zoomFactor = 1 - zoomIncrement.getOrThrow();
-					zoomImage(point);
-				}
+			boolean zoomIn = !SwingUtilities.isRightMouseButton(event);
+			if (isInNavigationImage(point)) {
+				zoomNavigationImage(zoomIn);
 			}
-			else {
-				if (isInNavigationImage(point)) {
-					navZoomFactor = 1 + zoomIncrement.getOrThrow();
-					zoomNavigationImage();
-				}
-				else if (coordinates.withinImage(point)) {
-					zoomFactor = 1 + zoomIncrement.getOrThrow();
-					zoomImage(point);
-				}
+			else if (coordinates.withinImage(point)) {
+				zoomImage(point, zoomIn);
 			}
 		}
 	}
@@ -1042,6 +1033,8 @@ public final class ImagePane extends JPanel {
 
 		private @Nullable BufferedImage bufferedImage;
 		private boolean settingBytesFromImage = false;
+		// the zoom level before the image changed, the zoom value being created after this one
+		private double previousZoom = 0;
 
 		private DefaultImageValue(@Nullable BufferedImage image) {
 			super(Notify.SET);
@@ -1082,6 +1075,7 @@ public final class ImagePane extends JPanel {
 
 		@Override
 		protected void setValue(@Nullable BufferedImage bufferedImage) {
+			previousZoom = zoomLevel();
 			this.bufferedImage = bufferedImage;
 			navigationImage = null;
 			//Reset scale so that the view is initialized for the new image when next needed.
@@ -1140,26 +1134,56 @@ public final class ImagePane extends JPanel {
 
 	private final class ZoomValue extends AbstractValue<Double> {
 
+		private @Nullable Point zoomingCenter;
+
 		private ZoomValue() {
-			super(Notify.CHANGED);
-			addValidator(POSITIVE_NUMBER);
+			super(1d, Notify.CHANGED);
 		}
 
 		@Override
 		protected Double getValue() {
-			return viewInitialized() ? scale / initialScale : 0d;
+			return viewInitialized() ? zoomLevel() : 0d;
 		}
 
 		@Override
 		protected void setValue(Double value) {
-			setZoom(value, new Point(getWidth() / 2, getHeight() / 2));
+			// not a validator, since the zoom level is 0 while no image is displayed
+			if (value <= 0) {
+				throw new IllegalArgumentException("Zoom must be a positive number");
+			}
+			if (Double.compare(value, getOrThrow()) != 0) {
+				setZoom(value, zoomingCenter == null ? new Point(getWidth() / 2, getHeight() / 2) : zoomingCenter);
+			}
 		}
 
 		/**
-		 * <p>Sets the zoom level used to display the image, and the zooming center,
-		 * around which zooming is done.</p>
-		 * <p>This method is used in programmatic zooming.
-		 * After a new zoom level is set the image is repainted.</p>
+		 * Zooms around the given pane coordinate instead of the pane center.
+		 * @param newZoom the zoom level
+		 * @param center the pane coordinate to zoom around
+		 */
+		private void zoom(double newZoom, Point center) {
+			zoomingCenter = center;
+			try {
+				set(newZoom);
+			}
+			finally {
+				zoomingCenter = null;
+			}
+		}
+
+		/**
+		 * Notifies listeners in case the zoom level differs from the given one, following a change of image or a view reset.
+		 * @param previousZoom the zoom level before the change
+		 */
+		private void notifyIfChanged(double previousZoom) {
+			if (Double.compare(previousZoom, getOrThrow()) != 0) {
+				notifyObserver();
+			}
+		}
+
+		/**
+		 * Sets the zoom level used to display the image, zooming around the given pane coordinate,
+		 * which keeps its position in case it is within the image.
 		 * @param newZoom the zoom level used to display this pane's image.
 		 * @param zoomingCenter the zooming center
 		 */
@@ -1183,11 +1207,9 @@ public final class ImagePane extends JPanel {
 			scale = zoomToScale(newZoom);
 			Point2D.Double paneP = coordinates.toPane(imageP);
 
-			origin.x += (int) (Math.round(correctedP.getX()) - (int) paneP.x);
-			origin.y += (int) (Math.round(correctedP.getY()) - (int) paneP.y);
+			origin.x += (int) Math.round(correctedP.getX() - paneP.getX());
+			origin.y += (int) Math.round(correctedP.getY() - paneP.getY());
 			origin.notifyChanged();
-
-			notifyObserver();
 		}
 
 		private double zoomToScale(double zoom) {
