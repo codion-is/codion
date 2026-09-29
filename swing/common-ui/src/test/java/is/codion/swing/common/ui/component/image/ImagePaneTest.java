@@ -384,6 +384,23 @@ public final class ImagePaneTest {
 	}
 
 	@Test
+	void navigationImageMinimumSize() throws Exception {
+		ImagePane pane = ImagePane.builder()
+						.navigable(true)
+						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
+						.build();
+		pane.image().set(image(Color.RED, 400, 400));
+		pane.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		paint(pane);
+		for (int i = 0; i < 20; i++) {
+			wheel(pane, 1, 5, 5);
+		}
+		// still there to zoom back in
+		assertEquals(Color.RED, navigationImagePixel(pane));
+	}
+
+	@Test
 	void zoomIncrement() {
 		ImagePane panel = ImagePane.builder().build();
 

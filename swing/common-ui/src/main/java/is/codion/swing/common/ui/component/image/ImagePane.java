@@ -241,6 +241,7 @@ public final class ImagePane extends JPanel {
 
 	private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of pane's width
 	private static final int NAV_IMAGE_HEADROOM = 2; // navigation image created at twice its displayed size
+	private static final int NAV_IMAGE_MINIMUM_SIZE = 20; // pixels, the navigation image can not be zoomed out any smaller
 	private static final double HIGH_QUALITY_RENDERING_SCALE_THRESHOLD = 1;
 	private static final double DEFAULT_ZOOM_INCREMENT = 0.2;
 	private static final Object INTERPOLATION_TYPE = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
@@ -809,15 +810,17 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
-	 * Zooms the navigation image, no larger than the pane, recreating it in case it
-	 * would otherwise be displayed larger than it is, and stretched.
+	 * Zooms the navigation image, no larger than the pane and not out below the minimum size,
+	 * recreating it in case it would otherwise be displayed larger than it is, and stretched.
 	 * @param zoomIn true to zoom in, false to zoom out
 	 */
 	private void zoomNavigationImage(boolean zoomIn) {
 		double zoomedScale = zoomed(navigationScale, zoomIn);
 		int displayWidth = (int) (zoomedScale * navigationImageWidth);
 		int displayHeight = (int) (zoomedScale * navigationImageHeight);
-		if (displayWidth <= getWidth() && displayHeight <= getHeight()) {
+		boolean tooLarge = displayWidth > getWidth() || displayHeight > getHeight();
+		boolean tooSmall = displayWidth < NAV_IMAGE_MINIMUM_SIZE || displayHeight < NAV_IMAGE_MINIMUM_SIZE;
+		if (zoomIn ? !tooLarge : !tooSmall) {
 			if (zoomedScale > 1) {
 				navigationImage = createNavigationImage(displayWidth);
 			}
