@@ -825,6 +825,18 @@ public final class ImagePane extends JPanel {
 			initializeParams();
 		}
 
+		paintImage(g);
+
+		// Paint overlays last, but not over the navigation image and zoom area outline
+		if (!overlays.isEmpty()) {
+			overlays.forEach(overlay -> overlay.accept((Graphics2D) g, this));
+		}
+		if (navigable.is()) {
+			paintNavigationImage(g);
+		}
+	}
+
+	private void paintImage(Graphics g) {
 		BufferedImage bufferedImage = image.getOrThrow();
 		if (isHighQualityRendering()) {
 			Rectangle rect = getImageClipBounds();
@@ -840,15 +852,6 @@ public final class ImagePane extends JPanel {
 		}
 		else {
 			g.drawImage(bufferedImage, origin.x, origin.y, getScreenImageWidth(), getScreenImageHeight(), null);
-		}
-
-		// Paint overlays last, but not over the navigation image and zoom area outline
-		if (!overlays.isEmpty()) {
-			overlays.forEach(overlay -> overlay.accept((Graphics2D) g, this));
-		}
-
-		if (navigable.is()) {
-			paintNavigationImage(g);
 		}
 	}
 
