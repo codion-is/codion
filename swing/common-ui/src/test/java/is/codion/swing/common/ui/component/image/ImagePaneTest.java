@@ -269,6 +269,25 @@ public final class ImagePaneTest {
 	}
 
 	@Test
+	void imageOutOfView() throws Exception {
+		AtomicInteger overlayCounter = new AtomicInteger();
+		ImagePane pane = ImagePane.builder()
+						.navigable(true)
+						.overlay((graphics, imagePane) -> overlayCounter.incrementAndGet())
+						.build();
+		pane.image().set(image(Color.RED, 400, 400));
+		pane.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		paint(pane);
+		// past 100%, rendering only the part of the image in view
+		pane.zoom().set(3.0);
+		pane.origin().set(new Point(-5000, -5000));
+		overlayCounter.set(0);
+		assertEquals(Color.RED, navigationImagePixel(pane));
+		assertEquals(1, overlayCounter.get());
+	}
+
+	@Test
 	void zoomIncrement() {
 		ImagePane panel = ImagePane.builder().build();
 
