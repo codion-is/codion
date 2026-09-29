@@ -747,12 +747,13 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
-	 * Tests whether the image is displayed in its entirety in the pane.
+	 * Tests whether the image is displayed in its entirety in a pane of the given size.
+	 * @param paneSize the pane size
 	 * @return true if the image is fully within the pane bounds
 	 */
-	private boolean isFullImageInPane() {
-		return origin.x >= 0 && (origin.x + getScreenImageWidth()) < getWidth() &&
-						origin.y >= 0 && (origin.y + getScreenImageHeight()) < getHeight();
+	private boolean isFullImageInPane(Dimension paneSize) {
+		return origin.x >= 0 && (origin.x + getScreenImageWidth()) <= paneSize.width &&
+						origin.y >= 0 && (origin.y + getScreenImageHeight()) <= paneSize.height;
 	}
 
 	/**
@@ -869,7 +870,7 @@ public final class ImagePane extends JPanel {
 	private void drawZoomAreaOutline(Graphics graphics, Point navOrigin) {
 		int screenImageWidth = getScreenImageWidth();
 		int screenImageHeight = getScreenImageHeight();
-		if (isFullImageInPane() || screenImageHeight == 0 || screenImageWidth == 0) {
+		if (isFullImageInPane(getSize()) || screenImageHeight == 0 || screenImageWidth == 0) {
 			return;
 		}
 
@@ -1272,7 +1273,8 @@ public final class ImagePane extends JPanel {
 					reset(); // Fit to new pane size
 				}
 				else {
-					if (isFullImageInPane()) {
+					// the origin is still the one from before the resize
+					if (isFullImageInPane(previousPaneSize)) {
 						centerImage();
 					}
 					else if (isImageEdgeInPane()) {

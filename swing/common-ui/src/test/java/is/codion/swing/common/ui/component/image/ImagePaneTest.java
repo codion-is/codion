@@ -27,6 +27,7 @@ import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -235,6 +236,39 @@ public final class ImagePaneTest {
 	}
 
 	@Test
+	void centeredOnResize() throws Exception {
+		ImagePane pane = ImagePane.builder().build();
+		pane.image().set(image(Color.RED, 400, 400));
+		pane.setSize(796, 256);
+		SwingUtilities.invokeAndWait(() -> {});
+		paint(pane);
+		assertCentered(pane);
+		pane.setSize(1200, 256);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertCentered(pane);
+		pane.setSize(600, 256);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertCentered(pane);
+		pane.setSize(600, 400);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertCentered(pane);
+	}
+
+	@Test
+	void zoomAreaOutline() throws Exception {
+		ImagePane pane = ImagePane.builder()
+						.navigable(true)
+						.build();
+		pane.image().set(image(Color.RED, 400, 400));
+		pane.setSize(800, 250);
+		SwingUtilities.invokeAndWait(() -> {});
+		// the whole image is visible
+		assertEquals(0, navigationImageWhitePixels(pane));
+		pane.zoom().set(2.0);
+		assertTrue(navigationImageWhitePixels(pane) > 0);
+	}
+
+	@Test
 	void zoomIncrement() {
 		ImagePane panel = ImagePane.builder().build();
 
@@ -299,6 +333,31 @@ public final class ImagePaneTest {
 	 */
 	private static Color navigationImagePixel(ImagePane pane) {
 		return new Color(paint(pane).getRGB(10, 10));
+	}
+
+	/**
+	 * @return the number of white pixels in the navigation image area, the zoom area outline being white
+	 */
+	private static int navigationImageWhitePixels(ImagePane pane) {
+		BufferedImage canvas = paint(pane);
+		int whitePixels = 0;
+		for (int x = 0; x < pane.getWidth() * 0.15; x++) {
+			for (int y = 0; y < pane.getHeight(); y++) {
+				if ((canvas.getRGB(x, y) & 0xFFFFFF) == 0xFFFFFF) {
+					whitePixels++;
+				}
+			}
+		}
+
+		return whitePixels;
+	}
+
+	private static void assertCentered(ImagePane pane) {
+		BufferedImage image = pane.image().getOrThrow();
+		int screenImageWidth = (int) (pane.scale() * image.getWidth());
+		int screenImageHeight = (int) (pane.scale() * image.getHeight());
+		assertEquals(new Point((pane.getWidth() - screenImageWidth) / 2, (pane.getHeight() - screenImageHeight) / 2),
+						pane.origin().getOrThrow(), "at " + pane.getWidth() + "x" + pane.getHeight());
 	}
 
 	private static BufferedImage paint(ImagePane pane) {
