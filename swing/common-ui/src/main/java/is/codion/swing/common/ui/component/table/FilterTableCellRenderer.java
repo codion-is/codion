@@ -133,6 +133,18 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 					booleanValue(FilterTableCellRenderer.class.getName() + ".setBorder", true);
 
 	/**
+	 * Specifies whether selected cells use the selection colors the look and feel sets on the table, such as FlatLaf's
+	 * inactive ones while the table is not focused, instead of the default ones of the look and feel.
+	 * Selection colors set on the table explicitly are used regardless.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	PropertyValue<Boolean> INACTIVE_SELECTION =
+					booleanValue(FilterTableCellRenderer.class.getName() + ".inactiveSelection", false);
+
+	/**
 	 * @return the column type
 	 */
 	Class<T> type();
