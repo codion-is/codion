@@ -62,6 +62,7 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 						.build();
 		JComboBox<T> comboBox = comboBox()
 						.model(comboBoxModel)
+						.renderer(renderer)
 						.build();
 		Control okControl = Control.builder()
 						.command(() -> Ancestor.window().of(comboBox).dispose())
