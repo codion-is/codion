@@ -148,7 +148,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 			}
 			fileChooserSave.setSelectedFiles(new File[] {new File("")});
 			fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			resetFileFilters(fileChooserSave);
+			resetFileFilters(fileChooserSave, fileFilters);
 			fileChooserSave.setMultiSelectionEnabled(false);
 			fileChooserSave.setDialogTitle(title == null ? null : title.get());
 			File startDirectory;
@@ -263,7 +263,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 					break;
 			}
 			fileChooserOpen.setSelectedFiles(new File[] {initialSelection(filesOrDirectories)});
-			resetFileFilters(fileChooserOpen);
+			resetFileFilters(fileChooserOpen, fileFilters);
 			fileChooserOpen.setMultiSelectionEnabled(!singleSelection);
 			if (!nullOrEmpty(startDirectory) && new File(startDirectory).exists()) {
 				fileChooserOpen.setCurrentDirectory(new File(startDirectory));
@@ -297,12 +297,17 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 		return new File("");
 	}
 
-	private void resetFileFilters(JFileChooser fileChooser) {
-		Stream.of(fileChooser.getChoosableFileFilters()).forEach(fileChooser::removeChoosableFileFilter);
+	/**
+	 * Replaces the filters of a previous selection with the given ones, keeping the accept all filter,
+	 * as a new {@link JFileChooser} offers it, selecting the first given filter, if any.
+	 */
+	static void resetFileFilters(JFileChooser fileChooser, List<FileFilter> fileFilters) {
+		FileFilter acceptAll = fileChooser.getAcceptAllFileFilter();
+		Stream.of(fileChooser.getChoosableFileFilters())
+						.filter(filter -> filter != acceptAll)
+						.forEach(fileChooser::removeChoosableFileFilter);
 		fileFilters.forEach(fileChooser::addChoosableFileFilter);
-		if (!fileFilters.isEmpty()) {
-			fileChooser.setFileFilter(fileFilters.get(0));
-		}
+		fileChooser.setFileFilter(fileFilters.isEmpty() ? acceptAll : fileFilters.get(0));
 	}
 
 	private static final class LookAndFeelChangeListener implements PropertyChangeListener {
