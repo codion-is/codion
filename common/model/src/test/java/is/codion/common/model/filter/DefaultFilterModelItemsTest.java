@@ -598,6 +598,93 @@ public class DefaultFilterModelItemsTest {
 	}
 
 	@Nested
+	@DisplayName("Order")
+	class OrderTest {
+
+		private final ObservableSort sort = new ObservableSort();
+
+		private Items<String> items;
+
+		@BeforeEach
+		void setUp() {
+			items = Items.builder()
+							.<String>selection(included -> new TestMultiSelection())
+							.sort(sort)
+							.build();
+			items.set(asList("a", "b", "c", "d", "e"));
+		}
+
+		@Test
+		@DisplayName("Filtering keeps the order")
+		void filter_shouldKeepOrder() {
+			items.included().predicate().set(item -> item.equals("b") || item.equals("d"));
+			assertEquals(asList("b", "d"), items.included().get());
+			items.included().predicate().clear();
+			assertEquals(asList("a", "b", "c", "d", "e"), items.included().get());
+			items.included().predicate().set(item -> !item.equals("a"));
+			items.included().predicate().clear();
+			assertEquals(asList("a", "b", "c", "d", "e"), items.included().get());
+		}
+
+		@Test
+		@DisplayName("Clearing the sort restores the order")
+		void sortCleared_shouldRestoreOrder() {
+			sort.comparator(Comparator.reverseOrder());
+			assertEquals(asList("e", "d", "c", "b", "a"), items.included().get());
+			sort.comparator(null);
+			assertEquals(asList("a", "b", "c", "d", "e"), items.included().get());
+		}
+
+		@Test
+		@DisplayName("All items in order, included and filtered alike")
+		void get_shouldKeepOrder() {
+			items.included().predicate().set(item -> !item.equals("b"));
+			assertEquals(asList("a", "b", "c", "d", "e"), new ArrayList<>(items.get()));
+			assertEquals(singletonList("b"), new ArrayList<>(items.filtered().get()));
+		}
+
+		@Test
+		@DisplayName("A replaced filtered item keeps its place")
+		void replaceFiltered_shouldKeepPlace() {
+			items.included().predicate().set(item -> !item.equals("b"));
+			items.replace("b", "x");
+			assertEquals(asList("a", "x", "c", "d", "e"), items.included().get());
+		}
+
+		@Test
+		@DisplayName("An inserted item takes its place before the item at the index")
+		void insert_shouldTakePlace() {
+			items.included().predicate().set(item -> !item.equals("b"));
+			items.included().add(1, "x");
+			assertEquals(asList("a", "x", "c", "d", "e"), items.included().get());
+			items.included().predicate().clear();
+			assertEquals(asList("a", "b", "x", "c", "d", "e"), items.included().get());
+		}
+
+		@Test
+		@DisplayName("Removing by index removes from the order")
+		void removeIndex_shouldRemoveFromOrder() {
+			items.included().predicate().set(item -> !item.equals("b"));
+			items.included().remove(0);
+			items.included().remove(1, 3);
+			items.included().predicate().clear();
+			assertEquals(asList("b", "c"), items.included().get());
+		}
+
+		@Test
+		@DisplayName("Removing by predicate removes equal items")
+		void removePredicate_shouldRemoveEqualItems() {
+			String equal = new String("a");
+			items.set(asList("a", "b", "a", equal));
+			items.included().predicate().set(item -> item != equal);
+			assertEquals(1, items.filtered().size());
+			items.remove(item -> item.equals("a"));
+			assertEquals(singletonList("b"), new ArrayList<>(items.get()));
+			assertEquals(0, items.filtered().size());
+		}
+	}
+
+	@Nested
 	@DisplayName("Concurrent access")
 	class ConcurrentAccessTest {
 
@@ -1021,6 +1108,33 @@ public class DefaultFilterModelItemsTest {
 		@Override
 		public boolean isNullable() {
 			return predicate.isNullable();
+		}
+	}
+
+	private static final class ObservableSort implements Sort<String> {
+
+		private final Event<Boolean> event = Event.event();
+
+		private Comparator<String> comparator;
+
+		void comparator(Comparator<String> comparator) {
+			this.comparator = comparator;
+			event.accept(sorted());
+		}
+
+		@Override
+		public int compare(String item, String other) {
+			return comparator == null ? 0 : comparator.compare(item, other);
+		}
+
+		@Override
+		public boolean sorted() {
+			return comparator != null;
+		}
+
+		@Override
+		public Observer<Boolean> observer() {
+			return event.observer();
 		}
 	}
 

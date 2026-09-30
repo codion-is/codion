@@ -10,6 +10,8 @@ Codion Change Log
 - ProgressWorker, an Error thrown by an onStarted handler now fails the task instead of the task running anyway.
 - ProgressWorker, progress reported and chunks published by a cancelled task are now dropped instead of arriving after onDone and onCancelled.
 - FilterModel.Items, equal items filtered out are no longer collapsed into one, the others lost when included again, affecting the table and list models.
+- FilterModel.Items now keeps the items in the order they were set, added and inserted, items included again by a filter taking their place in it instead of being appended, and the included items returning to it when sorting is no longer enabled instead of staying sorted, get() now returning the items in that order, affecting the table and list models.
+- FilterModel.Items.remove(Predicate) now removes all the items fulfilling the predicate, equal ones included, where only one of them was removed.
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 ### is.codion.swing.common.ui

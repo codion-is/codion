@@ -514,11 +514,12 @@ public class FilterTableTest {
 
 		selectionModel.indexes().set(singletonList(3));
 		assertEquals(3, selectionModel.getMinSelectionIndex());
-		assertEquals(ITEMS.get(2), selectionModel.item().get());
+		// the filter cleared, the items are in their original order
+		assertEquals(ITEMS.get(3), selectionModel.item().get());
 
 		table.model().sort().ascending(0);
-		assertEquals(ITEMS.get(2), selectionModel.item().get());
-		assertEquals(2, selectionModel.getMinSelectionIndex());
+		assertEquals(ITEMS.get(3), selectionModel.item().get());
+		assertEquals(3, selectionModel.getMinSelectionIndex());
 
 		tableModel.selection().indexes().set(singletonList(0));
 		assertEquals(ITEMS.get(0), selectionModel.item().get());
