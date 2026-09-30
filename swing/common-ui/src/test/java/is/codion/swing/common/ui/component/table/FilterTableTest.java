@@ -40,6 +40,7 @@ import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -184,6 +185,38 @@ public class FilterTableTest {
 	@Test
 	void builderNullTableModel() {
 		assertThrows(Exception.class, () -> FilterTable.builder().model(null));
+	}
+
+	@Test
+	void popupSelection() {
+		FilterTable<TestRow, Integer> table = createTestTable();
+		table.model().items().refresh();
+		table.setRowSelectionInterval(0, 0);
+		// the row under the mouse is selected
+		assertNull(table.getPopupLocation(popupTrigger(table, 2)));
+		assertArrayEquals(new int[] {2}, table.getSelectedRows());
+		// unless it is already part of the selection
+		table.setRowSelectionInterval(1, 3);
+		table.getPopupLocation(popupTrigger(table, 2));
+		assertArrayEquals(new int[] {1, 2, 3}, table.getSelectedRows());
+		// the row, when right of the last column
+		table.getPopupLocation(popupTrigger(table, 4, table.getColumnModel().getTotalColumnWidth() + 10));
+		assertArrayEquals(new int[] {4}, table.getSelectedRows());
+		// the selection is left as is when triggered via the keyboard
+		table.getPopupLocation(null);
+		assertArrayEquals(new int[] {4}, table.getSelectedRows());
+		// and cleared below the last row
+		table.getPopupLocation(popupTrigger(table, table.getRowCount()));
+		assertArrayEquals(new int[0], table.getSelectedRows());
+	}
+
+	private static MouseEvent popupTrigger(FilterTable<?, ?> table, int row) {
+		return popupTrigger(table, row, 5);
+	}
+
+	private static MouseEvent popupTrigger(FilterTable<?, ?> table, int row, int x) {
+		return new MouseEvent(table, MouseEvent.MOUSE_PRESSED, 0, MouseEvent.BUTTON3_DOWN_MASK,
+						x, row * table.getRowHeight() + 1, 1, true, MouseEvent.BUTTON3);
 	}
 
 	@Test
