@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -108,6 +109,8 @@ public final class ProgressWorker<T, V> {
 	private final List<Runnable> onCancelled;
 	private final Dispatcher dispatcher;
 
+	private final AtomicBoolean executed = new AtomicBoolean();
+
 	private Executor dispatchExecutor = Runnable::run;
 	private volatile boolean working = false;// set and read by the handlers only, which are all run by the dispatch executor
 	private final FutureTask<T> future = new FutureTask<>(this::doInBackground) {
@@ -144,10 +147,14 @@ public final class ProgressWorker<T, V> {
 	 * executor is resolved for the caller at this point, and implementations binding a context per request
 	 * or session must resolve the right one.
 	 * @throws IllegalStateException if no dispatch context is bound (except when using {@link Dispatcher#SYNCHRONOUS})
+	 * or if this worker has already been executed
 	 */
 	public void execute() {
 		if (dispatcher != Dispatcher.SYNCHRONOUS && !dispatcher.bound()) {
 			throw new IllegalStateException("ProgressWorker.execute() must be called where a dispatch context is bound");
+		}
+		if (!executed.compareAndSet(false, true)) {
+			throw new IllegalStateException("ProgressWorker has already been executed, instances are not reusable");
 		}
 		dispatchExecutor = dispatcher.executor();
 		EXECUTOR.execute(future);
@@ -183,8 +190,14 @@ public final class ProgressWorker<T, V> {
 	 * @throws InterruptedException if the current thread was interrupted while waiting
 	 * @throws ExecutionException if the task threw an exception
 	 * @throws CancellationException if the task was cancelled
+	 * @throws IllegalStateException if called where the dispatch context is bound before the task is done,
+	 * which would block the dispatch thread, or deadlock waiting for any {@code onStarted} handlers to run
 	 */
 	public @Nullable T get() throws InterruptedException, ExecutionException {
+		if (!future.isDone() && dispatcher.bound()) {
+			throw new IllegalStateException("ProgressWorker.get() must not be called where the dispatch context is bound before the task is done");
+		}
+
 		return future.get();
 	}
 
@@ -256,7 +269,7 @@ public final class ProgressWorker<T, V> {
 
 	private void runOnStarted() throws InterruptedException {
 		if (!onStarted.isEmpty() || !onWorking.isEmpty()) {
-			AtomicReference<RuntimeException> exception = new AtomicReference<>();
+			AtomicReference<Throwable> exception = new AtomicReference<>();
 			CountDownLatch startedLatch = new CountDownLatch(1);
 			dispatchExecutor.execute(() -> {
 				try {
@@ -264,7 +277,7 @@ public final class ProgressWorker<T, V> {
 					onWorking.forEach(handler -> handler.accept(true));
 					onStarted.forEach(Runnable::run);
 				}
-				catch (RuntimeException e) {
+				catch (Throwable e) {
 					exception.set(e);
 				}
 				finally {
@@ -278,8 +291,12 @@ public final class ProgressWorker<T, V> {
 				Thread.currentThread().interrupt();
 				throw e;
 			}
-			if (exception.get() != null) {
-				throw exception.get();
+			Throwable throwable = exception.get();
+			if (throwable instanceof Error) {
+				throw (Error) throwable;
+			}
+			if (throwable != null) {
+				throw Exceptions.runtime(throwable);
 			}
 		}
 	}
