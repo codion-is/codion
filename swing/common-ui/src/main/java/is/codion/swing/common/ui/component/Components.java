@@ -477,6 +477,14 @@ public final class Components {
 	}
 
 	/**
+	 * Provides builder for a {@link Path} based directory input.
+	 * @return a {@link FileInput} builder
+	 */
+	public static FileInput.Builder<Path> directoryInput() {
+		return FileInput.builder().directory();
+	}
+
+	/**
 	 * @return a {@link javax.swing.JToolBar} builder
 	 */
 	public static ControlPanelBuilder.ControlsStep<JToolBar, ToolBarBuilder> toolBar() {
