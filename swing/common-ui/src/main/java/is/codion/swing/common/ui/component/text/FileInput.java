@@ -27,6 +27,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.FileSelectionDialogBuilder;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
@@ -58,10 +59,14 @@ public final class FileInput extends JPanel {
 
 	private final JTextField filePathField;
 	private final JButton browseButton;
+	private final boolean directory;
+	private final @Nullable String dialogTitle;
 
 	private FileInput(AbstractBuilder<?> builder) {
+		this.directory = builder.directory;
+		this.dialogTitle = builder.dialogTitle;
 		CommandControl browseControl = Control.builder()
-						.command(this::browseFile)
+						.command(this::browse)
 						.caption(builder.buttonIcon == null ? builder.buttonCaption : null)
 						.smallIcon(builder.buttonIcon)
 						.build();
@@ -109,16 +114,18 @@ public final class FileInput extends JPanel {
 		return BUILDER_FACTORY;
 	}
 
-	private void browseFile() {
-		filePathField.setText(Dialogs.select()
+	private void browse() {
+		FileSelectionDialogBuilder selection = Dialogs.select()
 						.files()
-						.owner(filePathField)
-						.title("Select file")
-						.selectFile().toString());
+						.owner(filePathField);
+		if (dialogTitle != null) {
+			selection.title(dialogTitle);
+		}
+		filePathField.setText((directory ? selection.selectDirectory() : selection.selectFile()).toString());
 	}
 
 	/**
-	 * Provides either a {@link Path} or a byte array based {@link FileInput.Builder}.
+	 * Provides a {@link Path} based file or directory input builder, or a byte array based file input builder.
 	 */
 	public interface BuilderFactory {
 
@@ -127,6 +134,12 @@ public final class FileInput extends JPanel {
 		 * @return a new builder
 		 */
 		Builder<Path> path();
+
+		/**
+		 * Provides builder for a {@link Path} based directory input.
+		 * @return a new builder
+		 */
+		Builder<Path> directory();
 
 		/**
 		 * Provides builder for a byte[] based file input.
@@ -154,6 +167,12 @@ public final class FileInput extends JPanel {
 		Builder<T> buttonIcon(Icon buttonIcon);
 
 		/**
+		 * @param dialogTitle the file selection dialog title, null for the default one
+		 * @return this builder instance
+		 */
+		Builder<T> dialogTitle(@Nullable String dialogTitle);
+
+		/**
 		 * The field has already been rendered non-editable, use {@link TextFieldBuilder#editable(boolean)} to revert.
 		 * @param filePathField the file path field builder
 		 * @return this builder instance
@@ -165,7 +184,12 @@ public final class FileInput extends JPanel {
 
 		@Override
 		public Builder<Path> path() {
-			return new PathInputPanelBuilder();
+			return new PathInputPanelBuilder(false);
+		}
+
+		@Override
+		public Builder<Path> directory() {
+			return new PathInputPanelBuilder(true);
 		}
 
 		@Override
@@ -180,8 +204,15 @@ public final class FileInput extends JPanel {
 						.type(String.class)
 						.editable(false);
 
+		private final boolean directory;
+
 		private String buttonCaption = "...";
 		private @Nullable Icon buttonIcon;
+		private @Nullable String dialogTitle;
+
+		private AbstractBuilder(boolean directory) {
+			this.directory = directory;
+		}
 
 		@Override
 		public final Builder<T> buttonCaption(String buttonCaption) {
@@ -192,6 +223,12 @@ public final class FileInput extends JPanel {
 		@Override
 		public Builder<T> buttonIcon(Icon buttonIcon) {
 			this.buttonIcon = requireNonNull(buttonIcon);
+			return this;
+		}
+
+		@Override
+		public final Builder<T> dialogTitle(@Nullable String dialogTitle) {
+			this.dialogTitle = dialogTitle;
 			return this;
 		}
 
@@ -209,6 +246,10 @@ public final class FileInput extends JPanel {
 
 	private static final class PathInputPanelBuilder extends AbstractBuilder<Path> implements Builder<Path> {
 
+		private PathInputPanelBuilder(boolean directory) {
+			super(directory);
+		}
+
 		@Override
 		protected FileInput createComponent() {
 			return new FileInput(this);
@@ -221,6 +262,10 @@ public final class FileInput extends JPanel {
 	}
 
 	private static final class ByteArrayInputPanelBuilder extends AbstractBuilder<byte[]> implements Builder<byte[]> {
+
+		private ByteArrayInputPanelBuilder() {
+			super(false);
+		}
 
 		@Override
 		protected FileInput createComponent() {

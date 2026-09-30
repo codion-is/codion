@@ -30,9 +30,16 @@ public final class FileInputTest {
 
 	@Test
 	void baseline() {
-		FileInput panel = FileInput.builder()
+		baseline(FileInput.builder()
 						.path()
-						.build();
+						.build());
+		baseline(FileInput.builder()
+						.directory()
+						.dialogTitle("Select directory")
+						.build());
+	}
+
+	private static void baseline(FileInput panel) {
 		Dimension size = panel.getPreferredSize();
 		assertTrue(panel.getBaseline(size.width, size.height) >= 0);
 		assertEquals(BaselineResizeBehavior.CENTER_OFFSET, panel.getBaselineResizeBehavior());
