@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -654,7 +653,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private final class DefaultFilteredItems implements FilteredItems<R> {
 
 		private final Event<Collection<R>> changed = Event.event();
-		private final Set<R> items = new LinkedHashSet<>();
+		private final List<R> items = new ArrayList<>();
 
 		private boolean pendingChanges = false;
 

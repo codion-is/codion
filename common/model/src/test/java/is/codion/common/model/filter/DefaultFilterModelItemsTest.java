@@ -327,6 +327,24 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
+		@DisplayName("Filter keeps equal items")
+		void filter_equalItems_shouldKeepAll() {
+			// the same instance twice, and an equal one
+			items.add(asList("a", "b", "a", new String("a")));
+			includePredicate.setPredicate(item -> !item.equals("a"));
+			items.filter();
+
+			assertEquals(4, items.size());
+			assertEquals(3, items.filtered().size());
+
+			includePredicate.setPredicate(item -> true);
+			items.filter();
+
+			assertEquals(4, items.included().size());
+			assertEquals(0, items.filtered().size());
+		}
+
+		@Test
 		@DisplayName("Filter with sorting applied")
 		void filter_withSorting_shouldSortVisible() {
 			TestSort sort = new TestSort();

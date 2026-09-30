@@ -9,6 +9,7 @@ Codion Change Log
 - ProgressWorker.execute() now throws IllegalStateException when called a second time instead of doing nothing, and get() when called where the dispatch context is bound before the task is done instead of blocking the dispatch thread, possibly deadlocking.
 - ProgressWorker, an Error thrown by an onStarted handler now fails the task instead of the task running anyway.
 - ProgressWorker, progress reported and chunks published by a cancelled task are now dropped instead of arriving after onDone and onCancelled.
+- FilterModel.Items, equal items filtered out are no longer collapsed into one, the others lost when included again, affecting the table and list models.
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 ### is.codion.swing.common.ui
