@@ -36,6 +36,7 @@ import java.awt.event.KeyEvent;
 import java.util.Collections;
 
 import static is.codion.swing.common.ui.control.Control.command;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class DialogsTest {
@@ -96,6 +97,16 @@ public final class DialogsTest {
 						.title("title")
 						.startDirectory(System.getProperty("user.home"))
 						.confirmOverwrite(true);
+	}
+
+	@Test
+	void nullTitle() {
+		// no title, leaving a dialog with a default title, such as a file selection dialog, to use it
+		AbstractDialogBuilder<?> builder = (AbstractDialogBuilder<?>) Dialogs.select()
+						.files()
+						.title("title")
+						.title((String) null);
+		assertNull(builder.title);
 	}
 
 	@Test

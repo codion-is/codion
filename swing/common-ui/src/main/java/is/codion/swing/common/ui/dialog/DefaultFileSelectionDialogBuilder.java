@@ -42,8 +42,7 @@ import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.awt.Cursor.getDefaultCursor;
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
@@ -151,6 +150,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 			fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			resetFileFilters(fileChooserSave);
 			fileChooserSave.setMultiSelectionEnabled(false);
+			fileChooserSave.setDialogTitle(title == null ? null : title.get());
 			File startDirectory;
 			if (!nullOrEmpty(this.startDirectory) && new File(this.startDirectory).exists()) {
 				startDirectory = new File(this.startDirectory);
@@ -233,7 +233,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 	}
 
 	private File selectFileOrDirectory(FilesOrDirectories filesOrDirectories, String defaultDialogTitle) {
-		return selectFilesOrDirectories(filesOrDirectories, defaultDialogTitle, false).get(0);
+		return selectFilesOrDirectories(filesOrDirectories, defaultDialogTitle, true).get(0);
 	}
 
 	private List<File> selectFilesOrDirectories(FilesOrDirectories filesOrDirectories, String defaultDialogTitle, boolean singleSelection) {
@@ -268,15 +268,14 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 			if (!nullOrEmpty(startDirectory) && new File(startDirectory).exists()) {
 				fileChooserOpen.setCurrentDirectory(new File(startDirectory));
 			}
-			String dialogTitle = title == null ? defaultDialogTitle : title.get();
-			if (dialogTitle != null) {
-				fileChooserOpen.setDialogTitle(dialogTitle);
-			}
+			// the chooser is shared, so the title is always set, never left from a previous selection
+			fileChooserOpen.setDialogTitle(title == null ? defaultDialogTitle : title.get());
 			int option = fileChooserOpen.showOpenDialog(owner);
 			if (option == JFileChooser.APPROVE_OPTION) {
 				List<File> selectedFiles;
 				if (singleSelection) {
-					selectedFiles = singletonList(fileChooserOpen.getSelectedFile());
+					File selectedFile = fileChooserOpen.getSelectedFile();
+					selectedFiles = selectedFile == null ? emptyList() : singletonList(selectedFile);
 				}
 				else {
 					selectedFiles = unmodifiableList(asList(fileChooserOpen.getSelectedFiles()));

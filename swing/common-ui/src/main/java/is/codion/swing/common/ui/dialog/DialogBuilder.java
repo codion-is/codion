@@ -67,13 +67,13 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
 	B location(@Nullable Point location);
 
 	/**
-	 * @param title the dialog title
+	 * @param title the dialog title, null for the default title, if the dialog has one
 	 * @return this builder instance
 	 */
 	B title(@Nullable String title);
 
 	/**
-	 * @param title an observable for a dynamic dialog title
+	 * @param title an observable for a dynamic dialog title, null for the default title, if the dialog has one
 	 * @return this builder instance
 	 */
 	B title(@Nullable Observable<String> title);
