@@ -57,4 +57,45 @@ public final class Colors {
 						Math.max((int) (color.getBlue() * factor), 0),
 						color.getAlpha());
 	}
+
+	/**
+	 * Returns a shade of the given color, using 0.06 as the fraction.
+	 * @param color the color to shade
+	 * @return a shade of the given color
+	 * @see #shade(Color, double)
+	 */
+	public static Color shade(Color color) {
+		return shade(color, 0.06);
+	}
+
+	/**
+	 * Returns a shade of the given color, the given fraction of the way to black, or to white in case of a dark color,
+	 * darkness decided by perceived luminance. Unlike {@link #darker(Color, double)}, the difference is visible
+	 * on dark colors as well as light ones, making this suitable for shading backgrounds in both light and dark
+	 * look and feels.
+	 * @param color the color to shade
+	 * @param fraction a number between 0 and 1, non-inclusive
+	 * @return a shade of the given color
+	 */
+	public static Color shade(Color color, double fraction) {
+		requireNonNull(color);
+		if (fraction <= 0 || fraction >= 1) {
+			throw new IllegalArgumentException("Fraction must be between 0 and 1, non-inclusive");
+		}
+		int target = dark(color) ? 255 : 0;
+
+		return new Color(shade(color.getRed(), target, fraction),
+						shade(color.getGreen(), target, fraction),
+						shade(color.getBlue(), target, fraction),
+						color.getAlpha());
+	}
+
+	private static int shade(int component, int target, double fraction) {
+		return (int) Math.round(component + (target - component) * fraction);
+	}
+
+	// by perceived luminance, ITU-R BT.601
+	private static boolean dark(Color color) {
+		return 0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue() < 128;
+	}
 }

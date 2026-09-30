@@ -101,7 +101,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
-import static is.codion.swing.common.ui.color.Colors.darker;
+import static is.codion.swing.common.ui.color.Colors.shade;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -496,7 +496,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void configureColors() {
 		this.backgroundColor = UIManager.getColor("TextField.background");
-		this.searchBackgroundColor = darker(backgroundColor);
+		this.searchBackgroundColor = shade(backgroundColor, 0.2);
 		updateColors();
 	}
 

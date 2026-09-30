@@ -33,8 +33,13 @@ Codion Change Log
 - FilterTable, CalendarPanel and the list selection dialog now respond to a double-click with the left mouse button only, a double-click with any button previously triggering the double-click action.
 - FilterTableCellRenderer, a selected cell now uses the selection foreground instead of a cell foreground, which could be unreadable on the selection background.
 - FilterTableCellRenderer now uses selection colors set on the table instead of the look and feel defaults, FilterTableCellRenderer.INACTIVE_SELECTION added, for the inactive selection colors the look and feel sets while the table is not focused, such as FlatLaf's, false by default.
+- FilterTableCellRenderer, the alternate rows and filtered columns are now shaded from the table background, lighter in a dark look and feel instead of darker, and less heavily, the table background now used instead of the look and feel default.
+- Colors.shade() added, shading a color towards black, or towards white in case of a dark color.
+- FilterTableHeaderRenderer, the focused column indicator now shades a dark header lighter instead of darker.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
+- EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
+- EntitySearchField, the background indicating a search is ready now shades a dark background lighter instead of darker.
 
 ## 0.18.88
 ### is.codion.common.utilities

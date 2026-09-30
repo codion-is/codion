@@ -51,13 +51,13 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.color.Colors.darker;
+import static is.codion.swing.common.ui.color.Colors.shade;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
 
 final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<R, C, T> {
 
-	private static final double DARKENING_FACTOR = 0.9;
 	private static final double DOUBLE_DARKENING_FACTOR = 0.8;
 	private static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
 
@@ -306,7 +306,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Color backgroundColor(FilterTable<R, C> filterTable, int rowIndex, R row, C identifier, JComponent component) {
-			component.setBackground(backgroundColor(rowIndex));
+			component.setBackground(backgroundColor(filterTable, rowIndex));
 			customize(filterTable, row, identifier, component);
 
 			return component.getBackground();
@@ -320,17 +320,17 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 		}
 
-		private Color backgroundColor(int row) {
+		private Color backgroundColor(FilterTable<R, C> filterTable, int row) {
 			boolean alternateRow = alternateRow(row);
 			if (alternateRowColoring) {
-				return alternateRow ? uiSettings.alternateBackground() : uiSettings.background();
+				return alternateRow ? alternateBackground(filterTable) : background(filterTable);
 			}
 			else {
 				if (uiSettings.alternateRowColor() == null) {
-					return uiSettings.background();
+					return background(filterTable);
 				}
 				// If UIManager's Table.alternateRowColor is set, respect it
-				return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
+				return alternateRow ? uiSettings.alternateRowColor() : background(filterTable);
 			}
 		}
 
@@ -347,7 +347,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 				return cellBackgroundColor;
 			}
 
-			return alternateRow ? uiSettings.alternateBackground() : uiSettings.background();
+			return alternateRow ? alternateBackground(filterTable) : background(filterTable);
 		}
 
 		private Color backgroundNonAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
@@ -357,15 +357,15 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 				return cellBackgroundColor;
 			}
 			if (uiSettings.alternateRowColor() == null) {
-				return uiSettings.background();
+				return background(filterTable);
 			}
 			// If UIManager's Table.alternateRowColor is set, respect it
-			return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
+			return alternateRow ? uiSettings.alternateRowColor() : background(filterTable);
 		}
 
 		private Color backgroundAlternating(FilterTable<R, C> filterTable, Color cellBackgroundColor, boolean alternateRow, boolean selected) {
 			if (cellBackgroundColor != null && alternateRow) {
-				cellBackgroundColor = darker(cellBackgroundColor, DOUBLE_DARKENING_FACTOR);
+				cellBackgroundColor = shade(cellBackgroundColor);
 			}
 			if (selected) {
 				Color selectionBackground = alternateRow ? alternateSelectionBackground(filterTable) : selectionBackground(filterTable);
@@ -402,7 +402,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Color alternateSelectionBackground(FilterTable<R, C> filterTable) {
-			return darker(selectionBackground(filterTable), DARKENING_FACTOR);
+			return shade(selectionBackground(filterTable));
 		}
 
 		// A selection color set by the look and feel, such as FlatLaf's inactive one while the table is not focused,
@@ -414,6 +414,19 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 
 			return tableColor;
+		}
+
+		// The background of the table itself, the reference for shading the alternate rows
+		private Color background(FilterTable<R, C> filterTable) {
+			Color background = filterTable.getBackground();
+
+			return background == null ? uiSettings.background() : background;
+		}
+
+		private Color alternateBackground(FilterTable<R, C> filterTable) {
+			Color alternateRowColor = uiSettings.alternateRowColor();
+
+			return alternateRowColor == null ? shade(background(filterTable)) : alternateRowColor;
 		}
 
 		private static boolean alternateRow(int rowIndex) {
@@ -454,7 +467,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		@Override
 		public void customize(FilterTable<R, C> table, R row, C identifier, JComponent component) {
 			if (filterEnabled(identifier, table.model())) {
-				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
+				component.setBackground(shade(component.getBackground()));
 			}
 		}
 
@@ -812,7 +825,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			foreground = UIManager.getColor("Table.foreground");
 			background = UIManager.getColor("Table.background");
 			alternateRowColor = UIManager.getColor("Table.alternateRowColor");
-			alternateBackground = alternateRowColor == null ? darker(background, DOUBLE_DARKENING_FACTOR) : alternateRowColor;
+			alternateBackground = alternateRowColor == null ? shade(background) : alternateRowColor;
 			selectionForeground = UIManager.getColor("Table.selectionForeground");
 			selectionBackground = UIManager.getColor("Table.selectionBackground");
 			cellBorder = createEmptyBorder(0, leftPadding, 0, rightPadding);
