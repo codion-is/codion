@@ -46,6 +46,11 @@ Codion Change Log
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
 - EntitySearchField, the background indicating a search is ready now shades a dark background lighter instead of darker.
+### is.codion.plugin.flatlaf.intellij.themes
+- FlatLookAndFeelIntelliJThemes now includes the Cyan Light, Nord, Solarized Dark, Solarized Light, Spacegray and Autumn Lite themes, which were missing, "Autumn" having been Nature Autumn, Rider Dark no longer included twice and Arc Orange no longer misspelled.
+- solarized.SolarizedLight no longer fails to load, the look and feel used in place of the FlatLaf Solarized Light theme.
+- material.SolarizedDark and SolarizedLight renamed SolarizedDarkMaterial and SolarizedLightMaterial, autumn.Autumn renamed AutumnLite, conflicting with the other Solarized and Autumn themes.
+- rider.RiderMelonDark, RiderMelonDay, RiderMelonLight and RiderMelonNight removed, practically identical to the Rider themes and never included.
 
 ## 0.18.88
 ### is.codion.common.utilities
