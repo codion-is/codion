@@ -117,10 +117,8 @@ public final class FileInput extends JPanel {
 	private void browse() {
 		FileSelectionDialogBuilder selection = Dialogs.select()
 						.files()
-						.owner(filePathField);
-		if (dialogTitle != null) {
-			selection.title(dialogTitle);
-		}
+						.owner(filePathField)
+						.title(dialogTitle);
 		filePathField.setText((directory ? selection.selectDirectory() : selection.selectFile()).toString());
 	}
 

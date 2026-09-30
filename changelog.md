@@ -21,6 +21,9 @@ Codion Change Log
 - FormBuilder, a component whose baseline changes unpredictably with its size, such as an html label, is now anchored to the top of its row instead of its baseline, where it was neither filled nor kept at its preferred size, a multi-line html label appearing clipped.
 - KeyEvents.MENU_SHORTCUT_MASK is now CTRL_DOWN_MASK when headless instead of failing, KeyEvents and thereby the text component builders, FilterTable and CalendarPanel now usable headless.
 - FileInput.BuilderFactory.directory() and Components.directoryInput() added, for selecting a directory, along with FileInput.Builder.dialogTitle(), the dialog title now localized by default instead of always "Select file".
+- DialogBuilder.title(null) now leaves the title unspecified, for the default title of dialogs having one, such as the selection dialogs, instead of a null title, and a file selection dialog no longer keeps the title of a previous one.
+- FileSelectionDialogBuilder.selectFileToSave() now uses the title, which was ignored.
+- FileSelectionDialogBuilder.selectFile(), selectDirectory() and selectFileOrDirectory() no longer allow selecting multiple files, only the first one returned, a selected file now also returned when set programmatically.
 
 ## 0.18.88
 ### is.codion.common.utilities

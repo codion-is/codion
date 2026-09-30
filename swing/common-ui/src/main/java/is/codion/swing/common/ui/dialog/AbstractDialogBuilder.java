@@ -95,7 +95,7 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 
 	@Override
 	public final B title(@Nullable String title) {
-		return title(Value.nullable(title));
+		return title(title == null ? null : Value.nullable(title));
 	}
 
 	@Override
