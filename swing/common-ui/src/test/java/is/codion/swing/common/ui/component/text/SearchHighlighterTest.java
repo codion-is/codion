@@ -23,10 +23,14 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 import java.awt.Color;
+import java.util.Arrays;
 
+import static is.codion.swing.common.ui.color.Colors.darker;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -91,5 +95,36 @@ public final class SearchHighlighterTest {
 
 		highlighter.previousSearchPosition();
 		assertEquals(0, highlighter.selectedHighlightPosition());
+	}
+
+	@Test
+	void colors() throws BadLocationException {
+		JTextArea textArea = new JTextArea("Hello there, here we are");
+		SearchHighlighter highlighter = SearchHighlighter.builder()
+						.component(textArea)
+						.highlightColor(Color.BLUE)
+						.selectedHighlightColor(Color.MAGENTA)
+						.build();
+		highlighter.searchString().set("re");
+		assertEquals(9, highlighter.selectedHighlightPosition());
+		assertEquals(Color.MAGENTA, highlightColor(textArea, 9));
+		assertEquals(Color.BLUE, highlightColor(textArea, 15));
+		assertEquals(Color.BLUE, highlightColor(textArea, 22));
+
+		textArea = new JTextArea("Hello there, here we are");
+		highlighter = SearchHighlighter.builder()
+						.component(textArea)
+						.build();
+		highlighter.searchString().set("re");
+		assertEquals(darker(textArea.getSelectionColor()), highlightColor(textArea, 9));
+		assertEquals(textArea.getSelectionColor(), highlightColor(textArea, 15));
+	}
+
+	private static Color highlightColor(JTextComponent component, int start) {
+		return Arrays.stream(component.getHighlighter().getHighlights())
+						.filter(highlight -> highlight.getStartOffset() == start)
+						.map(highlight -> ((DefaultHighlightPainter) highlight.getPainter()).getColor())
+						.findFirst()
+						.orElseThrow(IllegalStateException::new);
 	}
 }
