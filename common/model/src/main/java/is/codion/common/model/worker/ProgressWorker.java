@@ -40,7 +40,6 @@ import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -107,7 +106,6 @@ public final class ProgressWorker<T, V> {
 	private final List<Consumer<List<V>>> onPublish;
 	private final List<Consumer<Exception>> onException;
 	private final List<Runnable> onCancelled;
-	private final List<Runnable> onInterrupted;
 	private final Dispatcher dispatcher;
 
 	private Executor dispatchExecutor = Runnable::run;
@@ -130,7 +128,6 @@ public final class ProgressWorker<T, V> {
 		this.onPublish = builder.onPublish();
 		this.onException = builder.onException();
 		this.onCancelled = builder.onCancelled();
-		this.onInterrupted = builder.onInterrupted();
 		this.dispatcher = builder.dispatcher == null ? Dispatcher.instance() : builder.dispatcher;
 	}
 
@@ -240,11 +237,15 @@ public final class ProgressWorker<T, V> {
 			return () -> exceptions.run(onCancelled);
 		}
 		catch (InterruptedException e) {
-			return () -> exceptions.run(onInterrupted);
+			// not thrown by a done future
+			Thread.currentThread().interrupt();
+
+			return () -> exceptions.run(onCancelled);
 		}
 		catch (ExecutionException e) {
 			Throwable cause = e.getCause();
-			if (cause instanceof CancelException) {
+			// the worker threads are only interrupted by cancel(true)
+			if (cause instanceof CancelException || cause instanceof InterruptedException) {
 				return () -> exceptions.run(onCancelled);
 			}
 			Exception exception = cause instanceof Exception ? (Exception) cause : new RuntimeException(cause);
@@ -452,17 +453,11 @@ public final class ProgressWorker<T, V> {
 		}
 
 		/**
-		 * Called using the {@link Dispatcher} if the background task was cancelled.
+		 * Called using the {@link Dispatcher} if the background task was cancelled
+		 * via {@link ProgressWorker#cancel(boolean)} or if it threw a {@link CancelException}
+		 * or an {@link InterruptedException}.
 		 */
 		default void onCancelled() {}
-
-		/**
-		 * Called using the {@link Dispatcher} if the background task was interrupted.
-		 * <p>The default implementation simply calls {@code Thread.currentThread().interrupt()}.
-		 */
-		default void onInterrupted() {
-			Thread.currentThread().interrupt();
-		}
 	}
 
 	/**
@@ -633,18 +628,12 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Adds a handler called using the {@link Dispatcher} if the background task is cancelled
-		 * via {@link ProgressWorker#cancel(boolean)} or if it throws a {@link CancelException}.
+		 * via {@link ProgressWorker#cancel(boolean)} or if it throws a {@link CancelException}
+		 * or an {@link InterruptedException}.
 		 * @param onCancelled the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onCancelled(Runnable onCancelled);
-
-		/**
-		 * Adds a handler called using the {@link Dispatcher} if the background task was interrupted.
-		 * @param onInterrupted the handler to add
-		 * @return this builder instance
-		 */
-		Builder<T, V> onInterrupted(Runnable onInterrupted);
 
 		/**
 		 * Overrides the {@link Dispatcher} used to run the handlers, {@link Dispatcher#instance()} by default.
@@ -697,8 +686,7 @@ public final class ProgressWorker<T, V> {
 								.onDone(handler::onDone)
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
-								.onCancelled(handler::onCancelled)
-								.onInterrupted(handler::onInterrupted);
+								.onCancelled(handler::onCancelled);
 				addOnException(builder, handler);
 			}
 
@@ -715,8 +703,7 @@ public final class ProgressWorker<T, V> {
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
-								.onCancelled(handler::onCancelled)
-								.onInterrupted(handler::onInterrupted);
+								.onCancelled(handler::onCancelled);
 				addOnException(builder, handler);
 			}
 
@@ -734,8 +721,7 @@ public final class ProgressWorker<T, V> {
 								.onDone(handler::onDone)
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
-								.onCancelled(handler::onCancelled)
-								.onInterrupted(handler::onInterrupted);
+								.onCancelled(handler::onCancelled);
 				addOnException(builder, handler);
 			}
 
@@ -754,8 +740,7 @@ public final class ProgressWorker<T, V> {
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
-								.onCancelled(handler::onCancelled)
-								.onInterrupted(handler::onInterrupted);
+								.onCancelled(handler::onCancelled);
 				addOnException(builder, handler);
 			}
 
@@ -780,8 +765,6 @@ public final class ProgressWorker<T, V> {
 
 	private static final class DefaultBuilder<T, V> implements Builder<T, V> {
 
-		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
-
 		private final WorkerTask task;
 
 		private @Nullable List<Runnable> onStarted;
@@ -793,7 +776,6 @@ public final class ProgressWorker<T, V> {
 		private @Nullable List<Consumer<List<V>>> onPublish;
 		private @Nullable List<Consumer<Exception>> onException;
 		private @Nullable List<Runnable> onCancelled;
-		private @Nullable List<Runnable> onInterrupted;
 		private @Nullable Dispatcher dispatcher;
 
 		private DefaultBuilder(Task task) {
@@ -876,13 +858,6 @@ public final class ProgressWorker<T, V> {
 		}
 
 		@Override
-		public Builder<T, V> onInterrupted(Runnable onInterrupted) {
-			this.onInterrupted = initialize(this.onInterrupted);
-			this.onInterrupted.add(requireNonNull(onInterrupted));
-			return this;
-		}
-
-		@Override
 		public Builder<T, V> dispatcher(Dispatcher dispatcher) {
 			this.dispatcher = requireNonNull(dispatcher);
 			return this;
@@ -935,10 +910,6 @@ public final class ProgressWorker<T, V> {
 
 		private List<Runnable> onCancelled() {
 			return onCancelled == null ? emptyList() : onCancelled;
-		}
-
-		private List<Runnable> onInterrupted() {
-			return onInterrupted == null ? singletonList(INTERRUPT_CURRENT_ON_INTERRUPTED) : onInterrupted;
 		}
 
 		private static <B> List<B> initialize(@Nullable List<B> list) {
@@ -1005,14 +976,6 @@ public final class ProgressWorker<T, V> {
 			}
 
 			throw Exceptions.runtime(primary);
-		}
-	}
-
-	private static final class InterruptCurrentOnInterrupted implements Runnable {
-
-		@Override
-		public void run() {
-			Thread.currentThread().interrupt();
 		}
 	}
 

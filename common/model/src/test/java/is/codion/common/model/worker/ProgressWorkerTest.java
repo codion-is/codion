@@ -84,7 +84,6 @@ public final class ProgressWorkerTest {
 							}
 						})
 						.onCancelled(() -> {})
-						.onInterrupted(() -> {})
 						.onException(exception -> {})
 						.execute()
 						.get();
@@ -191,49 +190,48 @@ public final class ProgressWorkerTest {
 
 	@Test
 	void progressWorkerInterruption() throws Exception {
-		CountDownLatch taskStartedLatch = new CountDownLatch(1);
-		CountDownLatch completionLatch = new CountDownLatch(1);
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			List<String> calls = synchronizedList(new ArrayList<>());
 
-		AtomicBoolean onInterruptedCalled = new AtomicBoolean();
-		AtomicBoolean onCancelledCalled = new AtomicBoolean();
-		AtomicBoolean onDoneCalled = new AtomicBoolean();
+			// a task throwing InterruptedException, without having been cancelled, is cancelled
+			CountDownLatch interruptedLatch = new CountDownLatch(1);
+			dispatcher.execute(ProgressWorker.builder()
+							.task(() -> {
+								throw new InterruptedException();
+							})
+							.dispatcher(dispatcher)
+							.onException(exception -> calls.add("exception"))
+							.onCancelled(() -> {
+								calls.add("cancelled");
+								interruptedLatch.countDown();
+							}));
+			assertTrue(interruptedLatch.await(5, SECONDS));
+			dispatcher.flush();
+			assertEquals(asList("cancelled"), calls);
 
-		Task task = () -> {
-			taskStartedLatch.countDown();
-			try {
-				Thread.sleep(1000);
-			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw e;
-			}
-		};
-
-		ProgressWorker<?, ?> worker = ProgressWorker.builder()
-						.task(task)
-						.onDone(() -> onDoneCalled.set(true))
-						.onInterrupted(() -> {
-							onInterruptedCalled.set(true);
-							completionLatch.countDown();
-						})
-						.onCancelled(() -> {
-							onCancelledCalled.set(true);
-							completionLatch.countDown();
-						})
-						.execute();
-
-		// Wait for task to start
-		assertTrue(taskStartedLatch.await(5, TimeUnit.SECONDS));
-
-		// Cancel with interruption
-		worker.cancel(true);
-
-		// Wait for either interruption or cancellation to be processed
-		assertTrue(completionLatch.await(5, TimeUnit.SECONDS));
-
-		assertTrue(onDoneCalled.get());
-		// Either onInterrupted or onCancelled should be called, depending on SwingWorker implementation
-		assertTrue(onInterruptedCalled.get() || onCancelledCalled.get());
+			// cancelled with interruption
+			calls.clear();
+			CountDownLatch startedLatch = new CountDownLatch(1);
+			CountDownLatch cancelledLatch = new CountDownLatch(1);
+			ProgressWorker<?, ?> worker = dispatcher.execute(ProgressWorker.builder()
+							.task(() -> {
+								startedLatch.countDown();
+								Thread.sleep(5000);
+							})
+							.dispatcher(dispatcher)
+							.onDone(() -> calls.add("done"))
+							.onException(exception -> calls.add("exception"))
+							.onCancelled(() -> {
+								calls.add("cancelled");
+								cancelledLatch.countDown();
+							}));
+			assertTrue(startedLatch.await(5, SECONDS));
+			worker.cancel(true);
+			assertTrue(cancelledLatch.await(5, SECONDS));
+			dispatcher.flush();
+			assertEquals(asList("done", "cancelled"), calls);
+			assertTrue(dispatcher.uncaught.isEmpty());
+		}
 	}
 
 	@Test
