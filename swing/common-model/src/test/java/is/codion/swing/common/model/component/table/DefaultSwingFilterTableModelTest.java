@@ -814,6 +814,12 @@ public final class DefaultSwingFilterTableModelTest {
 	}
 
 	@Test
+	void getColumnName() {
+		// the column caption, the identifier by default
+		assertEquals("0", tableModel.getColumnName(0));
+	}
+
+	@Test
 	void nullItems() {
 		assertThrows(NullPointerException.class, () -> tableModel.items().add((TestRow) null));
 		assertThrows(NullPointerException.class, () -> tableModel.items().remove((TestRow) null));

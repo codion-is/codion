@@ -100,6 +100,11 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 	}
 
 	@Override
+	public String getColumnName(int columnIndex) {
+		return model.columns().caption(model.columns().identifier(columnIndex));
+	}
+
+	@Override
 	public int getRowCount() {
 		return model.items().included().size();
 	}

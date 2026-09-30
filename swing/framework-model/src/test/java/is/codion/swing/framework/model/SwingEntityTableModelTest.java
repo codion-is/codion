@@ -109,6 +109,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	}
 
 	@Test
+	void getColumnName() {
+		// the attribute caption
+		assertEquals("Detail string", testModel.getColumnName(testModel.columns().identifiers().indexOf(Detail.STRING)));
+	}
+
+	@Test
 	void getColumnClass() {
 		assertEquals(Integer.class, testModel.getColumnClass(0));
 		assertEquals(Double.class, testModel.getColumnClass(1));
