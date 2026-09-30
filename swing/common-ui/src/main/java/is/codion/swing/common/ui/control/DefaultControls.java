@@ -364,6 +364,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private DefaultControlsBuilder(DefaultControls controls) {
 			enabled(controls.enabled().orElse(null));
+			caption(controls.captionObservable());
 			controls.keys().forEach(key -> value(key, controls.getValue(key)));
 			actions.addAll(controls.actions);
 		}

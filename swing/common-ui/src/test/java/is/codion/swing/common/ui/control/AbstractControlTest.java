@@ -19,16 +19,19 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.icon.SVGIconsTest;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.Action;
+import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static javax.swing.Action.*;
@@ -155,6 +158,57 @@ public final class AbstractControlTest {
 						.command(() -> {})
 						.build();
 		assertNotEquals("", withoutCaption.toString()); // Should return super.toString()
+	}
+
+	@Test
+	void dynamicCaption() throws Exception {
+		Value<String> caption = Value.nullable("Add note");
+		Control control = Control.builder()
+						.command(() -> {})
+						.caption(caption)
+						.caption("Static")
+						.build();
+		JMenuItem menuItem = new JMenuItem(control);
+		assertEquals("Add note", control.caption().orElse(null));
+		assertEquals("Add note", menuItem.getText());
+
+		SwingUtilities.invokeAndWait(() -> caption.set("Edit note"));
+		assertEquals("Edit note", control.caption().orElse(null));
+		assertEquals("Edit note", menuItem.getText());
+
+		// set off the Event Dispatch Thread, updated on it
+		caption.set("Remove note");
+		SwingUtilities.invokeAndWait(() -> {});
+		assertEquals("Remove note", control.caption().orElse(null));
+		assertEquals("Remove note", menuItem.getText());
+
+		SwingUtilities.invokeAndWait(() -> caption.set(null));
+		assertFalse(control.caption().isPresent());
+	}
+
+	@Test
+	void dynamicCaptionCopied() throws Exception {
+		Value<String> caption = Value.nullable("Before");
+		List<Control> copies = List.of(
+						Control.builder()
+										.command(() -> {})
+										.caption(caption)
+										.build()
+										.copy()
+										.build(),
+						Control.builder()
+										.toggle(State.state())
+										.caption(caption)
+										.build()
+										.copy()
+										.build(),
+						Controls.builder()
+										.caption(caption)
+										.build()
+										.copy()
+										.build());
+		SwingUtilities.invokeAndWait(() -> caption.set("After"));
+		copies.forEach(copy -> assertEquals("After", copy.caption().orElse(null)));
 	}
 
 	@Test
