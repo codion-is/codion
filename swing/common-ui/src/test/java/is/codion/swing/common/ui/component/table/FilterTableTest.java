@@ -54,6 +54,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
@@ -185,6 +186,23 @@ public class FilterTableTest {
 	@Test
 	void builderNullTableModel() {
 		assertThrows(Exception.class, () -> FilterTable.builder().model(null));
+	}
+
+	@Test
+	void doubleClick() {
+		AtomicInteger performed = new AtomicInteger();
+		AtomicInteger doubleClicked = new AtomicInteger();
+		FilterTable<TestRow, Integer> table = FilterTable.builder()
+						.model(createTestModel(null))
+						.doubleClick(command(performed::incrementAndGet))
+						.build();
+		table.doubleClicked().addListener(doubleClicked::incrementAndGet);
+		// the left button only
+		for (int button : new int[] {MouseEvent.BUTTON1, MouseEvent.BUTTON2, MouseEvent.BUTTON3}) {
+			table.dispatchEvent(new MouseEvent(table, MouseEvent.MOUSE_CLICKED, 0, 0, 5, 5, 2, false, button));
+		}
+		assertEquals(1, performed.get());
+		assertEquals(1, doubleClicked.get());
 	}
 
 	@Test
