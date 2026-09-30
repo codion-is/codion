@@ -24,6 +24,8 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -37,6 +39,8 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<JSplitPane,
 	private double resizeWeight;
 	private boolean continuousLayout;
 	private int dividerSize;
+	private @Nullable Integer dividerLocation;
+	private @Nullable Double proportionalDividerLocation;
 
 	@Override
 	public SplitPaneBuilder orientation(int orientation) {
@@ -113,6 +117,23 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<JSplitPane,
 	}
 
 	@Override
+	public SplitPaneBuilder dividerLocation(int dividerLocation) {
+		this.dividerLocation = dividerLocation;
+		this.proportionalDividerLocation = null;
+		return this;
+	}
+
+	@Override
+	public SplitPaneBuilder dividerLocation(double dividerLocation) {
+		if (dividerLocation < 0 || dividerLocation > 1) {
+			throw new IllegalArgumentException("Proportional divider location must be between 0 and 1");
+		}
+		this.proportionalDividerLocation = dividerLocation;
+		this.dividerLocation = null;
+		return this;
+	}
+
+	@Override
 	protected JSplitPane createComponent() {
 		JSplitPane splitPane = new JSplitPane(orientation);
 		splitPane.setLeftComponent(leftTopComponent);
@@ -123,7 +144,35 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<JSplitPane,
 		if (dividerSize > 0) {
 			splitPane.setDividerSize(dividerSize);
 		}
+		if (dividerLocation != null) {
+			splitPane.setDividerLocation(dividerLocation);
+		}
+		if (proportionalDividerLocation != null) {
+			splitPane.addComponentListener(new ProportionalDividerLocation(proportionalDividerLocation));
+		}
 
 		return splitPane;
+	}
+
+	/**
+	 * Sets the proportional divider location once the split pane has a size, removing itself.
+	 */
+	private static final class ProportionalDividerLocation extends ComponentAdapter {
+
+		private final double dividerLocation;
+
+		private ProportionalDividerLocation(double dividerLocation) {
+			this.dividerLocation = dividerLocation;
+		}
+
+		@Override
+		public void componentResized(ComponentEvent event) {
+			JSplitPane splitPane = (JSplitPane) event.getComponent();
+			int size = splitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT ? splitPane.getWidth() : splitPane.getHeight();
+			if (size > 0) {
+				splitPane.removeComponentListener(this);
+				splitPane.setDividerLocation(dividerLocation);
+			}
+		}
 	}
 }
