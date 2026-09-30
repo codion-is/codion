@@ -31,7 +31,8 @@ import java.util.function.Supplier;
  * as its widest label; the input columns absorb the horizontal slack, equally. Anything beyond that,
  * nesting, percentage widths, per-cell insets, row spans, is not a form but a hand-written {@link java.awt.GridBagLayout}.
  * <p>A label aligns with the baseline of its input, or with its top in case the input has no baseline, such as a panel,
- * and is hidden along with it. An input stretches to the height of its row, unless its baseline would move along
+ * or one which changes unpredictably with its size, such as that of an html label, and is hidden along with it.
+ * An inputstretches to the height of its row, unless its baseline would move along
  * with its height, as with single line inputs, such as text fields, which keep their height.
  * <p>The form does not grow vertically, extra height staying below the last row, so a component which should
  * absorb the vertical slack, such as a text area, belongs outside the form, in the center of a

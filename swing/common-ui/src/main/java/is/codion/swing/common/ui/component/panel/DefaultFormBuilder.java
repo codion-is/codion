@@ -193,7 +193,12 @@ public class DefaultFormBuilder<B extends FormBuilder<B>> extends AbstractCompon
 		return constraints;
 	}
 
+	// A baseline which changes unpredictably with the component size, as with an html label, counts as none,
+	// GridBagLayout neither filling such a component on a baseline anchor, nor sizing it reliably
 	private static boolean hasBaseline(JComponent component) {
+		if (component.getBaselineResizeBehavior() == BaselineResizeBehavior.OTHER) {
+			return false;
+		}
 		Dimension preferredSize = component.getPreferredSize();
 
 		return component.getBaseline(preferredSize.width, preferredSize.height) >= 0;
