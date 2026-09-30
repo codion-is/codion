@@ -26,6 +26,7 @@ import javax.swing.JToolBar;
 public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBuilder> {
 
 	/**
+	 * The look and feel default is used if not specified.
 	 * @param floatable true if the toolbar should be floatable
 	 * @return this builder instance
 	 * @see JToolBar#setFloatable(boolean)
@@ -33,6 +34,7 @@ public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBui
 	ToolBarBuilder floatable(boolean floatable);
 
 	/**
+	 * The look and feel default, {@code ToolBar.isRollover}, is used if not specified.
 	 * @param rollover true if rollover should be enabled
 	 * @return this builder instance
 	 * @see JToolBar#setRollover(boolean)
@@ -40,6 +42,7 @@ public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBui
 	ToolBarBuilder rollover(boolean rollover);
 
 	/**
+	 * The look and feel default is used if not specified.
 	 * @param borderPainted true if the border should be painted
 	 * @return this builder instance
 	 * @see JToolBar#setBorderPainted(boolean)

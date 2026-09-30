@@ -66,10 +66,13 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.plaf.basic.BasicToolBarUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -1218,6 +1221,31 @@ public final class ComponentsTest {
 		assertThrows(IllegalArgumentException.class, () -> Components.panel()
 						.flowLayout(FlowLayout.LEFT)
 						.add(new JLabel(), new JLabel()));
+	}
+
+	@Test
+	void toolBarDefaults() {
+		Object rollover = UIManager.get("ToolBar.isRollover");
+		try {
+			// the look and feel defaults, rollover enabled as by Metal and FlatLaf
+			UIManager.put("ToolBar.isRollover", true);
+			JToolBar toolBar = Components.toolBar()
+							.controls(Controls.builder().build())
+							.build();
+			assertTrue(((BasicToolBarUI) toolBar.getUI()).isRolloverBorders());
+			toolBar = Components.toolBar()
+							.controls(Controls.builder().build())
+							.rollover(false)
+							.floatable(false)
+							.borderPainted(false)
+							.build();
+			assertFalse(((BasicToolBarUI) toolBar.getUI()).isRolloverBorders());
+			assertFalse(toolBar.isFloatable());
+			assertFalse(toolBar.isBorderPainted());
+		}
+		finally {
+			UIManager.put("ToolBar.isRollover", rollover);
+		}
 	}
 
 	@Test
