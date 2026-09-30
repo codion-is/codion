@@ -33,6 +33,8 @@ import java.util.function.Function;
  * extends {@code ListModel}. The rich model logic (items, selection, filtering, sorting, export) lives
  * in the common module; this only adds the Swing coat, with {@link #selection()} narrowed to a
  * {@link FilterListSelection} (a {@code javax.swing.ListSelectionModel}).
+ * <p>The column names are the column captions, see
+ * {@link is.codion.common.model.component.table.FilterTableModel.TableColumns#caption(Object)}.
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @see #builder()
