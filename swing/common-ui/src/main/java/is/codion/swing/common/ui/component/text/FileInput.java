@@ -40,6 +40,7 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -50,7 +51,9 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * For instances use the {@link #builder()} method.
+ * A text field for a file or directory path, with a button for browsing, which starts in the directory
+ * of the current path, if it exists.
+ * <p>For instances use the {@link #builder()} method.
  * @see #builder()
  */
 public final class FileInput extends JPanel {
@@ -118,8 +121,23 @@ public final class FileInput extends JPanel {
 		FileSelectionDialogBuilder selection = Dialogs.select()
 						.files()
 						.owner(filePathField)
-						.title(dialogTitle);
+						.title(dialogTitle)
+						.startDirectory(startDirectory());
 		filePathField.setText((directory ? selection.selectDirectory() : selection.selectFile()).toString());
+	}
+
+	/**
+	 * @return the current path if it is a directory, otherwise its parent directory, null if none exists
+	 */
+	private @Nullable String startDirectory() {
+		String path = filePathField.getText();
+		if (path.isEmpty()) {
+			return null;
+		}
+		File file = new File(path);
+		File startDirectory = file.isDirectory() ? file : file.getParentFile();
+
+		return startDirectory != null && startDirectory.isDirectory() ? startDirectory.getAbsolutePath() : null;
 	}
 
 	/**
