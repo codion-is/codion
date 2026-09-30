@@ -77,7 +77,7 @@ public interface ComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBoxBu
 	 * @return this builder instance
 	 * @see JComboBox#setRenderer(ListCellRenderer)
 	 */
-	B renderer(@Nullable ListCellRenderer<T> renderer);
+	B renderer(@Nullable ListCellRenderer<? super T> renderer);
 
 	/**
 	 * @param editor the editor for the combo box

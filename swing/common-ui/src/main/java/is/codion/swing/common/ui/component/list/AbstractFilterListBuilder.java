@@ -39,7 +39,7 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	private final SwingFilterListModel<T> listModel;
 	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
 
-	private @Nullable ListCellRenderer<T> cellRenderer;
+	private @Nullable ListCellRenderer<? super T> cellRenderer;
 
 	private @Nullable Integer visibleRowCount;
 	private @Nullable Boolean dragEnabled;
@@ -77,7 +77,7 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	}
 
 	@Override
-	public final B cellRenderer(@Nullable ListCellRenderer<T> cellRenderer) {
+	public final B cellRenderer(@Nullable ListCellRenderer<? super T> cellRenderer) {
 		this.cellRenderer = cellRenderer;
 		return self();
 	}

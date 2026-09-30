@@ -103,7 +103,7 @@ public interface ItemComboBoxBuilder<T> extends ComponentValueBuilder<JComboBox<
 	 * @return this builder instance
 	 * @see JComboBox#setRenderer(ListCellRenderer)
 	 */
-	ItemComboBoxBuilder<T> renderer(@Nullable ListCellRenderer<Item<T>> renderer);
+	ItemComboBoxBuilder<T> renderer(@Nullable ListCellRenderer<? super Item<T>> renderer);
 
 	/**
 	 * @param editor the editor for the combo box

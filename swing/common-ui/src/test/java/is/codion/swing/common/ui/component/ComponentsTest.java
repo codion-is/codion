@@ -50,6 +50,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
@@ -628,6 +629,30 @@ public final class ComponentsTest {
 		assertTrue(componentValue.getOrThrow());
 		componentValue.component().getModel().setSelectedItem(null);
 		assertNull(componentValue.get());
+	}
+
+	@Test
+	void listCellRenderers() {
+		// a DefaultListCellRenderer, a ListCellRenderer<Object>, which JList and JComboBox accept
+		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+		assertSame(renderer, FilterList.builder()
+						.model(SwingFilterListModel.builder()
+										.items(asList("one", "two"))
+										.build())
+						.items()
+						.cellRenderer(renderer)
+						.build()
+						.getCellRenderer());
+		assertSame(renderer, Components.comboBox()
+						.model(new DefaultComboBoxModel<>(new String[] {"one", "two"}))
+						.renderer(renderer)
+						.build()
+						.getRenderer());
+		assertSame(renderer, Components.itemComboBox()
+						.items(asList(item(0, "0"), item(1, "1")))
+						.renderer(renderer)
+						.build()
+						.getRenderer());
 	}
 
 	@Test
