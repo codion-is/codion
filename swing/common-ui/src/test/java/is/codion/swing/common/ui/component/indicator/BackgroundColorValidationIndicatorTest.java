@@ -27,14 +27,26 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Color;
 
-import static is.codion.swing.common.ui.color.Colors.darker;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class BackgroundColorValidationIndicatorTest {
 
 	@Test
 	void colors() throws Exception {
 		Color background = UIManager.getColor("TextField.background");
+		try {
+			// darker when light and lighter when dark
+			assertColors(new Color(250, 250, 250), false);
+			assertColors(new Color(40, 44, 52), true);
+		}
+		finally {
+			UIManager.put("TextField.background", background);
+		}
+	}
+
+	private static void assertColors(Color background, boolean lighter) throws Exception {
+		UIManager.put("TextField.background", background);
 		State invalid = State.state();
 		State warned = State.state();
 		JTextField field = new JTextField();
@@ -44,13 +56,25 @@ public final class BackgroundColorValidationIndicatorTest {
 		assertEquals(background, field.getBackground());
 		invalid.set(true);
 		SwingUtilities.invokeAndWait(() -> {});
-		assertEquals(darker(background), field.getBackground());
+		Color invalidBackground = field.getBackground();
+		assertShaded(background, invalidBackground, lighter);
 		invalid.set(false);
 		warned.set(true);
 		SwingUtilities.invokeAndWait(() -> {});
-		assertEquals(darker(background, 0.95), field.getBackground());
+		Color warnedBackground = field.getBackground();
+		// a subtler shade than the invalid one
+		assertShaded(background, warnedBackground, lighter);
+		assertShaded(warnedBackground, invalidBackground, lighter);
 		warned.set(false);
 		SwingUtilities.invokeAndWait(() -> {});
 		assertEquals(background, field.getBackground());
+	}
+
+	private static void assertShaded(Color color, Color shaded, boolean lighter) {
+		int[] components = {color.getRed(), color.getGreen(), color.getBlue()};
+		int[] shadedComponents = {shaded.getRed(), shaded.getGreen(), shaded.getBlue()};
+		for (int i = 0; i < components.length; i++) {
+			assertTrue(lighter ? shadedComponents[i] > components[i] : shadedComponents[i] < components[i]);
+		}
 	}
 }
