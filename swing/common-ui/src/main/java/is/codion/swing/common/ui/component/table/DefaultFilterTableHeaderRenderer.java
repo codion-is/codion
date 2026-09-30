@@ -47,6 +47,7 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 
 	private static final int SORT_ICON_SIZE = 5;
 	private static final double FOCUSED_COLUMN_SHADE = 0.2;
+	private static final double SORT_ARROW_SHADE = 0.6;
 
 	static final Factory<?, ?> FACTORY = new DefaultFactory<>();
 
@@ -130,36 +131,16 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 
 		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
-			Color color = c == null ? Color.GRAY : c.getBackground();
 			// In a compound sort, make each successive triangle 20% smaller than the previous one.
 			int dx = (int) (size / PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
 			int dy = descending ? dx : -dx;
 			// Align icon (roughly) with font baseline.
 			int theY = y + SORT_ICON_SIZE * size / ALIGNMENT_CONSTANT + (descending ? -dy : 0);
-			int shift = descending ? 1 : -1;
-			g.translate(x, theY);
-
-			// Right diagonal.
-			g.setColor(color.darker());
-			g.drawLine(dx / 2, dy, 0, 0);
-			g.drawLine(dx / 2, dy + shift, 0, shift);
-
-			// Left diagonal.
-			g.setColor(color.brighter());
-			g.drawLine(dx / 2, dy, dx, 0);
-			g.drawLine(dx / 2, dy + shift, dx, shift);
-
-			// Horizontal line.
-			if (descending) {
-				g.setColor(color.darker().darker());
-			}
-			else {
-				g.setColor(color.brighter().brighter());
-			}
-			g.drawLine(dx, 0, 0, 0);
-
-			g.setColor(color);
-			g.translate(-x, -theY);
+			int[] xPoints = {x, x + dx, x + dx / 2};
+			int[] yPoints = {theY, theY, theY + dy};
+			g.setColor(c == null ? Color.GRAY : shade(c.getBackground(), SORT_ARROW_SHADE));
+			g.fillPolygon(xPoints, yPoints, xPoints.length);
+			g.drawPolygon(xPoints, yPoints, xPoints.length);
 		}
 
 		@Override

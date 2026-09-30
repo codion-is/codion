@@ -41,6 +41,7 @@ Codion Change Log
 - BackgroundColorValidationIndicator now colors the component when enabled, instead of clearing its background and indicating nothing until the look and feel changed.
 - BackgroundColorValidationIndicator now shades a dark background lighter instead of darker, where an invalid or warned value was barely distinguishable.
 - SearchHighlighter now highlights the selected search result with the selected highlight color and the others with the highlight color, the colors previously swapped, the default ones until the look and feel changed, couple of typos fixed.
+- FilterTableHeaderRenderer, the sort arrows are now filled with a shade of the header background instead of drawn as a beveled outline, which was partly invisible on a light header.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.

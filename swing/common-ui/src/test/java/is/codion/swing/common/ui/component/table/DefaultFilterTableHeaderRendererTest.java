@@ -19,12 +19,17 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.common.model.filter.SortOrder;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.table.FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR;
@@ -55,6 +60,48 @@ public final class DefaultFilterTableHeaderRendererTest {
 		finally {
 			FOCUSED_COLUMN_INDICATOR.set(false);
 		}
+	}
+
+	@Test
+	void sortArrows() {
+		FilterTable<String, Integer> table = createTable();
+		table.model().sort().ascending(0);
+		table.model().sort().order(1).add(SortOrder.DESCENDING);
+		for (int column = 0; column < 2; column++) {
+			// shaded from the header background, darker when light and lighter when dark
+			assertArrow(sortArrow(table, column), new Color(250, 250, 250), false);
+			assertArrow(sortArrow(table, column), new Color(40, 44, 52), true);
+		}
+	}
+
+	private static Icon sortArrow(FilterTable<?, ?> table, int column) {
+		TableColumn tableColumn = table.getColumnModel().getColumn(column);
+
+		return ((JLabel) tableColumn.getHeaderRenderer()
+						.getTableCellRendererComponent(table, tableColumn.getHeaderValue(), false, false, -1, column))
+						.getIcon();
+	}
+
+	private static void assertArrow(Icon arrow, Color background, boolean lighter) {
+		JLabel label = new JLabel();
+		label.setBackground(background);
+		BufferedImage image = new BufferedImage(arrow.getIconWidth(), arrow.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics = image.createGraphics();
+		graphics.setColor(background);
+		graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
+		arrow.paintIcon(label, graphics, 0, 0);
+		graphics.dispose();
+		int painted = 0;
+		for (int x = 0; x < image.getWidth(); x++) {
+			for (int y = 0; y < image.getHeight(); y++) {
+				Color pixel = new Color(image.getRGB(x, y));
+				if (!pixel.equals(background)) {
+					assertShaded(background, pixel, lighter);
+					painted++;
+				}
+			}
+		}
+		assertTrue(painted > 0);
 	}
 
 	private static Color headerBackground(FilterTable<?, ?> table, int column) {
