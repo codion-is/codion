@@ -618,6 +618,34 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
+	 * Selects what is under the mouse before the popup menu is shown, so that the popup menu actions apply to what
+	 * was clicked, where a {@link JTable} leaves the selection as is: the cell under the mouse, unless already selected,
+	 * the row when right of the last column, and nothing below the last row, clearing the selection.
+	 * @param event the mouse event triggering the popup menu, null when triggered via the keyboard
+	 * @return the popup menu location, null for the default one
+	 */
+	@Override
+	public @Nullable Point getPopupLocation(@Nullable MouseEvent event) {
+		if (event != null) {
+			int row = rowAtPoint(event.getPoint());
+			int column = columnAtPoint(event.getPoint());
+			if (row < 0) {
+				clearSelection();
+			}
+			else if (column < 0) {
+				if (!isRowSelected(row)) {
+					setRowSelectionInterval(row, row);
+				}
+			}
+			else if (!isCellSelected(row, column)) {
+				changeSelection(row, column, false, false);
+			}
+		}
+
+		return super.getPopupLocation(event);
+	}
+
+	/**
 	 * @return the filter {@link TableConditionPanel}
 	 */
 	public TableConditionPanel<C> filters() {
