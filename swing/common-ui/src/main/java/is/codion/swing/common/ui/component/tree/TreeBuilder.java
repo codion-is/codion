@@ -27,6 +27,8 @@ import javax.swing.JTree;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
+import javax.swing.plaf.TreeUI;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
@@ -40,6 +42,15 @@ import java.awt.event.MouseEvent;
  * and nothing below the last row, clearing the selection.
  */
 public interface TreeBuilder extends ComponentBuilder<JTree, TreeBuilder> {
+
+	/**
+	 * Sets the UI before any other setting, since a look and feel may adjust what is set while its own UI
+	 * is installed, such as removing the default icons of a {@link DefaultTreeCellRenderer}.
+	 * @param ui the tree UI
+	 * @return this builder instance
+	 * @see JTree#setUI(TreeUI)
+	 */
+	TreeBuilder ui(TreeUI ui);
 
 	/**
 	 * @param rootVisible true if the root node should be visible

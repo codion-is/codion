@@ -28,6 +28,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
+import javax.swing.plaf.TreeUI;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import java.awt.Point;
@@ -52,6 +53,7 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 	private final List<TreeWillExpandListener> treeWillExpandListeners = new ArrayList<>();
 	private final List<TreeSelectionListener> treeSelectionListeners = new ArrayList<>();
 
+	private @Nullable TreeUI ui;
 	private @Nullable Boolean rootVisible;
 	private @Nullable Boolean showsRootHandles;
 	private @Nullable TreeCellRenderer cellRenderer;
@@ -70,6 +72,12 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 
 	private DefaultTreeBuilder(TreeModel treeModel) {
 		this.treeModel = requireNonNull(treeModel);
+	}
+
+	@Override
+	public TreeBuilder ui(TreeUI ui) {
+		this.ui = requireNonNull(ui);
+		return this;
 	}
 
 	@Override
@@ -191,6 +199,9 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 	@Override
 	protected JTree createComponent() {
 		JTree tree = new PopupSelectionTree(treeModel);
+		if (ui != null) {
+			tree.setUI(ui);
+		}
 		if (rootVisible != null) {
 			tree.setRootVisible(rootVisible);
 		}
