@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultProgressBarBuilder extends AbstractComponentValueBuilder<JProgressBar, Integer, ProgressBarBuilder> implements ProgressBarBuilder {
 
 	private BoundedRangeModel boundedRangeModel = new DefaultBoundedRangeModel();
-	private boolean borderPainted;
+	private @Nullable Boolean borderPainted;
 	private boolean stringPainted;
 	private int orientation;
 	private boolean indeterminate = true;
@@ -80,7 +80,9 @@ final class DefaultProgressBarBuilder extends AbstractComponentValueBuilder<JPro
 	@Override
 	protected JProgressBar createComponent() {
 		JProgressBar progressBar = new JProgressBar(boundedRangeModel);
-		progressBar.setBorderPainted(borderPainted);
+		if (borderPainted != null) {
+			progressBar.setBorderPainted(borderPainted);
+		}
 		progressBar.setString(string);
 		progressBar.setStringPainted(stringPainted);
 		progressBar.setOrientation(orientation);

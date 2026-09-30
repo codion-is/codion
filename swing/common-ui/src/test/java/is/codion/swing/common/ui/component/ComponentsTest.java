@@ -1224,6 +1224,13 @@ public final class ComponentsTest {
 	}
 
 	@Test
+	void progressBarBorderPainted() {
+		// the JProgressBar default, without which some look and feels, such as Metal, paint no track
+		assertTrue(Components.progressBar().build().isBorderPainted());
+		assertFalse(Components.progressBar().borderPainted(false).build().isBorderPainted());
+	}
+
+	@Test
 	void toolBarDefaults() {
 		Object rollover = UIManager.get("ToolBar.isRollover");
 		try {
