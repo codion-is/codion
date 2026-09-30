@@ -99,8 +99,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
-import static javax.swing.SwingUtilities.invokeLater;
-import static javax.swing.SwingUtilities.isEventDispatchThread;
+import static javax.swing.SwingUtilities.*;
 
 /**
  * A panel presenting a calendar for date/time selection.
@@ -1247,7 +1246,7 @@ public final class CalendarPanel extends JPanel {
 				if (component instanceof DayLabel) {
 					DayLabel label = (DayLabel) component;
 					dayValue.set(label.day);
-					if (e.getClickCount() == 2) {
+					if (e.getClickCount() == 2 && isLeftMouseButton(e)) {
 						doubleClicked.accept(label.day);
 					}
 				}

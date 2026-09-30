@@ -162,6 +162,7 @@ import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
+import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -3256,7 +3257,7 @@ public class EntityTablePanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
+				if (e.getClickCount() == 2 && isLeftMouseButton(e)) {
 					configureLimit();
 				}
 			}

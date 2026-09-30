@@ -46,6 +46,7 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ListSelectionDialogBuilder<T>>
 				implements ListSelectionDialogBuilder<T> {
@@ -117,7 +118,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 			list.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() == 2) {
+					if (e.getClickCount() == 2 && isLeftMouseButton(e)) {
 						okControl.actionPerformed(null);
 					}
 				}

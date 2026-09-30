@@ -1493,7 +1493,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public void mouseClicked(MouseEvent event) {
-			if (event.getClickCount() == 2) {
+			if (event.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(event)) {
 				doubleClick.optional()
 								.filter(Action::isEnabled)
 								.ifPresent(action -> action.actionPerformed(new ActionEvent(event, ACTION_PERFORMED, "doubleClick")));

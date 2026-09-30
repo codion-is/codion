@@ -119,6 +119,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
+import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 /**
  * A UI component based on the EntitySearchModel.
@@ -841,7 +842,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class DoubleClickListener extends MouseAdapter {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
+				if (e.getClickCount() == 2 && isLeftMouseButton(e)) {
 					selectControl.actionPerformed(null);
 				}
 			}

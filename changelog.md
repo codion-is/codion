@@ -30,6 +30,9 @@ Codion Change Log
 - FileSelectionDialogBuilder.selectFileToSave() now uses the title, which was ignored.
 - FileSelectionDialogBuilder.selectFile(), selectDirectory() and selectFileOrDirectory() no longer allow selecting multiple files, only the first one returned, a selected file now also returned when set programmatically.
 - FilterTable now selects the cell under the mouse before a popup menu is shown, unless it is already selected, the row when right of the last column, clearing the selection below the last row, the popup menu actions previously applying to the selection as is, which did not necessarily include the row clicked.
+- FilterTable, CalendarPanel and the list selection dialog now respond to a double-click with the left mouse button only, a double-click with any button previously triggering the double-click action.
+### is.codion.swing.framework.ui
+- EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 
 ## 0.18.88
 ### is.codion.common.utilities
