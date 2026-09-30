@@ -54,6 +54,10 @@ import static java.util.Objects.requireNonNull;
  * <p>The {@code onStarted} handlers are guaranteed to be called using the {@link Dispatcher} before the background task executes,
  * and the {@code onDone} handlers are guaranteed to be called after the background task completes.
  * <p>All handler types support multiple handlers, which are called in the order they were added.
+ * <p>A handler throwing an exception neither prevents the remaining handlers from being called nor changes the outcome.
+ * Once all handlers have been called, the first exception thrown by a handler is rethrown on the dispatch thread,
+ * with any others added as suppressed. An exception thrown by the task without any {@code onException} handler
+ * is rethrown the same way, taking precedence over any handler exceptions.
  * <p>There are two ways to use this class:
  * <ul>
  * <li><b>Builder-only</b>: pass a task and wire handlers via the builder.
@@ -208,33 +212,44 @@ public final class ProgressWorker<T, V> {
 	}
 
 	private void finished() {
-		onDone.forEach(Runnable::run);
+		HandlerExceptions exceptions = new HandlerExceptions();
+		Runnable outcome = outcome(exceptions);
+		exceptions.run(onDone);
 		if (working) {
 			working = false;
-			onWorking.forEach(handler -> handler.accept(false));
+			exceptions.accept(onWorking, false);
 		}
+		outcome.run();
+		exceptions.rethrow();
+	}
+
+	/**
+	 * Determines the outcome before any handler is called, so that a handler exception can not change it.
+	 * @return the outcome handlers to run
+	 */
+	private Runnable outcome(HandlerExceptions exceptions) {
 		try {
 			T result = get();
-			onSuccess.forEach(Runnable::run);
-			onResult.forEach(c -> c.accept(result));
+
+			return () -> {
+				exceptions.run(onSuccess);
+				exceptions.accept(onResult, result);
+			};
 		}
 		catch (CancellationException e) {
-			onCancelled.forEach(Runnable::run);
+			return () -> exceptions.run(onCancelled);
 		}
 		catch (InterruptedException e) {
-			onInterrupted.forEach(Runnable::run);
+			return () -> exceptions.run(onInterrupted);
 		}
 		catch (ExecutionException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof CancelException) {
-				onCancelled.forEach(Runnable::run);
+				return () -> exceptions.run(onCancelled);
 			}
-			else if (cause instanceof Exception) {
-				onException.forEach(c -> c.accept((Exception) cause));
-			}
-			else {
-				onException.forEach(c -> c.accept(new RuntimeException(cause)));
-			}
+			Exception exception = cause instanceof Exception ? (Exception) cause : new RuntimeException(cause);
+
+			return () -> exceptions.failed(onException, exception);
 		}
 	}
 
@@ -765,7 +780,6 @@ public final class ProgressWorker<T, V> {
 
 	private static final class DefaultBuilder<T, V> implements Builder<T, V> {
 
-		private static final Consumer<Exception> RETHROW_HANDLER = new RethrowHandler();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
 		private final WorkerTask task;
@@ -916,7 +930,7 @@ public final class ProgressWorker<T, V> {
 		}
 
 		private List<Consumer<Exception>> onException() {
-			return onException == null ? singletonList(RETHROW_HANDLER) : onException;
+			return onException == null ? emptyList() : onException;
 		}
 
 		private List<Runnable> onCancelled() {
@@ -932,11 +946,65 @@ public final class ProgressWorker<T, V> {
 		}
 	}
 
-	private static final class RethrowHandler implements Consumer<Exception> {
+	/**
+	 * Runs handlers, each one even if another throws, collecting the exceptions thrown,
+	 * to be rethrown once all handlers have run.
+	 */
+	private static final class HandlerExceptions {
 
-		@Override
-		public void accept(Exception exception) {
-			throw Exceptions.runtime(exception);
+		private final List<Throwable> exceptions = new ArrayList<>(0);
+
+		private @Nullable Exception unhandled;
+
+		private void run(List<Runnable> handlers) {
+			for (Runnable handler : handlers) {
+				try {
+					handler.run();
+				}
+				catch (Throwable exception) {
+					exceptions.add(exception);
+				}
+			}
+		}
+
+		private <A> void accept(List<Consumer<A>> handlers, A argument) {
+			for (Consumer<A> handler : handlers) {
+				try {
+					handler.accept(argument);
+				}
+				catch (Throwable exception) {
+					exceptions.add(exception);
+				}
+			}
+		}
+
+		private void failed(List<Consumer<Exception>> handlers, Exception exception) {
+			if (handlers.isEmpty()) {
+				unhandled = exception;
+			}
+			else {
+				accept(handlers, exception);
+			}
+		}
+
+		/**
+		 * Rethrows an unhandled task exception, or else the first handler exception,
+		 * with any handler exceptions not rethrown added as suppressed.
+		 */
+		private void rethrow() {
+			if (unhandled == null && exceptions.isEmpty()) {
+				return;
+			}
+			Throwable primary = unhandled == null ? exceptions.remove(0) : Exceptions.runtime(unhandled);
+			exceptions.stream()
+							// handlers may rethrow the same exception
+							.filter(exception -> exception != primary)
+							.forEach(primary::addSuppressed);
+			if (primary instanceof Error) {
+				throw (Error) primary;
+			}
+
+			throw Exceptions.runtime(primary);
 		}
 	}
 

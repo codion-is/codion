@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -468,9 +469,105 @@ public final class ProgressWorkerTest {
 			dispatcher.execute(ProgressWorker.builder()
 							.task(notOverriding)
 							.dispatcher(dispatcher));
-			Throwable uncaught = dispatcher.uncaught.poll(5, SECONDS);
-			assertNotNull(uncaught);
-			assertEquals("failed", uncaught.getMessage());
+			assertEquals("failed", dispatcher.nextUncaught().getMessage());
+		}
+	}
+
+	@Test
+	void handlerExceptionKeepsLifecycle() throws Exception {
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			List<String> calls = synchronizedList(new ArrayList<>());
+
+			// a throwing onDone handler prevents neither the remaining handlers nor onWorking(false)
+			dispatcher.execute(ProgressWorker.builder()
+							.task(() -> "result")
+							.dispatcher(dispatcher)
+							.onWorking(working -> calls.add("working " + working))
+							.onDone(() -> {
+								throw new IllegalStateException("onDone");
+							})
+							.onDone(() -> calls.add("done"))
+							.onSuccess(() -> calls.add("success"))
+							.onResult(calls::add));
+			assertEquals("onDone", dispatcher.nextUncaught().getMessage());
+			assertEquals(asList("working true", "done", "working false", "success", "result"), calls);
+		}
+	}
+
+	@Test
+	void handlerExceptionKeepsOutcome() throws Exception {
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			List<String> calls = synchronizedList(new ArrayList<>());
+
+			// a handler exception does not change the outcome
+			dispatcher.execute(ProgressWorker.builder()
+							.task(() -> "result")
+							.dispatcher(dispatcher)
+							.onResult(result -> {
+								throw new CancellationException("onResult");
+							})
+							.onResult(calls::add)
+							.onCancelled(() -> calls.add("cancelled")));
+			assertEquals("onResult", dispatcher.nextUncaught().getMessage());
+			assertEquals(asList("result"), calls);
+		}
+	}
+
+	@Test
+	void handlerExceptionsRethrown() throws Exception {
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			List<String> calls = synchronizedList(new ArrayList<>());
+
+			// the first handler exception is rethrown, the others suppressed
+			dispatcher.execute(ProgressWorker.builder()
+							.task(() -> {
+								throw new IllegalStateException("task");
+							})
+							.dispatcher(dispatcher)
+							.onException(exception -> {
+								throw new IllegalArgumentException("first");
+							})
+							.onException(exception -> {
+								calls.add(exception.getMessage());
+								throw new IllegalArgumentException("second");
+							}));
+			Throwable uncaught = dispatcher.nextUncaught();
+			assertEquals("first", uncaught.getMessage());
+			assertEquals("second", uncaught.getSuppressed()[0].getMessage());
+			assertEquals(asList("task"), calls);
+
+			// handlers rethrowing the same exception
+			RuntimeException taskException = new IllegalStateException("task");
+			dispatcher.execute(ProgressWorker.builder()
+							.task(() -> {
+								throw taskException;
+							})
+							.dispatcher(dispatcher)
+							.onException(exception -> {
+								throw (RuntimeException) exception;
+							})
+							.onException(exception -> {
+								throw (RuntimeException) exception;
+							}));
+			uncaught = dispatcher.nextUncaught();
+			assertSame(taskException, uncaught);
+			assertEquals(0, uncaught.getSuppressed().length);
+
+			// an unhandled task exception takes precedence over handler exceptions
+			dispatcher.execute(ProgressWorker.builder()
+							.task(() -> {
+								throw new IllegalStateException("task");
+							})
+							.dispatcher(dispatcher)
+							.onDone(() -> {
+								throw new IllegalArgumentException("onDone");
+							}));
+			uncaught = dispatcher.nextUncaught();
+			assertEquals("task", uncaught.getMessage());
+			assertEquals("onDone", uncaught.getSuppressed()[0].getMessage());
+
+			dispatcher.flush();
+			assertTrue(dispatcher.uncaught.isEmpty());
 		}
 	}
 
@@ -514,6 +611,16 @@ public final class ProgressWorkerTest {
 			Callable<ProgressWorker<?, ?>> execute = builder::execute;
 
 			return executor.submit(execute).get();
+		}
+
+		/**
+		 * @return the next exception escaping a dispatched runnable, waiting for it if necessary
+		 */
+		private Throwable nextUncaught() throws InterruptedException {
+			Throwable next = uncaught.poll(5, SECONDS);
+			assertNotNull(next);
+
+			return next;
 		}
 
 		/**
