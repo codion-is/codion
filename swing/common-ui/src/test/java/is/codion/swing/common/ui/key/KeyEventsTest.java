@@ -25,9 +25,12 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import java.nio.file.Paths;
 
 import static is.codion.swing.common.ui.control.Control.command;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class KeyEventsTest {
@@ -62,5 +65,31 @@ public class KeyEventsTest {
 		assertThrows(IllegalStateException.class, () -> KeyEvents.builder()
 						.keyCode(VK_ENTER)
 						.enable(new JTextField()));
+	}
+
+	@Test
+	void headless() throws Exception {
+		// in a JVM of its own, headlessness being decided at startup, and the tests running with a display
+		Process process = new ProcessBuilder(Paths.get(System.getProperty("java.home"), "bin", "java").toString(),
+						"-Djava.awt.headless=true", "-cp", System.getProperty("java.class.path"), Headless.class.getName())
+						.inheritIO()
+						.start();
+		assertTrue(process.waitFor(30, SECONDS));
+		assertEquals(0, process.exitValue());
+	}
+
+	public static final class Headless {
+
+		public static void main(String[] args) {
+			// the toolkit throws HeadlessException for the menu shortcut mask when headless
+			if (KeyEvents.MENU_SHORTCUT_MASK != CTRL_DOWN_MASK) {
+				System.exit(1);
+			}
+			KeyEvents.builder()
+							.keyCode(VK_ENTER)
+							.modifiers(KeyEvents.MENU_SHORTCUT_MASK)
+							.action(command(() -> {}))
+							.enable(new JTextField());
+		}
 	}
 }

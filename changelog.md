@@ -19,6 +19,7 @@ Codion Change Log
 - ImagePane, the navigation image is now recreated instead of stretched when zoomed past the size it was created at, and can no longer be zoomed larger than the pane.
 - ImagePane, the navigation image can no longer be zoomed out below 20 pixels, where it could not be zoomed back in.
 - FormBuilder, a component whose baseline changes unpredictably with its size, such as an html label, is now anchored to the top of its row instead of its baseline, where it was neither filled nor kept at its preferred size, a multi-line html label appearing clipped.
+- KeyEvents.MENU_SHORTCUT_MASK is now CTRL_DOWN_MASK when headless instead of failing, KeyEvents and thereby the text component builders, FilterTable and CalendarPanel now usable headless.
 
 ## 0.18.88
 ### is.codion.common.utilities
