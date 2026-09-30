@@ -73,11 +73,13 @@ final class DefaultFilterListModelTest {
 		assertEquals(TWO, model.selection().item().get());
 		model.sort().clear();
 		assertFalse(model.sort().sorted());
+		// back in the original order
+		assertEquals(asList(ONE, TWO, THREE), model.items().included().get());
 		model.items().refresh();
 		assertEquals(0, model.items().included().indexOf(ONE));
 
 		model.items().replace(TWO, FOUR);
-		assertEquals(FOUR, model.items().included().get(2));
+		assertEquals(FOUR, model.items().included().get(1));
 		assertEquals(FOUR, model.selection().item().get());
 
 		model.items().included().predicate().set(string -> !string.startsWith("T"));

@@ -34,6 +34,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +46,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static is.codion.common.utilities.Nulls.rejectNulls;
@@ -59,12 +59,16 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private final Lock lock = new Lock() {};
 
 	private final Predicate<R> validator;
+	//every item, in the order the items were set, added and inserted, which filtering and sorting leave as is,
+	//the included ones also held by the included items, sorted when sorting is enabled, otherwise in this order
+	private final List<Entry<R>> entries = new ArrayList<>();
 	private final DefaultIncludedItems included;
 	private final DefaultFilteredItems filtered;
 	private final Collection<ItemsListener> listeners;
 
 	private final MultiSelection<R> selection;
 	private final Sort<R> sort;
+	private final Comparator<Entry<R>> entrySort;
 	private final Refresher<R> refresher;
 
 	//true while a mutation is grouping its notifications, see preserveSelection(). Like the selection's
@@ -75,6 +79,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	private DefaultFilterModelItems(DefaultBuilder<R> builder) {
 		this.sort = builder.sort;
+		this.entrySort = (entry, other) -> sort.compare(entry.item, other.item);
 		this.validator = builder.validator;
 		this.included = new DefaultIncludedItems(builder.included);
 		this.filtered = new DefaultFilteredItems();
@@ -87,7 +92,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 						.onException(builder.onRefreshException)
 						.build();
 		this.included.predicate.addListener(DefaultFilterModelItems.this::filter);
-		this.sort.observer().addListener(included::sort);
+		this.sort.observer().addListener(this::sortChanged);
 	}
 
 	@Override
@@ -113,14 +118,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public Collection<R> get() {
 		synchronized (lock) {
-			if (filtered.items.isEmpty()) {
-				return unmodifiableList(new ArrayList<>(included.items));
-			}
-			List<R> entities = new ArrayList<>(included.items.size() + filtered.items.size());
-			entities.addAll(included.items);
-			entities.addAll(filtered.items);
-
-			return unmodifiableList(entities);
+			return unmodifiableList(items(entries));
 		}
 	}
 
@@ -142,7 +140,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void add(Collection<R> items) {
 		synchronized (lock) {
-			addInternal(included.items.size(), rejectNulls(items));
+			addInternal(included.entries.size(), rejectNulls(items));
 		}
 	}
 
@@ -151,13 +149,15 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		requireNonNull(item);
 		preserveSelection(() -> {
 			synchronized (lock) {
-				if (filtered.items.remove(item)) {
+				Entry<R> filteredEntry = filtered.entry(item);
+				if (filteredEntry != null) {
+					entries.remove(filteredEntry);
 					filtered.notifyChanges();
 				}
 				else {
-					int index = included.items.indexOf(item);
+					int index = included.indexOf(item);
 					if (index >= 0) {
-						included.items.remove(index);
+						entries.remove(included.entries.remove(index));
 						notifyDeleted(index, index);
 						included.notifyChanges();
 					}
@@ -173,25 +173,32 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		rejectNulls(items);
 		preserveSelection(() -> {
 			synchronized (lock) {
-				boolean filteredRemoved = false;
 				Set<R> toRemove = new HashSet<>(items);
-				for (R itemToRemove : items) {
-					if (filtered.items.remove(itemToRemove)) {
-						toRemove.remove(itemToRemove);
-						filteredRemoved = true;
+				//entries are identified by identity, not overriding equals()
+				Set<Entry<R>> removed = new HashSet<>();
+				//a filtered item first, as before, one per item
+				for (Entry<R> entry : entries) {
+					if (toRemove.isEmpty()) {
+						break;
+					}
+					if (!entry.included && toRemove.remove(entry.item)) {
+						removed.add(entry);
 					}
 				}
+				boolean filteredRemoved = !removed.isEmpty();
 				boolean includedRemoved = false;
-				ListIterator<R> iterator = included.items.listIterator(included.items.size());
+				ListIterator<Entry<R>> iterator = included.entries.listIterator(included.entries.size());
 				while (!toRemove.isEmpty() && iterator.hasPrevious()) {
 					int index = iterator.previousIndex();
-					R item = iterator.previous();
-					if (toRemove.remove(item)) {
+					Entry<R> entry = iterator.previous();
+					if (toRemove.remove(entry.item)) {
 						iterator.remove();
+						removed.add(entry);
 						notifyDeleted(index, index);
 						includedRemoved = true;
 					}
 				}
+				entries.removeIf(removed::contains);
 				if (includedRemoved) {
 					included.notifyChanges();
 				}
@@ -207,11 +214,31 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void remove(Predicate<R> predicate) {
 		requireNonNull(predicate);
-		synchronized (lock) {
-			remove(Stream.concat(included.items.stream(), filtered.items.stream())
-							.filter(predicate)
-							.collect(toList()));
-		}
+		preserveSelection(() -> {
+			synchronized (lock) {
+				int filteredSize = filtered.size();
+				Set<Entry<R>> removed = new HashSet<>();
+				ListIterator<Entry<R>> iterator = included.entries.listIterator(included.entries.size());
+				while (iterator.hasPrevious()) {
+					int index = iterator.previousIndex();
+					Entry<R> entry = iterator.previous();
+					if (predicate.test(entry.item)) {
+						iterator.remove();
+						removed.add(entry);
+						notifyDeleted(index, index);
+					}
+				}
+				entries.removeIf(entry -> removed.contains(entry) || (!entry.included && predicate.test(entry.item)));
+				if (!removed.isEmpty()) {
+					included.notifyChanges();
+				}
+				if (filtered.size() != filteredSize) {
+					filtered.notifyChanges();
+				}
+			}
+
+			return null;
+		});
 	}
 
 	@Override
@@ -229,27 +256,35 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		preserveSelection(() -> {
 			synchronized (lock) {
 				Map<R, R> toReplace = new HashMap<>(items);
-				for (R itemToReplace : items.keySet()) {
-					if (filtered.items.remove(itemToReplace)) {
-						R replacement = toReplace.remove(itemToReplace);
-						if (included.predicate.test(replacement)) {
-							included.items.add(replacement);
-							int index = included.items.size() - 1;
+				//the filtered items first, a replacement now included taking its place in the order among the included ones
+				int includedBefore = 0;
+				for (Entry<R> entry : entries) {
+					if (toReplace.isEmpty()) {
+						break;
+					}
+					if (entry.included) {
+						includedBefore++;
+					}
+					else if (toReplace.containsKey(entry.item)) {
+						entry.item = toReplace.remove(entry.item);
+						if (included.predicate.test(entry.item)) {
+							entry.included = true;
+							//unsorted, the included items are in the order of the entries, and sorted just below otherwise
+							int index = sort.sorted() ? included.entries.size() : includedBefore;
+							included.entries.add(index, entry);
 							notifyInserted(index, index);
-						}
-						else {
-							filtered.items.add(replacement);
+							includedBefore++;
 						}
 					}
 				}
-				ListIterator<R> iterator = included.items.listIterator();
+				ListIterator<Entry<R>> iterator = included.entries.listIterator();
 				while (!toReplace.isEmpty() && iterator.hasNext()) {
-					R item = iterator.next();
-					R replacement = toReplace.remove(item);
+					Entry<R> entry = iterator.next();
+					R replacement = toReplace.remove(entry.item);
 					if (replacement != null) {
 						int index = iterator.previousIndex();
+						entry.item = replacement;
 						if (included.predicate.test(replacement)) {
-							iterator.set(replacement);
 							notifyUpdated(index, index);
 						}
 						else {
@@ -257,7 +292,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 							//notify per-item as we go: previousIndex() tracks the live shrinking list, so
 							//each deleted(index, index) is valid at fire time (as in remove(Collection))
 							iterator.remove();
-							filtered.items.add(replacement);
+							entry.included = false;
 							notifyDeleted(index, index);
 						}
 					}
@@ -276,7 +311,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void add(R item) {
 		synchronized (lock) {
-			addInternal(included.items.size(), singleton(requireNonNull(item)));
+			addInternal(included.entries.size(), singleton(requireNonNull(item)));
 		}
 	}
 
@@ -292,21 +327,39 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	@Override
 	public boolean contains(R item) {
-		return included.contains(requireNonNull(item)) || filtered.contains(item);
+		requireNonNull(item);
+		synchronized (lock) {
+			for (Entry<R> entry : entries) {
+				if (entry.item.equals(item)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 
 	@Override
 	public int size() {
-		return included.size() + filtered.size();
+		synchronized (lock) {
+			return entries.size();
+		}
 	}
 
 	@Override
 	public void filter() {
 		preserveSelection(() -> {
 			synchronized (lock) {
-				filterIncremental();
+				//rebuilt from the entries, so that items included again take their place in the order
+				included.entries.clear();
+				for (Entry<R> entry : entries) {
+					entry.included = included.predicate.test(entry.item);
+					if (entry.included) {
+						included.entries.add(entry);
+					}
+				}
 				if (sort.sorted()) {
-					included.items.sort(sort);
+					included.entries.sort(entrySort);
 				}
 				//the ItemsListener notification is not grouped, unlike the two below: it is how a view learns
 				//the rows changed - and how a JTable comes to clear the selection preserveSelection() restores
@@ -322,14 +375,14 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void clear() {
 		synchronized (lock) {
-			int includedSize = included.items.size();
-			included.items.clear();
+			int includedSize = included.entries.size();
+			int filteredSize = filtered.size();
+			entries.clear();
+			included.entries.clear();
 			if (includedSize > 0) {
 				notifyDeleted(0, includedSize - 1);
 				included.notifyChanges();
 			}
-			int filteredSize = filtered.size();
-			filtered.items.clear();
 			if (filteredSize > 0) {
 				filtered.notifyChanges();
 			}
@@ -381,33 +434,13 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	/**
-	 * Performs incremental filtering by only moving items between included and filtered collections
-	 * instead of rebuilding the entire included list. This optimizes performance for large datasets
-	 * by avoiding unnecessary operations on items that are already in the correct collection.
-	 */
-	private void filterIncremental() {
-		// First pass: move items from excluded to included if they now pass the predicate
-		filtered.items.removeIf(item -> {
-			if (included.predicate.test(item)) {
-				included.items.add(item);
-
-				return true; // Remove from filtered
-			}
-
-			return false; // Keep in filtered
-		});
-
-		// Second pass: move items from included to filtered if they no longer pass the predicate
-		included.items.removeIf(item -> {
-			if (!included.predicate.test(item)) {
-				filtered.items.add(item);
-
-				return true; // Remove from included
-			}
-
-			return false; // Keep in included
-		});
+	private void sortChanged() {
+		if (sort.sorted()) {
+			included.sort();
+		}
+		else {
+			included.unsort();
+		}
 	}
 
 	private boolean addInternal(int index, Collection<R> items) {
@@ -415,32 +448,36 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	private boolean addInternal(int index, Collection<R> items, boolean notifyAdded) {
-		Collection<R> includedItems = new ArrayList<>(items.size());
-		Collection<R> filteredItems = new ArrayList<>(items.size());
+		List<Entry<R>> addedEntries = new ArrayList<>(items.size());
+		List<Entry<R>> includedEntries = new ArrayList<>(items.size());
 		for (R item : items) {
 			validate(item);
-			if (included.predicate.test(item)) {
-				includedItems.add(item);
-			}
-			else {
-				filteredItems.add(item);
+			Entry<R> entry = new Entry<>(item, included.predicate.test(item));
+			addedEntries.add(entry);
+			if (entry.included) {
+				includedEntries.add(entry);
 			}
 		}
-		if (!includedItems.isEmpty()) {
-			included.items.addAll(index, includedItems);
-			notifyInserted(index, index + includedItems.size() - 1);
+		//in the order of the entries, before the one at the given index, at the end when appending
+		int position = index >= 0 && index < included.entries.size() ? entries.indexOf(included.entries.get(index)) : entries.size();
+		if (!includedEntries.isEmpty()) {
+			//before the entries are touched, an invalid index leaving the items as they were
+			included.entries.addAll(index, includedEntries);
+		}
+		entries.addAll(position, addedEntries);
+		if (!includedEntries.isEmpty()) {
+			notifyInserted(index, index + includedEntries.size() - 1);
 			included.notifyChanges();
 			included.sort();
 			if (notifyAdded) {
-				included.notifyAdded(includedItems);
+				included.notifyAdded(items(includedEntries));
 			}
 		}
-		if (!filteredItems.isEmpty()) {
-			filtered.items.addAll(filteredItems);
+		if (includedEntries.size() < addedEntries.size()) {
 			filtered.notifyChanges();
 		}
 
-		return !includedItems.isEmpty();
+		return !includedEntries.isEmpty();
 	}
 
 	private void notifyInserted(int firstIndex, int lastIndex) {
@@ -465,9 +502,18 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
+	private static <R> List<R> items(List<Entry<R>> entries) {
+		List<R> items = new ArrayList<>(entries.size());
+		for (Entry<R> entry : entries) {
+			items.add(entry.item);
+		}
+
+		return items;
+	}
+
 	private final class DefaultIncludedItems implements IncludedItems<R> {
 
-		private final List<R> items = new ArrayList<>();
+		private final List<Entry<R>> entries = new ArrayList<>();
 		private final IncludePredicate<R> predicate;
 		private final Event<List<R>> changed = Event.event();
 		private final Event<Collection<R>> added = Event.event();
@@ -487,7 +533,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		@Override
 		public List<R> get() {
 			synchronized (lock) {
-				return unmodifiableList(new ArrayList<>(items));
+				return unmodifiableList(items(entries));
 			}
 		}
 
@@ -508,22 +554,27 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		@Override
 		public boolean contains(R item) {
-			synchronized (lock) {
-				return items.contains(requireNonNull(item));
-			}
+			return indexOf(item) >= 0;
 		}
 
 		@Override
 		public int indexOf(R item) {
+			requireNonNull(item);
 			synchronized (lock) {
-				return items.indexOf(requireNonNull(item));
+				for (int i = 0; i < entries.size(); i++) {
+					if (entries.get(i).item.equals(item)) {
+						return i;
+					}
+				}
+
+				return -1;
 			}
 		}
 
 		@Override
 		public R get(int index) {
 			synchronized (lock) {
-				return items.get(index);
+				return entries.get(index).item;
 			}
 		}
 
@@ -550,7 +601,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			validate(requireNonNull(item));
 			synchronized (lock) {
 				if (predicate.test(item)) {
-					items.set(index, item);
+					entries.get(index).item = item;
 					notifyUpdated(index, index);
 					included.notifyChanges();
 
@@ -565,11 +616,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		public R remove(int index) {
 			return preserveSelection(() -> {
 				synchronized (lock) {
-					R removed = items.remove(index);
+					Entry<R> removed = entries.remove(index);
+					DefaultFilterModelItems.this.entries.remove(removed);
 					notifyDeleted(index, index);
 					notifyChanges();
 
-					return removed;
+					return removed.item;
 				}
 			});
 		}
@@ -578,16 +630,18 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		public List<R> remove(int fromIndex, int toIndex) {
 			return preserveSelection(() -> {
 				synchronized (lock) {
-					List<R> subList = items.subList(fromIndex, toIndex);
-					List<R> removedItems = new ArrayList<>(subList);
+					List<Entry<R>> subList = entries.subList(fromIndex, toIndex);
+					List<Entry<R>> removedEntries = new ArrayList<>(subList);
 					subList.clear();
+					Set<Entry<R>> removed = new HashSet<>(removedEntries);
+					DefaultFilterModelItems.this.entries.removeIf(removed::contains);
 					if (toIndex > fromIndex) {
 						//toIndex is exclusive, the ItemsListener range is inclusive
 						notifyDeleted(fromIndex, toIndex - 1);
 					}
 					notifyChanges();
 
-					return unmodifiableList(removedItems);
+					return unmodifiableList(items(removedEntries));
 				}
 			});
 		}
@@ -595,7 +649,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		@Override
 		public int size() {
 			synchronized (lock) {
-				return items.size();
+				return entries.size();
 			}
 		}
 
@@ -604,16 +658,43 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			if (sort.sorted()) {
 				preserveSelection(() -> {
 					synchronized (lock) {
-						items.sort(sort);
-						if (!items.isEmpty()) {
-							notifyUpdated(0, items.size() - 1);
-						}
-						notifyChanges();
+						entries.sort(entrySort);
+						notifyReordered();
 					}
 
 					return null;
 				});
 			}
+		}
+
+		/**
+		 * Restores the order of the entries, once sorting is no longer enabled.
+		 */
+		private void unsort() {
+			preserveSelection(() -> {
+				synchronized (lock) {
+					List<Entry<R>> unsorted = new ArrayList<>(entries.size());
+					for (Entry<R> entry : DefaultFilterModelItems.this.entries) {
+						if (entry.included) {
+							unsorted.add(entry);
+						}
+					}
+					if (!unsorted.equals(entries)) {
+						entries.clear();
+						entries.addAll(unsorted);
+						notifyReordered();
+					}
+				}
+
+				return null;
+			});
+		}
+
+		private void notifyReordered() {
+			if (!entries.isEmpty()) {
+				notifyUpdated(0, entries.size() - 1);
+			}
+			notifyChanges();
 		}
 
 		private void notifyAdded(Collection<R> addedItems) {
@@ -653,34 +734,55 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private final class DefaultFilteredItems implements FilteredItems<R> {
 
 		private final Event<Collection<R>> changed = Event.event();
-		private final List<R> items = new ArrayList<>();
 
 		private boolean pendingChanges = false;
 
 		@Override
 		public Collection<R> get() {
 			synchronized (lock) {
-				return unmodifiableList(new ArrayList<>(items));
+				List<R> items = new ArrayList<>(size());
+				for (Entry<R> entry : entries) {
+					if (!entry.included) {
+						items.add(entry.item);
+					}
+				}
+
+				return unmodifiableList(items);
 			}
 		}
 
 		@Override
 		public boolean contains(R item) {
+			requireNonNull(item);
 			synchronized (lock) {
-				return items.contains(requireNonNull(item));
+				return entry(item) != null;
 			}
 		}
 
 		@Override
 		public int size() {
 			synchronized (lock) {
-				return items.size();
+				return entries.size() - included.entries.size();
 			}
 		}
 
 		@Override
 		public Observer<Collection<R>> observer() {
 			return changed.observer();
+		}
+
+		/**
+		 * @param item the item
+		 * @return the first filtered entry holding the given item, null if none is found
+		 */
+		private @Nullable Entry<R> entry(R item) {
+			for (Entry<R> entry : entries) {
+				if (!entry.included && entry.item.equals(item)) {
+					return entry;
+				}
+			}
+
+			return null;
 		}
 
 		private void notifyChanges() {
@@ -697,6 +799,21 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				pendingChanges = false;
 				changed.accept(get());
 			}
+		}
+	}
+
+	/**
+	 * An item along with whether it is included, identified by identity, since equal items are distinct items.
+	 * @param <R> the item type
+	 */
+	private static final class Entry<R> {
+
+		private R item;
+		private boolean included;
+
+		private Entry(R item, boolean included) {
+			this.item = item;
+			this.included = included;
 		}
 	}
 

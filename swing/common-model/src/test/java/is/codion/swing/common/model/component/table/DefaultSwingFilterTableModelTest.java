@@ -701,7 +701,8 @@ public final class DefaultSwingFilterTableModelTest {
 		assertEquals(0, tableModel.selection().getMinSelectionIndex());
 		assertEquals(singletonList(0), tableModel.selection().indexes().get());
 		tableModel.filters().get(0).enabled().set(false);
-		assertEquals(0, tableModel.selection().getMinSelectionIndex());
+		// back in its original place
+		assertEquals(3, tableModel.selection().getMinSelectionIndex());
 		assertEquals(ITEMS.get(3), tableModel.selection().item().get());
 	}
 

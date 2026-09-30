@@ -88,6 +88,9 @@ public interface FilterModel<T> {
 
 	/**
 	 * Manages the items in {@link FilterModel}.
+	 * <p>The items keep the order in which they were set, added and inserted, which filtering and sorting leave
+	 * as is: items included again by a filter take their place in it, and the included items return to it
+	 * once sorting is no longer enabled.
 	 * @param <T> the item type
 	 */
 	interface Items<T> {
@@ -131,7 +134,7 @@ public interface FilterModel<T> {
 		void refresh(Consumer<Collection<T>> onResult);
 
 		/**
-		 * @return all items, included and filtered, in no particular order
+		 * @return all items, included and filtered, in order
 		 */
 		Collection<T> get();
 
@@ -174,7 +177,7 @@ public interface FilterModel<T> {
 		void remove(Collection<T> items);
 
 		/**
-		 * <p>Removes the items fulfilling the given predicate from this model.
+		 * <p>Removes all the items fulfilling the given predicate from this model, equal ones included.
 		 * @param predicate the {@link Predicate} specifying the items to remove from the model
 		 */
 		void remove(Predicate<T> predicate);
@@ -232,8 +235,8 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Filters the items according to the {@link IncludedItems#predicate()}.
 		 * <p>If no predicate is specified calling this method has no effect.
-		 * <p>In a sorted model the included items retain their sorted order. In an unsorted model, items
-		 * that are re-included by a filter change are appended and therefore may lose their original position.
+		 * <p>In a sorted model the included items are sorted, otherwise they are in order, items included again
+		 * taking their place in it.
 		 * @see IncludedItems#predicate()
 		 */
 		void filter();
