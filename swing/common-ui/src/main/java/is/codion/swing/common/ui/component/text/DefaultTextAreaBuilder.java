@@ -34,7 +34,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<JTextAre
 	private int tabSize;
 	private boolean lineWrap = false;
 	private boolean wrapStyleWord = false;
-	private boolean autoscrolls = false;
+	private @Nullable Boolean autoscrolls;
 	private @Nullable Document document;
 
 	DefaultTextAreaBuilder() {}
@@ -91,7 +91,9 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<JTextAre
 		else {
 			document = textArea.getDocument();
 		}
-		textArea.setAutoscrolls(autoscrolls);
+		if (autoscrolls != null) {
+			textArea.setAutoscrolls(autoscrolls);
+		}
 		textArea.setLineWrap(lineWrap);
 		textArea.setWrapStyleWord(wrapStyleWord);
 		if (tabSize > 0) {

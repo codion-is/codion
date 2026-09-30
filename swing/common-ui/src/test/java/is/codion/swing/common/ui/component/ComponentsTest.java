@@ -716,6 +716,15 @@ public final class ComponentsTest {
 	}
 
 	@Test
+	void autoscrolls() {
+		// the text UI default, as for a plain text component
+		assertTrue(Components.textArea().build().getAutoscrolls());
+		assertTrue(Components.textPane().build().getAutoscrolls());
+		assertFalse(Components.textArea().autoscrolls(false).build().getAutoscrolls());
+		assertFalse(Components.textPane().autoscrolls(false).build().getAutoscrolls());
+	}
+
+	@Test
 	void textArea() {
 		Value<String> value = Value.nullable();
 		TextAreaBuilder builder = Components.textArea()

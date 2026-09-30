@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultTextPaneBuilder extends AbstractTextComponentBuilder<JTextPane, String, TextPaneBuilder>
 				implements TextPaneBuilder {
 
-	private boolean autoscrolls = false;
+	private @Nullable Boolean autoscrolls;
 	private @Nullable StyledDocument document;
 
 	DefaultTextPaneBuilder() {}
@@ -53,7 +53,9 @@ final class DefaultTextPaneBuilder extends AbstractTextComponentBuilder<JTextPan
 		if (document != null) {
 			textPane.setStyledDocument(document);
 		}
-		textPane.setAutoscrolls(autoscrolls);
+		if (autoscrolls != null) {
+			textPane.setAutoscrolls(autoscrolls);
+		}
 
 		return textPane;
 	}
