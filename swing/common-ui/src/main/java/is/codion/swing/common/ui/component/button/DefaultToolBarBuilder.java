@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JToolBar;
 import java.util.ArrayList;
@@ -35,9 +37,9 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
 	private final Controls controls;
 
-	private boolean floatable = true;
-	private boolean rollover = false;
-	private boolean borderPainted = true;
+	private @Nullable Boolean floatable;
+	private @Nullable Boolean rollover;
+	private @Nullable Boolean borderPainted;
 
 	DefaultToolBarBuilder(Controls controls) {
 		this.controls = controls;
@@ -65,10 +67,16 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 	@Override
 	protected JToolBar createComponent() {
 		JToolBar toolBar = new JToolBar();
-		toolBar.setFloatable(floatable);
+		if (floatable != null) {
+			toolBar.setFloatable(floatable);
+		}
 		toolBar.setOrientation(orientation());
-		toolBar.setRollover(rollover);
-		toolBar.setBorderPainted(borderPainted);
+		if (rollover != null) {
+			toolBar.setRollover(rollover);
+		}
+		if (borderPainted != null) {
+			toolBar.setBorderPainted(borderPainted);
+		}
 
 		new ToolBarControlHandler(toolBar, controls);
 
