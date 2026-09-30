@@ -8,6 +8,7 @@ Codion Change Log
 - ProgressWorker.Builder.onInterrupted() and Handler.onInterrupted() removed, never called, a task throwing InterruptedException now cancelled instead of failing.
 - ProgressWorker.execute() now throws IllegalStateException when called a second time instead of doing nothing, and get() when called where the dispatch context is bound before the task is done instead of blocking the dispatch thread, possibly deadlocking.
 - ProgressWorker, an Error thrown by an onStarted handler now fails the task instead of the task running anyway.
+- ProgressWorker, progress reported and chunks published by a cancelled task are now dropped instead of arriving after onDone and onCancelled.
 ### is.codion.swing.common.ui
 - ImagePane, the navigation image is now created when painted and navigable() takes effect immediately, fixing a missing navigation image after the image changed while not navigable, and exceptions when built navigable with an image, or when the pane size or image proportions leave no room for a navigation image.
 - ImagePane, a fully visible image now stays centered when the pane is resized, and the zoom area outline is no longer drawn around the whole navigation image when the whole image is visible.

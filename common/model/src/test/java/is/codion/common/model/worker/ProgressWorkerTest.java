@@ -637,6 +637,44 @@ public final class ProgressWorkerTest {
 		}
 	}
 
+	@Test
+	void cancelledProgressDropped() throws Exception {
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			List<String> calls = synchronizedList(new ArrayList<>());
+			CountDownLatch startedLatch = new CountDownLatch(1);
+			CountDownLatch cancelledLatch = new CountDownLatch(1);
+			CountDownLatch reportedLatch = new CountDownLatch(1);
+			ProgressTask<String> task = progress -> {
+				startedLatch.countDown();
+				// ignores the interruption, still running when cancelled
+				boolean cancelled = false;
+				while (!cancelled) {
+					try {
+						cancelledLatch.await();
+						cancelled = true;
+					}
+					catch (InterruptedException e) {/*ignored*/}
+				}
+				progress.report(50);
+				progress.publish("chunk");
+				reportedLatch.countDown();
+			};
+			ProgressWorker<?, ?> worker = dispatcher.execute(ProgressWorker.builder()
+							.task(task)
+							.dispatcher(dispatcher)
+							.onDone(() -> calls.add("done"))
+							.onCancelled(() -> calls.add("cancelled"))
+							.onProgress(progress -> calls.add("progress"))
+							.onPublish(chunks -> calls.add("publish")));
+			assertTrue(startedLatch.await(5, SECONDS));
+			worker.cancel(true);
+			cancelledLatch.countDown();
+			assertTrue(reportedLatch.await(5, SECONDS));
+			dispatcher.flush();
+			assertEquals(asList("done", "cancelled"), calls);
+		}
+	}
+
 	/**
 	 * A single dispatch thread standing in for a UI thread, bound only on itself,
 	 * collecting any exception escaping a dispatched runnable.

@@ -52,7 +52,8 @@ import static java.util.Objects.requireNonNull;
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
  * those directly to the {@code onProgress} and {@code onPublish} handlers for the {@link Dispatcher}.</p>
  * <p>The {@code onStarted} handlers are guaranteed to be called using the {@link Dispatcher} before the background task executes,
- * and the {@code onDone} handlers are guaranteed to be called after the background task completes.
+ * and the {@code onDone} handlers after the background task completes or, when cancelled, as soon as it is cancelled,
+ * while it may still be running (see {@link #cancel(boolean)}).
  * <p>All handler types support multiple handlers, which are called in the order they were added.
  * <p>A handler throwing an exception neither prevents the remaining handlers from being called nor changes the outcome.
  * Once all handlers have been called, the first exception thrown by a handler is rethrown on the dispatch thread,
@@ -162,6 +163,9 @@ public final class ProgressWorker<T, V> {
 
 	/**
 	 * Attempts to cancel the background task.
+	 * <p>The {@code onDone} and {@code onCancelled} handlers are called as soon as the task is cancelled,
+	 * while it may still be running, until it notices the interruption or completes. Its result is discarded,
+	 * and any progress it reports or chunks it publishes once cancelled are dropped.
 	 * @param mayInterruptIfRunning true if the thread executing the task should be interrupted
 	 * @return false if the task could not be cancelled, typically because it has already completed
 	 */
@@ -437,7 +441,8 @@ public final class ProgressWorker<T, V> {
 		default void onStarted() {}
 
 		/**
-		 * Called using the {@link Dispatcher} when the task is done, successfully or not, before the result is processed.
+		 * Called using the {@link Dispatcher} when the task is done, successfully or not, or as soon as it is cancelled,
+		 * before the result is processed.
 		 */
 		default void onDone() {}
 
@@ -510,13 +515,13 @@ public final class ProgressWorker<T, V> {
 	public interface ProgressHandler<V> extends Handler {
 
 		/**
-		 * Called using the {@link Dispatcher} when progress is reported.
+		 * Called using the {@link Dispatcher} when progress is reported, unless the task has been cancelled.
 		 * @param progress the progress value
 		 */
 		default void onProgress(int progress) {}
 
 		/**
-		 * Called using the {@link Dispatcher} when intermediate results are available.
+		 * Called using the {@link Dispatcher} when intermediate results are available, unless the task has been cancelled.
 		 * @param chunks the published chunks
 		 */
 		default void onPublish(List<V> chunks) {}
@@ -586,7 +591,7 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Adds a handler called using the {@link Dispatcher} when the task is done running,
-		 * successfully or not, before the result is processed.
+		 * successfully or not, or as soon as it is cancelled, before the result is processed.
 		 * @param onDone the handler to add
 		 * @return this builder instance
 		 */
@@ -622,14 +627,15 @@ public final class ProgressWorker<T, V> {
 		Builder<T, V> onResult(Consumer<T> onResult);
 
 		/**
-		 * Adds a handler called using the {@link Dispatcher} when progress is reported.
+		 * Adds a handler called using the {@link Dispatcher} when progress is reported, unless the task has been cancelled.
 		 * @param onProgress the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onProgress(Consumer<Integer> onProgress);
 
 		/**
-		 * Adds a handler called using the {@link Dispatcher} when chunks are available for publishing.
+		 * Adds a handler called using the {@link Dispatcher} when chunks are available for publishing,
+		 * unless the task has been cancelled.
 		 * @param onPublish the handler to add
 		 * @return this builder instance
 		 */
@@ -679,15 +685,24 @@ public final class ProgressWorker<T, V> {
 
 		@Override
 		public void report(int progress) {
-			if (!onProgress.isEmpty()) {
-				dispatchExecutor.execute(() -> onProgress.forEach(c -> c.accept(progress)));
+			if (!onProgress.isEmpty() && !future.isCancelled()) {
+				dispatchExecutor.execute(() -> {
+					// dispatched before the task was cancelled but run after, when the handlers may no longer expect it
+					if (!future.isCancelled()) {
+						onProgress.forEach(c -> c.accept(progress));
+					}
+				});
 			}
 		}
 
 		@Override
 		public void publish(V... chunks) {
-			if (!onPublish.isEmpty()) {
-				dispatchExecutor.execute(() -> onPublish.forEach(c -> c.accept(asList(chunks))));
+			if (!onPublish.isEmpty() && !future.isCancelled()) {
+				dispatchExecutor.execute(() -> {
+					if (!future.isCancelled()) {
+						onPublish.forEach(c -> c.accept(asList(chunks)));
+					}
+				});
 			}
 		}
 	}
