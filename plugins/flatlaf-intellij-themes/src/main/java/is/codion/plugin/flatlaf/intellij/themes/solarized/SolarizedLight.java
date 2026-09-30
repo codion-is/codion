@@ -28,6 +28,6 @@ import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 public final class SolarizedLight extends IntelliJTheme.ThemeLaf {
 
 	public SolarizedLight() {
-		super(load(SolarizedLight.class.getResourceAsStream("SolarizedLight.theme.json")));
+		super(load(SolarizedLight.class.getResourceAsStream("solarized_light_theme.theme.json")));
 	}
 }

@@ -16,18 +16,15 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.plugin.flatlaf.intellij.themes.rider;
+package is.codion.plugin.flatlaf.intellij.themes.material;
 
 import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
-/**
- * https://github.com/JetBrains/rider-theme-pack/blob/master/src/main/resources/RiderMelonNight.theme.json
- */
-public final class RiderMelonNight extends IntelliJTheme.ThemeLaf {
+public final class SolarizedLightMaterial extends IntelliJTheme.ThemeLaf {
 
-	public RiderMelonNight() {
-		super(load(RiderMelonNight.class.getResourceAsStream("RiderMelonNight.theme.json")));
+	public SolarizedLightMaterial() {
+		super(load(SolarizedLightMaterial.class.getResourceAsStream("Solarized Light.theme.json")));
 	}
 }

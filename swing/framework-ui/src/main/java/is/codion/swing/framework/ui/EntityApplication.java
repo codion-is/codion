@@ -1125,10 +1125,10 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 						"is.codion.plugin.flatlaf.intellij.themes.material.NightOwl");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkIJTheme",
-						"is.codion.plugin.flatlaf.intellij.themes.material.SolarizedDark");
+						"is.codion.plugin.flatlaf.intellij.themes.material.SolarizedDarkMaterial");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightIJTheme",
-						"is.codion.plugin.flatlaf.intellij.themes.material.SolarizedLight");
+						"is.codion.plugin.flatlaf.intellij.themes.material.SolarizedLightMaterial");
 
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme",

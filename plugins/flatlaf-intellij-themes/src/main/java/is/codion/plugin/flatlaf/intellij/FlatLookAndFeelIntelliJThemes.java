@@ -26,6 +26,7 @@ import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
 import is.codion.plugin.flatlaf.intellij.themes.arc.ArcDark;
 import is.codion.plugin.flatlaf.intellij.themes.arc.ArcDarkOrange;
 import is.codion.plugin.flatlaf.intellij.themes.arc.ArcOrange;
+import is.codion.plugin.flatlaf.intellij.themes.autumn.AutumnLite;
 import is.codion.plugin.flatlaf.intellij.themes.carbon.Carbon;
 import is.codion.plugin.flatlaf.intellij.themes.catppuccin.CatppuccinFrappe;
 import is.codion.plugin.flatlaf.intellij.themes.catppuccin.CatppuccinLatte;
@@ -39,6 +40,7 @@ import is.codion.plugin.flatlaf.intellij.themes.codely.CodelyLight;
 import is.codion.plugin.flatlaf.intellij.themes.copilot.Copilot;
 import is.codion.plugin.flatlaf.intellij.themes.cutepink.CutePinkDark;
 import is.codion.plugin.flatlaf.intellij.themes.cutepink.CutePinkLight;
+import is.codion.plugin.flatlaf.intellij.themes.cyan.Cyan;
 import is.codion.plugin.flatlaf.intellij.themes.cyberpunk.Cyberpunk;
 import is.codion.plugin.flatlaf.intellij.themes.darculasolid.DarculaSolid;
 import is.codion.plugin.flatlaf.intellij.themes.darkflat.DarkFlat;
@@ -99,8 +101,8 @@ import is.codion.plugin.flatlaf.intellij.themes.material.MaterialPalenight;
 import is.codion.plugin.flatlaf.intellij.themes.material.MonokaiProMaterial;
 import is.codion.plugin.flatlaf.intellij.themes.material.Moonlight;
 import is.codion.plugin.flatlaf.intellij.themes.material.NightOwl;
-import is.codion.plugin.flatlaf.intellij.themes.material.SolarizedDark;
-import is.codion.plugin.flatlaf.intellij.themes.material.SolarizedLight;
+import is.codion.plugin.flatlaf.intellij.themes.material.SolarizedDarkMaterial;
+import is.codion.plugin.flatlaf.intellij.themes.material.SolarizedLightMaterial;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.plugin.flatlaf.intellij.themes.monocai.Monocai;
 import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
@@ -111,6 +113,7 @@ import is.codion.plugin.flatlaf.intellij.themes.naturethemes.Roraima;
 import is.codion.plugin.flatlaf.intellij.themes.naturethemes.Sakura;
 import is.codion.plugin.flatlaf.intellij.themes.naturethemes.Sequoia;
 import is.codion.plugin.flatlaf.intellij.themes.nightfall.Nightfall;
+import is.codion.plugin.flatlaf.intellij.themes.nord.Nord;
 import is.codion.plugin.flatlaf.intellij.themes.obsidiansunset.ObsidianSunsetBlue;
 import is.codion.plugin.flatlaf.intellij.themes.obsidiansunset.ObsidianSunsetOrange;
 import is.codion.plugin.flatlaf.intellij.themes.onedark.OneDark;
@@ -123,7 +126,10 @@ import is.codion.plugin.flatlaf.intellij.themes.rider.RiderDark;
 import is.codion.plugin.flatlaf.intellij.themes.rider.RiderDay;
 import is.codion.plugin.flatlaf.intellij.themes.rider.RiderLight;
 import is.codion.plugin.flatlaf.intellij.themes.rider.RiderNight;
+import is.codion.plugin.flatlaf.intellij.themes.solarized.SolarizedDark;
+import is.codion.plugin.flatlaf.intellij.themes.solarized.SolarizedLight;
 import is.codion.plugin.flatlaf.intellij.themes.solidcherry.SolidCherry;
+import is.codion.plugin.flatlaf.intellij.themes.spacegray.Spacegray;
 import is.codion.plugin.flatlaf.intellij.themes.srcery.Srcery;
 import is.codion.plugin.flatlaf.intellij.themes.tayviscon.TeyvisconDark;
 import is.codion.plugin.flatlaf.intellij.themes.trashpanda.TrashPanda;
@@ -217,7 +223,6 @@ public final class FlatLookAndFeelIntelliJThemes {
 					enabler(RiderDay.class, "Rider Day"),
 					enabler(RiderLight.class, "Rider Light"),
 					enabler(RiderNight.class, "Rider Night"),
-					enabler(RiderDark.class, "Rider Dark"),
 					enabler(DarculaSolid.class, "Darcula Solid"),
 					enabler(Nightfall.class, "Nightfall"),
 					enabler(TrashPanda.class, "Trash Panda"),
@@ -249,7 +254,7 @@ public final class FlatLookAndFeelIntelliJThemes {
 					enabler(HardHackerDarker.class, "Hard Hacker Darker"),
 					enabler(HardHackerNormal.class, "Hard Hacker Normal"),
 					enabler(DarkUbuntu.class, "Dark Ubuntu"),
-					enabler(Autumn.class, "Autumn"),
+					enabler(AutumnLite.class, "Autumn Lite"),
 					enabler(Iceberg.class, "Iceberg"),
 					enabler(Copilot.class, "Copilot"),
 					enabler(PinkAsHeck.class, "Pink As Heck"),
@@ -270,16 +275,17 @@ public final class FlatLookAndFeelIntelliJThemes {
 					enabler(MonokaiProMaterial.class, "Monokai Pro (Material)"),
 					enabler(Moonlight.class, "Moonlight (Material)"),
 					enabler(NightOwl.class, "Night Owl (Material)"),
-					enabler(SolarizedDark.class, "Solarized Dark (Material)"),
-					enabler(SolarizedLight.class, "Solarized Light (Material)"),
+					enabler(SolarizedDarkMaterial.class, "Solarized Dark (Material)"),
+					enabler(SolarizedLightMaterial.class, "Solarized Light (Material)"),
 					// End material
 
 					enabler(Arc.class, "Arc"),
 					enabler(ArcDark.class, "Arc Dark"),
-					enabler(ArcOrange.class, "Arc Orance"),
+					enabler(ArcOrange.class, "Arc Orange"),
 					enabler(ArcDarkOrange.class, "Arc Dark Orange"),
 					enabler(Carbon.class, "Carbon"),
 					enabler(Cobalt2.class, "Cobalt 2"),
+					enabler(Cyan.class, "Cyan Light"),
 					enabler(DarkFlat.class, "Dark Flat"),
 					enabler(DarkPurple.class, "Dark Purple"),
 					enabler(GradiantoDarkFuchsia.class, "Gradianto Dark Fuchsia"),
@@ -296,7 +302,11 @@ public final class FlatLookAndFeelIntelliJThemes {
 					enabler(MaterialTheme.class, "Material Theme"),
 					enabler(Monocai.class, "Monocai"),
 					enabler(MonokaiPro.class, "Monokai Pro"),
+					enabler(Nord.class, "Nord"),
 					enabler(OneDark.class, "One Dark"),
+					enabler(SolarizedDark.class, "Solarized Dark"),
+					enabler(SolarizedLight.class, "Solarized Light"),
+					enabler(Spacegray.class, "Spacegray"),
 					enabler(Vuesion.class, "Vuesion"),
 					enabler(XcodeDark.class, "XCode Dark")
 	));

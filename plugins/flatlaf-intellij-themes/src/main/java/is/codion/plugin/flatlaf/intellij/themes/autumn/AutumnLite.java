@@ -16,18 +16,18 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.plugin.flatlaf.intellij.themes.rider;
+package is.codion.plugin.flatlaf.intellij.themes.autumn;
 
 import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/JetBrains/rider-theme-pack/blob/master/src/main/resources/RiderMelonDark.theme.json
+ * https://github.com/codigrate/jetbrains-themes/blob/main/nature/autumn-theme/resources/theme/autumn.theme.json
  */
-public final class RiderMelonDark extends IntelliJTheme.ThemeLaf {
+public final class AutumnLite extends IntelliJTheme.ThemeLaf {
 
-	public RiderMelonDark() {
-		super(load(RiderMelonDark.class.getResourceAsStream("RiderMelonDark.theme.json")));
+	public AutumnLite() {
+		super(load(AutumnLite.class.getResourceAsStream("autumn.theme.json")));
 	}
 }
