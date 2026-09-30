@@ -23,19 +23,46 @@ import is.codion.swing.common.ui.control.Control;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class TreeBuilderTest {
+
+	@Test
+	void ui() {
+		AtomicReference<TreeCellRenderer> rendererWhenInstalled = new AtomicReference<>();
+		BasicTreeUI ui = new BasicTreeUI() {
+			@Override
+			public void installUI(JComponent component) {
+				rendererWhenInstalled.set(((JTree) component).getCellRenderer());
+				super.installUI(component);
+			}
+		};
+		DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+		JTree tree = TreeBuilder.builder()
+						.model(createModel())
+						.cellRenderer(renderer)
+						.ui(ui)
+						.build();
+		assertSame(ui, tree.getUI());
+		assertSame(renderer, tree.getCellRenderer());
+		// installed before the renderer was set
+		assertNotSame(renderer, rendererWhenInstalled.get());
+	}
 
 	@Test
 	void selectionMode() {
