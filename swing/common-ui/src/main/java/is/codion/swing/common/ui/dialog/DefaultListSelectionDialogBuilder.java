@@ -155,6 +155,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 			FilterList<T> list = FilterList.builder()
 							.model(model)
 							.items()
+							.cellRenderer(renderer)
 							.build();
 			if (singleSelection) {
 				list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

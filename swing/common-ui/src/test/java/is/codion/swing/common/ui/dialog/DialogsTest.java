@@ -29,6 +29,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -185,12 +186,14 @@ public final class DialogsTest {
 						.owner(new JLabel())
 						.title("title")
 						.allowEmptySelection(true)
+						.renderer(new DefaultListCellRenderer())
 						.defaultSelection("hello");
 		Dialogs.select()
 						.comboBox(Collections.singletonList("hello"))
 						.owner(new JLabel())
 						.title("title")
 						.allowEmptySelection(true)
+						.renderer(new DefaultListCellRenderer())
 						.defaultSelection("hello");
 	}
 

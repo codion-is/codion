@@ -20,6 +20,9 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.utilities.resource.MessageBundle;
 
+import org.jspecify.annotations.Nullable;
+
+import javax.swing.ListCellRenderer;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -37,6 +40,7 @@ abstract class AbstractSelectionDialogBuilder<T, B extends SelectionDialogBuilde
 
 	protected final Collection<T> values;
 	protected boolean allowEmptySelection = false;
+	protected @Nullable ListCellRenderer<? super T> renderer;
 
 	AbstractSelectionDialogBuilder(Collection<T> values) {
 		if (requireNonNull(values).isEmpty()) {
@@ -48,6 +52,12 @@ abstract class AbstractSelectionDialogBuilder<T, B extends SelectionDialogBuilde
 	@Override
 	public final B allowEmptySelection(boolean allowEmptySelection) {
 		this.allowEmptySelection = allowEmptySelection;
+		return (B) this;
+	}
+
+	@Override
+	public final B renderer(@Nullable ListCellRenderer<? super T> renderer) {
+		this.renderer = renderer;
 		return (B) this;
 	}
 }

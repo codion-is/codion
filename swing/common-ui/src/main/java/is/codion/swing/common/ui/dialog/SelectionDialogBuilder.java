@@ -18,6 +18,10 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import org.jspecify.annotations.Nullable;
+
+import javax.swing.ListCellRenderer;
+
 /**
  * A builder for a selection dialog.
  * @param <T> the value type
@@ -29,4 +33,10 @@ public interface SelectionDialogBuilder<T, B extends SelectionDialogBuilder<T, B
 	 * @return this SelectionDialogBuilder instance
 	 */
 	B allowEmptySelection(boolean allowEmptySelection);
+
+	/**
+	 * @param renderer the renderer for the items to select from, null for the default one, rendering {@code toString()}
+	 * @return this SelectionDialogBuilder instance
+	 */
+	B renderer(@Nullable ListCellRenderer<? super T> renderer);
 }
