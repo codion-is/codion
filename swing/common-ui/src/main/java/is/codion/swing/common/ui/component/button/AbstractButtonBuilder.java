@@ -27,6 +27,7 @@ import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
+import javax.swing.LookAndFeel;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
@@ -241,8 +242,14 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 		C button = createButton();
 		if (action != null) {
 			button.setAction(action);
-			button.setBackground((Color) action.getValue(BACKGROUND));
-			button.setForeground((Color) action.getValue(FOREGROUND));
+			Color background = (Color) action.getValue(BACKGROUND);
+			if (background != null) {
+				button.setBackground(background);
+			}
+			Color foreground = (Color) action.getValue(FOREGROUND);
+			if (foreground != null) {
+				button.setForeground(foreground);
+			}
 			Font actionFont = (Font) action.getValue(FONT);
 			if (actionFont != null) {
 				button.setFont(actionFont);
@@ -339,9 +346,11 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 			switch (evt.getPropertyName()) {
 				case BACKGROUND:
 					button.setBackground((Color) evt.getNewValue());
+					installColors(button);
 					break;
 				case FOREGROUND:
 					button.setForeground((Color) evt.getNewValue());
+					installColors(button);
 					break;
 				case FONT:
 					if (evt.getNewValue() != null) {
@@ -354,6 +363,16 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 				default:
 					break;
 			}
+		}
+
+		/**
+		 * Installs the look and feel colors in place of a null one, which would leave the button with the colors of its parent.
+		 */
+		private static void installColors(AbstractButton button) {
+			String uiClassID = button.getUIClassID();
+			//remove "UI" suffix
+			String prefix = uiClassID.substring(0, uiClassID.length() - 2);
+			LookAndFeel.installColors(button, prefix + ".background", prefix + ".foreground");
 		}
 	}
 

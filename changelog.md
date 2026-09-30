@@ -46,6 +46,7 @@ Codion Change Log
 - TreeBuilder, the tree now selects the row under the mouse before a popup menu is shown, unless it is already selected, clearing the selection below the last row, the popup menu actions previously applying to the selection as is, which did not necessarily include the row clicked.
 - FileInput, browsing now starts in the directory of the current path, if it exists, instead of where a file selection dialog was last used.
 - TreeBuilder.ui() added, the UI set before any other setting.
+- ButtonBuilder, a button built with an action or control without colors now keeps the look and feel colors, where it took the colors of its parent, and an action color reset to null restores the look and feel color.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
