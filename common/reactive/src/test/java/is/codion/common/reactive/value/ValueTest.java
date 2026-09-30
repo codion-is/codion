@@ -429,6 +429,34 @@ public class ValueTest {
 	}
 
 	@Test
+	void linkNestedChange() {
+		// a listener of the original reverting a change coming from the linked value, as a declined confirmation
+		Value<Boolean> original = Value.nonNull(false);
+		Value<Boolean> linked = Value.nonNull(false);
+		linked.link(original);
+		original.addConsumer(value -> {
+			if (value) {
+				original.set(false);
+			}
+		});
+		linked.set(true);
+		assertFalse(original.get());
+		assertFalse(linked.get());
+		// a listener of the linked value adjusting a change coming from the original
+		Value<Integer> source = Value.nonNull(0);
+		Value<Integer> target = Value.nonNull(0);
+		target.link(source);
+		target.addConsumer(value -> {
+			if (value > 10) {
+				target.set(10);
+			}
+		});
+		source.set(42);
+		assertEquals(10, target.get());
+		assertEquals(10, source.get());
+	}
+
+	@Test
 	void linkValidationDoesNotCompound() {
 		//one set validates both ends twice each, and that is the design: the bridge runs the far end's
 		//validators before anything is written, so a value one end rejects moves neither, and the write

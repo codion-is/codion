@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.89
 ### is.codion.common.reactive
 - Value.validate() now validates the null value in place of null in case of a non-null value, as set() does, validators of a non-null value linked to another value, such as a component value, previously receiving null.
+- Value.link(), a change a listener makes to either value while it is being updated through the link now reaches the other value, which kept the value from before the change.
 ### is.codion.common.model
 - ProgressWorker, a handler task's onException() is now only wired when overridden, the default no longer rethrowing before any onException handlers added via the builder, which were never called.
 - ProgressWorker, a handler throwing an exception no longer prevents the remaining handlers from being called, onWorking(false) included, nor changes the outcome, the first handler exception rethrown once all handlers have been called.

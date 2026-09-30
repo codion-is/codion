@@ -50,6 +50,10 @@ final class ValueLink<T> {
 	private volatile boolean updatingLinked = false;
 	private volatile boolean updatingOriginal = false;
 
+	//notifications of the value being updated, more than one meaning that a listener changed it during the update
+	private int linkedNotifications;
+	private int originalNotifications;
+
 	/**
 	 * Creates a new ValueLink
 	 * @param linkedValue the value to link to the original value
@@ -103,26 +107,40 @@ final class ValueLink<T> {
 	}
 
 	private void updateLinkedValue(T value) {
-		if (!updatingOriginal) {
-			updatingLinked = true;
-			try {
-				linkedValue.set(value);
-			}
-			finally {
-				updatingLinked = false;
-			}
+		if (updatingOriginal) {
+			originalNotifications++;
+			return;
+		}
+		updatingLinked = true;
+		linkedNotifications = 0;
+		try {
+			linkedValue.set(value);
+		}
+		finally {
+			updatingLinked = false;
+		}
+		if (linkedNotifications > 1) {
+			//a listener changed the linked value while it was being updated, which the original follows
+			updateOriginalValue(linkedValue.get());
 		}
 	}
 
 	private void updateOriginalValue(T value) {
-		if (!updatingLinked) {
-			updatingOriginal = true;
-			try {
-				originalValue.set(value);
-			}
-			finally {
-				updatingOriginal = false;
-			}
+		if (updatingLinked) {
+			linkedNotifications++;
+			return;
+		}
+		updatingOriginal = true;
+		originalNotifications = 0;
+		try {
+			originalValue.set(value);
+		}
+		finally {
+			updatingOriginal = false;
+		}
+		if (originalNotifications > 1) {
+			//a listener changed the original value while it was being updated, which the linked value follows
+			updateLinkedValue(originalValue.get());
 		}
 	}
 
