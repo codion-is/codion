@@ -151,6 +151,24 @@ public class ValueTest {
 	}
 
 	@Test
+	void nonNullValidation() {
+		List<String> validated = new ArrayList<>();
+		Value<String> value = Value.builder()
+						.nonNull("")
+						.validator(validated::add)
+						.build();
+		// the null value stands in for null, as when set
+		value.validate(null);
+		assertEquals("", validated.get(validated.size() - 1));
+		// also when a linked value is validated
+		Value<String> linked = Value.nullable("text");
+		value.link(linked);
+		linked.set(null);
+		assertFalse(validated.contains(null));
+		assertEquals("", value.get());
+	}
+
+	@Test
 	void setNullValue() {
 		Value<Integer> value = new AbstractValue<>(0, Notify.CHANGED) {
 			private Integer value;

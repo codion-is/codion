@@ -191,7 +191,8 @@ public interface Value<T> extends Observable<T> {
 	boolean removeValidator(Validator<? super T> validator);
 
 	/**
-	 * Validate the given value using all validators
+	 * Validates the given value using all validators, as {@link #set(Object)} does,
+	 * the null value standing in for null in case of a non-null value.
 	 * @param value the value to validate
 	 * @throws IllegalArgumentException in case the given value is invalid according to a validator
 	 */
@@ -373,7 +374,7 @@ public interface Value<T> extends Observable<T> {
 	interface Validator<T> {
 
 		/**
-		 * Validates the given value.
+		 * Validates the given value, never null when validating a non-null {@link Value}.
 		 * @param value the value to validate
 		 * @throws IllegalArgumentException in case of an invalid value
 		 */
