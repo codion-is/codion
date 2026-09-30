@@ -23,9 +23,9 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class SplitPaneBuilderTest {
 
@@ -37,6 +37,20 @@ public final class SplitPaneBuilderTest {
 						.dividerLocation(120)
 						.build();
 		assertEquals(120, splitPane.getDividerLocation());
+	}
+
+	@Test
+	void continuousLayout() {
+		Object continuousLayout = UIManager.get("SplitPane.continuousLayout");
+		try {
+			// the look and feel default, as FlatLaf's
+			UIManager.put("SplitPane.continuousLayout", true);
+			assertTrue(SplitPaneBuilder.builder().build().isContinuousLayout());
+			assertFalse(SplitPaneBuilder.builder().continuousLayout(false).build().isContinuousLayout());
+		}
+		finally {
+			UIManager.put("SplitPane.continuousLayout", continuousLayout);
+		}
 	}
 
 	@Test

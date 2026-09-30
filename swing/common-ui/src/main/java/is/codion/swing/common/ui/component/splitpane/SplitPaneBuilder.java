@@ -110,6 +110,7 @@ public interface SplitPaneBuilder extends ComponentBuilder<JSplitPane, SplitPane
 	SplitPaneBuilder resizeWeight(double resizeWeight);
 
 	/**
+	 * The look and feel default, {@code SplitPane.continuousLayout}, is used if not specified.
 	 * @param continuousLayout the value of the continuousLayout
 	 * @return this builder instance
 	 * @see JSplitPane#setContinuousLayout(boolean)

@@ -37,7 +37,7 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<JSplitPane,
 	private @Nullable JComponent leftTopComponent;
 	private @Nullable JComponent rightBottomComponent;
 	private double resizeWeight;
-	private boolean continuousLayout;
+	private @Nullable Boolean continuousLayout;
 	private int dividerSize;
 	private @Nullable Integer dividerLocation;
 	private @Nullable Double proportionalDividerLocation;
@@ -140,7 +140,9 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<JSplitPane,
 		splitPane.setRightComponent(rightBottomComponent);
 		splitPane.setResizeWeight(resizeWeight);
 		splitPane.setOneTouchExpandable(oneTouchExpandable);
-		splitPane.setContinuousLayout(continuousLayout);
+		if (continuousLayout != null) {
+			splitPane.setContinuousLayout(continuousLayout);
+		}
 		if (dividerSize > 0) {
 			splitPane.setDividerSize(dividerSize);
 		}
