@@ -26,7 +26,6 @@ import is.codion.common.reactive.observer.Observer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -35,7 +34,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static is.codion.common.reactive.value.Value.Notify.CHANGED;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.requireNonNull;
@@ -114,9 +112,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		if (changing && isLocked()) {
 			throw new IllegalStateException("Value is locked and can not be changed");
 		}
-		for (Validator<? super T> validator : validators()) {
-			validator.validate(newValue);
-		}
+		validate(newValue, null);
 		setValue(newValue);
 		if (notify == Notify.CHANGED && changing) {
 			notifyObserver();
@@ -234,7 +230,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 
 	@Override
 	public final void validate(@Nullable T value) {
-		validators().forEach(validator -> validator.validate(value));
+		validate(value, null);
 	}
 
 	/**
@@ -267,8 +263,20 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		return linkedValues == null ? emptySet() : linkedValues.keySet();
 	}
 
-	final Collection<Validator<? super T>> validators() {
-		return validators == null ? emptyList() : validators;
+	/**
+	 * Validates the given value as {@link #set(Object)} does, the null value standing in for null.
+	 * @param value the value to validate
+	 * @param excluded a validator to skip, if any
+	 */
+	final void validate(@Nullable T value, @Nullable Validator<?> excluded) {
+		if (validators != null) {
+			T validated = value == null ? nullValue : value;
+			for (Validator<? super T> validator : validators) {
+				if (validator != excluded) {
+					validator.validate(validated);
+				}
+			}
+		}
 	}
 
 	private void setInitialValue(@Nullable T initialValue) {

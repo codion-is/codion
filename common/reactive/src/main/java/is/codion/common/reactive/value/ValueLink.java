@@ -157,10 +157,7 @@ final class ValueLink<T> {
 			validating = true;
 			try {
 				if (linkedValue instanceof BaseValue) {
-					((BaseValue<T>) linkedValue).validators()
-									.stream()
-									.filter(validator -> validator != excluded)
-									.forEach(validator -> validator.validate(value));
+					((BaseValue<T>) linkedValue).validate(value, excluded);
 				}
 				else {
 					linkedValue.validate(value);
