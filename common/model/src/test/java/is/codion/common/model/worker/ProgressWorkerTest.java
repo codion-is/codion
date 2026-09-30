@@ -29,12 +29,14 @@ import is.codion.common.utilities.dispatch.Dispatcher;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -569,6 +571,72 @@ public final class ProgressWorkerTest {
 		}
 	}
 
+	@Test
+	void executeOnce() throws Throwable {
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			ProgressWorker<?, ?> worker = dispatcher.execute(ProgressWorker.builder()
+							.task(() -> {})
+							.dispatcher(dispatcher));
+			assertThrows(IllegalStateException.class, () -> dispatcher.call(() -> {
+				worker.execute();
+
+				return null;
+			}));
+		}
+	}
+
+	@Test
+	void getOnDispatchThread() throws Throwable {
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			CountDownLatch releaseLatch = new CountDownLatch(1);
+			ProgressWorker<?, ?> worker = dispatcher.execute(ProgressWorker.builder()
+							.task(() -> {
+								releaseLatch.await();
+
+								return "result";
+							})
+							.dispatcher(dispatcher));
+			try {
+				// would block the dispatch thread until the task is done
+				assertTimeoutPreemptively(Duration.ofSeconds(5), () ->
+								assertThrows(IllegalStateException.class, () -> dispatcher.call(worker::get)));
+			}
+			finally {
+				releaseLatch.countDown();
+			}
+			// off the dispatch thread, or once done
+			assertEquals("result", worker.get());
+			assertEquals("result", dispatcher.call(worker::get));
+		}
+	}
+
+	@Test
+	void onStartedError() throws Exception {
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			List<String> calls = synchronizedList(new ArrayList<>());
+			CountDownLatch exceptionLatch = new CountDownLatch(1);
+			// an Error thrown by an onStarted handler fails the task, which is not run
+			dispatcher.execute(ProgressWorker.builder()
+							.task(() -> {
+								calls.add("task");
+							})
+							.dispatcher(dispatcher)
+							.onWorking(working -> calls.add("working " + working))
+							.onStarted(() -> {
+								throw new AssertionError("onStarted");
+							})
+							.onDone(() -> calls.add("done"))
+							.onException(exception -> {
+								calls.add(exception.getCause().getMessage());
+								exceptionLatch.countDown();
+							}));
+			assertTrue(exceptionLatch.await(5, SECONDS));
+			dispatcher.flush();
+			assertEquals(asList("working true", "done", "working false", "onStarted"), calls);
+			assertTrue(dispatcher.uncaught.isEmpty());
+		}
+	}
+
 	/**
 	 * A single dispatch thread standing in for a UI thread, bound only on itself,
 	 * collecting any exception escaping a dispatched runnable.
@@ -609,6 +677,18 @@ public final class ProgressWorkerTest {
 			Callable<ProgressWorker<?, ?>> execute = builder::execute;
 
 			return executor.submit(execute).get();
+		}
+
+		/**
+		 * Calls the given callable on the dispatch thread, where a dispatch context is bound
+		 */
+		private <T> T call(Callable<T> callable) throws Throwable {
+			try {
+				return executor.submit(callable).get();
+			}
+			catch (ExecutionException e) {
+				throw e.getCause();
+			}
 		}
 
 		/**
