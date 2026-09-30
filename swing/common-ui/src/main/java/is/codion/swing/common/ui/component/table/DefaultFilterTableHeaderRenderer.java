@@ -39,14 +39,14 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import static is.codion.swing.common.ui.color.Colors.darker;
+import static is.codion.swing.common.ui.color.Colors.shade;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createCompoundBorder;
 
 final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderRenderer {
 
 	private static final int SORT_ICON_SIZE = 5;
-	private static final double FOCUSED_COLUMN_DARKENING_FACTOR = 0.8;
+	private static final double FOCUSED_COLUMN_SHADE = 0.2;
 
 	static final Factory<?, ?> FACTORY = new DefaultFactory<>();
 
@@ -94,10 +94,10 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 			if (focusedColumnIndicator) {
 				RowColumn currentSearchResult = ((FilterTable<R, C>) table).search().results().current().get();
 				if (currentSearchResult != null && column == currentSearchResult.column()) {
-					label.setBackground(darker(label.getBackground(), FOCUSED_COLUMN_DARKENING_FACTOR));
+					label.setBackground(shade(label.getBackground(), FOCUSED_COLUMN_SHADE));
 				}
 				if (!table.getSelectionModel().isSelectionEmpty() && column == table.getColumnModel().getSelectionModel().getLeadSelectionIndex()) {
-					label.setBackground(darker(label.getBackground(), FOCUSED_COLUMN_DARKENING_FACTOR));
+					label.setBackground(shade(label.getBackground(), FOCUSED_COLUMN_SHADE));
 				}
 			}
 		}

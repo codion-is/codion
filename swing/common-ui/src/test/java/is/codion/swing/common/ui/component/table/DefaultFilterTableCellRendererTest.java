@@ -102,6 +102,29 @@ public final class DefaultFilterTableCellRendererTest {
 		}
 	}
 
+	@Test
+	void alternateRowShading() {
+		FilterTable<String, Integer> table = createTable();
+		// shaded from the table background, darker when light
+		Color light = new Color(250, 250, 240);
+		table.setBackground(light);
+		assertEquals(light, background(table, 0));
+		assertShaded(light, background(table, 1), false);
+		// and lighter when dark
+		Color dark = new Color(70, 73, 75);
+		table.setBackground(dark);
+		assertEquals(dark, background(table, 0));
+		assertShaded(dark, background(table, 1), true);
+	}
+
+	private static void assertShaded(Color color, Color shaded, boolean lighter) {
+		int[] components = {color.getRed(), color.getGreen(), color.getBlue()};
+		int[] shadedComponents = {shaded.getRed(), shaded.getGreen(), shaded.getBlue()};
+		for (int i = 0; i < components.length; i++) {
+			assertTrue(lighter ? shadedComponents[i] > components[i] : shadedComponents[i] < components[i]);
+		}
+	}
+
 	private static FilterTable<String, Integer> createTable() {
 		SwingFilterTableModel<String, Integer> model = SwingFilterTableModel.<String, Integer>builder()
 						.columns(new TableColumns<String, Integer>() {

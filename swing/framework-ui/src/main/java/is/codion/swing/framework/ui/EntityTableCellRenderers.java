@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
 
-import static is.codion.swing.common.ui.color.Colors.darker;
+import static is.codion.swing.common.ui.color.Colors.shade;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -90,8 +90,6 @@ public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory
 
 	static final class ConditionIndicator implements Customizer<Entity, Attribute<?>> {
 
-		private static final double DARKENING_FACTOR = 0.9;
-
 		private @Nullable ObservableState conditionEnabled;
 		private boolean conditionEnabledSet = false;
 
@@ -100,7 +98,7 @@ public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory
 		@Override
 		public void customize(FilterTable<Entity, Attribute<?>> table, Entity entity, Attribute<?> attribute, JComponent component) {
 			if (conditionEnabled(attribute, (SwingEntityTableModel) table.model())) {
-				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
+				component.setBackground(shade(component.getBackground()));
 			}
 		}
 

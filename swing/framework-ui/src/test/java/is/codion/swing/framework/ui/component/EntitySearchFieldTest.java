@@ -31,6 +31,8 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import java.awt.Color;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,6 +75,37 @@ public class EntitySearchFieldTest {
 		value.clear();
 		assertFalse(searchModel.selection().present().is());
 		assertNull(value.get());
+	}
+
+	@Test
+	void searchBackground() {
+		Color background = UIManager.getColor("TextField.background");
+		try {
+			// a background ready to search, darker when light and lighter when dark
+			assertSearchBackground(new Color(250, 250, 250), false);
+			assertSearchBackground(new Color(40, 44, 52), true);
+		}
+		finally {
+			UIManager.put("TextField.background", background);
+		}
+	}
+
+	private static void assertSearchBackground(Color background, boolean lighter) {
+		UIManager.put("TextField.background", background);
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(EntitySearchModel.builder()
+										.entityType(Department.TYPE)
+										.connection(CONNECTION)
+										.build())
+						.build();
+		assertEquals(background, searchField.getBackground());
+		searchField.setText("search");
+		Color search = searchField.getBackground();
+		int[] components = {background.getRed(), background.getGreen(), background.getBlue()};
+		int[] searchComponents = {search.getRed(), search.getGreen(), search.getBlue()};
+		for (int i = 0; i < components.length; i++) {
+			assertTrue(lighter ? searchComponents[i] > components[i] : searchComponents[i] < components[i]);
+		}
 	}
 
 	@Test
