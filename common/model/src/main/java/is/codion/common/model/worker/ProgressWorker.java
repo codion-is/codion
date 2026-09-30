@@ -271,7 +271,8 @@ public final class ProgressWorker<T, V> {
 	/**
 	 * <p>Provides builders for a given task type.
 	 * <p>If the task also implements the corresponding handler interface (e.g. {@link TaskHandler},
-	 * {@link ResultTaskHandler}), the handler methods are automatically wired first.
+	 * {@link ResultTaskHandler}), the handler methods are automatically wired first,
+	 * {@link Handler#onException(Exception)} only when overridden.
 	 * Additional handlers can then be added via the returned {@link Builder},
 	 * and are called after the handler interface methods, in the order they were added.
 	 */
@@ -425,6 +426,8 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Called using the {@link Dispatcher} if an exception occurred during the background task.
+		 * <p>Only wired when overridden, and then called before any {@code onException} handlers added via the builder.
+		 * An exception without any {@code onException} handler is rethrown on the dispatch thread.
 		 * <p>The default implementation rethrows the exception as a {@link RuntimeException}.
 		 * Override to handle the exception, for example by displaying it.
 		 * @param exception the exception
@@ -607,6 +610,7 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Adds a handler called using the {@link Dispatcher} if an exception occurred.
+		 * <p>An exception without any {@code onException} handler is rethrown on the dispatch thread.
 		 * @param onException the handler to add
 		 * @return this builder instance
 		 */
@@ -678,9 +682,9 @@ public final class ProgressWorker<T, V> {
 								.onDone(handler::onDone)
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
-								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
 								.onInterrupted(handler::onInterrupted);
+				addOnException(builder, handler);
 			}
 
 			return builder;
@@ -696,9 +700,9 @@ public final class ProgressWorker<T, V> {
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
-								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
 								.onInterrupted(handler::onInterrupted);
+				addOnException(builder, handler);
 			}
 
 			return builder;
@@ -715,9 +719,9 @@ public final class ProgressWorker<T, V> {
 								.onDone(handler::onDone)
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
-								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
 								.onInterrupted(handler::onInterrupted);
+				addOnException(builder, handler);
 			}
 
 			return builder;
@@ -735,12 +739,27 @@ public final class ProgressWorker<T, V> {
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
-								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
 								.onInterrupted(handler::onInterrupted);
+				addOnException(builder, handler);
 			}
 
 			return builder;
+		}
+
+		/**
+		 * Wires {@link Handler#onException(Exception)} only when the handler overrides it, since the default,
+		 * called first, would rethrow before any {@code onException} handlers added via the builder were called.
+		 */
+		private static void addOnException(Builder<?, ?> builder, Handler handler) {
+			try {
+				if (handler.getClass().getMethod("onException", Exception.class).getDeclaringClass() != Handler.class) {
+					builder.onException(handler::onException);
+				}
+			}
+			catch (NoSuchMethodException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 	}
 

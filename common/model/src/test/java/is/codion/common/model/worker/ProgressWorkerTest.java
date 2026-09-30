@@ -23,19 +23,28 @@ import is.codion.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.common.model.worker.ProgressWorker.Task;
+import is.codion.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.dispatch.Dispatcher;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedList;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ProgressWorkerTest {
@@ -406,5 +415,117 @@ public final class ProgressWorkerTest {
 		assertTrue(latch.await(5, TimeUnit.SECONDS));
 		assertFalse(progressReports.isEmpty());
 		assertTrue(progressReports.contains(100));
+	}
+
+	@Test
+	void handlerOnExceptionWiredOnlyWhenOverridden() throws Exception {
+		try (TestDispatcher dispatcher = new TestDispatcher()) {
+			List<String> calls = synchronizedList(new ArrayList<>());
+			TaskHandler notOverriding = () -> {
+				throw new IllegalStateException("failed");
+			};
+
+			// the default does not rethrow before the builder handler
+			CountDownLatch builderLatch = new CountDownLatch(1);
+			dispatcher.execute(ProgressWorker.builder()
+							.task(notOverriding)
+							.dispatcher(dispatcher)
+							.onException(exception -> {
+								calls.add("builder " + exception.getMessage());
+								builderLatch.countDown();
+							}));
+			assertTrue(builderLatch.await(5, SECONDS));
+			dispatcher.flush();
+			assertEquals(asList("builder failed"), calls);
+			assertTrue(dispatcher.uncaught.isEmpty());
+
+			// an override is called before the builder handler
+			calls.clear();
+			CountDownLatch overridingLatch = new CountDownLatch(1);
+			dispatcher.execute(ProgressWorker.builder()
+							.task(new TaskHandler() {
+								@Override
+								public void execute() {
+									throw new IllegalStateException("failed");
+								}
+
+								@Override
+								public void onException(Exception exception) {
+									calls.add("handler " + exception.getMessage());
+								}
+							})
+							.dispatcher(dispatcher)
+							.onException(exception -> {
+								calls.add("builder " + exception.getMessage());
+								overridingLatch.countDown();
+							}));
+			assertTrue(overridingLatch.await(5, SECONDS));
+			dispatcher.flush();
+			assertEquals(asList("handler failed", "builder failed"), calls);
+			assertTrue(dispatcher.uncaught.isEmpty());
+
+			// without any onException handler, the exception is rethrown on the dispatch thread
+			dispatcher.execute(ProgressWorker.builder()
+							.task(notOverriding)
+							.dispatcher(dispatcher));
+			Throwable uncaught = dispatcher.uncaught.poll(5, SECONDS);
+			assertNotNull(uncaught);
+			assertEquals("failed", uncaught.getMessage());
+		}
+	}
+
+	/**
+	 * A single dispatch thread standing in for a UI thread, bound only on itself,
+	 * collecting any exception escaping a dispatched runnable.
+	 */
+	private static final class TestDispatcher implements Dispatcher, AutoCloseable {
+
+		private final BlockingQueue<Throwable> uncaught = new LinkedBlockingQueue<>();
+
+		private volatile Thread dispatchThread;
+
+		private final ExecutorService executor = Executors.newSingleThreadExecutor(runnable -> {
+			dispatchThread = new Thread(runnable, "dispatch");
+
+			return dispatchThread;
+		});
+
+		@Override
+		public Executor executor() {
+			return runnable -> executor.execute(() -> {
+				try {
+					runnable.run();
+				}
+				catch (Throwable throwable) {
+					uncaught.add(throwable);
+				}
+			});
+		}
+
+		@Override
+		public boolean bound() {
+			return Thread.currentThread() == dispatchThread;
+		}
+
+		/**
+		 * Executes the worker on the dispatch thread, where a dispatch context is bound
+		 */
+		private ProgressWorker<?, ?> execute(ProgressWorker.Builder<?, ?> builder) throws Exception {
+			Callable<ProgressWorker<?, ?>> execute = builder::execute;
+
+			return executor.submit(execute).get();
+		}
+
+		/**
+		 * Waits for everything dispatched so far to run
+		 */
+		private void flush() throws Exception {
+			executor.submit(() -> {}).get();
+		}
+
+		@Override
+		public void close() {
+			executor.shutdownNow();
+		}
 	}
 }
