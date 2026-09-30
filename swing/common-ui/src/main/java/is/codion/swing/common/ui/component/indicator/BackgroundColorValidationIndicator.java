@@ -59,7 +59,7 @@ public final class BackgroundColorValidationIndicator implements ValidationIndic
 				component.addPropertyChangeListener("UI", event -> configureColors());
 				invalid.addListener(this::update);
 				warned.addListener(this::update);
-				update();
+				configureColors();
 			}
 		}
 
