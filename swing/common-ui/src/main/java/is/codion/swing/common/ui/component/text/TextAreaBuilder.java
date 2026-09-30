@@ -57,6 +57,7 @@ public interface TextAreaBuilder extends TextComponentBuilder<JTextArea, String,
 	TextAreaBuilder wrapStyleWord(boolean wrapStyleWord);
 
 	/**
+	 * Autoscrolling is enabled by the text UI if not specified.
 	 * @param autoscrolls true if autoscrolling should be enabled
 	 * @return this builder instance
 	 * @see JTextArea#setAutoscrolls(boolean)

@@ -29,6 +29,7 @@ import javax.swing.text.StyledDocument;
 public interface TextPaneBuilder extends TextComponentBuilder<JTextPane, String, TextPaneBuilder> {
 
 	/**
+	 * Autoscrolling is enabled by the text UI if not specified.
 	 * @param autoscrolls true if autoscrolling should be enabled
 	 * @return this builder instance
 	 * @see JTextPane#setAutoscrolls(boolean)
