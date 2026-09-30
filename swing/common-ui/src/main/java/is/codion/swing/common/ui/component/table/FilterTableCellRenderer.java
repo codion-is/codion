@@ -283,13 +283,13 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 		Builder<R, C, T> formatter(Function<T, String> formatter);
 
 		/**
-		 * @param background provides the background color
+		 * @param background provides the background color, blended with the selection background for selected cells
 		 * @return this builder instance
 		 */
 		Builder<R, C, T> background(CellColor<R, C, T> background);
 
 		/**
-		 * @param foreground provides the foreground color
+		 * @param foreground provides the foreground color, selected cells using the selection foreground
 		 * @return this builder instance
 		 */
 		Builder<R, C, T> foreground(CellColor<R, C, T> foreground);

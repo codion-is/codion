@@ -293,13 +293,14 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			customize(filterTable, row, identifier, component);
 		}
 
+		// the selection foreground wins over the cell foreground, which may not be readable on the selection background
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
-			Color foreground = foregroundColor.get(filterTable, row, identifier, value);
-			if (foreground != null) {
-				return foreground;
+			if (selected) {
+				return uiSettings.selectionForeground();
 			}
+			Color foreground = foregroundColor.get(filterTable, row, identifier, value);
 
-			return selected ? uiSettings.selectionForeground() : uiSettings.foreground();
+			return foreground == null ? uiSettings.foreground() : foreground;
 		}
 
 		private Color backgroundColor(FilterTable<R, C> filterTable, int rowIndex, R row, C identifier, JComponent component) {
