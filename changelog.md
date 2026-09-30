@@ -52,6 +52,7 @@ Codion Change Log
 - SplitPaneBuilder, continuous layout now follows the look and feel unless specified, where it was always disabled, FlatLaf enabling it.
 - TextAreaBuilder and TextPaneBuilder, autoscrolling is now left enabled unless specified, where it was always disabled, drag selecting past the edge of a scrolled text area not scrolling it.
 - ToolBarBuilder, floatable, rollover and borderPainted now follow the look and feel unless specified, where a toolbar was always floatable, FlatLaf disabling it, and never rollover, Metal and FlatLaf enabling it.
+- ProgressBarBuilder, the border is now painted unless specified, as by a JProgressBar, where it never was, look and feels such as Metal then painting no track.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.

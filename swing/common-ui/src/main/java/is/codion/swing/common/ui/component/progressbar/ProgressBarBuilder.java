@@ -46,6 +46,7 @@ public interface ProgressBarBuilder extends ComponentValueBuilder<JProgressBar, 
 	ProgressBarBuilder string(@Nullable String string);
 
 	/**
+	 * The {@link JProgressBar} default, true, is used if not specified.
 	 * @param borderPainted true if a border should be painted
 	 * @return this builder
 	 * @see JProgressBar#setBorderPainted(boolean)
@@ -67,7 +68,7 @@ public interface ProgressBarBuilder extends ComponentValueBuilder<JProgressBar, 
 	ProgressBarBuilder orientation(int orientation);
 
 	/**
-	 * @param indeterminate true if the progress bar should be inditerminate
+	 * @param indeterminate true if the progress bar should be indeterminate
 	 * @return this builder
 	 * @see JProgressBar#setIndeterminate(boolean)
 	 */
