@@ -20,16 +20,24 @@ package is.codion.swing.common.ui.component.tree;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import javax.swing.Action;
 import javax.swing.DropMode;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 
 /**
  * A builder for JTree.
+ * <p>The tree selects the row under the mouse before a {@link JPopupMenu} is shown, so that the popup menu actions
+ * apply to what was clicked, where a {@link JTree} leaves the selection as is: the row, unless already selected,
+ * and nothing below the last row, clearing the selection.
  */
 public interface TreeBuilder extends ComponentBuilder<JTree, TreeBuilder> {
 
@@ -123,6 +131,21 @@ public interface TreeBuilder extends ComponentBuilder<JTree, TreeBuilder> {
 	 * @see JTree#setLargeModel(boolean)
 	 */
 	TreeBuilder largeModel(boolean largeModel);
+
+	/**
+	 * @param selectionMode the selection mode
+	 * @return this builder instance
+	 * @see TreeSelectionModel#setSelectionMode(int)
+	 */
+	TreeBuilder selectionMode(int selectionMode);
+
+	/**
+	 * Performs the given action on a double-click with the left mouse button on a selected node, the first click
+	 * selecting it, if the action is enabled. The {@link ActionEvent} source is the {@link MouseEvent}.
+	 * @param doubleClick the action to perform on a double-click
+	 * @return this builder instance
+	 */
+	TreeBuilder doubleClick(Action doubleClick);
 
 	/**
 	 * @param treeExpansionListener the tree expansion listener to add

@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.Action;
 import javax.swing.DropMode;
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionListener;
@@ -29,10 +30,17 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.awt.event.ActionEvent.ACTION_PERFORMED;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuilder> implements TreeBuilder {
 
@@ -57,6 +65,8 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 	private @Nullable Integer toggleClickCount;
 	private @Nullable Integer visibleRowCount;
 	private @Nullable Boolean largeModel;
+	private @Nullable Integer selectionMode;
+	private @Nullable Action doubleClick;
 
 	private DefaultTreeBuilder(TreeModel treeModel) {
 		this.treeModel = requireNonNull(treeModel);
@@ -141,6 +151,18 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 	}
 
 	@Override
+	public TreeBuilder selectionMode(int selectionMode) {
+		this.selectionMode = selectionMode;
+		return this;
+	}
+
+	@Override
+	public TreeBuilder doubleClick(Action doubleClick) {
+		this.doubleClick = requireNonNull(doubleClick);
+		return this;
+	}
+
+	@Override
 	public TreeBuilder treeExpansionListener(TreeExpansionListener treeExpansionListener) {
 		treeExpansionListeners.add(requireNonNull(treeExpansionListener));
 		return this;
@@ -168,7 +190,7 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 
 	@Override
 	protected JTree createComponent() {
-		JTree tree = new JTree(treeModel);
+		JTree tree = new PopupSelectionTree(treeModel);
 		if (rootVisible != null) {
 			tree.setRootVisible(rootVisible);
 		}
@@ -208,10 +230,74 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 		if (largeModel != null) {
 			tree.setLargeModel(largeModel);
 		}
+		if (selectionMode != null) {
+			tree.getSelectionModel().setSelectionMode(selectionMode);
+		}
+		if (doubleClick != null) {
+			tree.addMouseListener(new DoubleClickListener(tree, doubleClick));
+		}
 		treeExpansionListeners.forEach(tree::addTreeExpansionListener);
 		treeWillExpandListeners.forEach(tree::addTreeWillExpandListener);
 		treeSelectionListeners.forEach(tree::addTreeSelectionListener);
 
 		return tree;
+	}
+
+	/**
+	 * @return the row under the mouse, -1 if none
+	 */
+	private static int row(JTree tree, MouseEvent event) {
+		int row = tree.getClosestRowForLocation(event.getX(), event.getY());
+		if (row >= 0) {
+			Rectangle bounds = tree.getRowBounds(row);
+			if (bounds != null && event.getY() >= bounds.y && event.getY() < bounds.y + bounds.height) {
+				return row;
+			}
+		}
+
+		return -1;
+	}
+
+	private static final class PopupSelectionTree extends JTree {
+
+		private PopupSelectionTree(TreeModel treeModel) {
+			super(treeModel);
+		}
+
+		@Override
+		public @Nullable Point getPopupLocation(@Nullable MouseEvent event) {
+			if (event != null) {
+				int row = row(this, event);
+				if (row < 0) {
+					clearSelection();
+				}
+				else if (!isRowSelected(row)) {
+					setSelectionRow(row);
+				}
+			}
+
+			return super.getPopupLocation(event);
+		}
+	}
+
+	private static final class DoubleClickListener extends MouseAdapter {
+
+		private final JTree tree;
+		private final Action action;
+
+		private DoubleClickListener(JTree tree, Action action) {
+			this.tree = tree;
+			this.action = action;
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent event) {
+			if (event.getClickCount() == 2 && isLeftMouseButton(event) && action.isEnabled()) {
+				int row = row(tree, event);
+				if (row >= 0 && tree.isRowSelected(row)) {
+					action.actionPerformed(new ActionEvent(event, ACTION_PERFORMED, "doubleClick"));
+				}
+			}
+		}
 	}
 }
