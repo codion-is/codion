@@ -56,7 +56,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	private boolean mouseWheelScrollingWithWrapAround = false;
 	private int maximumRowCount = -1;
 	private int popupWidth = 0;
-	private @Nullable ListCellRenderer<Item<T>> renderer;
+	private @Nullable ListCellRenderer<? super Item<T>> renderer;
 	private @Nullable ComboBoxEditor editor;
 
 	DefaultItemComboBoxBuilder(List<Item<T>> items) {
@@ -136,7 +136,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	}
 
 	@Override
-	public ItemComboBoxBuilder<T> renderer(@Nullable ListCellRenderer<Item<T>> renderer) {
+	public ItemComboBoxBuilder<T> renderer(@Nullable ListCellRenderer<? super Item<T>> renderer) {
 		this.renderer = renderer;
 		return this;
 	}

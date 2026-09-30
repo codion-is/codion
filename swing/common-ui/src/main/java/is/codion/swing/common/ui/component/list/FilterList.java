@@ -130,7 +130,7 @@ public final class FilterList<T> extends JList<T> {
 		 * @return this builder instance
 		 * @see JList#setCellRenderer(ListCellRenderer)
 		 */
-		B cellRenderer(@Nullable ListCellRenderer<T> cellRenderer);
+		B cellRenderer(@Nullable ListCellRenderer<? super T> cellRenderer);
 
 		/**
 		 * @param dragEnabled the drag enabled value

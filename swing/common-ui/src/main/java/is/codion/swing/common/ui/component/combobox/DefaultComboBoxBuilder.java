@@ -52,7 +52,7 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 	private boolean editable = false;
 	private Completion.Mode completionMode = Completion.MODE.getOrThrow();
 	private boolean normalize = true;
-	private @Nullable ListCellRenderer<T> renderer;
+	private @Nullable ListCellRenderer<? super T> renderer;
 	private @Nullable ComboBoxEditor editor;
 	private boolean mouseWheelScrolling = MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingWithWrapAround = false;
@@ -91,7 +91,7 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 	}
 
 	@Override
-	public final B renderer(@Nullable ListCellRenderer<T> renderer) {
+	public final B renderer(@Nullable ListCellRenderer<? super T> renderer) {
 		this.renderer = renderer;
 		return self();
 	}
