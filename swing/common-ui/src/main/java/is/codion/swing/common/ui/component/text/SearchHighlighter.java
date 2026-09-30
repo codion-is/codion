@@ -85,7 +85,7 @@ public final class SearchHighlighter {
 	private final boolean customSelectedHighlightColor;
 
 	private HighlightPainter highlightPainter;
-	private SelectedHighlightPainter selectedHightlightPainter;
+	private SelectedHighlightPainter selectedHighlightPainter;
 
 	private SearchHighlighter(DefaultBuilder builder) {
 		this.textComponent = builder.textComponent;
@@ -96,8 +96,8 @@ public final class SearchHighlighter {
 						.build();
 		customHighlightColor = builder.customHighlightColor;
 		customSelectedHighlightColor = builder.customSelectedHighlightColor;
-		highlightPainter = new DefaultHighlightPainter(builder.selectedHighlightColor);
-		selectedHightlightPainter = new SelectedHighlightPainter(builder.highlightColor);
+		highlightPainter = new DefaultHighlightPainter(builder.highlightColor);
+		selectedHighlightPainter = new SelectedHighlightPainter(builder.selectedHighlightColor);
 		textComponent.setHighlighter(highlighter);
 		bindEvents();
 	}
@@ -128,7 +128,7 @@ public final class SearchHighlighter {
 	 * @param color the color to use when highlighting the selected search result.
 	 */
 	public void selectedHighlightColor(Color color) {
-		selectedHightlightPainter = new SelectedHighlightPainter(requireNonNull(color));
+		selectedHighlightPainter = new SelectedHighlightPainter(requireNonNull(color));
 		updateHighlights();
 	}
 
@@ -242,7 +242,7 @@ public final class SearchHighlighter {
 		selectedSearchTextPosition.set(matchPosition.start);
 		try {
 			highlighter.removeHighlight(matchPosition.highlightTag);
-			matchPosition.highlightTag = highlighter.addHighlight(matchPosition.start, matchPosition.end, selectedHightlightPainter);
+			matchPosition.highlightTag = highlighter.addHighlight(matchPosition.start, matchPosition.end, selectedHighlightPainter);
 		}
 		catch (BadLocationException e) {
 			throw new RuntimeException(e);
@@ -267,7 +267,7 @@ public final class SearchHighlighter {
 
 	private void bindEvents() {
 		textComponent.getDocument().addDocumentListener((DocumentAdapter) e -> searchAndHighlightResults());
-		textComponent.addPropertyChangeListener(UI_PROPERTY_NAME, new UpdateHightlightColors());
+		textComponent.addPropertyChangeListener(UI_PROPERTY_NAME, new UpdateHighlightColors());
 		selectedSearchTextPosition.when(Objects::nonNull).addConsumer(this::scrollToPosition);
 	}
 
@@ -317,7 +317,7 @@ public final class SearchHighlighter {
 	private void updateHighlight(Highlight highlight, MatchPosition matchPosition) {
 		try {
 			matchPosition.highlightTag = highlighter.addHighlight(highlight.getStartOffset(), highlight.getEndOffset(),
-							highlight.getPainter() instanceof SelectedHighlightPainter ? selectedHightlightPainter : highlightPainter);
+							highlight.getPainter() instanceof SelectedHighlightPainter ? selectedHighlightPainter : highlightPainter);
 		}
 		catch (BadLocationException e) {
 			throw new RuntimeException(e);
@@ -458,7 +458,7 @@ public final class SearchHighlighter {
 		}
 	}
 
-	private final class UpdateHightlightColors implements PropertyChangeListener {
+	private final class UpdateHighlightColors implements PropertyChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
