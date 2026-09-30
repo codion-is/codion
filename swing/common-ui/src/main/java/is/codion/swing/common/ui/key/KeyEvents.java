@@ -25,9 +25,11 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.util.Collection;
 
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_UNDEFINED;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -56,13 +58,14 @@ public final class KeyEvents {
 	 * <ul>
 	 * <li>Windows/Linux: {@link java.awt.event.InputEvent#CTRL_DOWN_MASK} (Control key)
 	 * <li>macOS: {@link java.awt.event.InputEvent#META_DOWN_MASK} (Command key)
+	 * <li>Headless: {@link java.awt.event.InputEvent#CTRL_DOWN_MASK}
 	 * </ul>
 	 * Use this constant instead of hardcoding {@link java.awt.event.InputEvent#CTRL_DOWN_MASK} to provide
 	 * native keyboard shortcuts on each platform. For example, shortcuts using this mask will
 	 * appear as Ctrl+F on Windows/Linux and ⌘+F on macOS.
 	 * @see Toolkit#getMenuShortcutKeyMaskEx()
 	 */
-	public static final int MENU_SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+	public static final int MENU_SHORTCUT_MASK = menuShortcutMask();
 
 
 	private KeyEvents() {}
@@ -105,6 +108,11 @@ public final class KeyEvents {
 	 */
 	public static KeyStroke keyStroke(String keyStroke) {
 		return getKeyStroke(keyStroke);
+	}
+
+	// The toolkit throws HeadlessException when headless, where there is no keyboard for the mask to matter to
+	private static int menuShortcutMask() {
+		return GraphicsEnvironment.isHeadless() ? CTRL_DOWN_MASK : Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 	}
 
 	/**
