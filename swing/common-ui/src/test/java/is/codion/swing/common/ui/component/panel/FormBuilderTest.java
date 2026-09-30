@@ -129,6 +129,26 @@ public final class FormBuilderTest {
 	}
 
 	@Test
+	void htmlLabelFills() {
+		// the baseline of an html label changes unpredictably with its size, and on a baseline
+		// anchor GridBagLayout neither fills it nor keeps it at its preferred size
+		JLabel spanned = htmlLabel();
+		JLabel paired = htmlLabel();
+		JPanel form = Components.form()
+						.span(spanned)
+						.add(new JLabel("Info"), paired)
+						.build();
+		int preferredWidth = form.getPreferredSize().width;
+		for (int width : new int[] {preferredWidth - 20, preferredWidth + 50}) {
+			form.setSize(width, 300);
+			form.doLayout();
+			assertEquals(width, spanned.getWidth());
+			assertEquals(width, paired.getX() + paired.getWidth());
+		}
+		assertEquals(spanned.getPreferredSize().height, spanned.getHeight());
+	}
+
+	@Test
 	void labelLessComponentInTheInputColumn() {
 		JCheckBox checkBox = new JCheckBox("Remember");
 		JTextField field = field("Name");
@@ -272,6 +292,10 @@ public final class FormBuilderTest {
 		panel.setPreferredSize(new Dimension(100, 150));
 
 		return panel;
+	}
+
+	private static JLabel htmlLabel() {
+		return new JLabel("<html>A label spanning two lines<br>of html text, the second one longer</html>");
 	}
 
 	private static JTextField field(String label) {
