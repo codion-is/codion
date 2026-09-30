@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 
 import org.jspecify.annotations.Nullable;
@@ -51,9 +52,11 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	static final String FOREGROUND = "Foreground";
 
 	private final @Nullable ObservableState enabledObservable;
+	private final @Nullable Observable<String> captionObservable;
 	private final boolean initialized;
-	// Keep this in a field since it's added as a weak listener
+	// Keep these in fields since they're added as weak listeners
 	private @Nullable Enabler enabler;
+	private @Nullable Captioner captioner;
 
 	AbstractControl(AbstractControlBuilder<?, ?> builder) {
 		super((String) builder.values.get(NAME));
@@ -65,6 +68,12 @@ abstract class AbstractControl extends AbstractAction implements Control {
 			super.setEnabled(enabledObservable.is());
 		}
 		builder.values.forEach(super::putValue);
+		captionObservable = builder.caption;
+		if (captionObservable != null) {
+			captioner = new Captioner();
+			captionObservable.addWeakConsumer(captioner);
+			super.putValue(NAME, captionObservable.get());
+		}
 	}
 
 	@Override
@@ -147,6 +156,13 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		return Optional.ofNullable((Font) getValue(FONT));
 	}
 
+	/**
+	 * @return the dynamic caption, null if none
+	 */
+	final @Nullable Observable<String> captionObservable() {
+		return captionObservable;
+	}
+
 	private final class Enabler implements Consumer<Boolean> {
 
 		@Override
@@ -160,15 +176,35 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		}
 	}
 
+	private final class Captioner implements Consumer<@Nullable String> {
+
+		@Override
+		public void accept(@Nullable String caption) {
+			if (SwingUtilities.isEventDispatchThread()) {
+				AbstractControl.super.putValue(NAME, caption);
+			}
+			else {
+				SwingUtilities.invokeLater(() -> AbstractControl.super.putValue(NAME, caption));
+			}
+		}
+	}
+
 	abstract static class AbstractControlBuilder<C extends Control, B extends ControlBuilder<C, B>> implements ControlBuilder<C, B> {
 
 		private final Map<String, @Nullable Object> values = new HashMap<>();
 
 		private @Nullable ObservableState enabled;
+		private @Nullable Observable<String> caption;
 
 		@Override
 		public final B caption(@Nullable String caption) {
 			values.put(NAME, caption);
+			return self();
+		}
+
+		@Override
+		public final B caption(@Nullable Observable<String> caption) {
+			this.caption = caption;
 			return self();
 		}
 

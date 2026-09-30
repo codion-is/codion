@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 
 import org.jspecify.annotations.Nullable;
@@ -37,10 +38,19 @@ import java.util.function.Supplier;
 public interface ControlBuilder<C extends Control, B extends ControlBuilder<C, B>> extends Supplier<C> {
 
 	/**
+	 * Overridden by {@link #caption(Observable)}.
 	 * @param caption the caption for the control
 	 * @return this Builder instance
 	 */
 	B caption(@Nullable String caption);
+
+	/**
+	 * Overrides {@link #caption(String)}. The control caption follows the given observable, updated on
+	 * the Event Dispatch Thread, as does the text of the buttons and menu items based on the control.
+	 * @param caption a dynamic caption for the control
+	 * @return this Builder instance
+	 */
+	B caption(@Nullable Observable<String> caption);
 
 	/**
 	 * @param enabled the state observer which controls the enabled state of the control
