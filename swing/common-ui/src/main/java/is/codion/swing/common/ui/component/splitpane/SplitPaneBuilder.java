@@ -124,6 +124,23 @@ public interface SplitPaneBuilder extends ComponentBuilder<JSplitPane, SplitPane
 	SplitPaneBuilder dividerSize(int dividerSize);
 
 	/**
+	 * @param dividerLocation the divider location
+	 * @return this builder instance
+	 * @see JSplitPane#setDividerLocation(int)
+	 */
+	SplitPaneBuilder dividerLocation(int dividerLocation);
+
+	/**
+	 * Sets the divider location as a proportion of the split pane size, once it has a size,
+	 * since {@link JSplitPane#setDividerLocation(double)} has no effect before that.
+	 * @param dividerLocation the proportional divider location, between 0 and 1
+	 * @return this builder instance
+	 * @throws IllegalArgumentException in case the location is not between 0 and 1
+	 * @see JSplitPane#setDividerLocation(double)
+	 */
+	SplitPaneBuilder dividerLocation(double dividerLocation);
+
+	/**
 	 * @return a new {@link SplitPaneBuilder} instance
 	 */
 	static SplitPaneBuilder builder() {

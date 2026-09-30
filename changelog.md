@@ -48,6 +48,7 @@ Codion Change Log
 - TreeBuilder.ui() added, the UI set before any other setting.
 - ButtonBuilder, a button built with an action or control without colors now keeps the look and feel colors, where it took the colors of its parent, and an action color reset to null restores the look and feel color.
 - FileSelectionDialogBuilder, the file selection dialog now always offers the accept all filter, as a JFileChooser does, the first filter selected, where a filter replaced it and a dialog without filters could offer none.
+- SplitPaneBuilder.dividerLocation(int) and dividerLocation(double) added, the proportional one set once the split pane has a size.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
