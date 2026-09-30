@@ -27,10 +27,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Color;
 
-import static is.codion.swing.common.ui.color.Colors.darker;
+import static is.codion.swing.common.ui.color.Colors.shade;
 import static java.util.Objects.requireNonNull;
 
 public final class BackgroundColorValidationIndicator implements ValidationIndicator {
+
+	private static final double INVALID_SHADE = 0.2;
+	private static final double WARNED_SHADE = 0.05;
 
 	@Override
 	public void enable(JComponent component, ObservableState invalid, ObservableState warned) {
@@ -83,8 +86,8 @@ public final class BackgroundColorValidationIndicator implements ValidationIndic
 		private void configureColors() {
 			this.backgroundColor = UIManager.getColor(uiComponentKey + ".background");
 			this.inactiveBackgroundColor = UIManager.getColor(uiComponentKey + ".inactiveBackground");
-			this.invalidBackgroundColor = darker(backgroundColor);
-			this.warnedBackgroundColor = darker(backgroundColor, 0.95);
+			this.invalidBackgroundColor = shade(backgroundColor, INVALID_SHADE);
+			this.warnedBackgroundColor = shade(backgroundColor, WARNED_SHADE);
 			update();
 		}
 
