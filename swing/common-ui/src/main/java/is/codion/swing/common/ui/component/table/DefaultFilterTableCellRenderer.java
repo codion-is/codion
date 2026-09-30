@@ -239,6 +239,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final boolean filterIndicator;
 		private final boolean focusedCellIndicator;
 		private final boolean setBorder;
+		private final boolean inactiveSelection;
 		private final CellColor<R, C, T> backgroundColor;
 		private final CellColor<R, C, T> foregroundColor;
 		private final Collection<Customizer<R, C>> customizers = new ArrayList<>();
@@ -259,6 +260,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.backgroundColor = builder.backgroundColor;
 			this.focusedCellIndicator = builder.focusedCellIndicator;
 			this.setBorder = builder.setBorder;
+			this.inactiveSelection = builder.inactiveSelection;
 			this.foregroundColor = builder.foregroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
 			this.toolTip = builder.toolTip;
@@ -296,7 +298,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		// the selection foreground wins over the cell foreground, which may not be readable on the selection background
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
 			if (selected) {
-				return uiSettings.selectionForeground();
+				return selectionForeground(filterTable);
 			}
 			Color foreground = foregroundColor.get(filterTable, row, identifier, value);
 
@@ -340,7 +342,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private Color backgroundAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
 			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
-			cellBackgroundColor = backgroundAlternating(cellBackgroundColor, alternateRow, selected);
+			cellBackgroundColor = backgroundAlternating(filterTable, cellBackgroundColor, alternateRow, selected);
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
 			}
@@ -350,7 +352,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private Color backgroundNonAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
 			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
-			cellBackgroundColor = backgroundNonAlternating(cellBackgroundColor, selected);
+			cellBackgroundColor = backgroundNonAlternating(filterTable, cellBackgroundColor, selected);
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
 			}
@@ -361,12 +363,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
 		}
 
-		private Color backgroundAlternating(Color cellBackgroundColor, boolean alternateRow, boolean selected) {
+		private Color backgroundAlternating(FilterTable<R, C> filterTable, Color cellBackgroundColor, boolean alternateRow, boolean selected) {
 			if (cellBackgroundColor != null && alternateRow) {
 				cellBackgroundColor = darker(cellBackgroundColor, DOUBLE_DARKENING_FACTOR);
 			}
 			if (selected) {
-				Color selectionBackground = alternateRow ? uiSettings.alternateSelectionBackground() : uiSettings.selectionBackground();
+				Color selectionBackground = alternateRow ? alternateSelectionBackground(filterTable) : selectionBackground(filterTable);
 				if (cellBackgroundColor == null) {
 					return selectionBackground;
 				}
@@ -377,16 +379,41 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return cellBackgroundColor;
 		}
 
-		private Color backgroundNonAlternating(Color cellBackgroundColor, boolean selected) {
+		private Color backgroundNonAlternating(FilterTable<R, C> filterTable, Color cellBackgroundColor, boolean selected) {
 			if (selected) {
 				if (cellBackgroundColor == null) {
-					return uiSettings.selectionBackground();
+					return selectionBackground(filterTable);
 				}
 
-				return blendColors(cellBackgroundColor, uiSettings.selectionBackground());
+				return blendColors(cellBackgroundColor, selectionBackground(filterTable));
 			}
 
 			return cellBackgroundColor;
+		}
+
+		// The selection colors of the table itself, which the look and feel may change, for example
+		// from the focused to the unfocused ones when the table loses the focus, as FlatLaf does
+		private Color selectionForeground(FilterTable<R, C> filterTable) {
+			return selectionColor(filterTable.getSelectionForeground(), uiSettings.selectionForeground());
+		}
+
+		private Color selectionBackground(FilterTable<R, C> filterTable) {
+			return selectionColor(filterTable.getSelectionBackground(), uiSettings.selectionBackground());
+		}
+
+		private Color alternateSelectionBackground(FilterTable<R, C> filterTable) {
+			return darker(selectionBackground(filterTable), DARKENING_FACTOR);
+		}
+
+		// A selection color set by the look and feel, such as FlatLaf's inactive one while the table is not focused,
+		// is replaced by the default one of the look and feel, unless inactive selection is enabled
+		private Color selectionColor(@Nullable Color tableColor, Color defaultColor) {
+			//qualified, since UIResource alone is the one nested in DefaultTableCellRenderer
+			if (tableColor == null || (!inactiveSelection && tableColor instanceof javax.swing.plaf.UIResource)) {
+				return defaultColor;
+			}
+
+			return tableColor;
 		}
 
 		private static boolean alternateRow(int rowIndex) {
@@ -462,6 +489,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private boolean filterIndicator = true;
 		private boolean focusedCellIndicator = FOCUSED_CELL_INDICATOR.getOrThrow();
 		private boolean setBorder = SET_BORDER.getOrThrow();
+		private boolean inactiveSelection = INACTIVE_SELECTION.getOrThrow();
 		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private @Nullable Function<T, String> toolTip;
@@ -774,7 +802,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final Color alternateBackground;
 		private final Color selectionForeground;
 		private final Color selectionBackground;
-		private final Color alternateSelectionBackground;
 		private final Border cellBorder;
 		private final Border focusedCellBorder;
 		private final Border currentSearchResultBorder;
@@ -788,7 +815,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			alternateBackground = alternateRowColor == null ? darker(background, DOUBLE_DARKENING_FACTOR) : alternateRowColor;
 			selectionForeground = UIManager.getColor("Table.selectionForeground");
 			selectionBackground = UIManager.getColor("Table.selectionBackground");
-			alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
 			cellBorder = createEmptyBorder(0, leftPadding, 0, rightPadding);
 			focusedCellBorder = createFocusedCellBorder();
 			currentSearchResultBorder = createCurrentSearchResultBorder();
@@ -820,10 +846,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private Color alternateBackground() {
 			return alternateBackground;
-		}
-
-		private Color alternateSelectionBackground() {
-			return alternateSelectionBackground;
 		}
 
 		private Border cellBorder() {
