@@ -117,7 +117,6 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 
 		private static final double PRIORITY_SIZE_RATIO = 0.8;
 		private static final double PRIORITY_SIZE_CONST = 2.0;
-		private static final int ALIGNMENT_CONSTANT = 6;
 
 		private final boolean descending;
 		private final int size;
@@ -132,12 +131,14 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			// In a compound sort, make each successive triangle 20% smaller than the previous one.
-			int dx = (int) (size / PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
-			int dy = descending ? dx : -dx;
-			// Align icon (roughly) with font baseline.
-			int theY = y + SORT_ICON_SIZE * size / ALIGNMENT_CONSTANT + (descending ? -dy : 0);
-			int[] xPoints = {x, x + dx, x + dx / 2};
-			int[] yPoints = {theY, theY, theY + dy};
+			int arrowSize = (int) (size / PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
+			// The primary arrow is centered vertically, the smaller ones aligned with its bottom
+			int bottom = y + (size + (int) (size / PRIORITY_SIZE_CONST)) / 2;
+			int top = bottom - arrowSize;
+			int base = descending ? top : bottom;
+			int apex = descending ? bottom : top;
+			int[] xPoints = {x, x + arrowSize, x + arrowSize / 2};
+			int[] yPoints = {base, base, apex};
 			g.setColor(c == null ? Color.GRAY : shade(c.getBackground(), SORT_ARROW_SHADE));
 			g.fillPolygon(xPoints, yPoints, xPoints.length);
 			g.drawPolygon(xPoints, yPoints, xPoints.length);

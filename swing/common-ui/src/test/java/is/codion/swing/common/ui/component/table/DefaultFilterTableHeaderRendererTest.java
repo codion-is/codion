@@ -74,6 +74,46 @@ public final class DefaultFilterTableHeaderRendererTest {
 		}
 	}
 
+	@Test
+	void sortArrowsAligned() {
+		FilterTable<String, Integer> table = createTable();
+		table.model().sort().ascending(0);
+		table.model().sort().order(1).add(SortOrder.DESCENDING);
+		// the primary arrow centered vertically
+		int[] primary = paintedRows(sortArrow(table, 0));
+		assertEquals((sortArrow(table, 0).getIconHeight() - 1) / 2.0, (primary[0] + primary[1]) / 2.0, 1.0);
+		// the smaller secondary one, pointing down, aligned with its bottom
+		int[] secondary = paintedRows(sortArrow(table, 1));
+		assertTrue(secondary[1] - secondary[0] < primary[1] - primary[0]);
+		assertEquals(primary[1], secondary[1]);
+	}
+
+	/**
+	 * @return the topmost and bottommost painted rows of the given arrow
+	 */
+	private static int[] paintedRows(Icon arrow) {
+		JLabel label = new JLabel();
+		label.setBackground(Color.WHITE);
+		BufferedImage image = new BufferedImage(arrow.getIconWidth(), arrow.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics = image.createGraphics();
+		graphics.setColor(Color.WHITE);
+		graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
+		arrow.paintIcon(label, graphics, 0, 0);
+		graphics.dispose();
+		int top = image.getHeight();
+		int bottom = -1;
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+				if (image.getRGB(x, y) != Color.WHITE.getRGB()) {
+					top = Math.min(top, y);
+					bottom = Math.max(bottom, y);
+				}
+			}
+		}
+
+		return new int[] {top, bottom};
+	}
+
 	private static Icon sortArrow(FilterTable<?, ?> table, int column) {
 		TableColumn tableColumn = table.getColumnModel().getColumn(column);
 
