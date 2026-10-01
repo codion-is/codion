@@ -23,6 +23,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
@@ -344,7 +345,9 @@ class CompletionDocument extends PlainDocument {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (!selecting) {
-				highlightCompletedText(0);
+				// Later, the editor being updated with the selected item after this action event, the caret
+				// otherwise ending up after the new text, where typing does not complete anew
+				SwingUtilities.invokeLater(() -> highlightCompletedText(0));
 			}
 		}
 	}
