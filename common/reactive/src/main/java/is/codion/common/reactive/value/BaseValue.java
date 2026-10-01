@@ -63,6 +63,10 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	private @Nullable Map<Observable<T>, ObservableLink> linkedObservables;
 	private @Nullable Observable<T> observable;
 
+	//set() calls changing this value while it notifies its listeners, a listener changing it in response to a change
+	private int notifying = 0;
+	private int nestedSets = 0;
+
 	BaseValue() {
 		this.nullValue = null;
 		this.notify = null;
@@ -108,6 +112,9 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	public void set(@Nullable T value) {
 		T newValue = value == null ? nullValue : value;
 		boolean changing = !deepEquals(get(), newValue);
+		if (changing && notifying > 0) {
+			nestedSets++;
+		}
 		//reject a locked change before running validators, so their side effects don't execute for a refused mutation
 		if (changing && isLocked()) {
 			throw new IllegalStateException("Value is locked and can not be changed");
@@ -249,7 +256,13 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	 * Notifies the underlying observer that the underlying value has changed or at least that it may have changed
 	 */
 	protected final void notifyObserver() {
-		notifyListeners(get());
+		notifying++;
+		try {
+			notifyListeners(get());
+		}
+		finally {
+			notifying--;
+		}
 	}
 
 	/**
@@ -257,6 +270,13 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	 */
 	protected Observable<T> createObservable() {
 		return new ObservableValue<>(this);
+	}
+
+	/**
+	 * @return the number of times {@link #set(Object)} has changed this value while it was notifying its listeners
+	 */
+	final int nestedSets() {
+		return nestedSets;
 	}
 
 	final Set<Value<T>> linkedValues() {

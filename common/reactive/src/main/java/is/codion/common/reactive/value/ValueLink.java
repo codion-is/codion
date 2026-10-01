@@ -50,10 +50,6 @@ final class ValueLink<T> {
 	private volatile boolean updatingLinked = false;
 	private volatile boolean updatingOriginal = false;
 
-	//notifications of the value being updated, more than one meaning that a listener changed it during the update
-	private int linkedNotifications;
-	private int originalNotifications;
-
 	/**
 	 * Creates a new ValueLink
 	 * @param linkedValue the value to link to the original value
@@ -107,41 +103,45 @@ final class ValueLink<T> {
 	}
 
 	private void updateLinkedValue(T value) {
-		if (updatingOriginal) {
-			originalNotifications++;
-			return;
-		}
-		updatingLinked = true;
-		linkedNotifications = 0;
-		try {
-			linkedValue.set(value);
-		}
-		finally {
-			updatingLinked = false;
-		}
-		if (linkedNotifications > 1) {
-			//a listener changed the linked value while it was being updated, which the original follows
-			updateOriginalValue(linkedValue.get());
+		if (!updatingOriginal) {
+			int nestedSets = nestedSets(linkedValue);
+			updatingLinked = true;
+			try {
+				linkedValue.set(value);
+			}
+			finally {
+				updatingLinked = false;
+			}
+			if (nestedSets(linkedValue) != nestedSets) {
+				//a listener changed the linked value while it was being updated, which the original follows
+				updateOriginalValue(linkedValue.get());
+			}
 		}
 	}
 
 	private void updateOriginalValue(T value) {
-		if (updatingLinked) {
-			linkedNotifications++;
-			return;
+		if (!updatingLinked) {
+			int nestedSets = nestedSets(originalValue);
+			updatingOriginal = true;
+			try {
+				originalValue.set(value);
+			}
+			finally {
+				updatingOriginal = false;
+			}
+			if (nestedSets(originalValue) != nestedSets) {
+				//a listener changed the original value while it was being updated, which the linked value follows
+				updateLinkedValue(originalValue.get());
+			}
 		}
-		updatingOriginal = true;
-		originalNotifications = 0;
-		try {
-			originalValue.set(value);
-		}
-		finally {
-			updatingOriginal = false;
-		}
-		if (originalNotifications > 1) {
-			//a listener changed the original value while it was being updated, which the linked value follows
-			updateLinkedValue(originalValue.get());
-		}
+	}
+
+	//A listener changing a value while it is being updated sets it while it notifies, a nested set, which unlike
+	//counting notifications is not fooled by a value notifying more than once for a single set, as a text
+	//component does when its document removes the text and then inserts the new one. A Value implemented
+	//outside the framework does not count its nested sets, so a change its listeners make is not followed.
+	private static int nestedSets(Value<?> value) {
+		return value instanceof BaseValue ? ((BaseValue<?>) value).nestedSets() : 0;
 	}
 
 	/**
