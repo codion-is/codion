@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.observer.Observer;
-import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 
 import javax.swing.JComponent;
@@ -28,7 +27,7 @@ import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.Optional;
 
-import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.HIDDEN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -42,9 +41,6 @@ public abstract class ConditionPanel<T> extends JPanel {
 					.nonNull(HIDDEN)
 					.consumer(this::onViewChanged)
 					.build();
-	private final State hiddenView = State.state(true);
-	private final State simpleView = State.state();
-	private final State advancedView = State.state();
 
 	/**
 	 * The available condition panel views
@@ -70,7 +66,6 @@ public abstract class ConditionPanel<T> extends JPanel {
 	 */
 	protected ConditionPanel(ConditionModel<T> conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);
-		configureStates();
 	}
 
 	/**
@@ -106,16 +101,4 @@ public abstract class ConditionPanel<T> extends JPanel {
 	}
 
 	protected abstract void onViewChanged(ConditionView conditionView);
-
-	private void configureStates() {
-		State.group(hiddenView, simpleView, advancedView).fallback(hiddenView);
-		hiddenView.when(true).addListener(() -> view.set(HIDDEN));
-		simpleView.when(true).addListener(() -> view.set(SIMPLE));
-		advancedView.when(true).addListener(() -> view.set(ADVANCED));
-		view.addConsumer(conditionView -> {
-			hiddenView.set(conditionView == HIDDEN);
-			simpleView.set(conditionView == SIMPLE);
-			advancedView.set(conditionView == ADVANCED);
-		});
-	}
 }
