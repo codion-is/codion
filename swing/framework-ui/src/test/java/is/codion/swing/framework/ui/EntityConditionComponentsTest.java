@@ -26,6 +26,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.multi.MultiInput;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 import is.codion.swing.framework.ui.component.EntityComboBox;
@@ -72,6 +74,19 @@ public final class EntityConditionComponentsTest {
 			ForeignKeyConditionModel manager = condition(Employee.MGR_FK);
 			assertInstanceOf(EntitySearchField.class, components.equal(manager));
 			assertInstanceOf(EntitySearchField.class, ((MultiInput<?, ?>) components.in(manager)).component());
+		});
+	}
+
+	@Test
+	void filters() throws Exception {
+		// the table filters are plain condition models, given the ConditionComponents defaults
+		onEventDispatchThread(() -> {
+			EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config -> config
+							.filterComponents(Employee.NAME, components)
+							.filterComponents(Employee.SALARY, components));
+			tablePanel.table().filters().view().set(ConditionView.ADVANCED);
+			assertFalse(tablePanel.table().filters().panel(Employee.NAME).components().isEmpty());
+			assertFalse(tablePanel.table().filters().panel(Employee.SALARY).components().isEmpty());
 		});
 	}
 
