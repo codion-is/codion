@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.multi;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -32,6 +33,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusListener;
@@ -211,21 +213,32 @@ public final class MultiInputTest {
 	}
 
 	@Test
-	void enterIsLeftToAWrappedComboBox() {
+	void enterAddsThroughAWrappedComboBox() throws Exception {
 		SwingFilterComboBoxModel<String> model = SwingFilterComboBoxModel.builder()
 						.items(asList("one", "two"))
 						.build();
 		ComponentValue<JComboBox<String>, String> comboBoxValue = Components.comboBox()
 						.model(model)
 						.buildValue();
+		List<String> refreshed = new ArrayList<>();
 		MultiInput<JComboBox<String>, String> field = Components.multiInput()
 						.component(comboBoxValue)
 						.build();
-		comboBoxValue.set("one");
-		assertFalse(enter(field.component()));
-		assertTrue(field.members().isEmpty());
-		insert(field.component());
+		// added later, as a condition panel's refresh
+		ComboBoxBuilder.addEnterAction(field.component(), Control.command(() -> refreshed.add("refresh")));
+		SwingUtilities.invokeAndWait(() -> comboBoxValue.set("one"));
+		enterInEditor(field.component());
 		assertEquals(asList("one"), new ArrayList<>(field.members()));
+		assertTrue(comboBoxValue.isNull());
+		assertTrue(refreshed.isEmpty());
+		enterInEditor(field.component());
+		assertEquals(asList("one"), new ArrayList<>(field.members()));
+		assertEquals(asList("refresh"), refreshed);
+		// no key listener of its own on the combo box, the editor taking Enter
+		assertFalse(enter(field.component()));
+		comboBoxValue.set("two");
+		insert(field.component());
+		assertEquals(asList("one", "two"), new ArrayList<>(field.members()));
 	}
 
 	@Test
@@ -254,6 +267,12 @@ public final class MultiInputTest {
 		Object key = component.getInputMap(condition).get(keyStroke);
 		assertNotNull(key);
 		component.getActionMap().get(key).actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, ""));
+	}
+
+	/** Enter in the editor of a combo box, as the editor's own Enter action performs it, followed by the deferred Enter action */
+	private static void enterInEditor(JComboBox<?> comboBox) throws Exception {
+		SwingUtilities.invokeAndWait(((JTextField) comboBox.getEditor().getEditorComponent())::postActionEvent);
+		SwingUtilities.invokeAndWait(() -> {});
 	}
 
 	/** Presses Enter through the component's key listeners, returning whether it was consumed */

@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.Action;
 import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
@@ -118,6 +119,14 @@ public interface ItemComboBoxBuilder<T> extends ComponentValueBuilder<JComboBox<
 	 * @see JComboBox#addItemListener(ItemListener)
 	 */
 	ItemComboBoxBuilder<T> itemListener(ItemListener itemListener);
+
+	/**
+	 * Adds an action for Enter, consulted after the ones already added, see {@link ComboBoxBuilder#addEnterAction(JComboBox, Action)}.
+	 * Note that this disables {@link #transferFocusOnEnter(boolean)}, which would otherwise take the Enter key.
+	 * @param action the action
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> enterAction(Action action);
 
 	/**
 	 * Provides a {@link ItemComboBoxBuilder}

@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.Action;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -135,6 +136,14 @@ public interface ComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBoxBu
 	B itemListener(ItemListener itemListener);
 
 	/**
+	 * Adds an action for Enter, consulted after the ones already added, see {@link #addEnterAction(JComboBox, Action)}.
+	 * Note that this disables {@link #transferFocusOnEnter(boolean)}, which would otherwise take the Enter key.
+	 * @param action the action
+	 * @return this builder instance
+	 */
+	B enterAction(Action action);
+
+	/**
 	 * Provides a {@link ComboBoxBuilder}
 	 */
 	interface ModelStep {
@@ -170,5 +179,22 @@ public interface ComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBoxBu
 	 */
 	static void enableMouseWheelSelectionWithWrapAround(JComboBox<?> comboBox) {
 		comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox, true));
+	}
+
+	/**
+	 * <p>Adds an action for Enter to the given combo box, consulted after the ones already added.
+	 * <p>While the popup is visible, Enter is the look and feel's, selecting and closing. Otherwise the first enabled
+	 * action, in the order added, is performed, once the combo box has committed its editor, and with none enabled
+	 * Enter is the look and feel's, the default button. With none enabled and no default button, Enter is left
+	 * to the ancestors of a non-editable combo box, the editor of an editable one always taking it.
+	 * <p>The actions replace the look and feel's {@code enterPressed} action in the action map of the combo box,
+	 * delegating to it as described. Note that they are not performed while Enter transfers the focus,
+	 * see {@link #transferFocusOnEnter(boolean)}.
+	 * @param comboBox the combo box
+	 * @param action the action
+	 * @see #enterAction(Action)
+	 */
+	static void addEnterAction(JComboBox<?> comboBox, Action action) {
+		EnterActions.add(comboBox, action);
 	}
 }

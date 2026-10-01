@@ -59,10 +59,13 @@ Codion Change Log
 - SelectionDialogBuilder.renderer() added, for rendering the items of the list and combo box selection dialogs, which only rendered toString().
 - ControlBuilder.caption(Observable) added, for a caption that changes, followed by the buttons and menu items based on the control.
 - FilterTableHeaderRenderer, the primary sort arrow is now centered vertically, the smaller arrows of a compound sort aligned with its bottom, where all of them sat low.
+- ComboBoxBuilder.enterAction(), ItemComboBoxBuilder.enterAction() and ComboBoxBuilder.addEnterAction() added, Enter performing the first enabled action, in the order added, once an open popup is closed and the editor committed, otherwise the look and feel's Enter.
+- MultiInput, Enter now adds the value of a wrapped combo box, as it does for other components, before any Enter action added to the combo box later.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
 - EntitySearchField, the background indicating a search is ready now shades a dark background lighter instead of darker.
+- EntityTablePanel, Enter in a condition combo box now adds the value of an in operand before refreshing, and reaches the default button with the condition unmodified, as in a condition text field, where it did nothing.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes now includes the Cyan Light, Nord, Solarized Dark, Solarized Light, Spacegray and Autumn Lite themes, which were missing, "Autumn" having been Nature Autumn, Rider Dark no longer included twice and Arc Orange no longer misspelled.
 - solarized.SolarizedLight no longer fails to load, the look and feel used in place of the FlatLaf Solarized Light theme.
