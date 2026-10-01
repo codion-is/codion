@@ -82,8 +82,9 @@ public final class EntityConditionComponentsTest {
 		// the table filters are plain condition models, given the ConditionComponents defaults
 		onEventDispatchThread(() -> {
 			EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config -> config
-							.filterComponents(Employee.NAME, components)
-							.filterComponents(Employee.SALARY, components));
+							.filters(filters -> filters
+											.condition(Employee.NAME, name -> name.components(components))
+											.condition(Employee.SALARY, salary -> salary.components(components))));
 			tablePanel.table().filters().view().set(ConditionView.ADVANCED);
 			assertFalse(tablePanel.table().filters().panel(Employee.NAME).components().isEmpty());
 			assertFalse(tablePanel.table().filters().panel(Employee.SALARY).components().isEmpty());

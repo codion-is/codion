@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
@@ -74,9 +75,13 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -100,6 +105,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static javax.swing.FocusManager.getCurrentManager;
 import static javax.swing.SwingConstants.CENTER;
 import static javax.swing.SwingUtilities.isDescendingFrom;
@@ -293,6 +299,31 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	/**
+	 * Creates a {@link ColumnConditionPanel} for each condition model of a column in the given column model, based on
+	 * the given default components and panel configuration. A condition model whose type the default components do
+	 * not support gets no panel, unless configured with components that do.
+	 * @param conditionModel the condition models
+	 * @param columnModel the column model
+	 * @param components the default condition components
+	 * @param panels configures the panels
+	 * @param <C> the column identifier type
+	 * @return the condition panels mapped to their respective identifier
+	 * @throws IllegalArgumentException in case an excluded or configured identifier has no condition model or is not a
+	 * column, or is both excluded and configured, or in case the components of a configured panel do not support its type
+	 * @see TableConditionPanel.Panels
+	 */
+	public static <C> Map<C, ConditionPanel<?>> panels(TableConditionModel<C> conditionModel, FilterTableColumnModel<C> columnModel,
+																										 ConditionComponents components, Consumer<TableConditionPanel.Panels<C>> panels) {
+		requireNonNull(conditionModel);
+		requireNonNull(columnModel);
+		requireNonNull(components);
+		DefaultPanels<C> configuration = new DefaultPanels<>();
+		requireNonNull(panels).accept(configuration);
+
+		return configuration.build(conditionModel, columnModel, components);
+	}
+
+	/**
 	 * Builds a {@link ColumnConditionPanel} instance
 	 * @param <T> the column value type
 	 */
@@ -401,6 +432,81 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		@Override
 		public ColumnConditionPanel<T> build() {
 			return new ColumnConditionPanel<>(this);
+		}
+	}
+
+	private static final class DefaultPanels<C> implements TableConditionPanel.Panels<C> {
+
+		private final Set<C> excluded = new HashSet<>();
+		private final Map<C, Consumer<?>> configured = new HashMap<>();
+
+		@Override
+		public TableConditionPanel.Panels<C> exclude(C... identifiers) {
+			excluded.addAll(asList(requireNonNull(identifiers)));
+			return this;
+		}
+
+		@Override
+		public <T> TableConditionPanel.Panels<C> condition(C identifier, Consumer<Builder<T>> condition) {
+			configured.put(requireNonNull(identifier), requireNonNull(condition));
+			return this;
+		}
+
+		private Map<C, ConditionPanel<?>> build(TableConditionModel<C> conditionModel, FilterTableColumnModel<C> columnModel,
+																						ConditionComponents components) {
+			Set<C> identifiers = conditionModel.get().keySet().stream()
+							.filter(columnModel::contains)
+							.collect(toSet());
+			validate(identifiers);
+			Map<C, ConditionPanel<?>> panels = new HashMap<>();
+			for (C identifier : identifiers) {
+				if (!excluded.contains(identifier)) {
+					panel(conditionModel.get(identifier), identifier, columnModel, components)
+									.ifPresent(panel -> panels.put(identifier, panel));
+				}
+			}
+
+			return panels;
+		}
+
+		private <T> Optional<ColumnConditionPanel<T>> panel(ConditionModel<T> condition, C identifier,
+																												FilterTableColumnModel<C> columnModel, ConditionComponents components) {
+			Consumer<Builder<T>> configuration = (Consumer<Builder<T>>) configured.get(identifier);
+			boolean supported = components.supports(condition.type());
+			if (configuration == null && !supported) {
+				return Optional.empty();
+			}
+			DefaultBuilder<T> builder = new DefaultBuilder<>(condition);
+			builder.tableColumn(columnModel.get(identifier))
+							.name(identifier.toString());
+			if (supported) {
+				builder.components(components);
+			}
+			if (configuration != null) {
+				configuration.accept(builder);
+				if (!builder.components.supports(condition.type())) {
+					throw new IllegalArgumentException("The components of condition panel " + identifier +
+									" do not support its type: " + condition.type().getName());
+				}
+			}
+
+			return Optional.of(builder.build());
+		}
+
+		private void validate(Set<C> identifiers) {
+			excluded.forEach(identifier -> validate(identifier, identifiers));
+			configured.keySet().forEach(identifier -> validate(identifier, identifiers));
+			for (C identifier : excluded) {
+				if (configured.containsKey(identifier)) {
+					throw new IllegalArgumentException("Condition panel " + identifier + " is both excluded and configured");
+				}
+			}
+		}
+
+		private static <C> void validate(C identifier, Set<C> identifiers) {
+			if (!identifiers.contains(identifier)) {
+				throw new IllegalArgumentException(identifier + " has no condition model or is not a column");
+			}
 		}
 	}
 

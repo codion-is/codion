@@ -52,6 +52,25 @@ public class EntityTablePanelTest {
 					.build();
 
 	@Test
+	void conditionAndFilterPanels() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
+		// excluded, the condition and filter models unaffected, available for use programmatically
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config
+						.conditions(conditions -> conditions.exclude(Employee.DEPARTMENT_FK))
+						.filters(filters -> filters.exclude(Employee.NAME)));
+		assertFalse(tablePanel.condition().panels().containsKey(Employee.DEPARTMENT_FK));
+		assertNotNull(tableModel.query().condition().get(Employee.DEPARTMENT_FK));
+		assertFalse(tablePanel.table().filters().panels().containsKey(Employee.NAME));
+		assertNotNull(tableModel.filters().get(Employee.NAME));
+		// a condition model of an attribute which is not a column, the foreign key source column
+		assertThrows(IllegalArgumentException.class, () -> new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION),
+						config -> config.conditions(conditions -> conditions.exclude(Employee.DEPARTMENT))));
+		// another entity's attribute
+		assertThrows(IllegalArgumentException.class, () -> new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION),
+						config -> config.filters(filters -> filters.exclude(Detail.STRING))));
+	}
+
+	@Test
 	void excludeHiddenColumns() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
 		tableModel.items().refresh();

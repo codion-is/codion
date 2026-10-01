@@ -116,7 +116,9 @@ public final class ChinookPanelsTest {
 
 	@Test
 	void preferences() {
-		new PreferencesEditPanel(new SwingEntityEditModel(Preferences.TYPE, connection)).initialize();
+		SwingEntityModel model = new SwingEntityModel(Preferences.TYPE, connection);
+		new EntityPanel(model, new PreferencesEditPanel(model.editModel()),
+						new PreferencesTablePanel(model.tableModel())).initialize();
 	}
 
 	@Test

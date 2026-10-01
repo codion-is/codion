@@ -51,8 +51,12 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 										.clickCountToStart(1)
 										.resizeRow(false)
 										.build())
-						.filterComponents(Preferences.NEWSLETTER, new NewsletterConditionComponents())
-						.conditionComponents(Preferences.NEWSLETTER, new NewsletterConditionComponents()));
+						.filters(filters -> filters
+										.condition(Preferences.NEWSLETTER, newsletter -> newsletter
+														.components(new NewsletterConditionComponents())))
+						.conditions(conditions -> conditions
+										.condition(Preferences.NEWSLETTER, newsletter -> newsletter
+														.components(new NewsletterConditionComponents()))));
 	}
 
 	private static final class NewsletterRenderer
