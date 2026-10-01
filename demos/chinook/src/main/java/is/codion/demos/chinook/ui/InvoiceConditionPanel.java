@@ -35,7 +35,6 @@ import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.component.table.FilterTableConditionPanel;
 import is.codion.swing.common.ui.component.table.TableConditionPanel;
-import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -61,7 +60,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.component.Components.*;
@@ -86,15 +84,14 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	InvoiceConditionPanel(SwingEntityTableModel tableModel,
 												Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
-												FilterTableColumnModel<Attribute<?>> columns,
-												Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
+												FilterTableColumnModel<Attribute<?>> columns) {
 		super(tableModel.query().condition(),
 						attribute -> columns.get(attribute).getHeaderValue().toString());
 		setLayout(new BorderLayout());
 		tableModel.query().condition().persist().add(Invoice.DATE);
 		this.simpleConditionPanel = new SimpleConditionPanel(tableModel);
 		this.advancedConditionPanel = filterTableConditionPanel(tableModel.query().condition(),
-						conditionPanels, columns, onPanelInitialized);
+						conditionPanels, columns);
 		view().link(advancedConditionPanel.view());
 	}
 

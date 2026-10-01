@@ -23,22 +23,30 @@ import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.INSPECT_QUERY;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
+import static java.awt.event.ActionEvent.ACTION_PERFORMED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityTablePanelTest {
@@ -68,6 +76,27 @@ public class EntityTablePanelTest {
 		// another entity's attribute
 		assertThrows(IllegalArgumentException.class, () -> new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION),
 						config -> config.filters(filters -> filters.exclude(Detail.STRING))));
+	}
+
+	@Test
+	void conditionComboBoxRefreshesOnEnter() throws Exception {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
+		tableModel.items().refresher().async().set(false);
+		AtomicInteger refreshed = new AtomicInteger();
+		tableModel.items().refresher().result().addListener(refreshed::incrementAndGet);
+		Entity accounting = CONNECTION.selectSingle(Department.ID.equalTo(10));
+		SwingUtilities.invokeAndWait(() -> {
+			EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+			// the condition panel components are created once the panel is first shown
+			tablePanel.condition().view().set(ConditionView.SIMPLE);
+			JComboBox<?> department = (JComboBox<?>) ((ColumnConditionPanel<?>) tablePanel.condition().panel(Employee.DEPARTMENT_FK))
+							.operands().equal().orElseThrow(IllegalStateException::new);
+			tableModel.query().condition().get(Employee.DEPARTMENT_FK).operands().equal().set(accounting);
+			department.getActionMap().get("enterPressed").actionPerformed(new ActionEvent(department, ACTION_PERFORMED, null));
+		});
+		// the Enter action deferred until the combo box has committed its editor
+		SwingUtilities.invokeAndWait(() -> {});
+		assertEquals(1, refreshed.get());
 	}
 
 	@Test

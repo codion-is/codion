@@ -1457,8 +1457,7 @@ public class EntityTablePanel extends JPanel {
 			return null;
 		}
 		TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
-						.create(model.query().condition(), createConditionPanels(),
-										table.columns(), this::configureTableConditionPanel);
+						.create(model.query().condition(), createConditionPanels(), table.columns());
 		KeyEvents.builder()
 						.keyCode(VK_ENTER)
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1470,18 +1469,17 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Map<Attribute<?>, ConditionPanel<?>> createConditionPanels() {
-		return ColumnConditionPanel.panels(model.query().condition(), table.columns(),
-						new EntityConditionComponents(model.entityDefinition()), configuration.conditionPanels);
-	}
+		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = ColumnConditionPanel.panels(model.query().condition(),
+						table.columns(), new EntityConditionComponents(model.entityDefinition()), configuration.conditionPanels);
+		conditionPanels.forEach(this::configureConditionPanel);
 
-	private void configureTableConditionPanel(TableConditionPanel<Attribute<?>> tableConditionPanel) {
-		tableConditionPanel.panels().forEach(this::configureConditionPanel);
+		return conditionPanels;
 	}
 
 	private void configureConditionPanel(Attribute<?> attribute, ConditionPanel<?> conditionPanel) {
 		conditionPanel.focusGained().ifPresent(focusGained ->
 						focusGained.addListener(() -> table.scrollTo().column(attribute)));
-		conditionPanel.components().forEach(this::enableConditionPanelRefreshOnEnter);
+		conditionPanel.view().addListener(new EnableRefreshOnEnter(conditionPanel));
 	}
 
 	private void configureExcludedColumns() {
@@ -1778,6 +1776,25 @@ public class EntityTablePanel extends JPanel {
 						null,
 						ADDITIONAL_TOOLBAR_CONTROLS
 		)));
+	}
+
+	// A condition panel creates its components when first shown, in response to the view changing, by a view
+	// consumer added when it was instantiated, this listener, added later, being notified after the components exist
+	private final class EnableRefreshOnEnter implements Runnable {
+
+		private final ConditionPanel<?> conditionPanel;
+
+		private EnableRefreshOnEnter(ConditionPanel<?> conditionPanel) {
+			this.conditionPanel = conditionPanel;
+		}
+
+		@Override
+		public void run() {
+			if (conditionPanel.view().isNot(HIDDEN)) {
+				conditionPanel.view().removeListener(this);
+				conditionPanel.components().forEach(EntityTablePanel.this::enableConditionPanelRefreshOnEnter);
+			}
+		}
 	}
 
 	private final class AddCommand implements Control.Command {

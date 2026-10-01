@@ -425,6 +425,7 @@ public final class FilterTable<R, C> extends JTable {
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.filterPanelFactory = builder.filterPanelFactory;
 		this.filterPanels = ColumnConditionPanel.panels(tableModel.filters(), columns(), FILTER_COMPONENTS, builder.filterPanels);
+		this.filterPanels.forEach(this::configureFilterPanel);
 		this.filters = builder.filters;
 		this.centerOnScroll = Value.builder()
 						.nonNull(CenterOnScroll.NEITHER)
@@ -650,8 +651,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public TableConditionPanel<C> filters() {
 		if (filterPanel == null) {
-			filterPanel = filterPanelFactory.create(tableModel.filters(), filterPanels,
-							columns(), this::configureFilterConditionPanel);
+			filterPanel = filterPanelFactory.create(tableModel.filters(), filterPanels, columns());
 		}
 
 		return filterPanel;
@@ -1197,10 +1197,6 @@ public final class FilterTable<R, C> extends JTable {
 		addIfComponent(components, column.getHeaderRenderer());
 
 		return components.stream();
-	}
-
-	private void configureFilterConditionPanel(TableConditionPanel<C> filterConditionPanel) {
-		filterConditionPanel.panels().forEach(this::configureFilterPanel);
 	}
 
 	// The table header, which the scroll pane was just handed as its column header view, with the filter panel above
