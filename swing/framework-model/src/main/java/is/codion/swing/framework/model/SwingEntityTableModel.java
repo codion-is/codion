@@ -222,7 +222,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	private static SwingFilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditor editor) {
 		return SwingFilterTableModel.builder()
 						.columns(tableColumns(editor.entityDefinition()))
-						.filters(filterConditions(editor.entityDefinition()))
 						.validator(itemValidator(editor.entityDefinition().type()))
 						.rowEditor(tableModel -> new SwingEntityRowEditor(editor));
 	}

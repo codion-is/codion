@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.ValueSet;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -78,5 +79,36 @@ public interface TableConditionModel<C> {
 	 */
 	static <C> TableConditionModel<C> tableConditionModel(Map<C, ConditionModel<?>> conditionModels) {
 		return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
+	}
+
+	/**
+	 * Builds a {@link TableConditionModel}, providing a condition model for each identifier, initialized with its defaults.
+	 * @param <C> the condition identifier type
+	 */
+	interface Builder<C> {
+
+		/**
+		 * Excludes the given conditions, no condition model being created for them.
+		 * @param identifiers the identifiers of the conditions to exclude
+		 * @return this builder
+		 */
+		Builder<C> exclude(C... identifiers);
+
+		/**
+		 * Configures the condition model for the given identifier, the builder received being initialized with its
+		 * defaults. Replaces any previous configuration of the given identifier.
+		 * @param identifier the condition identifier
+		 * @param condition configures the condition model builder
+		 * @param <T> the condition value type
+		 * @return this builder
+		 */
+		<T> Builder<C> condition(C identifier, Consumer<ConditionModel.Builder<T>> condition);
+
+		/**
+		 * @return a new {@link TableConditionModel} instance
+		 * @throws IllegalArgumentException in case an excluded or configured identifier has no condition model,
+		 * or is both excluded and configured
+		 */
+		TableConditionModel<C> build();
 	}
 }

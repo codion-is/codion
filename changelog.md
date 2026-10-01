@@ -16,6 +16,8 @@ Codion Change Log
 - FilterModel.Items, equal items filtered out are no longer collapsed into one, the others lost when included again, affecting the table and list models.
 - FilterModel.Items now keeps the items in the order they were set, added and inserted, items included again by a filter taking their place in it instead of being appended, and the included items returning to it when sorting is no longer enabled instead of staying sorted, get() now returning the items in that order, affecting the table and list models.
 - FilterModel.Items.remove(Predicate) now removes all the items fulfilling the predicate, equal ones included, where only one of them was removed.
+- FilterTableModel.Builder.filters(Map) replaced by filters(Consumer), for excluding and configuring the column filters instead of replacing them, TableConditionModel.Builder added.
+- FilterTableModel.TableColumns.filter() added, providing the filter for a column initialized with its defaults, its type, either String or the column type, validated when the table model is built.
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.
@@ -71,6 +73,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditor, setting a value the entity adjusts, such as a trimmed string, is now judged by the value the entity ends up with, where a change went unnoticed, the modified state not updated, and an edit event announced an unadjusted value without anything changing.
 - EntityTableModel, derived attributes now have filters again, lost when DerivedAttributeDefinition stopped extending ValueAttributeDefinition.
+- AbstractEntityTableModel.filterConditions() removed, the entity filter defaults now provided by the table columns.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes now includes the Cyan Light, Nord, Solarized Dark, Solarized Light, Spacegray and Autumn Lite themes, which were missing, "Autumn" having been Nature Autumn, Rider Dark no longer included twice and Arc Orange no longer misspelled.
 - solarized.SolarizedLight no longer fails to load, the look and feel used in place of the FlatLaf Solarized Light theme.

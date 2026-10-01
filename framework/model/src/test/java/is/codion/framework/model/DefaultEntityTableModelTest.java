@@ -152,7 +152,6 @@ public final class DefaultEntityTableModelTest extends
 		                                                                  Supplier<Collection<Entity>> items) {
 			FilterTableModel.Builder<Entity, Attribute<?>, ?> builder = FilterTableModel.<Entity, Attribute<?>>builder()
 							.columns(tableColumns(editModel.entityDefinition()))
-							.filters(filterConditions(editModel.entityDefinition()))
 							.validator(itemValidator(editModel.entityDefinition().type()));
 			if (items != null) {
 				builder = builder.items(items);

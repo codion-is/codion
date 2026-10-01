@@ -51,7 +51,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
-import static java.util.Collections.*;
+import static java.util.Collections.singleton;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -234,14 +235,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	 */
 	protected static TableColumns<Entity, Attribute<?>> tableColumns(EntityDefinition entityDefinition) {
 		return new EntityTableColumns(entityDefinition);
-	}
-
-	/**
-	 * @param entityDefinition the entity definition
-	 * @return the filter condition models based on the given entity definition
-	 */
-	protected static Map<Attribute<?>, ConditionModel<?>> filterConditions(EntityDefinition entityDefinition) {
-		return EntityFilters.createFilters(entityDefinition);
 	}
 
 	/**
@@ -547,29 +540,24 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 			return entityDefinition.attributes().definition(attribute).comparator();
 		}
-	}
 
-	private static final class EntityFilters {
-
-		private static Map<Attribute<?>, ConditionModel<?>> createFilters(EntityDefinition entityDefinition) {
-			return unmodifiableMap(entityDefinition.attributes().definitions().stream()
-							.filter(EntityFilters::include)
-							.collect(toMap(AttributeDefinition::attribute, EntityFilters::condition)));
-		}
-
-		private static ConditionModel<?> condition(AttributeDefinition<?> definition) {
-			if (useStringCondition(definition)) {
+		@Override
+		public Optional<ConditionModel.Builder<?>> filter(Attribute<?> attribute) {
+			if (attribute.type().isByteArray()) {
+				return Optional.empty();
+			}
+			AttributeDefinition<?> definition = entityDefinition.attributes().definition(attribute);
+			if (stringFilter(definition)) {
 				// Covers foreign keys
-				return ConditionModel.builder()
+				return Optional.of(ConditionModel.builder()
 								.type(String.class)
-								.caption(definition.caption())
-								.build();
+								.caption(definition.caption()));
 			}
 
-			return valueCondition(definition);
+			return Optional.of(valueFilter(definition));
 		}
 
-		private static <T> ConditionModel<T> valueCondition(AttributeDefinition<T> definition) {
+		private static <T> ConditionModel.Builder<T> valueFilter(AttributeDefinition<T> definition) {
 			ConditionModel.Builder<T> builder = ConditionModel.builder()
 							.type(definition.attribute().type().get())
 							.format(definition.format().orElse(null))
@@ -580,14 +568,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 				builder.operands(new AttributeOperands<>((ValueAttributeDefinition<T>) definition));
 			}
 
-			return builder.build();
+			return builder;
 		}
 
-		private static boolean include(AttributeDefinition<?> definition) {
-			return !definition.hidden() && !definition.attribute().type().isByteArray();
-		}
-
-		private static boolean useStringCondition(AttributeDefinition<?> definition) {
+		private static boolean stringFilter(AttributeDefinition<?> definition) {
 			return definition.attribute().type().isEntity() || // entities
 							itemBased(definition) || // items
 							!Comparable.class.isAssignableFrom(definition.attribute().type().get()); // non-comparables

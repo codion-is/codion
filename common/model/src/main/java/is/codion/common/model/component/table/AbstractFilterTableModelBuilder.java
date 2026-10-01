@@ -19,7 +19,7 @@
 package is.codion.common.model.component.table;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -62,7 +61,7 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 
 	@Nullable Supplier<Collection<R>> supplier;
 	Predicate<R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
-	Map<C, ConditionModel<?>> filters;
+	@Nullable Consumer<TableConditionModel.Builder<C>> filters;
 	@Nullable Consumer<Exception> onRefreshException;
 	@Nullable Predicate<R> included;
 
@@ -77,11 +76,10 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 			throw new IllegalArgumentException("TableColumns does not specify any column identifiers");
 		}
 		this.columns = validateIdentifiers(columns);
-		this.filters = DefaultFilterTableModel.createFilters(columns);
 	}
 
 	@Override
-	public final B filters(Map<C, ConditionModel<?>> filters) {
+	public final B filters(Consumer<TableConditionModel.Builder<C>> filters) {
 		this.filters = requireNonNull(filters);
 		return self();
 	}
