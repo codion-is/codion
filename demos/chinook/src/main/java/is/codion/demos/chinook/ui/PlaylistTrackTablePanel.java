@@ -38,8 +38,9 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		// is available via the popup menu, toolbar and keyboard shortcut (INSERT)
 		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
 						// Custom condition component factory for the track condition panel
-						.conditionComponents(PlaylistTrack.TRACK_FK,
-										new TrackConditionComponents(tableModel.entityDefinition()))
+						.conditions(conditions -> conditions
+										.condition(PlaylistTrack.TRACK_FK, track -> track
+														.components(new TrackConditionComponents(tableModel.entityDefinition()))))
 						// Skip confirmation when deleting
 						.confirmDelete(false)
 						// No need to edit individual rows, we just add or delete

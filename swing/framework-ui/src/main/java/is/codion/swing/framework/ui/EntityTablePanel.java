@@ -54,7 +54,6 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -1471,29 +1470,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Map<Attribute<?>, ConditionPanel<?>> createConditionPanels() {
-		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = new HashMap<>();
-		EntityConditionComponents defaultComponents = new EntityConditionComponents(model.entityDefinition());
-		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : model.query().condition().get().entrySet()) {
-			Attribute<?> attribute = conditionEntry.getKey();
-			if (table.columns().contains(attribute)) {
-				ConditionComponents components = configuration.conditionComponents.getOrDefault(attribute, defaultComponents);
-				if (components.supports(attribute.type().get())) {
-					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, components));
-				}
-			}
-		}
-
-		return conditionPanels;
-	}
-
-	private <C extends Attribute<?>> ColumnConditionPanel<?> createConditionPanel(ConditionModel<?> conditionModel, C identifier,
-																																								ConditionComponents conditionComponents) {
-		return ColumnConditionPanel.builder()
-						.model(conditionModel)
-						.components(conditionComponents)
-						.tableColumn(table.columns().get(identifier))
-						.name(identifier.toString())
-						.build();
+		return ColumnConditionPanel.panels(model.query().condition(), table.columns(),
+						new EntityConditionComponents(model.entityDefinition()), configuration.conditionPanels);
 	}
 
 	private void configureTableConditionPanel(TableConditionPanel<Attribute<?>> tableConditionPanel) {
@@ -2171,7 +2149,7 @@ public class EntityTablePanel extends JPanel {
 		private final EntityDefinition entityDefinition;
 		private final ValueSet<Attribute<?>> editable;
 		private final Map<Attribute<?>, EditComponent<?, ?>> editComponents;
-		private final Map<Attribute<?>, ConditionComponents> conditionComponents;
+		private Consumer<TableConditionPanel.Panels<Attribute<?>>> conditionPanels = panels -> {};
 
 		private FilterTable.@Nullable Builder<Entity, Attribute<?>> tableBuilder;
 		private TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory = FilterTableConditionPanel::filterTableConditionPanel;
@@ -2221,7 +2199,6 @@ public class EntityTablePanel extends JPanel {
 							.headerRenderers(new EntityTableHeaderRenderers())
 							.cellEditors(new EntityTableCellEditors())
 							.cellEditable(new EntityCellEditable(tablePanel.model.entities()));
-			this.conditionComponents = new HashMap<>();
 			this.controlMap = ControlMap.controlMap(ControlKeys.class);
 			this.editable = valueSet(editableAttributes());
 			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
@@ -2269,7 +2246,7 @@ public class EntityTablePanel extends JPanel {
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeToolBar = config.includeToolBar;
 			this.conditionPanelFactory = config.conditionPanelFactory;
-			this.conditionComponents = new HashMap<>(config.conditionComponents);
+			this.conditionPanels = config.conditionPanels;
 			this.excludeHiddenColumns = config.excludeHiddenColumns;
 			this.includeSearchField = config.includeSearchField;
 			this.includeStatusPanel = config.includeStatusPanel;
@@ -2303,13 +2280,16 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param attribute the attribute
-		 * @param conditionComponents the component factory for the given attribute
+		 * Configures the condition panels, a {@link ColumnConditionPanel} for each condition model of a table column,
+		 * the condition models themselves unaffected. Replaces any previous configuration, the configuration validated
+		 * when the panel is instantiated.
+		 * @param conditions configures the condition panels
 		 * @return this Config instance
+		 * @see ColumnConditionPanel#panels
 		 * @see EntityTablePanel#condition()
 		 */
-		public Config conditionComponents(Attribute<?> attribute, ConditionComponents conditionComponents) {
-			this.conditionComponents.put(requireNonNull(attribute), requireNonNull(conditionComponents));
+		public Config conditions(Consumer<TableConditionPanel.Panels<Attribute<?>>> conditions) {
+			this.conditionPanels = requireNonNull(conditions);
 			return this;
 		}
 
@@ -2639,13 +2619,15 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param attribute the attribute
-		 * @param filterComponents the filter component factory to use for the given attribute
+		 * Configures the filter panels, a {@link ColumnConditionPanel} for each filter, the filters themselves unaffected.
+		 * Replaces any previous configuration, the configuration validated when the panel is instantiated.
+		 * @param filters configures the filter panels
 		 * @return this Config instance
+		 * @see FilterTable.Builder#filters(Consumer)
 		 * @see FilterTable#filters()
 		 */
-		public Config filterComponents(Attribute<?> attribute, ConditionComponents filterComponents) {
-			tableBuilder.filterComponents(attribute, filterComponents);
+		public Config filters(Consumer<TableConditionPanel.Panels<Attribute<?>>> filters) {
+			tableBuilder.filters(filters);
 			return this;
 		}
 

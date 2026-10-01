@@ -20,10 +20,12 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.component.table.FilterTableSort;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.filter.SortOrder;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.ui.component.table.FilterTable.CenterOnScroll;
@@ -49,6 +51,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -56,8 +59,7 @@ import java.util.stream.IntStream;
 
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -125,6 +127,82 @@ public class FilterTableTest {
 							}
 						})
 						.items(() -> ITEMS)
+						.build();
+	}
+
+	@Test
+	void filterPanels() {
+		// a panel for each filter the default components support, none for the BigInteger one
+		FilterTable<List<Object>, Integer> table = FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.build();
+		assertEquals(new HashSet<>(asList(0, 1)), table.filters().panels().keySet());
+		// excluded, the filter itself unaffected
+		table = FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.filters(filters -> filters.exclude(1))
+						.build();
+		assertEquals(singleton(0), table.filters().panels().keySet());
+		assertNotNull(table.model().filters().get(1));
+		// configured, with components supporting the BigInteger filter
+		ConditionComponents bigIntegerComponents = new ConditionComponents() {
+			@Override
+			public boolean supports(Class<?> type) {
+				return type == BigInteger.class;
+			}
+
+			@Override
+			public <T> JComponent equal(ConditionModel<T> conditionModel) {
+				return new JTextField();
+			}
+		};
+		table = FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.filters(filters -> filters
+										.condition(2, bigInteger -> bigInteger.components(bigIntegerComponents)))
+						.build();
+		assertEquals(new HashSet<>(asList(0, 1, 2)), table.filters().panels().keySet());
+	}
+
+	@Test
+	void filterPanelsInvalid() {
+		// not a column
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.filters(filters -> filters.exclude(3))
+						.build());
+		// both excluded and configured
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.filters(filters -> filters
+										.exclude(0)
+										.condition(0, condition -> {}))
+						.build());
+		// configured, without components supporting the BigInteger filter
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.filters(filters -> filters.condition(2, condition -> {}))
+						.build());
+	}
+
+	private static SwingFilterTableModel<List<Object>, Integer> createFilterPanelsModel() {
+		return SwingFilterTableModel.builder()
+						.columns(new TableColumns<List<Object>, Integer>() {
+							@Override
+							public List<Integer> identifiers() {
+								return asList(0, 1, 2);
+							}
+
+							@Override
+							public Class<?> type(Integer identifier) {
+								return asList(String.class, Integer.class, BigInteger.class).get(identifier);
+							}
+
+							@Override
+							public Object value(List<Object> row, Integer identifier) {
+								return row.get(identifier);
+							}
+						})
 						.build();
 	}
 

@@ -395,7 +395,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final TableSummaryModel<C> summaryModel;
 
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
-	private final Map<C, ConditionComponents> filterComponents;
+	private final Map<C, ConditionPanel<?>> filterPanels;
 	private final Event<MouseEvent> doubleClicked = Event.event();
 	private final Copy copy = new Copy();
 	private final ScrollTo scrollTo = new ScrollTo();
@@ -424,7 +424,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.filterPanelFactory = builder.filterPanelFactory;
-		this.filterComponents = builder.filterComponents;
+		this.filterPanels = ColumnConditionPanel.panels(tableModel.filters(), columns(), FILTER_COMPONENTS, builder.filterPanels);
 		this.filters = builder.filters;
 		this.centerOnScroll = Value.builder()
 						.nonNull(CenterOnScroll.NEITHER)
@@ -650,7 +650,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public TableConditionPanel<C> filters() {
 		if (filterPanel == null) {
-			filterPanel = filterPanelFactory.create(tableModel.filters(), createFilterPanels(),
+			filterPanel = filterPanelFactory.create(tableModel.filters(), filterPanels,
 							columns(), this::configureFilterConditionPanel);
 		}
 
@@ -1199,25 +1199,6 @@ public final class FilterTable<R, C> extends JTable {
 		return components.stream();
 	}
 
-	private Map<C, ConditionPanel<?>> createFilterPanels() {
-		Map<C, ConditionPanel<?>> conditionPanels = new HashMap<>();
-		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().get().entrySet()) {
-			ConditionModel<?> condition = entry.getValue();
-			C identifier = entry.getKey();
-			ConditionComponents components = filterComponents.getOrDefault(identifier, FILTER_COMPONENTS);
-			if (components.supports(condition.type())) {
-				conditionPanels.put(identifier, ColumnConditionPanel.builder()
-								.model(condition)
-								.components(components)
-								.tableColumn(columns().get(identifier))
-								.name(identifier.toString())
-								.build());
-			}
-		}
-
-		return conditionPanels;
-	}
-
 	private void configureFilterConditionPanel(TableConditionPanel<C> filterConditionPanel) {
 		filterConditionPanel.panels().forEach(this::configureFilterPanel);
 	}
@@ -1587,14 +1568,6 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterPanel(TableConditionPanel.Factory<C> filterPanel);
 
 		/**
-		 * @param identifier the column identifier
-		 * @param filterComponents the column filter component factory for the given column
-		 * @return this builder instance
-		 * @see FilterTable#filters()
-		 */
-		Builder<R, C> filterComponents(C identifier, ConditionComponents filterComponents);
-
-		/**
 		 * The cell renderer for the given column, overrides {@link #cellRenderers(FilterTableCellRenderer.Factory)}.
 		 * @param identifier the column identifier
 		 * @param type the column type
@@ -1839,6 +1812,16 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filters(Filters filters);
 
 		/**
+		 * Configures the filter panels, a {@link ColumnConditionPanel} for each filter, the filters themselves unaffected.
+		 * Replaces any previous configuration, the configuration validated when the table is built.
+		 * @param filters configures the filter panels
+		 * @return this builder instance
+		 * @see ColumnConditionPanel#panels
+		 * @see FilterTable#filters()
+		 */
+		Builder<R, C> filters(Consumer<TableConditionPanel.Panels<C>> filters);
+
+		/**
 		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
@@ -1948,11 +1931,11 @@ public final class FilterTable<R, C> extends JTable {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 		private final Map<C, FilterTableCellRenderer<R, C, ?>> cellRenderers = new HashMap<>();
 		private final Map<C, FilterTableCellEditor<?, ?>> cellEditors = new HashMap<>();
-		private final Map<C, ConditionComponents> filterComponents = new HashMap<>();
 		private final Collection<KeyStroke> startEditKeyStrokes = new ArrayList<>();
 		private final Set<C> hiddenColumns = new HashSet<>();
 
 		private Consumer<FilterTableColumn.Builder<C>> columns = new EmptyConsumer<>();
+		private Consumer<TableConditionPanel.Panels<C>> filterPanels = new EmptyConsumer<>();
 		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = FilterTableConditionPanel::filterTableConditionPanel;
 		private FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory;
@@ -2025,12 +2008,6 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> filterPanel(TableConditionPanel.Factory<C> filterPanel) {
 			this.filterPanelFactory = requireNonNull(filterPanel);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> filterComponents(C identifier, ConditionComponents filterComponents) {
-			this.filterComponents.put(requireNonNull(identifier), requireNonNull(filterComponents));
 			return this;
 		}
 
@@ -2222,6 +2199,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> filters(Filters filters) {
 			this.filters = requireNonNull(filters);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> filters(Consumer<TableConditionPanel.Panels<C>> filters) {
+			this.filterPanels = requireNonNull(filters);
 			return this;
 		}
 

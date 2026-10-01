@@ -210,4 +210,31 @@ public abstract class TableConditionPanel<C> extends JPanel {
 																	FilterTableColumnModel<C> columnModel,
 																	Consumer<TableConditionPanel<C>> onPanelInitialized);
 	}
+
+	/**
+	 * Configures the condition panels of a {@link TableConditionPanel}, a {@link ColumnConditionPanel} for each condition
+	 * model of a table column. The condition models themselves are unaffected, available for use programmatically.
+	 * @param <C> the type identifying the table columns
+	 * @see ColumnConditionPanel#panels(TableConditionModel, FilterTableColumnModel, ColumnConditionPanel.ConditionComponents, Consumer)
+	 */
+	public interface Panels<C> {
+
+		/**
+		 * Excludes the condition panels of the given identifiers, their condition models unaffected,
+		 * available for use programmatically.
+		 * @param identifiers the identifiers of the condition panels to exclude
+		 * @return this Panels instance
+		 */
+		Panels<C> exclude(C... identifiers);
+
+		/**
+		 * Configures the condition panel for the given identifier, the builder received being initialized with its
+		 * defaults. Replaces any previous configuration of the given identifier.
+		 * @param identifier the identifier
+		 * @param condition configures the condition panel builder
+		 * @param <T> the condition value type
+		 * @return this Panels instance
+		 */
+		<T> Panels<C> condition(C identifier, Consumer<ColumnConditionPanel.Builder<T>> condition);
+	}
 }
