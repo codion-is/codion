@@ -33,6 +33,8 @@ import static java.util.Objects.requireNonNull;
  * {@link is.codion.common.model.component.combobox.FilterComboBoxModel}, adding the {@link ComboBoxModel}
  * interface — mirroring how {@code SwingFilterTableModel} extends {@code TableModel}. The rich model logic
  * (items, selection, filtering) lives in the common module; this only adds the Swing coat.
+ * <p>{@link #setSelectedItem(Object)} interprets an empty string as null, an empty string being what an editable
+ * combo box commits when its editor is empty, whatever the item type.
  * @param <T> the type of values in this combo box model
  * @see #builder()
  */
