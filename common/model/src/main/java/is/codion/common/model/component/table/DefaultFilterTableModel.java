@@ -30,8 +30,12 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -40,8 +44,8 @@ import java.util.stream.Stream;
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static java.lang.String.join;
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -73,7 +77,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 	DefaultFilterTableModel(AbstractFilterTableModelBuilder<R, C, ?> builder,
 													Function<IncludedItems<R>, MultiSelection<R>> selectionFactory, @Nullable ItemsListener listener) {
 		this.columns = builder.columns;
-		this.filters = tableConditionModel(builder.filters);
+		this.filters = createFilters(builder.columns, builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
 		Items.Builder<R> itemsBuilder = Items.builder()
 						.selection(selectionFactory)
@@ -170,19 +174,85 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 	}
 
-	static <C> Map<C, ConditionModel<?>> createFilters(TableColumns<?, C> columns) {
-		Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
-		for (C identifier : columns.identifiers()) {
-			Class<?> type = columns.type(requireNonNull(identifier));
-			if (Comparable.class.isAssignableFrom(type)) {
-				columnFilterModels.put(identifier, ConditionModel.builder()
-								.type(type)
-								.caption(columns.caption(identifier))
-								.build());
+	private static <C> TableConditionModel<C> createFilters(TableColumns<?, C> columns,
+																													@Nullable Consumer<TableConditionModel.Builder<C>> configuration) {
+		DefaultFiltersBuilder<C> builder = new DefaultFiltersBuilder<>(columns);
+		if (configuration != null) {
+			configuration.accept(builder);
+		}
+
+		return builder.build();
+	}
+
+	private static final class DefaultFiltersBuilder<C> implements TableConditionModel.Builder<C> {
+
+		private final TableColumns<?, C> columns;
+		private final Set<C> excluded = new HashSet<>();
+		private final Map<C, Consumer<?>> configured = new HashMap<>();
+
+		private DefaultFiltersBuilder(TableColumns<?, C> columns) {
+			this.columns = columns;
+		}
+
+		@Override
+		public TableConditionModel.Builder<C> exclude(C... identifiers) {
+			excluded.addAll(asList(requireNonNull(identifiers)));
+			return this;
+		}
+
+		@Override
+		public <T> TableConditionModel.Builder<C> condition(C identifier, Consumer<ConditionModel.Builder<T>> condition) {
+			configured.put(requireNonNull(identifier), requireNonNull(condition));
+			return this;
+		}
+
+		@Override
+		public TableConditionModel<C> build() {
+			Map<C, ConditionModel.Builder<?>> defaults = new LinkedHashMap<>();
+			for (C identifier : columns.identifiers()) {
+				columns.filter(identifier).ifPresent(filter -> defaults.put(identifier, filter));
+			}
+			validate(defaults.keySet());
+			Map<C, ConditionModel<?>> filters = new HashMap<>();
+			defaults.forEach((identifier, filter) -> {
+				if (!excluded.contains(identifier)) {
+					filters.put(identifier, filter(identifier, filter));
+				}
+			});
+
+			return tableConditionModel(filters);
+		}
+
+		private <T> ConditionModel<T> filter(C identifier, ConditionModel.Builder<T> builder) {
+			Consumer<ConditionModel.Builder<T>> configuration = (Consumer<ConditionModel.Builder<T>>) configured.get(identifier);
+			if (configuration != null) {
+				configuration.accept(builder);
+			}
+			ConditionModel<T> filter = builder.build();
+			Class<?> columnType = columns.type(identifier);
+			if (!filter.type().equals(String.class) && !filter.type().equals(columnType)) {
+				throw new IllegalArgumentException("Filter " + identifier + " is of type " + filter.type().getName() +
+								", neither String nor the column type " + columnType.getName());
+			}
+
+			return filter;
+		}
+
+		private void validate(Set<C> filterable) {
+			excluded.forEach(identifier -> validate(identifier, filterable));
+			configured.keySet().forEach(identifier -> validate(identifier, filterable));
+			for (C identifier : excluded) {
+				if (configured.containsKey(identifier)) {
+					throw new IllegalArgumentException("Filter " + identifier + " is both excluded and configured");
+				}
 			}
 		}
 
-		return unmodifiableMap(columnFilterModels);
+		private static <C> void validate(C identifier, Set<C> filterable) {
+			if (!filterable.contains(identifier)) {
+				throw new IllegalArgumentException(identifier + " is not a filterable column");
+			}
+		}
 	}
 
 	private static final class DefaultInclude<R, C>

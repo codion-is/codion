@@ -29,7 +29,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -155,10 +154,13 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		}
 
 		/**
-		 * @param filters the column filter models
+		 * Configures the column filters, the builder received providing a filter for each filterable column,
+		 * initialized with its defaults. Replaces any previous configuration.
+		 * @param filters configures the filters
 		 * @return this builder instance
+		 * @see TableColumns#filter(Object)
 		 */
-		B filters(Map<C, ConditionModel<?>> filters);
+		B filters(Consumer<TableConditionModel.Builder<C>> filters);
 
 		/**
 		 * @param items supplies the items
@@ -225,6 +227,9 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 
 		/**
 		 * @return a new {@link FilterTableModel} instance.
+		 * @throws IllegalArgumentException in case an excluded or configured filter is not a filterable column, or is
+		 * both excluded and configured, or in case a filter type is neither String nor the column type
+		 * @see #filters(Consumer)
 		 */
 		FilterTableModel<R, C> build();
 	}
@@ -337,6 +342,28 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 			}
 
 			return STRING_COMPARATOR;
+		}
+
+		/**
+		 * Returns the filter for the given column, initialized with its defaults, or an empty Optional in case the
+		 * column is not filterable. A {@link String} filter is applied to the {@link #formatted(Object, Object)} value,
+		 * any other to the {@link #comparable(Object, Object)} value, so the filter type must be either String or the
+		 * column {@link #type(Object)}.
+		 * <p>The default implementation returns a filter of the column type, captioned by {@link #caption(Object)},
+		 * for {@link Comparable} types, and an empty Optional for others.
+		 * @param identifier the column identifier
+		 * @return the filter for the given column, an empty Optional if the column is not filterable
+		 * @see Builder#filters(Consumer)
+		 */
+		default Optional<ConditionModel.Builder<?>> filter(C identifier) {
+			Class<?> type = type(requireNonNull(identifier));
+			if (Comparable.class.isAssignableFrom(type)) {
+				return Optional.of(ConditionModel.builder()
+								.type(type)
+								.caption(caption(identifier)));
+			}
+
+			return Optional.empty();
 		}
 	}
 
