@@ -27,6 +27,7 @@ import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
+import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
 import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
 import is.codion.swing.common.ui.component.list.FilterList;
@@ -159,7 +160,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.build();
 		members.items().included().addListener(this::onMembersChanged);
 		onMembersChanged();
-		bindKeys(component, builder.addOnEnter == null ? !(component instanceof JComboBox) : builder.addOnEnter);
+		bindKeys(component, builder.addOnEnter);
 	}
 
 	/**
@@ -255,8 +256,9 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		/**
 		 * Whether {@link KeyEvent#VK_ENTER} adds the wrapped component's value while it holds one, leaving the key
 		 * to the component while it does not, so that typing, Enter, typing, Enter, Enter collects two values and
-		 * then does what Enter does in the component. Default true, unless the wrapped component is a
-		 * {@link JComboBox}, whose Enter is its own, the editor a combo box has taking it before the component does.
+		 * then does what Enter does in the component. Default true. For a {@link JComboBox} the value is added
+		 * as the first of its Enter actions, see {@link ComboBoxBuilder#addEnterAction(JComboBox, javax.swing.Action)},
+		 * an Enter closing its popup first.
 		 * @param addOnEnter true if Enter should add the value
 		 * @return this builder instance
 		 */
@@ -348,9 +350,20 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.action(closeMembers)
 						.enable(component, membersButton);
 		if (addOnEnter) {
-			// A key listener rather than a key binding, so that Enter on an empty component is left unconsumed for
-			// whoever binds it further up, the condition panel's refresh say
-			component.addKeyListener(new AddOnEnter());
+			if (component instanceof JComboBox) {
+				// The editor of a combo box takes Enter before a key listener on the combo box sees it,
+				// so the value is added as an Enter action, the ones added later, a condition panel refresh say,
+				// performed while there is no value to add
+				ComboBoxBuilder.addEnterAction((JComboBox<?>) component, Control.builder()
+								.command(this::addValue)
+								.enabled(State.and(enabled, State.present(componentValue)))
+								.build());
+			}
+			else {
+				// A key listener rather than a key binding, so that Enter on an empty component is left unconsumed for
+				// whoever binds it further up, the condition panel's refresh say
+				component.addKeyListener(new AddOnEnter());
+			}
 		}
 	}
 
@@ -650,7 +663,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		private @Nullable Comparator<T> comparator = Text.comparator();
 		private @Nullable Format format;
 		private @Nullable String caption;
-		private @Nullable Boolean addOnEnter;
+		private boolean addOnEnter = true;
 		private boolean buttonFocusable = BUTTON_FOCUSABLE.getOrThrow();
 
 		private DefaultBuilder(ComponentValue<C, T> componentValue) {

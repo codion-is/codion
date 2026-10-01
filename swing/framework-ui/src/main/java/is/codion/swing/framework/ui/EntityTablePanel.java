@@ -52,6 +52,7 @@ import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
@@ -89,8 +90,6 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -114,7 +113,6 @@ import java.awt.GridBagLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -1530,7 +1528,8 @@ public class EntityTablePanel extends JPanel {
 			component = ((MultiInput<?, ?>) component).component();
 		}
 		if (component instanceof JComboBox) {
-			new ComboBoxEnterPressedAction((JComboBox<?>) component, conditionRefreshControl);
+			// The editor of a combo box takes Enter before the condition panel's binding sees it
+			ComboBoxBuilder.addEnterAction((JComboBox<?>) component, conditionRefreshControl);
 		}
 		else if (component instanceof TemporalField) {
 			((TemporalField<?>) component).addActionListener(conditionRefreshControl);
@@ -3260,32 +3259,6 @@ public class EntityTablePanel extends JPanel {
 				if (e.getClickCount() == 2 && isLeftMouseButton(e)) {
 					configureLimit();
 				}
-			}
-		}
-	}
-
-	private static final class ComboBoxEnterPressedAction extends AbstractAction {
-
-		private static final String ENTER_PRESSED = "enterPressed";
-
-		private final JComboBox<?> comboBox;
-		private final Action action;
-		private final Action enterPressedAction;
-
-		private ComboBoxEnterPressedAction(JComboBox<?> comboBox, Action action) {
-			this.comboBox = comboBox;
-			this.action = action;
-			this.enterPressedAction = comboBox.getActionMap().get(ENTER_PRESSED);
-			this.comboBox.getActionMap().put(ENTER_PRESSED, this);
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (comboBox.isPopupVisible()) {
-				enterPressedAction.actionPerformed(e);
-			}
-			else if (action.isEnabled()) {
-				action.actionPerformed(e);
 			}
 		}
 	}

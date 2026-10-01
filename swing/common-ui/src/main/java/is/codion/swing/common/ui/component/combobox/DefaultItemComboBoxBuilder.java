@@ -26,6 +26,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.Action;
 import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
@@ -45,6 +46,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 
 	private final List<Item<T>> items;
 	private final List<ItemListener> itemListeners = new ArrayList<>();
+	private final List<Action> enterActions = new ArrayList<>();
 
 	private @Nullable SwingFilterComboBoxModel<Item<T>> comboBoxModel;
 	private @Nullable Comparator<Item<T>> comparator;
@@ -154,6 +156,13 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	}
 
 	@Override
+	public ItemComboBoxBuilder<T> enterAction(Action action) {
+		this.enterActions.add(requireNonNull(action));
+
+		return transferFocusOnEnter(false);
+	}
+
+	@Override
 	protected JComboBox<Item<T>> createComponent() {
 		SwingFilterComboBoxModel<Item<T>> itemComboBoxModel = comboBoxModel == null ? createItemComboBoxModel() : comboBoxModel;
 		JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
@@ -179,6 +188,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 			comboBox.setMaximumRowCount(maximumRowCount);
 		}
 		itemListeners.forEach(new AddItemListener(comboBox));
+		enterActions.forEach(action -> EnterActions.add(comboBox, action));
 		if (DefaultComboBoxBuilder.systemOrCrossPlatformLookAndFeelEnabled()) {
 			new SteppedComboBoxUI(comboBox, popupWidth);
 		}

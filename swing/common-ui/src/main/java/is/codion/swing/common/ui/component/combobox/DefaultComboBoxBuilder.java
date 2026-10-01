@@ -26,6 +26,7 @@ import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.Action;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -48,6 +49,7 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 	protected final ComboBoxModel<T> comboBoxModel;
 
 	private final List<ItemListener> itemListeners = new ArrayList<>();
+	private final List<Action> enterActions = new ArrayList<>();
 
 	private boolean editable = false;
 	private Completion.Mode completionMode = Completion.MODE.getOrThrow();
@@ -145,6 +147,13 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 	}
 
 	@Override
+	public final B enterAction(Action action) {
+		this.enterActions.add(requireNonNull(action));
+
+		return transferFocusOnEnter(false);
+	}
+
+	@Override
 	protected final C createComponent() {
 		C comboBox = createComboBox();
 		if (editable) {
@@ -175,6 +184,7 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 			comboBox.setMaximumRowCount(maximumRowCount);
 		}
 		itemListeners.forEach(new AddItemListener(comboBox));
+		enterActions.forEach(action -> EnterActions.add(comboBox, action));
 		if (systemOrCrossPlatformLookAndFeelEnabled()) {
 			new SteppedComboBoxUI(comboBox, popupWidth);
 		}
