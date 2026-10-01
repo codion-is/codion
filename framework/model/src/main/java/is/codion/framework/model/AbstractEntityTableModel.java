@@ -35,7 +35,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 
@@ -567,22 +566,25 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 								.build();
 			}
 
-			return valueCondition((ValueAttributeDefinition<?>) definition);
+			return valueCondition(definition);
 		}
 
-		private static <T> ConditionModel<T> valueCondition(ValueAttributeDefinition<T> definition) {
-			return ConditionModel.builder()
+		private static <T> ConditionModel<T> valueCondition(AttributeDefinition<T> definition) {
+			ConditionModel.Builder<T> builder = ConditionModel.builder()
 							.type(definition.attribute().type().get())
 							.format(definition.format().orElse(null))
 							.caption(definition.caption())
-							.dateTimePattern(definition.dateTimePattern().orElse(null))
-							.operands(new AttributeOperands<>(definition))
-							.build();
+							.dateTimePattern(definition.dateTimePattern().orElse(null));
+			if (definition instanceof ValueAttributeDefinition<?>) {
+				// Derived attributes use the default operands
+				builder.operands(new AttributeOperands<>((ValueAttributeDefinition<T>) definition));
+			}
+
+			return builder.build();
 		}
 
 		private static boolean include(AttributeDefinition<?> definition) {
-			return !definition.hidden() && !definition.attribute().type().isByteArray() &&
-							(definition instanceof ForeignKeyDefinition || definition instanceof ValueAttributeDefinition<?>);
+			return !definition.hidden() && !definition.attribute().type().isByteArray();
 		}
 
 		private static boolean useStringCondition(AttributeDefinition<?> definition) {

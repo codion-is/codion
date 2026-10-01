@@ -436,6 +436,11 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		testModel.items().filter();
 		assertEquals(4, testModel.items().filtered().size());
 		testModel.filters().get(Detail.MASTER_FK);
+		filterModel.clear();
+		// derived attributes have filters as well
+		ConditionModel<Integer> derivedFilter = testModel.filters().get(Detail.INT_DERIVED);
+		derivedFilter.set().greaterThan(30);
+		assertEquals(2, testModel.items().included().size());
 	}
 
 	@Test

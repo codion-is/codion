@@ -70,6 +70,7 @@ Codion Change Log
 - EntityTablePanel, Enter in a condition combo box now adds the value of an in operand before refreshing, and reaches the default button with the condition unmodified, as in a condition text field, where it did nothing.
 ### is.codion.framework.model
 - EntityEditor, setting a value the entity adjusts, such as a trimmed string, is now judged by the value the entity ends up with, where a change went unnoticed, the modified state not updated, and an edit event announced an unadjusted value without anything changing.
+- EntityTableModel, derived attributes now have filters again, lost when DerivedAttributeDefinition stopped extending ValueAttributeDefinition.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes now includes the Cyan Light, Nord, Solarized Dark, Solarized Light, Spacegray and Autumn Lite themes, which were missing, "Autumn" having been Nature Autumn, Rider Dark no longer included twice and Arc Orange no longer misspelled.
 - solarized.SolarizedLight no longer fails to load, the look and feel used in place of the FlatLaf Solarized Light theme.
