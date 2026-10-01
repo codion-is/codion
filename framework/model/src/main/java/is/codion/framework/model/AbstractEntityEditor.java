@@ -2638,8 +2638,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
 			T previousValue = entity.instance.set(attribute, value);
-			if (!Objects.deepEquals(value, previousValue)) {
-				notifyValueEdit(attribute, value, dependingValues);
+			//the value the entity ends up with, which it may adjust, a trimmed string for example
+			T currentValue = entity.instance.get(attribute);
+			if (!Objects.deepEquals(currentValue, previousValue)) {
+				notifyValueEdit(attribute, currentValue, dependingValues);
 				//an unchanged value is not propagated, which settles a cycle that converges
 				//one that does not is stopped by propagate() itself
 				propagate();

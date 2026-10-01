@@ -41,6 +41,7 @@ import is.codion.framework.model.EntityEditor.EditorValue;
 import org.junit.jupiter.api.Test;
 
 import java.lang.ref.WeakReference;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +51,7 @@ import java.util.function.Predicate;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonMap;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class AbstractEntityEditorTest {
@@ -1839,6 +1839,32 @@ public final class AbstractEntityEditorTest {
 		// Released by removal, the link is registrable again
 		departmentEditor.detail().remove(Employee.DEPARTMENT_FK);
 		assertDoesNotThrow(() -> otherDepartmentEditor.detail().add(link));
+	}
+
+	@Test
+	void adjustedValue() throws Exception {
+		// the entity adjusting the value it is set to, trimming a string here, the editor follows the value it ends up with
+		CONNECTION.startTransaction();
+		try {
+			try (Statement statement = ((LocalEntityConnection) CONNECTION).connection().createStatement()) {
+				statement.executeUpdate("update employees.department set dname = 'SALES ' where deptno = 30");
+			}
+			TestEntityEditor editor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			editor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(30)));
+			List<String> edited = new ArrayList<>();
+			editor.value(Department.NAME).edited().addConsumer(edited::add);
+			// the value requested equal to the one loaded, the trimmed one it ends up with not
+			editor.value(Department.NAME).set("SALES ");
+			assertEquals("SALES", editor.value(Department.NAME).get());
+			assertTrue(editor.entity().modified().is());
+			assertEquals(singletonList("SALES"), edited);
+			// the value requested not equal to the current one, the trimmed one equal, nothing changing
+			editor.value(Department.NAME).set("SALES  ");
+			assertEquals(singletonList("SALES"), edited);
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
 	}
 
 	private static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
