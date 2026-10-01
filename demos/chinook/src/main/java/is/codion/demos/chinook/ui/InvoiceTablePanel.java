@@ -39,7 +39,6 @@ import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
@@ -113,9 +112,8 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 		@Override
 		public TableConditionPanel<Attribute<?>> create(TableConditionModel<Attribute<?>> tableConditionModel,
 																										Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
-																										FilterTableColumnModel<Attribute<?>> columnModel,
-																										Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
-			return new InvoiceConditionPanel(tableModel, conditionPanels, columnModel, onPanelInitialized);
+																										FilterTableColumnModel<Attribute<?>> columnModel) {
+			return new InvoiceConditionPanel(tableModel, conditionPanels, columnModel);
 		}
 	}
 }

@@ -200,15 +200,13 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 		/**
 		 * @param tableConditionModel the condition model
-		 * @param conditionPanels the condition panels
+		 * @param conditionPanels the condition panels, already configured by the table
 		 * @param columnModel the column model
-		 * @param onPanelInitialized called when the panel has been initialized
 		 * @return a new {@link TableConditionPanel}
 		 */
 		TableConditionPanel<C> create(TableConditionModel<C> tableConditionModel,
 																	Map<C, ConditionPanel<?>> conditionPanels,
-																	FilterTableColumnModel<C> columnModel,
-																	Consumer<TableConditionPanel<C>> onPanelInitialized);
+																	FilterTableColumnModel<C> columnModel);
 	}
 
 	/**

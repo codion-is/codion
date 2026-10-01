@@ -28,7 +28,6 @@ import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
@@ -38,25 +37,22 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default filter table condition panel.
  * @param <C> the column identifier type
- * @see #filterTableConditionPanel(TableConditionModel, Map, FilterTableColumnModel, Consumer)
+ * @see #filterTableConditionPanel(TableConditionModel, Map, FilterTableColumnModel)
  */
 public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	private final Map<C, ConditionPanel<?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
-	private final Consumer<TableConditionPanel<C>> onPanelInitialized;
 
 	private @Nullable FilterTableColumnComponentPanel<C> componentPanel;
 	private boolean initialized;
 
 	private FilterTableConditionPanel(TableConditionModel<C> tableConditionModel,
 																		Map<C, ConditionPanel<?>> conditionPanels,
-																		FilterTableColumnModel<C> columnModel,
-																		Consumer<TableConditionPanel<C>> onPanelInitialized) {
+																		FilterTableColumnModel<C> columnModel) {
 		super(tableConditionModel, identifier -> Objects.toString(columnModel.get(identifier).getHeaderValue()));
 		this.conditionPanels = unmodifiableMap(new HashMap<>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
-		this.onPanelInitialized = onPanelInitialized == null ? panel -> {} : onPanelInitialized;
 	}
 
 	@Override
@@ -82,14 +78,12 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	 * @param tableConditionModel the {@link TableConditionModel}
 	 * @param conditionPanels the condition panels
 	 * @param columnModel the column model
-	 * @param onPanelInitialized called when the panel has been initialized
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
 	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditionModel<C> tableConditionModel,
 																																					 Map<C, ConditionPanel<?>> conditionPanels,
-																																					 FilterTableColumnModel<C> columnModel,
-																																					 Consumer<TableConditionPanel<C>> onPanelInitialized) {
-		return new FilterTableConditionPanel<>(tableConditionModel, conditionPanels, columnModel, onPanelInitialized);
+																																					 FilterTableColumnModel<C> columnModel) {
+		return new FilterTableConditionPanel<>(tableConditionModel, conditionPanels, columnModel);
 	}
 
 	@Override
@@ -114,7 +108,6 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 		if (!initialized) {
 			setLayout(new BorderLayout());
 			componentPanel = filterTableColumnComponentPanel(columnModel, conditionPanels);
-			onPanelInitialized.accept(this);
 			initialized = true;
 		}
 	}

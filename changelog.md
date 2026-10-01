@@ -69,6 +69,7 @@ Codion Change Log
 - DefaultFilterPanelFactory removed, FilterTable using FilterTableConditionPanel::filterTableConditionPanel as the default filter panel factory.
 - TableConditionPanel.Panels and ColumnConditionPanel.panels() added, for excluding and configuring the condition panels of a table, the condition models themselves unaffected.
 - FilterTable.Builder.filterComponents() replaced by filters(Consumer), the filter panels now created and their configuration validated when the table is built.
+- TableConditionPanel.Factory.create() and FilterTableConditionPanel.filterTableConditionPanel(), the onPanelInitialized parameter removed, the table configuring each condition panel as it is created.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
@@ -77,6 +78,7 @@ Codion Change Log
 - EntityConditionComponents, condition models other than column and foreign key condition models, such as the table filters, now get the ConditionComponents defaults, where using it for filters failed with a ClassCastException once the filter panel was shown.
 - EntityTablePanel.Config, the default condition panel factory is now FilterTableConditionPanel::filterTableConditionPanel, replacing a duplicate of it.
 - EntityTablePanel.Config.conditionComponents() and filterComponents() replaced by conditions() and filters(), for excluding and configuring the condition and filter panels, the configuration validated when the panel is instantiated.
+- EntityTablePanel, each condition panel is now configured as it is created, instead of through the condition panel factory, where a custom factory could leave panels unconfigured.
 ### is.codion.framework.model
 - EntityEditor, setting a value the entity adjusts, such as a trimmed string, is now judged by the value the entity ends up with, where a change went unnoticed, the modified state not updated, and an edit event announced an unadjusted value without anything changing.
 - EntityTableModel, derived attributes now have filters again, lost when DerivedAttributeDefinition stopped extending ValueAttributeDefinition.
