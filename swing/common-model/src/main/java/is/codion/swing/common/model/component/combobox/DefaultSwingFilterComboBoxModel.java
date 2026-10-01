@@ -95,7 +95,8 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 	@Override
 	public void setSelectedItem(@Nullable Object item) {
 		// The common selection applies the translator + null-item handling via its Object-aware setValue.
-		model.selection().item().set((T) item);
+		// An empty string is what an editable combo box commits from an empty editor, so it means no item.
+		model.selection().item().set((T) ("".equals(item) ? null : item));
 	}
 
 	@Override

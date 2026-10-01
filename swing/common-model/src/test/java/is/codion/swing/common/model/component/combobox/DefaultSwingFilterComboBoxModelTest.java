@@ -106,6 +106,22 @@ public class DefaultSwingFilterComboBoxModelTest {
 	}
 
 	@Test
+	void emptyStringSelectsNull() {
+		//what an editable combo box commits from an empty editor, regardless of the item type
+		testModel.setSelectedItem(BJORN);
+		testModel.setSelectedItem("");
+		assertNull(testModel.selection().item().get());
+		assertEquals(NULL, testModel.selectedItem());
+		SwingFilterComboBoxModel<Integer> integers = SwingFilterComboBoxModel.builder()
+						.items(asList(1, 2))
+						.build();
+		integers.setSelectedItem(1);
+		integers.setSelectedItem("");
+		assertNull(integers.selection().item().get());
+		assertNull(integers.getSelectedItem());
+	}
+
+	@Test
 	void itemComboBoxSelectByValue() {
 		//setSelectedItem(Object) translates a raw value to its Item
 		Item<Integer> nullItem = item(null, "");
