@@ -457,6 +457,23 @@ public class ValueTest {
 	}
 
 	@Test
+	void linkNotifyingTwicePerSet() {
+		// a value notifying twice for a single set, as a text component does, its document removing the text and then
+		// inserting the new one, linked to a value trimming what it is set to, as an entity editor value does, the latter
+		// loading its own value as is: neither notification is a listener changing a value, so nothing is pushed back
+		TrimmingValue original = new TrimmingValue();
+		TwiceNotifyingValue linked = new TwiceNotifyingValue();
+		linked.link(original);
+		original.load("abc ");
+		assertEquals("abc ", linked.get());
+		assertEquals("abc ", original.get());
+		// a trailing space typed into the component stays there, the original trimming it
+		linked.set("xyz ");
+		assertEquals("xyz ", linked.get());
+		assertEquals("xyz", original.get());
+	}
+
+	@Test
 	void linkValidationDoesNotCompound() {
 		//one set validates both ends twice each, and that is the design: the bridge runs the far end's
 		//validators before anything is written, so a value one end rejects moves neither, and the write
@@ -893,5 +910,47 @@ public class ValueTest {
 						.build()
 						.set(1);
 		assertEquals(asList(1, 2, 3, 4, 5, 6, 7, 8), notified);
+	}
+
+	private static final class TwiceNotifyingValue extends AbstractValue<String> {
+
+		private @Nullable String value;
+
+		@Override
+		protected @Nullable String getValue() {
+			return value;
+		}
+
+		@Override
+		protected void setValue(@Nullable String value) {
+			this.value = null;
+			notifyObserver();
+			this.value = value;
+			notifyObserver();
+		}
+	}
+
+	private static final class TrimmingValue extends AbstractValue<String> {
+
+		private @Nullable String value;
+
+		private TrimmingValue() {
+			super(Notify.CHANGED);
+		}
+
+		@Override
+		protected @Nullable String getValue() {
+			return value;
+		}
+
+		@Override
+		protected void setValue(@Nullable String value) {
+			this.value = value == null ? null : value.trim();
+		}
+
+		private void load(String value) {
+			this.value = value;
+			notifyObserver();
+		}
 	}
 }
