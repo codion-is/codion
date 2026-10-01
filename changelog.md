@@ -71,6 +71,7 @@ Codion Change Log
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
 - EntitySearchField, the background indicating a search is ready now shades a dark background lighter instead of darker.
 - EntityTablePanel, Enter in a condition combo box now adds the value of an in operand before refreshing, and reaches the default button with the condition unmodified, as in a condition text field, where it did nothing.
+- EntityConditionComponents, condition models other than column and foreign key condition models, such as the table filters, now get the ConditionComponents defaults, where using it for filters failed with a ClassCastException once the filter panel was shown.
 ### is.codion.framework.model
 - EntityEditor, setting a value the entity adjusts, such as a trimmed string, is now judged by the value the entity ends up with, where a change went unnoticed, the modified state not updated, and an edit event announced an unadjusted value without anything changing.
 - EntityTableModel, derived attributes now have filters again, lost when DerivedAttributeDefinition stopped extending ValueAttributeDefinition.

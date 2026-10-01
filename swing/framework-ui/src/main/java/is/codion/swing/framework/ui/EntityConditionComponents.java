@@ -51,6 +51,8 @@ import static java.util.Objects.requireNonNull;
  * A default component factory implementation for attributes.
  * <p>A foreign key operand component is a combo box when the referenced entity is based on a small dataset,
  * a search field otherwise, based on the models provided by {@link ForeignKeyConditionModel#models()}.
+ * <p>Condition models other than {@link ColumnConditionModel} and {@link ForeignKeyConditionModel}, such as the
+ * table filters, get the {@link ConditionComponents} defaults.
  * @see EntityDefinition#smallDataset()
  */
 public class EntityConditionComponents implements ConditionComponents {
@@ -81,6 +83,9 @@ public class EntityConditionComponents implements ConditionComponents {
 		if (conditionModel instanceof ForeignKeyConditionModel) {
 			return createEqualForeignKeyField((ForeignKeyConditionModel) conditionModel);
 		}
+		if (!(conditionModel instanceof ColumnConditionModel)) {
+			return ConditionComponents.super.equal(conditionModel);
+		}
 
 		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
 						.link(conditionModel.operands().equal())
@@ -91,6 +96,9 @@ public class EntityConditionComponents implements ConditionComponents {
 	public <T> JComponent lower(ConditionModel<T> conditionModel) {
 		if (conditionModel instanceof ForeignKeyConditionModel) {
 			throw new IllegalArgumentException("Lower bound not supported for foreign key conditions");
+		}
+		if (!(conditionModel instanceof ColumnConditionModel)) {
+			return ConditionComponents.super.lower(conditionModel);
 		}
 
 		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
@@ -103,6 +111,9 @@ public class EntityConditionComponents implements ConditionComponents {
 		if (conditionModel instanceof ForeignKeyConditionModel) {
 			throw new IllegalArgumentException("Upper bound not supported for foreign key conditions");
 		}
+		if (!(conditionModel instanceof ColumnConditionModel)) {
+			return ConditionComponents.super.upper(conditionModel);
+		}
 
 		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
 						.link(conditionModel.operands().upper())
@@ -113,6 +124,9 @@ public class EntityConditionComponents implements ConditionComponents {
 	public <T> JComponent in(ConditionModel<T> conditionModel) {
 		if (conditionModel instanceof ForeignKeyConditionModel) {
 			return createInForeignKeyField((ForeignKeyConditionModel) conditionModel);
+		}
+		if (!(conditionModel instanceof ColumnConditionModel)) {
+			return ConditionComponents.super.in(conditionModel);
 		}
 
 		return multiInput()
