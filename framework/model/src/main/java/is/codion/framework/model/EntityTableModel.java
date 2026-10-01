@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.table.FilterTableModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
@@ -34,6 +35,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -184,6 +186,31 @@ public interface EntityTableModel<E extends EntityEditModel<R>, R extends Entity
 	 * @return the {@link EntityRowEditor}
 	 */
 	EntityRowEditor rowEditor();
+
+	/**
+	 * Configures an {@link EntityTableModel} when instantiated.
+	 */
+	interface Config {
+
+		/**
+		 * Configures the query condition model, the builder received being initialized with the entity type and
+		 * connection of the edit model. Replaces any previous configuration.
+		 * @param conditions configures the condition model builder
+		 * @return this Config instance
+		 * @see EntityConditionModel.Builder#exclude(Attribute[])
+		 * @see EntityConditionModel.Builder#condition(Column, Consumer)
+		 */
+		Config conditions(Consumer<EntityConditionModel.Builder> conditions);
+
+		/**
+		 * Configures the column filters, the builder received providing a filter for each filterable column,
+		 * initialized with its defaults. Replaces any previous configuration.
+		 * @param filters configures the filters
+		 * @return this Config instance
+		 * @see FilterTableModel.Builder#filters(Consumer)
+		 */
+		Config filters(Consumer<TableConditionModel.Builder<Attribute<?>>> filters);
+	}
 
 	/**
 	 * Controls table model editing

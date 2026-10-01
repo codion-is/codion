@@ -75,6 +75,10 @@ Codion Change Log
 - EntityEditor, setting a value the entity adjusts, such as a trimmed string, is now judged by the value the entity ends up with, where a change went unnoticed, the modified state not updated, and an edit event announced an unadjusted value without anything changing.
 - EntityTableModel, derived attributes now have filters again, lost when DerivedAttributeDefinition stopped extending ValueAttributeDefinition.
 - AbstractEntityTableModel.filterConditions() removed, the entity filter defaults now provided by the table columns.
+- EntityTableModel.Config added, for configuring the condition model and the filters of a table model when instantiated.
+- AbstractEntityTableModel, the constructor taking a query model and entityQueryModel() replaced by a constructor taking the filter model builder and a Config, the query model built from the edit model, so an entity type mismatch can no longer occur.
+### is.codion.swing.framework.model
+- SwingEntityTableModel(SwingEntityEditModel, Consumer<Config>) added, SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(SwingEntityEditModel, EntityConditionModel) removed, the condition model now configured via the Config.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes now includes the Cyan Light, Nord, Solarized Dark, Solarized Light, Spacegray and Autumn Lite themes, which were missing, "Autumn" having been Nature Autumn, Rider Dark no longer included twice and Arc Orange no longer misspelled.
 - solarized.SolarizedLight no longer fails to load, the look and feel used in place of the FlatLaf Solarized Light theme.
