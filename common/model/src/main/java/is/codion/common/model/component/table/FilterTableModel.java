@@ -149,6 +149,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 			 * @param columns the columns
 			 * @return a {@link Builder} based on the given columns
 			 * @throws NullPointerException in case {@code columns} is null
+			 * @throws IllegalArgumentException in case the columns specify no identifiers, non-unique ones, or a primitive column type
 			 */
 			<R, C> Builder<R, C, ?> columns(TableColumns<R, C> columns);
 		}
@@ -251,7 +252,8 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 
 		/**
 		 * @param identifier the column identifier
-		 * @return the class representing the type of the given column
+		 * @return the class representing the type of the given column, the boxed type in case of a primitive one,
+		 * {@code Integer.class} rather than {@code int.class}
 		 */
 		Class<?> type(C identifier);
 
