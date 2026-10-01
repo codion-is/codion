@@ -69,13 +69,13 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 
 	/**
 	 * @param columns the columns
-	 * @throws IllegalArgumentException in case the columns specify no identifiers, or non-unique ones
+	 * @throws IllegalArgumentException in case the columns specify no identifiers, non-unique ones, or a primitive column type
 	 */
 	protected AbstractFilterTableModelBuilder(TableColumns<R, C> columns) {
 		if (requireNonNull(columns).identifiers().isEmpty()) {
 			throw new IllegalArgumentException("TableColumns does not specify any column identifiers");
 		}
-		this.columns = validateIdentifiers(columns);
+		this.columns = validateTypes(validateIdentifiers(columns));
 	}
 
 	@Override
@@ -194,6 +194,17 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 	private static <R, C> TableColumns<R, C> validateIdentifiers(TableColumns<R, C> columns) {
 		if (new HashSet<>(columns.identifiers()).size() != columns.identifiers().size()) {
 			throw new IllegalArgumentException("Column identifiers are not unique");
+		}
+
+		return columns;
+	}
+
+	private static <R, C> TableColumns<R, C> validateTypes(TableColumns<R, C> columns) {
+		for (C identifier : columns.identifiers()) {
+			Class<?> type = columns.type(identifier);
+			if (type.isPrimitive()) {
+				throw new IllegalArgumentException("Column " + identifier + " is of the primitive type " + type + ", use the boxed type instead");
+			}
 		}
 
 		return columns;

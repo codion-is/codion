@@ -18,6 +18,7 @@ Codion Change Log
 - FilterModel.Items.remove(Predicate) now removes all the items fulfilling the predicate, equal ones included, where only one of them was removed.
 - FilterTableModel.Builder.filters(Map) replaced by filters(Consumer), for excluding and configuring the column filters instead of replacing them, TableConditionModel.Builder added.
 - FilterTableModel.TableColumns.filter() added, providing the filter for a column initialized with its defaults, its type, either String or the column type, validated when the table model is built.
+- FilterTableModel.Builder, primitive column types now rejected, such a column getting no default filter and sorted by its string representation.
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.
