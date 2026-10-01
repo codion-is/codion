@@ -19,6 +19,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.filter.SortOrder;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -70,6 +71,17 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void nullConditionModel() {
 		assertThrows(NullPointerException.class, () -> new SwingEntityTableModel(Employee.TYPE, null));
+	}
+
+	@Test
+	void config() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(createEditModel(Employee.TYPE, connection()), config -> config
+						.conditions(conditions -> conditions
+										.condition(Employee.JOB, job -> job.operator(Operator.NOT_EQUAL)))
+						.filters(filters -> filters
+										.exclude(Employee.SALARY)));
+		assertEquals(Operator.NOT_EQUAL, tableModel.query().condition().get(Employee.JOB).operator().get());
+		assertThrows(IllegalArgumentException.class, () -> tableModel.filters().get(Employee.SALARY));
 	}
 
 

@@ -76,31 +76,32 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 
 	/**
+	 * Instantiates a table model whose items are not provided by its query model.
 	 * @param editModel the edit model
 	 * @param filterModel the filter model
 	 */
 	protected AbstractEntityTableModel(E editModel, FilterTableModel<Entity, Attribute<?>> filterModel) {
-		this(editModel, new DefaultEntityQueryModel(EntityConditionModel.builder()
-						.entityType(editModel.entityType())
-						.connection(editModel.connection())
-						.build()), filterModel);
+		this.editModel = requireNonNull(editModel);
+		this.queryModel = queryModel(editModel, conditions -> {});
+		this.filterModel = requireNonNull(filterModel);
+		bindEvents();
 	}
 
 	/**
+	 * Instantiates a table model whose items are provided by its query model, see {@link #query()}.
 	 * @param editModel the edit model
-	 * @param queryModel the table query model, providing the items of the given filter model
-	 * @param filterModel the filter model
-	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
-	 * @see #entityQueryModel(EntityConditionModel)
+	 * @param filterModel the filter model builder, its items and filters provided by this table model
+	 * @param config the table model configuration
 	 */
-	protected AbstractEntityTableModel(E editModel, EntityQueryModel queryModel, FilterTableModel<Entity, Attribute<?>> filterModel) {
+	protected AbstractEntityTableModel(E editModel, FilterTableModel.Builder<Entity, Attribute<?>, ?> filterModel,
+																		 Consumer<Config> config) {
 		this.editModel = requireNonNull(editModel);
-		this.queryModel = requireNonNull(queryModel);
-		this.filterModel = requireNonNull(filterModel);
-		if (!editModel.entityType().equals(queryModel.entityType())) {
-			throw new IllegalArgumentException("Entity type mismatch, edit model: " +
-							editModel.entityType() + ", query model: " + queryModel.entityType());
-		}
+		DefaultConfig configuration = new DefaultConfig(config);
+		this.queryModel = queryModel(editModel, configuration.conditions);
+		this.filterModel = requireNonNull(filterModel)
+						.items(queryModel::query)
+						.filters(configuration.filters)
+						.build();
 		bindEvents();
 	}
 
@@ -217,16 +218,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	 */
 	protected FilterTableModel<Entity, Attribute<?>> filterModel() {
 		return filterModel;
-	}
-
-	/**
-	 * Creates the query model for a table model to base its {@link FilterTableModel} items on, and to be given
-	 * to {@link #AbstractEntityTableModel(EntityEditModel, EntityQueryModel, FilterTableModel)}.
-	 * @param conditionModel the condition model
-	 * @return a new {@link EntityQueryModel} based on the given condition model
-	 */
-	protected static EntityQueryModel entityQueryModel(EntityConditionModel conditionModel) {
-		return new DefaultEntityQueryModel(requireNonNull(conditionModel));
 	}
 
 	/**
@@ -389,6 +380,37 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		}
 
 		return false;
+	}
+
+	private static EntityQueryModel queryModel(EntityEditModel<?> editModel, Consumer<EntityConditionModel.Builder> conditions) {
+		EntityConditionModel.Builder builder = EntityConditionModel.builder()
+						.entityType(editModel.entityType())
+						.connection(editModel.connection());
+		conditions.accept(builder);
+
+		return new DefaultEntityQueryModel(builder.build());
+	}
+
+	private static final class DefaultConfig implements Config {
+
+		private Consumer<EntityConditionModel.Builder> conditions = builder -> {};
+		private Consumer<TableConditionModel.Builder<Attribute<?>>> filters = builder -> {};
+
+		private DefaultConfig(Consumer<Config> config) {
+			requireNonNull(config).accept(this);
+		}
+
+		@Override
+		public Config conditions(Consumer<EntityConditionModel.Builder> conditions) {
+			this.conditions = requireNonNull(conditions);
+			return this;
+		}
+
+		@Override
+		public Config filters(Consumer<TableConditionModel.Builder<Attribute<?>>> filters) {
+			this.filters = requireNonNull(filters);
+			return this;
+		}
 	}
 
 	private final class UpdateListener implements Consumer<Map<Entity, Entity>> {

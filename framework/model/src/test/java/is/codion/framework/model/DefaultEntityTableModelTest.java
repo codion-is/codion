@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.model.component.table.FilterTableModel;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
@@ -35,12 +36,13 @@ import is.codion.framework.model.test.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Exercises the shared {@link AbstractEntityTableModelTest} contract against a minimal, toolkit-free concrete
@@ -50,6 +52,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class DefaultEntityTableModelTest extends
 				AbstractEntityTableModelTest<DefaultEntityTableModelTest.TestEntityEditModel,
 								DefaultEntityTableModelTest.TestEntityTableModel, DefaultEntityTableModelTest.TestEntityEditor> {
+
+	@Test
+	void config() {
+		TestEntityTableModel tableModel = new TestEntityTableModel(createEditModel(Employee.TYPE, connection()), config -> config
+						.conditions(conditions -> conditions
+										.exclude(Employee.COMMISSION))
+						.filters(filters -> filters
+										.exclude(Employee.SALARY)
+										.condition(Employee.NAME, name -> name.operator(Operator.NOT_EQUAL))));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.query().condition().get(Employee.COMMISSION));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.filters().get(Employee.SALARY));
+		assertEquals(Operator.NOT_EQUAL, tableModel.filters().get(Employee.NAME).operator().get());
+		// the items provided by the query model, the filters applied
+		tableModel.items().refresh();
+		int employees = tableModel.items().included().size();
+		tableModel.filters().get(Employee.NAME).operands().equal().set("KING");
+		assertEquals(employees - 1, tableModel.items().included().size());
+	}
 
 	@Test
 	void editModelPreferences() {
@@ -103,14 +123,11 @@ public final class DefaultEntityTableModelTest extends
 		private final EntityRowEditor rowEditor;
 
 		private TestEntityTableModel(TestEntityEditModel editModel) {
-			this(editModel, entityQueryModel(EntityConditionModel.builder()
-							.entityType(editModel.entityType())
-							.connection(editModel.connection())
-							.build()));
+			this(editModel, config -> {});
 		}
 
-		private TestEntityTableModel(TestEntityEditModel editModel, EntityQueryModel queryModel) {
-			super(editModel, queryModel, filterModel(editModel, queryModel::query));
+		private TestEntityTableModel(TestEntityEditModel editModel, Consumer<Config> config) {
+			super(editModel, filterModel(editModel), config);
 			this.rowEditor = new AbstractEntityRowEditor<TestEntityEditor>(editModel.editor()) {};
 		}
 
@@ -119,7 +136,7 @@ public final class DefaultEntityTableModelTest extends
 		}
 
 		private TestEntityTableModel(TestEntityEditModel editModel, Collection<Entity> entities) {
-			super(editModel, filterModel(editModel, null));
+			super(editModel, filterModel(editModel).build());
 			this.rowEditor = new AbstractEntityRowEditor<TestEntityEditor>(editModel.editor()) {};
 			items().add(entities);
 		}
@@ -148,16 +165,10 @@ public final class DefaultEntityTableModelTest extends
 		@Override
 		protected void onRowsUpdated(int fromIndex, int toIndex) {}
 
-		private static FilterTableModel<Entity, Attribute<?>> filterModel(TestEntityEditModel editModel,
-		                                                                  Supplier<Collection<Entity>> items) {
-			FilterTableModel.Builder<Entity, Attribute<?>, ?> builder = FilterTableModel.<Entity, Attribute<?>>builder()
+		private static FilterTableModel.Builder<Entity, Attribute<?>, ?> filterModel(TestEntityEditModel editModel) {
+			return FilterTableModel.<Entity, Attribute<?>>builder()
 							.columns(tableColumns(editModel.entityDefinition()))
 							.validator(itemValidator(editModel.entityDefinition().type()));
-			if (items != null) {
-				builder = builder.items(items);
-			}
-
-			return builder.build();
 		}
 	}
 

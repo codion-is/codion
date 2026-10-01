@@ -25,8 +25,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.AbstractEntityTableModel;
-import is.codion.framework.model.EntityConditionModel;
-import is.codion.framework.model.EntityQueryModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 
@@ -34,6 +32,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.event.TableModelListener;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
@@ -82,34 +81,16 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, EntityConditionModel.builder()
-						.entityType(editModel.entityType())
-						.connection(editModel.connection())
-						.build());
-	}
-
-	/**
-	 * Instantiates a new SwingEntityTableModel.
-	 * @param conditionModel the condition model
-	 */
-	public SwingEntityTableModel(EntityConditionModel conditionModel) {
-		this(new SwingEntityEditModel(conditionModel.entityType(), conditionModel.connection()), conditionModel);
+		this(editModel, config -> {});
 	}
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
-	 * @param conditionModel the condition model
-	 * @throws IllegalArgumentException in case the edit model and condition model entity types are not the same
+	 * @param config the table model configuration
 	 */
-	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityConditionModel conditionModel) {
-		this(editModel, entityQueryModel(conditionModel));
-	}
-
-	private SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
-		super(requireNonNull(editModel), queryModel, tableModelBuilder(editModel.editor())
-						.items(queryModel::query)
-						.build());
+	public SwingEntityTableModel(SwingEntityEditModel editModel, Consumer<Config> config) {
+		super(requireNonNull(editModel), tableModelBuilder(editModel.editor()), config);
 	}
 
 	private SwingEntityTableModel(SwingEntityEditModel editModel, Collection<Entity> items) {
