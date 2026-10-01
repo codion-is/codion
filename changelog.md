@@ -61,6 +61,7 @@ Codion Change Log
 - FilterTableHeaderRenderer, the primary sort arrow is now centered vertically, the smaller arrows of a compound sort aligned with its bottom, where all of them sat low.
 - ComboBoxBuilder.enterAction(), ItemComboBoxBuilder.enterAction() and ComboBoxBuilder.addEnterAction() added, Enter performing the first enabled action, in the order added, once an open popup is closed and the editor committed, otherwise the look and feel's Enter.
 - MultiInput, Enter now adds the value of a wrapped combo box, as it does for other components, before any Enter action added to the combo box later.
+- Completion, the editor contents are now selected with the caret at the start once the editor shows a selection made outside of the completion, where clearing a combo box with a null item left the caret after the null item caption, typing then not completing until backspaced.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.

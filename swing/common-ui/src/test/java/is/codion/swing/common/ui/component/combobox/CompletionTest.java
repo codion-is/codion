@@ -26,7 +26,7 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -37,9 +37,8 @@ import static org.assertj.swing.core.KeyPressInfo.keyCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-// This test is only run in CI or when explicitly enabled with -Djava.awt.headless=true
-// Prevents UI window focus issues during local development
-@EnabledIfSystemProperty(named = "java.awt.headless", matches = "true")
+// Opens a window, so only run in CI, where xvfb-run provides a virtual display and CI=true is set
+@EnabledIfEnvironmentVariable(named = "CI", matches = "true")
 public final class CompletionTest {
 
 	private static FrameFixture window;
