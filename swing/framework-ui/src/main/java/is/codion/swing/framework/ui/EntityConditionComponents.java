@@ -34,13 +34,6 @@ import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
 import javax.swing.JComponent;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.multiInput;
 import static is.codion.swing.framework.model.component.SwingEntityComboBoxModel.model;
@@ -57,11 +50,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class EntityConditionComponents implements ConditionComponents {
 
-	private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
-					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
-					BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
-					LocalDateTime.class, OffsetDateTime.class, Entity.class);
-
 	private final EntityDefinition entityDefinition;
 	private final EntityComponents inputComponents;
 
@@ -75,7 +63,7 @@ public class EntityConditionComponents implements ConditionComponents {
 
 	@Override
 	public boolean supports(Class<?> type) {
-		return SUPPORTED_TYPES.contains(requireNonNull(type));
+		return Entity.class.equals(requireNonNull(type)) || ConditionComponents.super.supports(type);
 	}
 
 	@Override
