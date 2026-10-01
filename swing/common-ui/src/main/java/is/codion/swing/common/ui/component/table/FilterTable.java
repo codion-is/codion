@@ -1954,7 +1954,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private Consumer<FilterTableColumn.Builder<C>> columns = new EmptyConsumer<>();
 		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
-		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
+		private TableConditionPanel.Factory<C> filterPanelFactory = FilterTableConditionPanel::filterTableConditionPanel;
 		private FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory;
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.Factory<R, C> cellEditorFactory;

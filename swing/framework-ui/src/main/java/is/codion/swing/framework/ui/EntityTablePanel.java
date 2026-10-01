@@ -21,7 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.reactive.state.ObservableState;
@@ -64,7 +63,7 @@ import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel;
-import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
+import is.codion.swing.common.ui.component.table.FilterTableConditionPanel;
 import is.codion.swing.common.ui.component.table.FilterTableHeaderRenderer;
 import is.codion.swing.common.ui.component.table.TableConditionPanel;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -144,7 +143,6 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
-import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -2176,7 +2174,7 @@ public class EntityTablePanel extends JPanel {
 		private final Map<Attribute<?>, ConditionComponents> conditionComponents;
 
 		private FilterTable.@Nullable Builder<Entity, Attribute<?>> tableBuilder;
-		private TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory = new DefaultConditionPanelFactory();
+		private TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory = FilterTableConditionPanel::filterTableConditionPanel;
 		private boolean includeSouthPanel = true;
 		private boolean includeExport = INCLUDE_EXPORT.getOrThrow();
 		boolean includeConditions = INCLUDE_CONDITIONS.getOrThrow();
@@ -2223,7 +2221,6 @@ public class EntityTablePanel extends JPanel {
 							.headerRenderers(new EntityTableHeaderRenderers())
 							.cellEditors(new EntityTableCellEditors())
 							.cellEditable(new EntityCellEditable(tablePanel.model.entities()));
-			this.conditionPanelFactory = new DefaultConditionPanelFactory();
 			this.conditionComponents = new HashMap<>();
 			this.controlMap = ControlMap.controlMap(ControlKeys.class);
 			this.editable = valueSet(editableAttributes());
@@ -2797,18 +2794,6 @@ public class EntityTablePanel extends JPanel {
 			}
 
 			return updatable;
-		}
-
-		private static final class DefaultConditionPanelFactory
-						implements TableConditionPanel.Factory<Attribute<?>> {
-
-			@Override
-			public TableConditionPanel<Attribute<?>> create(TableConditionModel<Attribute<?>> tableConditionModel,
-																											Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
-																											FilterTableColumnModel<Attribute<?>> columnModel,
-																											Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
-				return filterTableConditionPanel(tableConditionModel, conditionPanels, columnModel, onPanelInitialized);
-			}
 		}
 
 		private static final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
