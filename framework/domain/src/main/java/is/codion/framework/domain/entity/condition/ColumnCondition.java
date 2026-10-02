@@ -30,61 +30,60 @@ import is.codion.framework.domain.entity.attribute.Column;
  * <p>
  * Column conditions are typically created through the ColumnConditions interface, which
  * all Column instances implement:
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.ColumnConditionSnippets region = usage :
  * // Equality conditions
- * List<Entity> metalTracks = connection.select(
- *     Track.GENRE_FK.equalTo(metalGenre));
+ * List<Entity> teenSpirit = connection.select(
+ * 				Track.NAME.equalTo("Smells Like Teen Spirit"));
  *
- * List<Entity> unpriced = connection.select(
- *     Track.UNIT_PRICE.equalTo(null)); // Becomes "IS NULL"
+ * List<Entity> noCompany = connection.select(
+ * 				Customer.COMPANY.equalTo(null)); // Becomes "IS NULL"
  *
  * // String pattern matching
  * List<Entity> theArtists = connection.select(
- *     Artist.NAME.like("The %"));
+ * 				Artist.NAME.like("The %"));
  *
  * List<Entity> liveAlbums = connection.select(
- *     Album.TITLE.likeIgnoreCase("%live%"));
+ * 				Album.TITLE.likeIgnoreCase("%live%"));
  *
  * // Comparison conditions
  * List<Entity> expensiveTracks = connection.select(
- *     Track.UNIT_PRICE.greaterThan(new BigDecimal("0.99")));
+ * 				Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
  *
  * List<Entity> recentTracks = connection.select(
- *     Track.CREATED_DATE.greaterThanOrEqualTo(
- *         LocalDateTime.now().minusDays(30)));
+ * 				Track.INSERT_TIME.greaterThanOrEqualTo(
+ * 								LocalDateTime.now().minusDays(30)));
  *
  * // Range conditions
  * List<Entity> mediumPricedTracks = connection.select(
- *     Track.UNIT_PRICE.between(
- *         new BigDecimal("0.50"),
- *         new BigDecimal("1.50")));
+ * 				Track.UNITPRICE.between(
+ * 								BigDecimal.valueOf(0.50),
+ * 								BigDecimal.valueOf(1.50)));
  *
  * // Collection-based conditions
- * List<String> genres = List.of("Rock", "Metal", "Blues");
- * List<Entity> rockishTracks = connection.select(
- *     Track.GENRE_NAME.inIgnoreCase(genres));
+ * List<String> artists = List.of("AC/DC", "Metallica", "Iron Maiden");
+ * List<Entity> metalTracks = connection.select(
+ * 				Track.ARTIST_NAME.inIgnoreCase(artists));
  *
- * List<Integer> excludedIds = List.of(1, 5, 10);
+ * List<Long> excludedIds = List.of(1L, 5L, 10L);
  * List<Entity> filteredArtists = connection.select(
- *     Artist.ID.notIn(excludedIds));
+ * 				Artist.ID.notIn(excludedIds));
  *
  * // Null checks
- * List<Entity> tracksWithPrice = connection.select(
- *     Track.UNIT_PRICE.isNotNull());
+ * List<Entity> tracksWithComposer = connection.select(
+ * 				Track.COMPOSER.isNotNull());
  *
  * List<Entity> tracksWithoutComposer = connection.select(
- *     Track.COMPOSER.isNull());
+ * 				Track.COMPOSER.isNull());
  *
  * // Case-insensitive operations
- * List<Entity> beatlesAlbums = connection.select(
- *     Album.ARTIST_NAME.equalToIgnoreCase("the beatles"));
+ * List<Entity> zeppelinTracks = connection.select(
+ * 				Track.ARTIST_NAME.equalToIgnoreCase("led zeppelin"));
  *
  * // Complex combinations with logical operators
- * List<Entity> complexQuery = connection.select(and(
- *     Track.UNIT_PRICE.greaterThan(new BigDecimal("0.99")),
- *     Track.GENRE_NAME.inIgnoreCase("Rock", "Metal"),
- *     Track.DURATION.lessThan(300000))); // Less than 5 minutes
- *}
+ * List<Entity> tracks = connection.select(and(
+ * 				Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)),
+ * 				Track.ARTIST_NAME.inIgnoreCase("AC/DC", "Metallica"),
+ * 				Track.MILLISECONDS.lessThan(300_000))); // Less than 5 minutes}
  * @param <T> the attribute type
  * @see ColumnConditions
  * @see Column

@@ -42,77 +42,92 @@ import java.util.List;
  * for a custom condition. The actual SQL generation logic is provided via a {@link ConditionString}
  * when defining the entity.
  * <p>
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.ConditionTypeSnippets region = notInPlaylist :
  * // Define a custom condition type for finding tracks not in a playlist
  * interface Track {
- *     EntityType TYPE = DOMAIN.entityType("music.track");
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.track");
  *
- *     Column<Long> ID = TYPE.longColumn("id");
- *     Column<String> NAME = TYPE.stringColumn("name");
+ * 	Column<Long> ID = TYPE.longColumn("id");
+ * 	Column<String> NAME = TYPE.stringColumn("name");
  *
- *     // Define a custom condition for complex subquery logic
- *     ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("not_in_playlist");
+ * 	// Define a custom condition for complex subquery logic
+ * 	ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("not_in_playlist");
  * }
  *
  * // In the entity definition, provide the SQL generation logic
  * EntityDefinition track() {
- *     return Track.TYPE.as()
- *         .attributes(
- *             Track.ID.as()
- *                 .primaryKey(),
- *             Track.NAME.as()
- *                 .column())
- *         .condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
- *             "track.id NOT IN (SELECT track_id FROM playlist_track WHERE playlist_id = ?)")
- *         .build();
+ * 	return Track.TYPE.as()
+ * 					.attributes(
+ * 									Track.ID.as()
+ * 													.primaryKey(),
+ * 									Track.NAME.as()
+ * 													.column()
+ * 													.caption("Name"))
+ * 					.condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
+ * 									"track.id NOT IN (SELECT track_id FROM chinook.playlisttrack WHERE playlist_id = ?)")
+ * 					.build();
  * }
  *
  * // Usage - find tracks not in a specific playlist
- * Long playlistId = 42L;
- * List<Entity> tracks = connection.select(
- *     Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistId));
- *}
+ * List<Entity> tracks(EntityConnection connection, Long playlistId) {
+ * 	return connection.select(Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistId));
+ * }}
  * <p>
  * Example with multiple columns:
- * {@snippet :
- * // Define a condition that uses multiple columns
- * ConditionType OVERLAPPING_DATES = TYPE.conditionType("overlapping_dates");
+ * {@snippet class = is.codion.demos.chinook.javadoc.ConditionTypeSnippets region = multipleColumns :
+ * interface Invoice {
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.invoice");
  *
- * // In entity definition
- * .condition(Event.OVERLAPPING_DATES, (columns, values) -> {
- *     return "((start_date <= ? AND end_date >= ?) OR " +
- *            "(start_date <= ? AND end_date >= ?) OR " +
- *            "(start_date >= ? AND end_date <= ?))";
- * })
+ * 	Column<Long> ID = TYPE.longColumn("id");
  *
- * // Usage with multiple column/value pairs
- * List<Column<?>> columns = List.of(
- *     Event.START_DATE, Event.END_DATE,
- *     Event.START_DATE, Event.END_DATE,
- *     Event.START_DATE, Event.END_DATE);
- * List<Object> values = List.of(
- *     searchStart, searchStart,
- *     searchEnd, searchEnd,
- *     searchStart, searchEnd);
+ * 	// Define a condition that uses multiple columns
+ * 	ConditionType CONTAINS_TRACK = TYPE.conditionType("contains_track");
+ * }
  *
- * List<Entity> overlapping = connection.select(
- *     Event.OVERLAPPING_DATES.get(columns, values));
- *}
+ * // In the entity definition
+ * EntityDefinition invoice() {
+ * 	return Invoice.TYPE.as()
+ * 					.attributes(
+ * 									Invoice.ID.as()
+ * 													.primaryKey())
+ * 					.condition(Invoice.CONTAINS_TRACK, (columns, values) ->
+ * 									"invoice.id IN (SELECT invoice_id FROM chinook.invoiceline WHERE track_id = ? AND quantity >= ?)")
+ * 					.build();
+ * }
+ *
+ * // Usage - a column for each value, used when binding it
+ * List<Entity> invoices(EntityConnection connection, Long trackId) {
+ * 	return connection.select(Invoice.CONTAINS_TRACK.get(
+ * 					List.of(InvoiceLine.TRACK_ID, InvoiceLine.QUANTITY),
+ * 					List.of(trackId, 2)));
+ * }}
  * <p>
- * Example with no columns (using only values):
- * {@snippet :
- * // Define a condition that doesn't need column references
- * ConditionType WITHIN_RADIUS = TYPE.conditionType("within_radius");
+ * Example without columns or values:
+ * {@snippet class = is.codion.demos.chinook.javadoc.ConditionTypeSnippets region = noValues :
+ * interface Track {
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.track");
  *
- * // In entity definition - values are: latitude, longitude, radius
- * .condition(Location.WITHIN_RADIUS, (columns, values) -> {
- *     return "ST_Distance(coordinates, ST_MakePoint(?, ?)) <= ?";
- * })
+ * 	Column<Long> ID = TYPE.longColumn("id");
  *
- * // Usage with just values
- * List<Entity> nearby = connection.select(
- *     Location.WITHIN_RADIUS.get(List.of(40.7128, -74.0060, 10.0)));
- *}
+ * 	// Define a condition without columns or values
+ * 	ConditionType NOT_PURCHASED = TYPE.conditionType("not_purchased");
+ * }
+ *
+ * // In the entity definition
+ * EntityDefinition track() {
+ * 	return Track.TYPE.as()
+ * 					.attributes(
+ * 									Track.ID.as()
+ * 													.primaryKey())
+ * 					.condition(Track.NOT_PURCHASED, (columns, values) ->
+ * 									"track.id NOT IN (SELECT track_id FROM chinook.invoiceline)")
+ * 					.build();
+ * }
+ *
+ * // Usage
+ * List<Entity> tracks(EntityConnection connection) {
+ * 	return connection.select(Track.NOT_PURCHASED.get());
+ * }}
  * @see CustomCondition
  * @see ConditionString
  * @see EntityDefinition#condition(ConditionType)
