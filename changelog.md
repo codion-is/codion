@@ -72,6 +72,7 @@ Codion Change Log
 - TableConditionPanel.Factory.create() and FilterTableConditionPanel.filterTableConditionPanel(), the onPanelInitialized parameter removed, the table configuring each condition panel as it is created.
 - ConditionPanel, the hidden, simple and advanced view states removed, private and never read, only mirroring view().
 - DefaultFilterTableCellRenderer, the cached alternate row background removed, unused since the alternate rows are shaded from the table background.
+- FileInput.Builder.filePathField() renamed pathField().
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
