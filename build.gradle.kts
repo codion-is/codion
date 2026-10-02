@@ -30,6 +30,13 @@ configure(frameworkModules()) {
             "https://jspecify.dev/docs/api/"
         )
         docletOptions.encoding = "UTF-8"
+        // Hybrid snippets, javadoc verifying each inline copy against its region in the demos' javadoc packages
+        docletOptions.addStringOption("-snippet-path", snippetSourceDirs().joinToString(File.pathSeparator) { it.absolutePath })
+        docletOptions.addStringOption("-add-stylesheet", snippetStylesheet().absolutePath)
+        inputs.files(snippetSourceDirs().map { dir -> fileTree(dir) { include("**/javadoc/**") } })
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+        inputs.file(snippetStylesheet())
+            .withPathSensitivity(PathSensitivity.RELATIVE)
     }
 
     tasks.withType<Jar>().configureEach {
@@ -255,6 +262,11 @@ fun hasSonarqubeProperties(): Boolean {
             project.hasProperty("systemProp.sonar.login") &&
             project.hasProperty("systemProp.sonar.password")
 }
+
+fun snippetSourceDirs(): List<File> =
+    listOf("demos/chinook/src/main/java", "demos/world/src/main/java").map { rootProject.file(it) }
+
+fun snippetStylesheet(): File = rootProject.file("documentation/src/docs/javadoc/snippets.css")
 
 fun frameworkModules(): Iterable<Project> {
     return subprojects.filter { project ->
