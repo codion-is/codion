@@ -34,18 +34,17 @@ import static java.util.Objects.requireNonNull;
  * A task scheduler based on a {@link ScheduledExecutorService}, scheduled at a fixed rate,
  * using a daemon thread by default.
  * A TaskScheduler can be stopped and restarted.
- * {@snippet :
+ * {@snippet class = is.codion.manual.javadoc.TaskSchedulerSnippets region = usage :
  * TaskScheduler scheduler = builder()
- *     .task(() -> System.out.println("Running wild..."))
- *     .interval(2, TimeUnit.SECONDS)
- *     .build();
+ * 				.task(() -> System.out.println("Running wild..."))
+ * 				.interval(2, TimeUnit.SECONDS)
+ * 				.build();
  *
  * scheduler.start();
  * // ...
- * scheduler.interval().set(1);//task restarted using the new interval
+ * scheduler.interval().set(1); // task restarted using the new interval
  * // ...
- * scheduler.stop();
- *}
+ * scheduler.stop();}
  * @see TaskScheduler#builder()
  */
 public final class TaskScheduler {

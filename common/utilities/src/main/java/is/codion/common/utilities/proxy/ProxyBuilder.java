@@ -48,36 +48,35 @@ import static java.util.Objects.requireNonNull;
  * but once added, methods cannot be removed from the builder.
  * <p>
  * Note that if the {@link Object#equals(Object)} method is not proxied the resulting proxy is equal only to itself.
- * {@snippet :
+ * {@snippet class = is.codion.manual.javadoc.ProxyBuilderSnippets region = usage :
  * List<String> list = new ArrayList<>();
  *
  * ProxyBuilder<List<String>> builder = ProxyBuilder.of(new TypeReference<List<String>>() {})
- *     .delegate(list)
- *     .method("add", Object.class, parameters -> {
- *       Object item = parameters.arguments().get(0);
- *       System.out.println("Adding: " + item);
+ * 				.delegate(list)
+ * 				.method("add", Object.class, parameters -> {
+ * 					Object item = parameters.arguments().get(0);
+ * 					System.out.println("Adding: " + item);
  *
- *       return parameters.delegate().add(item);
- *     })
- *     .method("size", parameters -> {
- *       System.out.println("Size");
+ * 					return parameters.delegate().add((String) item);
+ * 				})
+ * 				.method("size", parameters -> {
+ * 					System.out.println("Size");
  *
- *       return parameters.delegate().size();
- *     });
+ * 					return parameters.delegate().size();
+ * 				});
  *
  * List<String> proxy1 = builder.build();
  *
  * // Builder can be reused and modified
  * builder.method("remove", Object.class, parameters -> {
- *   Object item = parameters.arguments().get(0);
- *   System.out.println("Removing: " + item);
+ * 	Object item = parameters.arguments().get(0);
+ * 	System.out.println("Removing: " + item);
  *
- *   return parameters.delegate().remove(item);
+ * 	return parameters.delegate().remove(item);
  * });
  *
  * List<String> proxy2 = builder.build(); // Has all three methods
- * // proxy1 still has only add() and size() methods proxied
- *}
+ * // proxy1 still has only add() and size() methods proxied}
  * @param <T> the proxy type
  * @see #of(TypeReference)
  * @see #of(Class)

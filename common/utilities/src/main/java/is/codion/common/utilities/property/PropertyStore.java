@@ -58,7 +58,7 @@ import static java.util.stream.Collectors.toList;
  * does not affect the property store value, so the value should only be modified via the property store value instance.
  * If no value is found in a configuration file or in a system property, the default property value is used as the initial value.
  * When the value is set to null via {@link is.codion.common.reactive.value.Value#set(Object)} the default value is used, if one has been specified.
- * {@snippet :
+ * {@snippet class = is.codion.manual.javadoc.PropertyStoreSnippets region = usage :
  * Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties");
  *
  * PropertyStore store = PropertyStore.propertyStore(configurationFile);
@@ -75,8 +75,7 @@ import static java.util.stream.Collectors.toList;
  * featureEnabled.set(null);
  * defaultUsername.set(null);
  *
- * String isFeatureEnabled = System.getProperty("feature.enabled"); // "false"
- *}
+ * String isFeatureEnabled = System.getProperty("feature.enabled"); // "false"}
  */
 public final class PropertyStore {
 

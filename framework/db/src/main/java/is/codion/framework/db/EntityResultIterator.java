@@ -25,14 +25,13 @@ import java.util.Iterator;
 /**
  * Iterates through an {@link Entity} based query result.
  * Use try with resources or remember to call {@link #close()} in order to close underlying resources.
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.EntityConnectionSnippets region = iteratorSelect :
  * try (EntityResultIterator iterator = connection.iterator(select)) {
- *   while (iterator.hasNext()) {
- *     Entity entity = iterator.next();
- *     // process entity
- *   }
- * }
- *}
+ * 	while (iterator.hasNext()) {
+ * 		Entity entity = iterator.next();
+ * 		// process entity
+ * 	}
+ * }}
  */
 public interface EntityResultIterator extends Iterator<Entity>, Iterable<Entity>, AutoCloseable {
 

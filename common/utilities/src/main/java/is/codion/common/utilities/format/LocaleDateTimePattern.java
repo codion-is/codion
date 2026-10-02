@@ -45,22 +45,21 @@ import static java.util.stream.Collectors.toList;
  * <p>
  * Orders the year and month parts according to locale,
  * with two-digit month and day parts and two or four digit year.
- * {@snippet :
+ * {@snippet class = is.codion.manual.javadoc.LocaleDateTimePatternSnippets region = usage :
  * LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
- *     .delimiterDash()
- *     .yearFourDigits()
- *     .hoursMinutes()
- *     .build();
+ * 				.delimiterDash()
+ * 				.yearFourDigits()
+ * 				.hoursMinutes()
+ * 				.build();
  *
- * Locale iceland = Locale.of("is", "IS");
- * Locale us = Locale.of("en", "US");
+ * Locale iceland = Locale.forLanguageTag("is-IS");
+ * Locale us = Locale.forLanguageTag("en-US");
  *
- * pattern.datePattern(iceland);    // "dd-MM-yyyy"
- * pattern.datePattern(us);         // "MM-dd-yyyy"
+ * pattern.datePattern(iceland);     // "dd-MM-yyyy"
+ * pattern.datePattern(us);          // "MM-dd-yyyy"
  *
- * pattern.dateTimePattern(iceland);// "dd-MM-yyyy HH:mm"
- * pattern.dateTimePattern(us)     ;// "MM-dd-yyyy HH:mm"
- *}
+ * pattern.dateTimePattern(iceland); // "dd-MM-yyyy HH:mm"
+ * pattern.dateTimePattern(us);      // "MM-dd-yyyy HH:mm"}
  * @see #builder()
  */
 public final class LocaleDateTimePattern implements Serializable {
