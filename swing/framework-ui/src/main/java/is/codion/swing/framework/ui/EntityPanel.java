@@ -107,16 +107,14 @@ import static javax.swing.SwingConstants.VERTICAL;
 
 /**
  * A panel representing an Entity via an EntityModel, which facilitates browsing and editing of records.
- * {@snippet :
- *   EntityConnection connection = createConnection();
- *   SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connection);
- *   EntityPanel entityPanel = new EntityPanel(entityModel);
- *   entityPanel.initialize();
- *   JFrame frame = new JFrame();
- *   frame.add(entityPanel);
- *   frame.pack();
- *   frame.setVisible(true);
- *}
+ * {@snippet class = is.codion.demos.chinook.javadoc.EntityPanelSnippets region = usage :
+ * SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connection);
+ * EntityPanel entityPanel = new EntityPanel(entityModel);
+ * entityPanel.initialize();
+ * JFrame frame = new JFrame();
+ * frame.add(entityPanel);
+ * frame.pack();
+ * frame.setVisible(true);}
  */
 public class EntityPanel extends JPanel {
 
@@ -642,9 +640,8 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Returns the key used to identify user preferences for this panel, delegating to the model by default.
 	 * The default implementation is:
-	 * {@snippet :
-	 * return model().preferencesKey();
-	 *}
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityPanelSnippets region = preferencesKey :
+	 * return model().preferencesKey();}
 	 * Override the model's {@link EntityModel#preferencesKey()} in case this key is not unique within the
 	 * application, for example when the same entity type appears multiple times in different contexts.
 	 * @return the key used to identify user preferences for this panel
@@ -658,11 +655,10 @@ public class EntityPanel extends JPanel {
 	 * Configures the controls layout.<br>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * {@snippet :
-	 *   configureControls(layout -> layout
-	 *           .separator()
-	 *           .control(createCustomControl()))
-	 *}
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityPanelSnippets region = configureControls :
+	 * configureControls(layout -> layout
+	 * 				.separator()
+	 * 				.control(createCustomControl()));}
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#EDIT_CONTROLS ControlKeys#EDIT_CONTROLS}

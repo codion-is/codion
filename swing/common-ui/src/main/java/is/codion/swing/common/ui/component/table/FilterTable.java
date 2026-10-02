@@ -692,13 +692,13 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * <p>The {@link Action} is only triggered if enabled.
 	 * <p>The {@link ActionEvent} propagated when this action is performed, contains the associated {@link MouseEvent} as source.
-	 * {@snippet :
-	 *   public void actionPerformed(ActionEvent event) {
-	 *       MouseEvent mouseEvent = (MouseEvent) event.getSource();
-	 *       Point location = mouseEvent.getLocationOnScreen();
-	 *       // ...
-	 *   }
-	 *}
+	 * {@snippet class = is.codion.manual.javadoc.FilterTableSnippets region = doubleClick :
+	 * @Override
+	 * public void actionPerformed(ActionEvent event) {
+	 * 	MouseEvent mouseEvent = (MouseEvent) event.getSource();
+	 * 	Point location = mouseEvent.getLocationOnScreen();
+	 * 	// ...
+	 * }}
 	 * @return the {@link Value} controlling the action to perform when a double click is performed on the table
 	 */
 	public Value<Action> doubleClick() {

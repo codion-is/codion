@@ -38,17 +38,16 @@ import static javax.swing.KeyStroke.getKeyStroke;
 
 /**
  * A factory for key event builders.
- * {@snippet :
+ * {@snippet class = is.codion.manual.javadoc.KeyEventsSnippets region = usage :
  * JTextField textField = new JTextField();
  *
  * KeyEvents.builder()
- *          .keyCode(VK_DOWN)
- *          .onKeyRelease(false)
- *          .modifiers(MENU_SHORTCUT_MASK)
- *          .condition(WHEN_FOCUSED)
- *          .action(new FindNextAction())
- *          .enable(textField);
- *}
+ * 				.keyCode(VK_DOWN)
+ * 				.onKeyRelease(false)
+ * 				.modifiers(MENU_SHORTCUT_MASK)
+ * 				.condition(WHEN_FOCUSED)
+ * 				.action(findNext)
+ * 				.enable(textField);}
  * @see #builder()
  */
 public final class KeyEvents {

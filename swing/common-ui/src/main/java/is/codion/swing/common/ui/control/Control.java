@@ -43,16 +43,13 @@ import java.util.OptionalInt;
  * <p>
  * Controls come in two flavors: a {@link Command}/{@link ActionCommand} based {@link CommandControl}
  * and a {@link Value}/{@link State} based {@link ToggleControl}.
- * {@snippet :
- * State selectionEmpty = // ...
- *
+ * {@snippet class = is.codion.manual.javadoc.ControlSnippets region = usage :
  * CommandControl delete = Control.builder()
- *     .command(this::deleteSelected)
- *     .caption("Delete")
- *     .mnemonic('D')
- *     .enabled(selectionEmpty.not())
- *     .build();
- *}
+ * 				.command(this::deleteSelected)
+ * 				.caption("Delete")
+ * 				.mnemonic('D')
+ * 				.enabled(selectionEmpty.not())
+ * 				.build();}
  * @see #command(Command)
  * @see #action(ActionCommand)
  * @see #toggle(Value)

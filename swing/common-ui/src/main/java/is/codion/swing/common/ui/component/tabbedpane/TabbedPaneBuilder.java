@@ -32,29 +32,28 @@ import java.util.function.Supplier;
 
 /**
  * A builder for a JTabbedPane.
- * {@snippet :
+ * {@snippet class = is.codion.manual.javadoc.TabbedPaneBuilderSnippets region = usage :
  * Components.tabbedPane()
- *         .tab("First Tab", new JLabel("First"))
- *         .tab("Second Tab", new JLabel("Second"))
- *         .build();
+ * 				.tab("First Tab", new JLabel("First"))
+ * 				.tab("Second Tab", new JLabel("Second"))
+ * 				.build();
  *
  * Components.tabbedPane()
- *         .tabPlacement(SwingConstants.TOP)
- *         .tabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT)
- *         .tab("First Tab")
- *         .component(new JLabel("First"))
- *         .mnemonic(KeyEvent.VK_1)
- *         .toolTipText("This is the first tab")
- *         .icon(firstTabIcon)
- *         .add()
- *         .tab("Second Tab")
- *         .component(new JLabel("Second"))
- *         .mnemonic(KeyEvent.VK_2)
- *         .toolTipText("This is the second tab")
- *         .icon(secondTabIcon)
- *         .add()
- *         .build();
- *}
+ * 				.tabPlacement(SwingConstants.TOP)
+ * 				.tabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT)
+ * 				.tab("First Tab")
+ * 				.component(new JLabel("First"))
+ * 				.mnemonic(KeyEvent.VK_1)
+ * 				.toolTipText("This is the first tab")
+ * 				.icon(firstTabIcon)
+ * 				.add()
+ * 				.tab("Second Tab")
+ * 				.component(new JLabel("Second"))
+ * 				.mnemonic(KeyEvent.VK_2)
+ * 				.toolTipText("This is the second tab")
+ * 				.icon(secondTabIcon)
+ * 				.add()
+ * 				.build();}
  */
 public interface TabbedPaneBuilder extends ComponentBuilder<JTabbedPane, TabbedPaneBuilder> {
 

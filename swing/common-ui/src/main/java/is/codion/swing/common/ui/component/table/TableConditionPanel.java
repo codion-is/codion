@@ -114,11 +114,10 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	/**
 	 * Note that the {@link Controls} instance returned has no caption defined, copy it to add a caption.
-	 * {@snippet :
+	 * {@snippet class = is.codion.manual.javadoc.TableConditionPanelSnippets region = controls :
 	 * Controls conditionControls = conditionPanel.controls().copy()
-	 *          .caption("Filters")
-	 *          .build();
-	 * }
+	 * 				.caption("Filters")
+	 * 				.build();}
 	 * @return the controls provided by this condition panel, for clearing the condition and changing the condition view
 	 */
 	public Controls controls() {
