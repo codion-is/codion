@@ -51,54 +51,49 @@ import static java.util.stream.Collectors.toMap;
  * {@link Condition.All} indicates no condition, as in, all entities should be returned.
  * <p>
  * Conditions are typically created using column factory methods and combined using logical operators:
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.ConditionSnippets region = usage :
  * // Simple conditions using column factory methods
- * List<Entity> artists = connection.select(
- *     Artist.NAME.like("The %"));
+ * List<Entity> theArtists = connection.select(
+ * 				Artist.NAME.like("The %"));
  *
  * List<Entity> classicalTracks = connection.select(
- *     Track.GENRE_FK.equalTo(classicalGenre));
+ * 				Track.GENRE_FK.equalTo(classical));
  *
  * List<Entity> expensiveTracks = connection.select(
- *     Track.UNIT_PRICE.greaterThan(new BigDecimal("0.99")));
+ * 				Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
  *
  * // Complex conditions using logical combinations
- * List<Entity> filteredAlbums = connection.select(and(
- *     Album.ARTIST_FK.in(selectedArtists),
- *     Album.TITLE.likeIgnoreCase("%live%")));
+ * List<Entity> liveAlbums = connection.select(and(
+ * 				Album.ARTIST_FK.in(artists),
+ * 				Album.TITLE.likeIgnoreCase("%live%")));
  *
  * List<Entity> rockOrMetalTracks = connection.select(or(
- *     Track.GENRE_FK.equalTo(rockGenre),
- *     Track.GENRE_FK.equalTo(metalGenre)));
+ * 				Track.GENRE_FK.equalTo(rock),
+ * 				Track.GENRE_FK.equalTo(metal)));
  *
  * // Key-based conditions
- * Entity.Key artistKey = entities.primaryKey(Artist.TYPE, 1);
- * Entity artist = connection.selectSingle(Condition.key(artistKey));
+ * Entity.Key artistKey = entities.primaryKey(Artist.TYPE, 1L);
+ * Entity artist = connection.selectSingle(key(artistKey));
  * List<Entity> albumsByArtist = connection.select(
- *     Album.ARTIST_FK.equalTo(artist));
+ * 				Album.ARTIST_FK.equalTo(artist));
  *
  * // Multiple key conditions
- * List<Entity.Key> trackKeys = entities.primaryKeys(Track.TYPE, 1, 2, 3);
- * List<Entity> specificTracks = connection.select(
- *     Condition.keys(trackKeys));
+ * List<Entity.Key> trackKeys = entities.primaryKeys(Track.TYPE, 1L, 2L, 3L);
+ * List<Entity> tracks = connection.select(keys(trackKeys));
  *
  * // Complex nested conditions
- * List<Entity> complexQuery = connection.select(
- *     Select.where(and(
- *         Album.ARTIST_FK.in(popularArtists),
- *         or(
- *             Album.TITLE.likeIgnoreCase("%greatest%"),
- *             Album.TITLE.likeIgnoreCase("%best%"))))
- *         .orderBy(ascending(Album.TITLE))
- *         .build());
+ * Condition greatestHits = and(
+ * 				Album.ARTIST_FK.in(artists),
+ * 				or(
+ * 								Album.TITLE.likeIgnoreCase("%greatest%"),
+ * 								Album.TITLE.likeIgnoreCase("%best%")));
+ *
+ * List<Entity> albums = connection.select(
+ * 				Select.where(greatestHits)
+ * 								.orderBy(ascending(Album.TITLE)));
  *
  * // All entities (no filtering)
- * List<Entity> allArtists = connection.select(all(Artist.TYPE));
- *
- * // Custom conditions for advanced queries
- * List<Entity> customQuery = connection.select(
- *     Artist.CUSTOM_CONDITION.get(List.of(searchValue)));
- *}
+ * List<Entity> allArtists = connection.select(all(Artist.TYPE));}
  * @see #all(EntityType)
  * @see #key(Entity.Key)
  * @see #keys(Collection)
