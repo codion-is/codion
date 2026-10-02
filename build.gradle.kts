@@ -269,7 +269,8 @@ fun hasSonarqubeProperties(): Boolean {
 }
 
 fun snippetSourceDirs(): List<File> =
-    listOf("demos/chinook/src/main/java", "demos/world/src/main/java", "demos/schemabrowser/src/main/java").map { rootProject.file(it) }
+    listOf("demos/chinook/src/main/java", "demos/world/src/main/java", "demos/schemabrowser/src/main/java", "demos/manual/src/main/java")
+        .map { rootProject.file(it) }
 
 fun snippetStylesheet(): File = rootProject.file("documentation/src/docs/javadoc/snippets.css")
 
