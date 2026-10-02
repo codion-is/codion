@@ -17,6 +17,6 @@
  * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 /**
- * Snippets for {@link is.codion.tools.generator}, included by manual/framework-domain-generator.adoc.
+ * Snippets for {@code is.codion.tools.generator}, included by manual/framework-domain-generator.adoc.
  */
 package is.codion.manual.tools.generator;

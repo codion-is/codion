@@ -191,6 +191,9 @@ public final class FilterTableColumn<C> extends TableColumn {
 		Builder<C> cellEditor(@Nullable TableCellEditor cellEditor);
 
 		/**
+		 * The cell renderer is used as is, without the rendering settings of the table, such as the selection
+		 * and alternate row colors. To keep those, wrap it via {@link FilterTable.Builder#cellRenderer(Object, Class, java.util.function.Consumer)}
+		 * and {@link FilterTableCellRenderer.Builder#renderer(TableCellRenderer)}.
 		 * @param cellRenderer the cell renderer
 		 * @return this builder instance
 		 */

@@ -39,6 +39,11 @@ configure(frameworkModules()) {
             .withPathSensitivity(PathSensitivity.RELATIVE)
     }
 
+    // The javadoc jar is only built on publishing, so check runs javadoc, failing on broken links and drifted snippets
+    tasks.named("check") {
+        dependsOn(tasks.named("javadoc"))
+    }
+
     tasks.withType<Jar>().configureEach {
         manifest {
             attributes["Implementation-Title"] = project.name
