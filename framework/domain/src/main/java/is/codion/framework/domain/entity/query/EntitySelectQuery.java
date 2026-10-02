@@ -91,19 +91,18 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 		 * CTEs are prepended to the query using the WITH clause.
 		 * <p>
 		 * Example:
-		 * {@snippet :
+		 * {@snippet class = is.codion.demos.chinook.javadoc.EntitySelectQuerySnippets region = with :
 		 * EntitySelectQuery.builder()
-		 *     .with("active_customers")
-		 *     .as("SELECT * FROM customer WHERE active = true")
-		 *     .from("active_customers")
-		 *     .columns("id, name")
-		 *     .build();
-		 *}
+		 * 				.with("track_revenue")
+		 * 				.as("SELECT track_id, SUM(unitprice * quantity) AS revenue FROM chinook.invoiceline GROUP BY track_id")
+		 * 				.from("track_revenue")
+		 * 				.columns("track_id, revenue")
+		 * 				.build();}
 		 * Generates:
 		 * <pre>{@code
-		 * WITH active_customers AS (SELECT * FROM customer WHERE active = true)
-		 * SELECT id, name
-		 * FROM active_customers
+		 * WITH track_revenue AS (SELECT track_id, SUM(unitprice * quantity) AS revenue FROM chinook.invoiceline GROUP BY track_id)
+		 * SELECT track_id, revenue
+		 * FROM track_revenue
 		 * }</pre>
 		 */
 		sealed interface WithAsStep permits DefaultWithAsStep {

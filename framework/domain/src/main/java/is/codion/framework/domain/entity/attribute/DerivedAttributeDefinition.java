@@ -32,121 +32,71 @@ import java.util.List;
  * These attributes provide calculated fields, formatting, aggregation, and other computed values.
  * <p>
  * Derived attributes can be cached for performance or computed on-demand:
- * {@snippet :
- * public class Store extends DomainModel {
+ * {@snippet class = is.codion.demos.chinook.javadoc.DerivedAttributeDefinitionSnippets region = usage :
+ * interface Employee {
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.employee");
  *
- *     interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ * 	Column<Long> ID = TYPE.longColumn("id");
+ * 	Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+ * 	Column<String> LASTNAME = TYPE.stringColumn("lastname");
+ * 	Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
  *
- *         Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
- *         Column<String> LAST_NAME = TYPE.stringColumn("last_name");
- *         Column<String> EMAIL = TYPE.stringColumn("email");
- *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
- *         Column<String> PHONE = TYPE.stringColumn("phone");
- *
- *         // Derived attributes
- *         Attribute<String> FULL_NAME = TYPE.stringAttribute("full_name");
- *         Attribute<String> CONTACT_INFO = TYPE.stringAttribute("contact_info");
- *         Attribute<Integer> AGE = TYPE.integerAttribute("age");
- *         Attribute<String> NAME_UPPER = TYPE.stringAttribute("name_upper");
- *     }
- *
- *     void defineCustomer() {
- *         Customer.TYPE.as()
- *             .attributes(
- *                 Customer.FIRST_NAME.as()
- *                     .column(),
- *                 Customer.LAST_NAME.as()
- *                     .column(),
- *                 Customer.EMAIL.as()
- *                     .column(),
- *                 Customer.BIRTH_DATE.as()
- *                     .column(),
- *                 Customer.PHONE.as()
- *                     .column(),
- *
- *                 // Simple derived attribute (cached by default)
- *                 Customer.FULL_NAME.as()
- *                     .derived()
- *                     .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .with(values -> {
- *                         String first = values.get(Customer.FIRST_NAME);
- *                         String last = values.get(Customer.LAST_NAME);
- *                         if (first == null && last == null) {
- *                             return null;
- *                         }
- *                         return ((first != null ? first : "") + " " +
- *                                 (last != null ? last : "")).trim();
- *                     })
- *                     .caption("Full Name"),
- *
- *                 // Multi-source derived attribute with caching disabled
- *                 Customer.CONTACT_INFO.as()
- *                     .derived()
- *                     .from(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
- *                     .with(values -> {
- *                         String name = values.get(Customer.FULL_NAME);
- *                         String email = values.get(Customer.EMAIL);
- *                         String phone = values.get(Customer.PHONE);
- *
- *                         StringBuilder contact = new StringBuilder();
- *                         if (name != null) contact.append(name);
- *                         if (email != null) {
- *                             if (contact.length() > 0) contact.append(" - ");
- *                             contact.append(email);
- *                         }
- *                         if (phone != null) {
- *                             if (contact.length() > 0) contact.append(" - ");
- *                             contact.append(phone);
- *                         }
- *                         return contact.toString();
- *                     })
- *                     .cached(false) // Compute on each access
- *                     .caption("Contact Information"),
- *
- *                 // Time-dependent derived attribute (not cached)
- *                 Customer.AGE.as()
- *                     .derived()
- * 			               .from(Customer.BIRTH_DATE)
- *                     .with(values -> {
- *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
- *                         return birthDate != null ?
- *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
- *                     })
- *                     .cached(false) // Age changes over time
- *                     .caption("Age"),
- *
- *                 // Formatting derived attribute
- *                 Customer.NAME_UPPER.as()
- *                     .derived()
- * 		                 .from(Customer.FULL_NAME)
- *                     .with(values -> {
- *                         String fullName = values.get(Customer.FULL_NAME);
- *                         return fullName != null ? fullName.toUpperCase() : null;
- *                     })
- *                     .caption("Name (Uppercase)"))
- *             .build();
- *     }
+ * 	// Derived attributes
+ * 	Attribute<String> NAME = TYPE.stringAttribute("name");
+ * 	Attribute<Integer> YEARS_EMPLOYED = TYPE.integerAttribute("years_employed");
  * }
  *
- * // Usage examples
- * Entity customer = entities.entity(Customer.TYPE)
- *     .with(Customer.FIRST_NAME, "John")
- *     .with(Customer.LAST_NAME, "Doe")
- *     .with(Customer.EMAIL, "john.doe@example.com")
- *     .with(Customer.BIRTH_DATE, LocalDate.of(1990, 5, 15))
- *     .build();
+ * EntityDefinition employee() {
+ * 	return Employee.TYPE.as()
+ * 					.attributes(
+ * 									Employee.ID.as()
+ * 													.primaryKey(),
+ * 									Employee.FIRSTNAME.as()
+ * 													.column()
+ * 													.caption("First name"),
+ * 									Employee.LASTNAME.as()
+ * 													.column()
+ * 													.caption("Last name"),
+ * 									Employee.HIREDATE.as()
+ * 													.column()
+ * 													.caption("Hire date"),
  *
- * // Derived values are computed automatically
- * String fullName = customer.get(Customer.FULL_NAME);         // "John Doe" (cached)
- * String contactInfo = customer.get(Customer.CONTACT_INFO);   // Computed each time
- * Integer age = customer.get(Customer.AGE);                   // Current age
- * String nameUpper = customer.get(Customer.NAME_UPPER);       // "JOHN DOE"
+ * 									// Simple derived attribute (cached by default)
+ * 									Employee.NAME.as()
+ * 													.derived()
+ * 													.from(Employee.FIRSTNAME, Employee.LASTNAME)
+ * 													.with(values -> values.optional(Employee.FIRSTNAME).orElse("") + " " +
+ * 																	values.optional(Employee.LASTNAME).orElse(""))
+ * 													.caption("Name"),
  *
- * // Modifying source attributes updates derived values
- * customer.set(Customer.FIRST_NAME, "Jane");
- * String newFullName = customer.get(Customer.FULL_NAME);      // "Jane Doe"
- *}
+ * 									// Time-dependent derived attribute (not cached)
+ * 									Employee.YEARS_EMPLOYED.as()
+ * 													.derived()
+ * 													.from(Employee.HIREDATE)
+ * 													.with(values -> values.optional(Employee.HIREDATE)
+ * 																	.map(hireDate -> Period.between(hireDate, LocalDate.now()).getYears())
+ * 																	.orElse(null))
+ * 													.cached(false) // Changes over time
+ * 													.caption("Years employed"))
+ * 					.build();
+ * }
+ *
+ * void employees(Entities entities) {
+ * 	// Usage
+ * 	Entity employee = entities.entity(Employee.TYPE)
+ * 					.with(Employee.FIRSTNAME, "Jane")
+ * 					.with(Employee.LASTNAME, "Peacock")
+ * 					.with(Employee.HIREDATE, LocalDate.of(2002, 4, 1))
+ * 					.build();
+ *
+ * 	// Derived values are computed automatically
+ * 	String name = employee.get(Employee.NAME);                     // "Jane Peacock" (cached)
+ * 	Integer yearsEmployed = employee.get(Employee.YEARS_EMPLOYED); // Computed on each access
+ *
+ * 	// Modifying source attributes updates derived values
+ * 	employee.set(Employee.LASTNAME, "Park");
+ * 	String newName = employee.get(Employee.NAME);                  // "Jane Park"
+ * }}
  * @param <T> the underlying type
  * @see DerivedValue
  * @see #attributes()

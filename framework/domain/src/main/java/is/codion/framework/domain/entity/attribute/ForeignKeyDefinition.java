@@ -38,106 +38,44 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * for referenced entities.
  * <p>
  * Foreign key definitions control the loading strategy and behavior of entity relationships:
- * {@snippet :
- * public class Store extends DomainModel {
+ * {@snippet class = is.codion.demos.chinook.javadoc.ForeignKeyDefinitionSnippets region = usage :
+ * // Reference depth 0, the invoice is not loaded
+ * InvoiceLine.INVOICE_FK.as()
+ * 				.foreignKey()
+ * 				.referenceDepth(0);
  *
- *     interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<String> NAME = TYPE.stringColumn("name");
- *         Column<String> EMAIL = TYPE.stringColumn("email");
- *     }
+ * // The default reference depth of 1 loads the artist
+ * Album.ARTIST_FK.as()
+ * 				.foreignKey();
  *
- *     interface Order {
- *         EntityType TYPE = DOMAIN.entityType("store.order");
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
- *         Column<LocalDateTime> ORDER_DATE = TYPE.localDateTimeColumn("order_date");
- *         Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
- *
- *         ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
- *     }
- *
- *     interface OrderLine {
- *         EntityType TYPE = DOMAIN.entityType("store.order_line");
- *         Column<Integer> ORDER_ID = TYPE.integerColumn("order_id");
- *         Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
- *         Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
- *
- *         ForeignKey ORDER_FK = TYPE.foreignKey("order_fk", ORDER_ID, Order.ID);
- *     }
- *
- *     void defineEntities() {
- *         Order.TYPE.as()
- *             .attributes(
- *                 Order.ID.as()
- *                     .primaryKey(),
- *                 Order.CUSTOMER_ID.as()
- *                     .column(),
- *                 Order.ORDER_DATE.as()
- *                     .column(),
- *                 Order.TOTAL.as()
- *                     .column(),
- *
- *                 // Basic foreign key with default reference depth (1)
- *                 Order.CUSTOMER_FK.as()
- *                     .foreignKey()
- *                     .caption("Customer"))
- *             .build();
- *
- *         OrderLine.TYPE.as()
- *             .attributes(
- *                 OrderLine.ORDER_ID.as()
- *                     .primaryKey(),
- *                 OrderLine.PRODUCT_ID.as()
- *                     .column(),
- *                 OrderLine.QUANTITY.as()
- *                     .column(),
- *
- *                 // Foreign key with deeper reference depth to load customer info.
- *                 // Note that only the foreign keys among the included attributes are populated,
- *                 // so CUSTOMER_FK must be included for the reference depth of 2 to reach the customer.
- *                 OrderLine.ORDER_FK.as()
- *                     .foreignKey()
- *                     .caption("Order")
- *                     .referenceDepth(2)  // Load order AND its customer
- *                     .include(Order.ORDER_DATE, Order.TOTAL, Order.CUSTOMER_FK))
- *             .build();
- *     }
- * }
+ * // Foreign key with deeper reference depth, loading the album AND its artist.
+ * // Note that only the foreign keys among the included attributes are populated,
+ * // so ARTIST_FK must be included for the reference depth of 2 to reach the artist.
+ * Track.ALBUM_FK.as()
+ * 				.foreignKey()
+ * 				.referenceDepth(2)
+ * 				.include(Album.ARTIST_FK, Album.TITLE);
  *
  * // Reference depth behavior examples:
  *
  * // Reference depth 0: No automatic loading
- * List<Entity> orders = connection.select(
- *     Select.where(all(Order.TYPE))
- *         .referenceDepth(0)
- *         .build());
+ * List<Entity> tracks = connection.select(
+ * 				Select.all(Track.TYPE)
+ * 								.referenceDepth(0));
  *
- * Entity order = orders.get(0);
- * Entity customer = order.get(Order.CUSTOMER_FK); // null - not loaded
- * Entity customerEntity = order.entity(Order.CUSTOMER_FK); // Contains only primary key
+ * Entity track = tracks.get(0);
+ * Entity album = track.get(Track.ALBUM_FK); // null - not loaded
+ * Entity albumEntity = track.entity(Track.ALBUM_FK); // Contains only primary key
  *
- * // Reference depth 1: Load referenced entity only
- * List<Entity> ordersWithCustomers = connection.select(
- *     Select.where(all(Order.TYPE))
- *         .referenceDepth(1) // Default
- *         .build());
+ * // Reference depth 2, as defined: Load the referenced entity and its references
+ * List<Entity> tracksWithAlbums = connection.select(all(Track.TYPE));
  *
- * Entity orderWithCustomer = ordersWithCustomers.get(0);
- * Entity loadedCustomer = orderWithCustomer.get(Order.CUSTOMER_FK); // Fully loaded customer
+ * Entity trackWithAlbum = tracksWithAlbums.get(0);
+ * Entity loadedAlbum = trackWithAlbum.get(Track.ALBUM_FK); // Album is loaded
+ * Entity artist = loadedAlbum.get(Album.ARTIST_FK);         // Artist is also loaded
  *
- * // Reference depth 2: Load referenced entity and its references
- * List<Entity> orderLines = connection.select(all(OrderLine.TYPE));
- *
- * Entity orderLine = orderLines.get(0);
- * Entity orderWithCustomer = orderLine.get(OrderLine.ORDER_FK); // Order is loaded
- * Entity customer = orderWithCustomer.get(Order.CUSTOMER_FK);   // Customer is also loaded
- *
- * // WARNING: Circular references with referenceDepth(-1)
- * // If Order had a foreign key back to OrderLine, using referenceDepth(-1) would cause infinite recursion:
- * // OrderLine → Order → OrderLine → Order → ... → StackOverflowError
- *}
+ * // WARNING: an unlimited reference depth, -1, with a cyclic foreign key reference
+ * // in the data, causes infinite recursion, since no cycle detection is performed}
  * @see #referenceDepth()
  * @see #soft()
  * @see #attributes()

@@ -35,97 +35,37 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * Derived attributes are defined using value providers that receive source values
  * and compute the derived result:
- * {@snippet :
- * public class Store extends DomainModel {
+ * {@snippet class = is.codion.demos.chinook.javadoc.DerivedValueSnippets region = usage :
+ * // Computes the invoice line total from the quantity and unit price
+ * class InvoiceLineTotal implements DerivedValue<BigDecimal> {
  *
- *     interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ * 	@Override
+ * 	public BigDecimal from(SourceValues values) {
+ * 		Integer quantity = values.get(InvoiceLine.QUANTITY);
+ * 		BigDecimal unitPrice = values.get(InvoiceLine.UNITPRICE);
+ * 		if (unitPrice == null || quantity == null) {
+ * 			return null;
+ * 		}
  *
- *         Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
- *         Column<String> LAST_NAME = TYPE.stringColumn("last_name");
- *         Column<String> EMAIL = TYPE.stringColumn("email");
- *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
- *
- *         // Derived attributes
- *         Attribute<String> FULL_NAME = TYPE.stringAttribute("full_name");
- *         Attribute<String> DISPLAY_NAME = TYPE.stringAttribute("display_name");
- *         Attribute<Integer> AGE = TYPE.integerAttribute("age");
- *         Attribute<String> INITIALS = TYPE.stringAttribute("initials");
- *     }
- *
- *     void defineCustomer() {
- *         Customer.TYPE.as()
- *             .attributes(
- *                 Customer.FIRST_NAME.as()
- *                     .column(),
- *                 Customer.LAST_NAME.as()
- *                     .column(),
- *                 Customer.EMAIL.as()
- *                     .column(),
- *                 Customer.BIRTH_DATE.as()
- *                     .column(),
- *
- *                 // Simple concatenation
- *                 Customer.FULL_NAME.as()
- *                     .derived()
- * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .with(values -> {
- *                         String first = values.get(Customer.FIRST_NAME);
- *                         String last = values.get(Customer.LAST_NAME);
- *                         return (first != null ? first : "") + " " + (last != null ? last : "");
- *                     }),
- *
- *                 // Complex formatting with multiple sources
- *                 Customer.DISPLAY_NAME.as()
- *                     .derived()
- * 				             .from(Customer.FULL_NAME, Customer.EMAIL)
- *                     .with(values -> {
- *                         String fullName = values.get(Customer.FULL_NAME);
- *                         String email = values.get(Customer.EMAIL);
- *                         return fullName + " (" + email + ")";
- *                     }),
- *
- *                 // Age calculation
- *                 Customer.AGE.as()
- *                     .derived()
- * 				             .from(Customer.BIRTH_DATE)
- *                     .with(values -> {
- *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
- *                         return birthDate != null ?
- *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
- *                     }),
- *
- *                 // Initials from names
- *                 Customer.INITIALS.as()
- *                     .derived()
- * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .with(values -> {
- *                         String first = values.get(Customer.FIRST_NAME);
- *                         String last = values.get(Customer.LAST_NAME);
- *                         String firstInitial = first != null && !first.isEmpty() ?
- *                             first.substring(0, 1).toUpperCase() : "";
- *                         String lastInitial = last != null && !last.isEmpty() ?
- *                             last.substring(0, 1).toUpperCase() : "";
- *                         return firstInitial + lastInitial;
- *                     }))
- *             .build();
- *     }
+ * 		return unitPrice.multiply(BigDecimal.valueOf(quantity));
+ * 	}
  * }
  *
+ * // In the entity definition
+ * InvoiceLine.TOTAL.as()
+ * 				.derived()
+ * 				.from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
+ * 				.with(new InvoiceLineTotal())
+ * 				.caption("Total");
+ *
  * // Usage
- * Entity customer = entities.entity(Customer.TYPE)
- *     .with(Customer.FIRST_NAME, "John")
- *     .with(Customer.LAST_NAME, "Doe")
- *     .with(Customer.EMAIL, "john.doe@example.com")
- *     .with(Customer.BIRTH_DATE, LocalDate.of(1990, 5, 15))
- *     .build();
+ * Entity invoiceLine = entities.entity(InvoiceLine.TYPE)
+ * 				.with(InvoiceLine.UNITPRICE, BigDecimal.valueOf(0.99))
+ * 				.with(InvoiceLine.QUANTITY, 2)
+ * 				.build();
  *
  * // Derived values are computed automatically
- * String fullName = customer.get(Customer.FULL_NAME);       // "John Doe"
- * String displayName = customer.get(Customer.DISPLAY_NAME); // "John Doe (john.doe@example.com)"
- * Integer age = customer.get(Customer.AGE);                 // Calculated age
- * String initials = customer.get(Customer.INITIALS);       // "JD"
- *}
+ * BigDecimal total = invoiceLine.get(InvoiceLine.TOTAL); // 1.98}
  * @param <T> the value type
  * @see #sourceValues(Attribute, Map)
  * @see DerivedValue.SourceValues

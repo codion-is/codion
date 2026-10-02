@@ -50,77 +50,64 @@ import static is.codion.common.utilities.Configuration.*;
  * </ul>
  * <p>
  * AttributeDefinitions are created using the builder pattern through attribute definers:
- * {@snippet :
- * public class Store extends DomainModel {
+ * {@snippet class = is.codion.demos.world.javadoc.AttributeDefinitionSnippets region = usage :
+ * interface Country {
+ * 	EntityType TYPE = DOMAIN.entityType("world.country");
  *
- *     interface Product {
- *         EntityType TYPE = DOMAIN.entityType("store.product");
- *
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<String> NAME = TYPE.stringColumn("name");
- *         Column<String> DESCRIPTION = TYPE.stringColumn("description");
- *         Column<BigDecimal> PRICE = TYPE.bigDecimalColumn("price");
- *         Column<String> CATEGORY = TYPE.stringColumn("category");
- *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
- *         Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
- *     }
- *
- *     void defineProduct() {
- *         Product.TYPE.as()
- *             .attributes(
- *                 Product.ID.as()
- *                     .primaryKey()
- *                     .generator(Generator.identity())
- *                     .caption("Product ID"),
- *
- *                 Product.NAME.as()
- *                     .column()
- *                     .caption("Product Name")
- *                     .nullable(false)
- *                     .maximumLength(100)
- *                     .description("The name of the product"),
- *
- *                 Product.DESCRIPTION.as()
- *                     .column()
- *                     .caption("Description")
- *                     .maximumLength(500)
- *                     .nullable(true),
- *
- *                 Product.PRICE.as()
- *                     .column()
- *                     .caption("Price")
- *                     .nullable(false)
- *                     .minimum(BigDecimal.ZERO)
- *                     .maximum(new BigDecimal("99999.99"))
- *                     .fractionDigits(2)
- *                     .defaultValue(BigDecimal.ZERO),
- *
- *                 Product.CATEGORY.as()
- *                     .column()
- *                     .caption("Category")
- *                     .nullable(false)
- *                     .items(List.of(
- *                         Item.item("ELECTRONICS", "Electronics"),
- *                         Item.item("CLOTHING", "Clothing"),
- *                         Item.item("BOOKS", "Books"),
- *                         Item.item("HOME", "Home & Garden"))),
- *
- *                 Product.ACTIVE.as()
- *                     .column()
- *                     .caption("Active")
- *                     .nullable(false)
- *                     .defaultValue(true),
- *
- *                 Product.CREATED_DATE.as()
- *                     .column()
- *                     .caption("Created")
- *                     .nullable(false)
- *                     .withDefault(true) // Database sets this
- *                     .updatable(false))
- *             .build();
- *     }
+ * 	Column<String> CODE = TYPE.stringColumn("code");
+ * 	Column<String> NAME = TYPE.stringColumn("name");
+ * 	Column<String> CONTINENT = TYPE.stringColumn("continent");
+ * 	Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
+ * 	Column<Integer> POPULATION = TYPE.integerColumn("population");
+ * 	Column<Double> LIFE_EXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
  * }
- *}
+ *
+ * EntityDefinition country() {
+ * 	return Country.TYPE.as()
+ * 					.attributes(
+ * 									Country.CODE.as()
+ * 													.primaryKey()
+ * 													.caption("Code")
+ * 													.updatable(true)
+ * 													.maximumLength(3),
+ *
+ * 									Country.NAME.as()
+ * 													.column()
+ * 													.caption("Name")
+ * 													.description("The name of the country")
+ * 													.nullable(false)
+ * 													.maximumLength(52),
+ *
+ * 									Country.CONTINENT.as()
+ * 													.column()
+ * 													.caption("Continent")
+ * 													.nullable(false)
+ * 													.items(List.of(
+ * 																	item("Africa"), item("Antarctica"), item("Asia"),
+ * 																	item("Europe"), item("North America"), item("Oceania"),
+ * 																	item("South America"))),
+ *
+ * 									Country.SURFACEAREA.as()
+ * 													.column()
+ * 													.caption("Surface area")
+ * 													.nullable(false)
+ * 													.numberGrouping(true)
+ * 													.fractionDigits(2),
+ *
+ * 									Country.POPULATION.as()
+ * 													.column()
+ * 													.caption("Population")
+ * 													.nullable(false)
+ * 													.numberGrouping(true)
+ * 													.defaultValue(0),
+ *
+ * 									Country.LIFE_EXPECTANCY.as()
+ * 													.column()
+ * 													.caption("Life expectancy")
+ * 													.fractionDigits(1)
+ * 													.range(0, 99))
+ * 					.build();
+ * }}
  * @param <T> the underlying type
  * @see Attribute#as()
  * @see Builder

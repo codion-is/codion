@@ -20,38 +20,35 @@ package is.codion.framework.domain.entity.attribute;
 
 /**
  * Specifies a reusable column configuration.
- * {@snippet :
- * ColumnTemplate<Integer> REQUIRED_POSITIVE =
- *         column -> column.as()
- *                 .column()
- *                 .nullable(false)
- *                 .minimum(0);
+ * {@snippet class = is.codion.demos.chinook.javadoc.ColumnTemplateSnippets region = usage :
+ * ColumnTemplate<String> REQUIRED_SEARCHABLE =
+ * 				column -> column.as()
+ * 								.column()
+ * 								.nullable(false)
+ * 								.searchable(true);
  *
- * Customer.AGE.as(REQUIRED_POSITIVE)
- *         .caption("Age")
- *}
+ * Customer.LASTNAME.as(REQUIRED_SEARCHABLE)
+ * 				.maximumLength(20);}
  * <p>A template configures the column from the ground up, so it is free to use any
  * {@link Column.ColumnDefiner} method, a subquery or primary key column is templated
  * just like a regular one.
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.ColumnTemplateSnippets region = subquery :
  * static ColumnTemplate<Integer> count(String subquery) {
- *     return column -> column.as()
- *             .subquery(subquery)
- *             .numberGrouping(true);
- * }
- *}
+ * 	return column -> column.as()
+ * 					.subquery(subquery)
+ * 					.numberGrouping(true);
+ * }}
  * <p>Templates compose by applying the one being extended.
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.ColumnTemplateSnippets region = compose :
  * ColumnTemplate<String> NAME =
- *         column -> column.as()
- *                 .column()
- *                 .maximumLength(50)
- *                 .searchable(true);
+ * 				column -> column.as()
+ * 								.column()
+ * 								.maximumLength(120)
+ * 								.searchable(true);
  *
  * ColumnTemplate<String> REQUIRED_NAME =
- *         column -> NAME.apply(column)
- *                 .nullable(false);
- *}
+ * 				column -> NAME.apply(column)
+ * 								.nullable(false);}
  * @param <T> the column type
  * @see Column#as(ColumnTemplate)
  */

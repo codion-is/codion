@@ -43,45 +43,35 @@ import static java.util.Objects.requireNonNull;
  * They serve as factories for creating typed attributes (columns, foreign keys, derived attributes)
  * and provide the starting point for defining entity structure.
  * <p>
- * {@snippet :
- * public class Store extends DomainModel {
- *     public static final DomainType DOMAIN = domainType(Store.class);
+ * {@snippet class = is.codion.demos.chinook.javadoc.EntityTypeSnippets region = usage :
+ * // The domain API
+ * public interface Chinook {
  *
- *     // Define entity types as interfaces for organization
- *     public interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ * 	DomainType DOMAIN = domainType(Chinook.class);
  *
- *         // Define typed columns
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<String> NAME = TYPE.stringColumn("name");
- *         Column<String> EMAIL = TYPE.stringColumn("email");
- *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
- *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
- *     }
+ * 	// Define entity types as interfaces for organization
+ * 	interface Customer {
+ * 		EntityType TYPE = DOMAIN.entityType("chinook.customer");
  *
- *     public interface Order {
- *         EntityType TYPE = DOMAIN.entityType("store.order");
+ * 		// Define typed columns
+ * 		Column<Long> ID = TYPE.longColumn("id");
+ * 		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+ * 		Column<String> LASTNAME = TYPE.stringColumn("lastname");
+ * 		Column<String> EMAIL = TYPE.stringColumn("email");
+ * 	}
  *
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<LocalDateTime> ORDER_DATE = TYPE.localDateTimeColumn("order_date");
- *         Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
+ * 	interface Invoice {
+ * 		EntityType TYPE = DOMAIN.entityType("chinook.invoice");
  *
- *         // Define foreign key to Customer
- *         Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
- *         ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+ * 		Column<Long> ID = TYPE.longColumn("id");
+ * 		Column<LocalDate> DATE = TYPE.localDateColumn("invoicedate");
+ * 		Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
  *
- *         // Custom condition type for filtering
- *         ConditionType RECENT = TYPE.conditionType("recent_orders");
- *     }
- *
- *     // Constructor defines the entity structures
- *     public Store() {
- *         super(DOMAIN);
- *         defineCustomer();
- *         defineOrder();
- *     }
- * }
- *}
+ * 		// Define foreign key to Customer
+ * 		Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
+ * 		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+ * 	}
+ * }}
  * @see #as()
  * @see DomainType#entityType(String)
  */
@@ -352,31 +342,32 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given attributes.
-	 * {@snippet :
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityTypeSnippets region = foreignKey :
 	 * // Single column foreign key
-	 * interface Order {
-	 *     EntityType TYPE = DOMAIN.entityType("store.order");
+	 * interface Invoice {
+	 * 	EntityType TYPE = DOMAIN.entityType("chinook.invoice");
 	 *
-	 *     Column<Integer> ID = TYPE.integerColumn("id");
-	 *     Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
+	 * 	Column<Long> ID = TYPE.longColumn("id");
+	 * 	Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
 	 *
-	 *     // Define foreign key to Customer entity
-	 *     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
-	 *         CUSTOMER_ID, Customer.ID);
+	 * 	// Define foreign key to Customer entity
+	 * 	ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
+	 * 					CUSTOMER_ID, Customer.ID);
 	 * }
 	 *
 	 * // Usage in entity definition
-	 * Order.TYPE.as()
-	 *     .attributes(
-	 *         Order.ID.as()
-	 *             .primaryKey(),
-	 *         Order.CUSTOMER_ID.as()
-	 *             .column(),
-	 *         Order.CUSTOMER_FK.as()
-	 *             .foreignKey()
-	 *             .caption("Customer"))
-	 *     .build();
-	 *}
+	 * EntityDefinition invoice() {
+	 * 	return Invoice.TYPE.as()
+	 * 					.attributes(
+	 * 									Invoice.ID.as()
+	 * 													.primaryKey(),
+	 * 									Invoice.CUSTOMER_ID.as()
+	 * 													.column(),
+	 * 									Invoice.CUSTOMER_FK.as()
+	 * 													.foreignKey()
+	 * 													.caption("Customer"))
+	 * 					.build();
+	 * }}
 	 * @param name the attribute name
 	 * @param column the column
 	 * @param referencedColumn the referenced column
@@ -387,25 +378,22 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given columns.
-	 * {@snippet :
+	 * {@snippet class = is.codion.demos.schemabrowser.javadoc.EntityTypeSnippets region = compositeForeignKey :
 	 * // Composite foreign key (two columns)
-	 * interface OrderLine {
-	 *     EntityType TYPE = DOMAIN.entityType("store.order_line");
+	 * interface TableColumn {
+	 * 	EntityType TYPE = DOMAIN.entityType("column");
 	 *
-	 *     // Composite primary key columns
-	 *     Column<Integer> ORDER_ID = TYPE.integerColumn("order_id");
-	 *     Column<Integer> LINE_NUMBER = TYPE.integerColumn("line_number");
+	 * 	Column<String> NAME = TYPE.stringColumn("column_name");
 	 *
-	 *     // Foreign key columns to ProductPrice (which has composite key)
-	 *     Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
-	 *     Column<LocalDate> PRICE_DATE = TYPE.localDateColumn("price_date");
+	 * 	// Foreign key columns, referencing the composite primary key of Table
+	 * 	Column<String> SCHEMA = TYPE.stringColumn("table_schema");
+	 * 	Column<String> TABLE_NAME = TYPE.stringColumn("table_name");
 	 *
-	 *     // Composite foreign key
-	 *     ForeignKey PRODUCT_PRICE_FK = TYPE.foreignKey("product_price_fk",
-	 *         PRODUCT_ID, ProductPrice.PRODUCT_ID,
-	 *         PRICE_DATE, ProductPrice.EFFECTIVE_DATE);
-	 * }
-	 *}
+	 * 	// Composite foreign key
+	 * 	ForeignKey TABLE_FK = TYPE.foreignKey("table_fk",
+	 * 					SCHEMA, Table.SCHEMA,
+	 * 					TABLE_NAME, Table.NAME);
+	 * }}
 	 * @param name the column name
 	 * @param firstColumn the first column
 	 * @param firstReferencedColumn the first referenced column

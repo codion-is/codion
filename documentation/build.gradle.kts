@@ -122,7 +122,7 @@ tasks.asciidoctor {
 }
 
 val javadocModules = frameworkModules().filter { module -> module.plugins.hasPlugin("java") }
-val snippetSourceDirs = listOf("demos/chinook/src/main/java", "demos/world/src/main/java").map { rootProject.file(it) }
+val snippetSourceDirs = listOf("demos/chinook/src/main/java", "demos/world/src/main/java", "demos/schemabrowser/src/main/java").map { rootProject.file(it) }
 val snippetStylesheet = file("src/docs/javadoc/snippets.css")
 val combinedJavadocSourceDir = layout.buildDirectory.dir("tmp/javadoc/combined-source")
 
