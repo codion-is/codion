@@ -40,75 +40,73 @@ import static java.util.Objects.requireNonNull;
  * access to column values and enabling query condition creation. They extend the base
  * {@link Attribute} interface with column-specific functionality for database operations.
  * <p>
- * Columns inherit from {@link ColumnConditions} to provide condition creation methods:
- * {@snippet :
- * public class Store extends DomainModel {
+ * Columns are declared in the domain API, and defined in the domain model:
+ * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = usage :
+ * interface Track {
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.track");
  *
- *     interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *
- *         // Column definitions
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<String> NAME = TYPE.stringColumn("name");
- *         Column<String> EMAIL = TYPE.stringColumn("email");
- *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
- *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
- *         Column<BigDecimal> CREDIT_LIMIT = TYPE.bigDecimalColumn("credit_limit");
- *     }
- *
- *     void defineCustomer() {
- *         Customer.TYPE.as()
- *             .attributes(
- *                 Customer.ID.as()
- *                     .primaryKey()
- *                     .generator(Generator.identity()),
- *                 Customer.NAME.as()
- *                     .column()
- *                     .nullable(false)
- *                     .maximumLength(100)
- *                     .caption("Customer Name"),
- *                 Customer.EMAIL.as()
- *                     .column()
- *                     .nullable(false)
- *                     .maximumLength(255)
- *                     .caption("Email Address"),
- *                 Customer.BIRTH_DATE.as()
- *                     .column()
- *                     .nullable(true)
- *                     .caption("Date of Birth"),
- *                 Customer.ACTIVE.as()
- *                     .column()
- *                     .nullable(false)
- *                     .defaultValue(true)
- *                     .caption("Active"),
- *                 Customer.CREDIT_LIMIT.as()
- *                     .column()
- *                     .nullable(true)
- *                     .minimum(BigDecimal.ZERO)
- *                     .maximum(new BigDecimal("50000"))
- *                     .caption("Credit Limit"))
- *             .build();
- *     }
+ * 	// Column definitions
+ * 	Column<Long> ID = TYPE.longColumn("id");
+ * 	Column<String> NAME = TYPE.stringColumn("name");
+ * 	Column<String> COMPOSER = TYPE.stringColumn("composer");
+ * 	Column<Integer> MILLISECONDS = TYPE.integerColumn("milliseconds");
+ * 	Column<Integer> RATING = TYPE.integerColumn("rating");
+ * 	Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
  * }
  *
+ * EntityDefinition track() {
+ * 	return Track.TYPE.as()
+ * 					.attributes(
+ * 									Track.ID.as()
+ * 													.primaryKey()
+ * 													.generator(Generator.identity()),
+ * 									Track.NAME.as()
+ * 													.column()
+ * 													.caption("Name")
+ * 													.nullable(false)
+ * 													.maximumLength(200),
+ * 									Track.COMPOSER.as()
+ * 													.column()
+ * 													.caption("Composer")
+ * 													.maximumLength(220),
+ * 									Track.MILLISECONDS.as()
+ * 													.column()
+ * 													.caption("Duration")
+ * 													.nullable(false),
+ * 									Track.RATING.as()
+ * 													.column()
+ * 													.caption("Rating")
+ * 													.nullable(false)
+ * 													.defaultValue(5)
+ * 													.range(1, 10),
+ * 									Track.UNITPRICE.as()
+ * 													.column()
+ * 													.caption("Price")
+ * 													.nullable(false)
+ * 													.minimum(0)
+ * 													.fractionDigits(2))
+ * 					.build();
+ * }}
+ * <p>
+ * Columns inherit from {@link ColumnConditions} to provide condition creation methods:
+ * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = conditions :
  * // Query condition usage (inherited from ColumnConditions)
- * List<Entity> activeCustomers = connection.select(
- *     Customer.ACTIVE.equalTo(true));
+ * List<Entity> bachTracks = connection.select(
+ * 				Track.COMPOSER.equalTo("Johann Sebastian Bach"));
  *
- * List<Entity> customersByName = connection.select(
- *     Customer.NAME.like("John%"));
+ * List<Entity> loveSongs = connection.select(
+ * 				Track.NAME.likeIgnoreCase("%love%"));
  *
- * List<Entity> recentCustomers = connection.select(
- *     Customer.BIRTH_DATE.greaterThanOrEqualTo(LocalDate.now().minusYears(25)));
+ * List<Entity> longTracks = connection.select(
+ * 				Track.MILLISECONDS.greaterThanOrEqualTo(600_000));
  *
- * List<Entity> highValueCustomers = connection.select(
- *     Customer.CREDIT_LIMIT.greaterThan(new BigDecimal("10000")));
+ * List<Entity> expensiveTracks = connection.select(
+ * 				Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
  *
  * // Complex conditions
- * List<Entity> nonLiveAlbums = connection.select(and(
- * 						Album.ARTIST_FK.in(artists),
- * 						Album.TITLE.likeIgnoreCase("%live%")));
- *}
+ * List<Entity> liveAlbums = connection.select(and(
+ * 				Album.ARTIST_FK.in(artists),
+ * 				Album.TITLE.likeIgnoreCase("%live%")));}
  * @param <T> the column value type
  * @see ColumnConditions
  * @see #as()
@@ -122,10 +120,9 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 	/**
 	 * Returns a {@link ColumnDefinition.Builder} for this column, configured by the given template.
-	 * {@snippet :
-	 * Customer.AGE.as(REQUIRED_POSITIVE)
-	 *         .caption("Age")
-	 *}
+	 * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = template :
+	 * Customer.LASTNAME.as(REQUIRED_SEARCHABLE)
+	 * 				.maximumLength(20);}
 	 * <p>The template is applied first, any subsequent configuration overriding it.
 	 * <p>Note that a column has {@link Attribute#as(AttributeTemplate)} as well, so the template
 	 * must be typed, an inline lambda being ambiguous between the two.
@@ -175,12 +172,11 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the primary key index 0.
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
-		 * {@snippet :
-		 * Employee.ID.as()
-		 *   .primaryKey()
-		 *   .nullable(true)
-		 *   .updatable(true)
-		 *}
+		 * {@snippet class = is.codion.demos.world.javadoc.ColumnSnippets region = primaryKey :
+		 * Country.CODE.as()
+		 * 				.primaryKey()
+		 * 				.caption("Code")
+		 * 				.updatable(true);}
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with primary key index 0
 		 * @see ColumnDefinition.Builder#nullable(boolean)
@@ -192,14 +188,17 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the given primary key index.
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
-		 * {@snippet :
-		 * CountryLanguage.COUNTRY_CODE.as()
-		 *   .primaryKey(0)
-		 *   .updatable(true)
-		 * CountryLanguage.LANGUAGE.as()
-		 *   .primaryKey(1)
-		 *   .updatable(true)
-		 *}
+		 * {@snippet class = is.codion.demos.world.javadoc.ColumnSnippets region = primaryKeyIndex :
+		 * CountryLanguage.TYPE.as()
+		 * 				.attributes(
+		 * 								CountryLanguage.COUNTRY_CODE.as()
+		 * 												.primaryKey(0)
+		 * 												.updatable(true),
+		 * 								CountryLanguage.LANGUAGE.as()
+		 * 												.primaryKey(1)
+		 * 												.caption("Language")
+		 * 												.updatable(true))
+		 * 				.build();}
 		 * @param index the zero-based index of this column in the primary key
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with the given primary key index
@@ -272,70 +271,19 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 *       and {@link #afterInsert(Entity, Column, Database, Statement)} should be used
 	 * </ul>
 	 * <p>
-	 * Common generator types and usage patterns:
-	 * {@snippet :
-	 * public class Store extends DomainModel {
+	 * The common generators are provided by {@link #identity()}, {@link #sequence(String)} and {@link #queried(String)}.
+	 * A custom generator, setting a random UUID as the key:
+	 * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = generator :
+	 * class UUIDGenerator implements Generator<String> {
 	 *
-	 *     interface Customer {
-	 *         EntityType TYPE = DOMAIN.entityType("store.customer");
-	 *         Column<Integer> ID = TYPE.integerColumn("id");
-	 *     }
-	 *
-	 *     interface Product {
-	 *         EntityType TYPE = DOMAIN.entityType("store.product");
-	 *         Column<Long> ID = TYPE.longColumn("id");
-	 *     }
-	 *
-	 *     interface Order {
-	 *         EntityType TYPE = DOMAIN.entityType("store.order");
-	 *         Column<String> ID = TYPE.stringColumn("id");
-	 *     }
-	 *
-	 *     void defineEntities() {
-	 *         // Identity column (database auto-increment)
-	 *         Customer.TYPE.as()
-	 *             .attributes(
-	 *                 Customer.ID.as()
-	 *                     .primaryKey()
-	 *                     .generator(Generator.identity()))
-	 *             .build();
-	 *
-	 *         // Sequence-based key generation (Oracle, PostgreSQL)
-	 *         Product.TYPE.as()
-	 *             .attributes(
-	 *                 Product.ID.as()
-	 *                     .primaryKey()
-	 *                     .generator(Generator.sequence("product_seq")))
-	 *             .build();
-	 *
-	 *         // Custom query-based key generation
-	 *         Order.TYPE.as()
-	 *             .attributes(
-	 *                 Order.ID.as()
-	 *                     .primaryKey()
-	 *                     .generator(Generator.queried("SELECT 'ORD-' || NEXT VALUE FOR order_seq")))
-	 *             .build();
-	 *     }
-	 * }
-	 *
-	 * // Custom key generator implementation
-	 * public class UUIDGenerator implements Generator<String> {
-	 *
-	 *     @Override
-	 *     public void beforeInsert(Entity entity, Column<String> column, Database database, Connection connection) {
-	 *         // Only generate if not already set
-	 *         if (!entity.primaryKey().present()) {
-	 *             String uuid = UUID.randomUUID().toString();
-	 *             entity.set(column, uuid);
-	 *         }
-	 *     }
-	 *
-	 *     @Override
-	 *     public boolean inserted() {
-	 *         return true; // Include generated key in INSERT
-	 *     }
-	 * }
-	 *}
+	 * 	@Override
+	 * 	public void beforeInsert(Entity entity, Column<String> column, Database database, Connection connection) {
+	 * 		// Only generate if not already set
+	 * 		if (!entity.present(column)) {
+	 * 			entity.set(column, UUID.randomUUID().toString());
+	 * 		}
+	 * 	}
+	 * }}
 	 * @param <T> the generated column type
 	 * @see #sequence(String)
 	 * @see #identity()
@@ -399,25 +347,24 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Instantiates a generator which fetches column values from a sequence prior to insert.
-		 * {@snippet :
+		 * {@snippet class = is.codion.demos.world.javadoc.ColumnSnippets region = sequence :
 		 * // Oracle or PostgreSQL sequence
-		 * Product.TYPE.as()
-		 *     .attributes(
-		 *         Product.ID.as()
-		 *             .primaryKey()
-		 *             .generator(Generator.sequence("product_seq")))
-		 *     .build();
+		 * City.TYPE.as()
+		 * 				.attributes(
+		 * 								City.ID.as()
+		 * 												.primaryKey()
+		 * 												.generator(Generator.sequence("world.city_seq")))
+		 * 				.build();
 		 *
-		 * // Usage - key is generated automatically
-		 * Entity product = entities.entity(Product.TYPE)
-		 *     .with(Product.NAME, "Laptop")
-		 *     .with(Product.PRICE, new BigDecimal("999.99"))
-		 *     .build();
+		 * // Usage - the key is fetched from the sequence before insert
+		 * Entity city = entities.entity(City.TYPE)
+		 * 				.with(City.NAME, "Akureyri")
+		 * 				.with(City.COUNTRY_FK, iceland)
+		 * 				.with(City.POPULATION, 20_000)
+		 * 				.build();
 		 *
-		 * // Primary key will be fetched from sequence before insert
-		 * connection.insert(product);
-		 * Long generatedId = product.get(Product.ID); // e.g., 123
-		 *}
+		 * Entity.Key key = connection.insert(city);
+		 * Integer generatedId = key.get(City.ID);}
 		 * @param <T> the generated column type
 		 * @param sequenceName the sequence name
 		 * @return a sequence based generator
@@ -428,33 +375,23 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Instantiates a generator which fetches column values using the given query prior to insert.
-		 * {@snippet :
-		 * // Custom query-based key generation
-		 * Order.TYPE.as()
-		 *     .attributes(
-		 *         Order.ID.as()
-		 *             .primaryKey()
-		 *             .generator(Generator.queried("SELECT 'ORD-' || NEXT VALUE FOR order_seq")))
-		 *     .build();
-		 *
-		 * // Another example with date-based keys
+		 * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = queried :
+		 * // Custom query-based key generation, such as a function call
 		 * Invoice.TYPE.as()
-		 *     .attributes(
-		 *         Invoice.ID.as()
-		 *             .primaryKey()
-		 *             .generator(Generator.queried(
-		 *                 "SELECT FORMAT(GETDATE(), 'yyyyMMdd') + '-' + RIGHT('0000' + CAST(NEXT VALUE FOR invoice_seq AS VARCHAR), 4)")))
-		 *     .build();
+		 * 				.attributes(
+		 * 								Invoice.ID.as()
+		 * 												.primaryKey()
+		 * 												.generator(Generator.queried("SELECT chinook.next_invoice_id()")))
+		 * 				.build();
 		 *
-		 * // Usage
-		 * Entity order = entities.entity(Order.TYPE)
-		 *     .with(Order.CUSTOMER_FK, customer)
-		 *     .with(Order.TOTAL, new BigDecimal("150.00"))
-		 *     .build();
+		 * // Usage - the key is fetched before insert
+		 * Entity invoice = entities.entity(Invoice.TYPE)
+		 * 				.with(Invoice.CUSTOMER_FK, customer)
+		 * 				.with(Invoice.DATE, LocalDate.now())
+		 * 				.build();
 		 *
-		 * connection.insert(order);
-		 * String generatedId = order.get(Order.ID); // e.g., "ORD-12345"
-		 *}
+		 * Entity.Key key = connection.insert(invoice);
+		 * Long generatedId = key.get(Invoice.ID);}
 		 * @param <T> the generated column type
 		 * @param query a query for retrieving the column value
 		 * @return a query based column generator
@@ -476,30 +413,24 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Returns a column value generator based on an IDENTITY type column.
-		 * {@snippet :
+		 * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = identity :
 		 * // SQL Server, MySQL auto-increment, or similar
 		 * Customer.TYPE.as()
-		 *     .attributes(
-		 *         Customer.ID.as()
-		 *             .primaryKey()
-		 *             .generator(Generator.identity()))
-		 *     .build();
+		 * 				.attributes(
+		 * 								Customer.ID.as()
+		 * 												.primaryKey()
+		 * 												.generator(Generator.identity()))
+		 * 				.build();
 		 *
-		 * // Usage - database generates the key
+		 * // Usage - the database generates the key on insert
 		 * Entity customer = entities.entity(Customer.TYPE)
-		 *     .with(Customer.NAME, "John Doe")
-		 *     .with(Customer.EMAIL, "john@example.com")
-		 *     .build();
+		 * 				.with(Customer.FIRSTNAME, "John")
+		 * 				.with(Customer.LASTNAME, "Doe")
+		 * 				.with(Customer.EMAIL, "john@example.com")
+		 * 				.build();
 		 *
-		 * // Primary key is null before insert
-		 * Integer idBeforeInsert = customer.get(Customer.ID); // null
-		 *
-		 * // Database auto-generates the key during insert
-		 * connection.insert(customer);
-		 *
-		 * // Primary key is now populated from database
-		 * Integer generatedId = customer.get(Customer.ID); // e.g., 42
-		 *}
+		 * Entity.Key key = connection.insert(customer);
+		 * Long generatedId = key.get(Customer.ID);}
 		 * @param <T> the generated column type
 		 * @return an identity based generated column value generator
 		 * @see Statement#getGeneratedKeys()
