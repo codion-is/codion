@@ -246,9 +246,11 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 		private static final class DateConditionPanel extends ConditionPanel<LocalDate> {
 
-			private final ComponentValue<NumberField<Integer>, Integer> yearValue = Components.integerField()
+			private final ComponentValue<JSpinner, Integer> yearValue = Components.integerSpinner()
+							.range(LocalDate.now().getYear() - 10 , LocalDate.now().getYear())
 							.value(LocalDate.now().getYear())
 							.listener(this::updateCondition)
+							.groupingUsed(false)
 							.focusable(false)
 							.columns(4)
 							.horizontalAlignment(SwingConstants.CENTER)
