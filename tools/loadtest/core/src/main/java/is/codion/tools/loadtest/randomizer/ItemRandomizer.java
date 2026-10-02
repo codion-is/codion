@@ -26,20 +26,21 @@ import java.util.Optional;
 
 /**
  * ItemRandomizer provides a way to randomly choose an item based on a weight value.
- * {@snippet :
- * Item one = new Item();
- * Item two = new Item();
- * Item three = new Item();
+ * {@snippet class = is.codion.manual.javadoc.ItemRandomizerSnippets region = usage :
+ * String one = "one";
+ * String two = "two";
+ * String three = "three";
  *
- * ItemRandomizer<Object> randomizer = ItemRandomizer.randomizer(Arrays.asList(one, two, three));
- *
- * randomizer.setWeight(one, 10);
- * randomizer.setWeight(two, 60);
- * randomizer.setWeight(three, 30);
+ * ItemRandomizer<String> randomizer = ItemRandomizer.randomizer(List.of(
+ * 				randomItem(one, 10),
+ * 				randomItem(two, 60),
+ * 				randomItem(three, 30)));
  *
  * //10% chance of getting 'one', 60% chance of getting 'two' and 30% chance of getting 'three'.
- * Item random = randomizer.get().orElse(null);
- *}
+ * String random = randomizer.get().orElse(null);
+ *
+ * // The weights can be changed
+ * randomizer.weight(one).set(20);}
  * For instances use the following factory functions: {@link #randomizer(Collection)}
  * @param <T> the type of item this random item model returns
  */

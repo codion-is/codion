@@ -23,9 +23,8 @@ import java.lang.reflect.Type;
 
 /**
  * A basic TypeReference implementation, capturing a generic type via an anonymous subclass:
- * {@snippet :
- * TypeReference<List<String>> reference = new TypeReference<>() {};
- *}
+ * {@snippet class = is.codion.manual.javadoc.TypeReferenceSnippets region = usage :
+ * TypeReference<List<String>> reference = new TypeReference<>() {};}
  * <p>The captured type {@code T} must itself be a parameterized type; for plain classes use the
  * available {@code Class<T>} based overloads instead. A non-parameterized {@code T}
  * (e.g. {@code new TypeReference<String>() {}}) throws {@link IllegalArgumentException}.

@@ -106,16 +106,15 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	 * should be grouped and not triggered individually
 	 * <p>Note that grouping is not reentrant, {@code grouping().set(false)} ends the group whether or not it
 	 * opened one. Code which may run inside a group of its caller's making saves and restores the state:
-	 * {@snippet :
+	 * {@snippet class = is.codion.manual.javadoc.MultiSelectionSnippets region = grouping :
 	 * boolean wasGrouping = selection.grouping().is();
 	 * selection.grouping().set(true);
 	 * try {
-	 *   // mutate the selection
+	 * 	// mutate the selection
 	 * }
 	 * finally {
-	 *   selection.grouping().set(wasGrouping);
-	 * }
-	 *}
+	 * 	selection.grouping().set(wasGrouping);
+	 * }}
 	 * @return the {@link Grouping} instance
 	 */
 	Grouping grouping();

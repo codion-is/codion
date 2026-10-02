@@ -36,15 +36,15 @@ import static is.codion.common.utilities.Configuration.integerValue;
 /**
  * EntityConnection implementation based on a local JDBC connection.
  * A factory for {@link LocalEntityConnection} instances.
- * {@snippet :
- * Domain domain = new Store();
- * Database database = new H2DatabaseFactory().create("jdbc:h2:file:/path/to/database");
+ * {@snippet class = is.codion.demos.chinook.javadoc.LocalEntityConnectionSnippets region = usage :
+ * Domain domain = new ChinookImpl();
+ * String url = "jdbc:h2:file:/path/to/database";
+ * Database database = DatabaseFactory.instance(url).create(url);
  * User user = User.parse("scott:tiger");
  *
  * try (EntityConnection connection = localEntityConnection(database, domain, user)) {
- *   List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
- * }
- *}
+ * 	List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
+ * }}
  */
 public interface LocalEntityConnection extends EntityConnection {
 

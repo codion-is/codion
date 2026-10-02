@@ -31,24 +31,22 @@ import java.io.ByteArrayOutputStream;
  * report is filled. Filling a report through an {@code EntityConnection} runs it on the server, so a
  * report exported to {@link #PDF} reaches the client as bytes, which no reporting engine is required
  * to read.
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.JasperReportsSnippets region = export :
  * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report");
  *
- * add(REPORT, export(classPathReport(Store.class, "customer_report.jasper"), PDF));
- *}
+ * add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), PDF));}
  * <p>Exports beyond the ones defined here are lambdas, JasperReports exporters all following
  * the same shape:
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.JasperReportsSnippets region = xlsx :
  * JRExport<byte[]> xlsx = print -> {
- *   ByteArrayOutputStream bytes = new ByteArrayOutputStream();
- *   JRXlsxExporter exporter = new JRXlsxExporter();
- *   exporter.setExporterInput(new SimpleExporterInput(print));
- *   exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(bytes));
- *   exporter.exportReport();
+ * 	ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+ * 	JRXlsxExporter exporter = new JRXlsxExporter();
+ * 	exporter.setExporterInput(new SimpleExporterInput(print));
+ * 	exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(bytes));
+ * 	exporter.exportReport();
  *
- *   return bytes.toByteArray();
- * };
- *}
+ * 	return bytes.toByteArray();
+ * };}
  * @param <R> the export result type
  */
 public interface JRExport<R> {
@@ -66,14 +64,13 @@ public interface JRExport<R> {
 	 * connection transfers, a JSON one included, where a {@link JasperPrint} cannot go. A client with the
 	 * reporting engine, one displaying reports with a {@code JRViewer}, can therefore keep filling them to
 	 * a {@link JasperPrint} over any connection, reconstructing it from the bytes:
-	 * {@snippet :
+	 * {@snippet class = is.codion.demos.chinook.javadoc.JasperReportsSnippets region = serialized :
 	 * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report");
 	 *
-	 * add(REPORT, export(classPathReport(Store.class, "customer_report.jasper"), SERIALIZED));
+	 * add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), SERIALIZED));
 	 *
 	 * //client side, with the engine on hand
-	 * JasperPrint print = loadPrint(connection.report(REPORT, parameters));
-	 *}
+	 * JasperPrint print = loadPrint(connection.report(REPORT, parameters));}
 	 * <p>The bytes are the report's own Java serialization, so a client reconstructing them needs the
 	 * {@code net.sf.jasperreports.engine.**} classes allowed by any deserialization filter it applies,
 	 * the same classes a server loading a {@code .jasper} file needs.
