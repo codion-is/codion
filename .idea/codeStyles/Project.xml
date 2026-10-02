@@ -18,6 +18,7 @@
           <package name="" withSubpackages="true" static="true" />
         </value>
       </option>
+      <option name="ENABLE_JAVADOC_FORMATTING" value="false" />
       <option name="JD_ALIGN_PARAM_COMMENTS" value="false" />
       <option name="JD_ALIGN_EXCEPTION_COMMENTS" value="false" />
       <option name="JD_ADD_BLANK_AFTER_DESCRIPTION" value="false" />

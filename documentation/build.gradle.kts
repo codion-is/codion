@@ -122,6 +122,8 @@ tasks.asciidoctor {
 }
 
 val javadocModules = frameworkModules().filter { module -> module.plugins.hasPlugin("java") }
+val snippetSourceDirs = listOf("demos/chinook/src/main/java", "demos/world/src/main/java").map { rootProject.file(it) }
+val snippetStylesheet = file("src/docs/javadoc/snippets.css")
 val combinedJavadocSourceDir = layout.buildDirectory.dir("tmp/javadoc/combined-source")
 
 tasks.register<Sync>("combinedJavadocSource") {
@@ -165,7 +167,14 @@ tasks.register<Javadoc>("combinedJavadoc") {
             "https://jspecify.dev/docs/api/"
         )
         addStringOption("-add-modules", javadocModules.joinToString(",") { module -> moduleName(module) })
+        // Hybrid snippets, javadoc verifying each inline copy against its region in the demos' javadoc packages
+        addStringOption("-snippet-path", snippetSourceDirs.joinToString(File.pathSeparator) { it.absolutePath })
+        addStringOption("-add-stylesheet", snippetStylesheet.absolutePath)
     }
+    inputs.files(snippetSourceDirs.map { dir -> fileTree(dir) { include("**/javadoc/**") } })
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file(snippetStylesheet)
+        .withPathSensitivity(PathSensitivity.RELATIVE)
 
     doFirst {
         // Javadoc writes into the output directory without clearing it, leaving pages for deleted classes
