@@ -60,7 +60,7 @@ public final class FileInput extends JPanel {
 
 	private static final DefaultBuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
 
-	private final JTextField filePathField;
+	private final JTextField pathField;
 	private final JButton browseButton;
 	private final boolean directory;
 	private final @Nullable String dialogTitle;
@@ -73,41 +73,41 @@ public final class FileInput extends JPanel {
 						.caption(builder.buttonIcon == null ? builder.buttonCaption : null)
 						.smallIcon(builder.buttonIcon)
 						.build();
-		filePathField = builder.pathFieldBuilder
+		pathField = builder.pathFieldBuilder
 						.keyEvent(KeyEvents.builder()
 										.keyCode(KeyEvent.VK_INSERT)
 										.action(browseControl))
 						.build();
 		browseButton = ButtonBuilder.builder()
 						.control(browseControl)
-						.preferredSize(new Dimension(filePathField.getPreferredSize().height, filePathField.getPreferredSize().height))
+						.preferredSize(new Dimension(pathField.getPreferredSize().height, pathField.getPreferredSize().height))
 						.build();
 		setLayout(new BorderLayout());
-		add(filePathField, BorderLayout.CENTER);
+		add(pathField, BorderLayout.CENTER);
 		add(browseButton, BorderLayout.EAST);
 	}
 
 	// The baseline of the field, which spans the full height of this panel, the button beside it
 	@Override
 	public int getBaseline(int width, int height) {
-		return filePathField.getBaseline(width, height);
+		return pathField.getBaseline(width, height);
 	}
 
 	@Override
 	public BaselineResizeBehavior getBaselineResizeBehavior() {
-		return filePathField.getBaselineResizeBehavior();
+		return pathField.getBaselineResizeBehavior();
 	}
 
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
-		filePathField.setEnabled(enabled);
+		pathField.setEnabled(enabled);
 		browseButton.setEnabled(enabled);
 	}
 
 	@Override
 	public void setToolTipText(String text) {
-		filePathField.setToolTipText(text);
+		pathField.setToolTipText(text);
 	}
 
 	/**
@@ -120,17 +120,17 @@ public final class FileInput extends JPanel {
 	private void browse() {
 		FileSelectionDialogBuilder selection = Dialogs.select()
 						.files()
-						.owner(filePathField)
+						.owner(pathField)
 						.title(dialogTitle)
 						.startDirectory(startDirectory());
-		filePathField.setText((directory ? selection.selectDirectory() : selection.selectFile()).toString());
+		pathField.setText((directory ? selection.selectDirectory() : selection.selectFile()).toString());
 	}
 
 	/**
 	 * @return the current path if it is a directory, otherwise its parent directory, null if none exists
 	 */
 	private @Nullable String startDirectory() {
-		String path = filePathField.getText();
+		String path = pathField.getText();
 		if (path.isEmpty()) {
 			return null;
 		}
@@ -190,10 +190,10 @@ public final class FileInput extends JPanel {
 
 		/**
 		 * The field has already been rendered non-editable, use {@link TextFieldBuilder#editable(boolean)} to revert.
-		 * @param filePathField the file path field builder
+		 * @param pathField the file or directory path field builder
 		 * @return this builder instance
 		 */
-		Builder<T> filePathField(Consumer<TextFieldBuilder<JTextField, String, ?>> filePathField);
+		Builder<T> pathField(Consumer<TextFieldBuilder<JTextField, String, ?>> pathField);
 	}
 
 	private static final class DefaultBuilderFactory implements BuilderFactory {
@@ -249,14 +249,14 @@ public final class FileInput extends JPanel {
 		}
 
 		@Override
-		public final Builder<T> filePathField(Consumer<TextFieldBuilder<JTextField, String, ?>> filePathField) {
-			requireNonNull(filePathField).accept(pathFieldBuilder);
+		public final Builder<T> pathField(Consumer<TextFieldBuilder<JTextField, String, ?>> pathField) {
+			requireNonNull(pathField).accept(pathFieldBuilder);
 			return this;
 		}
 
 		@Override
 		protected final void enable(TransferFocusOnEnter transferFocusOnEnter, FileInput component) {
-			transferFocusOnEnter.enable(component.filePathField, component.browseButton);
+			transferFocusOnEnter.enable(component.pathField, component.browseButton);
 		}
 	}
 
@@ -298,12 +298,12 @@ public final class FileInput extends JPanel {
 
 		private PathInputPanelValue(FileInput fileInput) {
 			super(fileInput);
-			fileInput.filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
+			fileInput.pathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
 		}
 
 		@Override
 		protected @Nullable Path getComponentValue() {
-			String filePath = component().filePathField.getText();
+			String filePath = component().pathField.getText();
 			if (filePath.isEmpty()) {
 				return null;
 			}
@@ -313,7 +313,7 @@ public final class FileInput extends JPanel {
 
 		@Override
 		protected void setComponentValue(Path path) {
-			component().filePathField.setText(path == null ? "" : path.toString());
+			component().pathField.setText(path == null ? "" : path.toString());
 		}
 	}
 
@@ -321,12 +321,12 @@ public final class FileInput extends JPanel {
 
 		private ByteArrayInputPanelValue(FileInput fileInput) {
 			super(fileInput);
-			fileInput.filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
+			fileInput.pathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
 		}
 
 		@Override
 		protected byte @Nullable [] getComponentValue() {
-			String filePath = component().filePathField.getText();
+			String filePath = component().pathField.getText();
 			if (filePath.isEmpty()) {
 				return null;
 			}
