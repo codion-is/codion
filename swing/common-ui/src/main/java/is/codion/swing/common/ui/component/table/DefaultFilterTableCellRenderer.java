@@ -812,7 +812,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final Color foreground;
 		private final Color background;
 		private final Color alternateRowColor;
-		private final Color alternateBackground;
 		private final Color selectionForeground;
 		private final Color selectionBackground;
 		private final Border cellBorder;
@@ -825,7 +824,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			foreground = UIManager.getColor("Table.foreground");
 			background = UIManager.getColor("Table.background");
 			alternateRowColor = UIManager.getColor("Table.alternateRowColor");
-			alternateBackground = alternateRowColor == null ? shade(background) : alternateRowColor;
 			selectionForeground = UIManager.getColor("Table.selectionForeground");
 			selectionBackground = UIManager.getColor("Table.selectionBackground");
 			cellBorder = createEmptyBorder(0, leftPadding, 0, rightPadding);
@@ -855,10 +853,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private Color selectionBackground() {
 			return selectionBackground;
-		}
-
-		private Color alternateBackground() {
-			return alternateBackground;
 		}
 
 		private Border cellBorder() {
