@@ -45,41 +45,40 @@ import static java.util.Objects.requireNonNull;
  * that considers the entity's current state and relationships.
  * <p>
  * Custom validators can be implemented for complex business logic:
- * {@snippet :
+ * {@snippet class = is.codion.demos.chinook.javadoc.EntityValidatorSnippets region = usage :
  * // Custom validator for Customer entity
- * public class CustomerValidator implements EntityValidator {
+ * class CustomerValidator implements EntityValidator {
  *
- *     @Override
- *     public <T> void validate(Entity customer, Attribute<T> attribute) throws AttributeValidationException {
- *         // Start with super.validate(), which performs null validation
- *         EntityValidator.super.validate(customer, attribute);
- *         // Validate email format
- *         if (attribute.equals(Customer.EMAIL)) {
- *             String email = customer.get(Customer.EMAIL);
- *             // Email is non-null, since super.validate() checks that
- *             if (!isValidEmail(email)) {
- *                 throw new AttributeValidationException(Customer.EMAIL, email, "Invalid email format");
- *             }
- *         }
- *     }
+ * 	@Override
+ * 	public void validate(Entity customer, Attribute<?> attribute) throws AttributeValidationException {
+ * 		// Start with super.validate(), which performs null validation
+ * 		EntityValidator.super.validate(customer, attribute);
+ * 		// Validate email format
+ * 		if (attribute.equals(Customer.EMAIL)) {
+ * 			String email = customer.get(Customer.EMAIL);
+ * 			// Email is non-null, since super.validate() checks that
+ * 			if (!isValidEmail(email)) {
+ * 				throw new AttributeValidationException(Customer.EMAIL, email, "Invalid email format");
+ * 			}
+ * 		}
+ * 	}
  *
- *     private static boolean isValidEmail(String email) {
- *         return email.contains("@") && email.contains(".");
- *     }
+ * 	private static boolean isValidEmail(String email) {
+ * 		return email.contains("@") && email.contains(".");
+ * 	}
  * }
  *
  * // Usage in domain definition
  * Customer.TYPE.as()
- *     .attributes(
- *         Customer.EMAIL.as()
- *             .column(),
- *         Customer.ACTIVE.as()
- *             .column(),
- *         Customer.BIRTH_DATE.as()
- *             .column())
- *     .validator(new CustomerValidator())
- *     .build();
- *}
+ * 				.attributes(
+ * 								Customer.ID.as()
+ * 												.primaryKey(),
+ * 								Customer.EMAIL.as()
+ * 												.column()
+ * 												.caption("Email")
+ * 												.nullable(false))
+ * 				.validator(new CustomerValidator())
+ * 				.build();}
  * @see EntityDefinition.Builder#validator(EntityValidator)
  * @see EntityValidationException
  */
@@ -101,30 +100,30 @@ public interface EntityValidator {
 	/**
 	 * Returns true if the value based on the given attribute accepts a null value for the given entity,
 	 * by default this method simply returns the nullable state of the underlying attribute.
-	 * {@snippet :
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityValidatorSnippets region = nullable :
 	 * // Context-aware nullable validation
-	 * public class OrderValidator implements EntityValidator {
+	 * class CustomerValidator implements EntityValidator {
 	 *
-	 *     @Override
-	 *     public boolean nullable(Entity order, Attribute<?> attribute) {
-	 *         // Normally nullable, but not for shipped orders
-	 *         if (attribute.equals(Order.TRACKING_NUMBER)) {
-	 *             String status = order.get(Order.STATUS);
-	 *             return !"SHIPPED".equals(status); // Tracking number required when shipped
-	 *         }
+	 * 	@Override
+	 * 	public boolean nullable(Entity customer, Attribute<?> attribute) {
+	 * 		// Normally nullable, but not for customers in the USA
+	 * 		if (attribute.equals(Customer.STATE)) {
+	 * 			return !"USA".equals(customer.get(Customer.COUNTRY));
+	 * 		}
 	 *
-	 *         // Use default nullable behavior for other attributes
-	 *         return EntityValidator.super.nullable(order, attribute);
-	 *     }
+	 * 		// Use default nullable behavior for other attributes
+	 * 		return EntityValidator.super.nullable(customer, attribute);
+	 * 	}
 	 * }
 	 *
 	 * // Usage during validation
-	 * Entity order = entities.entity(Order.TYPE)
-	 *     .with(Order.STATUS, "SHIPPED")
-	 *     .build(); // No tracking number
+	 * EntityValidator validator = new CustomerValidator();
 	 *
-	 * boolean nullable = validator.nullable(order, Order.TRACKING_NUMBER); // false
-	 *}
+	 * Entity customer = entities.entity(Customer.TYPE)
+	 * 				.with(Customer.COUNTRY, "USA")
+	 * 				.build(); // No state
+	 *
+	 * boolean nullable = validator.nullable(customer, Customer.STATE); // false}
 	 * @param entity the entity being validated
 	 * @param attribute the attribute
 	 * @return true if the attribute is non-value based or accepts a null value
@@ -166,32 +165,33 @@ public interface EntityValidator {
 	 * {@link Entity#exists()} all values are validated, otherwise only modified values are validated.
 	 * Use the {@link #STRICT_VALIDATION} configuration value to change the default behaviour
 	 * or override {@link #strict()} in order to configure the strictness of a specific instance.
-	 * {@snippet :
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityValidatorSnippets region = validate :
 	 * // Validation during entity lifecycle
 	 * Entity customer = entities.entity(Customer.TYPE)
-	 *     .with(Customer.NAME, "John Doe")
-	 *     .with(Customer.EMAIL, "invalid-email") // Invalid format
-	 *     .with(Customer.ACTIVE, true)
-	 *     .build();
+	 * 				.with(Customer.FIRSTNAME, "John")
+	 * 				.with(Customer.LASTNAME, "Doe")
+	 * 				.with(Customer.EMAIL, "invalid-email") // Invalid format
+	 * 				.build();
 	 *
 	 * EntityValidator validator = entities.definition(Customer.TYPE).validator();
 	 *
 	 * try {
-	 *     validator.validate(customer);
-	 *     // Validation passed
-	 *     connection.insert(customer);
-	 * } catch (EntityValidationException e) {
-	 *     // Handle validation error
-	 *     System.err.println("Validation failed " + e.getMessage());
+	 * 	validator.validate(customer);
+	 * 	// Validation passed
+	 * 	connection.insert(customer);
+	 * }
+	 * catch (EntityValidationException e) {
+	 * 	// Handle validation error
+	 * 	System.err.println("Validation failed " + e.getMessage());
 	 * }
 	 *
 	 * // Check if entity is valid without throwing exception
 	 * if (validator.valid(customer)) {
-	 *     connection.insert(customer);
-	 * } else {
-	 *     // Handle invalid entity
+	 * 	connection.insert(customer);
 	 * }
-	 *}
+	 * else {
+	 * 	// Handle invalid entity
+	 * }}
 	 * @param entity the entity
 	 * @throws EntityValidationException in case of one or more invalid values
 	 * @see #strict()
@@ -241,22 +241,23 @@ public interface EntityValidator {
 	 * out-of-season record, the count that reads like a typo and is not. Rejecting those either blocks a true record or
 	 * teaches the user to enter a plausible lie; warning captures the doubt at the one moment the evidence is at hand.
 	 * <p>Called whenever the entity is revalidated, which is on every value change, so keep implementations cheap.
-	 * {@snippet :
-	 * public class TrackValidator implements EntityValidator {
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityValidatorSnippets region = warning :
+	 * class TrackValidator implements EntityValidator {
 	 *
-	 *     @Override
-	 *     public Optional<String> warning(Entity track, Attribute<?> attribute) {
-	 *         if (attribute.equals(Track.MILLISECONDS)) {
-	 *             Integer milliseconds = track.get(Track.MILLISECONDS);
-	 *             if (milliseconds != null && milliseconds > HOUR_MS) {
-	 *                 return Optional.of("Unusually long for a track - is this a whole album?");
-	 *             }
-	 *         }
+	 * 	private static final int HOUR_MS = 3_600_000;
 	 *
-	 *         return EntityValidator.super.warning(track, attribute);
-	 *     }
-	 * }
-	 *}
+	 * 	@Override
+	 * 	public Optional<String> warning(Entity track, Attribute<?> attribute) {
+	 * 		if (attribute.equals(Track.MILLISECONDS)) {
+	 * 			Integer milliseconds = track.get(Track.MILLISECONDS);
+	 * 			if (milliseconds != null && milliseconds > HOUR_MS) {
+	 * 				return Optional.of("Unusually long for a track - is this a whole album?");
+	 * 			}
+	 * 		}
+	 *
+	 * 		return EntityValidator.super.warning(track, attribute);
+	 * 	}
+	 * }}
 	 * @param entity the entity being validated
 	 * @param attribute the attribute
 	 * @return a warning for the value, or an empty {@link Optional} if there is nothing to say

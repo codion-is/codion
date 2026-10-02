@@ -60,41 +60,32 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * </ul>
  * <p>
  * Entity definitions are typically created using the builder pattern during domain initialization:
- * {@snippet :
- * public class Store extends DomainModel {
+ * {@snippet class = is.codion.demos.chinook.javadoc.EntityDefinitionSnippets region = usage :
+ * // Define entity types
+ * interface Genre {
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.genre");
  *
- *     // Define entity types
- *     interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<String> NAME = TYPE.stringColumn("name");
- *         Column<String> EMAIL = TYPE.stringColumn("email");
- *     }
- *
- *     // Define the entity structure
- *     void defineCustomer() {
- *         EntityDefinition definition = Customer.TYPE.as()
- *             .attributes(
- *                 Customer.ID.as()
- *                     .primaryKey(),
- *                 Customer.NAME.as()
- *                     .column()
- *                     .caption("Name")
- *                     .nullable(false)
- *                     .maximumLength(100),
- *                 Customer.EMAIL.as()
- *                     .column()
- *                     .caption("Email")
- *                     .maximumLength(255))
- *             .table("customer")
- *             .caption("Customer")
- *             .orderBy(ascending(Customer.NAME))
- *             .smallDataset(true)
- *             .build();
- *     }
+ * 	Column<Long> ID = TYPE.longColumn("id");
+ * 	Column<String> NAME = TYPE.stringColumn("name");
  * }
- *}
+ *
+ * // Define the entity structure
+ * EntityDefinition genre() {
+ * 	return Genre.TYPE.as()
+ * 					.attributes(
+ * 									Genre.ID.as()
+ * 													.primaryKey(),
+ * 									Genre.NAME.as()
+ * 													.column()
+ * 													.caption("Name")
+ * 													.nullable(false)
+ * 													.maximumLength(120))
+ * 					.caption("Genres")
+ * 					.orderBy(ascending(Genre.NAME))
+ * 					.formatter(Genre.NAME)
+ * 					.smallDataset(true)
+ * 					.build();
+ * }}
  * @see EntityType#as()
  * @see Builder
  */
@@ -192,33 +183,35 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * Returns the formatter responsible for providing toString values for this entity type.
-	 * {@snippet :
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityDefinitionSnippets region = formatter :
 	 * // Define custom string representation
 	 * Customer.TYPE.as()
-	 *     .attributes(
-	 *         Customer.ID.as()
-	 *             .primaryKey(),
-	 *         Customer.FIRST_NAME.as()
-	 *             .column(),
-	 *         Customer.LAST_NAME.as()
-	 *             .column(),
-	 *         Customer.EMAIL.as()
-	 *             .column())
-	 *     .formatter(customer ->
-	 *         customer.get(Customer.LAST_NAME) + ", " +
-	 *         customer.get(Customer.FIRST_NAME) +
-	 *         " (" + customer.get(Customer.EMAIL) + ")")
-	 *     .build();
+	 * 				.attributes(
+	 * 								Customer.ID.as()
+	 * 												.primaryKey(),
+	 * 								Customer.FIRSTNAME.as()
+	 * 												.column()
+	 * 												.caption("First name"),
+	 * 								Customer.LASTNAME.as()
+	 * 												.column()
+	 * 												.caption("Last name"),
+	 * 								Customer.EMAIL.as()
+	 * 												.column()
+	 * 												.caption("Email"))
+	 * 				.formatter(customer ->
+	 * 								customer.get(Customer.LASTNAME) + ", " +
+	 * 												customer.get(Customer.FIRSTNAME) +
+	 * 												" (" + customer.get(Customer.EMAIL) + ")")
+	 * 				.build();
 	 *
 	 * // Usage
 	 * Entity customer = entities.entity(Customer.TYPE)
-	 *     .with(Customer.FIRST_NAME, "John")
-	 *     .with(Customer.LAST_NAME, "Doe")
-	 *     .with(Customer.EMAIL, "john@example.com")
-	 *     .build();
+	 * 				.with(Customer.FIRSTNAME, "John")
+	 * 				.with(Customer.LASTNAME, "Doe")
+	 * 				.with(Customer.EMAIL, "john@example.com")
+	 * 				.build();
 	 *
-	 * System.out.println(customer); // "Doe, John (john@example.com)"
-	 *}
+	 * System.out.println(customer); // "Doe, John (john@example.com)"}
 	 * @return the function responsible for formatting entities of this type
 	 */
 	Function<Entity, String> formatter();
@@ -309,37 +302,36 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 			/**
 			 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
-			 * {@snippet :
+			 * {@snippet class = is.codion.demos.chinook.javadoc.EntityDefinitionSnippets region = attributes :
 			 * EntityDefinition definition = Customer.TYPE.as()
-			 *     .attributes(
-			 *         Customer.ID.as()
-			 *             .primaryKey(),
-			 *         Customer.NAME.as()
-			 *             .column()
-			 *             .caption("Customer Name")
-			 *             .nullable(false)
-			 *             .maximumLength(100),
-			 *         Customer.EMAIL.as()
-			 *             .column()
-			 *             .caption("Email Address")
-			 *             .maximumLength(255),
-			 *         Customer.BIRTH_DATE.as()
-			 *             .column()
-			 *             .caption("Date of Birth")
-			 *             .nullable(true),
-			 *         Customer.ACTIVE.as()
-			 *             .column()
-			 *             .caption("Active")
-			 *             .nullable(false)
-			 *             .defaultValue(true))
-			 *     .table("customer")
-			 *     .caption("Customer")
-			 *     .description("Customer information")
-			 *     .orderBy(ascending(Customer.NAME))
-			 *     .formatter(customer ->
-			 *         customer.get(Customer.NAME) + " (" + customer.get(Customer.EMAIL) + ")")
-			 *     .build();
-			 *}
+			 * 				.attributes(
+			 * 								Customer.ID.as()
+			 * 												.primaryKey(),
+			 * 								Customer.LASTNAME.as()
+			 * 												.column()
+			 * 												.caption("Last name")
+			 * 												.nullable(false)
+			 * 												.maximumLength(20),
+			 * 								Customer.FIRSTNAME.as()
+			 * 												.column()
+			 * 												.caption("First name")
+			 * 												.nullable(false)
+			 * 												.maximumLength(40),
+			 * 								Customer.EMAIL.as()
+			 * 												.column()
+			 * 												.caption("Email")
+			 * 												.nullable(false)
+			 * 												.maximumLength(60),
+			 * 								Customer.COMPANY.as()
+			 * 												.column()
+			 * 												.caption("Company")
+			 * 												.maximumLength(80))
+			 * 				.caption("Customer")
+			 * 				.description("Customer information")
+			 * 				.orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
+			 * 				.formatter(customer ->
+			 * 								customer.get(Customer.LASTNAME) + " (" + customer.get(Customer.EMAIL) + ")")
+			 * 				.build();}
 			 * @param definitionBuilder builder for an attribute definition
 			 * @param additional additional builders for the attribute definitions comprising the entity
 			 * @return a {@link EntityDefinition.Builder} instance
@@ -465,11 +457,10 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 		/**
 		 * Sets the formatter, based the value of the given attribute. Shortcut for:
-		 * {@snippet :
-		 * formatter(EntityFormatter.builder()
-		 *           .value(attribute)
-		 *           .build())
-		 *}
+		 * {@snippet class = is.codion.demos.chinook.javadoc.EntityDefinitionSnippets region = formatterAttribute :
+		 * builder.formatter(EntityFormatter.builder()
+		 * 				.value(attribute)
+		 * 				.build());}
 		 * @param attribute the attribute which value to use when formatting
 		 * @return this {@link Builder} instance
 		 */
