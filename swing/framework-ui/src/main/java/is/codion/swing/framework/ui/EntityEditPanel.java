@@ -119,24 +119,24 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * (accessible via {@link #editor()}) — it holds the edited values, the validation state and the
  * insert/update/delete tasks. Subclasses implement {@link #initializeUI()} to create and lay out
  * the input components.
- * {@snippet :
- *   public class CustomerEditPanel extends EntityEditPanel {
+ * {@snippet class = is.codion.demos.chinook.javadoc.EntityEditPanelSnippets region = usage :
+ * class CustomerEditPanel extends EntityEditPanel {
  *
- *       public CustomerEditPanel(SwingEntityEditModel editModel) {
- *           super(editModel);
- *       }
+ * 	CustomerEditPanel(SwingEntityEditModel editModel) {
+ * 		super(editModel);
+ * 	}
  *
- *       protected void initializeUI() {
- *           create().textField(Customer.NAME);
- *           create().textField(Customer.EMAIL);
+ * 	@Override
+ * 	protected void initializeUI() {
+ * 		create().textField(Customer.FIRSTNAME);
+ * 		create().textField(Customer.LASTNAME);
  *
- *           setLayout(new GridLayout(2, 1, 5, 5));
+ * 		setLayout(gridLayout(2, 1));
  *
- *           addInputPanel(Customer.NAME);
- *           addInputPanel(Customer.EMAIL);
- *       }
- *   }
- *}
+ * 		addInputPanel(Customer.FIRSTNAME);
+ * 		addInputPanel(Customer.LASTNAME);
+ * 	}
+ * }}
  * @see #editor()
  * @see #initializeUI()
  */
@@ -604,17 +604,17 @@ public abstract class EntityEditPanel extends JPanel {
 	/**
 	 * Initializes this EntityEditPanel UI, that is, creates and lays out the components
 	 * required for editing the underlying entity type.
-	 * {@snippet :
-	 *   protected void initializeUI() {
-	 *      create().textField(DomainModel.USER_NAME);
-	 *      create().textField(DomainModel.USER_ADDRESS);
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityEditPanelSnippets region = initializeUI :
+	 * @Override
+	 * protected void initializeUI() {
+	 * 	create().textField(Employee.FIRSTNAME);
+	 * 	create().textField(Employee.LASTNAME);
 	 *
-	 *      setLayout(new GridLayout(2, 1, 5, 5));
+	 * 	setLayout(gridLayout(2, 1));
 	 *
-	 *      addInputPanel(DomainModel.USER_NAME);
-	 *      addInputPanel(DomainModel.USER_ADDRESS);
-	 *   }
-	 *}
+	 * 	addInputPanel(Employee.FIRSTNAME);
+	 * 	addInputPanel(Employee.LASTNAME);
+	 * }}
 	 */
 	protected abstract void initializeUI();
 
@@ -623,11 +623,10 @@ public abstract class EntityEditPanel extends JPanel {
 	 * <p>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * {@snippet :
-	 *   configureControls(layout -> layout
-	 *           .separator()
-	 *           .control(createCustomControl()))
-	 *}
+	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityEditPanelSnippets region = configureControls :
+	 * configureControls(layout -> layout
+	 * 				.separator()
+	 * 				.control(createCustomControl()));}
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#INSERT ControlKeys#INSERT}
