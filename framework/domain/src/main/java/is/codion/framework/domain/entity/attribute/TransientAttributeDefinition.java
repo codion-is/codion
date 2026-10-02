@@ -36,95 +36,60 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  * Transient attributes are useful for UI state, temporary calculations and values the record carries without
  * storing. They are editable fields wherever the framework builds components from attribute definitions, which is
  * what makes them the way a form holds something the table does not store:
- * {@snippet :
- * public class Store extends DomainModel {
+ * {@snippet class = is.codion.demos.chinook.javadoc.TransientAttributeDefinitionSnippets region = usage :
+ * interface Customer {
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.customer");
  *
- *     interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ * 	// Database columns
+ * 	Column<Long> ID = TYPE.longColumn("id");
+ * 	Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+ * 	Column<String> LASTNAME = TYPE.stringColumn("lastname");
  *
- *         // Database columns
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
- *         Column<String> LAST_NAME = TYPE.stringColumn("last_name");
- *         Column<String> EMAIL = TYPE.stringColumn("email");
- *
- *         // Transient attributes
- *         Attribute<String> FULL_NAME = TYPE.stringAttribute("full_name");
- *         Attribute<Boolean> SELECTED = TYPE.booleanAttribute("selected");
- *         Attribute<String> TEMP_NOTES = TYPE.stringAttribute("temp_notes");
- *         Attribute<Object> UI_STATE = TYPE.attribute("ui_state", Object.class);
- *     }
- *
- *     void defineCustomer() {
- *         Customer.TYPE.as()
- *             .attributes(
- *                 // Database columns
- *                 Customer.ID.as()
- *                     .primaryKey(),
- *                 Customer.FIRST_NAME.as()
- *                     .column(),
- *                 Customer.LAST_NAME.as()
- *                     .column(),
- *                 Customer.EMAIL.as()
- *                     .column(),
- *
- *                 // A derived attribute - NOT a transient one: computed from other attributes,
- *                 // and presented read-only. Shown here for contrast; see DerivedAttributeDefinition.
- *                 Customer.FULL_NAME.as()
- *                     .derived()
- * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .with(values -> {
- *                         String first = values.get(Customer.FIRST_NAME);
- *                         String last = values.get(Customer.LAST_NAME);
- *                         return ((first != null ? first : "") + " " +
- *                                 (last != null ? last : "")).trim();
- *                     })
- *                     .caption("Full Name"),
- *
- *                 // UI state attribute that doesn't modify entity
- *                 Customer.SELECTED.as()
- *                     .attribute()
- *                     .modifies(false) // Doesn't mark entity as modified
- *                     .defaultValue(false)
- *                     .caption("Selected"),
- *
- *                 // Temporary notes (modifies entity by default)
- *                 Customer.TEMP_NOTES.as()
- *                     .attribute()
- *                     .caption("Temporary Notes"),
- *
- *                 // Generic UI state storage
- *                 Customer.UI_STATE.as()
- *                     .attribute()
- *                     .modifies(false)
- *                     .caption("UI State"))
- *             .build();
- *     }
+ * 	// Transient attributes
+ * 	Attribute<Boolean> SELECTED = TYPE.booleanAttribute("selected");
+ * 	Attribute<String> NOTES = TYPE.stringAttribute("notes");
  * }
  *
- * // Usage examples
- * Entity customer = entities.entity(Customer.TYPE)
- *     .with(Customer.FIRST_NAME, "John")
- *     .with(Customer.LAST_NAME, "Doe")
- *     .with(Customer.EMAIL, "john@example.com")
- *     .build();
+ * EntityDefinition customer() {
+ * 	return Customer.TYPE.as()
+ * 					.attributes(
+ * 									// Database columns
+ * 									Customer.ID.as()
+ * 													.primaryKey(),
+ * 									Customer.FIRSTNAME.as()
+ * 													.column()
+ * 													.caption("First name"),
+ * 									Customer.LASTNAME.as()
+ * 													.column()
+ * 													.caption("Last name"),
  *
- * // Transient attributes can be used for UI state
- * customer.set(Customer.SELECTED, true);  // Doesn't mark entity as modified
- * customer.set(Customer.TEMP_NOTES, "Important customer"); // Marks entity as modified
+ * 									// UI state attribute that doesn't modify entity
+ * 									Customer.SELECTED.as()
+ * 													.attribute()
+ * 													.modifies(false) // Doesn't mark entity as modified
+ * 													.defaultValue(false)
+ * 													.caption("Selected"),
  *
- * // Derived transient values are computed automatically
- * String fullName = customer.get(Customer.FULL_NAME); // "John Doe"
+ * 									// Temporary notes (modifies entity by default)
+ * 									Customer.NOTES.as()
+ * 													.attribute()
+ * 													.caption("Notes"))
+ * 					.build();
+ * }
  *
- * // UI state storage
- * customer.set(Customer.UI_STATE, new HashMap<String, Object>());
+ * void customers(EntityConnection connection) {
+ * 	// Transient attributes are initialized to null when entities are loaded
+ * 	Entity customer = connection.selectSingle(Customer.ID.equalTo(1L));
  *
- * // Transient attributes are ignored during database operations
- * connection.insert(customer); // Only persists database columns
+ * 	customer.set(Customer.SELECTED, true);
+ * 	customer.modified(); // false, SELECTED doesn't modify the entity
  *
- * // Check modification state
- * boolean isModified = customer.modified(); // Only true if database columns changed
- *}
+ * 	customer.set(Customer.NOTES, "Important customer");
+ * 	customer.modified(); // true, NOTES modifies the entity
+ *
+ * 	// Transient attributes are ignored during database operations,
+ * 	// updating an entity with only transient values modified results in an error
+ * }}
  * @param <T> the attribute value type
  * @see #modifies()
  */

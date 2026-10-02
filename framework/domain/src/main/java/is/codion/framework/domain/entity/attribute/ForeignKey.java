@@ -34,82 +34,62 @@ import java.util.List;
  * loading of referenced entities based on reference depth configuration.
  * <p>
  * Foreign keys inherit from {@link ForeignKeyConditions} to provide condition creation methods:
- * {@snippet :
- * public class Store extends DomainModel {
+ * {@snippet class = is.codion.demos.chinook.javadoc.ForeignKeySnippets region = usage :
+ * interface Album {
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.album");
  *
- *     interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<String> NAME = TYPE.stringColumn("name");
- *     }
+ * 	Column<Long> ID = TYPE.longColumn("id");
+ * 	Column<String> TITLE = TYPE.stringColumn("title");
+ * 	Column<Long> ARTIST_ID = TYPE.longColumn("artist_id");
  *
- *     interface Order {
- *         EntityType TYPE = DOMAIN.entityType("store.order");
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<Integer> LINE_NUMBER = TYPE.integerColumn("line_number");
- *         Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
- *         Column<LocalDateTime> ORDER_DATE = TYPE.localDateTimeColumn("order_date");
- *
- *         // Single-column foreign key
- *         ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
- *     }
- *
- *     interface OrderLine {
- *         EntityType TYPE = DOMAIN.entityType("store.order_line");
- *         Column<Integer> ORDER_ID = TYPE.integerColumn("order_id");
- *         Column<Integer> LINE_NUMBER = TYPE.integerColumn("line_number");
- *         Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
- *
- *         // Composite foreign key (two columns)
- *         ForeignKey ORDER_FK = TYPE.foreignKey("order_fk",
- *             List.of(ForeignKey.reference(ORDER_ID, Order.ID),
- *                     ForeignKey.reference(LINE_NUMBER, Order.LINE_NUMBER)));
- *     }
- *
- *     void defineOrder() {
- *         Order.TYPE.as()
- *             .attributes(
- *                 Order.ID.as()
- *                     .primaryKey(),
- *                 Order.CUSTOMER_ID.as()
- *                     .column(),
- *                 Order.ORDER_DATE.as()
- *                     .column(),
- *                 Order.CUSTOMER_FK.as()
- *                     .foreignKey()
- *                     .caption("Customer")
- *                     .referenceDepth(1))  // Load customer automatically (1 is the default)
- *             .build();
- *     }
+ * 	// Single-column foreign key
+ * 	ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
  * }
  *
- * // Foreign key navigation and usage
- * List<Entity> orders = connection.select(all(Order.TYPE));
- *
- * for (Entity order : orders) {
- *     // Direct foreign key entity access (loaded automatically with reference depth)
- *     Entity customer = order.get(Order.CUSTOMER_FK);
- *     if (customer != null) {
- *         String customerName = customer.get(Customer.NAME);
- *         System.out.println("Customer: " + customerName);
- *     }
- *
- *     // Or use entity() method to get entity even if not fully loaded
- *     Entity customerEntity = order.entity(Order.CUSTOMER_FK);
- *     if (customerEntity != null) {
- *         Integer customerId = customerEntity.get(Customer.ID); // Always available
- *     }
+ * EntityDefinition album() {
+ * 	return Album.TYPE.as()
+ * 					.attributes(
+ * 									Album.ID.as()
+ * 													.primaryKey(),
+ * 									Album.TITLE.as()
+ * 													.column()
+ * 													.caption("Title"),
+ * 									Album.ARTIST_ID.as()
+ * 													.column(),
+ * 									Album.ARTIST_FK.as()
+ * 													.foreignKey()
+ * 													.caption("Artist")
+ * 													.referenceDepth(1)) // Load the artist automatically (1 is the default)
+ * 					.build();
  * }
  *
- * // Query conditions using foreign keys
- * Entity specificCustomer = connection.selectSingle(Customer.ID.equalTo(42));
+ * void albums(EntityConnection connection) {
+ * 	// Foreign key navigation and usage
+ * 	List<Entity> albums = connection.select(all(Album.TYPE));
  *
- * List<Entity> customerOrders = connection.select(
- *     Order.CUSTOMER_FK.equalTo(specificCustomer));
+ * 	for (Entity album : albums) {
+ * 		// Direct foreign key entity access (loaded automatically with reference depth)
+ * 		Entity artist = album.get(Album.ARTIST_FK);
+ * 		if (artist != null) {
+ * 			System.out.println("Artist: " + artist.get(Artist.NAME));
+ * 		}
  *
- * List<Entity> ordersFromActiveCustomers = connection.select(
- *     Order.CUSTOMER_FK.in(connection.select(Customer.ACTIVE.equalTo(true))));
- *}
+ * 		// Or use entity() to get the entity even if not loaded
+ * 		Entity artistEntity = album.entity(Album.ARTIST_FK);
+ * 		if (artistEntity != null) {
+ * 			Long artistId = artistEntity.get(Artist.ID); // Always available
+ * 		}
+ * 	}
+ *
+ * 	// Query conditions using foreign keys
+ * 	Entity acdc = connection.selectSingle(Artist.NAME.equalTo("AC/DC"));
+ *
+ * 	List<Entity> acdcAlbums = connection.select(
+ * 					Album.ARTIST_FK.equalTo(acdc));
+ *
+ * 	List<Entity> albumsByTheArtists = connection.select(
+ * 					Album.ARTIST_FK.in(connection.select(Artist.NAME.like("The %"))));
+ * }}
  * @see ForeignKeyConditions
  * @see #as()
  * @see #referencedType()

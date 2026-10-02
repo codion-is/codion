@@ -28,36 +28,18 @@ import java.util.function.Function;
 /**
  * Formats {@link Entity} instances into their string representations.
  * Instances are built via {@link #builder()}.
- * {@snippet :
- *  interface Department {
- *  		EntityType TYPE = DOMAIN.entityType("employees.department");
- *  		Column<Integer> ID = TYPE.integerColumn("id");
- *  		Column<String> NAME = TYPE.stringColumn("name");
- *  }
+ * {@snippet class = is.codion.demos.chinook.javadoc.EntityFormatterSnippets region = usage :
+ * Entity track = connection.selectSingle(Track.NAME.equalTo("Come As You Are"));
  *
- *  interface Employee {
- *  		EntityType TYPE = DOMAIN.entityType("employees.employee");
- *  		Column<String> NAME = TYPE.stringColumn("name");
- *  		Column<Integer> DEPARTMENT_ID = TYPE.integerColumn("department_id");
- *  		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT_ID, Department.ID);
- *  }
+ * EntityFormatter formatter = EntityFormatter.builder()
+ * 				.text("Name=")
+ * 				.value(Track.NAME)
+ * 				.text(", Album='")
+ * 				.value(Track.ALBUM_FK, Album.TITLE)
+ * 				.text("'")
+ * 				.build();
  *
- *  void testFormatter() {
- * 			Entity department = createDepartment();// With name: Accounting
- *  		Entity employee = createEmployee(department);// With name: John and the above department
- *
- * 			EntityFormatter formatter =
- * 					EntityFormatter.builder()
- *             .text("Name=")
- *             .value(Employee.NAME)
- *             .text(", Department='")
- *             .value(Employee.DEPARTMENT_FK, Department.NAME)
- *             .text("'")
- *             .build();
- *
- *  		System.out.println(formatter.apply(employee));
- * }
- *}
+ * System.out.println(formatter.apply(track)); // Name=Come As You Are, Album='Nevermind'}
  * Outputs the following String:
  * <p>
  * {@code Name=John, Department='Accounting'}<br><br>

@@ -44,77 +44,58 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * Attributes are typically created through entity type factory methods and then configured
  * using the {@link #as()} method to create attribute definitions:
- * {@snippet :
- * public class Store extends DomainModel {
+ * {@snippet class = is.codion.demos.chinook.javadoc.AttributeSnippets region = usage :
+ * interface InvoiceLine {
+ * 	EntityType TYPE = DOMAIN.entityType("chinook.invoiceline");
  *
- *     interface Customer {
- *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ * 	// Typed columns, mapped to table columns
+ * 	Column<Long> ID = TYPE.longColumn("id");
+ * 	Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
+ * 	Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
  *
- *         // Typed attribute creation
- *         Column<Integer> ID = TYPE.integerColumn("id");
- *         Column<String> NAME = TYPE.stringColumn("name");
- *         Column<String> EMAIL = TYPE.stringColumn("email");
- *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
- *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
- *
- *         // Transient attribute (not mapped to database)
- *         Attribute<String> DISPLAY_NAME = TYPE.stringAttribute("display_name");
- *
- *         // Custom typed attribute
- *         Attribute<CustomerStatus> STATUS = TYPE.attribute("status", CustomerStatus.class);
- *     }
- *
- *     void defineCustomer() {
- *         Customer.TYPE.as()
- *             .attributes(
- *                 // Column attributes
- *                 Customer.ID.as()
- *                     .primaryKey(),
- *                 Customer.NAME.as()
- *                     .column()
- *                     .nullable(false)
- *                     .maximumLength(100),
- *                 Customer.EMAIL.as()
- *                     .column()
- *                     .nullable(false),
- *                 Customer.BIRTH_DATE.as()
- *                     .column(),
- *                 Customer.ACTIVE.as()
- *                     .column()
- *                     .defaultValue(true),
- *
- *                 // Derived attribute
- *                 Customer.DISPLAY_NAME.as()
- *                     .derived()
- * 				             .from(Customer.NAME, Customer.EMAIL)
- *                     .with(values ->
- *                         values.get(Customer.NAME) + " (" + values.get(Customer.EMAIL) + ")"),
- *
- *                 // Custom typed attribute
- *                 Customer.STATUS.as()
- *                     .column()
- *                     .converter(String.class, CustomerStatus::valueOf))
- *             .build();
- *     }
+ * 	// An attribute not mapped to a column, here a derived one
+ * 	Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
  * }
  *
- * // Usage with entities
- * Entity customer = entities.entity(Customer.TYPE)
- *     .with(Customer.NAME, "John Doe")
- *     .with(Customer.EMAIL, "john@example.com")
- *     .with(Customer.ACTIVE, true)
- *     .build();
+ * EntityDefinition invoiceLine() {
+ * 	return InvoiceLine.TYPE.as()
+ * 					.attributes(
+ * 									InvoiceLine.ID.as()
+ * 													.primaryKey(),
+ * 									InvoiceLine.UNITPRICE.as()
+ * 													.column()
+ * 													.caption("Price")
+ * 													.nullable(false),
+ * 									InvoiceLine.QUANTITY.as()
+ * 													.column()
+ * 													.caption("Quantity")
+ * 													.nullable(false)
+ * 													.defaultValue(1),
+ * 									InvoiceLine.TOTAL.as()
+ * 													.derived()
+ * 													.from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
+ * 													.with(new InvoiceLineTotal())
+ * 													.caption("Total"))
+ * 					.build();
+ * }
  *
- * // Type-safe value access
- * String name = customer.get(Customer.NAME);           // String
- * Boolean active = customer.get(Customer.ACTIVE);     // Boolean
- * LocalDate birthDate = customer.get(Customer.BIRTH_DATE); // LocalDate
+ * void attributes(Entities entities) {
+ * 	// Usage with entities
+ * 	Entity invoiceLine = entities.entity(InvoiceLine.TYPE)
+ * 					.with(InvoiceLine.UNITPRICE, BigDecimal.valueOf(0.99))
+ * 					.with(InvoiceLine.QUANTITY, 2)
+ * 					.build();
  *
- * // Attribute type information
- * Class<String> nameType = Customer.NAME.type().get();    // String.class
- * boolean isNumeric = Customer.ID.type().isNumeric();     // true
- * boolean isTemporal = Customer.BIRTH_DATE.type().isTemporal(); // true
- *}
+ * 	// Type-safe value access
+ * 	BigDecimal unitPrice = invoiceLine.get(InvoiceLine.UNITPRICE);
+ * 	Integer quantity = invoiceLine.get(InvoiceLine.QUANTITY);
+ * 	BigDecimal total = invoiceLine.get(InvoiceLine.TOTAL); // 1.98
+ *
+ * 	// Attribute type information
+ * 	Class<BigDecimal> priceType = InvoiceLine.UNITPRICE.type().get(); // BigDecimal.class
+ * 	boolean numeric = InvoiceLine.QUANTITY.type().isNumeric();      // true
+ * 	boolean decimal = InvoiceLine.UNITPRICE.type().isDecimal();     // true
+ * }}
  * @param <T> the attribute type
  * @see #as()
  * @see #type()
