@@ -397,7 +397,7 @@ public final class SchemaDomain extends DomainModel {
 				requireNonNull(auditColumnNames);
 				this.auditColumnNames = unmodifiableSet(Arrays.stream(auditColumnNames)
 								.map(String::trim)
-								.map(String::toLowerCase)
+								.map(columnName -> columnName.toLowerCase(Locale.ROOT))
 								.collect(toSet()));
 				return this;
 			}
