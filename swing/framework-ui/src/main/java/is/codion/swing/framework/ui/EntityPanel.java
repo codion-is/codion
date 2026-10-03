@@ -1832,7 +1832,7 @@ public class EntityPanel extends JPanel {
 								.north(buttonPanel()
 												.controls(controls)
 												.orientation(VERTICAL)
-												.button(button -> button.horizontalAlignment(SwingConstants.LEADING)))
+												.buttons(button -> button.horizontalAlignment(SwingConstants.LEADING)))
 								.build();
 			}
 		}
