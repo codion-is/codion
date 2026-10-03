@@ -48,6 +48,8 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -1292,6 +1294,87 @@ public final class ComponentsTest {
 						.rollover(true)
 						.orientation(SwingConstants.VERTICAL)
 						.build();
+	}
+
+	@Test
+	void toolBarContent() {
+		JTextField field = new JTextField();
+		JButton added = new JButton("Added");
+		JToolBar toolBar = Components.toolBar()
+						.separator()
+						.control(Control.builder()
+										.command(() -> {})
+										.caption("Control"))
+						.separator()
+						.separator()
+						.add(field)
+						.glue()
+						.add(added)
+						.separator()
+						.buttonsFocusable(false)
+						.build();
+		// in order, leading, trailing and duplicate separators removed
+		assertEquals(5, toolBar.getComponentCount());
+		assertInstanceOf(JButton.class, toolBar.getComponent(0));
+		assertInstanceOf(JToolBar.Separator.class, toolBar.getComponent(1));
+		assertSame(field, toolBar.getComponent(2));
+		assertInstanceOf(Box.Filler.class, toolBar.getComponent(3));
+		assertSame(added, toolBar.getComponent(4));
+		// the button configuration only applies to the buttons based on controls
+		assertFalse(toolBar.getComponent(0).isFocusable());
+		assertTrue(added.isFocusable());
+		assertEquals("Added", added.getText());
+
+		// the glue follows the orientation, even when specified after the glue is added
+		Box.Filler glue = (Box.Filler) Components.toolBar()
+						.glue()
+						.orientation(SwingConstants.VERTICAL)
+						.build()
+						.getComponent(0);
+		assertEquals(0, glue.getMaximumSize().width);
+		assertEquals(Short.MAX_VALUE, glue.getMaximumSize().height);
+
+		// empty controls are left out, leaving no adjacent separators
+		toolBar = Components.toolBar()
+						.control(Control.command(() -> {}))
+						.separator()
+						.control(Controls.builder().build())
+						.separator()
+						.control(Control.command(() -> {}))
+						.build();
+		assertEquals(3, toolBar.getComponentCount());
+
+		assertEquals(0, Components.toolBar().build().getComponentCount());
+	}
+
+	@Test
+	void buttonPanelContent() {
+		JLabel label = new JLabel();
+		JToggleButton added = new JToggleButton();
+		ButtonGroup buttonGroup = new ButtonGroup();
+		JPanel panel = Components.buttonPanel()
+						.separator()
+						.control(Control.toggle(Value.nonNull(false)))
+						.separator()
+						.separator()
+						.add(label)
+						.add(added)
+						.separator()
+						.controls(Controls.builder()
+										.control(Control.toggle(Value.nonNull(false))))
+						.separator()
+						.buttonGroup(buttonGroup)
+						.build();
+		// in order, leading, trailing and duplicate separators removed, a separator being an empty label
+		assertEquals(6, panel.getComponentCount());
+		assertInstanceOf(JToggleButton.class, panel.getComponent(0));
+		assertInstanceOf(JLabel.class, panel.getComponent(1));
+		assertSame(label, panel.getComponent(2));
+		assertSame(added, panel.getComponent(3));
+		assertInstanceOf(JLabel.class, panel.getComponent(4));
+		assertInstanceOf(JToggleButton.class, panel.getComponent(5));
+		// the button group only contains the buttons based on controls
+		assertEquals(2, buttonGroup.getButtonCount());
 	}
 
 	@Test

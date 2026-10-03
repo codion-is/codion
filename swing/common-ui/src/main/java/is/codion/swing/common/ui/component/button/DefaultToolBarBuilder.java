@@ -25,24 +25,18 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.JComponent;
 import javax.swing.JToolBar;
-import java.util.ArrayList;
-import java.util.function.Supplier;
-
-import static java.util.Objects.requireNonNull;
+import javax.swing.SwingConstants;
 
 final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
-
-	static final ControlsStep<JToolBar, ToolBarBuilder> CONTROLS = new ButtonPanelControlsStep();
-
-	private final Controls controls;
 
 	private @Nullable Boolean floatable;
 	private @Nullable Boolean rollover;
 	private @Nullable Boolean borderPainted;
 
-	DefaultToolBarBuilder(Controls controls) {
-		this.controls = controls;
+	DefaultToolBarBuilder() {
 		includeButtonText(false);
 	}
 
@@ -65,6 +59,11 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 	}
 
 	@Override
+	public ToolBarBuilder glue() {
+		return add(this::createGlue);
+	}
+
+	@Override
 	protected JToolBar createComponent() {
 		JToolBar toolBar = new JToolBar();
 		if (floatable != null) {
@@ -77,19 +76,24 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 		if (borderPainted != null) {
 			toolBar.setBorderPainted(borderPainted);
 		}
-
-		new ToolBarControlHandler(toolBar, controls);
+		addContent(new ToolBarControlHandler(toolBar), toolBar::add);
 
 		return toolBar;
+	}
+
+	// the glue follows the orientation, which may be specified after the glue is added
+	private JComponent createGlue() {
+		return (JComponent) (orientation() == SwingConstants.HORIZONTAL ?
+						Box.createHorizontalGlue() :
+						Box.createVerticalGlue());
 	}
 
 	private final class ToolBarControlHandler extends ControlHandler {
 
 		private final JToolBar toolBar;
 
-		private ToolBarControlHandler(JToolBar toolBar, Controls controls) {
+		private ToolBarControlHandler(JToolBar toolBar) {
 			this.toolBar = toolBar;
-			cleanupSeparators(new ArrayList<>(controls.actions())).forEach(this);
 		}
 
 		@Override
@@ -111,7 +115,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
 		@Override
 		void onControls(Controls controls) {
-			new ToolBarControlHandler(toolBar, controls);
+			cleanupSeparators(controls.actions()).forEach(this);
 		}
 
 		@Override
@@ -119,40 +123,6 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 			toolBar.add(buttonBuilder()
 							.action(action)
 							.build());
-		}
-	}
-
-	private static final class ButtonPanelControlsStep implements ControlsStep<JToolBar, ToolBarBuilder> {
-
-		@Override
-		public ToolBarBuilder action(Action action) {
-			return controls(Controls.builder()
-							.action(requireNonNull(action))
-							.build());
-		}
-
-		@Override
-		public ToolBarBuilder control(Control control) {
-			return controls(Controls.builder()
-							.control(requireNonNull(control))
-							.build());
-		}
-
-		@Override
-		public ToolBarBuilder control(Supplier<? extends Control> control) {
-			return controls(Controls.builder()
-							.control(requireNonNull(control))
-							.build());
-		}
-
-		@Override
-		public ToolBarBuilder controls(Controls controls) {
-			return new DefaultToolBarBuilder(requireNonNull(controls));
-		}
-
-		@Override
-		public ToolBarBuilder controls(Supplier<Controls> controls) {
-			return new DefaultToolBarBuilder(requireNonNull(controls).get());
 		}
 	}
 }

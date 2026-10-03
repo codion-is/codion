@@ -19,14 +19,20 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,6 +40,8 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 				extends AbstractComponentBuilder<C, B> implements ControlPanelBuilder<C, B> {
 
 	private static final EmptyConsumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
+
+	private final List<Item> items = new ArrayList<>();
 
 	private Consumer<ButtonBuilder<?, ?, ?>> button = (Consumer<ButtonBuilder<?, ?, ?>>) EMPTY_CONSUMER;
 	private Consumer<ToggleButtonBuilder<?, ?>> toggleButton = (Consumer<ToggleButtonBuilder<?, ?>>) EMPTY_CONSUMER;
@@ -47,6 +55,55 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	private boolean buttonsFocusable = true;
 
 	protected AbstractControlPanelBuilder() {}
+
+	@Override
+	public final B action(Action action) {
+		requireNonNull(action);
+		// empty controls are left out, as by Controls, keeping the separator cleanup accurate
+		if (!(action instanceof Controls) || ((Controls) action).size() > 0) {
+			items.add(new ActionItem(action));
+		}
+		return self();
+	}
+
+	@Override
+	public final B control(Control control) {
+		return action(control);
+	}
+
+	@Override
+	public final B control(Supplier<? extends Control> control) {
+		return action(requireNonNull(control).get());
+	}
+
+	@Override
+	public final B controls(Controls controls) {
+		requireNonNull(controls).actions().forEach(this::action);
+		return self();
+	}
+
+	@Override
+	public final B controls(Supplier<Controls> controls) {
+		return controls(requireNonNull(controls).get());
+	}
+
+	@Override
+	public final B separator() {
+		return action(Controls.SEPARATOR);
+	}
+
+	@Override
+	public final B add(JComponent component) {
+		requireNonNull(component);
+		items.add(new ComponentItem(() -> component));
+		return self();
+	}
+
+	@Override
+	public final B add(Supplier<? extends JComponent> component) {
+		items.add(new ComponentItem(requireNonNull(component)));
+		return self();
+	}
 
 	@Override
 	public final B orientation(int orientation) {
@@ -109,6 +166,16 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		return orientation;
 	}
 
+	/**
+	 * Adds the content in the order added, leading, trailing and adjacent duplicate separators removed.
+	 * @param handler handles the actions
+	 * @param components receives the components
+	 */
+	protected final void addContent(ControlHandler handler, Consumer<JComponent> components) {
+		ControlHandler.cleanupSeparators(items, Item::separator)
+						.forEach(item -> item.add(handler, components));
+	}
+
 	protected final ButtonBuilder<?, ?, ?> buttonBuilder() {
 		ButtonBuilder<JButton, Void, ?> buttonBuilder = set(ButtonBuilder.builder());
 		button.accept(buttonBuilder);
@@ -148,5 +215,50 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
 		@Override
 		public void accept(T result) {}
+	}
+
+	private interface Item {
+
+		boolean separator();
+
+		void add(ControlHandler handler, Consumer<JComponent> components);
+	}
+
+	private static final class ActionItem implements Item {
+
+		private final Action action;
+
+		private ActionItem(Action action) {
+			this.action = action;
+		}
+
+		@Override
+		public boolean separator() {
+			return action == Controls.SEPARATOR;
+		}
+
+		@Override
+		public void add(ControlHandler handler, Consumer<JComponent> components) {
+			handler.accept(action);
+		}
+	}
+
+	private static final class ComponentItem implements Item {
+
+		private final Supplier<? extends JComponent> component;
+
+		private ComponentItem(Supplier<? extends JComponent> component) {
+			this.component = component;
+		}
+
+		@Override
+		public boolean separator() {
+			return false;
+		}
+
+		@Override
+		public void add(ControlHandler handler, Consumer<JComponent> components) {
+			components.accept(requireNonNull(component.get()));
+		}
 	}
 }

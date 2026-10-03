@@ -50,9 +50,18 @@ public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBui
 	ToolBarBuilder borderPainted(boolean borderPainted);
 
 	/**
+	 * Adds glue, horizontal or vertical depending on the toolbar orientation,
+	 * for example to align the subsequent items to the right of a horizontal toolbar.
+	 * @return this builder instance
+	 * @see javax.swing.Box#createHorizontalGlue()
+	 * @see javax.swing.Box#createVerticalGlue()
+	 */
+	ToolBarBuilder glue();
+
+	/**
 	 * @return a new {@link ToolBarBuilder}
 	 */
-	static ControlsStep<JToolBar, ToolBarBuilder> builder() {
-		return DefaultToolBarBuilder.CONTROLS;
+	static ToolBarBuilder builder() {
+		return new DefaultToolBarBuilder();
 	}
 }

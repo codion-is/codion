@@ -255,7 +255,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<JMenu, MenuBuild
 			this.actionMenuItem = actionMenuItem;
 			this.controlMenuItem = controlMenuItem;
 			this.toggleControlMenuItem = toggleControlMenuItem;
-			cleanupSeparators(new ArrayList<>(controls.actions())).forEach(this);
+			cleanupSeparators(controls.actions()).forEach(this);
 		}
 
 		@Override
