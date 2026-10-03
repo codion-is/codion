@@ -73,6 +73,7 @@ public final class JsonPreferences {
 	}
 
 	/**
+	 * A key and a child node can not share a name, as with {@link FilePreferences}.
 	 * @return a file-less, in-memory {@link Preferences} node backed by a fresh {@link JsonPreferences}
 	 */
 	public static Preferences jsonPreferences() {
@@ -85,6 +86,12 @@ public final class JsonPreferences {
 		requireNonNull(value);
 
 		synchronized (lock) {
+			// a key and a child node share the namespace of a node, a value would replace the node, its subtree included
+			JSONObject node = getNode(path);
+			if (node != null && node.has(key) && isChildNode(node, key)) {
+				throw new IllegalStateException("Cannot put a value for key '" + key + "' at path '" + path +
+								"' because a child node with the same name exists");
+			}
 			doPut(path, key, value);
 			record(preferences -> preferences.doPut(path, key, value));
 		}
@@ -115,7 +122,8 @@ public final class JsonPreferences {
 
 		synchronized (lock) {
 			JSONObject node = getNode(path);
-			if (node == null || !node.has(key)) {
+			// a child node is not a value
+			if (node == null || !node.has(key) || isChildNode(node, key)) {
 				return null;
 			}
 
@@ -148,7 +156,8 @@ public final class JsonPreferences {
 		synchronized (lock) {
 			LOG.trace("Removing key '{}' at path '{}'", key, path);
 			JSONObject node = getNode(path);
-			if (node != null) {
+			// a child node is not a value, removing it would remove its subtree
+			if (node != null && node.has(key) && !isChildNode(node, key)) {
 				node.remove(key);
 			}
 		}

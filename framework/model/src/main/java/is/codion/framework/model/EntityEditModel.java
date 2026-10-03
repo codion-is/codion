@@ -70,6 +70,7 @@ public interface EntityEditModel<R extends EntityEditor<R>> {
 	/**
 	 * Stores any custom persistent state to the given preferences node. Does nothing by default,
 	 * override to persist edit model state along with the rest of the model tree.
+	 * <p>The given node is reserved for the edit model, nothing else is stored in it.
 	 * @param preferences the preferences node to store to
 	 * @see #restore(Preferences)
 	 */

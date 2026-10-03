@@ -23,6 +23,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.prefs.Preferences;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,6 +53,47 @@ public final class NodeConflictTest {
 
 		// Original value should still be there
 		assertEquals("value", store.get("", "foo"));
+	}
+
+	@Test
+	void testPuttingValueWhereNodeExists() {
+		Path prefsFile = tempDir.resolve("node-conflict.json");
+		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
+
+		// Create a child node "foo", with a value
+		store.put("foo", "bar", "childValue");
+
+		// Putting a value for "foo" would replace the node, its subtree included
+		IllegalStateException exception = assertThrows(IllegalStateException.class,
+						() -> store.put("", "foo", "value"));
+
+		assertTrue(exception.getMessage().contains("foo"));
+		assertTrue(exception.getMessage().contains("child node"));
+
+		// The node should be unchanged
+		assertTrue(store.childrenNames("").contains("foo"));
+		assertEquals("childValue", store.get("foo", "bar"));
+	}
+
+	@Test
+	void testPuttingValueWhereNodeExistsViaPreferences() {
+		Preferences preferences = JsonPreferences.jsonPreferences();
+		preferences.node("view").node("table").put("columns", "{\"a\":1}");
+
+		assertThrows(IllegalStateException.class, () -> preferences.put("view", "value"));
+		assertEquals("{\"a\":1}", preferences.node("view").node("table").get("columns", null));
+	}
+
+	@Test
+	void testChildNodeIsNotAValue() {
+		// as with java.util.prefs, where keys and child nodes are separate namespaces
+		Preferences preferences = JsonPreferences.jsonPreferences();
+		preferences.node("view").node("table").put("columns", "{\"a\":1}");
+
+		assertNull(preferences.get("view", null));
+		assertEquals("default", preferences.get("view", "default"));
+		preferences.remove("view");
+		assertEquals("{\"a\":1}", preferences.node("view").node("table").get("columns", null));
 	}
 
 	@Test

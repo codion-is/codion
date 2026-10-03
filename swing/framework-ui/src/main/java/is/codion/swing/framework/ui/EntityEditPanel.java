@@ -361,6 +361,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * Stores preferences for this panel.
 	 * Override to store panel specific preferences.
 	 * <p>Remember to call {@code super.store(preferences)} when overriding.
+	 * <p>The given node is reserved for the edit panel, nothing else is stored in it.
 	 * @param preferences the preferences instance to write to
 	 */
 	public void store(Preferences preferences) {

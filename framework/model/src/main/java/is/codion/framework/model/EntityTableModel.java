@@ -169,6 +169,8 @@ public interface EntityTableModel<E extends EntityEditModel<R>, R extends Entity
 	 * filter settings and sort order - to the given preferences node.
 	 * May be overridden to persist custom state, in which case {@code super.store(preferences)} should
 	 * be called in order to retain the default state.
+	 * <p>The keys {@code conditions}, {@code filters} and {@code sort} are stored in the given node, along with
+	 * the {@code edit} child node of the edit model, so custom state needs other names.
 	 * @param preferences the preferences node to store to
 	 * @see #restore(Preferences)
 	 */
