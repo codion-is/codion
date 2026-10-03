@@ -21,6 +21,7 @@ Codion Change Log
 - FilterTableModel.Builder, primitive column types now rejected, such a column getting no default filter and sorted by its string representation.
 - ConditionModel.Builder, an enum condition now defaults to the EQUAL, NOT_EQUAL, IN and NOT_IN operators, an enum comparing by declaration order.
 - FilterComboBoxModel.Builder.includeNull() renamed nullable(), FilterComboBoxModel.ComboBoxItems.includesNull() renamed nullable().
+- FilePreferences and JsonPreferences, putting a value for a key naming a child node now throws IllegalStateException instead of replacing the node and its subtree, get() and remove() now ignoring child nodes, where get() returned the node as JSON and remove() removed it.
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.

@@ -89,6 +89,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	 * Each root model stores its state under a child node named by its {@link EntityModel#preferencesKey()}.
 	 * May be overridden to persist custom state, in which case {@code super.store(preferences)} should
 	 * be called in order to retain the default state.
+	 * <p>Custom state belongs in a child node of its own, named so as not to clash with a model's preferences key.
 	 * @param preferences the preferences node representing the entity models
 	 * @see #restore(Preferences)
 	 */

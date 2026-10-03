@@ -459,6 +459,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	/**
 	 * Stores application preferences. Override to store custom preferences.
 	 * <p>Remember to call {@code super.store(preferences)} when overriding.
+	 * <p>The keys {@code application} and {@code version} are stored in the given node, along with the child nodes
+	 * {@code entities} and {@code auxiliary}, so custom preferences need other names, preferably a child node of their own.
 	 * @param preferences the Preferences instance to write to
 	 */
 	public void store(Preferences preferences) {

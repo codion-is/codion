@@ -99,6 +99,8 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	 * node. Each model stores its state under a child node named by its {@link #preferencesKey()}.
 	 * May be overridden to persist custom state, in which case {@code super.store(preferences)} should
 	 * be called in order to retain the default state.
+	 * <p>This model's node contains the child nodes {@code model} and {@code details}, along with {@code view}
+	 * for the UI, so custom state belongs in a child node of its own under it, with another name.
 	 * @param preferences the preferences node representing the entity models
 	 * @see #restore(Preferences)
 	 */

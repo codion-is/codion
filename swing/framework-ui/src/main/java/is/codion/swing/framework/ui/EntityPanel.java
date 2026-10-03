@@ -594,6 +594,8 @@ public class EntityPanel extends JPanel {
 	 * Stores preferences for this panel and its detail panels.
 	 * Override to store panel specific preferences.
 	 * <p>Remember to call {@code super.store(preferences)} when overriding.
+	 * <p>The child nodes {@code view} and {@code details} are stored in the given node, which also contains the
+	 * {@code model} node of the model, so custom preferences need other names, preferably a child node of their own.
 	 * @param preferences the preferences instance to write to
 	 */
 	public void store(Preferences preferences) {
