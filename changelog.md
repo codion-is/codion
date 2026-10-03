@@ -75,6 +75,7 @@ Codion Change Log
 - FileInput.Builder.filePathField() renamed pathField().
 - ControlPanelBuilder.ControlsStep removed, ToolBarBuilder and ButtonPanelBuilder now take controls and components in the order added, via action(), control(), controls(), separator() and add(), ToolBarBuilder.glue() added.
 - ControlPanelBuilder.button(), toggleButton(), checkBox() and radioButton() renamed buttons(), toggleButtons(), checkBoxes() and radioButtons().
+- FilterTable.Builder.filterPanel() renamed filters().
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
@@ -85,6 +86,7 @@ Codion Change Log
 - EntityTablePanel.Config.conditionComponents() and filterComponents() replaced by conditions() and filters(), for excluding and configuring the condition and filter panels, the configuration validated when the panel is instantiated.
 - EntityTablePanel, each condition panel is now configured as it is created, instead of through the condition panel factory, where a custom factory could leave panels unconfigured.
 - EntityConditionComponents.supports() now adds Entity to the ConditionComponents default instead of duplicating the supported types.
+- EntityTablePanel.Config.conditionPanel() renamed conditions().
 ### is.codion.framework.domain.db
 - SchemaDomain.DefaultSchemaSettings now uses Locale.ROOT when lowercasing audit column names.
 ### is.codion.framework.model

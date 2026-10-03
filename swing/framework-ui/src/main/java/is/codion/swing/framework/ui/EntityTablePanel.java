@@ -2281,11 +2281,14 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param conditionPanel the table condition panel factory
+		 * Specifies the factory creating the condition panel, {@link EntityTablePanel#condition()},
+		 * {@link FilterTableConditionPanel#filterTableConditionPanel} by default.
+		 * @param conditions the factory creating the condition panel
 		 * @return this Config instance
+		 * @see #conditions(Consumer)
 		 */
-		public Config conditionPanel(TableConditionPanel.Factory<Attribute<?>> conditionPanel) {
-			this.conditionPanelFactory = requireNonNull(conditionPanel);
+		public Config conditions(TableConditionPanel.Factory<Attribute<?>> conditions) {
+			this.conditionPanelFactory = requireNonNull(conditions);
 			return this;
 		}
 

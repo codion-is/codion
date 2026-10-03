@@ -1558,12 +1558,6 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> summaryValues(SummaryValues.Factory<C> summaryValues);
 
 		/**
-		 * @param filterPanel the table filter condition panel factory
-		 * @return this builder instance
-		 */
-		Builder<R, C> filterPanel(TableConditionPanel.Factory<C> filterPanel);
-
-		/**
 		 * The cell renderer for the given column, overrides {@link #cellRenderers(FilterTableCellRenderer.Factory)}.
 		 * @param identifier the column identifier
 		 * @param type the column type
@@ -1818,6 +1812,15 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filters(Consumer<TableConditionPanel.Panels<C>> filters);
 
 		/**
+		 * Specifies the factory creating the filter panel, {@link FilterTable#filters()},
+		 * {@link FilterTableConditionPanel#filterTableConditionPanel} by default.
+		 * @param filters the factory creating the filter panel
+		 * @return this builder instance
+		 * @see #filters(Consumer)
+		 */
+		Builder<R, C> filters(TableConditionPanel.Factory<C> filters);
+
+		/**
 		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
@@ -1998,12 +2001,6 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> summaryValues(SummaryValues.Factory<C> summaryValues) {
 			this.summaryValuesFactory = requireNonNull(summaryValues);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> filterPanel(TableConditionPanel.Factory<C> filterPanel) {
-			this.filterPanelFactory = requireNonNull(filterPanel);
 			return this;
 		}
 
@@ -2201,6 +2198,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> filters(Consumer<TableConditionPanel.Panels<C>> filters) {
 			this.filterPanels = requireNonNull(filters);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> filters(TableConditionPanel.Factory<C> filters) {
+			this.filterPanelFactory = requireNonNull(filters);
 			return this;
 		}
 
