@@ -46,7 +46,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultEntityConditionModelTest {
+public class DefaultEntityConditionsTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -56,7 +56,7 @@ public class DefaultEntityConditionModelTest {
 					.user(UNIT_TEST_USER)
 					.build();
 
-	private final EntityConditionModel conditionModel = EntityConditionModel.builder()
+	private final EntityConditions conditionModel = EntityConditions.builder()
 					.entityType(Employee.TYPE)
 					.connection(CONNECTION)
 					.build();
@@ -75,12 +75,12 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void noSearchColumnsDefined() {
-		EntityConditionModel model = EntityConditionModel.builder()
+		EntityConditions conditions = EntityConditions.builder()
 						.entityType(Detail.TYPE)
 						.connection(CONNECTION)
 						.build();
 		//no search columns defined for master entity
-		ForeignKeyConditionModel masterModel = model.get(Detail.MASTER_FK);
+		ForeignKeyConditionModel masterModel = conditions.get(Detail.MASTER_FK);
 		assertThrows(IllegalStateException.class, () ->
 						masterModel.models().equal().searchModel().search().perform());
 	}
@@ -97,20 +97,20 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void exclude() {
-		EntityConditionModel model = EntityConditionModel.builder()
+		EntityConditions conditions = EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.exclude(Employee.COMMISSION, Employee.MGR_FK)
 						.build();
-		assertEquals(9, model.get().size());
-		assertThrows(IllegalArgumentException.class, () -> model.get(Employee.COMMISSION));
-		assertThrows(IllegalArgumentException.class, () -> model.get(Employee.MGR_FK));
-		assertNotNull(model.get(Employee.SALARY));
+		assertEquals(9, conditions.get().size());
+		assertThrows(IllegalArgumentException.class, () -> conditions.get(Employee.COMMISSION));
+		assertThrows(IllegalArgumentException.class, () -> conditions.get(Employee.MGR_FK));
+		assertNotNull(conditions.get(Employee.SALARY));
 	}
 
 	@Test
 	void configure() {
-		EntityConditionModel model = EntityConditionModel.builder()
+		EntityConditions conditions = EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.condition(Employee.SALARY, condition -> condition
@@ -119,20 +119,20 @@ public class DefaultEntityConditionModelTest {
 										.operators(asList(Operator.EQUAL, Operator.NOT_EQUAL))
 										.operator(Operator.NOT_EQUAL))
 						.build();
-		ConditionModel<Double> salary = model.get(Employee.SALARY);
+		ConditionModel<Double> salary = conditions.get(Employee.SALARY);
 		assertEquals(asList(Operator.GREATER_THAN, Operator.LESS_THAN, Operator.BETWEEN), salary.operators());
 		// the first of the operators when no operator is specified
 		assertEquals(Operator.GREATER_THAN, salary.operator().get());
-		assertEquals(Operator.NOT_EQUAL, model.get(Employee.COMMISSION).operator().get());
+		assertEquals(Operator.NOT_EQUAL, conditions.get(Employee.COMMISSION).operator().get());
 		salary.operator().set(Operator.BETWEEN);
 		salary.clear();
 		assertEquals(Operator.GREATER_THAN, salary.operator().get());
 		// the column defaults still applied
 		assertEquals(CONNECTION.entities().definition(Employee.TYPE).columns().definition(Employee.SALARY).caption(),
 						salary.caption().orElseThrow());
-		assertTrue(model.get(Employee.NAME).operators().contains(Operator.EQUAL));
+		assertTrue(conditions.get(Employee.NAME).operators().contains(Operator.EQUAL));
 
-		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+		assertThrows(IllegalArgumentException.class, () -> EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.condition(Employee.SALARY, condition -> condition
@@ -144,30 +144,30 @@ public class DefaultEntityConditionModelTest {
 	@Test
 	void excludeAndConfigureValidated() {
 		// not part of the entity
-		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+		assertThrows(IllegalArgumentException.class, () -> EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.exclude(Department.NAME)
 						.build());
-		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+		assertThrows(IllegalArgumentException.class, () -> EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.condition(Department.NAME, condition -> {})
 						.build());
 		// neither a column nor a foreign key
-		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+		assertThrows(IllegalArgumentException.class, () -> EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.exclude(Employee.DEPARTMENT_LOCATION)
 						.build());
 		// both excluded and configured
-		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+		assertThrows(IllegalArgumentException.class, () -> EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.exclude(Employee.SALARY)
 						.condition(Employee.SALARY, condition -> {})
 						.build());
-		assertThrows(IllegalArgumentException.class, () -> EntityConditionModel.builder()
+		assertThrows(IllegalArgumentException.class, () -> EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.condition(Employee.DEPARTMENT_FK, condition -> {})
@@ -219,111 +219,111 @@ public class DefaultEntityConditionModelTest {
 		Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
 		Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
 
-		EntityConditionModel model = EntityConditionModel.builder()
+		EntityConditions conditions = EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.build();
-		ConditionModel<Double> commission = model.get(Employee.COMMISSION);
+		ConditionModel<Double> commission = conditions.get(Employee.COMMISSION);
 		commission.set().notEqualTo(0d);
-		assertEquals(Condition.or(Employee.COMMISSION.notEqualTo(0d), Employee.COMMISSION.isNull()), model.where());
-		assertQueryAndFilterAgree(15, model, commission, employees, Employee.COMMISSION);
+		assertEquals(Condition.or(Employee.COMMISSION.notEqualTo(0d), Employee.COMMISSION.isNull()), conditions.where());
+		assertQueryAndFilterAgree(15, conditions, commission, employees, Employee.COMMISSION);
 		commission.set().notIn(0d, 300d);
-		assertEquals(Condition.or(Employee.COMMISSION.notIn(0d, 300d), Employee.COMMISSION.isNull()), model.where());
-		assertQueryAndFilterAgree(14, model, commission, employees, Employee.COMMISSION);
+		assertEquals(Condition.or(Employee.COMMISSION.notIn(0d, 300d), Employee.COMMISSION.isNull()), conditions.where());
+		assertQueryAndFilterAgree(14, conditions, commission, employees, Employee.COMMISSION);
 		commission.set().notBetween(300d, 1500d);
-		assertEquals(Condition.or(Employee.COMMISSION.notBetween(300d, 1500d), Employee.COMMISSION.isNull()), model.where());
-		assertQueryAndFilterAgree(7, model, commission, employees, Employee.COMMISSION);
+		assertEquals(Condition.or(Employee.COMMISSION.notBetween(300d, 1500d), Employee.COMMISSION.isNull()), conditions.where());
+		assertQueryAndFilterAgree(7, conditions, commission, employees, Employee.COMMISSION);
 		commission.set().notBetweenExclusive(300d, 1500d);
-		assertEquals(Condition.or(Employee.COMMISSION.notBetweenExclusive(300d, 1500d), Employee.COMMISSION.isNull()), model.where());
-		assertQueryAndFilterAgree(11, model, commission, employees, Employee.COMMISSION);
+		assertEquals(Condition.or(Employee.COMMISSION.notBetweenExclusive(300d, 1500d), Employee.COMMISSION.isNull()), conditions.where());
+		assertQueryAndFilterAgree(11, conditions, commission, employees, Employee.COMMISSION);
 		// without an operand the negation is 'not null', which must not include null
 		commission.set().notEqualTo(null);
 		commission.enabled().set(true);
-		assertEquals(Employee.COMMISSION.isNotNull(), model.where());
-		assertQueryAndFilterAgree(10, model, commission, employees, Employee.COMMISSION);
+		assertEquals(Employee.COMMISSION.isNotNull(), conditions.where());
+		assertQueryAndFilterAgree(10, conditions, commission, employees, Employee.COMMISSION);
 		commission.set().notIn(emptyList());
 		commission.enabled().set(true);
-		assertEquals(Employee.COMMISSION.isNotNull(), model.where());
+		assertEquals(Employee.COMMISSION.isNotNull(), conditions.where());
 		// the positive operators are unaffected
 		commission.set().in(0d, 300d);
-		assertEquals(Employee.COMMISSION.in(0d, 300d), model.where());
-		assertQueryAndFilterAgree(2, model, commission, employees, Employee.COMMISSION);
+		assertEquals(Employee.COMMISSION.in(0d, 300d), conditions.where());
+		assertQueryAndFilterAgree(2, conditions, commission, employees, Employee.COMMISSION);
 		commission.clear();
 
-		ForeignKeyConditionModel manager = model.get(Employee.MGR_FK);
+		ForeignKeyConditionModel manager = conditions.get(Employee.MGR_FK);
 		manager.set().notEqualTo(king);
-		assertEquals(Condition.or(Employee.MGR_FK.notEqualTo(king), Employee.MGR_FK.isNull()), model.where());
-		assertQueryAndFilterAgree(13, model, manager, employees, Employee.MGR_FK);
+		assertEquals(Condition.or(Employee.MGR_FK.notEqualTo(king), Employee.MGR_FK.isNull()), conditions.where());
+		assertQueryAndFilterAgree(13, conditions, manager, employees, Employee.MGR_FK);
 		manager.set().notIn(king, blake);
-		assertEquals(Condition.or(Employee.MGR_FK.notIn(king, blake), Employee.MGR_FK.isNull()), model.where());
-		assertQueryAndFilterAgree(8, model, manager, employees, Employee.MGR_FK);
+		assertEquals(Condition.or(Employee.MGR_FK.notIn(king, blake), Employee.MGR_FK.isNull()), conditions.where());
+		assertQueryAndFilterAgree(8, conditions, manager, employees, Employee.MGR_FK);
 		manager.clear();
 
 		// not nullable, nothing to include
-		ForeignKeyConditionModel department = model.get(Employee.DEPARTMENT_FK);
+		ForeignKeyConditionModel department = conditions.get(Employee.DEPARTMENT_FK);
 		department.set().notEqualTo(sales);
-		assertEquals(Employee.DEPARTMENT_FK.notEqualTo(sales), model.where());
-		assertQueryAndFilterAgree(12, model, department, employees, Employee.DEPARTMENT_FK);
+		assertEquals(Employee.DEPARTMENT_FK.notEqualTo(sales), conditions.where());
+		assertQueryAndFilterAgree(12, conditions, department, employees, Employee.DEPARTMENT_FK);
 		department.clear();
-		ConditionModel<String> name = model.get(Employee.NAME);
+		ConditionModel<String> name = conditions.get(Employee.NAME);
 		name.set().notEqualTo("KING");
-		assertFalse(model.where().string(CONNECTION.entities().definition(Employee.TYPE)).contains("IS NULL"));
-		assertQueryAndFilterAgree(15, model, name, employees, Employee.NAME);
+		assertFalse(conditions.where().string(CONNECTION.entities().definition(Employee.TYPE)).contains("IS NULL"));
+		assertQueryAndFilterAgree(15, conditions, name, employees, Employee.NAME);
 
 		// disabled per condition, the query follows SQL and no longer agrees with the filter
-		model = EntityConditionModel.builder()
+		conditions = EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.condition(Employee.COMMISSION, condition -> condition.negationIncludesNull(false))
 						.condition(Employee.MGR_FK, condition -> condition.negationIncludesNull(false))
 						.build();
-		commission = model.get(Employee.COMMISSION);
+		commission = conditions.get(Employee.COMMISSION);
 		commission.set().notEqualTo(0d);
-		assertEquals(Employee.COMMISSION.notEqualTo(0d), model.where());
-		assertEquals(9, CONNECTION.count(Count.where(model.where())));
+		assertEquals(Employee.COMMISSION.notEqualTo(0d), conditions.where());
+		assertEquals(9, CONNECTION.count(Count.where(conditions.where())));
 		commission.set().notIn(0d, 300d);
-		assertEquals(Employee.COMMISSION.notIn(0d, 300d), model.where());
-		assertEquals(8, CONNECTION.count(Count.where(model.where())));
+		assertEquals(Employee.COMMISSION.notIn(0d, 300d), conditions.where());
+		assertEquals(8, CONNECTION.count(Count.where(conditions.where())));
 		commission.set().notBetween(300d, 1500d);
-		assertEquals(Employee.COMMISSION.notBetween(300d, 1500d), model.where());
-		assertEquals(1, CONNECTION.count(Count.where(model.where())));
+		assertEquals(Employee.COMMISSION.notBetween(300d, 1500d), conditions.where());
+		assertEquals(1, CONNECTION.count(Count.where(conditions.where())));
 		commission.clear();
-		manager = model.get(Employee.MGR_FK);
+		manager = conditions.get(Employee.MGR_FK);
 		manager.set().notEqualTo(king);
-		assertEquals(Employee.MGR_FK.notEqualTo(king), model.where());
-		assertEquals(12, CONNECTION.count(Count.where(model.where())));
+		assertEquals(Employee.MGR_FK.notEqualTo(king), conditions.where());
+		assertEquals(12, CONNECTION.count(Count.where(conditions.where())));
 		manager.clear();
 		// the other conditions unaffected
-		ConditionModel<Integer> managerId = model.get(Employee.MGR);
+		ConditionModel<Integer> managerId = conditions.get(Employee.MGR);
 		managerId.set().notEqualTo(king.get(Employee.ID));
-		assertEquals(Condition.or(Employee.MGR.notEqualTo(king.get(Employee.ID)), Employee.MGR.isNull()), model.where());
-		assertQueryAndFilterAgree(13, model, managerId, employees, Employee.MGR);
+		assertEquals(Condition.or(Employee.MGR.notEqualTo(king.get(Employee.ID)), Employee.MGR.isNull()), conditions.where());
+		assertQueryAndFilterAgree(13, conditions, managerId, employees, Employee.MGR);
 	}
 
 	@Test
 	void negationIncludesNullDefault() {
-		EntityConditionModel.NEGATION_INCLUDES_NULL.set(false);
+		EntityConditions.NEGATION_INCLUDES_NULL.set(false);
 		try {
 			Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
-			EntityConditionModel model = EntityConditionModel.builder()
+			EntityConditions conditions = EntityConditions.builder()
 							.entityType(Employee.TYPE)
 							.connection(CONNECTION)
 							.condition(Employee.MGR_FK, condition -> condition.negationIncludesNull(true))
 							.build();
-			ConditionModel<Double> commission = model.get(Employee.COMMISSION);
+			ConditionModel<Double> commission = conditions.get(Employee.COMMISSION);
 			commission.set().notEqualTo(0d);
-			assertEquals(Employee.COMMISSION.notEqualTo(0d), model.where());
+			assertEquals(Employee.COMMISSION.notEqualTo(0d), conditions.where());
 			commission.clear();
-			ForeignKeyConditionModel manager = model.get(Employee.MGR_FK);
+			ForeignKeyConditionModel manager = conditions.get(Employee.MGR_FK);
 			manager.set().notEqualTo(king);
-			assertEquals(Condition.or(Employee.MGR_FK.notEqualTo(king), Employee.MGR_FK.isNull()), model.where());
+			assertEquals(Condition.or(Employee.MGR_FK.notEqualTo(king), Employee.MGR_FK.isNull()), conditions.where());
 		}
 		finally {
-			EntityConditionModel.NEGATION_INCLUDES_NULL.set(true);
+			EntityConditions.NEGATION_INCLUDES_NULL.set(true);
 		}
 	}
 
-	private static <T> void assertQueryAndFilterAgree(int expected, EntityConditionModel model, ConditionModel<T> condition,
+	private static <T> void assertQueryAndFilterAgree(int expected, EntityConditions model, ConditionModel<T> condition,
 																										List<Entity> entities, Attribute<T> attribute) {
 		assertEquals(expected, CONNECTION.count(Count.where(model.where())));
 		assertEquals(expected, entities.stream()
@@ -419,7 +419,7 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void dateTimeEqualTo() {
-		EntityConditionModel condition = EntityConditionModel.builder()
+		EntityConditions condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -433,7 +433,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalTime.of(11, 00), where.values().get(0));
 		assertEquals(LocalTime.of(11, 01), where.values().get(1));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -446,7 +446,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalTime.of(11, 00, 2), where.values().get(0));
 		assertEquals(LocalTime.of(11, 00, 3), where.values().get(1));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -458,7 +458,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(1, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 3, 999_000_000), where.values().get(0));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -471,7 +471,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 46), where.values().get(1));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -484,7 +484,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 16), where.values().get(1));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -499,7 +499,7 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void dateTimeNotEqualTo() {
-		EntityConditionModel condition = EntityConditionModel.builder()
+		EntityConditions condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -513,7 +513,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalTime.of(11, 00), where.values().get(0));
 		assertEquals(LocalTime.of(11, 01), where.values().get(1));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -526,7 +526,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalTime.of(11, 00, 2), where.values().get(0));
 		assertEquals(LocalTime.of(11, 00, 3), where.values().get(1));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -538,7 +538,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(1, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 3, 999_000_000), where.values().get(0));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -551,7 +551,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 46), where.values().get(1));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -564,7 +564,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 16), where.values().get(1));
 
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -579,7 +579,7 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void temporalEqualWrappingAroundMidnight() {
-		EntityConditionModel condition = EntityConditionModel.builder()
+		EntityConditions condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -595,7 +595,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalTime.of(23, 59, 59), where.values().get(0));
 
 		//the last minute of the day likewise
-		condition = EntityConditionModel.builder()
+		condition = EntityConditions.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connection(CONNECTION)
 						.build();
@@ -607,7 +607,7 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void enablingWithMissingOperandDoesNotThrow() {
-		EntityConditionModel condition = EntityConditionModel.builder()
+		EntityConditions condition = EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.build();

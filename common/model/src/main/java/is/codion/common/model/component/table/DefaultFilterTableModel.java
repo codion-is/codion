@@ -19,7 +19,7 @@
 package is.codion.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.value.AbstractValue;
@@ -41,7 +41,7 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
+import static is.codion.common.model.condition.TableConditions.tableConditions;
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static java.lang.String.join;
 import static java.util.Arrays.asList;
@@ -69,7 +69,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 
 	private final Items<R> items;
 	private final TableColumns<R, C> columns;
-	private final TableConditionModel<C> filters;
+	private final TableConditions<C> filters;
 	private final MultiSelection<R> selection;
 	private final DefaultFilterTableSort<R, C> sort;
 	private final DefaultColumnValues columnValues = new DefaultColumnValues();
@@ -119,7 +119,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 	}
 
 	@Override
-	public TableConditionModel<C> filters() {
+	public TableConditions<C> filters() {
 		return filters;
 	}
 
@@ -174,8 +174,8 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 	}
 
-	private static <C> TableConditionModel<C> createFilters(TableColumns<?, C> columns,
-																													@Nullable Consumer<TableConditionModel.Builder<C>> configuration) {
+	private static <C> TableConditions<C> createFilters(TableColumns<?, C> columns,
+																											@Nullable Consumer<TableConditions.Builder<C>> configuration) {
 		DefaultFiltersBuilder<C> builder = new DefaultFiltersBuilder<>(columns);
 		if (configuration != null) {
 			configuration.accept(builder);
@@ -184,7 +184,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		return builder.build();
 	}
 
-	private static final class DefaultFiltersBuilder<C> implements TableConditionModel.Builder<C> {
+	private static final class DefaultFiltersBuilder<C> implements TableConditions.Builder<C> {
 
 		private final TableColumns<?, C> columns;
 		private final Set<C> excluded = new HashSet<>();
@@ -195,19 +195,19 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 
 		@Override
-		public TableConditionModel.Builder<C> exclude(C... identifiers) {
+		public TableConditions.Builder<C> exclude(C... identifiers) {
 			excluded.addAll(asList(requireNonNull(identifiers)));
 			return this;
 		}
 
 		@Override
-		public <T> TableConditionModel.Builder<C> condition(C identifier, Consumer<ConditionModel.Builder<T>> condition) {
+		public <T> TableConditions.Builder<C> condition(C identifier, Consumer<ConditionModel.Builder<T>> condition) {
 			configured.put(requireNonNull(identifier), requireNonNull(condition));
 			return this;
 		}
 
 		@Override
-		public TableConditionModel<C> build() {
+		public TableConditions<C> build() {
 			Map<C, ConditionModel.Builder<?>> defaults = new LinkedHashMap<>();
 			for (C identifier : columns.identifiers()) {
 				columns.filter(identifier).ifPresent(filter -> defaults.put(identifier, filter));
@@ -220,7 +220,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 				}
 			});
 
-			return tableConditionModel(filters);
+			return tableConditions(filters);
 		}
 
 		private <T> ConditionModel<T> filter(C identifier, ConditionModel.Builder<T> builder) {
@@ -259,11 +259,11 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 					extends AbstractValue<Predicate<R>> implements IncludePredicate<R> {
 
 		private final TableColumns<R, C> tableColumns;
-		private final TableConditionModel<C> filters;
+		private final TableConditions<C> filters;
 
 		private @Nullable Predicate<R> predicate;
 
-		private DefaultInclude(TableColumns<R, C> columns, TableConditionModel<C> filters) {
+		private DefaultInclude(TableColumns<R, C> columns, TableConditions<C> filters) {
 			super(SET);
 			this.tableColumns = columns;
 			this.filters = filters;

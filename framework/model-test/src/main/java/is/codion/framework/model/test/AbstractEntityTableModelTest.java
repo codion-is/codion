@@ -297,7 +297,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		tableModel.items().refresh();
 		assertEquals(6, tableModel.items().included().size());
 		ConditionModel<Double> commissionCondition =
-						tableModel.query().condition().get(Employee.COMMISSION);
+						tableModel.query().conditions().get(Employee.COMMISSION);
 		commissionCondition.operator().set(Operator.EQUAL);
 		commissionCondition.enabled().set(true);
 		tableModel.items().refresh();
@@ -314,9 +314,9 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		T empModel = createTableModel(Employee.TYPE, connection);
 		AtomicInteger counter = new AtomicInteger();
 		Runnable conditionChangedListener = counter::incrementAndGet;
-		empModel.query().condition().modified().addListener(conditionChangedListener);
+		empModel.query().conditions().modified().addListener(conditionChangedListener);
 		ConditionModel<Double> commissionModel =
-						empModel.query().condition().get(Employee.COMMISSION);
+						empModel.query().conditions().get(Employee.COMMISSION);
 		commissionModel.enabled().set(true);
 		assertEquals(1, counter.get());
 		commissionModel.enabled().set(false);
@@ -324,23 +324,23 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		commissionModel.set().greaterThanOrEqualTo(1200d);
 		//automatically set enabled when upper bound is set
 		assertEquals(3, counter.get());
-		empModel.query().condition().modified().removeListener(conditionChangedListener);
+		empModel.query().conditions().modified().removeListener(conditionChangedListener);
 	}
 
 	@Test
 	public void searchState() {
 		T empModel = createTableModel(Employee.TYPE, connection);
-		assertFalse(empModel.query().condition().modified().is());
+		assertFalse(empModel.query().conditions().modified().is());
 		ConditionModel<String> jobModel =
-						empModel.query().condition().get(Employee.JOB);
+						empModel.query().conditions().get(Employee.JOB);
 		jobModel.operands().equal().set("job");
-		assertTrue(empModel.query().condition().modified().is());
+		assertTrue(empModel.query().conditions().modified().is());
 		jobModel.enabled().set(false);
-		assertFalse(empModel.query().condition().modified().is());
+		assertFalse(empModel.query().conditions().modified().is());
 		jobModel.enabled().set(true);
-		assertTrue(empModel.query().condition().modified().is());
+		assertTrue(empModel.query().conditions().modified().is());
 		empModel.items().refresh();
-		assertFalse(empModel.query().condition().modified().is());
+		assertFalse(empModel.query().conditions().modified().is());
 	}
 
 	@Test
@@ -423,7 +423,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		T employeeTableModel = createTableModel(Employee.TYPE, connection());
 		assertEquals(0, employeeTableModel.items().included().size());
 		Entity accounting = connection().selectSingle(Department.ID.equalTo(10));
-		employeeTableModel.query().condition().get(Employee.DEPARTMENT_FK).set().in(accounting);
+		employeeTableModel.query().conditions().get(Employee.DEPARTMENT_FK).set().in(accounting);
 		employeeTableModel.items().refresh();
 		assertEquals(7, employeeTableModel.items().included().size());
 	}
@@ -461,28 +461,28 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	public void conditionChanged() {
 		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
-		ConditionModel<String> nameCondition = tableModel.query().condition().get(Employee.NAME);
+		ConditionModel<String> nameCondition = tableModel.query().conditions().get(Employee.NAME);
 		nameCondition.operands().equal().set(JONES);
-		assertTrue(tableModel.query().condition().modified().is());
+		assertTrue(tableModel.query().conditions().modified().is());
 		tableModel.items().refresh();
-		assertFalse(tableModel.query().condition().modified().is());
+		assertFalse(tableModel.query().conditions().modified().is());
 		nameCondition.enabled().set(false);
-		assertTrue(tableModel.query().condition().modified().is());
+		assertTrue(tableModel.query().conditions().modified().is());
 		nameCondition.enabled().set(true);
-		assertFalse(tableModel.query().condition().modified().is());
+		assertFalse(tableModel.query().conditions().modified().is());
 	}
 
 	@Test
 	public void isConditionEnabled() {
 		T tableModel = createTableModel(Employee.TYPE, connection());
 		EntityQueryModel queryModel = tableModel.query();
-		queryModel.conditionEnabled().set(queryModel.condition().get(Employee.MGR_FK).enabled());
+		queryModel.conditionEnabled().set(queryModel.conditions().get(Employee.MGR_FK).enabled());
 		tableModel.items().refresh();
 		assertEquals(16, tableModel.items().included().size());
 		queryModel.conditionRequired().set(true);
 		tableModel.items().refresh();
 		assertEquals(0, tableModel.items().included().size());
-		ConditionModel<Entity> mgrCondition = queryModel.condition().get(Employee.MGR_FK);
+		ConditionModel<Entity> mgrCondition = queryModel.conditions().get(Employee.MGR_FK);
 		mgrCondition.operands().equal().set(null);
 		mgrCondition.enabled().set(true);
 		tableModel.items().refresh();
@@ -777,7 +777,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	public void preferences() {
 		T source = createTableModel(Employee.TYPE, connection());
 		// condition settings (only the settings are persisted, not the operand values)
-		ConditionModel<String> nameCondition = source.query().condition().get(Employee.NAME);
+		ConditionModel<String> nameCondition = source.query().conditions().get(Employee.NAME);
 		nameCondition.autoEnable().set(false);
 		nameCondition.caseSensitive().set(true);
 		nameCondition.operands().wildcard().set(Wildcard.NONE);
@@ -793,7 +793,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		T target = createTableModel(Employee.TYPE, connection());
 		target.restore(preferences);
 
-		ConditionModel<String> restored = target.query().condition().get(Employee.NAME);
+		ConditionModel<String> restored = target.query().conditions().get(Employee.NAME);
 		assertFalse(restored.autoEnable().is());
 		assertTrue(restored.caseSensitive().is());
 		assertEquals(Wildcard.NONE, restored.operands().wildcard().getOrThrow());

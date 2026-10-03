@@ -388,7 +388,7 @@ connection.select(Select.where(Continent.NAME.equalTo("Europe")).build());
 connection.select(Select.having(Continent.POPULATION.greaterThan(100_000_000L)).build());
 ----
 
-**In the model layer ({url-javadoc}{framework-model}/is/codion/framework/model/EntityConditionModel.html[EntityConditionModel]):**
+**In the model layer ({url-javadoc}{framework-model}/is/codion/framework/model/EntityConditions.html[EntityConditions]):**
 
 The framework model layer automatically handles aggregate columns - conditions on aggregate columns are automatically placed in the HAVING clause without explicit configuration:
 
@@ -397,10 +397,10 @@ The framework model layer automatically handles aggregate columns - conditions o
 SwingEntityTableModel continentModel = new SwingEntityTableModel(Continent.TYPE, connection);
 
 // Condition on regular column (NAME) - automatically goes in WHERE
-continentModel.query().condition().get(Continent.NAME).set().equalTo("Asia");
+continentModel.query().conditions().get(Continent.NAME).set().equalTo("Asia");
 
 // Condition on aggregate column (POPULATION) - automatically goes in HAVING
-continentModel.query().condition().get(Continent.POPULATION).set().greaterThan(1_000_000_000L);
+continentModel.query().conditions().get(Continent.POPULATION).set().greaterThan(1_000_000_000L);
 
 // Both conditions work together correctly
 continentModel.items().refresh();

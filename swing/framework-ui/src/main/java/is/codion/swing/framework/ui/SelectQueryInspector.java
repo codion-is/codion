@@ -44,7 +44,7 @@ final class SelectQueryInspector extends JPanel {
 	SelectQueryInspector(EntityQueries queries, EntityQueryModel queryModel) {
 		this.queries = requireNonNull(queries);
 		this.queryModel = requireNonNull(queryModel);
-		this.queryModel.condition().changed().addListener(this::refreshQuery);
+		this.queryModel.conditions().changed().addListener(this::refreshQuery);
 		this.queryModel.limit().addListener(this::refreshQuery);
 		this.queryModel.orderBy().addListener(this::refreshQuery);
 		this.queryModel.attributes().defaults().addListener(this::refreshQuery);

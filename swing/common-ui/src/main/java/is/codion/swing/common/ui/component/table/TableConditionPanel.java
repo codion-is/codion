@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
@@ -45,7 +45,7 @@ import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 
 /**
- * An abstract base class for a UI component based on a {@link TableConditionModel}.
+ * An abstract base class for a UI component based on a {@link TableConditions}.
  * @param <C> the type used to identify the table columns
  */
 public abstract class TableConditionPanel<C> extends JPanel {
@@ -53,7 +53,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	private static final MessageBundle MESSAGES =
 					messageBundle(TableConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
 
-	private final TableConditionModel<C> tableConditionModel;
+	private final TableConditions<C> conditions;
 	private final Function<C, String> captions;
 	private final Value<ConditionView> view = Value.builder()
 					.nonNull(HIDDEN)
@@ -65,12 +65,12 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	/**
 	 * Instantiates a new {@link TableConditionPanel}
-	 * @param tableConditionModel the {@link TableConditionModel}
+	 * @param conditions the {@link TableConditions}
 	 * @param captions provides captions based on the column identifiers used when presenting conditions for selection
 	 * @see #select(JComponent)
 	 */
-	protected TableConditionPanel(TableConditionModel<C> tableConditionModel, Function<C, String> captions) {
-		this.tableConditionModel = requireNonNull(tableConditionModel);
+	protected TableConditionPanel(TableConditions<C> conditions, Function<C, String> captions) {
+		this.conditions = requireNonNull(conditions);
 		this.captions = requireNonNull(captions);
 		configureStates();
 	}
@@ -85,16 +85,16 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	/**
 	 * @return the condition panels mapped to their respective identifier
 	 */
-	public abstract Map<C, ConditionPanel<?>> panels();
+	public abstract Map<C, ConditionPanel<?>> get();
 
 	/**
 	 * By default, this returns all condition panels, override to customize.
 	 * @return the selectable condition panels
-	 * @see #panels()
+	 * @see #get()
 	 * @see #select(JComponent)
 	 */
 	public Map<C, ConditionPanel<?>> selectable() {
-		return panels();
+		return get();
 	}
 
 	/**
@@ -102,9 +102,9 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 * @return the {@link ConditionPanel} associated with the given identifier
 	 * @throws IllegalArgumentException in case no panel is available for the given identifier
 	 */
-	public ConditionPanel<?> panel(C identifier) {
+	public ConditionPanel<?> get(C identifier) {
 		requireNonNull(identifier);
-		ConditionPanel<?> conditionPanel = panels().get(identifier);
+		ConditionPanel<?> conditionPanel = get().get(identifier);
 		if (conditionPanel == null) {
 			throw new IllegalArgumentException("No condition panel available for " + identifier);
 		}
@@ -188,7 +188,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	private void clear() {
-		tableConditionModel.clear();
+		conditions.clear();
 	}
 
 	/**
@@ -198,12 +198,12 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	public interface Factory<C> {
 
 		/**
-		 * @param tableConditionModel the condition model
+		 * @param conditions the table conditions
 		 * @param conditionPanels the condition panels, already configured by the table
 		 * @param columnModel the column model
 		 * @return a new {@link TableConditionPanel}
 		 */
-		TableConditionPanel<C> create(TableConditionModel<C> tableConditionModel,
+		TableConditionPanel<C> create(TableConditions<C> conditions,
 																	Map<C, ConditionPanel<?>> conditionPanels,
 																	FilterTableColumnModel<C> columnModel);
 	}
@@ -212,7 +212,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 * Configures the condition panels of a {@link TableConditionPanel}, a {@link ColumnConditionPanel} for each condition
 	 * model of a table column. The condition models themselves are unaffected, available for use programmatically.
 	 * @param <C> the type identifying the table columns
-	 * @see ColumnConditionPanel#panels(TableConditionModel, FilterTableColumnModel, ColumnConditionPanel.ConditionComponents, Consumer)
+	 * @see ColumnConditionPanel#panels(TableConditions, FilterTableColumnModel, ColumnConditionPanel.ConditionComponents, Consumer)
 	 */
 	public interface Panels<C> {
 

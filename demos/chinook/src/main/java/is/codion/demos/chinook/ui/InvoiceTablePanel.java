@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -55,7 +55,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 						// see InvoiceLineEditModel, so we don't want it to be editable via the popup menu.
 						.editable(attributes -> attributes.remove(Invoice.TOTAL))
 						// The factory providing our custom condition panel.
-						.conditions(new InvoiceConditionPanelFactory(tableModel))
+						.conditions(new InvoiceConditions(tableModel))
 						// Start with the SIMPLE condition panel view.
 						.conditionView(SIMPLE));
 	}
@@ -101,16 +101,16 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 						.show();
 	}
 
-	private static final class InvoiceConditionPanelFactory implements TableConditionPanel.Factory<Attribute<?>> {
+	private static final class InvoiceConditions implements TableConditionPanel.Factory<Attribute<?>> {
 
 		private final SwingEntityTableModel tableModel;
 
-		private InvoiceConditionPanelFactory(SwingEntityTableModel tableModel) {
+		private InvoiceConditions(SwingEntityTableModel tableModel) {
 			this.tableModel = tableModel;
 		}
 
 		@Override
-		public TableConditionPanel<Attribute<?>> create(TableConditionModel<Attribute<?>> tableConditionModel,
+		public TableConditionPanel<Attribute<?>> create(TableConditions<Attribute<?>> conditions,
 																										Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
 																										FilterTableColumnModel<Attribute<?>> columnModel) {
 			return new InvoiceConditionPanel(tableModel, conditionPanels, columnModel);

@@ -42,7 +42,7 @@ public final class TrackTableModelTest {
 							.selectSingle(Album.TITLE.equalTo("Master Of Puppets"));
 
 			TrackTableModel trackTableModel = new TrackTableModel(connection);
-			trackTableModel.query().condition()
+			trackTableModel.query().conditions()
 							.get(Track.ALBUM_FK).set().equalTo(masterOfPuppets);
 
 			trackTableModel.items().refresh();

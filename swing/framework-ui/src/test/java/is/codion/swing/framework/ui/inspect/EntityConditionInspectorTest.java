@@ -59,7 +59,7 @@ public final class EntityConditionInspectorTest {
 	@Test
 	void queryCondition() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, CONNECTION);
-		ConditionModel<String> condition = tableModel.query().condition().get(Department.NAME);
+		ConditionModel<String> condition = tableModel.query().conditions().get(Department.NAME);
 		condition.operator().set(Operator.EQUAL);
 		condition.operands().equal().set("SALES");
 		condition.enabled().set(true);

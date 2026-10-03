@@ -80,7 +80,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 										.condition(Employee.JOB, job -> job.operator(Operator.NOT_EQUAL)))
 						.filters(filters -> filters
 										.exclude(Employee.SALARY)));
-		assertEquals(Operator.NOT_EQUAL, tableModel.query().condition().get(Employee.JOB).operator().get());
+		assertEquals(Operator.NOT_EQUAL, tableModel.query().conditions().get(Employee.JOB).operator().get());
 		assertThrows(IllegalArgumentException.class, () -> tableModel.filters().get(Employee.SALARY));
 	}
 

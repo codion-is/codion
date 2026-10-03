@@ -19,7 +19,7 @@
 package is.codion.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.utilities.Text;
@@ -66,9 +66,9 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 	MultiSelection<R> selection();
 
 	/**
-	 * @return the {@link TableConditionModel} used to filter this table model
+	 * @return the {@link TableConditions} used to filter this table model
 	 */
-	TableConditionModel<C> filters();
+	TableConditions<C> filters();
 
 	/**
 	 * @return the sort
@@ -161,7 +161,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		 * @return this builder instance
 		 * @see TableColumns#filter(Object)
 		 */
-		B filters(Consumer<TableConditionModel.Builder<C>> filters);
+		B filters(Consumer<TableConditions.Builder<C>> filters);
 
 		/**
 		 * @param items supplies the items

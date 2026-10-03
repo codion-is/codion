@@ -21,7 +21,7 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.model.component.table.AbstractFilterTableModelBuilder;
 import is.codion.common.model.component.table.FilterTableModel;
 import is.codion.common.model.component.table.FilterTableSort;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
@@ -75,7 +75,7 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 	}
 
 	@Override
-	public TableConditionModel<C> filters() {
+	public TableConditions<C> filters() {
 		return model.filters();
 	}
 

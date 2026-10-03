@@ -82,7 +82,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		if (model().containsTableModel()) {
 			//the foreign key condition reflects the master selection, persisting it keeps
 			//a condition clear from detaching the detail model from its master
-			model().tableModel().query().condition().persist().add(foreignKey);
+			model().tableModel().query().conditions().persist().add(foreignKey);
 		}
 	}
 
@@ -112,11 +112,11 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 
 		private boolean setConditionOnSelection(Collection<Entity> selection) {
 			if (!selection.isEmpty()) {
-				return model().tableModel().query().condition()
+				return model().tableModel().query().conditions()
 								.get(foreignKey).set().in(selection);
 			}
 			if (clearConditionOnEmptySelection) {
-				model().tableModel().query().condition()
+				model().tableModel().query().conditions()
 								.get(foreignKey).set().in(selection);
 
 				// Always refresh if the selection is empty, since
@@ -166,7 +166,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 
 		private boolean setConditionOnInsert(Collection<Entity> insertedEntities) {
 			if (setConditionOnInsert) {
-				return model().tableModel().query().condition()
+				return model().tableModel().query().conditions()
 								.get(foreignKey).set().in(insertedEntities);
 			}
 

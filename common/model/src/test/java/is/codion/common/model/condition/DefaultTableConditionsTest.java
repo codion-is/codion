@@ -25,7 +25,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultTableConditionModelTest {
+public final class DefaultTableConditionsTest {
 
 	@Test
 	void persist() {
@@ -36,7 +36,7 @@ public final class DefaultTableConditionModelTest {
 		conditions.put("two", two);
 		ConditionModel<String> three = ConditionModel.builder().type(String.class).build();
 		conditions.put("three", three);
-		DefaultTableConditionModel<String> model = new DefaultTableConditionModel<>(conditions);
+		DefaultTableConditions<String> model = new DefaultTableConditions<>(conditions);
 		one.enabled().set(true);
 		two.enabled().set(true);
 		three.enabled().set(true);

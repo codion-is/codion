@@ -78,7 +78,7 @@ public class EntityApplicationPanelTest {
 		Preferences entities = jsonPreferences();
 
 		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION);
-		model.tableModel().query().condition().get(Employee.NAME).caseSensitive().set(true); // model state
+		model.tableModel().query().conditions().get(Employee.NAME).caseSensitive().set(true); // model state
 		EntityPanel panel = new EntityPanel(model);
 		panel.tablePanel().table().columns().visible(Employee.COMMISSION).set(false); // view state
 
@@ -90,7 +90,7 @@ public class EntityApplicationPanelTest {
 		restoredModel.restore(entities);
 		restoredPanel.restore(entities.node(restoredPanel.preferencesKey()));
 
-		assertTrue(restoredModel.tableModel().query().condition().get(Employee.NAME).caseSensitive().is());
+		assertTrue(restoredModel.tableModel().query().conditions().get(Employee.NAME).caseSensitive().is());
 		assertFalse(restoredPanel.tablePanel().table().columns().visible(Employee.COMMISSION).is());
 	}
 

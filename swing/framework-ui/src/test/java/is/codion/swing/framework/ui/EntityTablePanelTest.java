@@ -68,9 +68,9 @@ public class EntityTablePanelTest {
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config
 						.conditions(conditions -> conditions.exclude(Employee.DEPARTMENT_FK))
 						.filters(filters -> filters.exclude(Employee.NAME)));
-		assertFalse(tablePanel.condition().panels().containsKey(Employee.DEPARTMENT_FK));
-		assertNotNull(tableModel.query().condition().get(Employee.DEPARTMENT_FK));
-		assertFalse(tablePanel.table().filters().panels().containsKey(Employee.NAME));
+		assertFalse(tablePanel.conditions().get().containsKey(Employee.DEPARTMENT_FK));
+		assertNotNull(tableModel.query().conditions().get(Employee.DEPARTMENT_FK));
+		assertFalse(tablePanel.table().filters().get().containsKey(Employee.NAME));
 		assertNotNull(tableModel.filters().get(Employee.NAME));
 		// a condition model of an attribute which is not a column, the foreign key source column
 		assertThrows(IllegalArgumentException.class, () -> new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION),
@@ -90,10 +90,10 @@ public class EntityTablePanelTest {
 		SwingUtilities.invokeAndWait(() -> {
 			EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 			// the condition panel components are created once the panel is first shown
-			tablePanel.condition().view().set(ConditionView.SIMPLE);
-			JComboBox<?> department = (JComboBox<?>) ((ColumnConditionPanel<?>) tablePanel.condition().panel(Employee.DEPARTMENT_FK))
+			tablePanel.conditions().view().set(ConditionView.SIMPLE);
+			JComboBox<?> department = (JComboBox<?>) ((ColumnConditionPanel<?>) tablePanel.conditions().get(Employee.DEPARTMENT_FK))
 							.operands().equal().orElseThrow(IllegalStateException::new);
-			tableModel.query().condition().get(Employee.DEPARTMENT_FK).operands().equal().set(accounting);
+			tableModel.query().conditions().get(Employee.DEPARTMENT_FK).operands().equal().set(accounting);
 			department.getActionMap().get("enterPressed").actionPerformed(new ActionEvent(department, ACTION_PERFORMED, null));
 		});
 		// the Enter action deferred until the combo box has committed its editor
@@ -152,10 +152,10 @@ public class EntityTablePanelTest {
 	void enumConditionAndFilter() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		ColumnConditionPanel<?> condition = (ColumnConditionPanel<?>) tablePanel.condition().panel(Detail.ENUM_TYPE);
+		ColumnConditionPanel<?> condition = (ColumnConditionPanel<?>) tablePanel.conditions().get(Detail.ENUM_TYPE);
 		assertEquals(asList(EQUAL, NOT_EQUAL, IN, NOT_IN), condition.model().operators());
 		assertInstanceOf(JComboBox.class, condition.operands().equal().orElseThrow());
-		ColumnConditionPanel<?> filter = (ColumnConditionPanel<?>) tablePanel.table().filters().panel(Detail.ENUM_TYPE);
+		ColumnConditionPanel<?> filter = (ColumnConditionPanel<?>) tablePanel.table().filters().get(Detail.ENUM_TYPE);
 		assertEquals(asList(EQUAL, NOT_EQUAL, IN, NOT_IN), filter.model().operators());
 		assertInstanceOf(JComboBox.class, filter.operands().equal().orElseThrow());
 	}

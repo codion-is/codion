@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * An {@link AttributeConditionModel} associated with a {@link Column}.
  * @param <T> the column type
- * @see EntityConditionModel.Builder#condition(Column, java.util.function.Consumer)
+ * @see EntityConditions.Builder#condition(Column, java.util.function.Consumer)
  */
 public interface ColumnConditionModel<T> extends AttributeConditionModel<T> {
 
@@ -57,7 +57,7 @@ public interface ColumnConditionModel<T> extends AttributeConditionModel<T> {
 		/**
 		 * Specifies whether the negative operators include null values when translated to a query condition,
 		 * matching exactly the rows their positive counterparts do not, instead of following SQL,
-		 * only affecting a nullable column, {@link EntityConditionModel#NEGATION_INCLUDES_NULL} by default.
+		 * only affecting a nullable column, {@link EntityConditions#NEGATION_INCLUDES_NULL} by default.
 		 * @param negationIncludesNull true if the negative operators should include null values
 		 * @return this builder
 		 */

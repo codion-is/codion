@@ -22,13 +22,13 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.
 
 == Condition Management
 
-=== Entity Condition Model
+=== Entity Conditions
 
-The primary condition mechanism is the {url-javadoc}{framework-model}/is/codion/framework/model/EntityConditionModel.html[EntityConditionModel], which provides a flexible way to build complex queries:
+The primary condition mechanism is the {url-javadoc}{framework-model}/is/codion/framework/model/EntityConditions.html[EntityConditions], which provides a flexible way to build complex queries:
 
 [source,java]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=tableConditionModel]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=entityConditions]
 ----
 
 ==== Negative operators and null values
@@ -38,7 +38,7 @@ The condition model therefore treats a negation as the complement of its positiv
 `NOT_EQUAL` and `NOT_IN` without an operand still mean _is not null_, and the positive operators never match a row without a value.
 
 This only applies to the conditions created by the condition model, conditions created via the domain API, `Customer.STATE.notIn("KA", "MH")`, are plain SQL.
-Set `EntityConditionModel.NEGATION_INCLUDES_NULL` to `false` for SQL semantics, or configure a single condition when building the model, `condition(Customer.STATE, condition -> condition.negationIncludesNull(false))`.
+Set `EntityConditions.NEGATION_INCLUDES_NULL` to `false` for SQL semantics, or configure a single condition when building the model, `condition(Customer.STATE, condition -> condition.negationIncludesNull(false))`.
 
 === Additional  Conditions
 

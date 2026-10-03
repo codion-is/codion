@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.component.table.FilterTableSort.ColumnSort;
 import is.codion.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.model.filter.SortOrder;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 
@@ -51,7 +51,7 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 
 	static final Factory<?, ?> FACTORY = new DefaultFactory<>();
 
-	private final TableConditionModel<C> filters;
+	private final TableConditions<C> filters;
 	private final ColumnSort<C> columnSort;
 	private final FilterTableColumn<C> tableColumn;
 	private final TableCellRenderer columnCellRenderer;

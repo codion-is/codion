@@ -86,7 +86,7 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 
 		private @Nullable List<Operator> operators;
 		private @Nullable Operator operator;
-		private boolean negationIncludesNull = EntityConditionModel.NEGATION_INCLUDES_NULL.getOrThrow();
+		private boolean negationIncludesNull = EntityConditions.NEGATION_INCLUDES_NULL.getOrThrow();
 
 		private DefaultBuilder(ColumnDefinition<T> columnDefinition) {
 			this.columnDefinition = columnDefinition;
