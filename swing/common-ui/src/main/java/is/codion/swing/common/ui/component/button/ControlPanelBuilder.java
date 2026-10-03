@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * 				.control(settingsControl)
  * 				.floatable(false)
  * 				.build();}
- * <p>The button configuration, such as {@link #includeButtonText(boolean)} and {@link #button(Consumer)}, applies
+ * <p>The button configuration, such as {@link #includeButtonText(boolean)} and {@link #buttons(Consumer)}, applies
  * to the buttons based on the controls, components added via {@link #add(JComponent)} are added as is.
  * <p>Leading, trailing and adjacent duplicate separators are removed.
  * @param <C> the component type
@@ -142,30 +142,33 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 	B toggleButtonType(ToggleButtonType toggleButtonType);
 
 	/**
-	 * Provides a way to configure the {@link ButtonBuilder} used by this {@link ControlPanelBuilder}.
-	 * @param builder provides the button builder used to create buttons
+	 * Configures each {@link ButtonBuilder} used to build the buttons.
+	 * @param buttons receives the builder of each button
 	 * @return this builder instance
 	 */
-	B button(Consumer<ButtonBuilder<?, ?, ?>> builder);
+	B buttons(Consumer<ButtonBuilder<?, ?, ?>> buttons);
 
 	/**
-	 * Provides a way to configure the {@link ToggleButtonBuilder} used by this {@link ControlPanelBuilder}.
-	 * @param builder provides the toggle button builder used to create toggle buttons
+	 * Configures each {@link ToggleButtonBuilder} used to build the toggle buttons, when toggle controls
+	 * are presented as toggle buttons, see {@link #toggleButtonType(ToggleButtonType)}.
+	 * @param toggleButtons receives the builder of each toggle button
 	 * @return this builder instance
 	 */
-	B toggleButton(Consumer<ToggleButtonBuilder<?, ?>> builder);
+	B toggleButtons(Consumer<ToggleButtonBuilder<?, ?>> toggleButtons);
 
 	/**
-	 * Provides a way to configure the {@link CheckBoxBuilder} used by this {@link ControlPanelBuilder}.
-	 * @param builder provides the toggle button builder used to create check boxes
+	 * Configures each {@link CheckBoxBuilder} used to build the check boxes, when toggle controls
+	 * are presented as check boxes, see {@link #toggleButtonType(ToggleButtonType)}.
+	 * @param checkBoxes receives the builder of each check box
 	 * @return this builder instance
 	 */
-	B checkBox(Consumer<CheckBoxBuilder> builder);
+	B checkBoxes(Consumer<CheckBoxBuilder> checkBoxes);
 
 	/**
-	 * Provides a way to configure the {@link RadioButtonBuilder} used by this {@link ControlPanelBuilder}.
-	 * @param builder provides the toggle button builder used to create radio buttons
+	 * Configures each {@link RadioButtonBuilder} used to build the radio buttons, when toggle controls
+	 * are presented as radio buttons, see {@link #toggleButtonType(ToggleButtonType)}.
+	 * @param radioButtons receives the builder of each radio button
 	 * @return this builder instance
 	 */
-	B radioButton(Consumer<RadioButtonBuilder> builder);
+	B radioButtons(Consumer<RadioButtonBuilder> radioButtons);
 }

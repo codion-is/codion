@@ -43,10 +43,10 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
 	private final List<Item> items = new ArrayList<>();
 
-	private Consumer<ButtonBuilder<?, ?, ?>> button = (Consumer<ButtonBuilder<?, ?, ?>>) EMPTY_CONSUMER;
-	private Consumer<ToggleButtonBuilder<?, ?>> toggleButton = (Consumer<ToggleButtonBuilder<?, ?>>) EMPTY_CONSUMER;
-	private Consumer<CheckBoxBuilder> checkBox = (Consumer<CheckBoxBuilder>) EMPTY_CONSUMER;
-	private Consumer<RadioButtonBuilder> radioButton = (Consumer<RadioButtonBuilder>) EMPTY_CONSUMER;
+	private Consumer<ButtonBuilder<?, ?, ?>> buttons = (Consumer<ButtonBuilder<?, ?, ?>>) EMPTY_CONSUMER;
+	private Consumer<ToggleButtonBuilder<?, ?>> toggleButtons = (Consumer<ToggleButtonBuilder<?, ?>>) EMPTY_CONSUMER;
+	private Consumer<CheckBoxBuilder> checkBoxes = (Consumer<CheckBoxBuilder>) EMPTY_CONSUMER;
+	private Consumer<RadioButtonBuilder> radioButtons = (Consumer<RadioButtonBuilder>) EMPTY_CONSUMER;
 
 	private int orientation = SwingConstants.HORIZONTAL;
 	private ToggleButtonType toggleButtonType = ToggleButtonType.BUTTON;
@@ -139,26 +139,26 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	}
 
 	@Override
-	public final B button(Consumer<ButtonBuilder<?, ?, ?>> builder) {
-		this.button = requireNonNull(builder);
+	public final B buttons(Consumer<ButtonBuilder<?, ?, ?>> buttons) {
+		this.buttons = requireNonNull(buttons);
 		return self();
 	}
 
 	@Override
-	public final B toggleButton(Consumer<ToggleButtonBuilder<?, ?>> builder) {
-		this.toggleButton = requireNonNull(builder);
+	public final B toggleButtons(Consumer<ToggleButtonBuilder<?, ?>> toggleButtons) {
+		this.toggleButtons = requireNonNull(toggleButtons);
 		return self();
 	}
 
 	@Override
-	public final B checkBox(Consumer<CheckBoxBuilder> builder) {
-		this.checkBox = requireNonNull(builder);
+	public final B checkBoxes(Consumer<CheckBoxBuilder> checkBoxes) {
+		this.checkBoxes = requireNonNull(checkBoxes);
 		return self();
 	}
 
 	@Override
-	public final B radioButton(Consumer<RadioButtonBuilder> builder) {
-		this.radioButton = requireNonNull(builder);
+	public final B radioButtons(Consumer<RadioButtonBuilder> radioButtons) {
+		this.radioButtons = requireNonNull(radioButtons);
 		return self();
 	}
 
@@ -178,7 +178,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
 	protected final ButtonBuilder<?, ?, ?> buttonBuilder() {
 		ButtonBuilder<JButton, Void, ?> buttonBuilder = set(ButtonBuilder.builder());
-		button.accept(buttonBuilder);
+		buttons.accept(buttonBuilder);
 
 		return buttonBuilder;
 	}
@@ -187,17 +187,17 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		switch (toggleButtonType) {
 			case CHECKBOX:
 				CheckBoxBuilder checkBoxBuilder = set(CheckBoxBuilder.builder());
-				checkBox.accept(checkBoxBuilder);
+				checkBoxes.accept(checkBoxBuilder);
 
 				return checkBoxBuilder;
 			case BUTTON:
 				ToggleButtonBuilder<?, ?> toggleButtonBuilder = set(ToggleButtonBuilder.builder());
-				toggleButton.accept(toggleButtonBuilder);
+				toggleButtons.accept(toggleButtonBuilder);
 
 				return toggleButtonBuilder;
 			case RADIO_BUTTON:
 				RadioButtonBuilder radioButtonBuilder = set(RadioButtonBuilder.builder());
-				radioButton.accept(radioButtonBuilder);
+				radioButtons.accept(radioButtonBuilder);
 
 				return radioButtonBuilder;
 			default:
