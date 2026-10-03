@@ -44,7 +44,8 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	ButtonPanelBuilder fixedButtonSize(boolean fixedButtonSize);
 
 	/**
-	 * @param buttonGroup the button group to add all buttons to
+	 * Note that components added via {@link #add(javax.swing.JComponent)} are not added to the button group.
+	 * @param buttonGroup the button group to add the buttons based on the controls to
 	 * @return this builder instance
 	 */
 	ButtonPanelBuilder buttonGroup(@Nullable ButtonGroup buttonGroup);
@@ -52,7 +53,7 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	/**
 	 * @return a new button panel builder
 	 */
-	static ControlsStep<JPanel, ButtonPanelBuilder> builder() {
-		return DefaultButtonPanelBuilder.CONTROLS;
+	static ButtonPanelBuilder builder() {
+		return new DefaultButtonPanelBuilder();
 	}
 }

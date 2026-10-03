@@ -26,6 +26,7 @@ import javax.swing.Action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 abstract class ControlHandler implements Consumer<Action> {
 
@@ -66,22 +67,27 @@ abstract class ControlHandler implements Consumer<Action> {
 	 * @return the cleaned action list
 	 */
 	protected static List<Action> cleanupSeparators(List<Action> actions) {
-		while (!actions.isEmpty() && actions.get(0) == Controls.SEPARATOR) {
-			actions.remove(0);
-		}
-		while (!actions.isEmpty() && actions.get(actions.size() - 1) == Controls.SEPARATOR) {
-			actions.remove(actions.size() - 1);
-		}
-		List<Action> cleaned = new ArrayList<>(actions.size());
-		for (int i = 0; i < actions.size(); i++) {
-			Action action = actions.get(i);
-			// Prevent multiple separators
-			if (action == Controls.SEPARATOR && i > 0 && actions.get(i - 1) == Controls.SEPARATOR) {
-				continue;
+		return cleanupSeparators(actions, action -> action == Controls.SEPARATOR);
+	}
+
+	/**
+	 * Trims separators from the ends and removes adjacent duplicate separators
+	 * @param items the items
+	 * @param separator identifies the separators
+	 * @param <T> the item type
+	 * @return a new list containing the cleaned items
+	 */
+	static <T> List<T> cleanupSeparators(List<T> items, Predicate<T> separator) {
+		List<T> cleaned = new ArrayList<>(items.size());
+		for (T item : items) {
+			// skips leading and adjacent duplicate separators
+			if (!separator.test(item) || (!cleaned.isEmpty() && !separator.test(cleaned.get(cleaned.size() - 1)))) {
+				cleaned.add(item);
 			}
-			else {
-				cleaned.add(action);
-			}
+		}
+		// at most one trailing separator remains
+		if (!cleaned.isEmpty() && separator.test(cleaned.get(cleaned.size() - 1))) {
+			cleaned.remove(cleaned.size() - 1);
 		}
 
 		return cleaned;

@@ -26,7 +26,6 @@ import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
-import is.codion.swing.common.ui.component.button.ControlPanelBuilder;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.component.button.MenuItemBuilder;
 import is.codion.swing.common.ui.component.button.NullableCheckBoxBuilder;
@@ -68,10 +67,8 @@ import is.codion.swing.common.ui.component.tree.TreeBuilder;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -487,14 +484,14 @@ public final class Components {
 	/**
 	 * @return a {@link javax.swing.JToolBar} builder
 	 */
-	public static ControlPanelBuilder.ControlsStep<JToolBar, ToolBarBuilder> toolBar() {
+	public static ToolBarBuilder toolBar() {
 		return ToolBarBuilder.builder();
 	}
 
 	/**
 	 * @return a button panel builder
 	 */
-	public static ControlPanelBuilder.ControlsStep<JPanel, ButtonPanelBuilder> buttonPanel() {
+	public static ButtonPanelBuilder buttonPanel() {
 		return ButtonPanelBuilder.builder();
 	}
 

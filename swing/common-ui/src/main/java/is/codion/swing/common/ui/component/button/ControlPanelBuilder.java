@@ -31,10 +31,83 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * Builds panels with controls.
+ * Builds panels with buttons based on controls, along with any other components, in the order added.
+ * {@snippet class = is.codion.manual.javadoc.ControlPanelBuilderSnippets region = toolBar :
+ * JToolBar toolBar = Components.toolBar()
+ * 				.controls(navigationControls)
+ * 				.separator()
+ * 				.add(searchField)
+ * 				// the settings button aligned to the right
+ * 				.glue()
+ * 				.control(settingsControl)
+ * 				.floatable(false)
+ * 				.build();}
+ * <p>The button configuration, such as {@link #includeButtonText(boolean)} and {@link #button(Consumer)}, applies
+ * to the buttons based on the controls, components added via {@link #add(JComponent)} are added as is.
+ * <p>Leading, trailing and adjacent duplicate separators are removed.
+ * @param <C> the component type
+ * @param <B> the builder type
  */
 public interface ControlPanelBuilder<C extends JComponent, B extends ControlPanelBuilder<C, B>>
 				extends ComponentBuilder<C, B> {
+
+	/**
+	 * Adds a button based on the given action, or a toggle button in case of a
+	 * {@link is.codion.swing.common.ui.control.ToggleControl}.
+	 * @param action the action to add
+	 * @return this builder instance
+	 */
+	B action(Action action);
+
+	/**
+	 * Adds a button based on the given control, or a toggle button in case of a
+	 * {@link is.codion.swing.common.ui.control.ToggleControl}.
+	 * @param control the control to add
+	 * @return this builder instance
+	 */
+	B control(Control control);
+
+	/**
+	 * Adds a button based on the given control, or a toggle button in case of a
+	 * {@link is.codion.swing.common.ui.control.ToggleControl}.
+	 * @param control the control to add
+	 * @return this builder instance
+	 */
+	B control(Supplier<? extends Control> control);
+
+	/**
+	 * Adds the actions of the given controls.
+	 * @param controls the controls to add
+	 * @return this builder instance
+	 */
+	B controls(Controls controls);
+
+	/**
+	 * Adds the actions of the given controls.
+	 * @param controls the controls to add
+	 * @return this builder instance
+	 */
+	B controls(Supplier<Controls> controls);
+
+	/**
+	 * Adds a separator.
+	 * @return this builder instance
+	 */
+	B separator();
+
+	/**
+	 * Adds the given component, as is.
+	 * @param component the component to add
+	 * @return this builder instance
+	 */
+	B add(JComponent component);
+
+	/**
+	 * Adds the component provided by the given supplier when the panel is built, as is.
+	 * @param component supplies the component to add
+	 * @return this builder instance
+	 */
+	B add(Supplier<? extends JComponent> component);
 
 	/**
 	 * @param orientation the panel orientation, default {@link javax.swing.SwingConstants#HORIZONTAL}
@@ -95,42 +168,4 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 	 * @return this builder instance
 	 */
 	B radioButton(Consumer<RadioButtonBuilder> builder);
-
-	/**
-	 * Provides a {@link ControlPanelBuilder}
-	 * @param <C> the component type
-	 * @param <B> the builder type
-	 */
-	interface ControlsStep<C extends JComponent, B extends ControlPanelBuilder<C, B>> {
-
-		/**
-		 * @param action the action to base the panel on
-		 * @return this builder instance
-		 */
-		B action(Action action);
-
-		/**
-		 * @param control the control to base the panel on
-		 * @return this builder instance
-		 */
-		B control(Control control);
-
-		/**
-		 * @param control the control to base the panel on
-		 * @return this builder instance
-		 */
-		B control(Supplier<? extends Control> control);
-
-		/**
-		 * @param controls the controls to base the panel on
-		 * @return this builder instance
-		 */
-		B controls(Controls controls);
-
-		/**
-		 * @param controls the controls to base the panel on
-		 * @return this builder instance
-		 */
-		B controls(Supplier<Controls> controls);
-	}
 }
