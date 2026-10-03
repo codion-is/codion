@@ -20,10 +20,13 @@ package is.codion.tools.generator.domain;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.utilities.user.User;
+import is.codion.framework.domain.DomainModel;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,11 +35,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
+import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class DomainSourceTest {
 
@@ -46,11 +54,12 @@ public final class DomainSourceTest {
 	@Test
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "PETSTORE", SchemaSettings.builder()
+			SchemaSettings schemaSettings = SchemaSettings.builder()
 							.primaryKeyColumnSuffix("_id")
 							.auditColumnNames("insert_user", "insert_time")
 							.hideAuditColumns(true)
-							.build());
+							.build();
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "PETSTORE", schemaSettings);
 			String domainPackage = "is.codion.petstore.domain";
 			Set<EntityType> dtos = schemaDomain.entities().definitions().stream()
 							.map(EntityDefinition::type)
@@ -64,6 +73,7 @@ public final class DomainSourceTest {
 							.domainPackage(domainPackage)
 							.dtos(dtos)
 							.i18n(true)
+							.auditColumnNames(schemaSettings.auditColumnNames())
 							.build();
 			String petstoreApi = textFileContents(DomainSourceTest.class, "PetstoreAPI.java");
 			assertEquals(petstoreApi, domainSource.api());
@@ -73,6 +83,7 @@ public final class DomainSourceTest {
 							.domain(schemaDomain)
 							.domainPackage(domainPackage)
 							.dtos(dtos)
+							.auditColumnNames(schemaSettings.auditColumnNames())
 							.build();
 			String petstoreCombined = textFileContents(DomainSourceTest.class, "Petstore.java");
 			assertEquals(petstoreCombined, domainSource.combined());
@@ -120,6 +131,122 @@ public final class DomainSourceTest {
 			assertEquals(worldImpl, domainSource.implementation());
 			String worldCombined = textFileContents(DomainSourceTest.class, "World.java");
 			assertEquals(worldCombined, domainSource.combined());
+		}
+	}
+
+	@Test
+	void templates() {
+		// the formatting is verified by the schema based tests above
+		String source = DomainSource.builder()
+						.domain(new TemplateDomain())
+						.domainPackage("is.codion.templates.domain")
+						.auditColumnNames(List.of("INSERT_TIME"))
+						.build()
+						.combined()
+						.lines()
+						.map(String::strip)
+						.collect(joining("\n"));
+		// identity keys of different types, a template for each type
+		assertTrue(source.contains("private static final ColumnTemplate<Long> LONG_IDENTITY_KEY"));
+		assertTrue(source.contains("private static final ColumnTemplate<Integer> INTEGER_IDENTITY_KEY"));
+		assertTrue(source.contains("First.ID.as(LONG_IDENTITY_KEY),"));
+		assertTrue(source.contains("Fourth.ID.as(INTEGER_IDENTITY_KEY),"));
+		// a single column is not templated
+		assertFalse(source.contains("ColumnTemplate<Short>"));
+		assertTrue(source.contains("""
+						Fifth.ID.as()
+						.primaryKey()
+						.generator(identity()))"""));
+		// an audit column, the most common type templated, holding the calls its columns have in common
+		assertTrue(source.contains("""
+						private static final ColumnTemplate<LocalDateTime> INSERT_TIME = column -> column.as()
+						.column()
+						.caption("Inserted")
+						.readOnly(true);"""));
+		assertTrue(source.contains("First.INSERT_TIME.as(INSERT_TIME))"));
+		// the rest following the template
+		assertTrue(source.contains("""
+						Second.INSERT_TIME.as(INSERT_TIME)
+						.description("Inserted by a trigger"))"""));
+		// a less common type is not templated
+		assertTrue(source.contains("""
+						Third.INSERT_TIME.as()
+						.column()
+						.caption("Inserted")
+						.readOnly(true))"""));
+	}
+
+	private static final class TemplateDomain extends DomainModel {
+
+		private static final DomainType DOMAIN = domainType("templates");
+
+		private static final EntityType FIRST = DOMAIN.entityType("first");
+		private static final Column<Long> FIRST_ID = FIRST.longColumn("id");
+		private static final Column<LocalDateTime> FIRST_INSERT_TIME = FIRST.localDateTimeColumn("insert_time");
+
+		private static final EntityType SECOND = DOMAIN.entityType("second");
+		private static final Column<Long> SECOND_ID = SECOND.longColumn("id");
+		private static final Column<LocalDateTime> SECOND_INSERT_TIME = SECOND.localDateTimeColumn("insert_time");
+
+		private static final EntityType THIRD = DOMAIN.entityType("third");
+		private static final Column<Integer> THIRD_ID = THIRD.integerColumn("id");
+		private static final Column<LocalDate> THIRD_INSERT_TIME = THIRD.localDateColumn("insert_time");
+
+		private static final EntityType FOURTH = DOMAIN.entityType("fourth");
+		private static final Column<Integer> FOURTH_ID = FOURTH.integerColumn("id");
+		private static final Column<String> FOURTH_NAME = FOURTH.stringColumn("name");
+
+		private static final EntityType FIFTH = DOMAIN.entityType("fifth");
+		private static final Column<Short> FIFTH_ID = FIFTH.shortColumn("id");
+
+		private TemplateDomain() {
+			super(DOMAIN);
+			add(FIRST.as()
+							.attributes(
+											FIRST_ID.as()
+															.primaryKey()
+															.generator(identity()),
+											FIRST_INSERT_TIME.as()
+															.column()
+															.caption("Inserted")
+															.readOnly(true))
+							.build());
+			add(SECOND.as()
+							.attributes(
+											SECOND_ID.as()
+															.primaryKey()
+															.generator(identity()),
+											SECOND_INSERT_TIME.as()
+															.column()
+															.caption("Inserted")
+															.readOnly(true)
+															.description("Inserted by a trigger"))
+							.build());
+			add(THIRD.as()
+							.attributes(
+											THIRD_ID.as()
+															.primaryKey()
+															.generator(identity()),
+											THIRD_INSERT_TIME.as()
+															.column()
+															.caption("Inserted")
+															.readOnly(true))
+							.build());
+			add(FOURTH.as()
+							.attributes(
+											FOURTH_ID.as()
+															.primaryKey()
+															.generator(identity()),
+											FOURTH_NAME.as()
+															.column()
+															.caption("Name"))
+							.build());
+			add(FIFTH.as()
+							.attributes(
+											FIFTH_ID.as()
+															.primaryKey()
+															.generator(identity()))
+							.build());
 		}
 	}
 

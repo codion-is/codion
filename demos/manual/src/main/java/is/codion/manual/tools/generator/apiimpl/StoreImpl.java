@@ -20,6 +20,7 @@ package is.codion.manual.tools.generator.apiimpl;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnTemplate;
 import is.codion.manual.tools.generator.apiimpl.api.Store.Customer;
 import is.codion.manual.tools.generator.apiimpl.api.Store.Order;
 
@@ -27,6 +28,10 @@ import static is.codion.framework.domain.entity.attribute.Column.Generator.ident
 import static is.codion.manual.tools.generator.apiimpl.api.Store.DOMAIN;
 
 public final class StoreImpl extends DomainModel {
+	private static final ColumnTemplate<Integer> IDENTITY_KEY = column -> column.as()
+					.primaryKey()
+					.generator(identity());
+
 	public StoreImpl() {
 		super(DOMAIN);
 		add(customer(), order());
@@ -35,9 +40,7 @@ public final class StoreImpl extends DomainModel {
 	EntityDefinition customer() {
 		return Customer.TYPE.as()
 						.attributes(
-										Customer.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Customer.ID.as(IDENTITY_KEY),
 										Customer.NAME.as()
 														.column()
 														.caption("Name")
@@ -54,9 +57,7 @@ public final class StoreImpl extends DomainModel {
 	EntityDefinition order() {
 		return Order.TYPE.as()
 						.attributes(
-										Order.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Order.ID.as(IDENTITY_KEY),
 										Order.CUSTOMER_ID.as()
 														.column(),
 										Order.CUSTOMER_FK.as()
