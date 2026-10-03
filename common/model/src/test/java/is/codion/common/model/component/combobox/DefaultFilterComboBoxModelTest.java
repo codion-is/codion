@@ -108,7 +108,7 @@ public final class DefaultFilterComboBoxModelTest {
 		assertEquals(5, testModel.items().included().size());
 		testModel.items().clear();
 		assertEquals(0, testModel.items().included().size());
-		assertTrue(testModel.items().includesNull());
+		assertTrue(testModel.items().nullable());
 		assertTrue(testModel.items().cleared());
 	}
 
@@ -342,7 +342,7 @@ public final class DefaultFilterComboBoxModelTest {
 		assertFalse(model.items().contains(null));
 		model = FilterComboBoxModel.builder()
 						.items(strings)
-						.includeNull(true)
+						.nullable(true)
 						.build();
 		assertTrue(model.items().contains(null));
 		model = FilterComboBoxModel.builder()
@@ -507,14 +507,14 @@ public final class DefaultFilterComboBoxModelTest {
 	}
 
 	@Test
-	void includeNullFalseClearsNullItem() {
-		//F7i: nullItem(x) followed by includeNull(false) must not leave a phantom null item
+	void nullableFalseClearsNullItem() {
+		//F7i: nullItem(x) followed by nullable(false) must not leave a phantom null item
 		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
 						.items(ITEMS)
 						.nullItem(NULL)
-						.includeNull(false)
+						.nullable(false)
 						.build();
-		assertFalse(model.items().includesNull());
+		assertFalse(model.items().nullable());
 		assertNull(model.items().nullItem());
 		assertNull(model.selectedItem());
 	}

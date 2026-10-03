@@ -54,7 +54,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 	 * <li>Value type: String
 	 * <li>Default value: -
 	 * </ul>
-	 * @see Builder#includeNull(boolean)
+	 * @see Builder#nullable(boolean)
 	 */
 	PropertyValue<String> NULL_CAPTION = stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
@@ -131,13 +131,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		B comparator(@Nullable Comparator<T> comparator);
 
 		/**
-		 * @param includeNull true if a null item should be included
+		 * @param nullable true if a null item should be included
 		 * @return this builder
 		 */
-		B includeNull(boolean includeNull);
+		B nullable(boolean nullable);
 
 		/**
-		 * Sets {@link #includeNull(boolean)} to true if {@code nullItem} is non-null, false otherwise.
+		 * Sets {@link #nullable(boolean)} to true if {@code nullItem} is non-null, false otherwise.
 		 * @param nullItem the item representing null
 		 * @return this builder
 		 */
@@ -261,10 +261,10 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 
 		/**
 		 * @return true if a null item is included, shown as the first item
-		 * @see FilterComboBoxModel.Builder#includeNull(boolean)
+		 * @see FilterComboBoxModel.Builder#nullable(boolean)
 		 * @see FilterComboBoxModel.Builder#nullItem(Object)
 		 */
-		boolean includesNull();
+		boolean nullable();
 
 		/**
 		 * @return the item representing null, possibly null itself (then rendered using {@link #NULL_CAPTION})

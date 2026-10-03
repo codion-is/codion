@@ -20,6 +20,7 @@ Codion Change Log
 - FilterTableModel.TableColumns.filter() added, providing the filter for a column initialized with its defaults, its type, either String or the column type, validated when the table model is built.
 - FilterTableModel.Builder, primitive column types now rejected, such a column getting no default filter and sorted by its string representation.
 - ConditionModel.Builder, an enum condition now defaults to the EQUAL, NOT_EQUAL, IN and NOT_IN operators, an enum comparing by declaration order.
+- FilterComboBoxModel.Builder.includeNull() renamed nullable(), FilterComboBoxModel.ComboBoxItems.includesNull() renamed nullable().
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.
@@ -98,6 +99,7 @@ Codion Change Log
 - AbstractEntityTableModel.filterConditions() removed, the entity filter defaults now provided by the table columns.
 - EntityTableModel.Config added, for configuring the condition model and the filters of a table model when instantiated.
 - AbstractEntityTableModel, the constructor taking a query model and entityQueryModel() replaced by a constructor taking the filter model builder and a Config, the query model built from the edit model, so an entity type mismatch can no longer occur.
+- EntityComboBoxModel.Builder.includeNull() renamed nullable().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel(SwingEntityEditModel, Consumer<Config>) added, SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(SwingEntityEditModel, EntityConditionModel) removed, the condition model now configured via the Config.
 ### is.codion.plugin.flatlaf.intellij.themes

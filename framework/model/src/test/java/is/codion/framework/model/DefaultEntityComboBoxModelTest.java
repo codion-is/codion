@@ -212,7 +212,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel managerComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
-						.includeNull(true)
+						.nullable(true)
 						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
 						.filterSelected(true)
 						.select(CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE")))
@@ -292,7 +292,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
-						.includeNull(true)
+						.nullable(true)
 						.build();
 		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
@@ -606,7 +606,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel model = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
-						.includeNull(true)
+						.nullable(true)
 						.build();
 		model.items().refresh();
 		assertTrue(model.items().contains(null));

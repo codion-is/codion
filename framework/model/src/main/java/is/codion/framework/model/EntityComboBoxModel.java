@@ -131,7 +131,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 			 * @return a new {@link ConnectionStep} instance
 			 * @see ForeignKeyDefinition#attributes()
 			 * @see EntityDefinition.ForeignKeys#nullable(ForeignKey)
-			 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+			 * @see EntityComboBoxModel.Builder#nullable(boolean)
 			 * @see EntityComboBoxModel.Builder#attributes(Collection)
 			 */
 			ConnectionStep foreignKey(ForeignKey foreignKey);
@@ -184,11 +184,11 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		B attributes(Collection<Attribute<?>> attributes);
 
 		/**
-		 * @param includeNull if true then the null item is enabled using the default null item caption ({@link FilterComboBoxModel#NULL_CAPTION})
+		 * @param nullable if true then the null item is enabled using the default null item caption ({@link FilterComboBoxModel#NULL_CAPTION})
 		 * @return this builder instance
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 */
-		B includeNull(boolean includeNull);
+		B nullable(boolean nullable);
 
 		/**
 		 * Enables the null item and sets the null item caption.

@@ -82,7 +82,7 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 	protected AbstractEntityComboBoxModelBuilder(ForeignKey foreignKey, EntityConnection connection) {
 		this(requireNonNull(foreignKey).referencedType(), connection);
 		ForeignKeys foreignKeys = connection.entities().definition(foreignKey.entityType()).foreignKeys();
-		includeNull(foreignKeys.nullable(foreignKey));
+		nullable(foreignKeys.nullable(foreignKey));
 		attributes(foreignKeys.definition(foreignKey).attributes());
 	}
 
@@ -116,8 +116,8 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 	}
 
 	@Override
-	public final B includeNull(boolean includeNull) {
-		return nullCaption(includeNull ? FilterComboBoxModel.NULL_CAPTION.getOrThrow() : null);
+	public final B nullable(boolean nullable) {
+		return nullCaption(nullable ? FilterComboBoxModel.NULL_CAPTION.getOrThrow() : null);
 	}
 
 	@Override

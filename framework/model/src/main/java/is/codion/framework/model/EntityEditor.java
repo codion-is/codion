@@ -791,7 +791,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see ComponentModels#comboBoxModel(ForeignKey, EntityConnection)
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 * @see EntityComboBoxModel.Builder#nullCaption(String)
-		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+		 * @see EntityComboBoxModel.Builder#nullable(boolean)
 		 * @see ValueAttributeDefinition#nullable()
 		 * @see EntityComboBoxModel.Builder#attributes(Collection)
 		 * @see ForeignKeyDefinition#attributes()
@@ -848,7 +848,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @return a {@link EntityComboBoxModel} for the given foreign key
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 * @see EntityComboBoxModel.Builder#nullCaption(String)
-		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+		 * @see EntityComboBoxModel.Builder#nullable(boolean)
 		 * @see ValueAttributeDefinition#nullable()
 		 * @see EntityComboBoxModel.Builder#attributes(Collection)
 		 * @see ForeignKeyDefinition#attributes()
@@ -878,7 +878,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 			return FilterComboBoxModel.builder()
 							.items(() -> connection.select(column))
 							.nullItem(nullable ? createNullItem(column) : null)
-							.includeNull(nullable)
+							.nullable(nullable)
 							.build();
 		}
 

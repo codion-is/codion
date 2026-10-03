@@ -181,19 +181,19 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final Predicate<T> validator;
 
 		private final boolean filterSelected;
-		private final boolean includeNull;
+		private final boolean nullable;
 		private final @Nullable T nullItem;
 
 		private boolean cleared = true;
 
 		private DefaultComboBoxItems(AbstractFilterComboBoxModelBuilder<T, ?> builder, Sort<T> sort) {
-			this.includeNull = builder.includeNull;
+			this.nullable = builder.nullable;
 			this.nullItem = builder.nullItem;
 			this.filterSelected = builder.filterSelected;
 			this.validator = builder.validator;
 			this.sort = sort;
 			this.included = new DefaultIncludedItems();
-			if (includeNull) {
+			if (nullable) {
 				included.items.add(null);
 			}
 			included.predicate.addListener(this::filter);
@@ -247,12 +247,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void set(Collection<T> items) {
-			//null is the reserved sentinel (see includeNull), it must not appear among the actual items
+			//null is the reserved sentinel (see nullable), it must not appear among the actual items
 			requireNonNull(items).forEach(this::validate);
 			synchronized (lock) {
 				filtered.items.clear();
 				included.items.clear();
-				if (includeNull) {
+				if (nullable) {
 					included.items.add(0, null);
 				}
 				//remove duplicates while preserving the original order
@@ -451,8 +451,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public boolean includesNull() {
-			return includeNull;
+		public boolean nullable() {
+			return nullable;
 		}
 
 		@Override
@@ -475,7 +475,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private void updateSelectedItem(T removedItem) {
 			if (Objects.equals(selection.selected.item, removedItem)) {
-				if (modelItems.nullItem != null || includeNull) {
+				if (modelItems.nullItem != null || nullable) {
 					//select the null item / sentinel when the model includes null
 					selection.selected.setSelectedItem(null);
 				}
@@ -523,7 +523,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					if (items.isEmpty()) {
 						return emptyList();
 					}
-					if (!includeNull) {
+					if (!nullable) {
 						return unmodifiableList(new ArrayList<>(items));
 					}
 
@@ -549,7 +549,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			@Override
 			public boolean contains(T item) {
 				if (item == null) {
-					return includeNull;
+					return nullable;
 				}
 				synchronized (lock) {
 					return items.contains(item);
@@ -601,7 +601,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					if (items.isEmpty()) {
 						return 0;
 					}
-					if (!includeNull) {
+					if (!nullable) {
 						return items.size();
 					}
 
@@ -620,7 +620,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 			private boolean sortInternal() {
 				if (sort.sorted() && size() > 0) {
-					items.subList(includeNull ? 1 : 0, items.size()).sort(sort);
+					items.subList(nullable ? 1 : 0, items.size()).sort(sort);
 					return true;
 				}
 
