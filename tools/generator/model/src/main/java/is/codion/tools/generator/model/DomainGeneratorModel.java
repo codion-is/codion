@@ -388,7 +388,14 @@ public final class DomainGeneratorModel {
 						.dtos(dtoEntities())
 						.i18n(i18n.is())
 						.test(test.is())
+						.auditColumnNames(auditColumnNames())
 						.build();
+	}
+
+	private Collection<String> auditColumnNames() {
+		return schemaTableModel.selection().item().optional()
+						.map(schema -> schema.schemaSettings().auditColumnNames())
+						.orElse(emptySet());
 	}
 
 	private Set<EntityType> dtoEntities() {

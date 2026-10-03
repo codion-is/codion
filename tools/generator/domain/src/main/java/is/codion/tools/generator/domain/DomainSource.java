@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.Column.Generator.Identity;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnTemplate;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.tools.generator.domain.PostProcessing.EntityNames;
@@ -44,6 +45,7 @@ import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
+import org.jspecify.annotations.Nullable;
 
 import javax.lang.model.SourceVersion;
 import java.io.IOException;
@@ -53,11 +55,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
@@ -76,7 +80,10 @@ import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
 /**
- * For instances use the builder provided by {@link #builder()}.
+ * Generates the source code for a domain model.
+ * <p>Single column identity primary keys, and the audit columns specified via {@link Builder#auditColumnNames(Collection)},
+ * occurring in more than one entity are defined via a {@link ColumnTemplate} shared by those entities.
+ * <p>For instances use the builder provided by {@link #builder()}.
  */
 public final class DomainSource {
 
@@ -96,6 +103,8 @@ public final class DomainSource {
 	private static final String IMPL_CLASS_SUFFIX = "Impl";
 	private static final String JAVA = ".java";
 	private static final String RETURN = "return ";
+	private static final String IDENTITY_KEY = "IDENTITY_KEY";
+	private static final String IDENTITY_GENERATOR = ".generator(identity())";
 
 	private final Domain domain;
 	private final String domainInterfaceName;
@@ -107,6 +116,7 @@ public final class DomainSource {
 	private final Set<EntityType> dtos;
 	private final boolean i18n;
 	private final boolean test;
+	private final Templates templates;
 
 	private DomainSource(DefaultBuilder builder) {
 		this.domain = builder.domain;
@@ -118,6 +128,7 @@ public final class DomainSource {
 		this.dtos = builder.dtos;
 		this.i18n = builder.i18n;
 		this.test = builder.test;
+		this.templates = Templates.templates(sortedDefinitions, builder.auditColumnNames, captionStrategy(i18n));
 		this.invalidNames = collectInvalidNames(sortedDefinitions);
 		if (!invalidNames.isEmpty()) {
 			System.err.println("Invalid domain attribute names: " + invalidNames);
@@ -287,6 +298,14 @@ public final class DomainSource {
 		Builder test(boolean test);
 
 		/**
+		 * Specifies the audit columns, which are defined via a {@link ColumnTemplate} shared by the entities having them.
+		 * In case an audit column has different types in different entities, only the most common type is templated.
+		 * @param auditColumnNames the audit column names, not case sensitive
+		 * @return this builder
+		 */
+		Builder auditColumnNames(Collection<String> auditColumnNames);
+
+		/**
 		 * @return a new {@link DomainSource} instance
 		 */
 		DomainSource build();
@@ -360,6 +379,7 @@ public final class DomainSource {
 						.addModifiers(PUBLIC, FINAL)
 						.superclass(DomainModel.class);
 
+		templates.addFields(classBuilder);
 		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder, i18n);
 
 		String implementationPackage = sourcePackage.isEmpty() ? "" : sourcePackage;
@@ -396,6 +416,7 @@ public final class DomainSource {
 										.build())
 						.superclass(DomainModel.class);
 
+		templates.addFields(classBuilder);
 		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder, i18n);
 		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, dtos, i18n)));
 
@@ -446,15 +467,16 @@ public final class DomainSource {
 	private Map<EntityDefinition, String> addDefinitionMethods(TypeSpec.Builder classBuilder, boolean i18n) {
 		Map<EntityDefinition, String> definitionMethods = new LinkedHashMap<>();
 		sortedDefinitions.forEach(definition ->
-						addDefinition(definition, classBuilder, definitionMethods::put, i18n));
+						addDefinition(definition, classBuilder, definitionMethods::put, i18n, templates));
 
 		return definitionMethods;
 	}
 
 	private static void addDefinition(EntityDefinition definition,
 																		TypeSpec.Builder classBuilder,
-																		BiConsumer<EntityDefinition, String> onMethod, boolean i18n) {
-		MethodSpec definitionMethod = createDefinitionMethod(definition, i18n);
+																		BiConsumer<EntityDefinition, String> onMethod, boolean i18n,
+																		Templates templates) {
+		MethodSpec definitionMethod = createDefinitionMethod(definition, i18n, templates);
 		classBuilder.addMethod(definitionMethod);
 		onMethod.accept(definition, definitionMethod.name());
 	}
@@ -481,12 +503,14 @@ public final class DomainSource {
 	}
 
 	private static FieldSpec createEntityType(EntityDefinition definition, boolean i18n, String interfaceName) {
-		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
-
 		return FieldSpec.builder(EntityType.class, TYPE_FIELD_NAME)
 						.addModifiers(PUBLIC, STATIC, FINAL)
-						.initializer(captionStrategy.entityTypeInitializer(definition, interfaceName))
+						.initializer(captionStrategy(i18n).entityTypeInitializer(definition, interfaceName))
 						.build();
+	}
+
+	private static CaptionStrategy captionStrategy(boolean i18n) {
+		return i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
 	}
 
 	// ========================================
@@ -671,14 +695,16 @@ public final class DomainSource {
 	// Entity Definition Generation
 	// ========================================
 
-	private static MethodSpec createDefinitionMethod(EntityDefinition definition, boolean i18n) {
+	private static MethodSpec createDefinitionMethod(EntityDefinition definition, boolean i18n, Templates templates) {
 		String interfaceName = interfaceName(definition, true);
-		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
+		CaptionStrategy captionStrategy = captionStrategy(i18n);
+		AttributeDefinitionFormatter formatter = new AttributeDefinitionFormatter(interfaceName, captionStrategy, templates);
 		StringBuilder builder = new StringBuilder()
 						.append(RETURN).append(interfaceName).append(".TYPE.as()").append("\n")
 						.append(INDENT).append(".attributes(").append("\n")
-						.append(String.join("," + "\n",
-										createAttributes(definition.attributes().definitions(), definition, interfaceName, i18n)))
+						.append(definition.attributes().definitions().stream()
+										.map(attributeDefinition -> createAttribute(attributeDefinition, definition, formatter))
+										.collect(joining(",\n")))
 						.append(")");
 		builder.append(captionStrategy.entityCaption(definition));
 		builder.append(captionStrategy.entityDescription(definition));
@@ -713,25 +739,12 @@ public final class DomainSource {
 		return definitionMethods;
 	}
 
-	private static List<String> createAttributes(Collection<AttributeDefinition<?>> attributeDefinitions,
-																							 EntityDefinition definition, String interfaceName, boolean i18n) {
-		return attributeDefinitions.stream()
-						.map(attributeDefinition -> createAttribute(attributeDefinition, definition, interfaceName, i18n))
-						.collect(toList());
-	}
-
 	private static String createAttribute(AttributeDefinition<?> attributeDefinition,
-																				EntityDefinition definition, String interfaceName, boolean i18n) {
-		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
-		AttributeDefinitionFormatter formatter = new AttributeDefinitionFormatter(interfaceName, captionStrategy);
+																				EntityDefinition definition, AttributeDefinitionFormatter formatter) {
 		if (attributeDefinition instanceof ColumnDefinition) {
 			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
-			ColumnContext context = new ColumnContext(
-							definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()),
-							definition.primaryKey().columns().size() > 1,
-							definition.readOnly());
 
-			return formatter.formatColumn(columnDefinition, context);
+			return formatter.formatColumn(columnDefinition, ColumnContext.of(definition, columnDefinition));
 		}
 
 		return formatter.formatForeignKey((ForeignKeyDefinition) attributeDefinition);
@@ -903,8 +916,11 @@ public final class DomainSource {
 	private boolean identityGeneratorUsed() {
 		return sortedDefinitions.stream()
 						.flatMap(entityDefinition -> entityDefinition.columns().definitions().stream())
-						.anyMatch(columnDefinition ->
-										columnDefinition.generated() && columnDefinition.generator() instanceof Identity<?>);
+						.anyMatch(DomainSource::identityGenerated);
+	}
+
+	private static boolean identityGenerated(ColumnDefinition<?> column) {
+		return column.generated() && column.generator() instanceof Identity<?>;
 	}
 
 	static String underscoreToCamelCase(String text) {
@@ -982,14 +998,14 @@ public final class DomainSource {
 		String entityDescription(EntityDefinition definition);
 
 		/**
-		 * Adds attribute caption configuration if needed.
+		 * @return the attribute caption call, or an empty Optional if not needed
 		 */
-		void addAttributeCaption(CodeBlock.Builder builder, String caption);
+		Optional<String> attributeCaption(String caption);
 
 		/**
-		 * Adds attribute description configuration if needed.
+		 * @return the attribute description call, or an empty Optional if not needed
 		 */
-		void addAttributeDescription(CodeBlock.Builder builder, String description);
+		Optional<String> attributeDescription(String description);
 	}
 
 	/**
@@ -1018,13 +1034,13 @@ public final class DomainSource {
 		}
 
 		@Override
-		public void addAttributeCaption(CodeBlock.Builder builder, String caption) {
-			builder.add("\n$L.caption($S)", TRIPLE_INDENT, caption);
+		public Optional<String> attributeCaption(String caption) {
+			return Optional.of(CodeBlock.of(".caption($S)", caption).toString());
 		}
 
 		@Override
-		public void addAttributeDescription(CodeBlock.Builder builder, String description) {
-			builder.add("\n$L.description($S)", TRIPLE_INDENT, description);
+		public Optional<String> attributeDescription(String description) {
+			return Optional.of(CodeBlock.of(".description($S)", description).toString());
 		}
 	}
 
@@ -1049,13 +1065,13 @@ public final class DomainSource {
 		}
 
 		@Override
-		public void addAttributeCaption(CodeBlock.Builder builder, String caption) {
-			// i18n mode - caption comes from resource bundle
+		public Optional<String> attributeCaption(String caption) {
+			return Optional.empty(); // i18n mode - caption comes from resource bundle
 		}
 
 		@Override
-		public void addAttributeDescription(CodeBlock.Builder builder, String description) {
-			// i18n mode - description comes from resource bundle
+		public Optional<String> attributeDescription(String description) {
+			return Optional.empty(); // i18n mode - description comes from resource bundle
 		}
 	}
 
@@ -1073,80 +1089,106 @@ public final class DomainSource {
 			this.compositePrimaryKey = compositePrimaryKey;
 			this.readOnlyEntity = readOnlyEntity;
 		}
+
+		private static ColumnContext of(EntityDefinition definition, ColumnDefinition<?> column) {
+			return new ColumnContext(
+							definition.foreignKeys().foreignKeyColumn(column.attribute()),
+							definition.primaryKey().columns().size() > 1,
+							definition.readOnly());
+		}
 	}
 
 	/**
-	 * Formats attribute definitions as source code using JavaPoet CodeBlock.
+	 * Formats attribute definitions as source code.
 	 */
 	private static final class AttributeDefinitionFormatter {
 
 		private final String interfaceName;
 		private final CaptionStrategy captionStrategy;
+		private final Templates templates;
 
-		private AttributeDefinitionFormatter(String interfaceName, CaptionStrategy captionStrategy) {
+		private AttributeDefinitionFormatter(String interfaceName, CaptionStrategy captionStrategy, Templates templates) {
 			this.interfaceName = interfaceName;
 			this.captionStrategy = captionStrategy;
+			this.templates = templates;
 		}
 
 		private String formatColumn(ColumnDefinition<?> column, ColumnContext context) {
-			CodeBlock.Builder builder = CodeBlock.builder()
-							.add("$L$L.$L.as()\n", DOUBLE_INDENT, interfaceName, column.name().toUpperCase(Locale.ROOT))
-							.add("$L.$L", TRIPLE_INDENT, definitionType(column, context.compositePrimaryKey));
+			List<String> calls = columnCalls(column, context, captionStrategy);
+			StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
+							.append(interfaceName).append(".").append(column.name().toUpperCase(Locale.ROOT));
+			Template template = templates.template(column.attribute());
+			if (template == null) {
+				builder.append(".as()");
+			}
+			else {
+				builder.append(".as(").append(template.name).append(")");
+				calls.removeAll(template.calls);
+			}
+			calls.forEach(call -> builder.append("\n").append(TRIPLE_INDENT).append(call));
 
-			if (!context.foreignKeyColumn && !column.primaryKey()) {
-				captionStrategy.addAttributeCaption(builder, column.caption());
-			}
-			if (!context.readOnlyEntity) {
-				if (column.readOnly()) {
-					builder.add("\n$L.readOnly(true)", TRIPLE_INDENT);
-				}
-				else {
-					if (column.generated() && column.generator() instanceof Identity<?>) {
-						builder.add("\n$L.generator(identity())", TRIPLE_INDENT);
-					}
-					if (!column.nullable() && !column.primaryKey()) {
-						builder.add("\n$L.nullable(false)", TRIPLE_INDENT);
-					}
-					if (!column.insertable()) {
-						builder.add("\n$L.insertable(false)", TRIPLE_INDENT);
-					}
-					else if (column.withDefault()) {
-						builder.add("\n$L.withDefault(true)", TRIPLE_INDENT);
-					}
-					if (!column.updatable() && !column.primaryKey()) {
-						builder.add("\n$L.updatable(false)", TRIPLE_INDENT);
-					}
-					if (column.attribute().type().isString() && column.maximumLength() != -1) {
-						builder.add("\n$L.maximumLength($L)", TRIPLE_INDENT, column.maximumLength());
-					}
-				}
-			}
-			if (!column.selected()) {
-				builder.add("\n$L.selected(false)", TRIPLE_INDENT);
-			}
-			// the default is applied anyway
-			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1
-							&& column.fractionDigits() != AttributeDefinition.FRACTION_DIGITS.getOrThrow()) {
-				builder.add("\n$L.fractionDigits($L)", TRIPLE_INDENT, column.fractionDigits());
-			}
-			if (!column.primaryKey() && column.hidden()) {
-				builder.add("\n$L.hidden(true)", TRIPLE_INDENT);
-			}
-			column.description().ifPresent(description ->
-							captionStrategy.addAttributeDescription(builder, description));
-
-			return builder.build().toString();
+			return builder.toString();
 		}
 
 		private String formatForeignKey(ForeignKeyDefinition definition) {
 			String foreignKeyName = definition.attribute().name().toUpperCase(Locale.ROOT);
-			CodeBlock.Builder builder = CodeBlock.builder()
-							.add("$L$L.$L.as()\n", DOUBLE_INDENT, interfaceName, foreignKeyName)
-							.add("$L.foreignKey()", TRIPLE_INDENT);
+			StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
+							.append(interfaceName).append(".").append(foreignKeyName).append(".as()\n")
+							.append(TRIPLE_INDENT).append(".foreignKey()");
+			captionStrategy.attributeCaption(definition.caption()).ifPresent(caption ->
+							builder.append("\n").append(TRIPLE_INDENT).append(caption));
 
-			captionStrategy.addAttributeCaption(builder, definition.caption());
+			return builder.toString();
+		}
 
-			return builder.build().toString();
+		// The builder calls defining the column, a template holding the ones its columns have in common
+		private static List<String> columnCalls(ColumnDefinition<?> column, ColumnContext context, CaptionStrategy captionStrategy) {
+			List<String> calls = new ArrayList<>();
+			calls.add("." + definitionType(column, context.compositePrimaryKey));
+			if (!context.foreignKeyColumn && !column.primaryKey()) {
+				captionStrategy.attributeCaption(column.caption()).ifPresent(calls::add);
+			}
+			if (!context.readOnlyEntity) {
+				if (column.readOnly()) {
+					calls.add(".readOnly(true)");
+				}
+				else {
+					if (identityGenerated(column)) {
+						calls.add(IDENTITY_GENERATOR);
+					}
+					if (!column.nullable() && !column.primaryKey()) {
+						calls.add(".nullable(false)");
+					}
+					if (!column.insertable()) {
+						calls.add(".insertable(false)");
+					}
+					else if (column.withDefault()) {
+						calls.add(".withDefault(true)");
+					}
+					if (!column.updatable() && !column.primaryKey()) {
+						calls.add(".updatable(false)");
+					}
+					if (column.attribute().type().isString() && column.maximumLength() != -1) {
+						calls.add(".maximumLength(" + column.maximumLength() + ")");
+					}
+				}
+			}
+			if (!column.selected()) {
+				calls.add(".selected(false)");
+			}
+			// the default is applied anyway
+			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1
+							&& column.fractionDigits() != AttributeDefinition.FRACTION_DIGITS.getOrThrow()) {
+				calls.add(".fractionDigits(" + column.fractionDigits() + ")");
+			}
+			if (!column.primaryKey() && column.hidden()) {
+				calls.add(".hidden(true)");
+			}
+			column.description()
+							.flatMap(captionStrategy::attributeDescription)
+							.ifPresent(calls::add);
+
+			return calls;
 		}
 
 		private static String definitionType(ColumnDefinition<?> column, boolean compositePrimaryKey) {
@@ -1155,6 +1197,125 @@ public final class DomainSource {
 			}
 
 			return "column()";
+		}
+	}
+
+	/**
+	 * The column templates, for the single column identity primary keys and the audit columns occurring in more than
+	 * one entity, each holding the builder calls its columns have in common, the rest following the template.
+	 */
+	private static final class Templates {
+
+		private static final int MINIMUM_COLUMNS = 2;
+		private static final int MINIMUM_CALLS = 2;
+
+		private final List<Template> templates = new ArrayList<>();
+		private final Map<Column<?>, Template> columnTemplates = new HashMap<>();
+
+		private @Nullable Template template(Column<?> column) {
+			return columnTemplates.get(column);
+		}
+
+		private void addFields(TypeSpec.Builder classBuilder) {
+			templates.forEach(template -> classBuilder.addField(FieldSpec.builder(ParameterizedTypeName.get(
+											ClassName.get(ColumnTemplate.class), TypeName.get(template.type)), template.name)
+							.addModifiers(PRIVATE, STATIC, FINAL)
+							.initializer(CodeBlock.builder()
+											.add("column -> column.as()")
+											.indent()
+											.add("$L", template.calls.stream()
+															.map(call -> "\n" + call)
+															.collect(joining()))
+											.unindent()
+											.build())
+							.build()));
+		}
+
+		private static Templates templates(List<EntityDefinition> definitions, Collection<String> auditColumnNames,
+																			 CaptionStrategy captionStrategy) {
+			Map<Class<?>, List<TemplateColumn>> identityKeys = new LinkedHashMap<>();
+			Map<String, Map<Class<?>, List<TemplateColumn>>> auditColumns = new LinkedHashMap<>();
+			definitions.stream()
+							// the column calls of a read-only entity leave out the read-only and generator ones
+							.filter(definition -> !definition.readOnly())
+							.forEach(definition -> definition.columns().definitions().forEach(column -> {
+								Class<?> type = column.attribute().type().get();
+								String name = column.name().toLowerCase(Locale.ROOT);
+								if (column.primaryKey() && definition.primaryKey().columns().size() == 1 && identityGenerated(column)) {
+									identityKeys.computeIfAbsent(type, k -> new ArrayList<>())
+													.add(new TemplateColumn(definition, column, captionStrategy));
+								}
+								else if (!column.primaryKey() && auditColumnNames.contains(name)) {
+									auditColumns.computeIfAbsent(name, k -> new LinkedHashMap<>())
+													.computeIfAbsent(type, k -> new ArrayList<>())
+													.add(new TemplateColumn(definition, column, captionStrategy));
+								}
+							}));
+
+			Templates templates = new Templates();
+			Map<Class<?>, List<TemplateColumn>> identityTemplates = identityKeys.entrySet().stream()
+							.filter(entry -> entry.getValue().size() >= MINIMUM_COLUMNS)
+							.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (columns1, columns2) -> columns1, LinkedHashMap::new));
+			// one identity key template, unless the keys differ in type, a template having one type
+			identityTemplates.forEach((type, columns) -> templates.add(identityTemplates.size() == 1 ?
+							IDENTITY_KEY : typeName(type) + "_" + IDENTITY_KEY, type, columns));
+			auditColumns.forEach((name, columnsByType) -> {
+				Map.Entry<Class<?>, List<TemplateColumn>> mostCommon = mostCommonType(columnsByType);
+				templates.add(name.toUpperCase(Locale.ROOT), mostCommon.getKey(), mostCommon.getValue());
+			});
+
+			return templates;
+		}
+
+		private void add(String name, Class<?> type, List<TemplateColumn> columns) {
+			List<String> calls = new ArrayList<>(columns.get(0).calls);
+			columns.forEach(column -> calls.retainAll(column.calls));
+			if (columns.size() >= MINIMUM_COLUMNS && calls.size() >= MINIMUM_CALLS) {
+				Template template = new Template(name, type, calls);
+				templates.add(template);
+				columns.forEach(column -> columnTemplates.put(column.column, template));
+			}
+		}
+
+		// the first one in case of a tie
+		private static Map.Entry<Class<?>, List<TemplateColumn>> mostCommonType(Map<Class<?>, List<TemplateColumn>> columnsByType) {
+			Map.Entry<Class<?>, List<TemplateColumn>> mostCommon = null;
+			for (Map.Entry<Class<?>, List<TemplateColumn>> entry : columnsByType.entrySet()) {
+				if (mostCommon == null || entry.getValue().size() > mostCommon.getValue().size()) {
+					mostCommon = entry;
+				}
+			}
+
+			return requireNonNull(mostCommon);
+		}
+
+		// LocalDateTime -> LOCAL_DATE_TIME
+		private static String typeName(Class<?> type) {
+			return type.getSimpleName().replaceAll("([a-z0-9])([A-Z])", "$1_$2").toUpperCase(Locale.ROOT);
+		}
+	}
+
+	private static final class Template {
+
+		private final String name;
+		private final Class<?> type;
+		private final List<String> calls;
+
+		private Template(String name, Class<?> type, List<String> calls) {
+			this.name = name;
+			this.type = type;
+			this.calls = calls;
+		}
+	}
+
+	private static final class TemplateColumn {
+
+		private final Column<?> column;
+		private final List<String> calls;
+
+		private TemplateColumn(EntityDefinition definition, ColumnDefinition<?> column, CaptionStrategy captionStrategy) {
+			this.column = column.attribute();
+			this.calls = AttributeDefinitionFormatter.columnCalls(column, ColumnContext.of(definition, column), captionStrategy);
 		}
 	}
 
@@ -1187,6 +1348,7 @@ public final class DomainSource {
 		private Set<EntityType> dtos = emptySet();
 		private boolean i18n = false;
 		private boolean test = false;
+		private Set<String> auditColumnNames = emptySet();
 
 		private DefaultBuilder(Domain domain) {
 			this.domain = domain;
@@ -1221,6 +1383,14 @@ public final class DomainSource {
 		@Override
 		public Builder test(boolean test) {
 			this.test = test;
+			return this;
+		}
+
+		@Override
+		public Builder auditColumnNames(Collection<String> auditColumnNames) {
+			this.auditColumnNames = requireNonNull(auditColumnNames).stream()
+							.map(name -> name.trim().toLowerCase(Locale.ROOT))
+							.collect(toSet());
 			return this;
 		}
 

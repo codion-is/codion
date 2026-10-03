@@ -57,6 +57,25 @@ public final class DomainGeneratorCliTest {
 	}
 
 	@Test
+	void auditColumns() {
+		assertEquals(0, run(arguments("--audit-columns", "insert_time, INSERT_USER", "--hide-audit-columns")));
+		String source = out();
+		assertTrue(source.contains("Category.ID.as(IDENTITY_KEY)"));
+		assertTrue(source.contains("Item.ID.as(IDENTITY_KEY)"));
+		assertTrue(source.contains("private static final ColumnTemplate<LocalDateTime> INSERT_TIME"));
+		assertTrue(source.contains("private static final ColumnTemplate<String> INSERT_USER"));
+		assertTrue(source.contains("Category.INSERT_TIME.as(INSERT_TIME)"));
+		assertTrue(source.contains("Item.INSERT_USER.as(INSERT_USER)"));
+		assertTrue(source.contains(".hidden(true)"));
+		// without, the identity keys are templated, the audit columns are regular columns
+		assertEquals(0, run(STORE));
+		source = out();
+		assertTrue(source.contains("Category.ID.as(IDENTITY_KEY)"));
+		assertFalse(source.contains("ColumnTemplate<LocalDateTime>"));
+		assertFalse(source.contains(".readOnly(true)"));
+	}
+
+	@Test
 	void combined(@TempDir Path outputDir) throws Exception {
 		assertEquals(0, run(arguments("--output-dir", outputDir.toString())));
 		Path domainFile = outputDir.resolve("is/codion/test/domain/Store.java");
@@ -131,6 +150,9 @@ public final class DomainGeneratorCliTest {
 		// and they require their own output directories
 		assertEquals(2, run(arguments("--output-dir", outputDir.toString(), "--i18n")));
 		assertEquals(2, run(arguments("--output-dir", outputDir.toString(), "--test")));
+
+		assertEquals(2, run(arguments("--hide-audit-columns")));
+		assertTrue(err().contains("--audit-columns"));
 	}
 
 	private int run(String... arguments) {

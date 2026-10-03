@@ -13,8 +13,24 @@ import static is.codion.petstore.domain.api.Petstore.TagItem;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnTemplate;
+import java.time.LocalDateTime;
 
 public final class PetstoreImpl extends DomainModel {
+	private static final ColumnTemplate<Integer> IDENTITY_KEY = column -> column.as()
+		.primaryKey()
+		.generator(identity());
+
+	private static final ColumnTemplate<LocalDateTime> INSERT_TIME = column -> column.as()
+		.column()
+		.readOnly(true)
+		.hidden(true);
+
+	private static final ColumnTemplate<String> INSERT_USER = column -> column.as()
+		.column()
+		.readOnly(true)
+		.hidden(true);
+
 	public PetstoreImpl() {
 		super(DOMAIN);
 		add(address(), category(), contactInfo(),
@@ -25,9 +41,7 @@ public final class PetstoreImpl extends DomainModel {
 	EntityDefinition address() {
 		return Address.TYPE.as()
 			.attributes(
-				Address.ADDRESS_ID.as()
-					.primaryKey()
-					.generator(identity()),
+				Address.ADDRESS_ID.as(IDENTITY_KEY),
 				Address.STREET1.as()
 					.column()
 					.nullable(false)
@@ -62,9 +76,7 @@ public final class PetstoreImpl extends DomainModel {
 	EntityDefinition category() {
 		return Category.TYPE.as()
 			.attributes(
-				Category.CATEGORY_ID.as()
-					.primaryKey()
-					.generator(identity()),
+				Category.CATEGORY_ID.as(IDENTITY_KEY),
 				Category.NAME.as()
 					.column()
 					.nullable(false)
@@ -82,9 +94,7 @@ public final class PetstoreImpl extends DomainModel {
 	EntityDefinition contactInfo() {
 		return ContactInfo.TYPE.as()
 			.attributes(
-				ContactInfo.CONTACT_INFO_ID.as()
-					.primaryKey()
-					.generator(identity()),
+				ContactInfo.CONTACT_INFO_ID.as(IDENTITY_KEY),
 				ContactInfo.LAST_NAME.as()
 					.column()
 					.nullable(false)
@@ -114,9 +124,7 @@ public final class PetstoreImpl extends DomainModel {
 	EntityDefinition tag() {
 		return Tag.TYPE.as()
 			.attributes(
-				Tag.TAG_ID.as()
-					.primaryKey()
-					.generator(identity()),
+				Tag.TAG_ID.as(IDENTITY_KEY),
 				Tag.TAG.as()
 					.column()
 					.nullable(false)
@@ -127,9 +135,7 @@ public final class PetstoreImpl extends DomainModel {
 	EntityDefinition product() {
 		return Product.TYPE.as()
 			.attributes(
-				Product.PRODUCT_ID.as()
-					.primaryKey()
-					.generator(identity()),
+				Product.PRODUCT_ID.as(IDENTITY_KEY),
 				Product.CATEGORY_ID.as()
 					.column()
 					.nullable(false),
@@ -146,23 +152,15 @@ public final class PetstoreImpl extends DomainModel {
 				Product.IMAGE_URL.as()
 					.column()
 					.maximumLength(55),
-				Product.INSERT_TIME.as()
-					.column()
-					.readOnly(true)
-					.hidden(true),
-				Product.INSERT_USER.as()
-					.column()
-					.readOnly(true)
-					.hidden(true))
+				Product.INSERT_TIME.as(INSERT_TIME),
+				Product.INSERT_USER.as(INSERT_USER))
 			.build();
 	}
 
 	EntityDefinition item() {
 		return Item.TYPE.as()
 			.attributes(
-				Item.ITEM_ID.as()
-					.primaryKey()
-					.generator(identity()),
+				Item.ITEM_ID.as(IDENTITY_KEY),
 				Item.PRODUCT_ID.as()
 					.column()
 					.nullable(false),
@@ -204,14 +202,8 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.nullable(false)
 					.withDefault(true),
-				Item.INSERT_TIME.as()
-					.column()
-					.readOnly(true)
-					.hidden(true),
-				Item.INSERT_USER.as()
-					.column()
-					.readOnly(true)
-					.hidden(true))
+				Item.INSERT_TIME.as(INSERT_TIME),
+				Item.INSERT_USER.as(INSERT_USER))
 			.build();
 	}
 

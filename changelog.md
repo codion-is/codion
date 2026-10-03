@@ -96,6 +96,12 @@ Codion Change Log
 - solarized.SolarizedLight no longer fails to load, the look and feel used in place of the FlatLaf Solarized Light theme.
 - material.SolarizedDark and SolarizedLight renamed SolarizedDarkMaterial and SolarizedLightMaterial, autumn.Autumn renamed AutumnLite, conflicting with the other Solarized and Autumn themes.
 - rider.RiderMelonDark, RiderMelonDay, RiderMelonLight and RiderMelonNight removed, practically identical to the Rider themes and never included.
+### is.codion.tools.generator.domain
+- DomainSource, identity primary keys and audit columns occurring in more than one entity are now defined via shared column templates, DomainSource.Builder.auditColumnNames() added.
+### is.codion.tools.generator.model
+- DomainGeneratorModel now passes the audit column names to DomainSource, for their column templates.
+### is.codion.tools.generator.cli
+- DomainGeneratorCli, --audit-columns and --hide-audit-columns options added.
 
 ## 0.18.88
 ### is.codion.common.utilities

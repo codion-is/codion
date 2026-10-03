@@ -21,6 +21,7 @@ package is.codion.tools.generator.cli;
 import is.codion.common.db.database.Database;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.domain.db.SchemaDomain;
+import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.tools.generator.domain.DomainSource;
@@ -77,6 +78,9 @@ public final class DomainGeneratorCli {
 					  --i18n                   generate i18n resource bundles for the entity and attribute captions
 					  --test                   generate a domain unit test
 					  --dtos                   generate a record based dto for each entity
+					  --audit-columns <names>  the audit column names, comma separated, read-only and defined via
+					                           column templates shared by the entities having them
+					  --hide-audit-columns     hide the audit columns, requires --audit-columns
 					  --overwrite              overwrite existing source files
 					  --help                   print this message
 					
@@ -128,13 +132,15 @@ public final class DomainGeneratorCli {
 		if (arguments.initScripts != null) {
 			Database.INIT_SCRIPTS.set(arguments.initScripts);
 		}
-		SchemaDomain domain = schemaDomain(arguments);
+		SchemaSettings schemaSettings = arguments.schemaSettings();
+		SchemaDomain domain = schemaDomain(arguments, schemaSettings);
 		DomainSource domainSource = DomainSource.builder()
 						.domain(domain)
 						.domainPackage(arguments.domainPackage)
 						.dtos(arguments.dtos ? entityTypes(domain) : emptySet())
 						.i18n(arguments.i18n)
 						.test(arguments.test)
+						.auditColumnNames(schemaSettings.auditColumnNames())
 						.build();
 		if (arguments.outputDir == null) {
 			out.println(domainSource.combined());
@@ -147,12 +153,12 @@ public final class DomainGeneratorCli {
 		return SUCCESS;
 	}
 
-	private static SchemaDomain schemaDomain(Arguments arguments) throws SQLException {
+	private static SchemaDomain schemaDomain(Arguments arguments, SchemaSettings schemaSettings) throws SQLException {
 		Database database = Database.instance();
 		try (Connection connection = arguments.user == null ?
 						database.createConnection() :
 						database.createConnection(arguments.user)) {
-			SchemaDomain domain = SchemaDomain.schemaDomain(connection.getMetaData(), arguments.schema);
+			SchemaDomain domain = SchemaDomain.schemaDomain(connection.getMetaData(), arguments.schema, schemaSettings);
 			if (domain.entities().definitions().isEmpty()) {
 				throw new IllegalArgumentException("No tables found in schema: " + arguments.schema);
 			}
@@ -209,6 +215,8 @@ public final class DomainGeneratorCli {
 		private boolean i18n;
 		private boolean test;
 		private boolean dtos;
+		private @Nullable String auditColumns;
+		private boolean hideAuditColumns;
 		private boolean overwrite;
 		private boolean help;
 
@@ -229,6 +237,8 @@ public final class DomainGeneratorCli {
 					case "--i18n" -> parsed.i18n = true;
 					case "--test" -> parsed.test = true;
 					case "--dtos" -> parsed.dtos = true;
+					case "--audit-columns" -> parsed.auditColumns = value(arguments, ++i);
+					case "--hide-audit-columns" -> parsed.hideAuditColumns = true;
 					case "--overwrite" -> parsed.overwrite = true;
 					case "--help", "-h" -> parsed.help = true;
 					default -> throw new IllegalArgumentException("Unknown option: " + argument);
@@ -264,6 +274,16 @@ public final class DomainGeneratorCli {
 			if (test && testDir == null) {
 				throw new IllegalArgumentException("The --test option requires --test-dir");
 			}
+			if (hideAuditColumns && auditColumns == null) {
+				throw new IllegalArgumentException("The --hide-audit-columns option requires --audit-columns");
+			}
+		}
+
+		private SchemaSettings schemaSettings() {
+			return SchemaSettings.builder()
+							.auditColumnNames(auditColumns == null ? new String[0] : auditColumns.split(","))
+							.hideAuditColumns(hideAuditColumns)
+							.build();
 		}
 
 		private static String value(String[] arguments, int index) {

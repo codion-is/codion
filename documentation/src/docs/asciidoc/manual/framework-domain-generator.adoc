@@ -248,13 +248,18 @@ NOTE: Both view prefix and view suffix can be used simultaneously. The prefix is
 
 Many schemas include audit columns like `INSERT_USER`, `INSERT_TIME`, `UPDATE_USER`, `UPDATE_TIME`. Specifying these column names (comma-separated, case-insensitive) marks them as read-only in generated definitions.
 
+An audit column occurring in more than one entity is defined via a <<_column_templates, column template>> shared by those entities. Any configuration a column does not share with the others, such as a description, follows the template. In case an audit column has different types in different entities, only the most common type is templated.
+
 .Example: Audit columns "insert_user,insert_time,update_user,update_time"
 [source,java]
 ----
-Customer.INSERT_USER.as()
+private static final ColumnTemplate<String> INSERT_USER = column -> column.as()
     .column()
+    .caption("Insert user")
     .readOnly(true)
-    .hidden(true)  // If "Hide Audit Columns" enabled
+    .hidden(true); // If "Hide Audit Columns" enabled
+
+Customer.INSERT_USER.as(INSERT_USER)
 ----
 
 == User Workflow
@@ -415,6 +420,12 @@ application {
 |`--dtos`
 |Generate a record based dto for each entity
 
+|`--audit-columns <names>`
+|The audit column names, comma separated, read-only and defined via column templates shared by the entities having them, see <<_audit_columns, Audit Columns>>
+
+|`--hide-audit-columns`
+|Hide the audit columns, requires `--audit-columns`
+
 |`--overwrite`
 |Overwrite existing source files
 
@@ -424,7 +435,7 @@ application {
 
 Exit codes: 0 success, 1 failure, 2 usage error.
 
-NOTE: The CLI generates the domain model for the whole schema, using the default schema settings, entity selection and schema settings require the UI.
+NOTE: The CLI generates the domain model for the whole schema, the audit columns being the only schema settings it offers, entity selection and the other schema settings require the UI.
 
 == Generated Output
 
@@ -522,6 +533,8 @@ Database column metadata is transformed into Codion column definitions:
 |Column comment
 |`.description("comment")`
 |===
+
+Single column auto-increment primary keys occurring in more than one entity are defined via a shared <<_column_templates, column template>>, `IDENTITY_KEY`, or one per type, such as `LONG_IDENTITY_KEY`, in case the keys differ in type.
 
 === Foreign Key Detection
 
