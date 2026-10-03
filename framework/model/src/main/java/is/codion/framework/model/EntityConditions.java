@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Conjunction;
@@ -39,9 +39,9 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 /**
  * Manages the condition models associated with an entity's attributes, providing the combined
  * WHERE and HAVING conditions used when querying entities.
- * Use {@link EntityConditionModel#builder()} for an instance.
+ * Use {@link EntityConditions#builder()} for an instance.
  */
-public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
+public interface EntityConditions extends TableConditions<Attribute<?>> {
 
 	/**
 	 * Specifies whether the negative operators {@link is.codion.common.utilities.Operator#NOT_EQUAL},
@@ -58,7 +58,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	 * @see ColumnConditionModel.Builder#negationIncludesNull(boolean)
 	 * @see ForeignKeyConditionModel.Builder#negationIncludesNull(boolean)
 	 */
-	PropertyValue<Boolean> NEGATION_INCLUDES_NULL = booleanValue(EntityConditionModel.class.getName() + ".negationIncludesNull", true);
+	PropertyValue<Boolean> NEGATION_INCLUDES_NULL = booleanValue(EntityConditions.class.getName() + ".negationIncludesNull", true);
 
 	/**
 	 * @return the type of the entity this table condition model is based on
@@ -166,12 +166,12 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	}
 
 	/**
-	 * Builds an {@link EntityConditionModel}
+	 * Builds an {@link EntityConditions}
 	 */
 	interface Builder {
 
 		/**
-		 * The first step in building an {@link EntityConditionModel}
+		 * The first step in building an {@link EntityConditions}
 		 */
 		interface EntityTypeStep {
 
@@ -183,7 +183,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 		}
 
 		/**
-		 * The second step in building an {@link EntityConditionModel}
+		 * The second step in building an {@link EntityConditions}
 		 */
 		interface ConnectionStep {
 
@@ -221,17 +221,17 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 		Builder condition(ForeignKey foreignKey, Consumer<ForeignKeyConditionModel.Builder> condition);
 
 		/**
-		 * @return a new {@link EntityConditionModel} instance
+		 * @return a new {@link EntityConditions} instance
 		 * @throws IllegalArgumentException in case an excluded or configured attribute is not a column or foreign key
 		 * of the underlying entity, or is both excluded and configured
 		 */
-		EntityConditionModel build();
+		EntityConditions build();
 	}
 
 	/**
 	 * @return a {@link Builder.EntityTypeStep}
 	 */
 	static Builder.EntityTypeStep builder() {
-		return DefaultEntityConditionModel.DefaultBuilder.ENTITY_TYPE_STEP;
+		return DefaultEntityConditions.DefaultBuilder.ENTITY_TYPE_STEP;
 	}
 }

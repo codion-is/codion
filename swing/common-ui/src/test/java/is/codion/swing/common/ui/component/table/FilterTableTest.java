@@ -136,13 +136,13 @@ public class FilterTableTest {
 		FilterTable<List<Object>, Integer> table = FilterTable.builder()
 						.model(createFilterPanelsModel())
 						.build();
-		assertEquals(new HashSet<>(asList(0, 1)), table.filters().panels().keySet());
+		assertEquals(new HashSet<>(asList(0, 1)), table.filters().get().keySet());
 		// excluded, the filter itself unaffected
 		table = FilterTable.builder()
 						.model(createFilterPanelsModel())
 						.filters(filters -> filters.exclude(1))
 						.build();
-		assertEquals(singleton(0), table.filters().panels().keySet());
+		assertEquals(singleton(0), table.filters().get().keySet());
 		assertNotNull(table.model().filters().get(1));
 		// configured, with components supporting the BigInteger filter
 		ConditionComponents bigIntegerComponents = new ConditionComponents() {
@@ -161,7 +161,7 @@ public class FilterTableTest {
 						.filters(filters -> filters
 										.condition(2, bigInteger -> bigInteger.components(bigIntegerComponents)))
 						.build();
-		assertEquals(new HashSet<>(asList(0, 1, 2)), table.filters().panels().keySet());
+		assertEquals(new HashSet<>(asList(0, 1, 2)), table.filters().get().keySet());
 	}
 
 	@Test
@@ -679,9 +679,9 @@ public class FilterTableTest {
 
 		// Should follow cell renderer alignment
 		NumberField<Integer> equalComponent = (NumberField<Integer>)
-						((ColumnConditionPanel<Integer>) table.filters().panel(0)).operands().equal().get();
+						((ColumnConditionPanel<Integer>) table.filters().get(0)).operands().equal().get();
 		assertEquals(SwingConstants.CENTER, equalComponent.getHorizontalAlignment());
-		equalComponent = (NumberField<Integer>) ((ColumnConditionPanel<Integer>) table.filters().panel(1)).operands().equal().get();
+		equalComponent = (NumberField<Integer>) ((ColumnConditionPanel<Integer>) table.filters().get(1)).operands().equal().get();
 		assertEquals(SwingConstants.LEFT, equalComponent.getHorizontalAlignment());
 	}
 

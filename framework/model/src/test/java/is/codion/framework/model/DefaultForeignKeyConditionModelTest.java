@@ -186,7 +186,7 @@ public final class DefaultForeignKeyConditionModelTest {
 
 	@Test
 	void caption() {
-		ForeignKeyConditionModel condition = EntityConditionModel.builder()
+		ForeignKeyConditionModel condition = EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.build()
@@ -220,7 +220,7 @@ public final class DefaultForeignKeyConditionModelTest {
 
 	@Test
 	void configuredBuilderInitializedWithTheDefaults() {
-		ForeignKeyConditionModel condition = EntityConditionModel.builder()
+		ForeignKeyConditionModel condition = EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.condition(Employee.DEPARTMENT_FK, builder -> builder.operators(asList(EQUAL, NOT_EQUAL)))

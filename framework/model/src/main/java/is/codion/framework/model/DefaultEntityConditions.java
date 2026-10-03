@@ -20,7 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Operands;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -57,7 +57,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
+import static is.codion.common.model.condition.TableConditions.tableConditions;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.time.temporal.ChronoUnit.*;
@@ -65,16 +65,16 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultEntityConditionModel implements EntityConditionModel {
+final class DefaultEntityConditions implements EntityConditions {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConditionModel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConditions.class);
 
 	private static final Supplier<@Nullable Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnection connection;
 	private final Set<Attribute<?>> negationIncludesNull = new HashSet<>();
-	private final TableConditionModel<Attribute<?>> conditionModel;
+	private final TableConditions<Attribute<?>> conditions;
 	private final Value<Conjunction> conjunction = Value.builder()
 					.nonNull(Conjunction.AND)
 					.build();
@@ -84,10 +84,10 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private final Predicate<Attribute<?>> notAggregateColumn = aggregateColumn.negate();
 	private final DefaultModified modified;
 
-	DefaultEntityConditionModel(DefaultBuilder builder) {
+	DefaultEntityConditions(DefaultBuilder builder) {
 		this.entityDefinition = builder.connection.entities().definition(builder.entityType);
 		this.connection = builder.connection;
-		this.conditionModel = tableConditionModel(createConditions(builder));
+		this.conditions = tableConditions(createConditions(builder));
 		this.modified = new DefaultModified();
 		bindEvents();
 	}
@@ -119,27 +119,27 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public Map<Attribute<?>, ConditionModel<?>> get() {
-		return conditionModel.get();
+		return conditions.get();
 	}
 
 	@Override
 	public <T> ConditionModel<T> get(Attribute<?> attribute) {
 		entityDefinition.attributes().definition(attribute);
 
-		return conditionModel.get(attribute);
+		return conditions.get(attribute);
 	}
 
 	@Override
 	public <T> ConditionModel<T> get(Column<T> column) {
 		entityDefinition.columns().definition(column);
 
-		return conditionModel.get(column);
+		return conditions.get(column);
 	}
 
 	@Override
 	public ForeignKeyConditionModel get(ForeignKey foreignKey) {
 		entityDefinition.foreignKeys().definition(foreignKey);
-		ConditionModel<Entity> model = conditionModel.get(foreignKey);
+		ConditionModel<Entity> model = conditions.get(foreignKey);
 		if (!(model instanceof ForeignKeyConditionModel)) {
 			throw new IllegalArgumentException("Condition model for foreign key " + foreignKey
 							+ " is not a " + ForeignKeyConditionModel.class.getSimpleName() + ": " + model.getClass().getName());
@@ -150,7 +150,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public ObservableState enabled() {
-		return conditionModel.enabled();
+		return conditions.enabled();
 	}
 
 	@Override
@@ -160,12 +160,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public ValueSet<Attribute<?>> persist() {
-		return conditionModel.persist();
+		return conditions.persist();
 	}
 
 	@Override
 	public void clear() {
-		conditionModel.clear();
+		conditions.clear();
 	}
 
 	@Override
@@ -179,7 +179,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private Condition createCondition(Predicate<Attribute<?>> columnType, ConditionValue additionalCondition) {
-		List<Condition> conditions = conditionModel.get().entrySet().stream()
+		List<Condition> conditions = this.conditions.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
 						.filter(entry -> entry.getValue().enabled().is())
 						.map(entry -> condition(entry.getValue(), entry.getKey()))
@@ -206,7 +206,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private void bindEvents() {
-		conditionModel.changed().addListener(changed);
+		conditions.changed().addListener(changed);
 		additional.where.addListener(changed);
 		additional.where.conjunction().addListener(changed);
 		additional.having.addListener(changed);
@@ -480,7 +480,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	/**
 	 * A negation matches what its positive counterpart does not, null values included, whereas SQL excludes them.
 	 * @return the given condition, also accepting null values in case the attribute is nullable
-	 * @see EntityConditionModel#NEGATION_INCLUDES_NULL
+	 * @see EntityConditions#NEGATION_INCLUDES_NULL
 	 */
 	private Condition negation(Condition condition, Attribute<?> attribute) {
 		if (!negationIncludesNull.contains(attribute)) {
@@ -557,8 +557,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 
 		@Override
-		public EntityConditionModel build() {
-			return new DefaultEntityConditionModel(this);
+		public EntityConditions build() {
+			return new DefaultEntityConditions(this);
 		}
 	}
 

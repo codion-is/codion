@@ -30,9 +30,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * Manages a set of {@link ConditionModel}s for table columns.
  * @param <C> the condition identifier type
- * @see #tableConditionModel(Map)
+ * @see #tableConditions(Map)
  */
-public interface TableConditionModel<C> {
+public interface TableConditions<C> {
 
 	/**
 	 * @return an unmodifiable view of the available condition models
@@ -72,17 +72,17 @@ public interface TableConditionModel<C> {
 	ValueSet<C> persist();
 
 	/**
-	 * Instantiates a new {@link TableConditionModel}
+	 * Instantiates a new {@link TableConditions}
 	 * @param conditionModels the condition models mapped to their respective column identifiers
 	 * @param <C> the condition identifier type
-	 * @return a new {@link TableConditionModel}
+	 * @return a new {@link TableConditions}
 	 */
-	static <C> TableConditionModel<C> tableConditionModel(Map<C, ConditionModel<?>> conditionModels) {
-		return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
+	static <C> TableConditions<C> tableConditions(Map<C, ConditionModel<?>> conditionModels) {
+		return new DefaultTableConditions<>(requireNonNull(conditionModels));
 	}
 
 	/**
-	 * Builds a {@link TableConditionModel}, providing a condition model for each identifier, initialized with its defaults.
+	 * Builds a {@link TableConditions}, providing a condition model for each identifier, initialized with its defaults.
 	 * @param <C> the condition identifier type
 	 */
 	interface Builder<C> {
@@ -105,10 +105,10 @@ public interface TableConditionModel<C> {
 		<T> Builder<C> condition(C identifier, Consumer<ConditionModel.Builder<T>> condition);
 
 		/**
-		 * @return a new {@link TableConditionModel} instance
+		 * @return a new {@link TableConditions} instance
 		 * @throws IllegalArgumentException in case an excluded or configured identifier has no condition model,
 		 * or is both excluded and configured
 		 */
-		TableConditionModel<C> build();
+		TableConditions<C> build();
 	}
 }

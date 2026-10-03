@@ -37,7 +37,7 @@
  * <li>{@link is.codion.framework.model.EntitySearchModel#WILDCARD_POSTFIX}
  * <li>{@link is.codion.framework.model.EntitySearchModel#SPACE_AS_WILDCARD}
  * <li>{@link is.codion.framework.model.EntitySearchModel#CASE_SENSITIVE}
- * <li>{@link is.codion.framework.model.EntityConditionModel#NEGATION_INCLUDES_NULL}
+ * <li>{@link is.codion.framework.model.EntityConditions#NEGATION_INCLUDES_NULL}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

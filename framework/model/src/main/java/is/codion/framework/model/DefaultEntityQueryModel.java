@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
-	private final EntityConditionModel conditionModel;
+	private final EntityConditions conditions;
 	private final EntityDefinition entityDefinition;
 	private final Value<ObservableState> conditionEnabled;
 	private final State conditionRequired = State.state();
@@ -57,10 +57,10 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final Map<ForeignKey, Value<Integer>> foreignKeyReferenceDepth = new HashMap<>();
 	private final Value<Function<EntityQueryModel, List<Entity>>> dataSource = Value.nonNull(new DefaultDataSource());
 
-	DefaultEntityQueryModel(EntityConditionModel conditionModel) {
-		this.conditionModel = requireNonNull(conditionModel);
-		this.entityDefinition = conditionModel.connection().entities().definition(conditionModel.entityType());
-		this.conditionEnabled = Value.nonNull(conditionModel.enabled());
+	DefaultEntityQueryModel(EntityConditions conditions) {
+		this.conditions = requireNonNull(conditions);
+		this.entityDefinition = conditions.connection().entities().definition(conditions.entityType());
+		this.conditionEnabled = Value.nonNull(conditions.enabled());
 		this.orderBy = entityDefinition.orderBy()
 						.map(Value::nonNull)
 						.orElse(Value.nullable());
@@ -68,31 +68,31 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public EntityType entityType() {
-		return conditionModel.entityType();
+		return conditions.entityType();
 	}
 
 	@Override
 	public EntityConnection connection() {
-		return conditionModel.connection();
+		return conditions.connection();
 	}
 
 	@Override
 	public List<Entity> query() {
 		if (conditionRequired.is() && !conditionEnabled.getOrThrow().is()) {
-			conditionModel.modified().reset();
+			conditions.modified().reset();
 
 			return emptyList();
 		}
 
 		List<Entity> entities = dataSource.getOrThrow().apply(this);
-		conditionModel.modified().reset();
+		conditions.modified().reset();
 
 		return entities;
 	}
 
 	@Override
-	public EntityConditionModel condition() {
-		return conditionModel;
+	public EntityConditions conditions() {
+		return conditions;
 	}
 
 	@Override
@@ -141,8 +141,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	@Override
 	public Select select() {
 		Select.Builder builder = Select
-						.where(conditionModel.where())
-						.having(conditionModel.having())
+						.where(conditions.where())
+						.having(conditions.having())
 						.attributes(attributes.defaults.get())
 						.include(attributes.included.get())
 						.exclude(attributes.excluded.get())
@@ -160,8 +160,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		@Override
 		public void validate(Set<Attribute<?>> attributes) {
 			for (Attribute<?> attribute : attributes) {
-				if (!attribute.entityType().equals(conditionModel.entityType())) {
-					throw new IllegalArgumentException(attribute + " is not part of entity: " + conditionModel.entityType());
+				if (!attribute.entityType().equals(conditions.entityType())) {
+					throw new IllegalArgumentException(attribute + " is not part of entity: " + conditions.entityType());
 				}
 			}
 		}

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 
@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default filter table condition panel.
  * @param <C> the column identifier type
- * @see #filterTableConditionPanel(TableConditionModel, Map, FilterTableColumnModel)
+ * @see #filterTableConditionPanel(TableConditions, Map, FilterTableColumnModel)
  */
 public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
@@ -47,10 +47,10 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	private @Nullable FilterTableColumnComponentPanel<C> componentPanel;
 	private boolean initialized;
 
-	private FilterTableConditionPanel(TableConditionModel<C> tableConditionModel,
+	private FilterTableConditionPanel(TableConditions<C> conditions,
 																		Map<C, ConditionPanel<?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel) {
-		super(tableConditionModel, identifier -> Objects.toString(columnModel.get(identifier).getHeaderValue()));
+		super(conditions, identifier -> Objects.toString(columnModel.get(identifier).getHeaderValue()));
 		this.conditionPanels = unmodifiableMap(new HashMap<>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
 	}
@@ -62,7 +62,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	}
 
 	@Override
-	public Map<C, ConditionPanel<?>> panels() {
+	public Map<C, ConditionPanel<?>> get() {
 		return conditionPanels;
 	}
 
@@ -75,15 +75,15 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	/**
 	 * @param <C> the column identifier type
-	 * @param tableConditionModel the {@link TableConditionModel}
+	 * @param conditions the {@link TableConditions}
 	 * @param conditionPanels the condition panels
 	 * @param columnModel the column model
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
-	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditionModel<C> tableConditionModel,
+	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditions<C> conditions,
 																																					 Map<C, ConditionPanel<?>> conditionPanels,
 																																					 FilterTableColumnModel<C> columnModel) {
-		return new FilterTableConditionPanel<>(tableConditionModel, conditionPanels, columnModel);
+		return new FilterTableConditionPanel<>(conditions, conditionPanels, columnModel);
 	}
 
 	@Override

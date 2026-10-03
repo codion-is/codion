@@ -178,7 +178,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		private List<Operator> operators = OPERATORS;
 		private @Nullable Operator operator;
 		private @Nullable String caption;
-		private boolean negationIncludesNull = EntityConditionModel.NEGATION_INCLUDES_NULL.getOrThrow();
+		private boolean negationIncludesNull = EntityConditions.NEGATION_INCLUDES_NULL.getOrThrow();
 
 		private DefaultBuilder(ForeignKey foreignKey, EntityConnection connection) {
 			this.foreignKey = foreignKey;

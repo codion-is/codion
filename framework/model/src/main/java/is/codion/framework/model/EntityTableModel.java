@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.table.FilterTableModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
@@ -199,10 +199,10 @@ public interface EntityTableModel<E extends EntityEditModel<R>, R extends Entity
 		 * connection of the edit model. Replaces any previous configuration.
 		 * @param conditions configures the condition model builder
 		 * @return this Config instance
-		 * @see EntityConditionModel.Builder#exclude(Attribute[])
-		 * @see EntityConditionModel.Builder#condition(Column, Consumer)
+		 * @see EntityConditions.Builder#exclude(Attribute[])
+		 * @see EntityConditions.Builder#condition(Column, Consumer)
 		 */
-		Config conditions(Consumer<EntityConditionModel.Builder> conditions);
+		Config conditions(Consumer<EntityConditions.Builder> conditions);
 
 		/**
 		 * Configures the column filters, the builder received providing a filter for each filterable column,
@@ -211,7 +211,7 @@ public interface EntityTableModel<E extends EntityEditModel<R>, R extends Entity
 		 * @return this Config instance
 		 * @see FilterTableModel.Builder#filters(Consumer)
 		 */
-		Config filters(Consumer<TableConditionModel.Builder<Attribute<?>>> filters);
+		Config filters(Consumer<TableConditions.Builder<Attribute<?>>> filters);
 	}
 
 	/**

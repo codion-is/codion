@@ -34,14 +34,14 @@ import java.util.stream.Collectors;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
+final class DefaultTableConditions<C> implements TableConditions<C> {
 
 	private final Map<C, ConditionModel<?>> conditions;
 	private final ValueSet<C> persist;
 	private final ObservableState enabled;
 	private final Event<?> changed = Event.event();
 
-	DefaultTableConditionModel(Map<C, ConditionModel<?>> conditionModels) {
+	DefaultTableConditions(Map<C, ConditionModel<?>> conditionModels) {
 		this.conditions = unmodifiableMap(new HashMap<>(requireNonNull(conditionModels)));
 		this.persist = ValueSet.<C>builder()
 						.validator(new PersistValidator())

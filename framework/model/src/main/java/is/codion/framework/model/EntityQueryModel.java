@@ -84,9 +84,9 @@ public interface EntityQueryModel {
 	Select select();
 
 	/**
-	 * @return the {@link EntityConditionModel} instance used by this query model
+	 * @return the {@link EntityConditions} instance used by this query model
 	 */
-	EntityConditionModel condition();
+	EntityConditions conditions();
 
 	/**
 	 * Returns a {@link State} controlling whether this query model should query all underlying entities
@@ -136,7 +136,7 @@ public interface EntityQueryModel {
 	/**
 	 * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
 	 * This can be done by enabling the {@link EntityQueryModel#conditionRequired()} {@link State}, which prevents a refresh as long as the
-	 * {@link ObservableState} controlled via this method is disabled. The default {@link ObservableState} is simply {@link EntityConditionModel#enabled()}.
+	 * {@link ObservableState} controlled via this method is disabled. The default {@link ObservableState} is simply {@link EntityConditions#enabled()}.
 	 * Override for a more fine-grained control, such as requiring a specific column condition to be enabled.
 	 * @return the {@link Value} controlling the {@link ObservableState} specifying if enough conditions are enabled for a safe refresh
 	 * @see #conditionRequired()

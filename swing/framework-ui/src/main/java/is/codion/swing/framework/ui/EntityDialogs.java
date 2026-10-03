@@ -334,7 +334,7 @@ public final class EntityDialogs {
 
 		private DefaultEntitySelectionDialogBuilder(EntityTablePanel tablePanel) {
 			this.tablePanel = requireNonNull(tablePanel);
-			this.includeSearchButton = tablePanel.containsConditionPanel();
+			this.includeSearchButton = tablePanel.containsConditions();
 		}
 
 		@Override

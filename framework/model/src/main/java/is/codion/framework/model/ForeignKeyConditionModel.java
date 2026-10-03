@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * these models, a component based on one must be linked to the operand it edits, {@link Operands#equal()}
  * or {@link Operands#in()}. Entities of the referenced type updated or deleted are replaced in, or removed
  * from, the operands, via {@link PersistenceEvents}.
- * @see EntityConditionModel.Builder#condition(ForeignKey, java.util.function.Consumer)
+ * @see EntityConditions.Builder#condition(ForeignKey, java.util.function.Consumer)
  */
 public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity> {
 
@@ -179,7 +179,7 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 		/**
 		 * Specifies whether the negative operators include null values when translated to a query condition,
 		 * matching exactly the rows their positive counterparts do not, instead of following SQL,
-		 * only affecting a nullable foreign key, {@link EntityConditionModel#NEGATION_INCLUDES_NULL} by default.
+		 * only affecting a nullable foreign key, {@link EntityConditions#NEGATION_INCLUDES_NULL} by default.
 		 * @param negationIncludesNull true if the negative operators should include null values
 		 * @return this builder
 		 */

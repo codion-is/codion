@@ -20,7 +20,7 @@ package is.codion.swing.framework.ui.inspect;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Operands;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
@@ -65,7 +65,7 @@ public final class EntityConditionInspector implements UiInspector {
 	static Optional<Map<String, Object>> state(SwingEntityTableModel tableModel, ConditionModel<?> focused) {
 		//the condition and filter models are distinct instances per attribute, so identity locates both which
 		//system the focused field belongs to and its attribute; the field itself carries neither
-		Attribute<?> attribute = identifier(tableModel.query().condition(), focused);
+		Attribute<?> attribute = identifier(tableModel.query().conditions(), focused);
 		String type = "condition";
 		if (attribute == null) {
 			attribute = identifier(tableModel.filters(), focused);
@@ -85,7 +85,7 @@ public final class EntityConditionInspector implements UiInspector {
 		return Optional.of(state);
 	}
 
-	private static @Nullable Attribute<?> identifier(TableConditionModel<Attribute<?>> conditions, ConditionModel<?> focused) {
+	private static @Nullable Attribute<?> identifier(TableConditions<Attribute<?>> conditions, ConditionModel<?> focused) {
 		return conditions.get().entrySet().stream()
 						.filter(entry -> entry.getValue() == focused)
 						.map(Map.Entry::getKey)

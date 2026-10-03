@@ -19,7 +19,7 @@
 package is.codion.common.model.component.table;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
@@ -61,7 +61,7 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 
 	@Nullable Supplier<Collection<R>> supplier;
 	Predicate<R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
-	@Nullable Consumer<TableConditionModel.Builder<C>> filters;
+	@Nullable Consumer<TableConditions.Builder<C>> filters;
 	@Nullable Consumer<Exception> onRefreshException;
 	@Nullable Predicate<R> included;
 
@@ -79,7 +79,7 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 	}
 
 	@Override
-	public final B filters(Consumer<TableConditionModel.Builder<C>> filters) {
+	public final B filters(Consumer<TableConditions.Builder<C>> filters) {
 		this.filters = requireNonNull(filters);
 		return self();
 	}

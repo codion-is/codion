@@ -21,7 +21,7 @@ package is.codion.manual.swing.common.model.component.table;
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.component.table.FilterTableSort;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
@@ -137,7 +137,7 @@ public final class FilterTableModelDemo {
 
 	static void filter(SwingFilterTableModel<Person, String> tableModel) {
 		// tag::filters[]
-		TableConditionModel<String> filters = tableModel.filters();
+		TableConditions<String> filters = tableModel.filters();
 
 		// Filter out people under 40 years old
 		ConditionModel<Integer> ageFilter = filters.get(Person.AGE);

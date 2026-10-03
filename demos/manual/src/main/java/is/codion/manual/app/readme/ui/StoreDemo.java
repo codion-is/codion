@@ -113,7 +113,7 @@ public class StoreDemo {
 
 		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
 		addressPanel.tablePanel()
-						.condition().view().set(SIMPLE);
+						.conditions().view().set(SIMPLE);
 
 		customerModel.tableModel().items().refresh();
 

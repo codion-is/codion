@@ -30,7 +30,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.ColumnConditionModel;
-import is.codion.framework.model.EntityConditionModel;
+import is.codion.framework.model.EntityConditions;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
@@ -97,8 +97,8 @@ public final class EntityConditionComponentsTest {
 											.condition(Employee.NAME, name -> name.components(components))
 											.condition(Employee.SALARY, salary -> salary.components(components))));
 			tablePanel.table().filters().view().set(ConditionView.ADVANCED);
-			assertFalse(tablePanel.table().filters().panel(Employee.NAME).components().isEmpty());
-			assertFalse(tablePanel.table().filters().panel(Employee.SALARY).components().isEmpty());
+			assertFalse(tablePanel.table().filters().get(Employee.NAME).components().isEmpty());
+			assertFalse(tablePanel.table().filters().get(Employee.SALARY).components().isEmpty());
 		});
 	}
 
@@ -255,7 +255,7 @@ public final class EntityConditionComponentsTest {
 						.domain(new NonNullableDomain())
 						.user(UNIT_TEST_USER)
 						.build();
-		EntityConditionModel conditionModel = EntityConditionModel.builder()
+		EntityConditions conditionModel = EntityConditions.builder()
 						.entityType(NonNullable.TYPE)
 						.connection(connection)
 						.build();
@@ -326,7 +326,7 @@ public final class EntityConditionComponentsTest {
 	}
 
 	private static ForeignKeyConditionModel condition(ForeignKey foreignKey) {
-		return EntityConditionModel.builder()
+		return EntityConditions.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
 						.build()

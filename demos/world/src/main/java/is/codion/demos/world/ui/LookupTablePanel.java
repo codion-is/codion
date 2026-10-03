@@ -123,7 +123,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	@Override
 	protected void setupControls() {
 		control(CLEAR).set(Control.builder()
-						.command(this::clearTableAndCondition)
+						.command(this::clearTableAndConditions)
 						.caption("Clear")
 						.mnemonic('C')
 						.icon(ICONS.clear())
@@ -272,7 +272,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	public void importJSON(File file) throws IOException {
 		List<Entity> entities = objectMapper.deserializeEntities(
 						String.join("\n", Files.readAllLines(file.toPath())));
-		clearTableAndCondition();
+		clearTableAndConditions();
 		model().items().included().add(0, entities);
 	}
 
@@ -296,9 +296,9 @@ final class LookupTablePanel extends EntityTablePanel {
 		revalidate();
 	}
 
-	private void clearTableAndCondition() {
+	private void clearTableAndConditions() {
 		model().items().clear();
-		model().query().condition().clear();
+		model().query().conditions().clear();
 	}
 
 	private static Control createSelectAllColumnsControl(Controls toggleColumnsControls) {

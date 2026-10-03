@@ -33,8 +33,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.model.EntityConditionModel;
-import is.codion.framework.model.EntityConditionModel.AdditionalConditions;
+import is.codion.framework.model.EntityConditions;
+import is.codion.framework.model.EntityConditions.AdditionalConditions;
 import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.framework.model.EntityEditor.PersistEvents;
 import is.codion.framework.model.EntityQueryModel;
@@ -205,7 +205,7 @@ public final class FrameworkModelDemo {
 		tableModel.query().dataSource().set(query -> {
 			return query.connection().select(and(
 							Customer.EMAIL.isNotNull(),
-							query.condition().where())
+							query.conditions().where())
 			);
 		});
 		// end::customDataSource[]
@@ -217,7 +217,7 @@ public final class FrameworkModelDemo {
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Alternative approach using ConditionModel
-		ConditionModel<String> condition = tableModel.query().condition().get(Customer.EMAIL);
+		ConditionModel<String> condition = tableModel.query().conditions().get(Customer.EMAIL);
 		condition.set().isNotNull();
 		condition.locked().set(true); // disables the UI condition panel
 		// end::conditionConfiguration[]
@@ -237,24 +237,24 @@ public final class FrameworkModelDemo {
 		// end::entityQueryModel[]
 	}
 
-	void tableConditionModel(EntityConnection connection) {
-		// tag::tableConditionModel[]
+	void entityConditions(EntityConnection connection) {
+		// tag::entityConditions[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
-		EntityConditionModel condition = customerModel.tableModel().query().condition();
+		EntityConditions conditions = customerModel.tableModel().query().conditions();
 
 		// Set condition values
-		condition.get(Customer.EMAIL).set().isNotNull();
-		condition.get(Customer.COUNTRY).set().equalTo("Iceland");
+		conditions.get(Customer.EMAIL).set().isNotNull();
+		conditions.get(Customer.COUNTRY).set().equalTo("Iceland");
 
 		// The resulting query will include:
 		// WHERE email is not null AND country = 'Iceland'
-		// end::tableConditionModel[]
+		// end::entityConditions[]
 	}
 
 	void additionalWhereConditions(EntityConnection connection) {
 		// tag::additionalWhereConditions[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
-		AdditionalConditions additional = customerModel.tableModel().query().condition().additional();
+		AdditionalConditions additional = customerModel.tableModel().query().conditions().additional();
 
 		// Single additional condition
 		additional.where().set(() -> Customer.COUNTRY.equalTo("Iceland"));
@@ -332,7 +332,7 @@ public final class FrameworkModelDemo {
 		query.conditionRequired().set(true);
 
 		// Specify that a certain condition must be enabled
-		query.conditionEnabled().set(query.condition().get(Customer.SUPPORTREP_FK).enabled());
+		query.conditionEnabled().set(query.conditions().get(Customer.SUPPORTREP_FK).enabled());
 		// end::conditionRequired[]
 	}
 
@@ -475,8 +475,8 @@ public final class FrameworkModelDemo {
 											// Custom selection logic
 											if (selectedCustomers.size() > 1) {
 												// Handle multi-selection differently
-												invoiceModel.tableModel().query().condition().clear();
-												invoiceModel.tableModel().query().condition().additional().where().set(() ->
+												invoiceModel.tableModel().query().conditions().clear();
+												invoiceModel.tableModel().query().conditions().additional().where().set(() ->
 																Invoice.CUSTOMER_FK.in(selectedCustomers)
 												);
 											}

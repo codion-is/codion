@@ -41,7 +41,7 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.EntityConditionModel;
+import is.codion.framework.model.EntityConditions;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.framework.model.EntityTableModel;
@@ -565,7 +565,7 @@ public class EntityTablePanel extends JPanel {
 	 * @throws IllegalStateException in case a condition panel is not available
 	 * @see Config#includeConditions(boolean)
 	 */
-	public final TableConditionPanel<Attribute<?>> condition() {
+	public final TableConditionPanel<Attribute<?>> conditions() {
 		if (tableConditionPanel == null) {
 			throw new IllegalStateException("No condition panel is available");
 		}
@@ -575,10 +575,10 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * @return true if a condition panel is available
-	 * @see #condition()
+	 * @see #conditions()
 	 * @see Config#includeConditions(boolean)
 	 */
-	public final boolean containsConditionPanel() {
+	public final boolean containsConditions() {
 		return tableConditionPanel != null;
 	}
 
@@ -1216,7 +1216,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectConditionControl() {
-		return command(() -> condition().select(this));
+		return command(() -> conditions().select(this));
 	}
 
 	private @Nullable Controls createConditionControls() {
@@ -1248,7 +1248,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void toggleConditionView() {
-		toggleView(condition().view(), conditionPanelScrollPane);
+		toggleView(conditions().view(), conditionPanelScrollPane);
 	}
 
 	private void toggleFilterView() {
@@ -1422,7 +1422,7 @@ public class EntityTablePanel extends JPanel {
 	private Control createConditionRefreshControl() {
 		return Control.builder()
 						.command(model.items()::refresh)
-						.enabled(model.query().condition().modified())
+						.enabled(model.query().conditions().modified())
 						.icon(ICONS.refresh())
 						.build();
 	}
@@ -1456,7 +1456,7 @@ public class EntityTablePanel extends JPanel {
 			return null;
 		}
 		TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
-						.create(model.query().condition(), createConditionPanels(), table.columns());
+						.create(model.query().conditions(), createConditionPanels(), table.columns());
 		KeyEvents.builder()
 						.keyCode(VK_ENTER)
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1468,7 +1468,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Map<Attribute<?>, ConditionPanel<?>> createConditionPanels() {
-		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = ColumnConditionPanel.panels(model.query().condition(),
+		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = ColumnConditionPanel.panels(model.query().conditions(),
 						table.columns(), new EntityConditionComponents(model.entityDefinition()), configuration.conditionPanels);
 		conditionPanels.forEach(this::configureConditionPanel);
 
@@ -1491,7 +1491,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
-		model.query().condition().changed().addListener(this::onConditionChanged);
+		model.query().conditions().changed().addListener(this::onConditionChanged);
 		model.editor().events().persisted().addListener(table::repaint);
 	}
 
@@ -2283,7 +2283,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * Specifies the factory creating the condition panel, {@link EntityTablePanel#condition()},
+		 * Specifies the factory creating the condition panel, {@link EntityTablePanel#conditions()},
 		 * {@link FilterTableConditionPanel#filterTableConditionPanel} by default.
 		 * @param conditions the factory creating the condition panel
 		 * @return this Config instance
@@ -2301,7 +2301,7 @@ public class EntityTablePanel extends JPanel {
 		 * @param conditions configures the condition panels
 		 * @return this Config instance
 		 * @see ColumnConditionPanel#panels
-		 * @see EntityTablePanel#condition()
+		 * @see EntityTablePanel#conditions()
 		 */
 		public Config conditions(Consumer<TableConditionPanel.Panels<Attribute<?>>> conditions) {
 			this.conditionPanels = requireNonNull(conditions);
@@ -2823,14 +2823,14 @@ public class EntityTablePanel extends JPanel {
 
 		private final TableCellRenderer wrappedRenderer;
 		private final FilterTableColumn<Attribute<?>> tableColumn;
-		private final EntityConditionModel condition;
+		private final EntityConditions conditions;
 
 		private boolean conditionIndicator;
 
 		private EntityTableHeaderRenderer(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
 			this.wrappedRenderer = DEFAULT_FACTORY.create(attribute, table);
 			this.tableColumn = table.columns().get(attribute);
-			this.condition = ((SwingEntityTableModel) table.model()).query().condition();
+			this.conditions = ((SwingEntityTableModel) table.model()).query().conditions();
 		}
 
 		@Override
@@ -2839,7 +2839,7 @@ public class EntityTablePanel extends JPanel {
 			Component component = wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			boolean useBoldFont = false;
 			if (conditionIndicator) {
-				ConditionModel<?> conditionModel = condition.get().get(tableColumn.identifier());
+				ConditionModel<?> conditionModel = conditions.get().get(tableColumn.identifier());
 				if (conditionModel != null) {
 					useBoldFont = conditionModel.enabled().is();
 				}

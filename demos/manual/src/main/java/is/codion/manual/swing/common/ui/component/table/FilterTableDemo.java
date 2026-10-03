@@ -120,7 +120,7 @@ final class FilterTableDemo {
 						.build();
 
 		// The filter panel of a single column
-		ConditionPanel<?> ageFilterPanel = filters.panel(Person.AGE);
+		ConditionPanel<?> ageFilterPanel = filters.get(Person.AGE);
 		// end::filterView[]
 	}
 

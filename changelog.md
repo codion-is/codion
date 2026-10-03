@@ -22,6 +22,7 @@ Codion Change Log
 - ConditionModel.Builder, an enum condition now defaults to the EQUAL, NOT_EQUAL, IN and NOT_IN operators, an enum comparing by declaration order.
 - FilterComboBoxModel.Builder.includeNull() renamed nullable(), FilterComboBoxModel.ComboBoxItems.includesNull() renamed nullable().
 - FilePreferences and JsonPreferences, putting a value for a key naming a child node now throws IllegalStateException instead of replacing the node and its subtree, get() and remove() now ignoring child nodes, where get() returned the node as JSON and remove() removed it.
+- TableConditionModel renamed TableConditions, tableConditionModel() renamed tableConditions().
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.
@@ -92,6 +93,7 @@ Codion Change Log
 - EntityConditionComponents.supports() now adds Entity to the ConditionComponents default instead of duplicating the supported types.
 - EntityTablePanel.Config.conditionPanel() renamed conditions().
 - EntityConditionComponents, the item and enum based column operand combo boxes now include a null item for clearing the operand, a non-nullable column included.
+- EntityTablePanel.condition() renamed conditions().
 ### is.codion.framework.domain.db
 - SchemaDomain.DefaultSchemaSettings now uses Locale.ROOT when lowercasing audit column names.
 ### is.codion.framework.model
@@ -101,6 +103,7 @@ Codion Change Log
 - EntityTableModel.Config added, for configuring the condition model and the filters of a table model when instantiated.
 - AbstractEntityTableModel, the constructor taking a query model and entityQueryModel() replaced by a constructor taking the filter model builder and a Config, the query model built from the edit model, so an entity type mismatch can no longer occur.
 - EntityComboBoxModel.Builder.includeNull() renamed nullable().
+- EntityConditionModel renamed EntityConditions, EntityQueryModel.condition() renamed conditions().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel(SwingEntityEditModel, Consumer<Config>) added, SwingEntityTableModel(EntityConditionModel) and SwingEntityTableModel(SwingEntityEditModel, EntityConditionModel) removed, the condition model now configured via the Config.
 ### is.codion.plugin.flatlaf.intellij.themes

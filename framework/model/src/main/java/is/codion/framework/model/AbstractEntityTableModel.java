@@ -21,7 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.model.component.table.FilterTableModel;
 import is.codion.common.model.component.table.FilterTableSort;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
@@ -199,7 +199,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	}
 
 	@Override
-	public final TableConditionModel<Attribute<?>> filters() {
+	public final TableConditions<Attribute<?>> filters() {
 		return filterModel.filters();
 	}
 
@@ -382,8 +382,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		return false;
 	}
 
-	private static EntityQueryModel queryModel(EntityEditModel<?> editModel, Consumer<EntityConditionModel.Builder> conditions) {
-		EntityConditionModel.Builder builder = EntityConditionModel.builder()
+	private static EntityQueryModel queryModel(EntityEditModel<?> editModel, Consumer<EntityConditions.Builder> conditions) {
+		EntityConditions.Builder builder = EntityConditions.builder()
 						.entityType(editModel.entityType())
 						.connection(editModel.connection());
 		conditions.accept(builder);
@@ -393,21 +393,21 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 	private static final class DefaultConfig implements Config {
 
-		private Consumer<EntityConditionModel.Builder> conditions = builder -> {};
-		private Consumer<TableConditionModel.Builder<Attribute<?>>> filters = builder -> {};
+		private Consumer<EntityConditions.Builder> conditions = builder -> {};
+		private Consumer<TableConditions.Builder<Attribute<?>>> filters = builder -> {};
 
 		private DefaultConfig(Consumer<Config> config) {
 			requireNonNull(config).accept(this);
 		}
 
 		@Override
-		public Config conditions(Consumer<EntityConditionModel.Builder> conditions) {
+		public Config conditions(Consumer<EntityConditions.Builder> conditions) {
 			this.conditions = requireNonNull(conditions);
 			return this;
 		}
 
 		@Override
-		public Config filters(Consumer<TableConditionModel.Builder<Attribute<?>>> filters) {
+		public Config filters(Consumer<TableConditions.Builder<Attribute<?>>> filters) {
 			this.filters = requireNonNull(filters);
 			return this;
 		}

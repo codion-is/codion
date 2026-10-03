@@ -101,7 +101,7 @@ These are established across the codebase. New code follows them, and code that 
 - **Builder methods take parameters,** `enabled(true)` rather than `enable()`, which keeps them uniform and mechanically generatable.
 - **`Abstract*` names a public extension base.** Implementations are package-private wherever possible.
 - **Composite input components are `*Input`, leaf components `*Field`,** for example `TemporalInput` wrapping a `TemporalField`.
-- **Configure rather than extend** where a customization hook is needed. For example, `EntityConditionModel.Builder.condition(attribute, consumer)` hands out a builder initialized with the defaults.
+- **Configure rather than extend** where a customization hook is needed. For example, `EntityConditions.Builder.condition(attribute, consumer)` hands out a builder initialized with the defaults.
 - **Packages are strictly acyclic.** A method belongs with the type at the level of what it returns: a factory returning a higher-level type is a static method there, not an instance method on the lower type.
 - **Nullability:** every module is `@NullMarked` (JSpecify), with `@Nullable` exactly where null is allowed.
 - **Configuration properties** are `PropertyValue` constants on the owning type, listed in the package javadoc.
@@ -159,6 +159,6 @@ If you spot any of these while working with Codion, **speak up immediately**:
 5. **Confusing method or parameter names**
 6. **Behaviour that would be awkward to keep forever** - operator semantics, null handling, defaults and customization hooks are API too
 
-Recent examples: `valueClass()`/`columnClass()` → `type()`, `codion.configurationFile` → `codion.config.file`, `EntityConditions` subclassing → `EntityConditionModel.Builder.condition()`, and `NOT_BETWEEN` made the exact complement of `BETWEEN`, null values included.
+Recent examples: `valueClass()`/`columnClass()` → `type()`, `codion.configurationFile` → `codion.config.file`, subclassing the condition model factory → `EntityConditions.Builder.condition()`, and `NOT_BETWEEN` made the exact complement of `BETWEEN`, null values included.
 
 Remember: Once the API freezes, these names are forever. Help make Codion something we'll all be happy using and maintaining for the next 20 years!

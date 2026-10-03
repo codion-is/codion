@@ -68,7 +68,7 @@ final class EntityTableModelPreferences {
 		requireNonNull(preferences);
 		requireNonNull(tableModel);
 		try {
-			putOrRemove(preferences, CONDITIONS, createConditionPreferences(tableModel.query().condition().get()));
+			putOrRemove(preferences, CONDITIONS, createConditionPreferences(tableModel.query().conditions().get()));
 		}
 		catch (Exception e) {
 			LOG.error("Error while storing condition preferences", e);
@@ -99,7 +99,7 @@ final class EntityTableModelPreferences {
 		try {
 			JSONObject conditions = new JSONObject(preferences.get(CONDITIONS, EMPTY_JSON_OBJECT));
 			if (conditions.length() > 0) {
-				restoreConditionPreferences(conditions, tableModel.query().condition().get());
+				restoreConditionPreferences(conditions, tableModel.query().conditions().get());
 			}
 		}
 		catch (Exception e) {

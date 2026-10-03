@@ -64,7 +64,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 
 	private void configureCapitalConditionModel() {
 		ForeignKeyConditionModel capitalCondition =
-						query().condition().get(Country.CAPITAL_FK);
+						query().conditions().get(Country.CAPITAL_FK);
 		capitalCondition.models().condition().set(new CapitalCondition());
 	}
 

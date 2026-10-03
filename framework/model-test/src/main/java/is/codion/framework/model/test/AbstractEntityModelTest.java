@@ -92,7 +92,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			//the selection holds the updated entity, whose primary key differs from the previous one,
 			//so it notifies, carrying the detail's foreign key condition along with it
 			assertEquals(singleton(operations), employeeModel.tableModel().query()
-							.condition().get(Employee.DEPARTMENT_FK).operands().in().get());
+							.conditions().get(Employee.DEPARTMENT_FK).operands().in().get());
 		}
 
 		deptTableModel.items().included().predicate().set(item ->
@@ -242,7 +242,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 						.foreignKey(Employee.DEPARTMENT_FK)
 						.build();
 		assertFalse(employeeModel.tableModel().query().conditionRequired().is());
-		assertFalse(employeeModel.tableModel().query().condition().persist().contains(Employee.DEPARTMENT_FK));
+		assertFalse(employeeModel.tableModel().query().conditions().persist().contains(Employee.DEPARTMENT_FK));
 	}
 
 	@Test
@@ -270,7 +270,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 						.active(true)
 						.build());
 		assertEquals(new HashSet<>(departmentModel.tableModel().selection().items().get()),
-						employeeModel.tableModel().query().condition().get(Employee.DEPARTMENT_FK).operands().in().get());
+						employeeModel.tableModel().query().conditions().get(Employee.DEPARTMENT_FK).operands().in().get());
 	}
 
 	@Test
@@ -295,7 +295,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		connection.startTransaction();
 		try {
 			ConditionModel<Entity> deptCondition = employeeModel.tableModel().query()
-							.condition()
+							.conditions()
 							.get(Employee.DEPARTMENT_FK);
 
 			departmentModel.editor().value(Department.ID).set(-10);
@@ -324,7 +324,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		connection.startTransaction();
 		try {
 			ConditionModel<Entity> deptCondition = employeeModel.tableModel().query()
-							.condition()
+							.conditions()
 							.get(Employee.DEPARTMENT_FK);
 
 			deptCondition.clear();
@@ -488,7 +488,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 						.setValueOnInsert(false)
 						.build());
 		ConditionModel<Entity> deptCondition = employeeModel.tableModel().query()
-						.condition()
+						.conditions()
 						.get(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();
@@ -511,7 +511,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 						.setValueOnInsert(false)
 						.build());
 		deptCondition = employeeModel.tableModel().query()
-						.condition()
+						.conditions()
 						.get(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();
@@ -577,7 +577,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().index().set(0);
 		Entity other = departmentModel.tableModel().items().included().get(1);
-		ConditionModel<Entity> condition = employeeModel.tableModel().query().condition().get(Employee.DEPARTMENT_FK);
+		ConditionModel<Entity> condition = employeeModel.tableModel().query().conditions().get(Employee.DEPARTMENT_FK);
 		condition.set().equalTo(other);
 		AtomicInteger detailRefreshes = new AtomicInteger();
 		employeeModel.tableModel().items().refresher().result().addListener(detailRefreshes::incrementAndGet);
@@ -599,7 +599,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().index().set(0);
 		Entity other = departmentModel.tableModel().items().included().get(1);
-		ConditionModel<Entity> condition = employeeModel.tableModel().query().condition().get(Employee.DEPARTMENT_FK);
+		ConditionModel<Entity> condition = employeeModel.tableModel().query().conditions().get(Employee.DEPARTMENT_FK);
 		condition.set().equalTo(other);
 		AtomicInteger detailRefreshes = new AtomicInteger();
 		employeeModel.tableModel().items().refresher().result().addListener(detailRefreshes::incrementAndGet);

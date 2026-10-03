@@ -61,7 +61,7 @@ public final class DefaultEntityTableModelTest extends
 						.filters(filters -> filters
 										.exclude(Employee.SALARY)
 										.condition(Employee.NAME, name -> name.operator(Operator.NOT_EQUAL))));
-		assertThrows(IllegalArgumentException.class, () -> tableModel.query().condition().get(Employee.COMMISSION));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.query().conditions().get(Employee.COMMISSION));
 		assertThrows(IllegalArgumentException.class, () -> tableModel.filters().get(Employee.SALARY));
 		assertEquals(Operator.NOT_EQUAL, tableModel.filters().get(Employee.NAME).operator().get());
 		// the items provided by the query model, the filters applied

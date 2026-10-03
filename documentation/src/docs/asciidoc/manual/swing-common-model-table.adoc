@@ -8,20 +8,20 @@
 -------------------------------------------
 
 interface FilterTableModel {
-    +TableConditionModel filters()
-    +TableSelection selection()
-    +FilterTableSortModel sort()
+    +TableConditions filters()
+    +MultiSelection selection()
+    +FilterTableSort sort()
 }
 
-interface TableConditionModel {}
+interface TableConditions {}
 
-interface FilterTableSelectionModel {}
+interface MultiSelection {}
 
-interface FilterTableSortModel {}
+interface FilterTableSort {}
 
-FilterTableModel --o TableConditionModel
-FilterTableModel --o TableSelection
-FilterTableModel --o FilterTableSortModel
+FilterTableModel --o TableConditions
+FilterTableModel --o MultiSelection
+FilterTableModel --o FilterTableSort
 -------------------------------------------
 
 The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/SwingFilterTableModel.html[SwingFilterTableModel] is a table model central to the framework.

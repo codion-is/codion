@@ -26,7 +26,7 @@ import is.codion.common.reactive.value.ValueList;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntityConditionModel;
+import is.codion.framework.model.EntityConditions;
 import is.codion.manual.app.store.domain.Store.Customer;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
@@ -72,8 +72,8 @@ public final class DesignAndStyleDemo {
 										.border(createTitledBorder("Date"))
 										.build();
 
-		EntityConditionModel condition =
-						EntityConditionModel.builder()
+		EntityConditions conditions =
+						EntityConditions.builder()
 										.entityType(Customer.TYPE)
 										.connection(connection)
 										.build();
