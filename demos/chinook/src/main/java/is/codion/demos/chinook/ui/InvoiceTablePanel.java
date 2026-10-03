@@ -55,7 +55,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 						// see InvoiceLineEditModel, so we don't want it to be editable via the popup menu.
 						.editable(attributes -> attributes.remove(Invoice.TOTAL))
 						// The factory providing our custom condition panel.
-						.conditionPanel(new InvoiceConditionPanelFactory(tableModel))
+						.conditions(new InvoiceConditionPanelFactory(tableModel))
 						// Start with the SIMPLE condition panel view.
 						.conditionView(SIMPLE));
 	}
