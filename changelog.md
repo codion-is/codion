@@ -83,6 +83,8 @@ Codion Change Log
 - EntityTablePanel.Config.conditionComponents() and filterComponents() replaced by conditions() and filters(), for excluding and configuring the condition and filter panels, the configuration validated when the panel is instantiated.
 - EntityTablePanel, each condition panel is now configured as it is created, instead of through the condition panel factory, where a custom factory could leave panels unconfigured.
 - EntityConditionComponents.supports() now adds Entity to the ConditionComponents default instead of duplicating the supported types.
+### is.codion.framework.domain.db
+- SchemaDomain.DefaultSchemaSettings now uses Locale.ROOT when lowercasing audit column names.
 ### is.codion.framework.model
 - EntityEditor, setting a value the entity adjusts, such as a trimmed string, is now judged by the value the entity ends up with, where a change went unnoticed, the modified state not updated, and an edit event announced an unadjusted value without anything changing.
 - EntityTableModel, derived attributes now have filters again, lost when DerivedAttributeDefinition stopped extending ValueAttributeDefinition.
