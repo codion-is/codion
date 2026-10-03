@@ -264,11 +264,11 @@ public final class DomainGeneratorModel {
 		return new PopulateTask();
 	}
 
-	public void setSchemaSettings(SchemaSettings schemaSettings) {
+	public void schemaSettings(SchemaSettings schemaSettings) {
 		schemaTableModel.selection().item().optional().ifPresent(schema -> {
-			schema.setSchemaSettings(schemaSettings);
+			schema.schemaSettings(schemaSettings);
 			writeSchemaSettings(schema.name(), schemaSettings);
-			schema.setDomain(schemaDomain(schema));
+			schema.domain(schemaDomain(schema));
 			schemaSelectionChanged();
 		});
 	}
@@ -456,7 +456,7 @@ public final class DomainGeneratorModel {
 			schemaTableModel.selection().items().get().forEach(schema -> {
 				if (!cancelled.is()) {
 					progress.publish(schema.name());
-					schema.setDomain(schemaDomain(schema));
+					schema.domain(schemaDomain(schema));
 					progress.report(counter.incrementAndGet());
 				}
 			});

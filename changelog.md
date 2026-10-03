@@ -100,6 +100,7 @@ Codion Change Log
 - DomainSource, identity primary keys and audit columns occurring in more than one entity are now defined via shared column templates, DomainSource.Builder.auditColumnNames() added.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel now passes the audit column names to DomainSource, for their column templates.
+- DomainGeneratorModel and SchemaRow.setSchemaSettings() renamed schemaSettings().
 ### is.codion.tools.generator.cli
 - DomainGeneratorCli, --audit-columns and --hide-audit-columns options added.
 

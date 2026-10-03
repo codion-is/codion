@@ -568,7 +568,7 @@ public final class DomainGeneratorPanel extends JPanel {
 							.component(settingsPanel)
 							.owner(schemaTable)
 							.title("Schema Settings")
-							.onOk(() -> model.setSchemaSettings(settingsPanel.settings()))
+							.onOk(() -> model.schemaSettings(settingsPanel.settings()))
 							.show();
 		});
 	}
