@@ -18,11 +18,18 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.domain.DomainModel;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.model.ColumnConditionModel;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.multi.MultiInput;
@@ -35,6 +42,7 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -44,7 +52,10 @@ import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+import static is.codion.common.utilities.item.Item.item;
+import static is.codion.framework.domain.DomainType.domainType;
 import static java.awt.event.KeyEvent.*;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -235,6 +246,83 @@ public final class EntityConditionComponentsTest {
 		}
 
 		return event.isConsumed();
+	}
+
+	@Test
+	void itemAndEnumComboBoxesIncludeNull() throws Exception {
+		// non-nullable columns, the null item clearing the operand
+		EntityConnection connection = LocalEntityConnection.builder()
+						.domain(new NonNullableDomain())
+						.user(UNIT_TEST_USER)
+						.build();
+		EntityConditionModel conditionModel = EntityConditionModel.builder()
+						.entityType(NonNullable.TYPE)
+						.connection(connection)
+						.build();
+		EntityConditionComponents nonNullableComponents =
+						new EntityConditionComponents(connection.entities().definition(NonNullable.TYPE));
+		onEventDispatchThread(() -> {
+			ConditionModel<String> code = conditionModel.get(NonNullable.CODE);
+			// the column condition path, not the defaults
+			assertInstanceOf(ColumnConditionModel.class, code);
+			JComboBox<Item<String>> items = (JComboBox<Item<String>>) nonNullableComponents.equal(code);
+			assertEquals(3, items.getItemCount());
+			assertNull(items.getItemAt(0).get());
+			items.setSelectedIndex(1);
+			assertEquals("A", code.operands().equal().get());
+			assertTrue(code.enabled().is());
+			items.setSelectedIndex(0);
+			assertNull(code.operands().equal().get());
+			assertFalse(code.enabled().is());
+			assertNull(((JComboBox<Item<String>>) ((MultiInput<?, ?>) nonNullableComponents.in(code)).component())
+							.getItemAt(0).get());
+
+			ConditionModel<Size> size = conditionModel.get(NonNullable.SIZE);
+			assertInstanceOf(ColumnConditionModel.class, size);
+			JComboBox<Size> sizes = (JComboBox<Size>) nonNullableComponents.equal(size);
+			assertEquals(3, sizes.getItemCount());
+			assertNull(sizes.getItemAt(0));
+			sizes.setSelectedItem(Size.LARGE);
+			assertEquals(Size.LARGE, size.operands().equal().get());
+			sizes.setSelectedItem(null);
+			assertNull(size.operands().equal().get());
+			assertFalse(size.enabled().is());
+			assertNull(((JComboBox<Size>) ((MultiInput<?, ?>) nonNullableComponents.in(size)).component()).getItemAt(0));
+		});
+	}
+
+	private static final class NonNullableDomain extends DomainModel {
+
+		private static final DomainType DOMAIN = domainType("non_nullable_domain");
+
+		private NonNullableDomain() {
+			super(DOMAIN);
+			add(NonNullable.TYPE.as()
+							.attributes(
+											NonNullable.ID.as()
+															.primaryKey(),
+											NonNullable.CODE.as()
+															.column()
+															.items(asList(item("A"), item("B")))
+															.nullable(false)
+															.caption("Code"),
+											NonNullable.SIZE.as()
+															.column()
+															.nullable(false)
+															.caption("Size"))
+							.build());
+		}
+	}
+
+	interface NonNullable {
+		EntityType TYPE = NonNullableDomain.DOMAIN.entityType("non_nullable");
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<String> CODE = TYPE.stringColumn("code");
+		Column<Size> SIZE = TYPE.column("size", Size.class);
+	}
+
+	enum Size {
+		SMALL, LARGE
 	}
 
 	private static ForeignKeyConditionModel condition(ForeignKey foreignKey) {

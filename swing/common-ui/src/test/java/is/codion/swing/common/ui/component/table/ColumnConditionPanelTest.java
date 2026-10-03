@@ -19,9 +19,11 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.swing.common.ui.component.multi.MultiInput;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComboBox;
 import java.awt.Component;
 import java.util.Objects;
 import java.util.Set;
@@ -79,6 +81,36 @@ public class ColumnConditionPanelTest {
 		//no name provided, the components keep their default null name
 		assertTrue(panel.operands().equal().isPresent());
 		assertNull(panel.operands().equal().get().getName());
+	}
+
+	@Test
+	void enumOperands() {
+		ConditionModel<Ordered> model = ConditionModel.builder()
+						.type(Ordered.class)
+						.build();
+		assertTrue(new ColumnConditionPanel.ConditionComponents() {}.supports(Ordered.class));
+		ColumnConditionPanel<Ordered> panel = ColumnConditionPanel.builder()
+						.model(model)
+						.build();
+		// a combo box, with a null item for clearing the operand
+		JComboBox<Ordered> equal = (JComboBox<Ordered>) panel.operands().equal().orElseThrow();
+		assertEquals(4, equal.getItemCount());
+		assertNull(equal.getItemAt(0));
+		assertEquals(Ordered.ONE, equal.getItemAt(1));
+		equal.setSelectedItem(Ordered.TWO);
+		assertEquals(Ordered.TWO, model.operands().equal().get());
+		assertTrue(model.enabled().is());
+		equal.setSelectedItem(null);
+		assertNull(model.operands().equal().get());
+		assertFalse(model.enabled().is());
+		assertInstanceOf(MultiInput.class, panel.operands().in().orElseThrow());
+		// no range operators
+		assertFalse(panel.operands().upper().isPresent());
+		assertFalse(panel.operands().lower().isPresent());
+	}
+
+	private enum Ordered {
+		ONE, TWO, THREE
 	}
 
 	@Test

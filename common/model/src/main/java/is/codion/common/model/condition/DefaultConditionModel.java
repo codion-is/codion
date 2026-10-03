@@ -607,6 +607,10 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		static final ValueTypeStep VALUE_CLASS = new DefaultValueTypeStep();
 
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
+		// An enum compares by declaration order, which means nothing to a user and generally does not match
+		// the order of its database representation, a filter and a query condition then disagreeing
+		private static final List<Operator> ENUM_OPERATORS =
+						asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);
 
 		private final Class<T> valueType;
 
@@ -626,7 +630,18 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		private DefaultBuilder(Class<T> valueType) {
 			this.valueType = requireNonNull(valueType);
-			this.operators = valueType.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
+			this.operators = defaultOperators(valueType);
+		}
+
+		private static List<Operator> defaultOperators(Class<?> valueType) {
+			if (valueType.equals(Boolean.class)) {
+				return singletonList(Operator.EQUAL);
+			}
+			if (valueType.isEnum()) {
+				return ENUM_OPERATORS;
+			}
+
+			return DEFAULT_OPERATORS;
 		}
 
 		@Override

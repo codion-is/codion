@@ -433,6 +433,9 @@ public interface ConditionModel<T> {
 		}
 
 		/**
+		 * Defaults to all operators, except for {@link Boolean}, which defaults to {@link Operator#EQUAL},
+		 * and enums, which default to {@link Operator#EQUAL}, {@link Operator#NOT_EQUAL}, {@link Operator#IN}
+		 * and {@link Operator#NOT_IN}, an enum comparing by declaration order.
 		 * @param operators the conditional operators available to this condition model
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case of an empty list

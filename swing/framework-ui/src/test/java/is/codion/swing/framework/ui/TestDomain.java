@@ -187,7 +187,8 @@ public final class TestDomain extends DomainModel {
 														})
 														.caption(Detail.INT_DERIVED.name()),
 										Detail.ENUM_TYPE.as()
-														.column())
+														.column()
+														.caption(Detail.ENUM_TYPE.name()))
 						.selectTable(DETAIL_SELECT_TABLE_NAME)
 						.orderBy(ascending(Detail.STRING))
 						.smallDataset(true)

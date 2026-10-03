@@ -511,7 +511,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	/**
-	 * Provides equal, in, upper and lower bound input components for a {@link ColumnConditionPanel}
+	 * Provides equal, in, upper and lower bound input components for a {@link ColumnConditionPanel}.
+	 * <p>By default, enum operands are selected with a combo box, including a null item for clearing the operand.
 	 */
 	public interface ConditionComponents {
 
@@ -520,7 +521,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * @return true if the type is supported
 		 */
 		default boolean supports(Class<?> type) {
-			return SUPPORTED_COMPONENT_TYPES.contains(requireNonNull(type));
+			return SUPPORTED_COMPONENT_TYPES.contains(requireNonNull(type)) || type.isEnum();
 		}
 
 		/**
@@ -1051,6 +1052,13 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 		else if (type.equals(Character.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) characterField();
+		}
+		else if (type.isEnum()) {
+			// the null item clears the operand, as clearing a text field does
+			return comboBox().model(SwingFilterComboBoxModel.builder()
+							.items(asList(type.getEnumConstants()))
+							.includeNull(true)
+							.build());
 		}
 
 		throw new IllegalArgumentException("Unsupported type: " + type);

@@ -19,6 +19,7 @@ Codion Change Log
 - FilterTableModel.Builder.filters(Map) replaced by filters(Consumer), for excluding and configuring the column filters instead of replacing them, TableConditionModel.Builder added.
 - FilterTableModel.TableColumns.filter() added, providing the filter for a column initialized with its defaults, its type, either String or the column type, validated when the table model is built.
 - FilterTableModel.Builder, primitive column types now rejected, such a column getting no default filter and sorted by its string representation.
+- ConditionModel.Builder, an enum condition now defaults to the EQUAL, NOT_EQUAL, IN and NOT_IN operators, an enum comparing by declaration order.
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.
@@ -76,6 +77,7 @@ Codion Change Log
 - ControlPanelBuilder.ControlsStep removed, ToolBarBuilder and ButtonPanelBuilder now take controls and components in the order added, via action(), control(), controls(), separator() and add(), ToolBarBuilder.glue() added.
 - ControlPanelBuilder.button(), toggleButton(), checkBox() and radioButton() renamed buttons(), toggleButtons(), checkBoxes() and radioButtons().
 - FilterTable.Builder.filterPanel() renamed filters().
+- ColumnConditionPanel.ConditionComponents now supports enums, selected with a combo box, so enum columns get condition and filter panels.
 ### is.codion.swing.framework.ui
 - EntityTablePanel and EntitySearchField, the limit indicator and the search result list now respond to a double-click with the left mouse button only.
 - EntityTableCellRenderers, columns with an enabled condition are now shaded as the filtered ones, lighter in a dark look and feel instead of darker.
@@ -87,6 +89,7 @@ Codion Change Log
 - EntityTablePanel, each condition panel is now configured as it is created, instead of through the condition panel factory, where a custom factory could leave panels unconfigured.
 - EntityConditionComponents.supports() now adds Entity to the ConditionComponents default instead of duplicating the supported types.
 - EntityTablePanel.Config.conditionPanel() renamed conditions().
+- EntityConditionComponents, the item and enum based column operand combo boxes now include a null item for clearing the operand, a non-nullable column included.
 ### is.codion.framework.domain.db
 - SchemaDomain.DefaultSchemaSettings now uses Locale.ROOT when lowercasing audit column names.
 ### is.codion.framework.model
