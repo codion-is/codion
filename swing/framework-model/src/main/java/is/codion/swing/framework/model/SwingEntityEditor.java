@@ -145,7 +145,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 			return SwingFilterComboBoxModel.builder()
 							.items(() -> connection.select(column))
 							.nullItem(nullable ? ComponentModels.createNullItem(column) : null)
-							.includeNull(nullable)
+							.nullable(nullable)
 							.build();
 		}
 	}

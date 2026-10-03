@@ -1057,7 +1057,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			// the null item clears the operand, as clearing a text field does
 			return comboBox().model(SwingFilterComboBoxModel.builder()
 							.items(asList(type.getEnumConstants()))
-							.includeNull(true)
+							.nullable(true)
 							.build());
 		}
 

@@ -140,7 +140,7 @@ public class EntityConditionComponents implements ConditionComponents {
 		if (column.type().isEnum()) {
 			return inputComponents.comboBox(column, SwingFilterComboBoxModel.builder()
 							.items(asList(column.type().get().getEnumConstants()))
-							.includeNull(true)
+							.nullable(true)
 							.build());
 		}
 

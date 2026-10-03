@@ -50,7 +50,7 @@ public final class DefaultSwingEntityComboBoxModelTest {
 		SwingEntityComboBoxModel model = SwingEntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
-						.includeNull(true)
+						.nullable(true)
 						.build();
 		model.items().refresh();
 		// getSize/getElementAt expose the null item + the entities, the ListModel surface a JComboBox needs

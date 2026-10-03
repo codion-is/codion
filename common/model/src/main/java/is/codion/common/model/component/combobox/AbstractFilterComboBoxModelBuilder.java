@@ -50,7 +50,7 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	Function<Object, T> translator = (Function<Object, T>) DefaultFilterComboBoxModel.DEFAULT_SELECTED_ITEM_TRANSLATOR;
 	@Nullable Consumer<Exception> onRefreshException;
 	boolean filterSelected;
-	boolean includeNull;
+	boolean nullable;
 	@Nullable T nullItem;
 	@Nullable T selectItem;
 	boolean refresh = false;
@@ -84,9 +84,9 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	}
 
 	@Override
-	public final B includeNull(boolean includeNull) {
-		this.includeNull = includeNull;
-		if (!includeNull) {
+	public final B nullable(boolean nullable) {
+		this.nullable = nullable;
+		if (!nullable) {
 			this.nullItem = null;
 		}
 		return self();
@@ -95,7 +95,7 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	@Override
 	public final B nullItem(@Nullable T nullItem) {
 		this.nullItem = nullItem;
-		return includeNull(nullItem != null);
+		return nullable(nullItem != null);
 	}
 
 	@Override

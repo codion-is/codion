@@ -701,7 +701,7 @@ public final class EntityComponents {
 	private static <T> SwingFilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
 		return SwingFilterComboBoxModel.builder()
 						.items(asList(attribute.type().get().getEnumConstants()))
-						.includeNull(nullable)
+						.nullable(nullable)
 						.build();
 	}
 

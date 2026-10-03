@@ -148,7 +148,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		return EntityComboBoxModel.builder()
 						.entityType(requireNonNull(foreignKey).referencedType())
 						.connection(requireNonNull(connection))
-						.includeNull(true)
+						.nullable(true)
 						.build();
 	}
 
