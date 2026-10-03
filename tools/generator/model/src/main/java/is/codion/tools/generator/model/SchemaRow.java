@@ -21,6 +21,8 @@ package is.codion.tools.generator.model;
 import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -34,7 +36,7 @@ public final class SchemaRow {
 	private final String schema;
 
 	private SchemaSettings schemaSettings;
-	private SchemaDomain domainModel;
+	private @Nullable SchemaDomain domainModel;
 
 	SchemaRow(SchemaSettings schemaSettings) {
 		this(null, "NO_SCHEMA", schemaSettings);
@@ -66,7 +68,7 @@ public final class SchemaRow {
 		return schemaSettings;
 	}
 
-	public void setSchemaSettings(SchemaSettings schemaSettings) {
+	void schemaSettings(SchemaSettings schemaSettings) {
 		this.schemaSettings = requireNonNull(schemaSettings);
 	}
 
@@ -74,7 +76,7 @@ public final class SchemaRow {
 		return Optional.ofNullable(domainModel);
 	}
 
-	void setDomain(SchemaDomain domain) {
+	void domain(SchemaDomain domain) {
 		this.domainModel = domain;
 	}
 }
