@@ -21,11 +21,14 @@ package is.codion.swing.framework.ui;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.ColumnConditionModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel.Models.Operand;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -38,12 +41,15 @@ import javax.swing.JComponent;
 import static is.codion.swing.common.ui.component.Components.multiInput;
 import static is.codion.swing.framework.model.component.SwingEntityComboBoxModel.model;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A default component factory implementation for attributes.
  * <p>A foreign key operand component is a combo box when the referenced entity is based on a small dataset,
  * a search field otherwise, based on the models provided by {@link ForeignKeyConditionModel#models()}.
+ * <p>An item or enum based column operand component is a combo box including a null item, for clearing the operand,
+ * whether or not the column is nullable.
  * <p>Condition models other than {@link ColumnConditionModel} and {@link ForeignKeyConditionModel}, such as the
  * table filters, get the {@link ConditionComponents} defaults.
  * @see EntityDefinition#smallDataset()
@@ -75,7 +81,7 @@ public class EntityConditionComponents implements ConditionComponents {
 			return ConditionComponents.super.equal(conditionModel);
 		}
 
-		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
+		return component(((ColumnConditionModel<T>) conditionModel).attribute())
 						.link(conditionModel.operands().equal())
 						.build();
 	}
@@ -89,7 +95,7 @@ public class EntityConditionComponents implements ConditionComponents {
 			return ConditionComponents.super.lower(conditionModel);
 		}
 
-		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
+		return component(((ColumnConditionModel<T>) conditionModel).attribute())
 						.link(conditionModel.operands().lower())
 						.build();
 	}
@@ -103,7 +109,7 @@ public class EntityConditionComponents implements ConditionComponents {
 			return ConditionComponents.super.upper(conditionModel);
 		}
 
-		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
+		return component(((ColumnConditionModel<T>) conditionModel).attribute())
 						.link(conditionModel.operands().upper())
 						.build();
 	}
@@ -118,11 +124,27 @@ public class EntityConditionComponents implements ConditionComponents {
 		}
 
 		return multiInput()
-						.component(inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute()).buildValue())
+						.component(component(((ColumnConditionModel<T>) conditionModel).attribute()).buildValue())
 						.link(conditionModel.operands().in())
 						.format(conditionModel.format().orElse(null))
 						.caption(conditionModel.caption().orElse(null))
 						.build();
+	}
+
+	private <T> ComponentValueBuilder<? extends JComponent, T, ?> component(Column<T> column) {
+		// a null item for clearing the operand, a non-nullable column included
+		if (!entityDefinition.columns().definition(column).items().isEmpty()) {
+			return inputComponents.itemComboBox(column)
+							.nullable(true);
+		}
+		if (column.type().isEnum()) {
+			return inputComponents.comboBox(column, SwingFilterComboBoxModel.builder()
+							.items(asList(column.type().get().getEnumConstants()))
+							.includeNull(true)
+							.build());
+		}
+
+		return inputComponents.component(column);
 	}
 
 	private JComponent createEqualForeignKeyField(ForeignKeyConditionModel conditionModel) {

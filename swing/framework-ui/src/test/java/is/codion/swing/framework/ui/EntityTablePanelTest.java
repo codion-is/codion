@@ -44,9 +44,11 @@ import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.common.utilities.Operator.*;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.INSPECT_QUERY;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityTablePanelTest {
@@ -144,6 +146,18 @@ public class EntityTablePanelTest {
 		assertEquals(13, tablePanel.table().columns().indexOf(Detail.MASTER_CODE));
 		assertEquals(14, tablePanel.table().columns().indexOf(Detail.INT_ITEMS));
 		assertEquals(15, tablePanel.table().columns().indexOf(Detail.INT_DERIVED));
+	}
+
+	@Test
+	void enumConditionAndFilter() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		ColumnConditionPanel<?> condition = (ColumnConditionPanel<?>) tablePanel.condition().panel(Detail.ENUM_TYPE);
+		assertEquals(asList(EQUAL, NOT_EQUAL, IN, NOT_IN), condition.model().operators());
+		assertInstanceOf(JComboBox.class, condition.operands().equal().orElseThrow());
+		ColumnConditionPanel<?> filter = (ColumnConditionPanel<?>) tablePanel.table().filters().panel(Detail.ENUM_TYPE);
+		assertEquals(asList(EQUAL, NOT_EQUAL, IN, NOT_IN), filter.model().operators());
+		assertInstanceOf(JComboBox.class, filter.operands().equal().orElseThrow());
 	}
 
 	@Test

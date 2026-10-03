@@ -42,6 +42,7 @@ import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultConditionModelTest {
@@ -194,6 +195,36 @@ public class DefaultConditionModelTest {
 		assertThrows(IllegalArgumentException.class, () -> model.operator().set(Operator.BETWEEN));
 
 		assertThrows(IllegalArgumentException.class, () -> model.operator().set(Operator.BETWEEN));
+	}
+
+	@Test
+	void defaultOperators() {
+		assertEquals(Arrays.asList(Operator.values()), ConditionModel.builder()
+						.type(Integer.class)
+						.build()
+						.operators());
+		assertEquals(singletonList(Operator.EQUAL), ConditionModel.builder()
+						.type(Boolean.class)
+						.build()
+						.operators());
+		// an enum compares by declaration order, so no range operators
+		ConditionModel<Ordered> model = ConditionModel.builder()
+						.type(Ordered.class)
+						.build();
+		assertEquals(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN), model.operators());
+		model.operands().equal().set(Ordered.TWO);
+		assertTrue(model.enabled().is());
+		assertTrue(model.accepts(Ordered.TWO));
+		assertFalse(model.accepts(Ordered.ONE));
+		model.operator().set(Operator.NOT_IN);
+		model.operands().in().set(Arrays.asList(Ordered.ONE, Ordered.THREE));
+		assertTrue(model.accepts(Ordered.TWO));
+		assertFalse(model.accepts(Ordered.THREE));
+		assertThrows(IllegalArgumentException.class, () -> model.operator().set(Operator.LESS_THAN));
+	}
+
+	private enum Ordered {
+		ONE, TWO, THREE
 	}
 
 	@Test
