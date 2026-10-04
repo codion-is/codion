@@ -22,6 +22,7 @@
  * <li>{@link is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel}
  * <li>{@link is.codion.swing.common.model.component.list.FilterListSelection}
  * <li>{@link is.codion.swing.common.model.component.table.SwingFilterTableModel}
+ * <li>{@link is.codion.swing.common.model.component.tree.SwingFilterTreeModel}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked
@@ -35,6 +36,7 @@ module is.codion.swing.common.model {
 	exports is.codion.swing.common.model.component.list;
 	exports is.codion.swing.common.model.component.table;
 	exports is.codion.swing.common.model.component.text;
+	exports is.codion.swing.common.model.component.tree;
 
 	provides is.codion.common.utilities.dispatch.Dispatcher
 					with is.codion.swing.common.model.dispatch.SwingDispatcher;

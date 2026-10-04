@@ -27,6 +27,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.
+- SwingFilterTreeModel and FilterTreeSelection added, a TreeModel and a TreeSelectionModel based on FilterTreeModel.
 ### is.codion.swing.common.ui
 - ImagePane, the navigation image is now created when painted and navigable() takes effect immediately, fixing a missing navigation image after the image changed while not navigable, and exceptions when built navigable with an image, or when the pane size or image proportions leave no room for a navigation image.
 - ImagePane, a fully visible image now stays centered when the pane is resized, and the zoom area outline is no longer drawn around the whole navigation image when the whole image is visible.
