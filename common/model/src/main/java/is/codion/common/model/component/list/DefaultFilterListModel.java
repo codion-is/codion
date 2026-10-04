@@ -19,6 +19,7 @@
 package is.codion.common.model.component.list;
 
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
+import is.codion.common.model.filter.SortOrder;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
@@ -81,17 +82,13 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		return sort;
 	}
 
-	private enum Order {
-		ASCENDING, DESCENDING, UNSORTED
-	}
-
 	private final class DefaultListSort implements FilterListSort<T> {
 
 		private final @Nullable Comparator<T> comparator;
 		private final Event<Boolean> changed = Event.event();
-		private final Value<Order> order = Value.builder()
-						.nonNull(Order.ASCENDING)
-						.consumer(sortOrder -> changed.accept(sortOrder != Order.UNSORTED))
+		private final Value<SortOrder> order = Value.builder()
+						.nonNull(SortOrder.ASCENDING)
+						.consumer(sortOrder -> changed.accept(sortOrder != SortOrder.UNSORTED))
 						.build();
 
 		private DefaultListSort(@Nullable Comparator<T> comparator) {
@@ -115,22 +112,22 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 
 		@Override
 		public void ascending() {
-			order.set(Order.ASCENDING);
+			order.set(SortOrder.ASCENDING);
 		}
 
 		@Override
 		public void descending() {
-			order.set(Order.DESCENDING);
+			order.set(SortOrder.DESCENDING);
 		}
 
 		@Override
 		public void clear() {
-			order.set(Order.UNSORTED);
+			order.set(SortOrder.UNSORTED);
 		}
 
 		@Override
 		public boolean sorted() {
-			return comparator != null && order.getOrThrow() != Order.UNSORTED;
+			return comparator != null && order.getOrThrow() != SortOrder.UNSORTED;
 		}
 
 		@Override
