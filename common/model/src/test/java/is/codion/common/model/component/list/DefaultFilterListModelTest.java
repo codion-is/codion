@@ -18,6 +18,7 @@
  */
 package is.codion.common.model.component.list;
 
+import is.codion.common.model.filter.SortOrder;
 import is.codion.common.utilities.Text;
 
 import org.junit.jupiter.api.Test;
@@ -52,8 +53,10 @@ final class DefaultFilterListModelTest {
 						.comparator(null)
 						.build();
 		assertFalse(unsorted.sort().sorted());
+		assertEquals(SortOrder.UNSORTED, unsorted.sort().order());
 		unsorted.sort().descending();
 		assertFalse(unsorted.sort().sorted());
+		assertEquals(SortOrder.UNSORTED, unsorted.sort().order());
 		unsorted.sort().clear();
 		assertFalse(unsorted.sort().sorted());
 
@@ -65,16 +68,20 @@ final class DefaultFilterListModelTest {
 		assertEquals(items.size(), model.items().size());
 		assertEquals(items.size(), model.items().included().size());
 		assertTrue(model.sort().sorted());
+		assertEquals(SortOrder.ASCENDING, model.sort().order());
 		model.sort().descending();
 		assertTrue(model.sort().sorted());
+		assertEquals(SortOrder.DESCENDING, model.sort().order());
 		assertEquals(0, model.items().included().indexOf(TWO));
 		assertEquals(THREE, model.items().included().get(1));
 		assertEquals(TWO, model.selection().item().get());
 		model.sort().ascending();
+		assertEquals(SortOrder.ASCENDING, model.sort().order());
 		assertEquals(2, model.items().included().indexOf(TWO));
 		assertEquals(TWO, model.selection().item().get());
 		model.sort().clear();
 		assertFalse(model.sort().sorted());
+		assertEquals(SortOrder.UNSORTED, model.sort().order());
 		// back in the original order
 		assertEquals(asList(ONE, TWO, THREE), model.items().included().get());
 		model.items().refresh();

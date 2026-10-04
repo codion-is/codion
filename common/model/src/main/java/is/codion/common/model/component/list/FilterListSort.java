@@ -19,6 +19,7 @@
 package is.codion.common.model.component.list;
 
 import is.codion.common.model.filter.FilterModel;
+import is.codion.common.model.filter.SortOrder;
 
 /**
  * Handles the sorting state for a {@link FilterListModel}.
@@ -40,4 +41,9 @@ public interface FilterListSort<T> extends FilterModel.Sort<T> {
 	 * Clears the sort
 	 */
 	void clear();
+
+	/**
+	 * @return the current sort order, {@link SortOrder#UNSORTED} in case the model has no comparator
+	 */
+	SortOrder order();
 }

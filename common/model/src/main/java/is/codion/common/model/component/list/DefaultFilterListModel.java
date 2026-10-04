@@ -126,6 +126,11 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		}
 
 		@Override
+		public SortOrder order() {
+			return comparator == null ? SortOrder.UNSORTED : order.getOrThrow();
+		}
+
+		@Override
 		public boolean sorted() {
 			return comparator != null && order.getOrThrow() != SortOrder.UNSORTED;
 		}
