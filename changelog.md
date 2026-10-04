@@ -23,6 +23,7 @@ Codion Change Log
 - FilterComboBoxModel.Builder.includeNull() renamed nullable(), FilterComboBoxModel.ComboBoxItems.includesNull() renamed nullable().
 - FilePreferences and JsonPreferences, putting a value for a key naming a child node now throws IllegalStateException instead of replacing the node and its subtree, get() and remove() now ignoring child nodes, where get() returned the node as JSON and remove() removed it.
 - TableConditionModel renamed TableConditions, tableConditionModel() renamed tableConditions().
+- FilterTreeModel added, a UI-agnostic tree model with lazy loading, expansion, selection, filtering and sorting, its nodes identified by NodePath.
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.

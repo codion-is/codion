@@ -23,6 +23,7 @@
  * <li>{@link is.codion.common.model.filter.FilterModel}
  * <li>{@link is.codion.common.model.selection.SingleSelection}
  * <li>{@link is.codion.common.model.selection.MultiSelection}
+ * <li>{@link is.codion.common.model.component.tree.FilterTreeModel}
  * <li>{@link is.codion.common.model.condition.ConditionModel}
  * <li>{@link is.codion.common.model.condition.TableConditions}
  * <li>{@link is.codion.common.model.preferences.UserPreferences}
@@ -42,6 +43,7 @@ module is.codion.common.model {
 	exports is.codion.common.model.component.combobox;
 	exports is.codion.common.model.component.list;
 	exports is.codion.common.model.component.table;
+	exports is.codion.common.model.component.tree;
 	exports is.codion.common.model.condition;
 	exports is.codion.common.model.filter;
 	exports is.codion.common.model.preferences;
