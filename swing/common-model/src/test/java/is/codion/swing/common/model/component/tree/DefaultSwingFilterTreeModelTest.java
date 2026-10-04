@@ -277,6 +277,10 @@ final class DefaultSwingFilterTreeModelTest {
 		assertTrue(changing.isEmpty());
 		//restored
 		assertEquals(singletonList(path("a", "a1")), selection.items().get());
+		//nor does the model restoring the selection, here replacing the selected node with the ancestor collapsed
+		model.expansion().collapse(path("a"));
+		assertEquals(singletonList(path("a")), selection.items().get());
+		assertTrue(changing.isEmpty());
 	}
 
 	@Test

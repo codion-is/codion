@@ -420,7 +420,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		grouping = true;
 		try {
 			T result = mutation.get();
-			selection.items().set(replacements.apply(selectedItems));
+			selection.items().restore(replacements.apply(selectedItems));
 
 			return result;
 		}

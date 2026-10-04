@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -257,6 +259,27 @@ final class DefaultFilterListModelTest {
 		// Clear sort - selection preserved
 		model.sort().clear();
 		assertEquals("Bob", model.selection().item().get());
+	}
+
+	@Test
+	void restoringSelectionNotChanging() {
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(asList(ONE, TWO, THREE, FOUR))
+						.comparator(Text.collator())
+						.build();
+		model.selection().items().set(asList(THREE, TWO));
+		AtomicInteger changing = new AtomicInteger();
+		model.selection().changing().addListener(changing::incrementAndGet);
+		//the selection following the items is not a change by request: the indexes of the selected items shifting,
+		model.items().remove(FOUR);
+		model.sort().descending();
+		assertEquals(asList(TWO, THREE), model.selection().items().get());
+		//or a selected item being removed
+		model.items().remove(TWO);
+		assertEquals(singletonList(THREE), model.selection().items().get());
+		assertEquals(0, changing.get());
+		model.selection().item().set(ONE);
+		assertEquals(1, changing.get());
 	}
 
 	@Test

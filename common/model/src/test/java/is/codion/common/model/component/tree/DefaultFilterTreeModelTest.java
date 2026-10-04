@@ -530,29 +530,37 @@ final class DefaultFilterTreeModelTest {
 		List<NodePath<Item>> collapsed = new ArrayList<>();
 		model.visible().addListener(notifications::incrementAndGet);
 		model.expansion().collapsed().addConsumer(collapsed::add);
-		//vetoing the selection change following the collapse does not prevent
-		//the collapse, which the visible nodes and the expansion still notify
-		AtomicBoolean veto = new AtomicBoolean(true);
-		model.selection().changing().addListener(() -> {
-			if (veto.get()) {
-				throw new CancelException();
-			}
-		});
-		assertThrows(CancelException.class, () -> model.expansion().collapse(path("a")));
-		assertEquals(paths("a", "b", "c"), model.visible().get());
-		assertEquals(1, notifications.get());
-		assertEquals(singletonList(path("a")), collapsed);
-		//as when a listener throws once the selection has been restored
-		veto.set(false);
-		model.expansion().expand(path("a"));
-		model.selection().items().set(singletonList(path("a", "a2")));
+		//a listener throwing once the selection has been restored, as an editor vetoing the change of its entity
+		//does, does not prevent the collapse, which the visible nodes and the expansion still notify
 		model.selection().item().addListener(() -> {
 			throw new CancelException();
 		});
 		assertThrows(CancelException.class, () -> model.expansion().collapse(path("a")));
 		assertEquals(paths("a", "b", "c"), model.visible().get());
-		assertEquals(3, notifications.get());
-		assertEquals(asList(path("a"), path("a")), collapsed);
+		assertEquals(singletonList(path("a")), model.selection().items().get());
+		assertEquals(1, notifications.get());
+		assertEquals(singletonList(path("a")), collapsed);
+	}
+
+	@Test
+	void restoringSelectionNotChanging() {
+		FilterTreeModel<Item> model = model();
+		model.nodes().refresh();
+		model.expansion().expand(path("a"));
+		model.selection().items().set(asList(path("a", "a1"), path("b")));
+		AtomicInteger changing = new AtomicInteger();
+		model.selection().changing().addListener(changing::incrementAndGet);
+		//the selection following the nodes is not a change by request: the rows of the selected nodes shifting,
+		model.expansion().expand(path("a", "a1"));
+		assertEquals(asList(path("a", "a1"), path("b")), model.selection().items().get());
+		//a selected node being removed,
+		model.nodes().remove(singletonList(path("b")));
+		//or replaced by the ancestor collapsed
+		model.expansion().collapse(path("a"));
+		assertEquals(singletonList(path("a")), model.selection().items().get());
+		assertEquals(0, changing.get());
+		model.selection().items().set(singletonList(path("c")));
+		assertEquals(1, changing.get());
 	}
 
 	@Test

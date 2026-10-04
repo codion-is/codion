@@ -411,6 +411,15 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
+		public void restore(Collection<R> itemsToRestore) {
+			store.restore(rejectNulls(itemsToRestore).stream()
+							.mapToInt(items::indexOf)
+							.filter(index -> index >= 0)
+							.boxed()
+							.collect(toList()));
+		}
+
+		@Override
 		public void add(Predicate<R> predicate) {
 			selectedIndexes.add(indexesToSelect(requireNonNull(predicate)));
 		}
@@ -504,6 +513,15 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		public void set(Collection<Integer> indexes) {
+			set(indexes, true);
+		}
+
+		@Override
+		public void restore(Collection<Integer> indexes) {
+			set(indexes, false);
+		}
+
+		private void set(Collection<Integer> indexes, boolean notifyChanging) {
 			NavigableSet<Integer> target = new TreeSet<>(indexes);
 			if (singleSelection.is() && target.size() > 1) {
 				Integer keep = target.last();
@@ -514,7 +532,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 				//silent on a no-op, the framework's selection to editor linking loops infinitely otherwise
 				return;
 			}
-			changing.run();
+			if (notifyChanging) {
+				changing.run();
+			}
 			selected.clear();
 			selected.addAll(target);
 			adjusting.run();

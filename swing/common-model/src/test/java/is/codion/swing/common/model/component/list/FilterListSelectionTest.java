@@ -346,6 +346,11 @@ public class FilterListSelectionTest {
 		assertEquals(4, changingCounter.get());
 		testModel.setLeadSelectionIndex(2);
 		assertEquals(5, changingCounter.get());
+
+		//nor is a model restoring the selection after its items changed
+		testModel.items().restore(asList("B", "C"));
+		assertEquals(asList("B", "C"), testModel.items().get());
+		assertEquals(5, changingCounter.get());
 	}
 
 	@Test

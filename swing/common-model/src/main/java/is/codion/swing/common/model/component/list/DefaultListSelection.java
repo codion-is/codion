@@ -213,7 +213,8 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	/**
 	 * The {@link DefaultListSelectionModel} as a {@link IndexStore}. Structural changes made by a JTable or JList,
 	 * insertIndexInterval() and removeIndexInterval(), reach {@link #changed()} via fireValueChanged() without
-	 * passing {@link #changing()}, they re-index the selection rather than change it.
+	 * passing {@link #changing()}, they re-index the selection rather than change it, as does a model restoring
+	 * the selection via {@link #restore(Collection)}.
 	 */
 	private final class ListStore implements IndexStore {
 
@@ -233,6 +234,15 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void set(Collection<Integer> indexes) {
+			set(indexes, true);
+		}
+
+		@Override
+		public void restore(Collection<Integer> indexes) {
+			set(indexes, false);
+		}
+
+		private void set(Collection<Integer> indexes, boolean notifyChanging) {
 			Set<Integer> current = get();
 			Set<Integer> toRemove = new TreeSet<>(current);
 			toRemove.removeAll(indexes);
@@ -241,7 +251,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 			if (toRemove.isEmpty() && toAdd.isEmpty()) {
 				return;
 			}
-			changing.run();
+			if (notifyChanging) {
+				changing.run();
+			}
 			//save/restore so a caller already grouping (adjusting == true) is not terminated early
 			boolean wasAdjusting = getValueIsAdjusting();
 			setValueIsAdjusting(true);

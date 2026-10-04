@@ -80,6 +80,34 @@ public final class DefaultMultiSelectionTest {
 	}
 
 	@Test
+	void restore() {
+		TestItems items = new TestItems(asList("a", "b", "c", "d"));
+		MultiSelection<String> selection = new DefaultMultiSelection<>(items);
+		selection.items().set(asList("b", "c"));
+		AtomicInteger changing = new AtomicInteger();
+		List<List<String>> selectedItems = new ArrayList<>();
+		List<List<Integer>> selectedIndexes = new ArrayList<>();
+		selection.changing().addListener(changing::incrementAndGet);
+		selection.items().addConsumer(selectedItems::add);
+		selection.indexes().addConsumer(selectedIndexes::add);
+		//the selection following the items is not a change by request, the items not found left out
+		selection.items().restore(asList("c", "d", "x"));
+		assertEquals(asList("c", "d"), selection.items().get());
+		assertEquals(0, changing.get());
+		assertEquals(singletonList(asList("c", "d")), selectedItems);
+		assertEquals(singletonList(asList(2, 3)), selectedIndexes);
+		//unchanged
+		selection.items().restore(asList("c", "d"));
+		assertEquals(1, selectedItems.size());
+		//by request
+		selection.items().set(singletonList("a"));
+		assertEquals(1, changing.get());
+		selection.singleSelection().set(true);
+		selection.items().restore(asList("a", "b"));
+		assertEquals(singletonList("b"), selection.items().get());
+	}
+
+	@Test
 	void singleSelectionMode() {
 		TestItems items = new TestItems(asList("a", "b", "c"));
 		MultiSelection<String> selection = new DefaultMultiSelection<>(items);

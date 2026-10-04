@@ -33,14 +33,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
 import static is.codion.common.model.selection.MultiSelection.multiSelection;
 import static is.codion.swing.common.model.component.tree.DefaultSwingFilterTreeModel.createTreePath;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
@@ -243,24 +240,13 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 		}
 	}
 
-	private Set<TreePath> selectedPaths() {
-		TreePath[] paths = getSelectionPaths();
-
-		return paths == null ? emptySet() : new HashSet<>(asList(paths));
-	}
-
 	private final class DefaultGrouping implements Grouping {
 
-		//the selected paths when the group started
-		private Set<TreePath> selected = emptySet();
 		private boolean grouping = false;
 
 		@Override
 		public void set(boolean grouping) {
 			boolean ended = this.grouping && !grouping;
-			if (grouping && !this.grouping) {
-				selected = selectedPaths();
-			}
 			this.grouping = grouping;
 			if (ended) {
 				//the facades are consulted regardless of whether the paths changed during the group,
@@ -298,6 +284,15 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 
 		@Override
 		public void set(Collection<Integer> indexes) {
+			set(indexes, true);
+		}
+
+		@Override
+		public void restore(Collection<Integer> indexes) {
+			set(indexes, false);
+		}
+
+		private void set(Collection<Integer> indexes, boolean notifyChanging) {
 			TreeSet<Integer> rows = new TreeSet<>(indexes);
 			if (singleSelection.is() && rows.size() > 1) {
 				Integer keep = rows.last();
@@ -313,10 +308,9 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 			for (Integer row : rows) {
 				paths[index++] = createTreePath(visible.get(row));
 			}
-			//the selection does not change when the rows are unchanged, the paths without a row being dropped, the paths
-			//of nodes removed or filtered with no JTree attached to remove them, nor when the selection a group started
-			//with is restored, after a JTree removed the selected paths below nodes changed structurally
-			if (rowsChanged && (!grouping.grouping || !grouping.selected.equals(new HashSet<>(asList(paths))))) {
+			//the selection does not change when the rows are unchanged, only the paths without a row being dropped,
+			//the paths of nodes removed or filtered with no JTree attached to remove them
+			if (notifyChanging && rowsChanged) {
 				changing.run();
 			}
 			if (paths.length == 0) {

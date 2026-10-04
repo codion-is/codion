@@ -153,11 +153,11 @@ public final class FilterTreeTest {
 							.build();
 			model.expansion().expand(path("a"));
 			model.selection().items().set(singletonList(path("a", "a2")));
-			model.selection().changing().addListener(() -> {
+			model.selection().item().addListener(() -> {
 				throw new CancelException();
 			});
-			//collapsed via the tree, the selection change following it vetoed, which
-			//does not prevent the model from collapsing, in which case the tree follows
+			//collapsed via the tree, a listener vetoing the selection change following it, as an editor vetoing
+			//the change of its entity does, which does not prevent the model from collapsing, so the tree follows
 			assertThrows(CancelException.class, () -> tree.collapseRow(0));
 			assertFalse(model.expansion().expanded(path("a")));
 			assertFalse(tree.isExpanded(0));

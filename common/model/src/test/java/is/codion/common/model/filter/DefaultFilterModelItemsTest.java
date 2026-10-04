@@ -1433,6 +1433,11 @@ public class DefaultFilterModelItemsTest {
 			public void set(Predicate<String> predicate) {}
 
 			@Override
+			public void restore(Collection<String> items) {
+				selectedItems.set(new ArrayList<>(items));
+			}
+
+			@Override
 			public void add(Predicate<String> predicate) {}
 
 			@Override

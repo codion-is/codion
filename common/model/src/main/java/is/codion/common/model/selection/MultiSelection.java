@@ -51,6 +51,14 @@ import static java.util.Objects.requireNonNull;
 public interface MultiSelection<T> extends SingleSelection<T> {
 
 	/**
+	 * {@inheritDoc}
+	 * <p>Notified before the selection is changed by request, not when a model restores the selection after its
+	 * items changed, the selection then following the items, see {@link Items#restore(Collection)}.
+	 */
+	@Override
+	Observer<?> changing();
+
+	/**
 	 * @return an {@link ObservableState} indicating whether multiple items are selected
 	 */
 	ObservableState multiple();
@@ -222,6 +230,17 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		void set(Predicate<R> predicate);
 
 		/**
+		 * <p>Selects the given items without notifying {@link MultiSelection#changing()}, the ones not found among
+		 * the indexed items left out.
+		 * <p>For a model restoring the selection after its items changed: the selected items having moved, been
+		 * replaced or removed, the selection follows along, rather than being changed by request, which is what
+		 * {@link MultiSelection#changing()} is for.
+		 * @param items the items to select
+		 * @see IndexStore#restore(Collection)
+		 */
+		void restore(Collection<R> items);
+
+		/**
 		 * Adds the items passing the predicate test to the selection
 		 * @param predicate the predicate
 		 */
@@ -306,8 +325,9 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 
 	/**
 	 * <p>The selected indexes a {@link MultiSelection} is a view over, the one part of a selection that differs per toolkit.
-	 * <p>A store notifies {@link #changing()} before and {@link #changed()} after its indexes change, whoever
-	 * changed them, the selection deriving its index and item values from {@link #get()} on each {@link #changed()}.
+	 * <p>A store notifies {@link #changing()} before its indexes are changed by request, and {@link #changed()} after
+	 * they change, whoever changed them, the selection deriving its index and item values from {@link #get()} on each
+	 * {@link #changed()}.
 	 * @see #multiSelection(IndexedItems, IndexStore)
 	 */
 	interface IndexStore {
@@ -324,6 +344,14 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * @param indexes the indexes to select
 		 */
 		void set(Collection<Integer> indexes);
+
+		/**
+		 * <p>Replaces the selected indexes as {@link #set(Collection)} does, without notifying {@link #changing()}.
+		 * <p>For a model restoring the selection after its items changed, which re-indexes the selection rather
+		 * than changing it by request, see {@link Items#restore(Collection)}.
+		 * @param indexes the indexes to select
+		 */
+		void restore(Collection<Integer> indexes);
 
 		/**
 		 * @return the number of stored indexes
@@ -347,7 +375,8 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		Grouping grouping();
 
 		/**
-		 * @return an observer notified before the selected indexes change
+		 * @return an observer notified before the selected indexes are changed by request
+		 * @see #restore(Collection)
 		 */
 		Observer<?> changing();
 

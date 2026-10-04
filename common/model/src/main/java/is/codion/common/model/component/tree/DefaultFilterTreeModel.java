@@ -190,12 +190,12 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		try {
 			mutation.run();
 			commit();
-			selection.items().set(restore(selected, mapping));
+			selection.items().restore(restore(selected, mapping));
 			while (recommit || !snapshots.isEmpty()) {
 				//a mutation made by a selection listener, while the selection was being restored
 				List<NodePath<T>> restored = selection.items().get();
 				commit();
-				selection.items().set(restore(restored, UnaryOperator.identity()));
+				selection.items().restore(restore(restored, UnaryOperator.identity()));
 			}
 		}
 		finally {
