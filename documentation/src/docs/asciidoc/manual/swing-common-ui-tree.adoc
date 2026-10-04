@@ -1,0 +1,85 @@
+= Tree UI
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
+
+== FilterTree
+
+[plantuml,filter-tree-diagram,svg,align=center]
+-------------------------------------------
+
+class FilterTree {
+    +SwingFilterTreeModel model()
+}
+
+interface SwingFilterTreeModel {
+    +Nodes nodes()
+    +Expansion expansion()
+    +VisibleNodes visible()
+    +FilterTreeSelection selection()
+    +FilterTreeSort sort()
+}
+
+interface FilterTreeModel {}
+
+class JTree {}
+
+interface TreeModel {}
+
+FilterTree --|> JTree
+FilterTree --o SwingFilterTreeModel
+SwingFilterTreeModel --|> FilterTreeModel
+SwingFilterTreeModel --|> TreeModel
+
+-------------------------------------------
+
+The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/tree/FilterTree.html[FilterTree] is a *JTree* based on a {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/tree/SwingFilterTreeModel.html[SwingFilterTreeModel], the Swing coat of the UI-agnostic {url-javadoc}{common-model}/is/codion/common/model/component/tree/FilterTreeModel.html[FilterTreeModel].
+
+=== The model
+
+A node is identified by its {url-javadoc}{common-model}/is/codion/common/model/component/tree/NodePath.html[NodePath], the items from the top level down to it, so the same item may appear in several places in a tree. Siblings must be distinct.
+
+The structure is loaded lazily, the roots supplier providing the top level, and the children function the children of a node, the first time it is expanded. Loading is asynchronous by default, as refreshing a table model is.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTreeDemo.java[tags=model]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTreeDemo.java[tags=files]
+----
+
+=== The tree
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTreeDemo.java[tags=tree]
+----
+
+=== Expansion
+
+Expansion is model state rather than view state, so it survives refreshes, and the tree follows the model, whether a node is expanded via the model, by the mouse or by the keyboard. Expanding a node not yet loaded loads it.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTreeDemo.java[tags=expansion]
+----
+
+=== Selection
+
+The selection is a *MultiSelection* over the visible nodes, its items the paths of the selected nodes, and the selection model of the tree. A selected node hidden by collapsing an ancestor is replaced by the collapsed ancestor, as a *JTree* does.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTreeDemo.java[tags=selection]
+----
+
+=== Filtering
+
+A node is included when it passes the predicate, or when one of its loaded descendants does, so a match keeps its ancestors. Filtering applies to the loaded nodes only. To hide whole subtrees, have the children function return fewer children and refresh, which keeps the expansion and selection of the remaining nodes.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTreeDemo.java[tags=filter]
+----

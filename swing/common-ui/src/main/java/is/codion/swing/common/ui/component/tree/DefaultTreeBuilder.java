@@ -255,9 +255,11 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 	}
 
 	/**
+	 * @param tree the tree
+	 * @param event the mouse event
 	 * @return the row under the mouse, -1 if none
 	 */
-	private static int row(JTree tree, MouseEvent event) {
+	static int row(JTree tree, MouseEvent event) {
 		int row = tree.getClosestRowForLocation(event.getX(), event.getY());
 		if (row >= 0) {
 			Rectangle bounds = tree.getRowBounds(row);

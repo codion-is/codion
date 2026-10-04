@@ -14,16 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 /**
- * <p>Trees.
- * <ul>
- * <li>{@link is.codion.swing.common.ui.component.tree.FilterTree}, based on a
- * {@link is.codion.swing.common.model.component.tree.SwingFilterTreeModel}
- * <li>{@link is.codion.swing.common.ui.component.tree.TreeBuilder}, for a {@link javax.swing.JTree} over any
- * {@link javax.swing.tree.TreeModel}
- * </ul>
+ * Snippets for {@link is.codion.swing.common.ui.component.tree}, included by manual/swing-common-ui-tree.adoc.
  */
-@org.jspecify.annotations.NullMarked
-package is.codion.swing.common.ui.component.tree;
+package is.codion.manual.swing.common.ui.component.tree;

@@ -65,6 +65,8 @@ For a full application built this way, see the link:{basedir}/tutorials/sdkboy/s
 
 include::{basedir}/manual/swing-common-ui-table.adoc[leveloffset=+1]
 
+include::{basedir}/manual/swing-common-ui-tree.adoc[leveloffset=+1]
+
 include::{basedir}/manual/swing-common-ui-action-controls.adoc[leveloffset=+1]
 
 include::{basedir}/manual/swing-common-ui-input-components.adoc[leveloffset=+1]
