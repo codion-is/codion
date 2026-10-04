@@ -18,6 +18,7 @@
  */
 package is.codion.common.model.filter;
 
+import is.codion.common.model.CancelException;
 import is.codion.common.model.filter.FilterModel.IncludePredicate;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.Items;
@@ -935,6 +936,35 @@ public class DefaultFilterModelItemsTest {
 		assertEquals(asList(new Versioned("a", 0), new Versioned("c", 0)), items.included().get());
 		assertFalse(selection.get().present().is());
 		assertTrue(selection.get().indexes().get().isEmpty());
+	}
+
+	@Test
+	void notifiesWhenSelectionListenerThrows() {
+		AtomicReference<MultiSelection<Versioned>> selection = new AtomicReference<>();
+		Items<Versioned> items = Items.builder()
+						.<Versioned>selection(included -> selection.updateAndGet(current -> MultiSelection.multiSelection(included)))
+						.sort(new VersionedSort())
+						.build();
+		items.included().predicate().set(row -> row.version == 0);
+		Versioned b = new Versioned("b", 0);
+		Versioned filtered = new Versioned("d", 1);
+		items.add(asList(new Versioned("a", 0), b, new Versioned("c", 0), filtered));
+		selection.get().item().set(b);
+		AtomicInteger includedChanged = new AtomicInteger();
+		AtomicInteger filteredChanged = new AtomicInteger();
+		items.included().addListener(includedChanged::incrementAndGet);
+		items.filtered().addListener(filteredChanged::incrementAndGet);
+		// vetoing the selection change following the removal, as an editor with unsaved changes does
+		selection.get().item().addListener(() -> {
+			throw new CancelException();
+		});
+
+		assertThrows(CancelException.class, () -> items.remove(asList(b, filtered)));
+		// the removal has been made, and is notified regardless
+		assertEquals(asList(new Versioned("a", 0), new Versioned("c", 0)), items.included().get());
+		assertTrue(items.filtered().get().isEmpty());
+		assertEquals(1, includedChanged.get());
+		assertEquals(1, filteredChanged.get());
 	}
 
 	// equal by key only, the shape of a row a refresh replaces with a fresher instance

@@ -25,6 +25,7 @@ Codion Change Log
 - TableConditionModel renamed TableConditions, tableConditionModel() renamed tableConditions().
 - FilterTreeModel added, a UI-agnostic tree model with lazy loading, expansion, selection, filtering and sorting, its nodes identified by NodePath.
 - MultiSelection.Items.restore() and MultiSelection.IndexStore.restore() added, a model restoring the selection after its items changed no longer notifies changing().
+- FilterModel.Items, a mutation is now notified via the included and filtered items when a selection listener throws on the selection change following it, a vetoing editor for example, where the notifications were lost, affecting the table and list models.
 ### is.codion.swing.common.model
 - SwingFilterTableModel.getColumnName() now returns the column caption, as shown in the table header, instead of the AbstractTableModel default, "A", "B" and so on, SwingEntityTableModel included.
 - SwingFilterComboBoxModel.setSelectedItem() now interprets an empty string as null, where Enter in an empty editable combo box selected an empty string, whatever the item type.

@@ -426,10 +426,16 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 		finally {
 			grouping = wasGrouping;
-			selection.grouping().set(selectionGrouping);
-			if (!grouping) {
-				included.notifyPending();
-				filtered.notifyPending();
+			try {
+				selection.grouping().set(selectionGrouping);
+			}
+			finally {
+				//the mutation has been made, whether or not a selection listener threw ending the group, vetoing
+				//the selection change following it for example, in which case it must still be notified
+				if (!grouping) {
+					included.notifyPending();
+					filtered.notifyPending();
+				}
 			}
 		}
 	}
