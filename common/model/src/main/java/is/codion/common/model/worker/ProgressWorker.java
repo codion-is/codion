@@ -75,6 +75,7 @@ import static java.util.Objects.requireNonNull;
  * 				.task(this::performTask)
  * 				.onStarted(this::displayDialog)
  * 				.onDone(this::closeDialog)
+ * 				.onWorking(this::setBusy)
  * 				.onSuccess(this::handleSuccess)
  * 				.onResult(this::handleResult)
  * 				.onProgress(this::displayProgress)

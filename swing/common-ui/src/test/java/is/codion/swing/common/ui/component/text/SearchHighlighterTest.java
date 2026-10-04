@@ -98,7 +98,7 @@ public final class SearchHighlighterTest {
 	}
 
 	@Test
-	void colors() throws BadLocationException {
+	void colors() {
 		JTextArea textArea = new JTextArea("Hello there, here we are");
 		SearchHighlighter highlighter = SearchHighlighter.builder()
 						.component(textArea)

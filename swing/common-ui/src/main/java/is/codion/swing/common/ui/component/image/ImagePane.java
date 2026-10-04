@@ -626,6 +626,12 @@ public final class ImagePane extends JPanel {
 
 			return false;
 		}
+
+		private void requireViewInitialized() {
+			if (!viewInitialized()) {
+				throw new IllegalStateException(image.isNull() ? "No image is set" : "The pane has no size");
+			}
+		}
 	}
 
 	/**
@@ -676,12 +682,6 @@ public final class ImagePane extends JPanel {
 		}
 
 		return true;
-	}
-
-	private void requireViewInitialized() {
-		if (!viewInitialized()) {
-			throw new IllegalStateException(image.isNull() ? "No image is set" : "The pane has no size");
-		}
 	}
 
 	private void initializeParams() {

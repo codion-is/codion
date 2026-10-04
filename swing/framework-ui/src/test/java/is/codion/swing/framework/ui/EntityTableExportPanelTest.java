@@ -211,7 +211,7 @@ public final class EntityTableExportPanelTest {
 	}
 
 	@Test
-	void configuration() throws Exception {
+	void configuration() {
 		EntityTableExportTreeModel treeModel = exportTreeModel();
 		SwingFilterTreeModel<AttributeDefinition<?>> model = treeModel.treeModel();
 		treeModel.includeNone();

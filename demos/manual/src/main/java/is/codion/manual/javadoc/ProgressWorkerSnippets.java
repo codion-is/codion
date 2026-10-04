@@ -33,6 +33,7 @@ final class ProgressWorkerSnippets {
 						.task(this::performTask)
 						.onStarted(this::displayDialog)
 						.onDone(this::closeDialog)
+						.onWorking(this::setBusy)
 						.onSuccess(this::handleSuccess)
 						.onResult(this::handleResult)
 						.onProgress(this::displayProgress)
@@ -45,6 +46,8 @@ final class ProgressWorkerSnippets {
 	private String performTask(ProgressReporter<String> progress) {
 		return "";
 	}
+
+	private void setBusy(boolean busy) {}
 
 	private void displayDialog() {}
 
