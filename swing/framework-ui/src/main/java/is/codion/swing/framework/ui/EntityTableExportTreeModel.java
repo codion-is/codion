@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
@@ -26,57 +27,71 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityExport.ExportAttributes;
+import is.codion.swing.common.model.component.tree.SwingFilterTreeModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
+import java.util.Set;
 
-import static java.util.Comparator.comparingInt;
-import static java.util.function.Function.identity;
+import static is.codion.common.model.component.tree.NodePath.nodePath;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
-final class EntityTableExportTreeModel extends DefaultTreeModel {
+/**
+ * <p>The export configuration, the attributes to include and their order, with a tree model as its view.
+ * <p>A node is identified by its path, the attribute definitions from the top level down to it, the same attribute
+ * under two foreign keys being two nodes, each with its own configuration. The foreign keys make the tree infinite,
+ * Customer, Invoice, Customer and so on, so nodes are loaded on demand.
+ * <p>The configuration is kept apart from the tree model, which hides attributes via its children function and
+ * excluded attributes via its predicate, both reading the configuration.
+ */
+final class EntityTableExportTreeModel {
 
 	static final String ENTITY_TYPE_KEY = "entityType";
 
 	private static final String ATTRIBUTES_KEY = "attributes";
 	private static final String SHOW_HIDDEN_KEY = "showHidden";
 
-	private static final AttributeCaptionComparator CAPTION_COMPARATOR = new AttributeCaptionComparator();
-	private static final AttributeNodeComparator NODE_COMPARATOR = new AttributeNodeComparator();
+	private static final Comparator<AttributeDefinition<?>> CAPTION_COMPARATOR =
+					(definition, other) -> definition.caption().compareToIgnoreCase(other.caption());
 
+	private final EntityType entityType;
 	private final Entities entities;
+	private final SwingFilterTreeModel<AttributeDefinition<?>> treeModel;
+	//the order of the children of each foreign key path, the root included, hidden attributes included
+	private final Map<NodePath<AttributeDefinition<?>>, List<AttributeDefinition<?>>> order = new HashMap<>();
+	//the paths of the included attributes
+	private final Set<NodePath<AttributeDefinition<?>>> included = new HashSet<>();
 	private final State showHidden = State.builder()
 					.listener(this::showHiddenChanged)
 					.build();
 	private final Event<?> configuration = Event.event();
 
 	EntityTableExportTreeModel(EntityType entityType, Entities entities) {
-		super(null);
+		this.entityType = entityType;
 		this.entities = entities;
-		EntityNode rootNode = new EntityNode(entityType, this);
-		rootNode.populate();
-		setRoot(rootNode);
+		this.treeModel = SwingFilterTreeModel.builder()
+						.roots(() -> children(nodePath()))
+						.children(this::children)
+						.leaf(path -> !(path.item() instanceof ForeignKeyDefinition))
+						.build();
+		//in-memory, no need for a background thread
+		this.treeModel.nodes().loader().async().set(false);
+		this.treeModel.nodes().refresh();
 	}
 
-	@Override
-	public EntityNode getRoot() {
-		return (EntityNode) super.getRoot();
+	SwingFilterTreeModel<AttributeDefinition<?>> treeModel() {
+		return treeModel;
 	}
 
 	Observer<?> configuration() {
@@ -87,472 +102,345 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 		return showHidden;
 	}
 
+	/**
+	 * @param path the path
+	 * @return true if the attribute is included
+	 */
+	boolean included(NodePath<AttributeDefinition<?>> path) {
+		return included.contains(path);
+	}
+
+	/**
+	 * @param path the path
+	 * @return the number of included attributes below the given one
+	 */
+	int includedCount(NodePath<AttributeDefinition<?>> path) {
+		int count = 0;
+		for (NodePath<AttributeDefinition<?>> includedPath : included) {
+			if (includedPath.depth() > path.depth() && path.contains(includedPath)) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	/**
+	 * Includes the displayed attributes, the top level and the loaded foreign keys.
+	 */
 	void includeAll() {
-		getRoot().populate();
-		include(Collections.list(getRoot().children()), true);
+		List<NodePath<AttributeDefinition<?>>> paths = new ArrayList<>();
+		displayed(nodePath(), paths);
+		included.addAll(paths);
+		changed(paths);
 		configuration.run();
 	}
 
+	/**
+	 * Resets the configuration, excluding all attributes, in their default order, the excluded ones shown again.
+	 */
 	void includeNone() {
-		refresh();
+		reset();
 		configuration.run();
 	}
 
-	void applyConfiguration(JSONObject json) {
-		showHidden.set(json.has(SHOW_HIDDEN_KEY) && json.getBoolean(SHOW_HIDDEN_KEY));
-		refresh();
-		getRoot().apply(json);
-		hideExcluded();
-		configuration.run();
+	/**
+	 * Toggles the inclusion of the given attributes.
+	 * @param paths the paths of the attributes
+	 */
+	void toggle(Collection<NodePath<AttributeDefinition<?>>> paths) {
+		for (NodePath<AttributeDefinition<?>> path : paths) {
+			if (!included.remove(path)) {
+				included.add(path);
+			}
+		}
+		changed(paths);
 	}
 
-	JSONObject toJson() {
-		JSONObject jsonObject = getRoot().toJson();
-		jsonObject.put(ENTITY_TYPE_KEY, getRoot().entityType.name());
-		jsonObject.put(SHOW_HIDDEN_KEY, showHidden().is());
-
-		return jsonObject;
-	}
-
-	ExportAttributes attributes(ExportAttributes.Builder attributes) {
-		getRoot().populate(attributes);
-
-		return attributes.build();
+	/**
+	 * Includes the given attributes, or excludes them in case they are all included.
+	 * @param paths the paths of the attributes
+	 */
+	void toggleAll(Collection<NodePath<AttributeDefinition<?>>> paths) {
+		if (included.containsAll(paths)) {
+			included.removeAll(paths);
+		}
+		else {
+			included.addAll(paths);
+		}
+		changed(paths);
 	}
 
 	void hideExcluded() {
-		getRoot().reload(true);
-		nodeStructureChanged(getRoot());
+		treeModel.nodes().predicate().set(this::includesData);
 		configuration.run();
 	}
 
 	void showExcluded() {
-		getRoot().populate();
-		getRoot().reload(false);
-		nodeStructureChanged(getRoot());
+		treeModel.nodes().predicate().clear();
 		configuration.run();
+	}
+
+	/**
+	 * Moves the given sibling attributes one position up or down among the displayed attributes.
+	 * @param paths the paths of the attributes, sharing a parent
+	 * @param up true to move up
+	 */
+	void move(List<NodePath<AttributeDefinition<?>>> paths, boolean up) {
+		NodePath<AttributeDefinition<?>> parent = paths.get(0).parent();
+		List<NodePath<AttributeDefinition<?>>> displayed = new ArrayList<>(treeModel.nodes().children(parent));
+		int[] indexes = paths.stream()
+						.mapToInt(displayed::indexOf)
+						.filter(index -> index >= 0)
+						.sorted()
+						.toArray();
+		if (indexes.length == 0) {
+			return;
+		}
+		if (up && indexes[0] > 0) {
+			for (int index : indexes) {
+				displayed.add(index - 1, displayed.remove(index));
+			}
+		}
+		else if (!up && indexes[indexes.length - 1] < displayed.size() - 1) {
+			for (int i = indexes.length - 1; i >= 0; i--) {
+				displayed.add(indexes[i] + 1, displayed.remove(indexes[i]));
+			}
+		}
+		order(parent, displayed);
+	}
+
+	/**
+	 * Moves the given sibling attributes to the given index among the displayed attributes.
+	 * @param paths the paths of the attributes, sharing a parent
+	 * @param index the index to move them to, before removing them
+	 */
+	void move(List<NodePath<AttributeDefinition<?>>> paths, int index) {
+		NodePath<AttributeDefinition<?>> parent = paths.get(0).parent();
+		List<NodePath<AttributeDefinition<?>>> displayed = new ArrayList<>(treeModel.nodes().children(parent));
+		//count the siblings before the drop index not themselves being moved, so dropping
+		//a node onto its own position leaves it there
+		int insertIndex = (int) displayed.subList(0, Math.min(index, displayed.size())).stream()
+						.filter(path -> !paths.contains(path))
+						.count();
+		displayed.removeAll(paths);
+		displayed.addAll(insertIndex, paths);
+		order(parent, displayed);
+	}
+
+	void applyConfiguration(JSONObject json) {
+		showHidden.set(json.has(SHOW_HIDDEN_KEY) && json.getBoolean(SHOW_HIDDEN_KEY));
+		included.clear();
+		order.clear();
+		apply(nodePath(), json);
+		treeModel.nodes().refresh();
+		hideExcluded();
+	}
+
+	JSONObject toJson() {
+		JSONObject json = toJson(nodePath());
+		json.put(ENTITY_TYPE_KEY, entityType.name());
+		json.put(SHOW_HIDDEN_KEY, showHidden.is());
+
+		return json;
+	}
+
+	ExportAttributes attributes(ExportAttributes.Builder attributes) {
+		populate(nodePath(), attributes);
+
+		return attributes.build();
+	}
+
+	/**
+	 * @return the paths of the foreign keys with included attributes below them, for expanding
+	 */
+	Collection<NodePath<AttributeDefinition<?>>> includedParents() {
+		Set<NodePath<AttributeDefinition<?>>> parents = new LinkedHashSet<>();
+		for (NodePath<AttributeDefinition<?>> path : included) {
+			NodePath<AttributeDefinition<?>> parent = path.parent();
+			while (!parent.root()) {
+				parents.add(parent);
+				parent = parent.parent();
+			}
+		}
+
+		return parents;
 	}
 
 	private void showHiddenChanged() {
-		getRoot().reload(false);
-		nodeStructureChanged(getRoot());
-		configuration.run();
+		//keeps the expansion and selection, nodes being kept by attribute
+		treeModel.nodes().refresh();
 	}
 
-	private void refresh() {
-		getRoot().removeAllChildren();
-		getRoot().populate();
-		nodeStructureChanged(getRoot());
+	private void reset() {
+		included.clear();
+		order.clear();
+		//all being excluded now, the excluded ones are shown again
+		treeModel.nodes().predicate().clear();
+		treeModel.nodes().refresh();
 	}
 
-	private static void include(List<TreeNode> nodes, boolean include) {
-		for (TreeNode node : nodes) {
-			AttributeNode attributeNode = (AttributeNode) node;
-			attributeNode.include().set(include);
-			if (attributeNode instanceof MutableForeignKeyNode) {
-				include(Collections.list(((MutableForeignKeyNode) attributeNode).children()), include);
+	/**
+	 * The children of a node, in the configured order, the hidden attributes left out unless shown or included.
+	 */
+	private List<AttributeDefinition<?>> children(NodePath<AttributeDefinition<?>> path) {
+		return order(path).stream()
+						.filter(definition -> showHidden.is() || !definition.hidden() || includesData(path.child(definition)))
+						.collect(toList());
+	}
+
+	private List<AttributeDefinition<?>> order(NodePath<AttributeDefinition<?>> path) {
+		return order.computeIfAbsent(path, this::defaultOrder);
+	}
+
+	/**
+	 * Orders the displayed attributes, the ones not displayed following.
+	 */
+	private void order(NodePath<AttributeDefinition<?>> parent, List<NodePath<AttributeDefinition<?>>> displayed) {
+		List<AttributeDefinition<?>> ordered = displayed.stream()
+						.map(NodePath::item)
+						.collect(toList());
+		order(parent).stream()
+						.filter(definition -> !ordered.contains(definition))
+						.forEach(ordered::add);
+		order.put(parent, ordered);
+		treeModel.nodes().refresh(parent);
+	}
+
+	private List<AttributeDefinition<?>> defaultOrder(NodePath<AttributeDefinition<?>> path) {
+		EntityType type = path.root() ? entityType : ((ForeignKeyDefinition) path.item()).attribute().referencedType();
+
+		return entities.definition(type).attributes().definitions().stream()
+						.filter(EntityTableExportTreeModel::selectedColumnOrAttribute)
+						.sorted(CAPTION_COMPARATOR)
+						.collect(toList());
+	}
+
+	private boolean includesData(NodePath<AttributeDefinition<?>> path) {
+		return included.contains(path) || includedCount(path) > 0;
+	}
+
+	private void displayed(NodePath<AttributeDefinition<?>> parent, List<NodePath<AttributeDefinition<?>>> paths) {
+		for (NodePath<AttributeDefinition<?>> child : treeModel.nodes().children(parent)) {
+			paths.add(child);
+			if (treeModel.nodes().loaded(child)) {
+				displayed(child, paths);
 			}
 		}
 	}
 
-	interface AttributeNode extends MutableTreeNode {
-
-		AttributeDefinition<?> definition();
-
-		Attribute<?> attribute();
-
-		boolean hidden();
-
-		State include();
+	/**
+	 * Notifies that the given nodes and their ancestors changed, an inclusion changing the counts of the ancestors.
+	 */
+	private void changed(Collection<NodePath<AttributeDefinition<?>>> paths) {
+		Set<NodePath<AttributeDefinition<?>>> changed = new LinkedHashSet<>();
+		for (NodePath<AttributeDefinition<?>> path : paths) {
+			NodePath<AttributeDefinition<?>> node = path;
+			while (!node.root()) {
+				changed.add(node);
+				node = node.parent();
+			}
+		}
+		treeModel.fireNodesChanged(changed);
+		if (!treeModel.nodes().predicate().isNull()) {
+			treeModel.nodes().filter();
+		}
 	}
 
-	static class EntityNode extends DefaultMutableTreeNode {
-
-		private final EntityType entityType;
-		private final EntityTableExportTreeModel treeModel;
-
-		private EntityNode(EntityType entityType, EntityTableExportTreeModel treeModel) {
-			this.entityType = entityType;
-			this.treeModel = treeModel;
-		}
-
-		final void populate() {
-			if (getChildCount() == 0) {
-				attributeNodes().forEach(this::add);
-				treeModel.nodeStructureChanged(this);
-			}
-		}
-
-		final void move(List<AttributeNode> nodes, boolean up) {
-			int[] indexes = nodes.stream()
-							.mapToInt(children::indexOf)
-							.sorted()
-							.toArray();
-			if (up) {
-				moveUp(indexes);
-			}
-			else {
-				moveDown(indexes);
-			}
-			treeModel.nodeStructureChanged(this);
-		}
-
-		void move(List<AttributeNode> nodes, int index) {
-			//count the children before the drop index that are not themselves being moved, so dropping a node
-			//onto its own position (indexOf after removeAll would return -1) no longer throws
-			int insertIndex = (int) children.subList(0, Math.min(index, children.size())).stream()
-							.filter(child -> !nodes.contains(child))
-							.count();
-			children.removeAll(nodes);
-			children.addAll(insertIndex, nodes);
-			treeModel.nodeStructureChanged(this);
-		}
-
-		protected void populate(ExportAttributes.Builder attributes) {
-			attributes.include(include()).order(order());
-			Collections.list(children()).stream()
-							.filter(MutableForeignKeyNode.class::isInstance)
-							.map(MutableForeignKeyNode.class::cast)
-							.forEach(foreignKeyNode ->
-											attributes.attributes(foreignKeyNode.attribute(), foreignKeyNode::populate));
-		}
-
-		private final JSONObject toJson() {
-			Enumeration<TreeNode> nodes = children();
-			JSONArray attributes = new JSONArray();
-			while (nodes.hasMoreElements()) {
-				AttributeNode node = (AttributeNode) nodes.nextElement();
-				String attributeName = node.attribute().name();
-				if (node.getChildCount() > 0) {
-					JSONObject fkChildren = ((EntityNode) node).toJson();
-					if (!node.include().is() && fkChildren.isEmpty()) {
-						continue;
-					}
-					if (node.include().is()) {// If FK itself is included, add its name to the attributes array
-						attributes.put(attributeName);
-					}
-					if (!fkChildren.isEmpty()) {// If FK has included children, add the structure object
-						JSONObject fkObject = new JSONObject();
-						fkObject.put(attributeName, fkChildren);
-						attributes.put(fkObject);
-					}
-				}
-				else if (node.include().is()) {// Simple attributes are just strings
+	private JSONObject toJson(NodePath<AttributeDefinition<?>> parent) {
+		JSONArray attributes = new JSONArray();
+		for (AttributeDefinition<?> definition : order(parent)) {
+			NodePath<AttributeDefinition<?>> path = parent.child(definition);
+			String attributeName = definition.attribute().name();
+			if (definition instanceof ForeignKeyDefinition) {
+				JSONObject foreignKeyAttributes = includedCount(path) > 0 ? toJson(path) : new JSONObject();
+				if (included.contains(path)) {
 					attributes.put(attributeName);
 				}
+				if (!foreignKeyAttributes.isEmpty()) {
+					attributes.put(new JSONObject().put(attributeName, foreignKeyAttributes));
+				}
 			}
-
-			JSONObject result = new JSONObject();
-			if (!attributes.isEmpty()) {
-				result.put(ATTRIBUTES_KEY, attributes);
+			else if (included.contains(path)) {
+				attributes.put(attributeName);
 			}
-
-			return result;
+		}
+		JSONObject result = new JSONObject();
+		if (!attributes.isEmpty()) {
+			result.put(ATTRIBUTES_KEY, attributes);
 		}
 
-		private void apply(JSONObject json) {
-			if (!json.has(ATTRIBUTES_KEY)) {
-				return;
-			}
-			populate();
-			Enumeration<TreeNode> childNodes = children();
-			Map<String, DefaultMutableTreeNode> children = new HashMap<>();
-			while (childNodes.hasMoreElements()) {
-				DefaultMutableTreeNode child = (DefaultMutableTreeNode) childNodes.nextElement();
-				children.put(((AttributeNode) child).attribute().name(), child);
-			}
-			for (Object jsonAttribute : json.getJSONArray(ATTRIBUTES_KEY)) {
-				String attributeName = attributeName(jsonAttribute);
-				DefaultMutableTreeNode child = children.get(attributeName);
-				if (child != null) {// missing attribute, removed or hidden f.ex.
-					int index = getIndex(child);
-					if (index >= 0) {
-						remove(child);
+		return result;
+	}
+
+	/**
+	 * Applies the given configuration below the given path, the attributes it names ordered first, in the order it
+	 * names them, the rest following in their default order. Attributes no longer present are ignored.
+	 */
+	private void apply(NodePath<AttributeDefinition<?>> parent, JSONObject json) {
+		if (!json.has(ATTRIBUTES_KEY)) {
+			return;
+		}
+		List<AttributeDefinition<?>> defaultOrder = order(parent);
+		List<AttributeDefinition<?>> ordered = new ArrayList<>(defaultOrder.size());
+		for (Object attribute : json.getJSONArray(ATTRIBUTES_KEY)) {
+			String attributeName = attributeName(attribute);
+			for (AttributeDefinition<?> definition : defaultOrder) {
+				if (definition.attribute().name().equals(attributeName)) {
+					if (!ordered.contains(definition)) {
+						ordered.add(definition);
 					}
-					add(child);
-					treeModel.nodeStructureChanged(this);
-					if (jsonAttribute instanceof String) {
-						((AttributeNode) child).include().set(true);
+					NodePath<AttributeDefinition<?>> path = parent.child(definition);
+					if (attribute instanceof String) {
+						included.add(path);
 					}
 					else {
-						((EntityNode) child).apply(((JSONObject) jsonAttribute).getJSONObject(attributeName));
+						apply(path, ((JSONObject) attribute).getJSONObject(attributeName));
 					}
 				}
 			}
-			List<AttributeNode> sorted = Collections.list(children()).stream()
-							.map(AttributeNode.class::cast)
-							.sorted(NODE_COMPARATOR)
-							.collect(toList());
-			removeAllChildren();
-			sorted.forEach(this::add);
-			treeModel.nodeStructureChanged(this);
 		}
+		defaultOrder.stream()
+						.filter(definition -> !ordered.contains(definition))
+						.forEach(ordered::add);
+		order.put(parent, ordered);
+	}
 
-		private void reload(boolean hideExcluded) {
-			if (getChildCount() > 0) {
-				List<AttributeNode> nodes = Collections.list(children()).stream()
-								.map(AttributeNode.class::cast)
-								.collect(toList());
-				Map<AttributeDefinition<?>, AttributeNode> nodeMap = Collections.list(children()).stream()
-								.map(AttributeNode.class::cast)
-								.collect(toMap(AttributeNode::definition, identity()));
-				removeAllChildren();
-				Stream.concat(
-								attributeNodes().stream()
-												.map(node -> nodeMap.getOrDefault(node.definition(), node)),
-								//preserve included nodes the show-hidden filter would otherwise drop, along with their include state
-								nodes.stream().filter(node -> node.hidden() && !treeModel.showHidden.is() && includesData(node)))
-								.sorted(NODE_COMPARATOR)
-								.filter(node -> displayNode(node, hideExcluded))
-								.sorted(comparingInt(node -> {
-									int index = nodes.indexOf(node);
-									return index == -1 ? nodes.size() : index;
-								}))
-								.forEach(this::add);
-				Collections.list(children()).stream()
-								.filter(EntityNode.class::isInstance)
-								.map(EntityNode.class::cast)
-								.forEach(node -> node.reload(hideExcluded));
+	private void populate(NodePath<AttributeDefinition<?>> parent, ExportAttributes.Builder attributes) {
+		List<Attribute<?>> include = new ArrayList<>();
+		List<Attribute<?>> attributeOrder = new ArrayList<>();
+		for (AttributeDefinition<?> definition : order(parent)) {
+			NodePath<AttributeDefinition<?>> path = parent.child(definition);
+			if (included.contains(path)) {
+				include.add(definition.attribute());
+			}
+			if (includesData(path)) {
+				attributeOrder.add(definition.attribute());
 			}
 		}
-
-		private static boolean displayNode(AttributeNode node, boolean hideExcluded) {
-			return includesData(node) || !hideExcluded;
-		}
-
-		private static boolean includesData(AttributeNode node) {
-			return node.include().is() || (node instanceof MutableForeignKeyNode && ((MutableForeignKeyNode) node).includedCount() > 0);
-		}
-
-		private List<AttributeNode> attributeNodes() {
-			return treeModel.entities.definition(entityType).attributes().definitions().stream()
-							.filter(EntityNode::selectedColumnOrAttribute)
-							.filter(attributeDefinition -> treeModel.showHidden.is() || !attributeDefinition.hidden())
-							.sorted(CAPTION_COMPARATOR)
-							.map(this::createNode)
-							.collect(toList());
-		}
-
-		private AttributeNode createNode(AttributeDefinition<?> attributeDefinition) {
-			if (attributeDefinition instanceof ForeignKeyDefinition) {
-				return new MutableForeignKeyNode(treeModel, (ForeignKeyDefinition) attributeDefinition);
-			}
-			else {
-				return new MutableAttributeNode(treeModel, attributeDefinition);
-			}
-		}
-
-		private List<Attribute<?>> include() {
-			return Collections.list(children()).stream()
-							.map(AttributeNode.class::cast)
-							.filter(attribute -> attribute.include().is())
-							.map(AttributeNode::attribute)
-							.collect(toList());
-		}
-
-		private List<Attribute<?>> order() {
-			return Collections.list(children()).stream()
-							.map(AttributeNode.class::cast)
-							.filter(EntityNode::order)
-							.map(AttributeNode::attribute)
-							.collect(toList());
-		}
-
-		private static boolean order(AttributeNode node) {
-			if (node.include().is()) {
-				return true;
-			}
-			if (node instanceof MutableForeignKeyNode) {
-				return ((MutableForeignKeyNode) node).includedCount() > 0;
-			}
-
-			return false;
-		}
-
-		private static boolean selectedColumnOrAttribute(AttributeDefinition<?> definition) {
-			if (definition instanceof ColumnDefinition) {
-				return ((ColumnDefinition<?>) definition).selected();
-			}
-
-			return true;
-		}
-
-		private static String attributeName(Object item) {
-			if (item instanceof String) {
-				return (String) item;
-			}
-
-			return ((JSONObject) item).keys().next();
-		}
-
-		private void moveDown(int[] indexes) {
-			if (indexes[indexes.length - 1] < children.size() - 1) {
-				for (int i = indexes.length - 1; i >= 0; i--) {
-					children.add(indexes[i] + 1, children.remove(indexes[i]));
-				}
-			}
-		}
-
-		private void moveUp(int[] indexes) {
-			if (indexes[0] > 0) {
-				for (int i = 0; i < indexes.length; i++) {
-					children.add(indexes[i] - 1, children.remove(indexes[i]));
-				}
+		attributes.include(include).order(attributeOrder);
+		for (AttributeDefinition<?> definition : order(parent)) {
+			NodePath<AttributeDefinition<?>> path = parent.child(definition);
+			if (definition instanceof ForeignKeyDefinition && includedCount(path) > 0) {
+				attributes.attributes(((ForeignKeyDefinition) definition).attribute(), foreignKeyAttributes ->
+								populate(path, foreignKeyAttributes));
 			}
 		}
 	}
 
-	static final class MutableAttributeNode extends DefaultMutableTreeNode implements AttributeNode {
-
-		private final AttributeDefinition<?> definition;
-		private final State include;
-
-		private MutableAttributeNode(DefaultTreeModel treeModel, AttributeDefinition<?> definition) {
-			this.definition = definition;
-			this.include = State.builder()
-							.listener(new NodeChanged(treeModel, this))
-							.build();
+	private static boolean selectedColumnOrAttribute(AttributeDefinition<?> definition) {
+		if (definition instanceof ColumnDefinition) {
+			return ((ColumnDefinition<?>) definition).selected();
 		}
 
-		@Override
-		public AttributeDefinition<?> definition() {
-			return definition;
-		}
-
-		public Attribute<?> attribute() {
-			return definition.attribute();
-		}
-
-		@Override
-		public boolean hidden() {
-			return definition.hidden();
-		}
-
-		public State include() {
-			return include;
-		}
+		return true;
 	}
 
-	static final class MutableForeignKeyNode extends EntityNode implements AttributeNode {
-
-		private final ForeignKeyDefinition definition;
-		private final State include;
-
-		private MutableForeignKeyNode(EntityTableExportTreeModel treeModel, ForeignKeyDefinition definition) {
-			super(definition.attribute().referencedType(), treeModel);
-			this.definition = definition;
-			this.include = State.builder()
-							.listener(new NodeChanged(treeModel, this))
-							.build();
+	private static String attributeName(Object attribute) {
+		if (attribute instanceof String) {
+			return (String) attribute;
 		}
 
-		@Override
-		public boolean isLeaf() {
-			return false;
-		}
-
-		@Override
-		public AttributeDefinition<?> definition() {
-			return definition;
-		}
-
-		@Override
-		public ForeignKey attribute() {
-			return definition.attribute();
-		}
-
-		@Override
-		public boolean hidden() {
-			return definition.hidden();
-		}
-
-		@Override
-		public State include() {
-			return include;
-		}
-
-		@Override
-		protected void populate(ExportAttributes.Builder attributes) {
-			if (includedCount() > 0) {
-				super.populate(attributes);
-			}
-		}
-
-		int includedCount() {
-			return includedCount(this);
-		}
-
-		private static int includedCount(DefaultMutableTreeNode node) {
-			int counter = 0;
-			Enumeration<? extends TreeNode> children = node.children();
-			while (children.hasMoreElements()) {
-				AttributeNode child = (AttributeNode) children.nextElement();
-				if (child.include().is()) {
-					counter++;
-				}
-				if (child instanceof MutableForeignKeyNode) {
-					counter += includedCount((MutableForeignKeyNode) child);
-				}
-			}
-
-			return counter;
-		}
-	}
-
-	private static final class NodeChanged implements Runnable {
-
-		private final DefaultTreeModel model;
-		private final DefaultMutableTreeNode node;
-
-		private NodeChanged(DefaultTreeModel model, DefaultMutableTreeNode node) {
-			this.model = model;
-			this.node = node;
-		}
-
-		@Override
-		public void run() {
-			model.nodeChanged(node);
-			TreeNode parent = node.getParent();
-			while (parent != null) {
-				model.nodeChanged(parent);
-				parent = parent.getParent();
-			}
-		}
-	}
-
-	private static final class AttributeCaptionComparator implements Comparator<AttributeDefinition<?>> {
-
-		@Override
-		public int compare(AttributeDefinition<?> d1, AttributeDefinition<?> d2) {
-			return d1.caption().compareToIgnoreCase(d2.caption());
-		}
-	}
-
-	private static class AttributeNodeComparator implements Comparator<AttributeNode> {
-
-		@Override
-		public int compare(AttributeNode o1, AttributeNode o2) {
-			boolean o1Included = included(o1);
-			boolean o2Included = included(o2);
-			if (o1Included && o2Included) {
-				return 0;
-			}
-			if (o1Included && !o2Included) {
-				return -1;
-			}
-			if (!o1Included && o2Included) {
-				return 1;
-			}
-
-			return CAPTION_COMPARATOR.compare(o1.definition(), o2.definition());
-		}
-
-		private static boolean included(AttributeNode node) {
-			if (node instanceof MutableForeignKeyNode) {
-				return node.include().is() || ((MutableForeignKeyNode) node).includedCount() > 0;
-			}
-
-			return node.include().is();
-		}
+		return ((JSONObject) attribute).keys().next();
 	}
 }

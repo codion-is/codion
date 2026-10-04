@@ -19,12 +19,14 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.resource.MessageBundle;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.swing.common.ui.ancestor.Ancestor;
-import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.tree.FilterTree;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -32,9 +34,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.ui.EntityTableExportModel.ConfigurationFile;
 import is.codion.swing.framework.ui.EntityTableExportModel.ExportTask;
-import is.codion.swing.framework.ui.EntityTableExportTreeModel.AttributeNode;
-import is.codion.swing.framework.ui.EntityTableExportTreeModel.EntityNode;
-import is.codion.swing.framework.ui.EntityTableExportTreeModel.MutableForeignKeyNode;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.json.JSONObject;
@@ -50,15 +49,8 @@ import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeWillExpandListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.ExpandVetoException;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -69,10 +61,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -86,7 +75,6 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.emptyList;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -97,16 +85,13 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final String TSV = "tsv";
 	private static final String JSON = "json";
-	private static final AttributeRenderer ATTRIBUTE_RENDERER = new AttributeRenderer();
 	private static final FileNameExtensionFilter CONFIGURATION_FILE =
 					new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON);
 
 	private final EntityTableExportModel model;
-	private final JTree exportTree;
-	private final State refreshingNodes = State.state();
+	private final FilterTree<AttributeDefinition<?>> exportTree;
 	private final State singleSelection = State.state();
 	private final State singleParentSelection = State.state();
-	private final ObservableState moveEnabled = State.or(refreshingNodes, singleParentSelection);
 
 	private final Control saveConfiguration = Control.builder()
 					.command(this::saveConfiguration)
@@ -120,12 +105,12 @@ final class EntityTableExportPanel extends JPanel {
 					.build();
 	private final Control moveUp = Control.builder()
 					.command(this::moveSelectionUp)
-					.enabled(moveEnabled)
+					.enabled(singleParentSelection)
 					.icon(FrameworkIcons.instance().up())
 					.build();
 	private final Control moveDown = Control.builder()
 					.command(this::moveSelectionDown)
-					.enabled(moveEnabled)
+					.enabled(singleParentSelection)
 					.icon(FrameworkIcons.instance().down())
 					.build();
 	private final Control includeAll;
@@ -140,6 +125,7 @@ final class EntityTableExportPanel extends JPanel {
 		super(borderLayout());
 		this.model = model;
 		this.exportTree = createTree();
+		this.exportTree.model().selection().items().addConsumer(this::selectionChanged);
 		this.includeAll = Control.builder()
 						.command(model.treeModel()::includeAll)
 						.caption(MESSAGES.getString("columns_all"))
@@ -238,14 +224,10 @@ final class EntityTableExportPanel extends JPanel {
 						.build();
 	}
 
-	private JTree createTree() {
-		return Components.tree()
-						.model(model.treeModel())
-						.cellRenderer(ATTRIBUTE_RENDERER)
-						.showsRootHandles(true)
-						.rootVisible(false)
-						.treeWillExpandListener(new ExpandListener())
-						.treeSelectionListener(new SingleLevelSelectionListener())
+	private FilterTree<AttributeDefinition<?>> createTree() {
+		return FilterTree.builder()
+						.model(model.treeModel().treeModel())
+						.cellRenderer(new AttributeRenderer(model.treeModel()))
 						.mouseListener(new ExportTreeMouseListener())
 						.dragEnabled(true)
 						.dropMode(DropMode.INSERT)
@@ -272,64 +254,35 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void moveSelectionUp() {
-		moveSelection(true);
+		model.treeModel().move(selectedPaths(), true);
 	}
 
 	private void moveSelectionDown() {
-		moveSelection(false);
+		model.treeModel().move(selectedPaths(), false);
 	}
 
-	private void moveSelection(boolean up) {
-		TreePath[] selectionPaths = exportTree.getSelectionPaths();
-		List<AttributeNode> selected = selectedNodes(selectionPaths);
-		if (!selected.isEmpty()) {
-			refreshingNodes.set(true);
-			List<TreePath> expandedPaths = Collections.list(exportTree.getExpandedDescendants(new TreePath(exportTree.getModel().getRoot())));
-			((EntityNode) selected.get(0).getParent()).move(selected, up);
-			expandedPaths.forEach(exportTree::expandPath);
-			exportTree.setSelectionPaths(selectionPaths);
-			refreshingNodes.set(false);
-			exportTree.scrollPathToVisible(selectionPaths[0]);
-		}
-	}
-
-	private List<AttributeNode> selectedNodes(TreePath[] selectionPaths) {
-		return Stream.of(selectionPaths)
-						.filter(exportTree::isPathSelected)
-						.map(TreePath::getLastPathComponent)
-						.map(AttributeNode.class::cast)
-						.collect(toList());
+	private List<NodePath<AttributeDefinition<?>>> selectedPaths() {
+		return exportTree.model().selection().items().get();
 	}
 
 	private void toggleSelected() {
-		TreePath[] selectionPaths = exportTree.getSelectionPaths();
-		if (selectionPaths != null) {
-			Stream.of(selectionPaths)
-							.filter(exportTree::isPathSelected)
-							.map(TreePath::getLastPathComponent)
-							.map(AttributeNode.class::cast)
-							.forEach(node -> node.include().toggle());
-			exportTree.repaint();
-		}
+		model.treeModel().toggle(selectedPaths());
 	}
 
 	private void toggleChildren() {
-		TreePath[] selectionPaths = exportTree.getSelectionPaths();
-		if (selectionPaths != null) {
-			List<DefaultMutableTreeNode> children = Stream.of(selectionPaths)
-							.filter(exportTree::isPathSelected)
-							.map(TreePath::getLastPathComponent)
-							.map(DefaultMutableTreeNode.class::cast)
-							.flatMap(node -> Collections.list(node.children()).stream())
-							.map(DefaultMutableTreeNode.class::cast)
-							.collect(toList());
-			if (!children.isEmpty()) {
-				boolean allSelected = children.stream()
-								.allMatch(child -> ((AttributeNode) child).include().is());
-				children.forEach(node -> ((AttributeNode) node).include().set(!allSelected));
-				exportTree.repaint();
-			}
+		List<NodePath<AttributeDefinition<?>>> selected = selectedPaths();
+		if (selected.size() == 1) {
+			model.treeModel().toggleAll(exportTree.model().nodes().children(selected.get(0)));
 		}
+	}
+
+	private void selectionChanged(List<NodePath<AttributeDefinition<?>>> selected) {
+		//require a shared parent, the move operations reordering the children of a single parent
+		singleParentSelection.set(!selected.isEmpty() && selected.stream()
+						.map(NodePath::parent)
+						.distinct()
+						.count() == 1);
+		singleSelection.set(selected.size() == 1);
 	}
 
 	private void openConfigurationFiles() {
@@ -478,45 +431,7 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void expandIncludedNodes() {
-		collapseAll();
-		expandNodeIfHasSelectedChildren(model.treeModel().getRoot());
-		exportTree.repaint();
-	}
-
-	private void collapseAll() {
-		TreePath rootPath = new TreePath(model.treeModel().getRoot());
-		Enumeration<? extends TreeNode> children = model.treeModel().getRoot().children();
-		while (children.hasMoreElements()) {
-			collapseAll(rootPath.pathByAddingChild(children.nextElement()));
-		}
-	}
-
-	private void collapseAll(TreePath parent) {
-		TreeNode node = (TreeNode) parent.getLastPathComponent();
-		Enumeration<? extends TreeNode> children = node.children();
-		while (children.hasMoreElements()) {
-			collapseAll(parent.pathByAddingChild(children.nextElement()));
-		}
-		exportTree.collapsePath(parent);
-	}
-
-	private boolean expandNodeIfHasSelectedChildren(TreeNode node) {
-		boolean hasSelectedDescendants = false;
-		for (int i = 0; i < node.getChildCount(); i++) {
-			TreeNode child = node.getChildAt(i);
-			if (child instanceof AttributeNode) {
-				AttributeNode attrNode = (AttributeNode) child;
-				if (attrNode.include().is()) {
-					hasSelectedDescendants = true;
-				}
-				if (expandNodeIfHasSelectedChildren(child)) {
-					hasSelectedDescendants = true;
-					exportTree.expandPath(new TreePath(((DefaultMutableTreeNode) attrNode).getPath()));
-				}
-			}
-		}
-
-		return hasSelectedDescendants;
+		exportTree.model().expansion().set(model.treeModel().includedParents());
 	}
 
 	private final class ExportTreeMouseListener extends MouseAdapter {
@@ -525,33 +440,6 @@ final class EntityTableExportPanel extends JPanel {
 			if (e.isAltDown()) {
 				toggleSelected();
 			}
-		}
-	}
-
-	private static final class ExpandListener implements TreeWillExpandListener {
-		@Override
-		public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
-			Object node = event.getPath().getLastPathComponent();
-			if (node instanceof MutableForeignKeyNode) {
-				((MutableForeignKeyNode) node).populate();
-			}
-		}
-
-		@Override
-		public void treeWillCollapse(TreeExpansionEvent event) {}
-	}
-
-	private final class SingleLevelSelectionListener implements TreeSelectionListener {
-		@Override
-		public void valueChanged(TreeSelectionEvent e) {
-			//require a shared parent, not merely a shared depth: the move operations manipulate a single
-			//parent's child list, and mixed-parent selections would corrupt the tree or throw
-			singleParentSelection.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
-							.filter(exportTree::isPathSelected)
-							.map(TreePath::getParentPath)
-							.distinct()
-							.count() == 1);
-			singleSelection.set(!exportTree.isSelectionEmpty() && exportTree.getSelectionPaths().length == 1);
 		}
 	}
 
@@ -578,12 +466,12 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final class TransferableAttributeNodes implements Transferable {
 
-		private static final DataFlavor FLAVOR = new DataFlavor(AttributeNode.class, "AttributeNodeDataFlavor");
+		private static final DataFlavor FLAVOR = new DataFlavor(NodePath.class, "AttributeNodeDataFlavor");
 
-		private final List<AttributeNode> nodes;
+		private final List<NodePath<AttributeDefinition<?>>> paths;
 
-		private TransferableAttributeNodes(List<AttributeNode> nodes) {
-			this.nodes = nodes;
+		private TransferableAttributeNodes(List<NodePath<AttributeDefinition<?>>> paths) {
+			this.paths = paths;
 		}
 
 		@Override
@@ -597,8 +485,8 @@ final class EntityTableExportPanel extends JPanel {
 		}
 
 		@Override
-		public List<AttributeNode> getTransferData(DataFlavor flavor) {
-			return nodes;
+		public List<NodePath<AttributeDefinition<?>>> getTransferData(DataFlavor flavor) {
+			return paths;
 		}
 	}
 
@@ -606,7 +494,7 @@ final class EntityTableExportPanel extends JPanel {
 
 		@Override
 		protected Transferable createTransferable(JComponent component) {
-			return new TransferableAttributeNodes(singleParentSelection.is() ? selectedNodes(exportTree.getSelectionPaths()) : emptyList());
+			return new TransferableAttributeNodes(singleParentSelection.is() ? selectedPaths() : emptyList());
 		}
 
 		@Override
@@ -617,49 +505,34 @@ final class EntityTableExportPanel extends JPanel {
 		@Override
 		public boolean canImport(TransferSupport support) {
 			Point dropPoint = support.getDropLocation().getDropPoint();
-			TreePath path = exportTree.getPathForRow(exportTree.getRowForLocation(dropPoint.x, dropPoint.y));
-			if (path == null) {
+			TreePath treePath = exportTree.getPathForRow(exportTree.getRowForLocation(dropPoint.x, dropPoint.y));
+			if (treePath == null) {
 				return false;
 			}
-			List<AttributeNode> nodes = nodes(support);
-			if (nodes.isEmpty()) {
+			List<NodePath<AttributeDefinition<?>>> paths = paths(support);
+			if (paths.isEmpty()) {
 				return false;
 			}
-			AttributeNode attributeNode = (AttributeNode) path.getLastPathComponent();
-			if (selectedNodes(exportTree.getSelectionPaths()).contains(attributeNode)) {
-				// Not allow dropping on any of the selected nodes
-				return false;
-			}
-			EntityNode dropParent = (EntityNode) attributeNode.getParent();
-
-			// Only allow nodes under the same parent node to be moved
-			return nodes.get(0).getParent() == dropParent;
+			NodePath<AttributeDefinition<?>> path = (NodePath<AttributeDefinition<?>>) treePath.getLastPathComponent();
+			// Not allow dropping on any of the selected nodes, and only allow nodes under the same parent to be moved
+			return !selectedPaths().contains(path) && paths.get(0).parent().equals(path.parent());
 		}
 
 		@Override
 		public boolean importData(TransferSupport support) {
-			JTree.DropLocation dropLocation = (JTree.DropLocation) support.getDropLocation();
-			int dropIndex = dropLocation.getChildIndex();
-			if (dropIndex == -1) {
+			int dropIndex = ((JTree.DropLocation) support.getDropLocation()).getChildIndex();
+			List<NodePath<AttributeDefinition<?>>> paths = paths(support);
+			if (dropIndex == -1 || paths.isEmpty()) {
 				return false;
 			}
-			List<AttributeNode> nodes = nodes(support);
-			if (!nodes.isEmpty()) {
-				List<TreePath> expandedPaths = Collections.list(exportTree.getExpandedDescendants(new TreePath(exportTree.getModel().getRoot())));
-				TreePath[] selectionPaths = exportTree.getSelectionPaths();
-				((EntityNode) nodes.get(0).getParent()).move(nodes, dropIndex);
-				expandedPaths.forEach(exportTree::expandPath);
-				exportTree.setSelectionPaths(selectionPaths);
+			model.treeModel().move(paths, dropIndex);
 
-				return true;
-			}
-
-			return false;
+			return true;
 		}
 
-		private List<AttributeNode> nodes(TransferSupport support) {
+		private List<NodePath<AttributeDefinition<?>>> paths(TransferSupport support) {
 			try {
-				return (List<AttributeNode>) support.getTransferable()
+				return (List<NodePath<AttributeDefinition<?>>>) support.getTransferable()
 								.getTransferData(TransferableAttributeNodes.FLAVOR);
 			}
 			catch (Exception e) {
@@ -699,7 +572,7 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
-	private static class AttributeRenderer extends DefaultTreeCellRenderer {
+	private static final class AttributeRenderer extends DefaultTreeCellRenderer {
 
 		/**
 		 * To make drag'n drop easier, otherwise the renderer can be
@@ -707,19 +580,25 @@ final class EntityTableExportPanel extends JPanel {
 		 */
 		private static final int MIN_LENGTH = 25;
 
+		private final EntityTableExportTreeModel treeModel;
+
+		private AttributeRenderer(EntityTableExportTreeModel treeModel) {
+			this.treeModel = treeModel;
+		}
+
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 			Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-			if (value instanceof AttributeNode) {
-				AttributeNode treeNode = (AttributeNode) value;
-				StringBuilder builder = new StringBuilder(treeNode.definition().caption());
-				if (treeNode.include().is()) {
+			NodePath<AttributeDefinition<?>> path = (NodePath<AttributeDefinition<?>>) value;
+			if (!path.root()) {
+				StringBuilder builder = new StringBuilder(path.item().caption());
+				if (treeModel.included(path)) {
 					builder.insert(0, "+");
 				}
-				if (treeNode instanceof MutableForeignKeyNode) {
-					int includedChildrenCount = ((MutableForeignKeyNode) treeNode).includedCount();
-					if (includedChildrenCount > 0) {
-						builder.append(" (").append(includedChildrenCount).append(")");
+				if (path.item() instanceof ForeignKeyDefinition) {
+					int includedCount = treeModel.includedCount(path);
+					if (includedCount > 0) {
+						builder.append(" (").append(includedCount).append(")");
 					}
 				}
 				setText(Text.rightPad(builder.toString(), MIN_LENGTH, ' '));

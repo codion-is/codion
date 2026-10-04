@@ -18,24 +18,27 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.model.EntityExport;
+import is.codion.swing.common.model.component.tree.SwingFilterTreeModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableExportTreeModel.AttributeNode;
-import is.codion.swing.framework.ui.EntityTableExportTreeModel.EntityNode;
-import is.codion.swing.framework.ui.EntityTableExportTreeModel.MutableForeignKeyNode;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.tree.TreeNode;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.model.component.tree.NodePath.nodePath;
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
+import static is.codion.framework.db.EntityConnection.Select.all;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,6 +52,8 @@ public final class EntityTableExportPanelTest {
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
+
+	private static final NodePath<AttributeDefinition<?>> ROOT = nodePath();
 
 	@Test
 	void exportPreferencesDefaults() {
@@ -69,84 +74,200 @@ public final class EntityTableExportPanelTest {
 
 	@Test
 	void cyclicalForeignKeyExpansion() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
-		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
+		SwingFilterTreeModel<AttributeDefinition<?>> model = exportTreeModel().treeModel();
 
-		// Find the MGR_FK node (cyclical self-reference)
-		MutableForeignKeyNode mgrNode = null;
-		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
-		while (children.hasMoreElements()) {
-			AttributeNode node = (AttributeNode) children.nextElement();
-			if (node.definition().attribute().equals(Employee.MGR_FK)) {
-				mgrNode = (MutableForeignKeyNode) node;
-				break;
-			}
-		}
+		// The cyclical self-reference
+		NodePath<AttributeDefinition<?>> manager = child(model, ROOT, Employee.MGR_FK);
+		assertFalse(model.nodes().loaded(manager), "Not loaded initially");
+		assertFalse(model.nodes().leaf(manager), "Not a leaf, showing the expand icon");
 
-		assertNotNull(mgrNode, "MGR_FK node should exist");
-		assertEquals(0, mgrNode.getChildCount(), "Expandable stub should have no children initially");
-		assertFalse(mgrNode.isLeaf(), "Expandable should not be a leaf (to show expand icon)");
+		model.expansion().expand(manager);
+		assertFalse(model.nodes().children(manager).isEmpty(), "Loaded when expanded");
 
-		// Expand the cyclical stub
-		mgrNode.populate();
+		// The manager's manager
+		NodePath<AttributeDefinition<?>> managersManager = child(model, manager, Employee.MGR_FK);
+		assertFalse(model.nodes().loaded(managersManager));
 
-		// After expansion, should have children
-		assertTrue(mgrNode.getChildCount() > 0, "After expansion should have children");
+		model.expansion().expand(managersManager);
+		assertFalse(model.nodes().children(managersManager).isEmpty());
+	}
 
-		// Find the nested MGR_FK (manager's manager)
-		MutableForeignKeyNode nestedMgrNode = null;
-		Enumeration<TreeNode> mgrChildren = mgrNode.children();
-		while (mgrChildren.hasMoreElements()) {
-			AttributeNode child = (AttributeNode) mgrChildren.nextElement();
-			if (child instanceof MutableForeignKeyNode && child.definition().attribute().equals(Employee.MGR_FK)) {
-				nestedMgrNode = (MutableForeignKeyNode) child;
-				break;
-			}
-		}
-
-		assertNotNull(nestedMgrNode, "Nested MGR_FK should exist after expansion");
-		assertEquals(0, nestedMgrNode.getChildCount(), "Nested expandable node should have no children initially");
-
-		// Expand again (manager's manager's manager)
-		nestedMgrNode.populate();
-		assertTrue(nestedMgrNode.getChildCount() > 0, "After second expansion should have children");
+	@Test
+	void attributeNotLoaded() {
+		SwingFilterTreeModel<AttributeDefinition<?>> model = exportTreeModel().treeModel();
+		NodePath<AttributeDefinition<?>> name = child(model, ROOT, Employee.NAME);
+		//not a foreign key, so a leaf, which is not loaded, neither when expanded nor when refreshed
+		model.expansion().expand(name);
+		model.nodes().refresh(name);
+		assertFalse(model.nodes().loaded(name));
 	}
 
 	@Test
 	void moveOntoOwnPositionDoesNotThrow() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
-		EntityNode root = tablePanel.exportPanel().model().treeModel().getRoot();
-
-		List<AttributeNode> before = childNodes(root);
+		EntityTableExportTreeModel treeModel = exportTreeModel();
+		List<NodePath<AttributeDefinition<?>>> before = treeModel.treeModel().nodes().children(ROOT);
 		assertTrue(before.size() > 3);
-		AttributeNode third = before.get(2);
 		//dropping a node exactly where it already sits (drop index == its own index) must not throw
-		root.move(singletonList(third), 2);
-		assertEquals(before, childNodes(root));
+		treeModel.move(singletonList(before.get(2)), 2);
+		assertEquals(before, treeModel.treeModel().nodes().children(ROOT));
 	}
 
 	@Test
-	void rowSelectionFallsBackToAll() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
-		tableModel.items().refresh();
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
-		EntityTableExportModel model = tablePanel.exportPanel().model();
+	void move() {
+		EntityTableExportTreeModel treeModel = exportTreeModel();
+		SwingFilterTreeModel<AttributeDefinition<?>> model = treeModel.treeModel();
+		NodePath<AttributeDefinition<?>> manager = child(model, ROOT, Employee.MGR_FK);
+		model.expansion().expand(manager);
+		List<NodePath<AttributeDefinition<?>>> before = model.nodes().children(ROOT);
+		List<NodePath<AttributeDefinition<?>>> moved = asList(before.get(1), before.get(2));
+		model.selection().items().set(moved);
 
-		tableModel.selection().index().set(0);
-		assertTrue(model.selected().is());
-		assertFalse(model.all().is());
+		treeModel.move(moved, true);
+		assertEquals(asList(before.get(1), before.get(2), before.get(0)), model.nodes().children(ROOT).subList(0, 3));
+		//selection and expansion kept, paths identifying nodes rather than positions
+		assertEquals(moved, model.selection().items().get());
+		assertTrue(model.expansion().expanded(manager));
+		assertTrue(model.nodes().loaded(manager));
+		//already first
+		treeModel.move(moved, true);
+		assertEquals(moved, model.nodes().children(ROOT).subList(0, 2));
 
-		tableModel.selection().clear();
-		//clearing the selection deactivates 'selected'; the group must fall back to 'all', not leave both off
-		assertFalse(model.selected().is());
-		assertTrue(model.all().is());
+		treeModel.move(moved, false);
+		assertEquals(before.subList(0, 3), model.nodes().children(ROOT).subList(0, 3));
+		assertEquals(moved, model.selection().items().get());
+
+		//drag and drop, after the last
+		treeModel.move(moved, before.size());
+		assertEquals(moved, model.nodes().children(ROOT).subList(before.size() - 2, before.size()));
+		assertEquals(moved, model.selection().items().get());
 	}
 
-	private static List<AttributeNode> childNodes(EntityNode node) {
-		return Collections.list(node.children()).stream()
-						.map(AttributeNode.class::cast)
-						.collect(toList());
+	@Test
+	void showHidden() {
+		EntityTableExportTreeModel treeModel = exportTreeModel();
+		SwingFilterTreeModel<AttributeDefinition<?>> model = treeModel.treeModel();
+		NodePath<AttributeDefinition<?>> manager = child(model, ROOT, Employee.MGR_FK);
+		model.expansion().expand(manager);
+		int managerChildren = model.nodes().children(manager).size();
+		assertFalse(displayed(model, ROOT, Employee.MGR));
+
+		treeModel.showHidden().set(true);
+		assertTrue(displayed(model, ROOT, Employee.MGR));
+		assertTrue(displayed(model, ROOT, Employee.DEPARTMENT));
+		//expansion kept, the children of the expanded node now including its hidden attributes
+		assertTrue(model.expansion().expanded(manager));
+		assertTrue(model.nodes().children(manager).size() > managerChildren);
+
+		//an included hidden attribute stays displayed
+		treeModel.toggle(singletonList(child(model, ROOT, Employee.MGR)));
+		treeModel.showHidden().set(false);
+		assertTrue(displayed(model, ROOT, Employee.MGR));
+		assertFalse(displayed(model, ROOT, Employee.DEPARTMENT));
+		assertEquals(managerChildren, model.nodes().children(manager).size());
+	}
+
+	@Test
+	void hideExcluded() {
+		EntityTableExportTreeModel treeModel = exportTreeModel();
+		SwingFilterTreeModel<AttributeDefinition<?>> model = treeModel.treeModel();
+		treeModel.includeNone();
+		NodePath<AttributeDefinition<?>> manager = child(model, ROOT, Employee.MGR_FK);
+		model.expansion().expand(manager);
+		NodePath<AttributeDefinition<?>> managerName = child(model, manager, Employee.NAME);
+		treeModel.toggle(singletonList(managerName));
+		assertTrue(treeModel.included(managerName));
+		assertEquals(1, treeModel.includedCount(manager));
+		assertEquals(1, treeModel.includedCount(ROOT));
+
+		treeModel.hideExcluded();
+		assertEquals(asList(manager, managerName), model.visible().get());
+
+		treeModel.showExcluded();
+		assertTrue(model.visible().size() > 2);
+		//excluding hides it again, the predicate reading the configuration
+		treeModel.hideExcluded();
+		treeModel.toggle(singletonList(managerName));
+		assertEquals(0, model.visible().size());
+	}
+
+	@Test
+	void includeNoneShowsExcluded() {
+		EntityTableExportTreeModel treeModel = exportTreeModel();
+		SwingFilterTreeModel<AttributeDefinition<?>> model = treeModel.treeModel();
+		String header = header(treeModel);
+		int attributes = model.visible().size();
+		treeModel.includeNone();
+		treeModel.toggle(asList(child(model, ROOT, Employee.NAME), child(model, ROOT, Employee.JOB)));
+		//hides the excluded ones
+		treeModel.applyConfiguration(treeModel.toJson());
+		assertEquals(2, model.visible().size());
+		//the configuration deselected, see EntityTableExportModel.configurationFileSelected()
+		treeModel.showHidden().set(false);
+		treeModel.includeNone();
+		assertEquals(attributes, model.visible().size());
+		treeModel.includeAll();
+		assertEquals(attributes, model.visible().size());
+		assertEquals(header, header(treeModel));
+	}
+
+	@Test
+	void configuration() throws Exception {
+		EntityTableExportTreeModel treeModel = exportTreeModel();
+		SwingFilterTreeModel<AttributeDefinition<?>> model = treeModel.treeModel();
+		treeModel.includeNone();
+		NodePath<AttributeDefinition<?>> job = child(model, ROOT, Employee.JOB);
+		NodePath<AttributeDefinition<?>> manager = child(model, ROOT, Employee.MGR_FK);
+		treeModel.toggle(asList(child(model, ROOT, Employee.NAME), job, manager));
+		model.expansion().expand(manager);
+		treeModel.toggle(singletonList(child(model, manager, Employee.NAME)));
+		treeModel.move(singletonList(job), 0);
+
+		String header = header(treeModel);
+		assertTrue(header.startsWith("job\tename\tmgr_fk\tmgr_fk ename"), header);
+
+		JSONObject json = treeModel.toJson();
+		EntityTableExportTreeModel applied = new EntityTableExportTreeModel(Employee.TYPE, CONNECTION.entities());
+		applied.applyConfiguration(json);
+		assertTrue(json.similar(applied.toJson()), json + " / " + applied.toJson());
+		assertEquals(header, header(applied));
+		//the excluded attributes hidden
+		applied.treeModel().expansion().set(applied.includedParents());
+		assertEquals(asList(job, child(model, ROOT, Employee.NAME), manager, child(model, manager, Employee.NAME)),
+						applied.treeModel().visible().get().stream()
+										.filter(path -> !path.root())
+										.collect(toList()).subList(0, 4));
+	}
+
+	private static String header(EntityTableExportTreeModel treeModel) {
+		StringBuilder output = new StringBuilder();
+		EntityExport.builder(CONNECTION)
+						.entityType(Employee.TYPE)
+						.attributes(treeModel::attributes)
+						.entities(CONNECTION.select(all(Employee.TYPE).build()).iterator())
+						.output(output::append)
+						.export();
+
+		return output.substring(0, output.indexOf("\n"));
+	}
+
+	private static EntityTableExportTreeModel exportTreeModel() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
+
+		return tablePanel.exportPanel().model().treeModel();
+	}
+
+	private static NodePath<AttributeDefinition<?>> child(SwingFilterTreeModel<AttributeDefinition<?>> model,
+																												NodePath<AttributeDefinition<?>> parent, Attribute<?> attribute) {
+		return model.nodes().children(parent).stream()
+						.filter(path -> path.item().attribute().equals(attribute))
+						.findFirst()
+						.orElseThrow(() -> new AssertionError(attribute + " not found below " + parent));
+	}
+
+	private static boolean displayed(SwingFilterTreeModel<AttributeDefinition<?>> model,
+																	 NodePath<AttributeDefinition<?>> parent, Attribute<?> attribute) {
+		return model.nodes().children(parent).stream()
+						.anyMatch(path -> path.item().attribute().equals(attribute));
 	}
 }

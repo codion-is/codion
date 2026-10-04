@@ -97,6 +97,7 @@ Codion Change Log
 - EntityTablePanel.Config.conditionPanel() renamed conditions().
 - EntityConditionComponents, the item and enum based column operand combo boxes now include a null item for clearing the operand, a non-nullable column included.
 - EntityTablePanel.condition() renamed conditions().
+- EntityTableExportPanel, the attribute tree is now a FilterTree, its configuration kept apart from the tree, showing or hiding the hidden attributes no longer collapsing it.
 ### is.codion.framework.domain.db
 - SchemaDomain.DefaultSchemaSettings now uses Locale.ROOT when lowercasing audit column names.
 ### is.codion.framework.model
