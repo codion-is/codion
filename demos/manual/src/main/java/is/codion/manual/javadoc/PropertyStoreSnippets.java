@@ -29,23 +29,23 @@ import java.nio.file.Path;
  */
 final class PropertyStoreSnippets {
 
-	void usage() throws IOException {
-		Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties"); // @start region=usage
+  void usage() throws IOException {
+    Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties"); // @start region=usage
 
-		PropertyStore store = PropertyStore.propertyStore(configurationFile);
+    PropertyStore store = PropertyStore.propertyStore(configurationFile);
 
-		Value<Boolean> featureEnabled = store.booleanValue("feature.enabled", false);
-		Value<String> defaultUsername = store.stringValue("default.username", System.getProperty("user.name"));
+    Value<Boolean> featureEnabled = store.booleanValue("feature.enabled", false);
+    Value<String> defaultUsername = store.stringValue("default.username", System.getProperty("user.name"));
 
-		featureEnabled.set(true);
-		defaultUsername.set("scott");
+    featureEnabled.set(true);
+    defaultUsername.set("scott");
 
-		store.writeToFile(configurationFile);
+    store.writeToFile(configurationFile);
 
-		//reverts to the default value
-		featureEnabled.set(null);
-		defaultUsername.set(null);
+    //reverts to the default value
+    featureEnabled.set(null);
+    defaultUsername.set(null);
 
-		String isFeatureEnabled = System.getProperty("feature.enabled"); // "false" // @end
-	}
+    String isFeatureEnabled = System.getProperty("feature.enabled"); // "false" // @end
+  }
 }

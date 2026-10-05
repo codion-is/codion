@@ -30,23 +30,23 @@ import java.sql.SQLException;
  */
 final class SessionContextSnippets {
 
-	void usage() {
-		class AuditContext implements SessionContext { // @start region=usage
+  void usage() {
+    class AuditContext implements SessionContext { // @start region=usage
 
-			@Override
-			public void prepare(Connection connection, ClientInfo clientInfo) throws SQLException {
-				try (CallableStatement statement = connection.prepareCall("{call set_audit_user(?)}")) {
-					statement.setString(1, clientInfo.user());
-					statement.execute();
-				}
-			}
+      @Override
+      public void prepare(Connection connection, ClientInfo clientInfo) throws SQLException {
+        try (CallableStatement statement = connection.prepareCall("{call set_audit_user(?)}")) {
+          statement.setString(1, clientInfo.user());
+          statement.execute();
+        }
+      }
 
-			@Override
-			public void release(Connection connection, ClientInfo clientInfo) throws SQLException {
-				try (CallableStatement statement = connection.prepareCall("{call clear_audit_user()}")) {
-					statement.execute();
-				}
-			}
-		} // @end
-	}
+      @Override
+      public void release(Connection connection, ClientInfo clientInfo) throws SQLException {
+        try (CallableStatement statement = connection.prepareCall("{call clear_audit_user()}")) {
+          statement.execute();
+        }
+      }
+    } // @end
+  }
 }

@@ -36,60 +36,60 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  * Transient attributes are useful for UI state, temporary calculations and values the record carries without
  * storing. They are editable fields wherever the framework builds components from attribute definitions, which is
  * what makes them the way a form holds something the table does not store:
- * {@snippet class = is.codion.demos.chinook.javadoc.TransientAttributeDefinitionSnippets region = usage :
- * interface Customer {
- * 	EntityType TYPE = DOMAIN.entityType("chinook.customer");
+ * {@snippet class = "is.codion.demos.chinook.javadoc.TransientAttributeDefinitionSnippets" region = "usage" :
+ * interface Customer { // @start region=usage
+ *   EntityType TYPE = DOMAIN.entityType("chinook.customer");
  *
- * 	// Database columns
- * 	Column<Long> ID = TYPE.longColumn("id");
- * 	Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
- * 	Column<String> LASTNAME = TYPE.stringColumn("lastname");
+ *   // Database columns
+ *   Column<Long> ID = TYPE.longColumn("id");
+ *   Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+ *   Column<String> LASTNAME = TYPE.stringColumn("lastname");
  *
- * 	// Transient attributes
- * 	Attribute<Boolean> SELECTED = TYPE.booleanAttribute("selected");
- * 	Attribute<String> NOTES = TYPE.stringAttribute("notes");
+ *   // Transient attributes
+ *   Attribute<Boolean> SELECTED = TYPE.booleanAttribute("selected");
+ *   Attribute<String> NOTES = TYPE.stringAttribute("notes");
  * }
  *
  * EntityDefinition customer() {
- * 	return Customer.TYPE.as()
- * 					.attributes(
- * 									// Database columns
- * 									Customer.ID.as()
- * 													.primaryKey(),
- * 									Customer.FIRSTNAME.as()
- * 													.column()
- * 													.caption("First name"),
- * 									Customer.LASTNAME.as()
- * 													.column()
- * 													.caption("Last name"),
+ *   return Customer.TYPE.as()
+ *           .attributes(
+ *                   // Database columns
+ *                   Customer.ID.as()
+ *                           .primaryKey(),
+ *                   Customer.FIRSTNAME.as()
+ *                           .column()
+ *                           .caption("First name"),
+ *                   Customer.LASTNAME.as()
+ *                           .column()
+ *                           .caption("Last name"),
  *
- * 									// UI state attribute that doesn't modify entity
- * 									Customer.SELECTED.as()
- * 													.attribute()
- * 													.modifies(false) // Doesn't mark entity as modified
- * 													.defaultValue(false)
- * 													.caption("Selected"),
+ *                   // UI state attribute that doesn't modify entity
+ *                   Customer.SELECTED.as()
+ *                           .attribute()
+ *                           .modifies(false) // Doesn't mark entity as modified
+ *                           .defaultValue(false)
+ *                           .caption("Selected"),
  *
- * 									// Temporary notes (modifies entity by default)
- * 									Customer.NOTES.as()
- * 													.attribute()
- * 													.caption("Notes"))
- * 					.build();
+ *                   // Temporary notes (modifies entity by default)
+ *                   Customer.NOTES.as()
+ *                           .attribute()
+ *                           .caption("Notes"))
+ *           .build();
  * }
  *
  * void customers(EntityConnection connection) {
- * 	// Transient attributes are initialized to null when entities are loaded
- * 	Entity customer = connection.selectSingle(Customer.ID.equalTo(1L));
+ *   // Transient attributes are initialized to null when entities are loaded
+ *   Entity customer = connection.selectSingle(Customer.ID.equalTo(1L));
  *
- * 	customer.set(Customer.SELECTED, true);
- * 	customer.modified(); // false, SELECTED doesn't modify the entity
+ *   customer.set(Customer.SELECTED, true);
+ *   customer.modified(); // false, SELECTED doesn't modify the entity
  *
- * 	customer.set(Customer.NOTES, "Important customer");
- * 	customer.modified(); // true, NOTES modifies the entity
+ *   customer.set(Customer.NOTES, "Important customer");
+ *   customer.modified(); // true, NOTES modifies the entity
  *
- * 	// Transient attributes are ignored during database operations,
- * 	// updating an entity with only transient values modified results in an error
- * }}
+ *   // Transient attributes are ignored during database operations,
+ *   // updating an entity with only transient values modified results in an error
+ * } // @end}
  * @param <T> the attribute value type
  * @see #modifies()
  */

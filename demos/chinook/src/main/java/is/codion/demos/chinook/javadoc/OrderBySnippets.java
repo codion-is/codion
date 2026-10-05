@@ -34,109 +34,109 @@ import java.util.List;
  */
 final class OrderBySnippets {
 
-	void usage(EntityConnection connection) {
-		// Default ordering for the entity // @start region=usage
-		Customer.TYPE.as()
-						.attributes(
-										Customer.LASTNAME.as()
-														.column()
-														.caption("Last name"),
-										Customer.FIRSTNAME.as()
-														.column()
-														.caption("First name"))
-						.orderBy(OrderBy.builder()
-										.ascending(Customer.LASTNAME, Customer.FIRSTNAME)
-										.build())
-						.build();
+  void usage(EntityConnection connection) {
+    // Default ordering for the entity // @start region=usage
+    Customer.TYPE.as()
+            .attributes(
+                    Customer.LASTNAME.as()
+                            .column()
+                            .caption("Last name"),
+                    Customer.FIRSTNAME.as()
+                            .column()
+                            .caption("First name"))
+            .orderBy(OrderBy.builder()
+                    .ascending(Customer.LASTNAME, Customer.FIRSTNAME)
+                    .build())
+            .build();
 
-		// Query usage examples
-		// Simple ascending sort
-		List<Entity> customers = connection.select(
-						Select.all(Customer.TYPE)
-										.orderBy(OrderBy.ascending(Customer.LASTNAME)));
+    // Query usage examples
+    // Simple ascending sort
+    List<Entity> customers = connection.select(
+            Select.all(Customer.TYPE)
+                    .orderBy(OrderBy.ascending(Customer.LASTNAME)));
 
-		// Multiple columns, mixed directions
-		List<Entity> tracksByRatingAndName = connection.select(
-						Select.all(Track.TYPE)
-										.orderBy(OrderBy.builder()
-														.descending(Track.RATING) // Highest rated first
-														.ascendingIgnoreCase(Track.NAME) // Case-insensitive names
-														.build()));
+    // Multiple columns, mixed directions
+    List<Entity> tracksByRatingAndName = connection.select(
+            Select.all(Track.TYPE)
+                    .orderBy(OrderBy.builder()
+                            .descending(Track.RATING) // Highest rated first
+                            .ascendingIgnoreCase(Track.NAME) // Case-insensitive names
+                            .build()));
 
-		// With null handling
-		List<Entity> tracksByComposer = connection.select(
-						Select.all(Track.TYPE)
-										.orderBy(OrderBy.builder()
-														.ascending(OrderBy.NullOrder.NULLS_LAST, Track.COMPOSER)
-														.build())); // @end
-	}
+    // With null handling
+    List<Entity> tracksByComposer = connection.select(
+            Select.all(Track.TYPE)
+                    .orderBy(OrderBy.builder()
+                            .ascending(OrderBy.NullOrder.NULLS_LAST, Track.COMPOSER)
+                            .build())); // @end
+  }
 
-	void builder(EntityConnection connection, boolean byRating, boolean byPlayCount) {
-		// Complex ordering with multiple columns and options // @start region=builder
-		OrderBy order = OrderBy.builder()
-						.descending(Track.RATING) // Highest rated first
-						.ascending(Track.ARTIST_NAME) // Then by artist
-						.descending(OrderBy.NullOrder.NULLS_LAST, Track.COMPOSER) // Then by composer (nulls last)
-						.ascendingIgnoreCase(Track.NAME) // Finally by name (case-insensitive)
-						.build();
+  void builder(EntityConnection connection, boolean byRating, boolean byPlayCount) {
+    // Complex ordering with multiple columns and options // @start region=builder
+    OrderBy order = OrderBy.builder()
+            .descending(Track.RATING) // Highest rated first
+            .ascending(Track.ARTIST_NAME) // Then by artist
+            .descending(OrderBy.NullOrder.NULLS_LAST, Track.COMPOSER) // Then by composer (nulls last)
+            .ascendingIgnoreCase(Track.NAME) // Finally by name (case-insensitive)
+            .build();
 
-		// Use in query
-		List<Entity> tracks = connection.select(
-						Select.all(Track.TYPE)
-										.orderBy(order));
+    // Use in query
+    List<Entity> tracks = connection.select(
+            Select.all(Track.TYPE)
+                    .orderBy(order));
 
-		// Builder pattern allows conditional ordering
-		OrderBy.Builder builder = OrderBy.builder();
-		if (byRating) {
-			builder.descending(Track.RATING);
-		}
-		builder.ascending(Track.NAME);
-		if (byPlayCount) {
-			builder.descending(Track.PLAY_COUNT);
-		}
-		OrderBy dynamicOrder = builder.build(); // @end
-	}
+    // Builder pattern allows conditional ordering
+    OrderBy.Builder builder = OrderBy.builder();
+    if (byRating) {
+      builder.descending(Track.RATING);
+    }
+    builder.ascending(Track.NAME);
+    if (byPlayCount) {
+      builder.descending(Track.PLAY_COUNT);
+    }
+    OrderBy dynamicOrder = builder.build(); // @end
+  }
 
-	void ascending(EntityConnection connection) {
-		// Single column ascending // @start region=ascending
-		OrderBy byName = OrderBy.ascending(Artist.NAME);
+  void ascending(EntityConnection connection) {
+    // Single column ascending // @start region=ascending
+    OrderBy byName = OrderBy.ascending(Artist.NAME);
 
-		// Multiple columns ascending
-		OrderBy byLastAndFirstName = OrderBy.ascending(Customer.LASTNAME, Customer.FIRSTNAME);
+    // Multiple columns ascending
+    OrderBy byLastAndFirstName = OrderBy.ascending(Customer.LASTNAME, Customer.FIRSTNAME);
 
-		// Usage in queries
-		List<Entity> customers = connection.select(
-						Select.all(Customer.TYPE)
-										.orderBy(OrderBy.ascending(Customer.LASTNAME)));
+    // Usage in queries
+    List<Entity> customers = connection.select(
+            Select.all(Customer.TYPE)
+                    .orderBy(OrderBy.ascending(Customer.LASTNAME)));
 
-		// Usage in entity definition as default ordering
-		Customer.TYPE.as()
-						.attributes(
-										Customer.LASTNAME.as()
-														.column()
-														.caption("Last name"),
-										Customer.FIRSTNAME.as()
-														.column()
-														.caption("First name"))
-						.orderBy(OrderBy.ascending(Customer.LASTNAME, Customer.FIRSTNAME))
-						.build(); // @end
-	}
+    // Usage in entity definition as default ordering
+    Customer.TYPE.as()
+            .attributes(
+                    Customer.LASTNAME.as()
+                            .column()
+                            .caption("Last name"),
+                    Customer.FIRSTNAME.as()
+                            .column()
+                            .caption("First name"))
+            .orderBy(OrderBy.ascending(Customer.LASTNAME, Customer.FIRSTNAME))
+            .build(); // @end
+  }
 
-	void descending(EntityConnection connection, Entity customer) {
-		// Single column descending // @start region=descending
-		OrderBy byDateDescending = OrderBy.descending(Invoice.DATE);
+  void descending(EntityConnection connection, Entity customer) {
+    // Single column descending // @start region=descending
+    OrderBy byDateDescending = OrderBy.descending(Invoice.DATE);
 
-		// Multiple columns descending
-		OrderBy byRatingAndPlayCount = OrderBy.descending(Track.RATING, Track.PLAY_COUNT);
+    // Multiple columns descending
+    OrderBy byRatingAndPlayCount = OrderBy.descending(Track.RATING, Track.PLAY_COUNT);
 
-		// Usage - most recent invoices first
-		List<Entity> recentInvoices = connection.select(
-						Select.all(Invoice.TYPE)
-										.orderBy(OrderBy.descending(Invoice.DATE)));
+    // Usage - most recent invoices first
+    List<Entity> recentInvoices = connection.select(
+            Select.all(Invoice.TYPE)
+                    .orderBy(OrderBy.descending(Invoice.DATE)));
 
-		// Combine with conditions
-		List<Entity> recentCustomerInvoices = connection.select(
-						Select.where(Invoice.CUSTOMER_FK.equalTo(customer))
-										.orderBy(OrderBy.descending(Invoice.DATE))); // @end
-	}
+    // Combine with conditions
+    List<Entity> recentCustomerInvoices = connection.select(
+            Select.where(Invoice.CUSTOMER_FK.equalTo(customer))
+                    .orderBy(OrderBy.descending(Invoice.DATE))); // @end
+  }
 }

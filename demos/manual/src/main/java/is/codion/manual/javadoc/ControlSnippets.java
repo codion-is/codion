@@ -27,14 +27,14 @@ import is.codion.swing.common.ui.control.Control;
  */
 final class ControlSnippets {
 
-	void usage(State selectionEmpty) {
-		CommandControl delete = Control.builder() // @start region=usage
-						.command(this::deleteSelected)
-						.caption("Delete")
-						.mnemonic('D')
-						.enabled(selectionEmpty.not())
-						.build(); // @end
-	}
+  void usage(State selectionEmpty) {
+    CommandControl delete = Control.builder() // @start region=usage
+            .command(this::deleteSelected)
+            .caption("Delete")
+            .mnemonic('D')
+            .enabled(selectionEmpty.not())
+            .build(); // @end
+  }
 
-	private void deleteSelected() {}
+  private void deleteSelected() {}
 }

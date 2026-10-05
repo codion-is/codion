@@ -31,13 +31,13 @@ import static is.codion.swing.common.ui.component.builder.ComponentValueBuilder.
  */
 final class ComponentValueBuilderSnippets {
 
-	void componentValue() {
-		JTextField textField = // @start region=componentValue
-						Components.stringField()
-										.build();
+  void componentValue() {
+    JTextField textField = // @start region=componentValue
+            Components.stringField()
+                    .build();
 
-		ComponentValue<JTextField, String> componentValue =
-						(ComponentValue<JTextField, String>)
-										textField.getClientProperty(COMPONENT_VALUE); // @end
-	}
+    ComponentValue<JTextField, String> componentValue =
+            (ComponentValue<JTextField, String>)
+                    textField.getClientProperty(COMPONENT_VALUE); // @end
+  }
 }

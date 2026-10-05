@@ -30,8 +30,9 @@ import java.sql.Connection;
  * a connection pool for the duration of an invocation, or replaces one which has gone bad, in place.
  * <p>Connections created via {@link LocalEntityConnection#localEntityConnection} implement this,
  * reached by casting:
- * {@snippet class = is.codion.demos.chinook.javadoc.ConnectionHolderSnippets region = attach :
- * ((ConnectionHolder) entityConnection).attach(connectionPool.connection(user));}
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ConnectionHolderSnippets" region = "attach" :
+ * // @start region=attach
+ * ((ConnectionHolder) entityConnection).attach(connectionPool.connection(user)); // @end}
  * A self-managing connection, see {@link LocalEntityConnection#builder()}, does not implement this,
  * its underlying connection being its own to manage.
  */

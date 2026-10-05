@@ -30,35 +30,35 @@ import java.util.function.Consumer;
  */
 final class EventSnippets {
 
-	// Strongly referenced by this instance, for the weak region
-	private final Runnable listener = this::doSomethingElse;
-	private final Consumer<Boolean> consumer = this::onBoolean;
+  // Strongly referenced by this instance, for the weak region
+  private final Runnable listener = this::doSomethingElse;
+  private final Consumer<Boolean> consumer = this::onBoolean;
 
-	void usage() {
-		Event<Boolean> event = Event.event(); // @start region=usage
+  void usage() {
+    Event<Boolean> event = Event.event(); // @start region=usage
 
-		event.addListener(this::doSomething);
+    event.addListener(this::doSomething);
 
-		event.run();
+    event.run();
 
-		event.addConsumer(this::onBoolean);
+    event.addConsumer(this::onBoolean);
 
-		event.accept(true);
+    event.accept(true);
 
-		Observer<Boolean> observer = event.observer();
+    Observer<Boolean> observer = event.observer();
 
-		observer.addListener(this::doSomethingElse); // @end
-	}
+    observer.addListener(this::doSomethingElse); // @end
+  }
 
-	void weak(Observer<Boolean> observer) {
-		// listener and consumer are fields // @start region=weak
-		observer.addWeakListener(listener);
-		observer.addWeakConsumer(consumer); // @end
-	}
+  void weak(Observer<Boolean> observer) {
+    // listener and consumer are fields // @start region=weak
+    observer.addWeakListener(listener);
+    observer.addWeakConsumer(consumer); // @end
+  }
 
-	private void doSomething() {}
+  private void doSomething() {}
 
-	private void doSomethingElse() {}
+  private void doSomethingElse() {}
 
-	private void onBoolean(@Nullable Boolean value) {}
+  private void onBoolean(@Nullable Boolean value) {}
 }

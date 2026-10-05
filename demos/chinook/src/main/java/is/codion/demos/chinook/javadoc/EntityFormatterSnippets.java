@@ -29,17 +29,17 @@ import is.codion.framework.domain.entity.EntityFormatter;
  */
 final class EntityFormatterSnippets {
 
-	void usage(EntityConnection connection) {
-		Entity track = connection.selectSingle(Track.NAME.equalTo("Come As You Are")); // @start region=usage
+  void usage(EntityConnection connection) {
+    Entity track = connection.selectSingle(Track.NAME.equalTo("Come As You Are")); // @start region=usage
 
-		EntityFormatter formatter = EntityFormatter.builder()
-						.text("Name=")
-						.value(Track.NAME)
-						.text(", Album='")
-						.value(Track.ALBUM_FK, Album.TITLE)
-						.text("'")
-						.build();
+    EntityFormatter formatter = EntityFormatter.builder()
+            .text("Name=")
+            .value(Track.NAME)
+            .text(", Album='")
+            .value(Track.ALBUM_FK, Album.TITLE)
+            .text("'")
+            .build();
 
-		System.out.println(formatter.apply(track)); // Name=Come As You Are, Album='Nevermind' // @end
-	}
+    System.out.println(formatter.apply(track)); // Name=Come As You Are, Album='Nevermind' // @end
+  }
 }

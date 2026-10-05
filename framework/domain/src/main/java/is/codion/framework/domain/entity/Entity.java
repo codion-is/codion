@@ -68,13 +68,13 @@ import static java.util.stream.Collectors.*;
  *   <li>Create defensive copies with {@link #copy()} when passing entities between threads</li>
  * </ul>
  * <p>
- * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = usage :
- * // Creating and working with entities
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "usage" :
+ * // Creating and working with entities // @start region=usage
  * Entity customer = entities.entity(Customer.TYPE)
- * 				.with(Customer.FIRSTNAME, "John")
- * 				.with(Customer.LASTNAME, "Doe")
- * 				.with(Customer.EMAIL, "john@example.com")
- * 				.build();
+ *         .with(Customer.FIRSTNAME, "John")
+ *         .with(Customer.LASTNAME, "Doe")
+ *         .with(Customer.EMAIL, "john@example.com")
+ *         .build();
  *
  * // Accessing values
  * String lastName = customer.get(Customer.LASTNAME);
@@ -85,10 +85,10 @@ import static java.util.stream.Collectors.*;
  * boolean modified = customer.modified(Customer.EMAIL); // true
  *
  * // Reverting changes
- * customer.revert(Customer.EMAIL); // back to "john@example.com"}
+ * customer.revert(Customer.EMAIL); // back to "john@example.com" // @end}
  * <p>
- * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = foreignKeys :
- * // Working with foreign keys
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "foreignKeys" :
+ * // Working with foreign keys // @start region=foreignKeys
  * Entity invoice = connection.selectSingle(Invoice.ID.equalTo(123L));
  *
  * // Access the referenced entity (automatically loaded if configured)
@@ -98,7 +98,7 @@ import static java.util.stream.Collectors.*;
  * String lastName = invoice.get(Invoice.CUSTOMER_FK).get(Customer.LASTNAME);
  *
  * // Get the foreign key value
- * Key customerKey = invoice.key(Invoice.CUSTOMER_FK);}
+ * Key customerKey = invoice.key(Invoice.CUSTOMER_FK); // @end}
  * @see EntityDefinition#entity()
  * @see Entities#entity(EntityType)
  * @see Entities#key(EntityType)
@@ -230,20 +230,20 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 * a foreign key value exists but the actual referenced entity has not
 	 * been loaded, an "empty" entity is returned, containing only the referenced
 	 * key value(s). Null is returned only if the actual foreign key is null.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = entity :
-	 * Entity invoice = connection.selectSingle(Invoice.ID.equalTo(42L));
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "entity" :
+	 * Entity invoice = connection.selectSingle(Invoice.ID.equalTo(42L)); // @start region=entity
 	 *
 	 * // Get the customer entity - may be fully loaded or just contain the key
 	 * Entity customer = invoice.entity(Invoice.CUSTOMER_FK);
 	 *
 	 * if (customer != null) {
-	 * 	// This is always available - the foreign key value
-	 * 	Long customerId = customer.get(Customer.ID);
+	 *   // This is always available - the foreign key value
+	 *   Long customerId = customer.get(Customer.ID);
 	 *
-	 * 	// This may return null if customer wasn't loaded
-	 * 	// and the foreign key entity doesn't contain Customer.LASTNAME
-	 * 	String lastName = customer.get(Customer.LASTNAME);
-	 * }}
+	 *   // This may return null if customer wasn't loaded
+	 *   // and the foreign key entity doesn't contain Customer.LASTNAME
+	 *   String lastName = customer.get(Customer.LASTNAME);
+	 * } // @end}
 	 * @param foreignKey the foreign key for which to retrieve the referenced entity
 	 * @return the entity associated with {@code foreignKey}
 	 */
@@ -260,11 +260,11 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	/**
 	 * Returns true if the value associated with the given attribute has been modified since first set,
 	 * note that this does not apply to attributes based on derived values.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = modified :
-	 * Entity customer = entities.entity(Customer.TYPE)
-	 * 				.with(Customer.FIRSTNAME, "John")
-	 * 				.with(Customer.EMAIL, "john@example.com")
-	 * 				.build();
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "modified" :
+	 * Entity customer = entities.entity(Customer.TYPE) // @start region=modified
+	 *         .with(Customer.FIRSTNAME, "John")
+	 *         .with(Customer.EMAIL, "john@example.com")
+	 *         .build();
 	 *
 	 * customer.modified(Customer.FIRSTNAME); // false
 	 *
@@ -272,7 +272,7 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 * customer.modified(Customer.FIRSTNAME); // true
 	 *
 	 * customer.save();
-	 * customer.modified(Customer.FIRSTNAME); // false}
+	 * customer.modified(Customer.FIRSTNAME); // false // @end}
 	 * @param attribute the attribute
 	 * @return true if the value associated with the given attribute has been modified
 	 */
@@ -299,21 +299,21 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 * <p>A non-derived attribute must be present in both entities or in neither, so one present in only one of
 	 * them, a lazily loaded column for example, makes the entities unequal. A derived attribute is compared by
 	 * value alone, whether it has been computed and cached on either side being immaterial.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = valuesEqual :
-	 * Entity customer1 = entities.entity(Customer.TYPE)
-	 * 				.with(Customer.ID, 42L)
-	 * 				.with(Customer.LASTNAME, "Doe")
-	 * 				.build();
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "valuesEqual" :
+	 * Entity customer1 = entities.entity(Customer.TYPE) // @start region=valuesEqual
+	 *         .with(Customer.ID, 42L)
+	 *         .with(Customer.LASTNAME, "Doe")
+	 *         .build();
 	 *
 	 * Entity customer2 = entities.entity(Customer.TYPE)
-	 * 				.with(Customer.ID, 42L)
-	 * 				.with(Customer.LASTNAME, "Doe")
-	 * 				.with(Customer.EMAIL, "john@example.com") // present in customer2 only
-	 * 				.build();
+	 *         .with(Customer.ID, 42L)
+	 *         .with(Customer.LASTNAME, "Doe")
+	 *         .with(Customer.EMAIL, "john@example.com") // present in customer2 only
+	 *         .build();
 	 *
 	 * customer1.equals(customer2);      // true, the primary keys are equal
 	 * customer1.valuesEqual(customer2); // false, EMAIL is present in customer2 only
-	 * customer2.valuesEqual(customer1); // false, symmetric}
+	 * customer2.valuesEqual(customer1); // false, symmetric // @end}
 	 * @param entity the entity to compare to
 	 * @return true if the two entities contain the same attributes with equal values
 	 * @throws IllegalArgumentException in case the entity is not of the same type
@@ -324,9 +324,9 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	/**
 	 * <p>Returns true if this entity and the given one contain the given attributes with equal values, each
 	 * attribute compared as by {@link #valuesEqual(Entity)}.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = valuesEqualAttributes :
-	 * customer1.valuesEqual(customer2, List.of(Customer.ID, Customer.LASTNAME)); // true, ID and LASTNAME are equal
-	 * customer1.valuesEqual(customer2, List.of(Customer.ID, Customer.EMAIL));    // false, EMAIL is present in customer2 only}
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "valuesEqualAttributes" :
+	 * customer1.valuesEqual(customer2, List.of(Customer.ID, Customer.LASTNAME)); // true, ID and LASTNAME are equal // @start region=valuesEqualAttributes
+	 * customer1.valuesEqual(customer2, List.of(Customer.ID, Customer.EMAIL));    // false, EMAIL is present in customer2 only // @end}
 	 * @param entity the entity to compare to
 	 * @param attributes the attributes to compare
 	 * @return true if the two entities contain the given attributes with equal values
@@ -346,12 +346,12 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 
 	/**
 	 * Returns a {@link Copy} instance providing ways to create copies of this entity.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = copy :
-	 * Entity customer = entities.entity(Customer.TYPE)
-	 * 				.with(Customer.ID, 42L)
-	 * 				.with(Customer.LASTNAME, "Doe")
-	 * 				.with(Customer.EMAIL, "john@example.com")
-	 * 				.build();
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "copy" :
+	 * Entity customer = entities.entity(Customer.TYPE) // @start region=copy
+	 *         .with(Customer.ID, 42L)
+	 *         .with(Customer.LASTNAME, "Doe")
+	 *         .with(Customer.EMAIL, "john@example.com")
+	 *         .build();
 	 *
 	 * // Create a mutable copy
 	 * Entity mutableCopy = customer.copy().mutable();
@@ -363,9 +363,9 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 *
 	 * // Create a builder initialized with entity values
 	 * Entity newCustomer = customer.copy().builder()
-	 * 				.with(Customer.ID, 43L) // Different ID
-	 * 				.with(Customer.PHONE, "555-1234") // Additional field
-	 * 				.build();}
+	 *         .with(Customer.ID, 43L) // Different ID
+	 *         .with(Customer.PHONE, "555-1234") // Additional field
+	 *         .build(); // @end}
 	 * @return a {@link Copy} instance for this entity
 	 */
 	Copy copy();
@@ -495,15 +495,15 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 * being recorded as a modification.
 	 * <p>
 	 * Instances are not thread safe and not intended to be reused after {@link #build()}.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = builder :
-	 * Domain domain = new ChinookImpl();
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "builder" :
+	 * Domain domain = new ChinookImpl(); // @start region=builder
 	 *
 	 * Entities entities = domain.entities();
 	 *
 	 * Entity customer = entities.entity(Customer.TYPE)
-	 * 				.with(Customer.FIRSTNAME, "John")
-	 * 				.with(Customer.LASTNAME, "Doe")
-	 * 				.build();}
+	 *         .with(Customer.FIRSTNAME, "John")
+	 *         .with(Customer.LASTNAME, "Doe")
+	 *         .build(); // @end}
 	 * @see Entities#entity(EntityType)
 	 * @see Entity#builder(Key)
 	 * @see Copy#builder()
@@ -670,19 +670,19 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	/**
 	 * Returns a {@link LinkedHashMap} containing the given entities mapped to the value of {@code attribute},
 	 * respecting the iteration order of the given collection
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntitySnippets region = groupByValue :
-	 * List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(album));
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySnippets" region = "groupByValue" :
+	 * List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(album)); // @start region=groupByValue
 	 *
 	 * // Group the tracks by composer
 	 * LinkedHashMap<String, List<Entity>> tracksByComposer =
-	 * 				Entity.groupByValue(Track.COMPOSER, tracks);
+	 *         Entity.groupByValue(Track.COMPOSER, tracks);
 	 *
 	 * // Process the tracks by composer
 	 * tracksByComposer.forEach((composer, composerTracks) ->
-	 * 				System.out.println("Composer: " + composer + ", tracks: " + composerTracks.size()));
+	 *         System.out.println("Composer: " + composer + ", tracks: " + composerTracks.size()));
 	 *
 	 * // Tracks without a composer are grouped under null
-	 * List<Entity> noComposerTracks = tracksByComposer.get(null);}
+	 * List<Entity> noComposerTracks = tracksByComposer.get(null); // @end}
 	 * @param <T> the key type
 	 * @param attribute the attribute which value should be used for mapping
 	 * @param entities the entities to map by attribute value

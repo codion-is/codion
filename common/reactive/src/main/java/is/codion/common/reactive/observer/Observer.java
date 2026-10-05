@@ -91,9 +91,9 @@ public interface Observer<T> {
 	 * Note: Dead weak references accumulate until cleaned up, which happens automatically
 	 * when listeners are added or removed. To trigger cleanup manually without modifying
 	 * the listener set, call {@link #removeWeakListener(Runnable)} with any non-existing listener:
-	 * {@snippet class = is.codion.manual.javadoc.ObserverSnippets region = removeWeakListener :
-	 * // Clean up dead weak references
-	 * observer.removeWeakListener(() -> {});}
+	 * {@snippet class = "is.codion.manual.javadoc.ObserverSnippets" region = "removeWeakListener" :
+	 * // Clean up dead weak references // @start region=removeWeakListener
+	 * observer.removeWeakListener(() -> {}); // @end}
 	 * @param listener the listener
 	 * @return true if this observer did not already contain the specified listener
 	 */
@@ -117,9 +117,9 @@ public interface Observer<T> {
 	 * Note: Dead weak references accumulate until cleaned up, which happens automatically
 	 * when listeners are added or removed. To trigger cleanup manually without modifying
 	 * the listener set, call {@link #removeWeakConsumer(Consumer)} with any non-existing consumer:
-	 * {@snippet class = is.codion.manual.javadoc.ObserverSnippets region = removeWeakConsumer :
-	 * // Clean up dead weak references
-	 * observer.removeWeakConsumer(data -> {});}
+	 * {@snippet class = "is.codion.manual.javadoc.ObserverSnippets" region = "removeWeakConsumer" :
+	 * // Clean up dead weak references // @start region=removeWeakConsumer
+	 * observer.removeWeakConsumer(data -> {}); // @end}
 	 * @param consumer the consumer
 	 * @return true if this observer did not already contain the specified consumer
 	 */

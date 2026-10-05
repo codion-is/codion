@@ -30,15 +30,15 @@ import java.awt.event.MouseEvent;
  */
 final class FilterTableSnippets {
 
-	void doubleClick() {
-		class DoubleClickAction extends AbstractAction {
+  void doubleClick() {
+    class DoubleClickAction extends AbstractAction {
 
-			@Override // @start region=doubleClick
-			public void actionPerformed(ActionEvent event) {
-				MouseEvent mouseEvent = (MouseEvent) event.getSource();
-				Point location = mouseEvent.getLocationOnScreen();
-				// ...
-			} // @end
-		}
-	}
+      @Override // @start region=doubleClick
+      public void actionPerformed(ActionEvent event) {
+        MouseEvent mouseEvent = (MouseEvent) event.getSource();
+        Point location = mouseEvent.getLocationOnScreen();
+        // ...
+      } // @end
+    }
+  }
 }

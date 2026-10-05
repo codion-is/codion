@@ -27,20 +27,20 @@ import java.util.Locale;
  */
 final class LocaleDateTimePatternSnippets {
 
-	void usage() {
-		LocaleDateTimePattern pattern = LocaleDateTimePattern.builder() // @start region=usage
-						.delimiterDash()
-						.yearFourDigits()
-						.hoursMinutes()
-						.build();
+  void usage() {
+    LocaleDateTimePattern pattern = LocaleDateTimePattern.builder() // @start region=usage
+            .delimiterDash()
+            .yearFourDigits()
+            .hoursMinutes()
+            .build();
 
-		Locale iceland = Locale.forLanguageTag("is-IS");
-		Locale us = Locale.forLanguageTag("en-US");
+    Locale iceland = Locale.forLanguageTag("is-IS");
+    Locale us = Locale.forLanguageTag("en-US");
 
-		pattern.datePattern(iceland);     // "dd-MM-yyyy"
-		pattern.datePattern(us);          // "MM-dd-yyyy"
+    pattern.datePattern(iceland);     // "dd-MM-yyyy"
+    pattern.datePattern(us);          // "MM-dd-yyyy"
 
-		pattern.dateTimePattern(iceland); // "dd-MM-yyyy HH:mm"
-		pattern.dateTimePattern(us);      // "MM-dd-yyyy HH:mm" // @end
-	}
+    pattern.dateTimePattern(iceland); // "dd-MM-yyyy HH:mm"
+    pattern.dateTimePattern(us);      // "MM-dd-yyyy HH:mm" // @end
+  }
 }

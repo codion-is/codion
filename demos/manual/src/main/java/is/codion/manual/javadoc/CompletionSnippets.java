@@ -28,10 +28,10 @@ import javax.swing.JComboBox;
  */
 final class CompletionSnippets {
 
-	void usage(JComboBox<String> comboBox) {
-		Completion.builder() // @start region=usage
-						.mode(Mode.AUTOCOMPLETE)
-						.normalize(false)
-						.enable(comboBox); // @end
-	}
+  void usage(JComboBox<String> comboBox) {
+    Completion.builder() // @start region=usage
+            .mode(Mode.AUTOCOMPLETE)
+            .normalize(false)
+            .enable(comboBox); // @end
+  }
 }

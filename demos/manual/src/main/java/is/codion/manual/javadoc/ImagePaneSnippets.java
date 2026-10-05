@@ -37,141 +37,144 @@ import java.util.List;
  */
 final class ImagePaneSnippets {
 
-	void image(BufferedImage bufferedImage, BufferedImage newImage) {
-		ImagePane pane = ImagePane.builder() // @start region=image
-						.image(bufferedImage)
-						.build();
+  void image(BufferedImage bufferedImage, BufferedImage newImage) {
+    ImagePane pane = ImagePane.builder() // @start region=image
+            .image(bufferedImage)
+            .build();
 
-		// Or change the image reactively
-		pane.image().set(newImage); // @end
-	}
+    // Or change the image reactively
+    pane.image().set(newImage); // @end
+  }
 
-	void zoomDevice() {
-		ImagePane pane = ImagePane.builder() // @start region=zoomDevice
-						.zoomDevice(ZoomDevice.MOUSE_BUTTON)
-						.build();
+  void zoomDevice() {
+    ImagePane pane = ImagePane.builder() // @start region=zoomDevice
+            .zoomDevice(ZoomDevice.MOUSE_BUTTON)
+            .build();
 
-		// Or change reactively
-		pane.zoomDevice().set(ZoomDevice.NONE); // @end
-	}
+    // Or change reactively
+    pane.zoomDevice().set(ZoomDevice.NONE); // @end
+  }
 
-	void zoomIncrement(ImagePane pane) {
-		pane.zoomIncrement().set(0.3); // 30% increment // @start region=zoomIncrement @end
-	}
+  void zoomIncrement(ImagePane pane) {
+    // @start region=zoomIncrement
+    pane.zoomIncrement().set(0.3); // 30% increment // @end
+  }
 
-	void zoom(ImagePane pane) {
-		pane.zoom().set(2.0); // Zoom to 200% // @start region=zoom @end
-	}
+  void zoom(ImagePane pane) {
+    // @start region=zoom
+    pane.zoom().set(2.0); // Zoom to 200% // @end
+  }
 
-	void autoResize() {
-		ImagePane pane = ImagePane.builder() // @start region=autoResize
-						.autoResize(true)
-						.build();
+  void autoResize() {
+    ImagePane pane = ImagePane.builder() // @start region=autoResize
+            .autoResize(true)
+            .build();
 
-		// Or toggle reactively
-		pane.autoResize().set(true); // @end
-	}
+    // Or toggle reactively
+    pane.autoResize().set(true); // @end
+  }
 
-	void navigable() {
-		ImagePane pane = ImagePane.builder() // @start region=navigable
-						.navigable(true)
-						.build();
+  void navigable() {
+    ImagePane pane = ImagePane.builder() // @start region=navigable
+            .navigable(true)
+            .build();
 
-		// Or toggle reactively
-		pane.navigable().set(false); // @end
-	}
+    // Or toggle reactively
+    pane.navigable().set(false); // @end
+  }
 
-	void movable(ImagePane pane) {
-		pane.movable().set(false); // Disable dragging // @start region=movable @end
-	}
+  void movable(ImagePane pane) {
+    // @start region=movable
+    pane.movable().set(false); // Disable dragging // @end
+  }
 
-	void origin(ImagePane pane) {
-		// Move image to show a specific region // @start region=origin
-		pane.origin().set(new Point(-200, -100));
+  void origin(ImagePane pane) {
+    // Move image to show a specific region // @start region=origin
+    pane.origin().set(new Point(-200, -100));
 
-		// React to origin changes
-		pane.origin().addConsumer(origin ->
-						System.out.println("Image origin: " + origin)); // @end
-	}
+    // React to origin changes
+    pane.origin().addConsumer(origin ->
+            System.out.println("Image origin: " + origin)); // @end
+  }
 
-	void usage(MouseEvent mouseEvent) throws IOException {
-		BufferedImage image = ImageIO.read(new File("photo.jpg")); // @start region=usage
+  void usage(MouseEvent mouseEvent) throws IOException {
+    BufferedImage image = ImageIO.read(new File("photo.jpg")); // @start region=usage
 
-		ImagePane pane = ImagePane.builder()
-						.image(image)
-						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
-						.autoResize(true)
-						.navigable(true)
-						.movable(true)
-						.build();
+    ImagePane pane = ImagePane.builder()
+            .image(image)
+            .zoomDevice(ZoomDevice.MOUSE_WHEEL)
+            .autoResize(true)
+            .navigable(true)
+            .movable(true)
+            .build();
 
-		// Coordinate translation
-		Point2D.Double imagePoint = pane.coordinates().toImage(mouseEvent.getPoint());
+    // Coordinate translation
+    Point2D.Double imagePoint = pane.coordinates().toImage(mouseEvent.getPoint());
 
-		// Center image on a specific point
-		pane.center().onImage(new Point2D.Double(500, 300));
+    // Center image on a specific point
+    pane.center().onImage(new Point2D.Double(500, 300));
 
-		// Programmatic zoom
-		pane.zoom().set(1.5);
+    // Programmatic zoom
+    pane.zoom().set(1.5);
 
-		// React to zoom changes
-		pane.zoom().addConsumer(zoom ->
-						System.out.println("Zoom level: " + zoom)); // @end
-	}
+    // React to zoom changes
+    pane.zoom().addConsumer(zoom ->
+            System.out.println("Zoom level: " + zoom)); // @end
+  }
 
-	void originUsage(ImagePane pane) {
-		// Center image coordinates (500, 300) in the pane, as center().onImage() does // @start region=originUsage
-		Point2D.Double panePoint = pane.coordinates().toPane(new Point2D.Double(500, 300));
-		Point origin = pane.origin().getOrThrow();
-		pane.origin().set(new Point(
-						origin.x + pane.getWidth() / 2 - (int) panePoint.x,
-						origin.y + pane.getHeight() / 2 - (int) panePoint.y));
+  void originUsage(ImagePane pane) {
+    // Center image coordinates (500, 300) in the pane, as center().onImage() does // @start region=originUsage
+    Point2D.Double panePoint = pane.coordinates().toPane(new Point2D.Double(500, 300));
+    Point origin = pane.origin().getOrThrow();
+    pane.origin().set(new Point(
+            origin.x + pane.getWidth() / 2 - (int) panePoint.x,
+            origin.y + pane.getHeight() / 2 - (int) panePoint.y));
 
-		// React to origin changes (e.g., when user drags the image)
-		pane.origin().addConsumer(this::updateVisibleRegionIndicator); // @end
-	}
+    // React to origin changes (e.g., when user drags the image)
+    pane.origin().addConsumer(this::updateVisibleRegionIndicator); // @end
+  }
 
-	void gridOverlay(BufferedImage image) {
-		ImagePane imagePane = ImagePane.builder() // @start region=gridOverlay
-						.image(image)
-						.overlay((g2d, pane) -> {
-							g2d.setColor(new Color(255, 255, 255, 100));
-							// Draw grid lines every 100 image pixels
-							for (int x = 0; x < image.getWidth(); x += 100) {
-								Point2D.Double top = pane.coordinates().toPane(new Point2D.Double(x, 0));
-								Point2D.Double bottom = pane.coordinates().toPane(
-												new Point2D.Double(x, image.getHeight()));
-								g2d.drawLine((int) top.x, (int) top.y, (int) bottom.x, (int) bottom.y);
-							}
-						})
-						.build(); // @end
-	}
+  void gridOverlay(BufferedImage image) {
+    ImagePane imagePane = ImagePane.builder() // @start region=gridOverlay
+            .image(image)
+            .overlay((g2d, pane) -> {
+              g2d.setColor(new Color(255, 255, 255, 100));
+              // Draw grid lines every 100 image pixels
+              for (int x = 0; x < image.getWidth(); x += 100) {
+                Point2D.Double top = pane.coordinates().toPane(new Point2D.Double(x, 0));
+                Point2D.Double bottom = pane.coordinates().toPane(
+                        new Point2D.Double(x, image.getHeight()));
+                g2d.drawLine((int) top.x, (int) top.y, (int) bottom.x, (int) bottom.y);
+              }
+            })
+            .build(); // @end
+  }
 
-	void regionOverlay(BufferedImage image) {
-		List<Rectangle> taggedRegions = taggedRegions(); // @start region=regionOverlay
+  void regionOverlay(BufferedImage image) {
+    List<Rectangle> taggedRegions = taggedRegions(); // @start region=regionOverlay
 
-		ImagePane imagePane = ImagePane.builder()
-						.image(image)
-						.overlay((g2d, pane) -> {
-							g2d.setColor(new Color(255, 0, 0, 128));
-							for (Rectangle region : taggedRegions) {
-								// Convert image coordinates to pane coordinates
-								Point2D.Double topLeft = pane.coordinates().toPane(
-												new Point2D.Double(region.x, region.y));
-								Point2D.Double bottomRight = pane.coordinates().toPane(
-												new Point2D.Double(region.x + region.width, region.y + region.height));
+    ImagePane imagePane = ImagePane.builder()
+            .image(image)
+            .overlay((g2d, pane) -> {
+              g2d.setColor(new Color(255, 0, 0, 128));
+              for (Rectangle region : taggedRegions) {
+                // Convert image coordinates to pane coordinates
+                Point2D.Double topLeft = pane.coordinates().toPane(
+                        new Point2D.Double(region.x, region.y));
+                Point2D.Double bottomRight = pane.coordinates().toPane(
+                        new Point2D.Double(region.x + region.width, region.y + region.height));
 
-								int width = (int) (bottomRight.x - topLeft.x);
-								int height = (int) (bottomRight.y - topLeft.y);
-								g2d.fillRect((int) topLeft.x, (int) topLeft.y, width, height);
-							}
-						})
-						.build(); // @end
-	}
+                int width = (int) (bottomRight.x - topLeft.x);
+                int height = (int) (bottomRight.y - topLeft.y);
+                g2d.fillRect((int) topLeft.x, (int) topLeft.y, width, height);
+              }
+            })
+            .build(); // @end
+  }
 
-	private void updateVisibleRegionIndicator(Point origin) {}
+  private void updateVisibleRegionIndicator(Point origin) {}
 
-	private static List<Rectangle> taggedRegions() {
-		return List.of();
-	}
+  private static List<Rectangle> taggedRegions() {
+    return List.of();
+  }
 }

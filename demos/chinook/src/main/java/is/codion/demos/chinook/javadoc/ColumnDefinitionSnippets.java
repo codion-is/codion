@@ -36,53 +36,53 @@ import static is.codion.demos.chinook.domain.api.Chinook.DOMAIN;
  */
 final class ColumnDefinitionSnippets {
 
-	interface Invoice { // @start region=usage
-		EntityType TYPE = DOMAIN.entityType("chinook.invoice");
+  interface Invoice { // @start region=usage
+    EntityType TYPE = DOMAIN.entityType("chinook.invoice");
 
-		Column<Long> ID = TYPE.longColumn("id");
-		Column<LocalDate> DATE = TYPE.localDateColumn("invoicedate");
-		Column<String> BILLINGCITY = TYPE.stringColumn("billingcity");
-		Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
-		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
-	}
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<LocalDate> DATE = TYPE.localDateColumn("invoicedate");
+    Column<String> BILLINGCITY = TYPE.stringColumn("billingcity");
+    Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
+    Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+  }
 
-	EntityDefinition invoice() {
-		return Invoice.TYPE.as()
-						.attributes(
-										// Primary key with auto-generation
-										Invoice.ID.as()
-														.primaryKey()
-														.generator(Generator.identity()),
+  EntityDefinition invoice() {
+    return Invoice.TYPE.as()
+            .attributes(
+                    // Primary key with auto-generation
+                    Invoice.ID.as()
+                            .primaryKey()
+                            .generator(Generator.identity()),
 
-										// Required column
-										Invoice.DATE.as()
-														.column()
-														.caption("Date")
-														.nullable(false),
+                    // Required column
+                    Invoice.DATE.as()
+                            .column()
+                            .caption("Date")
+                            .nullable(false),
 
-										// String column with length constraint
-										Invoice.BILLINGCITY.as()
-														.column()
-														.caption("Billing city")
-														.maximumLength(40),
+                    // String column with length constraint
+                    Invoice.BILLINGCITY.as()
+                            .column()
+                            .caption("Billing city")
+                            .maximumLength(40),
 
-										// Decimal column with precision and range validation,
-										// the database providing a default value
-										Invoice.TOTAL.as()
-														.column()
-														.caption("Total")
-														.nullable(false)
-														.minimum(0)
-														.fractionDigits(2)
-														.withDefault(true),
+                    // Decimal column with precision and range validation,
+                    // the database providing a default value
+                    Invoice.TOTAL.as()
+                            .column()
+                            .caption("Total")
+                            .nullable(false)
+                            .minimum(0)
+                            .fractionDigits(2)
+                            .withDefault(true),
 
-										// Audit column (database-managed)
-										Invoice.INSERT_TIME.as()
-														.column()
-														.caption("Inserted")
-														.insertable(false)  // Not included in INSERT
-														.updatable(false)   // Not included in UPDATE
-														.withDefault(true)) // Database provides a default value
-						.build();
-	} // @end
+                    // Audit column (database-managed)
+                    Invoice.INSERT_TIME.as()
+                            .column()
+                            .caption("Inserted")
+                            .insertable(false)  // Not included in INSERT
+                            .updatable(false)   // Not included in UPDATE
+                            .withDefault(true)) // Database provides a default value
+            .build();
+  } // @end
 }

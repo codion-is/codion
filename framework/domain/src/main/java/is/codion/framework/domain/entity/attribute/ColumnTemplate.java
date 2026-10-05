@@ -20,35 +20,35 @@ package is.codion.framework.domain.entity.attribute;
 
 /**
  * Specifies a reusable column configuration.
- * {@snippet class = is.codion.demos.chinook.javadoc.ColumnTemplateSnippets region = usage :
- * ColumnTemplate<String> REQUIRED_SEARCHABLE =
- * 				column -> column.as()
- * 								.column()
- * 								.nullable(false)
- * 								.searchable(true);
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnTemplateSnippets" region = "usage" :
+ * ColumnTemplate<String> REQUIRED_SEARCHABLE = // @start region=usage
+ *         column -> column.as()
+ *                 .column()
+ *                 .nullable(false)
+ *                 .searchable(true);
  *
  * Customer.LASTNAME.as(REQUIRED_SEARCHABLE)
- * 				.maximumLength(20);}
+ *         .maximumLength(20); // @end}
  * <p>A template configures the column from the ground up, so it is free to use any
  * {@link Column.ColumnDefiner} method, a subquery or primary key column is templated
  * just like a regular one.
- * {@snippet class = is.codion.demos.chinook.javadoc.ColumnTemplateSnippets region = subquery :
- * static ColumnTemplate<Integer> count(String subquery) {
- * 	return column -> column.as()
- * 					.subquery(subquery)
- * 					.numberGrouping(true);
- * }}
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnTemplateSnippets" region = "subquery" :
+ * static ColumnTemplate<Integer> count(String subquery) { // @start region=subquery
+ *   return column -> column.as()
+ *           .subquery(subquery)
+ *           .numberGrouping(true);
+ * } // @end}
  * <p>Templates compose by applying the one being extended.
- * {@snippet class = is.codion.demos.chinook.javadoc.ColumnTemplateSnippets region = compose :
- * ColumnTemplate<String> NAME =
- * 				column -> column.as()
- * 								.column()
- * 								.maximumLength(120)
- * 								.searchable(true);
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnTemplateSnippets" region = "compose" :
+ * ColumnTemplate<String> NAME = // @start region=compose
+ *         column -> column.as()
+ *                 .column()
+ *                 .maximumLength(120)
+ *                 .searchable(true);
  *
  * ColumnTemplate<String> REQUIRED_NAME =
- * 				column -> NAME.apply(column)
- * 								.nullable(false);}
+ *         column -> NAME.apply(column)
+ *                 .nullable(false); // @end}
  * @param <T> the column type
  * @see Column#as(ColumnTemplate)
  */

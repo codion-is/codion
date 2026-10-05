@@ -27,33 +27,33 @@ import is.codion.common.reactive.value.ValueSet;
  */
 final class StateSnippets {
 
-	void usage() {
-		State state = State.state(); // @start region=usage
+  void usage() {
+    State state = State.state(); // @start region=usage
 
-		ObservableState observable = state.observable();
+    ObservableState observable = state.observable();
 
-		observable.addConsumer(this::onStateChange);
+    observable.addConsumer(this::onStateChange);
 
-		state.set(true);
-		state.set(false);
+    state.set(true);
+    state.set(false);
 
-		boolean value = state.is();
+    boolean value = state.is();
 
-		ObservableState opposite = state.not(); // @end
-	}
+    ObservableState opposite = state.not(); // @end
+  }
 
-	void contains() {
-		ValueSet<String> tags = ValueSet.valueSet(); // @start region=contains
-		State containsImportant = State.contains(tags, "important");
+  void contains() {
+    ValueSet<String> tags = ValueSet.valueSet(); // @start region=contains
+    State containsImportant = State.contains(tags, "important");
 
-		// State → Set
-		containsImportant.set(true);
-		tags.contains("important"); // true
+    // State → Set
+    containsImportant.set(true);
+    tags.contains("important"); // true
 
-		// Set → State
-		tags.remove("important");
-		containsImportant.is(); // false // @end
-	}
+    // Set → State
+    tags.remove("important");
+    containsImportant.is(); // false // @end
+  }
 
-	private void onStateChange(boolean state) {}
+  private void onStateChange(boolean state) {}
 }

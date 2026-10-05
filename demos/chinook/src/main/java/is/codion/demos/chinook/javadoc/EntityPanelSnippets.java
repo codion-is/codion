@@ -31,32 +31,33 @@ import javax.swing.JFrame;
  */
 final class EntityPanelSnippets {
 
-	void usage(EntityConnection connection) {
-		SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connection); // @start region=usage
-		EntityPanel entityPanel = new EntityPanel(entityModel);
-		entityPanel.initialize();
-		JFrame frame = new JFrame();
-		frame.add(entityPanel);
-		frame.pack();
-		frame.setVisible(true); // @end
-	}
+  void usage(EntityConnection connection) {
+    SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connection); // @start region=usage
+    EntityPanel entityPanel = new EntityPanel(entityModel);
+    entityPanel.initialize();
+    JFrame frame = new JFrame();
+    frame.add(entityPanel);
+    frame.pack();
+    frame.setVisible(true); // @end
+  }
 
-	static final class CustomPanel extends EntityPanel {
+  static final class CustomPanel extends EntityPanel {
 
-		CustomPanel(SwingEntityModel model) {
-			super(model);
-			configureControls(layout -> layout // @start region=configureControls
-							.separator()
-							.control(createCustomControl())); // @end
-		}
+    CustomPanel(SwingEntityModel model) {
+      super(model);
+      configureControls(layout -> layout // @start region=configureControls
+              .separator()
+              .control(createCustomControl())); // @end
+    }
 
-		@Override
-		public String preferencesKey() {
-			return model().preferencesKey(); // @start region=preferencesKey @end
-		}
+    @Override
+    public String preferencesKey() {
+      // @start region=preferencesKey
+      return model().preferencesKey(); // @end
+    }
 
-		private Control createCustomControl() {
-			return Control.command(() -> {});
-		}
-	}
+    private Control createCustomControl() {
+      return Control.command(() -> {});
+    }
+  }
 }

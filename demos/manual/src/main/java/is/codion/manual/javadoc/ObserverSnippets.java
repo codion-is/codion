@@ -25,13 +25,13 @@ import is.codion.common.reactive.observer.Observer;
  */
 final class ObserverSnippets {
 
-	void removeWeakListener(Observer<String> observer) {
-		// Clean up dead weak references // @start region=removeWeakListener
-		observer.removeWeakListener(() -> {}); // @end
-	}
+  void removeWeakListener(Observer<String> observer) {
+    // Clean up dead weak references // @start region=removeWeakListener
+    observer.removeWeakListener(() -> {}); // @end
+  }
 
-	void removeWeakConsumer(Observer<String> observer) {
-		// Clean up dead weak references // @start region=removeWeakConsumer
-		observer.removeWeakConsumer(data -> {}); // @end
-	}
+  void removeWeakConsumer(Observer<String> observer) {
+    // Clean up dead weak references // @start region=removeWeakConsumer
+    observer.removeWeakConsumer(data -> {}); // @end
+  }
 }

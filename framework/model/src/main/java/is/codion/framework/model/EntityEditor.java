@@ -305,15 +305,15 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * split up for use with a background thread.
 	 * <p>A {@link EditorTask} captures entity state and, where applicable, fires "before" events at creation time.
 	 * It should be executed promptly after creation, not cached for later use.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityEditorSnippets region = task :
-	 * // Must be called on the UI thread, fires "before" events and captures entity state
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditorSnippets" region = "task" :
+	 * // Must be called on the UI thread, fires "before" events and captures entity state // @start region=task
 	 * EditorTask<Entity> task = editor.tasks().insert();
 	 *
 	 * // Can safely be called in a background thread
 	 * EditorTask.Result<Entity> result = task.perform();
 	 *
 	 * // Must be called on the UI thread, fires "after" events
-	 * Entity insertedEntity = result.handle();}
+	 * Entity insertedEntity = result.handle(); // @end}
 	 * <p>The split is not a transaction boundary. {@link #perform()} does the work and commits it where the task
 	 * persists; {@link Result#handle()} only announces it. A result that is never handled therefore leaves the work
 	 * done and nothing notified - no "after" event, no {@link PersistenceEvents} publication, no editor state
@@ -1090,12 +1090,12 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * propagating in the current cascade is given its derived value but propagates no further - so a pair
 		 * deriving from each other settles after one lap whether or not it ever reaches a fixpoint. When setting
 		 * values in an entity, each attribute is propagated to once, the assignment included.
-		 * {@snippet class = is.codion.demos.chinook.javadoc.EntityEditorSnippets region = propagate :
-		 * // Populate billing address fields when customer changes
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditorSnippets" region = "propagate" :
+		 * // Populate billing address fields when customer changes // @start region=propagate
 		 * editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
-		 * 				customer -> customer == null ? null : customer.get(Customer.ADDRESS));
+		 *         customer -> customer == null ? null : customer.get(Customer.ADDRESS));
 		 * editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGCITY,
-		 * 				customer -> customer == null ? null : customer.get(Customer.CITY));}
+		 *         customer -> customer == null ? null : customer.get(Customer.CITY)); // @end}
 		 * @param attribute the target attribute to propagate to
 		 * @param deriver the function deriving the target value from the source attribute's value
 		 * @param <V> the target attribute value type

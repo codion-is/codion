@@ -29,34 +29,34 @@ import java.util.List;
  */
 final class ProxyBuilderSnippets {
 
-	void usage() {
-		List<String> list = new ArrayList<>(); // @start region=usage
+  void usage() {
+    List<String> list = new ArrayList<>(); // @start region=usage
 
-		ProxyBuilder<List<String>> builder = ProxyBuilder.of(new TypeReference<List<String>>() {})
-						.delegate(list)
-						.method("add", Object.class, parameters -> {
-							Object item = parameters.arguments().get(0);
-							System.out.println("Adding: " + item);
+    ProxyBuilder<List<String>> builder = ProxyBuilder.of(new TypeReference<List<String>>() {})
+            .delegate(list)
+            .method("add", Object.class, parameters -> {
+              Object item = parameters.arguments().get(0);
+              System.out.println("Adding: " + item);
 
-							return parameters.delegate().add((String) item);
-						})
-						.method("size", parameters -> {
-							System.out.println("Size");
+              return parameters.delegate().add((String) item);
+            })
+            .method("size", parameters -> {
+              System.out.println("Size");
 
-							return parameters.delegate().size();
-						});
+              return parameters.delegate().size();
+            });
 
-		List<String> proxy1 = builder.build();
+    List<String> proxy1 = builder.build();
 
-		// Builder can be reused and modified
-		builder.method("remove", Object.class, parameters -> {
-			Object item = parameters.arguments().get(0);
-			System.out.println("Removing: " + item);
+    // Builder can be reused and modified
+    builder.method("remove", Object.class, parameters -> {
+      Object item = parameters.arguments().get(0);
+      System.out.println("Removing: " + item);
 
-			return parameters.delegate().remove(item);
-		});
+      return parameters.delegate().remove(item);
+    });
 
-		List<String> proxy2 = builder.build(); // Has all three methods
-		// proxy1 still has only add() and size() methods proxied // @end
-	}
+    List<String> proxy2 = builder.build(); // Has all three methods
+    // proxy1 still has only add() and size() methods proxied // @end
+  }
 }

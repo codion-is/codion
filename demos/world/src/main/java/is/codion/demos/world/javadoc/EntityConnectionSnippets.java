@@ -30,51 +30,51 @@ import java.util.List;
  */
 final class EntityConnectionSnippets {
 
-	void include(EntityConnection connection) {
-		// Include a lazy blob column along with all defaults // @start region=include
-		List<Entity> countries = connection.select(
-						Select.all(Country.TYPE)
-										.include(Country.FLAG)); // FLAG is .selected(false)
+  void include(EntityConnection connection) {
+    // Include a lazy blob column along with all defaults // @start region=include
+    List<Entity> countries = connection.select(
+            Select.all(Country.TYPE)
+                    .include(Country.FLAG)); // FLAG is .selected(false)
 
-		// Include a lazy column with explicit attributes
-		List<Entity> flags = connection.select(
-						Select.all(Country.TYPE)
-										.attributes(Country.CODE, Country.NAME)
-										.include(Country.FLAG)); // @end
-	}
+    // Include a lazy column with explicit attributes
+    List<Entity> flags = connection.select(
+            Select.all(Country.TYPE)
+                    .attributes(Country.CODE, Country.NAME)
+                    .include(Country.FLAG)); // @end
+  }
 
-	void exclude(EntityConnection connection) {
-		// Exclude an expensive subquery column // @start region=exclude
-		List<Entity> countries = connection.select(
-						Select.all(Country.TYPE)
-										.exclude(Country.NO_OF_CITIES));
+  void exclude(EntityConnection connection) {
+    // Exclude an expensive subquery column // @start region=exclude
+    List<Entity> countries = connection.select(
+            Select.all(Country.TYPE)
+                    .exclude(Country.NO_OF_CITIES));
 
-		// Include a lazy column, exclude others
-		List<Entity> flags = connection.select(
-						Select.all(Country.TYPE)
-										.include(Country.FLAG)
-										.exclude(Country.NO_OF_CITIES, Country.NO_OF_LANGUAGES)); // @end
-	}
+    // Include a lazy column, exclude others
+    List<Entity> flags = connection.select(
+            Select.all(Country.TYPE)
+                    .include(Country.FLAG)
+                    .exclude(Country.NO_OF_CITIES, Country.NO_OF_LANGUAGES)); // @end
+  }
 
-	void builderInclude() {
-		// Include the lazy FLAG column with all defaults // @start region=builderInclude
-		Select.all(Country.TYPE)
-						.include(Country.FLAG);
+  void builderInclude() {
+    // Include the lazy FLAG column with all defaults // @start region=builderInclude
+    Select.all(Country.TYPE)
+            .include(Country.FLAG);
 
-		// Include the lazy column with specific attributes
-		Select.all(Country.TYPE)
-						.attributes(Country.CODE, Country.NAME)
-						.include(Country.FLAG); // @end
-	}
+    // Include the lazy column with specific attributes
+    Select.all(Country.TYPE)
+            .attributes(Country.CODE, Country.NAME)
+            .include(Country.FLAG); // @end
+  }
 
-	void builderExclude() {
-		// Exclude the expensive subquery columns // @start region=builderExclude
-		Select.all(Country.TYPE)
-						.exclude(Country.NO_OF_CITIES, Country.NO_OF_LANGUAGES);
+  void builderExclude() {
+    // Exclude the expensive subquery columns // @start region=builderExclude
+    Select.all(Country.TYPE)
+            .exclude(Country.NO_OF_CITIES, Country.NO_OF_LANGUAGES);
 
-		// Include lazy, exclude others
-		Select.all(Country.TYPE)
-						.include(Country.FLAG)
-						.exclude(Country.NO_OF_CITIES, Country.NO_OF_LANGUAGES); // @end
-	}
+    // Include lazy, exclude others
+    Select.all(Country.TYPE)
+            .include(Country.FLAG)
+            .exclude(Country.NO_OF_CITIES, Country.NO_OF_LANGUAGES); // @end
+  }
 }

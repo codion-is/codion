@@ -40,12 +40,12 @@ import static is.codion.common.utilities.Configuration.integerValue;
 /**
  * Provides entities based on query conditions.
  * The default data source can be overridden by using {@link #dataSource()}.
- * {@snippet class = is.codion.demos.chinook.javadoc.EntityQueryModelSnippets region = dataSource :
- * tableModel.query().dataSource().set(query -> {
- * 	EntityConnection connection = query.connection();
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityQueryModelSnippets" region = "dataSource" :
+ * tableModel.query().dataSource().set(query -> { // @start region=dataSource
+ *   EntityConnection connection = query.connection();
  *
- * 	return connection.select(Employee.LASTNAME.equalTo("Peacock"));
- * });}
+ *   return connection.select(Employee.LASTNAME.equalTo("Peacock"));
+ * }); // @end}
  * @see EntityTableModel#query()
  */
 public interface EntityQueryModel {
@@ -172,15 +172,15 @@ public interface EntityQueryModel {
 		 * This allows complete control over the base attribute set, rather than just adding to or removing from defaults.
 		 * <p>
 		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
-		 * {@snippet class = is.codion.demos.chinook.javadoc.EntityQueryModelSnippets region = defaults :
-		 * // Replace defaults with a minimal set
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityQueryModelSnippets" region = "defaults" :
+		 * // Replace defaults with a minimal set // @start region=defaults
 		 * EntityQueryModel query = tableModel.query();
 		 * query.attributes().defaults().set(List.of(Employee.ID, Employee.LASTNAME));
 		 * tableModel.items().refresh();
 		 *
 		 * // Revert to entity definition defaults
 		 * query.attributes().defaults().clear();
-		 * tableModel.items().refresh();}
+		 * tableModel.items().refresh(); // @end}
 		 * @return the {@link ValueSet} controlling the default base attributes
 		 * @see #included()
 		 * @see #excluded()
@@ -198,15 +198,15 @@ public interface EntityQueryModel {
 		 * replace the entire default attribute set.
 		 * <p>
 		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
-		 * {@snippet class = is.codion.demos.world.javadoc.EntityQueryModelSnippets region = included :
-		 * // Include a lazy blob column on-demand
+		 * {@snippet class = "is.codion.demos.world.javadoc.EntityQueryModelSnippets" region = "included" :
+		 * // Include a lazy blob column on-demand // @start region=included
 		 * EntityQueryModel query = tableModel.query();
 		 * query.attributes().included().add(Country.FLAG);
 		 * tableModel.items().refresh();
 		 *
 		 * // Remove the lazy attribute
 		 * query.attributes().included().remove(Country.FLAG);
-		 * tableModel.items().refresh();}
+		 * tableModel.items().refresh(); // @end}
 		 * @return the {@link ValueSet} controlling additional attributes to include
 		 * @see #excluded()
 		 */
@@ -221,15 +221,15 @@ public interface EntityQueryModel {
 		 * and attributes required by included foreign keys cannot be excluded.
 		 * <p>
 		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
-		 * {@snippet class = is.codion.demos.chinook.javadoc.EntityQueryModelSnippets region = excluded :
-		 * // Exclude expensive computed columns
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityQueryModelSnippets" region = "excluded" :
+		 * // Exclude expensive computed columns // @start region=excluded
 		 * EntityQueryModel query = tableModel.query();
 		 * query.attributes().excluded().add(Artist.NUMBER_OF_TRACKS);
 		 * tableModel.items().refresh();
 		 *
 		 * // Re-include the column
 		 * query.attributes().excluded().remove(Artist.NUMBER_OF_TRACKS);
-		 * tableModel.items().refresh();}
+		 * tableModel.items().refresh(); // @end}
 		 * @return the {@link ValueSet} controlling attributes to exclude
 		 * @see #included()
 		 */

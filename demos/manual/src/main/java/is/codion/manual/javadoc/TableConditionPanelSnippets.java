@@ -26,9 +26,9 @@ import is.codion.swing.common.ui.control.Controls;
  */
 final class TableConditionPanelSnippets {
 
-	void controls(TableConditionPanel<?> conditionPanel) {
-		Controls conditionControls = conditionPanel.controls().copy() // @start region=controls
-						.caption("Filters")
-						.build(); // @end
-	}
+  void controls(TableConditionPanel<?> conditionPanel) {
+    Controls conditionControls = conditionPanel.controls().copy() // @start region=controls
+            .caption("Filters")
+            .build(); // @end
+  }
 }

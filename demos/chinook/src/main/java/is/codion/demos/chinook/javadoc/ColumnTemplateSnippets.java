@@ -26,32 +26,32 @@ import is.codion.framework.domain.entity.attribute.ColumnTemplate;
  */
 final class ColumnTemplateSnippets {
 
-	void usage() {
-		ColumnTemplate<String> REQUIRED_SEARCHABLE = // @start region=usage
-						column -> column.as()
-										.column()
-										.nullable(false)
-										.searchable(true);
+  void usage() {
+    ColumnTemplate<String> REQUIRED_SEARCHABLE = // @start region=usage
+            column -> column.as()
+                    .column()
+                    .nullable(false)
+                    .searchable(true);
 
-		Customer.LASTNAME.as(REQUIRED_SEARCHABLE)
-						.maximumLength(20); // @end
-	}
+    Customer.LASTNAME.as(REQUIRED_SEARCHABLE)
+            .maximumLength(20); // @end
+  }
 
-	static ColumnTemplate<Integer> count(String subquery) { // @start region=subquery
-		return column -> column.as()
-						.subquery(subquery)
-						.numberGrouping(true);
-	} // @end
+  static ColumnTemplate<Integer> count(String subquery) { // @start region=subquery
+    return column -> column.as()
+            .subquery(subquery)
+            .numberGrouping(true);
+  } // @end
 
-	void compose() {
-		ColumnTemplate<String> NAME = // @start region=compose
-						column -> column.as()
-										.column()
-										.maximumLength(120)
-										.searchable(true);
+  void compose() {
+    ColumnTemplate<String> NAME = // @start region=compose
+            column -> column.as()
+                    .column()
+                    .maximumLength(120)
+                    .searchable(true);
 
-		ColumnTemplate<String> REQUIRED_NAME =
-						column -> NAME.apply(column)
-										.nullable(false); // @end
-	}
+    ColumnTemplate<String> REQUIRED_NAME =
+            column -> NAME.apply(column)
+                    .nullable(false); // @end
+  }
 }

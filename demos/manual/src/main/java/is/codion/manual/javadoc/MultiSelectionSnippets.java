@@ -25,14 +25,14 @@ import is.codion.common.model.selection.MultiSelection;
  */
 final class MultiSelectionSnippets {
 
-	void grouping(MultiSelection<String> selection) {
-		boolean wasGrouping = selection.grouping().is(); // @start region=grouping
-		selection.grouping().set(true);
-		try {
-			// mutate the selection
-		}
-		finally {
-			selection.grouping().set(wasGrouping);
-		} // @end
-	}
+  void grouping(MultiSelection<String> selection) {
+    boolean wasGrouping = selection.grouping().is(); // @start region=grouping
+    selection.grouping().set(true);
+    try {
+      // mutate the selection
+    }
+    finally {
+      selection.grouping().set(wasGrouping);
+    } // @end
+  }
 }

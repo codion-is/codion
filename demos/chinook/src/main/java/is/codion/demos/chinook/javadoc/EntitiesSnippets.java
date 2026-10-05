@@ -35,65 +35,66 @@ import java.util.List;
  */
 final class EntitiesSnippets {
 
-	void usage() {
-		Domain domain = new ChinookImpl(); // @start region=usage
-		Entities entities = domain.entities();
+  void usage() {
+    Domain domain = new ChinookImpl(); // @start region=usage
+    Entities entities = domain.entities();
 
-		// Create entity instances
-		Entity customer = entities.entity(Customer.TYPE)
-						.with(Customer.FIRSTNAME, "John")
-						.with(Customer.LASTNAME, "Doe")
-						.with(Customer.EMAIL, "john@example.com")
-						.build();
+    // Create entity instances
+    Entity customer = entities.entity(Customer.TYPE)
+            .with(Customer.FIRSTNAME, "John")
+            .with(Customer.LASTNAME, "Doe")
+            .with(Customer.EMAIL, "john@example.com")
+            .build();
 
-		// Create primary keys
-		Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42L); // @end
-	}
+    // Create primary keys
+    Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42L); // @end
+  }
 
-	void connection(EntityConnection connection) {
-		Entities entities = connection.entities(); // @start region=connection @end
-	}
+  void connection(EntityConnection connection) {
+    // @start region=connection
+    Entities entities = connection.entities(); // @end
+  }
 
-	void entity(Entities entities) {
-		// Build an entity with initial values // @start region=entity
-		Entity customer = entities.entity(Customer.TYPE)
-						.with(Customer.FIRSTNAME, "John")
-						.with(Customer.LASTNAME, "Doe")
-						.with(Customer.EMAIL, "john@example.com")
-						.build();
+  void entity(Entities entities) {
+    // Build an entity with initial values // @start region=entity
+    Entity customer = entities.entity(Customer.TYPE)
+            .with(Customer.FIRSTNAME, "John")
+            .with(Customer.LASTNAME, "Doe")
+            .with(Customer.EMAIL, "john@example.com")
+            .build();
 
-		// Build with a foreign key reference
-		Entity invoice = entities.entity(Invoice.TYPE)
-						.with(Invoice.CUSTOMER_FK, customer)
-						.with(Invoice.DATE, LocalDate.now())
-						.build(); // @end
-	}
+    // Build with a foreign key reference
+    Entity invoice = entities.entity(Invoice.TYPE)
+            .with(Invoice.CUSTOMER_FK, customer)
+            .with(Invoice.DATE, LocalDate.now())
+            .build(); // @end
+  }
 
-	void primaryKey(EntityConnection connection, Entities entities) {
-		// Create a single-value primary key // @start region=primaryKey
-		Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42L);
+  void primaryKey(EntityConnection connection, Entities entities) {
+    // Create a single-value primary key // @start region=primaryKey
+    Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42L);
 
-		// Use the key to fetch an entity
-		Entity customer = connection.select(customerKey);
+    // Use the key to fetch an entity
+    Entity customer = connection.select(customerKey);
 
-		// Keys can be compared
-		Entity.Key anotherKey = entities.primaryKey(Customer.TYPE, 42L);
-		customerKey.equals(anotherKey); // true
+    // Keys can be compared
+    Entity.Key anotherKey = entities.primaryKey(Customer.TYPE, 42L);
+    customerKey.equals(anotherKey); // true
 
-		// Null values are allowed
-		Entity.Key nullKey = entities.primaryKey(Customer.TYPE, null); // @end
-	}
+    // Null values are allowed
+    Entity.Key nullKey = entities.primaryKey(Customer.TYPE, null); // @end
+  }
 
-	void primaryKeys(EntityConnection connection, Entities entities) {
-		// Create multiple keys at once // @start region=primaryKeys
-		List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, 1L, 2L, 3L, 4L, 5L);
+  void primaryKeys(EntityConnection connection, Entities entities) {
+    // Create multiple keys at once // @start region=primaryKeys
+    List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, 1L, 2L, 3L, 4L, 5L);
 
-		// Fetch multiple entities
-		Collection<Entity> customers = connection.select(customerKeys); // @end
-	}
+    // Fetch multiple entities
+    Collection<Entity> customers = connection.select(customerKeys); // @end
+  }
 
-	void primaryKeysCollection(Entities entities) {
-		// Create multiple keys at once // @start region=primaryKeysCollection
-		List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, List.of(1L, 2L, 3L, 4L, 5L)); // @end
-	}
+  void primaryKeysCollection(Entities entities) {
+    // Create multiple keys at once // @start region=primaryKeysCollection
+    List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, List.of(1L, 2L, 3L, 4L, 5L)); // @end
+  }
 }

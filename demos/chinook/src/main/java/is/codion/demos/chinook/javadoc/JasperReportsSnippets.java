@@ -45,47 +45,48 @@ import static is.codion.plugin.jasperreports.JasperReports.*;
  */
 final class JasperReportsSnippets {
 
-	static final class Reports extends DomainModel {
+  static final class Reports extends DomainModel {
 
-		Reports() {
-			super(DOMAIN);
-		}
+    Reports() {
+      super(DOMAIN);
+    }
 
-		void pdfReport() {
-			ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=export
+    void pdfReport() {
+      ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=export
 
-			add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), PDF)); // @end
-		}
+      add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), PDF)); // @end
+    }
 
-		void printReport() {
-			ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("customer_report"); // @start region=print
+    void printReport() {
+      ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("customer_report"); // @start region=print
 
-			add(REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper")); // @end
-		}
+      add(REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper")); // @end
+    }
 
-		void serializedReport(EntityConnection connection, Map<String, Object> parameters) throws Exception {
-			ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=serialized
+    void serializedReport(EntityConnection connection, Map<String, Object> parameters) throws Exception {
+      ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=serialized
 
-			add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), SERIALIZED));
+      add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), SERIALIZED));
 
-			//client side, with the engine on hand
-			JasperPrint print = loadPrint(connection.report(REPORT, parameters)); // @end
-		}
-	}
+      //client side, with the engine on hand
+      JasperPrint print = loadPrint(connection.report(REPORT, parameters)); // @end
+    }
+  }
 
-	void loadPrintUsage(EntityConnection connection, Map<String, Object> parameters) throws Exception {
-		JasperPrint print = loadPrint(connection.report(Customer.REPORT, parameters)); // @start region=loadPrint @end
-	}
+  void loadPrintUsage(EntityConnection connection, Map<String, Object> parameters) throws Exception {
+    // @start region=loadPrint
+    JasperPrint print = loadPrint(connection.report(Customer.REPORT, parameters)); // @end
+  }
 
-	void xlsx() {
-		JRExport<byte[]> xlsx = print -> { // @start region=xlsx
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			JRXlsxExporter exporter = new JRXlsxExporter();
-			exporter.setExporterInput(new SimpleExporterInput(print));
-			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(bytes));
-			exporter.exportReport();
+  void xlsx() {
+    JRExport<byte[]> xlsx = print -> { // @start region=xlsx
+      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+      JRXlsxExporter exporter = new JRXlsxExporter();
+      exporter.setExporterInput(new SimpleExporterInput(print));
+      exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(bytes));
+      exporter.exportReport();
 
-			return bytes.toByteArray();
-		}; // @end
-	}
+      return bytes.toByteArray();
+    }; // @end
+  }
 }

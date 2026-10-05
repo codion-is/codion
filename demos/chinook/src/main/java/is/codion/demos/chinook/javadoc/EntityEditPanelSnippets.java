@@ -31,48 +31,48 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
  */
 final class EntityEditPanelSnippets {
 
-	void usage() {
-		class CustomerEditPanel extends EntityEditPanel { // @start region=usage
+  void usage() {
+    class CustomerEditPanel extends EntityEditPanel { // @start region=usage
 
-			CustomerEditPanel(SwingEntityEditModel editModel) {
-				super(editModel);
-			}
+      CustomerEditPanel(SwingEntityEditModel editModel) {
+        super(editModel);
+      }
 
-			@Override
-			protected void initializeUI() {
-				create().textField(Customer.FIRSTNAME);
-				create().textField(Customer.LASTNAME);
+      @Override
+      protected void initializeUI() {
+        create().textField(Customer.FIRSTNAME);
+        create().textField(Customer.LASTNAME);
 
-				setLayout(gridLayout(2, 1));
+        setLayout(gridLayout(2, 1));
 
-				addInputPanel(Customer.FIRSTNAME);
-				addInputPanel(Customer.LASTNAME);
-			}
-		} // @end
-	}
+        addInputPanel(Customer.FIRSTNAME);
+        addInputPanel(Customer.LASTNAME);
+      }
+    } // @end
+  }
 
-	static final class EmployeeEditPanel extends EntityEditPanel {
+  static final class EmployeeEditPanel extends EntityEditPanel {
 
-		EmployeeEditPanel(SwingEntityEditModel editModel) {
-			super(editModel);
-			configureControls(layout -> layout // @start region=configureControls
-							.separator()
-							.control(createCustomControl())); // @end
-		}
+    EmployeeEditPanel(SwingEntityEditModel editModel) {
+      super(editModel);
+      configureControls(layout -> layout // @start region=configureControls
+              .separator()
+              .control(createCustomControl())); // @end
+    }
 
-		@Override // @start region=initializeUI
-		protected void initializeUI() {
-			create().textField(Employee.FIRSTNAME);
-			create().textField(Employee.LASTNAME);
+    @Override // @start region=initializeUI
+    protected void initializeUI() {
+      create().textField(Employee.FIRSTNAME);
+      create().textField(Employee.LASTNAME);
 
-			setLayout(gridLayout(2, 1));
+      setLayout(gridLayout(2, 1));
 
-			addInputPanel(Employee.FIRSTNAME);
-			addInputPanel(Employee.LASTNAME);
-		} // @end
+      addInputPanel(Employee.FIRSTNAME);
+      addInputPanel(Employee.LASTNAME);
+    } // @end
 
-		private Control createCustomControl() {
-			return Control.command(() -> {});
-		}
-	}
+    private Control createCustomControl() {
+      return Control.command(() -> {});
+    }
+  }
 }

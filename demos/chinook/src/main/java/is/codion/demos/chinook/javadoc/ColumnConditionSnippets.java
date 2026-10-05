@@ -37,59 +37,59 @@ import static is.codion.framework.domain.entity.condition.Condition.and;
  */
 final class ColumnConditionSnippets {
 
-	void usage(EntityConnection connection) {
-		// Equality conditions // @start region=usage
-		List<Entity> teenSpirit = connection.select(
-						Track.NAME.equalTo("Smells Like Teen Spirit"));
+  void usage(EntityConnection connection) {
+    // Equality conditions // @start region=usage
+    List<Entity> teenSpirit = connection.select(
+            Track.NAME.equalTo("Smells Like Teen Spirit"));
 
-		List<Entity> noCompany = connection.select(
-						Customer.COMPANY.equalTo(null)); // Becomes "IS NULL"
+    List<Entity> noCompany = connection.select(
+            Customer.COMPANY.equalTo(null)); // Becomes "IS NULL"
 
-		// String pattern matching
-		List<Entity> theArtists = connection.select(
-						Artist.NAME.like("The %"));
+    // String pattern matching
+    List<Entity> theArtists = connection.select(
+            Artist.NAME.like("The %"));
 
-		List<Entity> liveAlbums = connection.select(
-						Album.TITLE.likeIgnoreCase("%live%"));
+    List<Entity> liveAlbums = connection.select(
+            Album.TITLE.likeIgnoreCase("%live%"));
 
-		// Comparison conditions
-		List<Entity> expensiveTracks = connection.select(
-						Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
+    // Comparison conditions
+    List<Entity> expensiveTracks = connection.select(
+            Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
 
-		List<Entity> recentTracks = connection.select(
-						Track.INSERT_TIME.greaterThanOrEqualTo(
-										LocalDateTime.now().minusDays(30)));
+    List<Entity> recentTracks = connection.select(
+            Track.INSERT_TIME.greaterThanOrEqualTo(
+                    LocalDateTime.now().minusDays(30)));
 
-		// Range conditions
-		List<Entity> mediumPricedTracks = connection.select(
-						Track.UNITPRICE.between(
-										BigDecimal.valueOf(0.50),
-										BigDecimal.valueOf(1.50)));
+    // Range conditions
+    List<Entity> mediumPricedTracks = connection.select(
+            Track.UNITPRICE.between(
+                    BigDecimal.valueOf(0.50),
+                    BigDecimal.valueOf(1.50)));
 
-		// Collection-based conditions
-		List<String> artists = List.of("AC/DC", "Metallica", "Iron Maiden");
-		List<Entity> metalTracks = connection.select(
-						Track.ARTIST_NAME.inIgnoreCase(artists));
+    // Collection-based conditions
+    List<String> artists = List.of("AC/DC", "Metallica", "Iron Maiden");
+    List<Entity> metalTracks = connection.select(
+            Track.ARTIST_NAME.inIgnoreCase(artists));
 
-		List<Long> excludedIds = List.of(1L, 5L, 10L);
-		List<Entity> filteredArtists = connection.select(
-						Artist.ID.notIn(excludedIds));
+    List<Long> excludedIds = List.of(1L, 5L, 10L);
+    List<Entity> filteredArtists = connection.select(
+            Artist.ID.notIn(excludedIds));
 
-		// Null checks
-		List<Entity> tracksWithComposer = connection.select(
-						Track.COMPOSER.isNotNull());
+    // Null checks
+    List<Entity> tracksWithComposer = connection.select(
+            Track.COMPOSER.isNotNull());
 
-		List<Entity> tracksWithoutComposer = connection.select(
-						Track.COMPOSER.isNull());
+    List<Entity> tracksWithoutComposer = connection.select(
+            Track.COMPOSER.isNull());
 
-		// Case-insensitive operations
-		List<Entity> zeppelinTracks = connection.select(
-						Track.ARTIST_NAME.equalToIgnoreCase("led zeppelin"));
+    // Case-insensitive operations
+    List<Entity> zeppelinTracks = connection.select(
+            Track.ARTIST_NAME.equalToIgnoreCase("led zeppelin"));
 
-		// Complex combinations with logical operators
-		List<Entity> tracks = connection.select(and(
-						Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)),
-						Track.ARTIST_NAME.inIgnoreCase("AC/DC", "Metallica"),
-						Track.MILLISECONDS.lessThan(300_000))); // Less than 5 minutes // @end
-	}
+    // Complex combinations with logical operators
+    List<Entity> tracks = connection.select(and(
+            Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)),
+            Track.ARTIST_NAME.inIgnoreCase("AC/DC", "Metallica"),
+            Track.MILLISECONDS.lessThan(300_000))); // Less than 5 minutes // @end
+  }
 }

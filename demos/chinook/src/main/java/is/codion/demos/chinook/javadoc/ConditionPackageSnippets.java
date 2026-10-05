@@ -39,93 +39,93 @@ import static is.codion.framework.domain.entity.condition.Condition.*;
  */
 final class ConditionPackageSnippets {
 
-	void usage(EntityConnection connection) {
-		// Column conditions - created directly from Column attributes // @start region=usage
-		Condition nameStartsWithA = Customer.LASTNAME.like("A%");
-		Condition fromUSA = Customer.COUNTRY.equalTo("USA");
-		Condition hasEmail = Customer.EMAIL.isNotNull();
+  void usage(EntityConnection connection) {
+    // Column conditions - created directly from Column attributes // @start region=usage
+    Condition nameStartsWithA = Customer.LASTNAME.like("A%");
+    Condition fromUSA = Customer.COUNTRY.equalTo("USA");
+    Condition hasEmail = Customer.EMAIL.isNotNull();
 
-		// Foreign key conditions
-		Entity peacock = connection.selectSingle(Employee.LASTNAME.equalTo("Peacock"));
-		Condition supportedByPeacock = Customer.SUPPORTREP_FK.equalTo(peacock);
+    // Foreign key conditions
+    Entity peacock = connection.selectSingle(Employee.LASTNAME.equalTo("Peacock"));
+    Condition supportedByPeacock = Customer.SUPPORTREP_FK.equalTo(peacock);
 
-		// Combining conditions
-		Condition condition = and(
-						nameStartsWithA,
-						fromUSA,
-						hasEmail,
-						supportedByPeacock);
+    // Combining conditions
+    Condition condition = and(
+            nameStartsWithA,
+            fromUSA,
+            hasEmail,
+            supportedByPeacock);
 
-		// Using conditions in queries
-		List<Entity> customers = connection.select(condition); // @end
-	}
+    // Using conditions in queries
+    List<Entity> customers = connection.select(condition); // @end
+  }
 
-	void columnConditions() {
-		// Equality // @start region=columnConditions
-		Condition teenSpirit = Track.NAME.equalTo("Smells Like Teen Spirit");
-		Condition rated = Track.RATING.equalTo(5);
+  void columnConditions() {
+    // Equality // @start region=columnConditions
+    Condition teenSpirit = Track.NAME.equalTo("Smells Like Teen Spirit");
+    Condition rated = Track.RATING.equalTo(5);
 
-		// Comparison
-		Condition longTracks = Track.MILLISECONDS.greaterThan(180_000);
-		Condition totals = Invoice.TOTAL.between(BigDecimal.valueOf(10), BigDecimal.valueOf(100));
+    // Comparison
+    Condition longTracks = Track.MILLISECONDS.greaterThan(180_000);
+    Condition totals = Invoice.TOTAL.between(BigDecimal.valueOf(10), BigDecimal.valueOf(100));
 
-		// Pattern matching
-		Condition theArtists = Artist.NAME.like("The %");
-		Condition zeppelin = Artist.NAME.likeIgnoreCase("%zeppelin%");
+    // Pattern matching
+    Condition theArtists = Artist.NAME.like("The %");
+    Condition zeppelin = Artist.NAME.likeIgnoreCase("%zeppelin%");
 
-		// Nullity
-		Condition noPhone = Customer.PHONE.isNull();
-		Condition hasEmail = Customer.EMAIL.isNotNull();
+    // Nullity
+    Condition noPhone = Customer.PHONE.isNull();
+    Condition hasEmail = Customer.EMAIL.isNotNull();
 
-		// Multiple values
-		Condition genres = Track.GENRE_ID.in(1L, 2L, 3L);
-		Condition ratings = Album.RATING.notIn(1, 2, 3); // @end
-	}
+    // Multiple values
+    Condition genres = Track.GENRE_ID.in(1L, 2L, 3L);
+    Condition ratings = Album.RATING.notIn(1, 2, 3); // @end
+  }
 
-	void foreignKeyConditions(EntityConnection connection) {
-		// Single entity reference // @start region=foreignKeyConditions
-		Entity metal = connection.selectSingle(Genre.NAME.equalTo("Metal"));
-		Condition metalTracks = Track.GENRE_FK.equalTo(metal);
+  void foreignKeyConditions(EntityConnection connection) {
+    // Single entity reference // @start region=foreignKeyConditions
+    Entity metal = connection.selectSingle(Genre.NAME.equalTo("Metal"));
+    Condition metalTracks = Track.GENRE_FK.equalTo(metal);
 
-		// Multiple entity references
-		List<Entity> artists = connection.select(Artist.NAME.like("A%"));
-		Condition byArtists = Album.ARTIST_FK.in(artists);
+    // Multiple entity references
+    List<Entity> artists = connection.select(Artist.NAME.like("A%"));
+    Condition byArtists = Album.ARTIST_FK.in(artists);
 
-		// Null foreign key
-		Condition noGenre = Track.GENRE_FK.isNull(); // @end
-	}
+    // Null foreign key
+    Condition noGenre = Track.GENRE_FK.isNull(); // @end
+  }
 
-	void combinations() {
-		// AND combination // @start region=combinations
-		Condition longExpensiveTracks = and(
-						Track.MILLISECONDS.greaterThan(300_000),
-						Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
+  void combinations() {
+    // AND combination // @start region=combinations
+    Condition longExpensiveTracks = and(
+            Track.MILLISECONDS.greaterThan(300_000),
+            Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
 
-		// OR combination
-		Condition popularTracks = or(
-						Track.RATING.greaterThanOrEqualTo(8),
-						Track.PLAY_COUNT.greaterThan(100));
+    // OR combination
+    Condition popularTracks = or(
+            Track.RATING.greaterThanOrEqualTo(8),
+            Track.PLAY_COUNT.greaterThan(100));
 
-		// Complex nesting
-		Condition condition = and(
-						longExpensiveTracks,
-						popularTracks,
-						Track.COMPOSER.isNotNull()); // @end
-	}
+    // Complex nesting
+    Condition condition = and(
+            longExpensiveTracks,
+            popularTracks,
+            Track.COMPOSER.isNotNull()); // @end
+  }
 
-	void caseSensitivity() {
-		// Case-insensitive operations // @start region=caseSensitivity
-		Condition zeppelin = Artist.NAME.equalToIgnoreCase("led zeppelin");
-		Condition loveAlbums = Album.TITLE.likeIgnoreCase("%love%"); // @end
-	}
+  void caseSensitivity() {
+    // Case-insensitive operations // @start region=caseSensitivity
+    Condition zeppelin = Artist.NAME.equalToIgnoreCase("led zeppelin");
+    Condition loveAlbums = Album.TITLE.likeIgnoreCase("%love%"); // @end
+  }
 
-	void allCondition(EntityConnection connection, String searchText) {
-		// Select all rows (no WHERE clause) // @start region=all
-		List<Entity> customers = connection.select(all(Customer.TYPE));
+  void allCondition(EntityConnection connection, String searchText) {
+    // Select all rows (no WHERE clause) // @start region=all
+    List<Entity> customers = connection.select(all(Customer.TYPE));
 
-		// Useful for conditional filtering
-		Condition condition = searchText.isEmpty() ?
-						all(Track.TYPE) :
-						Track.NAME.like("%" + searchText + "%"); // @end
-	}
+    // Useful for conditional filtering
+    Condition condition = searchText.isEmpty() ?
+            all(Track.TYPE) :
+            Track.NAME.like("%" + searchText + "%"); // @end
+  }
 }

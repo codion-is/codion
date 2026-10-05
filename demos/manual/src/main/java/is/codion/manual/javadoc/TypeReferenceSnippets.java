@@ -27,7 +27,8 @@ import java.util.List;
  */
 final class TypeReferenceSnippets {
 
-	void usage() {
-		TypeReference<List<String>> reference = new TypeReference<>() {}; // @start region=usage @end
-	}
+  void usage() {
+    // @start region=usage
+    TypeReference<List<String>> reference = new TypeReference<>() {}; // @end
+  }
 }

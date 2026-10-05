@@ -28,44 +28,44 @@ import org.jspecify.annotations.Nullable;
  */
 final class ValueSnippets {
 
-	void nullable() {
-		Value<Integer> value = Value.nullable(); // @start region=nullable
-		value.set(42);
-		value.addConsumer(this::onValueChange);
-		value.isNullable(); // true // @end
-	}
+  void nullable() {
+    Value<Integer> value = Value.nullable(); // @start region=nullable
+    value.set(42);
+    value.addConsumer(this::onValueChange);
+    value.isNullable(); // true // @end
+  }
 
-	void nonNull() {
-		Value<Boolean> value = Value.nonNull(false); // @start region=nonNull
-		value.set(true);
-		value.set(null);
-		value.get(); // false
-		value.isNullable(); // false // @end
-	}
+  void nonNull() {
+    Value<Boolean> value = Value.nonNull(false); // @start region=nonNull
+    value.set(true);
+    value.set(null);
+    value.get(); // false
+    value.isNullable(); // false // @end
+  }
 
-	void builder() {
-		Value<String> value = Value.builder() // @start region=builder
-						.nonNull("none")
-						.value("hello")                  // the initial value
-						.notify(Notify.SET)              // notifies listeners when set
-						.validator(this::validateString) // using a validator
-						.listener(this::onStringSet)     // and a listener
-						.build();
-		value.isNullable(); // false
-		value.set("hey");
-		value.set(null); // reverts to the null substitute: "none" // @end
-	}
+  void builder() {
+    Value<String> value = Value.builder() // @start region=builder
+            .nonNull("none")
+            .value("hello")                  // the initial value
+            .notify(Notify.SET)              // notifies listeners when set
+            .validator(this::validateString) // using a validator
+            .listener(this::onStringSet)     // and a listener
+            .build();
+    value.isNullable(); // false
+    value.set("hey");
+    value.set(null); // reverts to the null substitute: "none" // @end
+  }
 
-	void update() {
-		Value<Integer> value = Value.nonNull(0); // @start region=update
+  void update() {
+    Value<Integer> value = Value.nonNull(0); // @start region=update
 
-		// increment the value by one
-		value.update(currentValue -> currentValue + 1); // @end
-	}
+    // increment the value by one
+    value.update(currentValue -> currentValue + 1); // @end
+  }
 
-	private void onValueChange(@Nullable Integer value) {}
+  private void onValueChange(@Nullable Integer value) {}
 
-	private void validateString(@Nullable String value) {}
+  private void validateString(@Nullable String value) {}
 
-	private void onStringSet() {}
+  private void onStringSet() {}
 }

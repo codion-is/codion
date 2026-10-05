@@ -31,19 +31,19 @@ import static is.codion.demos.schemabrowser.domain.SchemaBrowser.DOMAIN;
  */
 final class EntityTypeSnippets {
 
-	// Composite foreign key (two columns) // @start region=compositeForeignKey
-	interface TableColumn {
-		EntityType TYPE = DOMAIN.entityType("column");
+  // Composite foreign key (two columns) // @start region=compositeForeignKey
+  interface TableColumn {
+    EntityType TYPE = DOMAIN.entityType("column");
 
-		Column<String> NAME = TYPE.stringColumn("column_name");
+    Column<String> NAME = TYPE.stringColumn("column_name");
 
-		// Foreign key columns, referencing the composite primary key of Table
-		Column<String> SCHEMA = TYPE.stringColumn("table_schema");
-		Column<String> TABLE_NAME = TYPE.stringColumn("table_name");
+    // Foreign key columns, referencing the composite primary key of Table
+    Column<String> SCHEMA = TYPE.stringColumn("table_schema");
+    Column<String> TABLE_NAME = TYPE.stringColumn("table_name");
 
-		// Composite foreign key
-		ForeignKey TABLE_FK = TYPE.foreignKey("table_fk",
-						SCHEMA, Table.SCHEMA,
-						TABLE_NAME, Table.NAME);
-	} // @end
+    // Composite foreign key
+    ForeignKey TABLE_FK = TYPE.foreignKey("table_fk",
+            SCHEMA, Table.SCHEMA,
+            TABLE_NAME, Table.NAME);
+  } // @end
 }

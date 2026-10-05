@@ -37,68 +37,68 @@ import static is.codion.demos.chinook.domain.api.Chinook.DOMAIN;
  */
 final class DerivedAttributeDefinitionSnippets {
 
-	interface Employee { // @start region=usage
-		EntityType TYPE = DOMAIN.entityType("chinook.employee");
+  interface Employee { // @start region=usage
+    EntityType TYPE = DOMAIN.entityType("chinook.employee");
 
-		Column<Long> ID = TYPE.longColumn("id");
-		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
-		Column<String> LASTNAME = TYPE.stringColumn("lastname");
-		Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+    Column<String> LASTNAME = TYPE.stringColumn("lastname");
+    Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
 
-		// Derived attributes
-		Attribute<String> NAME = TYPE.stringAttribute("name");
-		Attribute<Integer> YEARS_EMPLOYED = TYPE.integerAttribute("years_employed");
-	}
+    // Derived attributes
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Attribute<Integer> YEARS_EMPLOYED = TYPE.integerAttribute("years_employed");
+  }
 
-	EntityDefinition employee() {
-		return Employee.TYPE.as()
-						.attributes(
-										Employee.ID.as()
-														.primaryKey(),
-										Employee.FIRSTNAME.as()
-														.column()
-														.caption("First name"),
-										Employee.LASTNAME.as()
-														.column()
-														.caption("Last name"),
-										Employee.HIREDATE.as()
-														.column()
-														.caption("Hire date"),
+  EntityDefinition employee() {
+    return Employee.TYPE.as()
+            .attributes(
+                    Employee.ID.as()
+                            .primaryKey(),
+                    Employee.FIRSTNAME.as()
+                            .column()
+                            .caption("First name"),
+                    Employee.LASTNAME.as()
+                            .column()
+                            .caption("Last name"),
+                    Employee.HIREDATE.as()
+                            .column()
+                            .caption("Hire date"),
 
-										// Simple derived attribute (cached by default)
-										Employee.NAME.as()
-														.derived()
-														.from(Employee.FIRSTNAME, Employee.LASTNAME)
-														.with(values -> values.optional(Employee.FIRSTNAME).orElse("") + " " +
-																		values.optional(Employee.LASTNAME).orElse(""))
-														.caption("Name"),
+                    // Simple derived attribute (cached by default)
+                    Employee.NAME.as()
+                            .derived()
+                            .from(Employee.FIRSTNAME, Employee.LASTNAME)
+                            .with(values -> values.optional(Employee.FIRSTNAME).orElse("") + " " +
+                                    values.optional(Employee.LASTNAME).orElse(""))
+                            .caption("Name"),
 
-										// Time-dependent derived attribute (not cached)
-										Employee.YEARS_EMPLOYED.as()
-														.derived()
-														.from(Employee.HIREDATE)
-														.with(values -> values.optional(Employee.HIREDATE)
-																		.map(hireDate -> Period.between(hireDate, LocalDate.now()).getYears())
-																		.orElse(null))
-														.cached(false) // Changes over time
-														.caption("Years employed"))
-						.build();
-	}
+                    // Time-dependent derived attribute (not cached)
+                    Employee.YEARS_EMPLOYED.as()
+                            .derived()
+                            .from(Employee.HIREDATE)
+                            .with(values -> values.optional(Employee.HIREDATE)
+                                    .map(hireDate -> Period.between(hireDate, LocalDate.now()).getYears())
+                                    .orElse(null))
+                            .cached(false) // Changes over time
+                            .caption("Years employed"))
+            .build();
+  }
 
-	void employees(Entities entities) {
-		// Usage
-		Entity employee = entities.entity(Employee.TYPE)
-						.with(Employee.FIRSTNAME, "Jane")
-						.with(Employee.LASTNAME, "Peacock")
-						.with(Employee.HIREDATE, LocalDate.of(2002, 4, 1))
-						.build();
+  void employees(Entities entities) {
+    // Usage
+    Entity employee = entities.entity(Employee.TYPE)
+            .with(Employee.FIRSTNAME, "Jane")
+            .with(Employee.LASTNAME, "Peacock")
+            .with(Employee.HIREDATE, LocalDate.of(2002, 4, 1))
+            .build();
 
-		// Derived values are computed automatically
-		String name = employee.get(Employee.NAME);                     // "Jane Peacock" (cached)
-		Integer yearsEmployed = employee.get(Employee.YEARS_EMPLOYED); // Computed on each access
+    // Derived values are computed automatically
+    String name = employee.get(Employee.NAME);                     // "Jane Peacock" (cached)
+    Integer yearsEmployed = employee.get(Employee.YEARS_EMPLOYED); // Computed on each access
 
-		// Modifying source attributes updates derived values
-		employee.set(Employee.LASTNAME, "Park");
-		String newName = employee.get(Employee.NAME);                  // "Jane Park"
-	} // @end
+    // Modifying source attributes updates derived values
+    employee.set(Employee.LASTNAME, "Park");
+    String newName = employee.get(Employee.NAME);                  // "Jane Park"
+  } // @end
 }

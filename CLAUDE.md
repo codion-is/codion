@@ -130,8 +130,13 @@ These are established across the codebase. New code follows them, and code that 
 - Javadoc links in the asciidoc use module placeholders, `{url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html`, defined in `documentation/build.gradle.kts`.
 - **Javadoc code examples are hybrid snippets.** The code stays inline, and javadoc checks it against a region of compiled demo code. A copy that has drifted is a javadoc error, failing the build:
   - **Where the regions live:** in the demos' `javadoc` packages, one class per documented type, `is.codion.demos.chinook.javadoc.EntityConnectionSnippets` for example, using the real demo entities. They're on the snippet path set in `build.gradle.kts` and `documentation/build.gradle.kts`.
-  - **Region markup** goes on the code lines: `// @start region=name` at the end of the first line, a comment line included, and `// @end` at the end of the last, after any comment of its own: `customer.modified(Customer.FIRSTNAME); // false // @end`.
-  - **The inline copy** is the region's text, tabs included, and closes on its last code line: `...;}`, `}}` after a block, or `// false}` after a comment. IntelliJ removes the space in a closing ` * }` on a line of its own, which javadoc then reads as indentation. The attributes are spaced, as IntelliJ formats them: `{@snippet class = is.codion.demos.chinook.javadoc.EntityConnectionSnippets region = select :`.
+  - **Spaces, not tabs, in those packages,** kept by an `.editorconfig` in each. IntelliJ's quick documentation shows a tab as 8 columns, and javadoc requires the inline copies to match the regions exactly, whitespace included.
+  - **Region markup** goes on the code lines:
+    - `// @start region=name` at the end of the first line, a comment line included;
+    - `// @end` at the end of the last line, after any comment of its own: `customer.modified(Customer.FIRSTNAME); // false // @end`;
+    - a one-line region starts on a line of its own, `// @start region=name`, since IntelliJ renders `@start … @end` in one comment as an empty region.
+  - **The inline copy** is the region's lines verbatim, markup included, and closes on its last code line: `...; // @end}`. IntelliJ removes the space in a closing ` * }` on a line of its own, which javadoc then reads as indentation.
+  - **The attributes are spaced and quoted:** `{@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "select" :`. IntelliJ cuts an unquoted value off at its first dot, so the snippet doesn't render. It also filters a hybrid snippet's inline body by the region, which is why the copy keeps the markup. IntelliJ shows the snippets from the sources jars this way, to everyone using the jars.
   - **Javadoc formatting is off** in the project code style, as IntelliJ's javadoc formatter trims the line holding the closing brace.
 
 ## Where to Find Working Examples

@@ -38,64 +38,64 @@ import static is.codion.framework.domain.DomainType.domainType;
  */
 final class EntityTypeSnippets {
 
-	static final class Usage {
+  static final class Usage {
 
-		// The domain API // @start region=usage
-		public interface Chinook {
+    // The domain API // @start region=usage
+    public interface Chinook {
 
-			DomainType DOMAIN = domainType(Chinook.class);
+      DomainType DOMAIN = domainType(Chinook.class);
 
-			// Define entity types as interfaces for organization
-			interface Customer {
-				EntityType TYPE = DOMAIN.entityType("chinook.customer");
+      // Define entity types as interfaces for organization
+      interface Customer {
+        EntityType TYPE = DOMAIN.entityType("chinook.customer");
 
-				// Define typed columns
-				Column<Long> ID = TYPE.longColumn("id");
-				Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
-				Column<String> LASTNAME = TYPE.stringColumn("lastname");
-				Column<String> EMAIL = TYPE.stringColumn("email");
-			}
+        // Define typed columns
+        Column<Long> ID = TYPE.longColumn("id");
+        Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+        Column<String> LASTNAME = TYPE.stringColumn("lastname");
+        Column<String> EMAIL = TYPE.stringColumn("email");
+      }
 
-			interface Invoice {
-				EntityType TYPE = DOMAIN.entityType("chinook.invoice");
+      interface Invoice {
+        EntityType TYPE = DOMAIN.entityType("chinook.invoice");
 
-				Column<Long> ID = TYPE.longColumn("id");
-				Column<LocalDate> DATE = TYPE.localDateColumn("invoicedate");
-				Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
+        Column<Long> ID = TYPE.longColumn("id");
+        Column<LocalDate> DATE = TYPE.localDateColumn("invoicedate");
+        Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
 
-				// Define foreign key to Customer
-				Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
-				ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
-			}
-		} // @end
-	}
+        // Define foreign key to Customer
+        Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
+        ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+      }
+    } // @end
+  }
 
-	static final class SingleColumnForeignKey {
+  static final class SingleColumnForeignKey {
 
-		// Single column foreign key // @start region=foreignKey
-		interface Invoice {
-			EntityType TYPE = DOMAIN.entityType("chinook.invoice");
+    // Single column foreign key // @start region=foreignKey
+    interface Invoice {
+      EntityType TYPE = DOMAIN.entityType("chinook.invoice");
 
-			Column<Long> ID = TYPE.longColumn("id");
-			Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
+      Column<Long> ID = TYPE.longColumn("id");
+      Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
 
-			// Define foreign key to Customer entity
-			ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
-							CUSTOMER_ID, Customer.ID);
-		}
+      // Define foreign key to Customer entity
+      ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
+              CUSTOMER_ID, Customer.ID);
+    }
 
-		// Usage in entity definition
-		EntityDefinition invoice() {
-			return Invoice.TYPE.as()
-							.attributes(
-											Invoice.ID.as()
-															.primaryKey(),
-											Invoice.CUSTOMER_ID.as()
-															.column(),
-											Invoice.CUSTOMER_FK.as()
-															.foreignKey()
-															.caption("Customer"))
-							.build();
-		} // @end
-	}
+    // Usage in entity definition
+    EntityDefinition invoice() {
+      return Invoice.TYPE.as()
+              .attributes(
+                      Invoice.ID.as()
+                              .primaryKey(),
+                      Invoice.CUSTOMER_ID.as()
+                              .column(),
+                      Invoice.CUSTOMER_FK.as()
+                              .foreignKey()
+                              .caption("Customer"))
+              .build();
+    } // @end
+  }
 }

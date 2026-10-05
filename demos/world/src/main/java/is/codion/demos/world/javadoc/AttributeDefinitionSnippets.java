@@ -34,61 +34,61 @@ import static is.codion.demos.world.domain.api.World.DOMAIN;
  */
 final class AttributeDefinitionSnippets {
 
-	interface Country { // @start region=usage
-		EntityType TYPE = DOMAIN.entityType("world.country");
+  interface Country { // @start region=usage
+    EntityType TYPE = DOMAIN.entityType("world.country");
 
-		Column<String> CODE = TYPE.stringColumn("code");
-		Column<String> NAME = TYPE.stringColumn("name");
-		Column<String> CONTINENT = TYPE.stringColumn("continent");
-		Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
-		Column<Integer> POPULATION = TYPE.integerColumn("population");
-		Column<Double> LIFE_EXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
-	}
+    Column<String> CODE = TYPE.stringColumn("code");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> CONTINENT = TYPE.stringColumn("continent");
+    Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
+    Column<Integer> POPULATION = TYPE.integerColumn("population");
+    Column<Double> LIFE_EXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
+  }
 
-	EntityDefinition country() {
-		return Country.TYPE.as()
-						.attributes(
-										Country.CODE.as()
-														.primaryKey()
-														.caption("Code")
-														.updatable(true)
-														.maximumLength(3),
+  EntityDefinition country() {
+    return Country.TYPE.as()
+            .attributes(
+                    Country.CODE.as()
+                            .primaryKey()
+                            .caption("Code")
+                            .updatable(true)
+                            .maximumLength(3),
 
-										Country.NAME.as()
-														.column()
-														.caption("Name")
-														.description("The name of the country")
-														.nullable(false)
-														.maximumLength(52),
+                    Country.NAME.as()
+                            .column()
+                            .caption("Name")
+                            .description("The name of the country")
+                            .nullable(false)
+                            .maximumLength(52),
 
-										Country.CONTINENT.as()
-														.column()
-														.caption("Continent")
-														.nullable(false)
-														.items(List.of(
-																		item("Africa"), item("Antarctica"), item("Asia"),
-																		item("Europe"), item("North America"), item("Oceania"),
-																		item("South America"))),
+                    Country.CONTINENT.as()
+                            .column()
+                            .caption("Continent")
+                            .nullable(false)
+                            .items(List.of(
+                                    item("Africa"), item("Antarctica"), item("Asia"),
+                                    item("Europe"), item("North America"), item("Oceania"),
+                                    item("South America"))),
 
-										Country.SURFACEAREA.as()
-														.column()
-														.caption("Surface area")
-														.nullable(false)
-														.numberGrouping(true)
-														.fractionDigits(2),
+                    Country.SURFACEAREA.as()
+                            .column()
+                            .caption("Surface area")
+                            .nullable(false)
+                            .numberGrouping(true)
+                            .fractionDigits(2),
 
-										Country.POPULATION.as()
-														.column()
-														.caption("Population")
-														.nullable(false)
-														.numberGrouping(true)
-														.defaultValue(0),
+                    Country.POPULATION.as()
+                            .column()
+                            .caption("Population")
+                            .nullable(false)
+                            .numberGrouping(true)
+                            .defaultValue(0),
 
-										Country.LIFE_EXPECTANCY.as()
-														.column()
-														.caption("Life expectancy")
-														.fractionDigits(1)
-														.range(0, 99))
-						.build();
-	} // @end
+                    Country.LIFE_EXPECTANCY.as()
+                            .column()
+                            .caption("Life expectancy")
+                            .fractionDigits(1)
+                            .range(0, 99))
+            .build();
+  } // @end
 }

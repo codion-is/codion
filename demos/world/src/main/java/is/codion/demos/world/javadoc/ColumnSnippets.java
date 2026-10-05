@@ -32,43 +32,43 @@ import is.codion.framework.domain.entity.attribute.Column.Generator;
  */
 final class ColumnSnippets {
 
-	void primaryKey() {
-		Country.CODE.as() // @start region=primaryKey
-						.primaryKey()
-						.caption("Code")
-						.updatable(true); // @end
-	}
+  void primaryKey() {
+    Country.CODE.as() // @start region=primaryKey
+            .primaryKey()
+            .caption("Code")
+            .updatable(true); // @end
+  }
 
-	void primaryKeyIndex() {
-		CountryLanguage.TYPE.as() // @start region=primaryKeyIndex
-						.attributes(
-										CountryLanguage.COUNTRY_CODE.as()
-														.primaryKey(0)
-														.updatable(true),
-										CountryLanguage.LANGUAGE.as()
-														.primaryKey(1)
-														.caption("Language")
-														.updatable(true))
-						.build(); // @end
-	}
+  void primaryKeyIndex() {
+    CountryLanguage.TYPE.as() // @start region=primaryKeyIndex
+            .attributes(
+                    CountryLanguage.COUNTRY_CODE.as()
+                            .primaryKey(0)
+                            .updatable(true),
+                    CountryLanguage.LANGUAGE.as()
+                            .primaryKey(1)
+                            .caption("Language")
+                            .updatable(true))
+            .build(); // @end
+  }
 
-	void sequence(EntityConnection connection, Entities entities, Entity iceland) {
-		// Oracle or PostgreSQL sequence // @start region=sequence
-		City.TYPE.as()
-						.attributes(
-										City.ID.as()
-														.primaryKey()
-														.generator(Generator.sequence("world.city_seq")))
-						.build();
+  void sequence(EntityConnection connection, Entities entities, Entity iceland) {
+    // Oracle or PostgreSQL sequence // @start region=sequence
+    City.TYPE.as()
+            .attributes(
+                    City.ID.as()
+                            .primaryKey()
+                            .generator(Generator.sequence("world.city_seq")))
+            .build();
 
-		// Usage - the key is fetched from the sequence before insert
-		Entity city = entities.entity(City.TYPE)
-						.with(City.NAME, "Akureyri")
-						.with(City.COUNTRY_FK, iceland)
-						.with(City.POPULATION, 20_000)
-						.build();
+    // Usage - the key is fetched from the sequence before insert
+    Entity city = entities.entity(City.TYPE)
+            .with(City.NAME, "Akureyri")
+            .with(City.COUNTRY_FK, iceland)
+            .with(City.POPULATION, 20_000)
+            .build();
 
-		Entity.Key key = connection.insert(city);
-		Integer generatedId = key.get(City.ID); // @end
-	}
+    Entity.Key key = connection.insert(city);
+    Integer generatedId = key.get(City.ID); // @end
+  }
 }

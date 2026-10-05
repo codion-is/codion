@@ -1,0 +1,7 @@
+# Spaces in the javadoc snippet sources: IntelliJ quick documentation shows a tab as 8 columns, and javadoc
+# requires the inline copies in the framework javadoc to match these regions exactly, whitespace included.
+[*.java]
+indent_style = space
+indent_size = 2
+tab_width = 2
+ij_continuation_indent_size = 8

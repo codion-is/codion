@@ -32,24 +32,24 @@ import java.util.ServiceLoader;
  * <p>Discovered via {@link ServiceLoader}, so an implementation is registered in
  * {@code META-INF/services/is.codion.common.db.database.SessionContext}, and applied by the Codion server.
  * All registered instances are applied, shared ones first, and removed in reverse.
- * {@snippet class = is.codion.manual.javadoc.SessionContextSnippets region = usage :
- * class AuditContext implements SessionContext {
+ * {@snippet class = "is.codion.manual.javadoc.SessionContextSnippets" region = "usage" :
+ * class AuditContext implements SessionContext { // @start region=usage
  *
- * 	@Override
- * 	public void prepare(Connection connection, ClientInfo clientInfo) throws SQLException {
- * 		try (CallableStatement statement = connection.prepareCall("{call set_audit_user(?)}")) {
- * 			statement.setString(1, clientInfo.user());
- * 			statement.execute();
- * 		}
- * 	}
+ *   @Override
+ *   public void prepare(Connection connection, ClientInfo clientInfo) throws SQLException {
+ *     try (CallableStatement statement = connection.prepareCall("{call set_audit_user(?)}")) {
+ *       statement.setString(1, clientInfo.user());
+ *       statement.execute();
+ *     }
+ *   }
  *
- * 	@Override
- * 	public void release(Connection connection, ClientInfo clientInfo) throws SQLException {
- * 		try (CallableStatement statement = connection.prepareCall("{call clear_audit_user()}")) {
- * 			statement.execute();
- * 		}
- * 	}
- * }}
+ *   @Override
+ *   public void release(Connection connection, ClientInfo clientInfo) throws SQLException {
+ *     try (CallableStatement statement = connection.prepareCall("{call clear_audit_user()}")) {
+ *       statement.execute();
+ *     }
+ *   }
+ * } // @end}
  * <p>The session is the database's, not Codion's: with a connection pool the connection is a single
  * database session handed to one client after another, and this is the context swapped in and out around
  * each use of it. Hence the name, which the databases share - {@code sp_set_session_context} on SQL Server,

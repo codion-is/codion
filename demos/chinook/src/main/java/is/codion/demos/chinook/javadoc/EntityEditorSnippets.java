@@ -30,22 +30,22 @@ import is.codion.framework.model.EntityEditor.EditorTask;
  */
 final class EntityEditorSnippets {
 
-	void task(EntityEditor<?> editor) throws EntityValidationException {
-		// Must be called on the UI thread, fires "before" events and captures entity state // @start region=task
-		EditorTask<Entity> task = editor.tasks().insert();
+  void task(EntityEditor<?> editor) throws EntityValidationException {
+    // Must be called on the UI thread, fires "before" events and captures entity state // @start region=task
+    EditorTask<Entity> task = editor.tasks().insert();
 
-		// Can safely be called in a background thread
-		EditorTask.Result<Entity> result = task.perform();
+    // Can safely be called in a background thread
+    EditorTask.Result<Entity> result = task.perform();
 
-		// Must be called on the UI thread, fires "after" events
-		Entity insertedEntity = result.handle(); // @end
-	}
+    // Must be called on the UI thread, fires "after" events
+    Entity insertedEntity = result.handle(); // @end
+  }
 
-	void propagate(EntityEditor<?> editor) {
-		// Populate billing address fields when customer changes // @start region=propagate
-		editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
-						customer -> customer == null ? null : customer.get(Customer.ADDRESS));
-		editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGCITY,
-						customer -> customer == null ? null : customer.get(Customer.CITY)); // @end
-	}
+  void propagate(EntityEditor<?> editor) {
+    // Populate billing address fields when customer changes // @start region=propagate
+    editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
+            customer -> customer == null ? null : customer.get(Customer.ADDRESS));
+    editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGCITY,
+            customer -> customer == null ? null : customer.get(Customer.CITY)); // @end
+  }
 }

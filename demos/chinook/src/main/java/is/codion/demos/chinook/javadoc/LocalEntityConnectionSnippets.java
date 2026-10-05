@@ -39,14 +39,14 @@ import static is.codion.framework.db.local.LocalEntityConnection.localEntityConn
  */
 final class LocalEntityConnectionSnippets {
 
-	void usage() throws SQLException {
-		Domain domain = new ChinookImpl(); // @start region=usage
-		String url = "jdbc:h2:file:/path/to/database";
-		Database database = DatabaseFactory.instance(url).create(url);
-		User user = User.parse("scott:tiger");
+  void usage() throws SQLException {
+    Domain domain = new ChinookImpl(); // @start region=usage
+    String url = "jdbc:h2:file:/path/to/database";
+    Database database = DatabaseFactory.instance(url).create(url);
+    User user = User.parse("scott:tiger");
 
-		try (EntityConnection connection = localEntityConnection(database, domain, user)) {
-			List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
-		} // @end
-	}
+    try (EntityConnection connection = localEntityConnection(database, domain, user)) {
+      List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
+    } // @end
+  }
 }

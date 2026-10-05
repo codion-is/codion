@@ -28,40 +28,40 @@ import java.util.List;
  */
 final class ProgressWorkerSnippets {
 
-	void usage() {
-		ProgressWorker.builder() // @start region=usage
-						.task(this::performTask)
-						.onStarted(this::displayDialog)
-						.onDone(this::closeDialog)
-						.onWorking(this::setBusy)
-						.onSuccess(this::handleSuccess)
-						.onResult(this::handleResult)
-						.onProgress(this::displayProgress)
-						.onPublish(this::publishMessage)
-						.onCancelled(this::displayCancelledMessage)
-						.onException(this::displayException)
-						.execute(); // @end
-	}
+  void usage() {
+    ProgressWorker.builder() // @start region=usage
+            .task(this::performTask)
+            .onStarted(this::displayDialog)
+            .onDone(this::closeDialog)
+            .onWorking(this::setBusy)
+            .onSuccess(this::handleSuccess)
+            .onResult(this::handleResult)
+            .onProgress(this::displayProgress)
+            .onPublish(this::publishMessage)
+            .onCancelled(this::displayCancelledMessage)
+            .onException(this::displayException)
+            .execute(); // @end
+  }
 
-	private String performTask(ProgressReporter<String> progress) {
-		return "";
-	}
+  private String performTask(ProgressReporter<String> progress) {
+    return "";
+  }
 
-	private void setBusy(boolean busy) {}
+  private void setBusy(boolean busy) {}
 
-	private void displayDialog() {}
+  private void displayDialog() {}
 
-	private void closeDialog() {}
+  private void closeDialog() {}
 
-	private void handleSuccess() {}
+  private void handleSuccess() {}
 
-	private void handleResult(String result) {}
+  private void handleResult(String result) {}
 
-	private void displayProgress(Integer progress) {}
+  private void displayProgress(Integer progress) {}
 
-	private void publishMessage(List<String> messages) {}
+  private void publishMessage(List<String> messages) {}
 
-	private void displayCancelledMessage() {}
+  private void displayCancelledMessage() {}
 
-	private void displayException(Exception exception) {}
+  private void displayException(Exception exception) {}
 }

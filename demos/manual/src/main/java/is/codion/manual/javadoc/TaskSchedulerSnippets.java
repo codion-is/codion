@@ -29,16 +29,16 @@ import static is.codion.common.utilities.scheduler.TaskScheduler.builder;
  */
 final class TaskSchedulerSnippets {
 
-	void usage() {
-		TaskScheduler scheduler = builder() // @start region=usage
-						.task(() -> System.out.println("Running wild..."))
-						.interval(2, TimeUnit.SECONDS)
-						.build();
+  void usage() {
+    TaskScheduler scheduler = builder() // @start region=usage
+            .task(() -> System.out.println("Running wild..."))
+            .interval(2, TimeUnit.SECONDS)
+            .build();
 
-		scheduler.start();
-		// ...
-		scheduler.interval().set(1); // task restarted using the new interval
-		// ...
-		scheduler.stop(); // @end
-	}
+    scheduler.start();
+    // ...
+    scheduler.interval().set(1); // task restarted using the new interval
+    // ...
+    scheduler.stop(); // @end
+  }
 }

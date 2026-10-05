@@ -355,12 +355,12 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 		 * the width it lacks, the other columns keeping their preferred width. Call for each growing column.
 		 * <p>By default the difference is divided equally between all columns, as it is when none of the
 		 * columns specified exists. A label column in a two column form typically keeps its preferred width:
-		 * {@snippet class = is.codion.manual.javadoc.FlexibleGridLayoutSnippets region = growColumn :
-		 * FlexibleGridLayout.builder()
-		 * 				.rows(0)
-		 * 				.columns(2)
-		 * 				.growColumn(1) // the input column takes the space the labels do not need
-		 * 				.build();}
+		 * {@snippet class = "is.codion.manual.javadoc.FlexibleGridLayoutSnippets" region = "growColumn" :
+		 * FlexibleGridLayout.builder() // @start region=growColumn
+		 *         .rows(0)
+		 *         .columns(2)
+		 *         .growColumn(1) // the input column takes the space the labels do not need
+		 *         .build(); // @end}
 		 * @param index the index of the growing column
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case the index is negative

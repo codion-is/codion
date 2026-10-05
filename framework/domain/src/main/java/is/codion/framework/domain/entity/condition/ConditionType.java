@@ -42,92 +42,92 @@ import java.util.List;
  * for a custom condition. The actual SQL generation logic is provided via a {@link ConditionString}
  * when defining the entity.
  * <p>
- * {@snippet class = is.codion.demos.chinook.javadoc.ConditionTypeSnippets region = notInPlaylist :
- * // Define a custom condition type for finding tracks not in a playlist
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "notInPlaylist" :
+ * // Define a custom condition type for finding tracks not in a playlist // @start region=notInPlaylist
  * interface Track {
- * 	EntityType TYPE = DOMAIN.entityType("chinook.track");
+ *   EntityType TYPE = DOMAIN.entityType("chinook.track");
  *
- * 	Column<Long> ID = TYPE.longColumn("id");
- * 	Column<String> NAME = TYPE.stringColumn("name");
+ *   Column<Long> ID = TYPE.longColumn("id");
+ *   Column<String> NAME = TYPE.stringColumn("name");
  *
- * 	// Define a custom condition for complex subquery logic
- * 	ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("not_in_playlist");
+ *   // Define a custom condition for complex subquery logic
+ *   ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("not_in_playlist");
  * }
  *
  * // In the entity definition, provide the SQL generation logic
  * EntityDefinition track() {
- * 	return Track.TYPE.as()
- * 					.attributes(
- * 									Track.ID.as()
- * 													.primaryKey(),
- * 									Track.NAME.as()
- * 													.column()
- * 													.caption("Name"))
- * 					.condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
- * 									"track.id NOT IN (SELECT track_id FROM chinook.playlisttrack WHERE playlist_id = ?)")
- * 					.build();
+ *   return Track.TYPE.as()
+ *           .attributes(
+ *                   Track.ID.as()
+ *                           .primaryKey(),
+ *                   Track.NAME.as()
+ *                           .column()
+ *                           .caption("Name"))
+ *           .condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
+ *                   "track.id NOT IN (SELECT track_id FROM chinook.playlisttrack WHERE playlist_id = ?)")
+ *           .build();
  * }
  *
  * // Usage - find tracks not in a specific playlist
  * List<Entity> tracks(EntityConnection connection, Long playlistId) {
- * 	return connection.select(Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistId));
- * }}
+ *   return connection.select(Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistId));
+ * } // @end}
  * <p>
  * Example with multiple columns:
- * {@snippet class = is.codion.demos.chinook.javadoc.ConditionTypeSnippets region = multipleColumns :
- * interface Invoice {
- * 	EntityType TYPE = DOMAIN.entityType("chinook.invoice");
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "multipleColumns" :
+ * interface Invoice { // @start region=multipleColumns
+ *   EntityType TYPE = DOMAIN.entityType("chinook.invoice");
  *
- * 	Column<Long> ID = TYPE.longColumn("id");
+ *   Column<Long> ID = TYPE.longColumn("id");
  *
- * 	// Define a condition that uses multiple columns
- * 	ConditionType CONTAINS_TRACK = TYPE.conditionType("contains_track");
+ *   // Define a condition that uses multiple columns
+ *   ConditionType CONTAINS_TRACK = TYPE.conditionType("contains_track");
  * }
  *
  * // In the entity definition
  * EntityDefinition invoice() {
- * 	return Invoice.TYPE.as()
- * 					.attributes(
- * 									Invoice.ID.as()
- * 													.primaryKey())
- * 					.condition(Invoice.CONTAINS_TRACK, (columns, values) ->
- * 									"invoice.id IN (SELECT invoice_id FROM chinook.invoiceline WHERE track_id = ? AND quantity >= ?)")
- * 					.build();
+ *   return Invoice.TYPE.as()
+ *           .attributes(
+ *                   Invoice.ID.as()
+ *                           .primaryKey())
+ *           .condition(Invoice.CONTAINS_TRACK, (columns, values) ->
+ *                   "invoice.id IN (SELECT invoice_id FROM chinook.invoiceline WHERE track_id = ? AND quantity >= ?)")
+ *           .build();
  * }
  *
  * // Usage - a column for each value, used when binding it
  * List<Entity> invoices(EntityConnection connection, Long trackId) {
- * 	return connection.select(Invoice.CONTAINS_TRACK.get(
- * 					List.of(InvoiceLine.TRACK_ID, InvoiceLine.QUANTITY),
- * 					List.of(trackId, 2)));
- * }}
+ *   return connection.select(Invoice.CONTAINS_TRACK.get(
+ *           List.of(InvoiceLine.TRACK_ID, InvoiceLine.QUANTITY),
+ *           List.of(trackId, 2)));
+ * } // @end}
  * <p>
  * Example without columns or values:
- * {@snippet class = is.codion.demos.chinook.javadoc.ConditionTypeSnippets region = noValues :
- * interface Track {
- * 	EntityType TYPE = DOMAIN.entityType("chinook.track");
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "noValues" :
+ * interface Track { // @start region=noValues
+ *   EntityType TYPE = DOMAIN.entityType("chinook.track");
  *
- * 	Column<Long> ID = TYPE.longColumn("id");
+ *   Column<Long> ID = TYPE.longColumn("id");
  *
- * 	// Define a condition without columns or values
- * 	ConditionType NOT_PURCHASED = TYPE.conditionType("not_purchased");
+ *   // Define a condition without columns or values
+ *   ConditionType NOT_PURCHASED = TYPE.conditionType("not_purchased");
  * }
  *
  * // In the entity definition
  * EntityDefinition track() {
- * 	return Track.TYPE.as()
- * 					.attributes(
- * 									Track.ID.as()
- * 													.primaryKey())
- * 					.condition(Track.NOT_PURCHASED, (columns, values) ->
- * 									"track.id NOT IN (SELECT track_id FROM chinook.invoiceline)")
- * 					.build();
+ *   return Track.TYPE.as()
+ *           .attributes(
+ *                   Track.ID.as()
+ *                           .primaryKey())
+ *           .condition(Track.NOT_PURCHASED, (columns, values) ->
+ *                   "track.id NOT IN (SELECT track_id FROM chinook.invoiceline)")
+ *           .build();
  * }
  *
  * // Usage
  * List<Entity> tracks(EntityConnection connection) {
- * 	return connection.select(Track.NOT_PURCHASED.get());
- * }}
+ *   return connection.select(Track.NOT_PURCHASED.get());
+ * } // @end}
  * @see CustomCondition
  * @see ConditionString
  * @see EntityDefinition#condition(ConditionType)

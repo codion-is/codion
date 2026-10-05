@@ -31,41 +31,41 @@ import java.util.List;
  * ascending/descending order, null value handling, and case-insensitive sorting for strings.
  * <p>
  * OrderBy can be used in entity definitions as default ordering, or in queries for custom sorting:
- * {@snippet class = is.codion.demos.chinook.javadoc.OrderBySnippets region = usage :
- * // Default ordering for the entity
+ * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "usage" :
+ * // Default ordering for the entity // @start region=usage
  * Customer.TYPE.as()
- * 				.attributes(
- * 								Customer.LASTNAME.as()
- * 												.column()
- * 												.caption("Last name"),
- * 								Customer.FIRSTNAME.as()
- * 												.column()
- * 												.caption("First name"))
- * 				.orderBy(OrderBy.builder()
- * 								.ascending(Customer.LASTNAME, Customer.FIRSTNAME)
- * 								.build())
- * 				.build();
+ *         .attributes(
+ *                 Customer.LASTNAME.as()
+ *                         .column()
+ *                         .caption("Last name"),
+ *                 Customer.FIRSTNAME.as()
+ *                         .column()
+ *                         .caption("First name"))
+ *         .orderBy(OrderBy.builder()
+ *                 .ascending(Customer.LASTNAME, Customer.FIRSTNAME)
+ *                 .build())
+ *         .build();
  *
  * // Query usage examples
  * // Simple ascending sort
  * List<Entity> customers = connection.select(
- * 				Select.all(Customer.TYPE)
- * 								.orderBy(OrderBy.ascending(Customer.LASTNAME)));
+ *         Select.all(Customer.TYPE)
+ *                 .orderBy(OrderBy.ascending(Customer.LASTNAME)));
  *
  * // Multiple columns, mixed directions
  * List<Entity> tracksByRatingAndName = connection.select(
- * 				Select.all(Track.TYPE)
- * 								.orderBy(OrderBy.builder()
- * 												.descending(Track.RATING) // Highest rated first
- * 												.ascendingIgnoreCase(Track.NAME) // Case-insensitive names
- * 												.build()));
+ *         Select.all(Track.TYPE)
+ *                 .orderBy(OrderBy.builder()
+ *                         .descending(Track.RATING) // Highest rated first
+ *                         .ascendingIgnoreCase(Track.NAME) // Case-insensitive names
+ *                         .build()));
  *
  * // With null handling
  * List<Entity> tracksByComposer = connection.select(
- * 				Select.all(Track.TYPE)
- * 								.orderBy(OrderBy.builder()
- * 												.ascending(OrderBy.NullOrder.NULLS_LAST, Track.COMPOSER)
- * 												.build()));}
+ *         Select.all(Track.TYPE)
+ *                 .orderBy(OrderBy.builder()
+ *                         .ascending(OrderBy.NullOrder.NULLS_LAST, Track.COMPOSER)
+ *                         .build())); // @end}
  * @see #ascending(Column[])
  * @see #descending(Column[])
  * @see #builder()
@@ -126,30 +126,30 @@ public sealed interface OrderBy permits DefaultOrderBy {
 
 	/**
 	 * Builds a {@link OrderBy} instance.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.OrderBySnippets region = builder :
-	 * // Complex ordering with multiple columns and options
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "builder" :
+	 * // Complex ordering with multiple columns and options // @start region=builder
 	 * OrderBy order = OrderBy.builder()
-	 * 				.descending(Track.RATING) // Highest rated first
-	 * 				.ascending(Track.ARTIST_NAME) // Then by artist
-	 * 				.descending(OrderBy.NullOrder.NULLS_LAST, Track.COMPOSER) // Then by composer (nulls last)
-	 * 				.ascendingIgnoreCase(Track.NAME) // Finally by name (case-insensitive)
-	 * 				.build();
+	 *         .descending(Track.RATING) // Highest rated first
+	 *         .ascending(Track.ARTIST_NAME) // Then by artist
+	 *         .descending(OrderBy.NullOrder.NULLS_LAST, Track.COMPOSER) // Then by composer (nulls last)
+	 *         .ascendingIgnoreCase(Track.NAME) // Finally by name (case-insensitive)
+	 *         .build();
 	 *
 	 * // Use in query
 	 * List<Entity> tracks = connection.select(
-	 * 				Select.all(Track.TYPE)
-	 * 								.orderBy(order));
+	 *         Select.all(Track.TYPE)
+	 *                 .orderBy(order));
 	 *
 	 * // Builder pattern allows conditional ordering
 	 * OrderBy.Builder builder = OrderBy.builder();
 	 * if (byRating) {
-	 * 	builder.descending(Track.RATING);
+	 *   builder.descending(Track.RATING);
 	 * }
 	 * builder.ascending(Track.NAME);
 	 * if (byPlayCount) {
-	 * 	builder.descending(Track.PLAY_COUNT);
+	 *   builder.descending(Track.PLAY_COUNT);
 	 * }
-	 * OrderBy dynamicOrder = builder.build();}
+	 * OrderBy dynamicOrder = builder.build(); // @end}
 	 */
 	sealed interface Builder permits DefaultOrderByBuilder {
 
@@ -237,8 +237,8 @@ public sealed interface OrderBy permits DefaultOrderBy {
 
 	/**
 	 * Creates an ascending OrderBy for the given columns.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.OrderBySnippets region = ascending :
-	 * // Single column ascending
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "ascending" :
+	 * // Single column ascending // @start region=ascending
 	 * OrderBy byName = OrderBy.ascending(Artist.NAME);
 	 *
 	 * // Multiple columns ascending
@@ -246,20 +246,20 @@ public sealed interface OrderBy permits DefaultOrderBy {
 	 *
 	 * // Usage in queries
 	 * List<Entity> customers = connection.select(
-	 * 				Select.all(Customer.TYPE)
-	 * 								.orderBy(OrderBy.ascending(Customer.LASTNAME)));
+	 *         Select.all(Customer.TYPE)
+	 *                 .orderBy(OrderBy.ascending(Customer.LASTNAME)));
 	 *
 	 * // Usage in entity definition as default ordering
 	 * Customer.TYPE.as()
-	 * 				.attributes(
-	 * 								Customer.LASTNAME.as()
-	 * 												.column()
-	 * 												.caption("Last name"),
-	 * 								Customer.FIRSTNAME.as()
-	 * 												.column()
-	 * 												.caption("First name"))
-	 * 				.orderBy(OrderBy.ascending(Customer.LASTNAME, Customer.FIRSTNAME))
-	 * 				.build();}
+	 *         .attributes(
+	 *                 Customer.LASTNAME.as()
+	 *                         .column()
+	 *                         .caption("Last name"),
+	 *                 Customer.FIRSTNAME.as()
+	 *                         .column()
+	 *                         .caption("First name"))
+	 *         .orderBy(OrderBy.ascending(Customer.LASTNAME, Customer.FIRSTNAME))
+	 *         .build(); // @end}
 	 * @param columns the columns to order by ascending
 	 * @return a new ascending OrderBy instance based on the given columns
 	 */
@@ -269,8 +269,8 @@ public sealed interface OrderBy permits DefaultOrderBy {
 
 	/**
 	 * Creates a descending OrderBy for the given columns.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.OrderBySnippets region = descending :
-	 * // Single column descending
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "descending" :
+	 * // Single column descending // @start region=descending
 	 * OrderBy byDateDescending = OrderBy.descending(Invoice.DATE);
 	 *
 	 * // Multiple columns descending
@@ -278,13 +278,13 @@ public sealed interface OrderBy permits DefaultOrderBy {
 	 *
 	 * // Usage - most recent invoices first
 	 * List<Entity> recentInvoices = connection.select(
-	 * 				Select.all(Invoice.TYPE)
-	 * 								.orderBy(OrderBy.descending(Invoice.DATE)));
+	 *         Select.all(Invoice.TYPE)
+	 *                 .orderBy(OrderBy.descending(Invoice.DATE)));
 	 *
 	 * // Combine with conditions
 	 * List<Entity> recentCustomerInvoices = connection.select(
-	 * 				Select.where(Invoice.CUSTOMER_FK.equalTo(customer))
-	 * 								.orderBy(OrderBy.descending(Invoice.DATE)));}
+	 *         Select.where(Invoice.CUSTOMER_FK.equalTo(customer))
+	 *                 .orderBy(OrderBy.descending(Invoice.DATE))); // @end}
 	 * @param columns the columns to order by descending
 	 * @return a new descending OrderBy instance based on the given columns
 	 */

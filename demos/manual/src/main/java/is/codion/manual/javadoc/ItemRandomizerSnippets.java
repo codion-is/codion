@@ -29,20 +29,20 @@ import static is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem.rand
  */
 final class ItemRandomizerSnippets {
 
-	void usage() {
-		String one = "one"; // @start region=usage
-		String two = "two";
-		String three = "three";
+  void usage() {
+    String one = "one"; // @start region=usage
+    String two = "two";
+    String three = "three";
 
-		ItemRandomizer<String> randomizer = ItemRandomizer.randomizer(List.of(
-						randomItem(one, 10),
-						randomItem(two, 60),
-						randomItem(three, 30)));
+    ItemRandomizer<String> randomizer = ItemRandomizer.randomizer(List.of(
+            randomItem(one, 10),
+            randomItem(two, 60),
+            randomItem(three, 30)));
 
-		//10% chance of getting 'one', 60% chance of getting 'two' and 30% chance of getting 'three'.
-		String random = randomizer.get().orElse(null);
+    //10% chance of getting 'one', 60% chance of getting 'two' and 30% chance of getting 'three'.
+    String random = randomizer.get().orElse(null);
 
-		// The weights can be changed
-		randomizer.weight(one).set(20); // @end
-	}
+    // The weights can be changed
+    randomizer.weight(one).set(20); // @end
+  }
 }

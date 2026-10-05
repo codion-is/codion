@@ -28,18 +28,18 @@ import java.util.function.Function;
 /**
  * Formats {@link Entity} instances into their string representations.
  * Instances are built via {@link #builder()}.
- * {@snippet class = is.codion.demos.chinook.javadoc.EntityFormatterSnippets region = usage :
- * Entity track = connection.selectSingle(Track.NAME.equalTo("Come As You Are"));
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityFormatterSnippets" region = "usage" :
+ * Entity track = connection.selectSingle(Track.NAME.equalTo("Come As You Are")); // @start region=usage
  *
  * EntityFormatter formatter = EntityFormatter.builder()
- * 				.text("Name=")
- * 				.value(Track.NAME)
- * 				.text(", Album='")
- * 				.value(Track.ALBUM_FK, Album.TITLE)
- * 				.text("'")
- * 				.build();
+ *         .text("Name=")
+ *         .value(Track.NAME)
+ *         .text(", Album='")
+ *         .value(Track.ALBUM_FK, Album.TITLE)
+ *         .text("'")
+ *         .build();
  *
- * System.out.println(formatter.apply(track)); // Name=Come As You Are, Album='Nevermind'}
+ * System.out.println(formatter.apply(track)); // Name=Come As You Are, Album='Nevermind' // @end}
  * Outputs the following String:
  * <p>
  * {@code Name=John, Department='Accounting'}<br><br>

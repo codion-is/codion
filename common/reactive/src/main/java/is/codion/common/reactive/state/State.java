@@ -34,8 +34,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A class encapsulating a boolean state.
- * {@snippet class = is.codion.manual.javadoc.StateSnippets region = usage :
- * State state = State.state();
+ * {@snippet class = "is.codion.manual.javadoc.StateSnippets" region = "usage" :
+ * State state = State.state(); // @start region=usage
  *
  * ObservableState observable = state.observable();
  *
@@ -46,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  *
  * boolean value = state.is();
  *
- * ObservableState opposite = state.not();}
+ * ObservableState opposite = state.not(); // @end}
  * A factory for {@link State} instances.
  * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
  * However, state modifications via {@link #set(boolean)} and notification are NOT thread-safe and should be
@@ -222,8 +222,8 @@ public interface State extends ObservableState {
 	 *   <li>Once the returned {@link State} is no longer reachable and is garbage collected,
 	 *       the synchronization is automatically cleaned up</li>
 	 * </ul>
-	 * {@snippet class = is.codion.manual.javadoc.StateSnippets region = contains :
-	 * ValueSet<String> tags = ValueSet.valueSet();
+	 * {@snippet class = "is.codion.manual.javadoc.StateSnippets" region = "contains" :
+	 * ValueSet<String> tags = ValueSet.valueSet(); // @start region=contains
 	 * State containsImportant = State.contains(tags, "important");
 	 *
 	 * // State → Set
@@ -232,7 +232,7 @@ public interface State extends ObservableState {
 	 *
 	 * // Set → State
 	 * tags.remove("important");
-	 * containsImportant.is(); // false}
+	 * containsImportant.is(); // false // @end}
 	 * @param <T> the value type
 	 * @param valueSet the value set
 	 * @param value the value

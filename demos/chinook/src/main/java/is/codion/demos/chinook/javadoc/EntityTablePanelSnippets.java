@@ -30,50 +30,51 @@ import static java.util.Arrays.asList;
  */
 final class EntityTablePanelSnippets {
 
-	static final class CustomTablePanel extends EntityTablePanel {
+  static final class CustomTablePanel extends EntityTablePanel {
 
-		CustomTablePanel(SwingEntityTableModel tableModel) {
-			super(tableModel);
-			configureToolBar(layout -> layout.clear() // @start region=configureToolBar
-							.control(ControlKeys.REFRESH)
-							.separator()
-							.control(createCustomControl())
-							.separator()
-							.defaults()); // @end
-			configurePopupMenu(layout -> layout.clear() // @start region=configurePopupMenu
-							.control(ControlKeys.REFRESH)
-							.separator()
-							.control(createCustomControl())
-							.separator()
-							.defaults()); // @end
-		}
+    CustomTablePanel(SwingEntityTableModel tableModel) {
+      super(tableModel);
+      configureToolBar(layout -> layout.clear() // @start region=configureToolBar
+              .control(ControlKeys.REFRESH)
+              .separator()
+              .control(createCustomControl())
+              .separator()
+              .defaults()); // @end
+      configurePopupMenu(layout -> layout.clear() // @start region=configurePopupMenu
+              .control(ControlKeys.REFRESH)
+              .separator()
+              .control(createCustomControl())
+              .separator()
+              .defaults()); // @end
+    }
 
-		@Override
-		protected String preferencesKey() {
-			return model().getClass().getSimpleName() + "-" + model().entityType(); // @start region=preferencesKey @end
-		}
+    @Override
+    protected String preferencesKey() {
+      // @start region=preferencesKey
+      return model().getClass().getSimpleName() + "-" + model().entityType(); // @end
+    }
 
-		private Control createCustomControl() {
-			return Control.command(() -> {});
-		}
-	}
+    private Control createCustomControl() {
+      return Control.command(() -> {});
+    }
+  }
 
-	void popupMenuLayout() {
-		EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList( // @start region=popupMenuLayout
-						EntityTablePanel.ControlKeys.REFRESH,
-						null, // <- separator
-						EntityTablePanel.ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
-						null,
-						EntityTablePanel.ControlKeys.CONDITION_CONTROLS,
-						null,
-						EntityTablePanel.ControlKeys.COPY_CONTROLS))); // @end
-	}
+  void popupMenuLayout() {
+    EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList( // @start region=popupMenuLayout
+            EntityTablePanel.ControlKeys.REFRESH,
+            null, // <- separator
+            EntityTablePanel.ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
+            null,
+            EntityTablePanel.ControlKeys.CONDITION_CONTROLS,
+            null,
+            EntityTablePanel.ControlKeys.COPY_CONTROLS))); // @end
+  }
 
-	void toolBarLayout() {
-		EntityTablePanel.Config.TOOLBAR_LAYOUT.set(Controls.layout(asList( // @start region=toolBarLayout
-						EntityTablePanel.ControlKeys.TOGGLE_CONDITION_VIEW,
-						EntityTablePanel.ControlKeys.TOGGLE_FILTER_VIEW,
-						null, // <- separator
-						EntityTablePanel.ControlKeys.ADDITIONAL_TOOLBAR_CONTROLS))); // @end
-	}
+  void toolBarLayout() {
+    EntityTablePanel.Config.TOOLBAR_LAYOUT.set(Controls.layout(asList( // @start region=toolBarLayout
+            EntityTablePanel.ControlKeys.TOGGLE_CONDITION_VIEW,
+            EntityTablePanel.ControlKeys.TOGGLE_FILTER_VIEW,
+            null, // <- separator
+            EntityTablePanel.ControlKeys.ADDITIONAL_TOOLBAR_CONTROLS))); // @end
+  }
 }

@@ -42,47 +42,47 @@ import static is.codion.framework.domain.entity.condition.Condition.and;
  */
 final class CustomConditionSnippets {
 
-	// Define custom condition types in the entity interface // @start region=usage
-	interface Track {
-		EntityType TYPE = DOMAIN.entityType("chinook.track");
+  // Define custom condition types in the entity interface // @start region=usage
+  interface Track {
+    EntityType TYPE = DOMAIN.entityType("chinook.track");
 
-		Column<Long> ID = TYPE.longColumn("id");
-		Column<String> NAME = TYPE.stringColumn("name");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<String> NAME = TYPE.stringColumn("name");
 
-		// Custom condition with any number of values
-		ConditionType NOT_IN_PLAYLISTS = TYPE.conditionType("not_in_playlists");
-	}
+    // Custom condition with any number of values
+    ConditionType NOT_IN_PLAYLISTS = TYPE.conditionType("not_in_playlists");
+  }
 
-	// Register custom conditions in the entity definition
-	EntityDefinition track() {
-		return Track.TYPE.as()
-						.attributes(
-										Track.ID.as()
-														.primaryKey(),
-										Track.NAME.as()
-														.column()
-														.caption("Name"))
-						.condition(Track.NOT_IN_PLAYLISTS, (columns, values) ->
-										// A parameter placeholder for each value
-										"track.id NOT IN (SELECT track_id FROM chinook.playlisttrack WHERE playlist_id IN (" +
-														String.join(", ", Collections.nCopies(values.size(), "?")) + "))")
-						.build();
-	}
+  // Register custom conditions in the entity definition
+  EntityDefinition track() {
+    return Track.TYPE.as()
+            .attributes(
+                    Track.ID.as()
+                            .primaryKey(),
+                    Track.NAME.as()
+                            .column()
+                            .caption("Name"))
+            .condition(Track.NOT_IN_PLAYLISTS, (columns, values) ->
+                    // A parameter placeholder for each value
+                    "track.id NOT IN (SELECT track_id FROM chinook.playlisttrack WHERE playlist_id IN (" +
+                            String.join(", ", Collections.nCopies(values.size(), "?")) + "))")
+            .build();
+  }
 
-	List<Entity> tracks(EntityConnection connection) {
-		// Tracks not in specific playlists
-		List<Entity> notInPlaylists = connection.select(
-						Track.NOT_IN_PLAYLISTS.get(Playlist.ID, List.of(1L, 5L, 10L)));
+  List<Entity> tracks(EntityConnection connection) {
+    // Tracks not in specific playlists
+    List<Entity> notInPlaylists = connection.select(
+            Track.NOT_IN_PLAYLISTS.get(Playlist.ID, List.of(1L, 5L, 10L)));
 
-		// Combine custom conditions with standard conditions
-		Condition condition = and(
-						Track.NAME.like("The%"),
-						Track.NOT_IN_PLAYLISTS.get(Playlist.ID, List.of(1L)));
+    // Combine custom conditions with standard conditions
+    Condition condition = and(
+            Track.NAME.like("The%"),
+            Track.NOT_IN_PLAYLISTS.get(Playlist.ID, List.of(1L)));
 
-		// Use a Select for additional control
-		return connection.select(
-						Select.where(condition)
-										.attributes(Track.NAME)
-										.orderBy(ascending(Track.NAME)));
-	} // @end
+    // Use a Select for additional control
+    return connection.select(
+            Select.where(condition)
+                    .attributes(Track.NAME)
+                    .orderBy(ascending(Track.NAME)));
+  } // @end
 }

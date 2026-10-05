@@ -27,14 +27,14 @@ import is.codion.framework.model.EntityTableModel;
  */
 final class EntityQueryModelSnippets {
 
-	void included(EntityTableModel<?, ?> tableModel) {
-		// Include a lazy blob column on-demand // @start region=included
-		EntityQueryModel query = tableModel.query();
-		query.attributes().included().add(Country.FLAG);
-		tableModel.items().refresh();
+  void included(EntityTableModel<?, ?> tableModel) {
+    // Include a lazy blob column on-demand // @start region=included
+    EntityQueryModel query = tableModel.query();
+    query.attributes().included().add(Country.FLAG);
+    tableModel.items().refresh();
 
-		// Remove the lazy attribute
-		query.attributes().included().remove(Country.FLAG);
-		tableModel.items().refresh(); // @end
-	}
+    // Remove the lazy attribute
+    query.attributes().included().remove(Country.FLAG);
+    tableModel.items().refresh(); // @end
+  }
 }

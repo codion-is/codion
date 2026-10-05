@@ -38,30 +38,30 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * for referenced entities.
  * <p>
  * Foreign key definitions control the loading strategy and behavior of entity relationships:
- * {@snippet class = is.codion.demos.chinook.javadoc.ForeignKeyDefinitionSnippets region = usage :
- * // Reference depth 0, the invoice is not loaded
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeyDefinitionSnippets" region = "usage" :
+ * // Reference depth 0, the invoice is not loaded // @start region=usage
  * InvoiceLine.INVOICE_FK.as()
- * 				.foreignKey()
- * 				.referenceDepth(0);
+ *         .foreignKey()
+ *         .referenceDepth(0);
  *
  * // The default reference depth of 1 loads the artist
  * Album.ARTIST_FK.as()
- * 				.foreignKey();
+ *         .foreignKey();
  *
  * // Foreign key with deeper reference depth, loading the album AND its artist.
  * // Note that only the foreign keys among the included attributes are populated,
  * // so ARTIST_FK must be included for the reference depth of 2 to reach the artist.
  * Track.ALBUM_FK.as()
- * 				.foreignKey()
- * 				.referenceDepth(2)
- * 				.include(Album.ARTIST_FK, Album.TITLE);
+ *         .foreignKey()
+ *         .referenceDepth(2)
+ *         .include(Album.ARTIST_FK, Album.TITLE);
  *
  * // Reference depth behavior examples:
  *
  * // Reference depth 0: No automatic loading
  * List<Entity> tracks = connection.select(
- * 				Select.all(Track.TYPE)
- * 								.referenceDepth(0));
+ *         Select.all(Track.TYPE)
+ *                 .referenceDepth(0));
  *
  * Entity track = tracks.get(0);
  * Entity album = track.get(Track.ALBUM_FK); // null - not loaded
@@ -75,7 +75,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * Entity artist = loadedAlbum.get(Album.ARTIST_FK);         // Artist is also loaded
  *
  * // WARNING: an unlimited reference depth, -1, with a cyclic foreign key reference
- * // in the data, causes infinite recursion, since no cycle detection is performed}
+ * // in the data, causes infinite recursion, since no cycle detection is performed // @end}
  * @see #referenceDepth()
  * @see #soft()
  * @see #attributes()

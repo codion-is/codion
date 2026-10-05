@@ -36,55 +36,55 @@ import static is.codion.demos.chinook.domain.api.Chinook.DOMAIN;
  */
 final class AttributeSnippets {
 
-	interface InvoiceLine { // @start region=usage
-		EntityType TYPE = DOMAIN.entityType("chinook.invoiceline");
+  interface InvoiceLine { // @start region=usage
+    EntityType TYPE = DOMAIN.entityType("chinook.invoiceline");
 
-		// Typed columns, mapped to table columns
-		Column<Long> ID = TYPE.longColumn("id");
-		Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
-		Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
+    // Typed columns, mapped to table columns
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
+    Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
 
-		// An attribute not mapped to a column, here a derived one
-		Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
-	}
+    // An attribute not mapped to a column, here a derived one
+    Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
+  }
 
-	EntityDefinition invoiceLine() {
-		return InvoiceLine.TYPE.as()
-						.attributes(
-										InvoiceLine.ID.as()
-														.primaryKey(),
-										InvoiceLine.UNITPRICE.as()
-														.column()
-														.caption("Price")
-														.nullable(false),
-										InvoiceLine.QUANTITY.as()
-														.column()
-														.caption("Quantity")
-														.nullable(false)
-														.defaultValue(1),
-										InvoiceLine.TOTAL.as()
-														.derived()
-														.from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
-														.with(new InvoiceLineTotal())
-														.caption("Total"))
-						.build();
-	}
+  EntityDefinition invoiceLine() {
+    return InvoiceLine.TYPE.as()
+            .attributes(
+                    InvoiceLine.ID.as()
+                            .primaryKey(),
+                    InvoiceLine.UNITPRICE.as()
+                            .column()
+                            .caption("Price")
+                            .nullable(false),
+                    InvoiceLine.QUANTITY.as()
+                            .column()
+                            .caption("Quantity")
+                            .nullable(false)
+                            .defaultValue(1),
+                    InvoiceLine.TOTAL.as()
+                            .derived()
+                            .from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
+                            .with(new InvoiceLineTotal())
+                            .caption("Total"))
+            .build();
+  }
 
-	void attributes(Entities entities) {
-		// Usage with entities
-		Entity invoiceLine = entities.entity(InvoiceLine.TYPE)
-						.with(InvoiceLine.UNITPRICE, BigDecimal.valueOf(0.99))
-						.with(InvoiceLine.QUANTITY, 2)
-						.build();
+  void attributes(Entities entities) {
+    // Usage with entities
+    Entity invoiceLine = entities.entity(InvoiceLine.TYPE)
+            .with(InvoiceLine.UNITPRICE, BigDecimal.valueOf(0.99))
+            .with(InvoiceLine.QUANTITY, 2)
+            .build();
 
-		// Type-safe value access
-		BigDecimal unitPrice = invoiceLine.get(InvoiceLine.UNITPRICE);
-		Integer quantity = invoiceLine.get(InvoiceLine.QUANTITY);
-		BigDecimal total = invoiceLine.get(InvoiceLine.TOTAL); // 1.98
+    // Type-safe value access
+    BigDecimal unitPrice = invoiceLine.get(InvoiceLine.UNITPRICE);
+    Integer quantity = invoiceLine.get(InvoiceLine.QUANTITY);
+    BigDecimal total = invoiceLine.get(InvoiceLine.TOTAL); // 1.98
 
-		// Attribute type information
-		Class<BigDecimal> priceType = InvoiceLine.UNITPRICE.type().get(); // BigDecimal.class
-		boolean numeric = InvoiceLine.QUANTITY.type().isNumeric();      // true
-		boolean decimal = InvoiceLine.UNITPRICE.type().isDecimal();     // true
-	} // @end
+    // Attribute type information
+    Class<BigDecimal> priceType = InvoiceLine.UNITPRICE.type().get(); // BigDecimal.class
+    boolean numeric = InvoiceLine.QUANTITY.type().isNumeric();      // true
+    boolean decimal = InvoiceLine.UNITPRICE.type().isDecimal();     // true
+  } // @end
 }

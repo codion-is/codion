@@ -25,11 +25,11 @@ import is.codion.swing.common.ui.layout.FlexibleGridLayout;
  */
 final class FlexibleGridLayoutSnippets {
 
-	void growColumn() {
-		FlexibleGridLayout.builder() // @start region=growColumn
-						.rows(0)
-						.columns(2)
-						.growColumn(1) // the input column takes the space the labels do not need
-						.build(); // @end
-	}
+  void growColumn() {
+    FlexibleGridLayout.builder() // @start region=growColumn
+            .rows(0)
+            .columns(2)
+            .growColumn(1) // the input column takes the space the labels do not need
+            .build(); // @end
+  }
 }

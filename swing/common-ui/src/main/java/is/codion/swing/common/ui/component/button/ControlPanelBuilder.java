@@ -32,16 +32,16 @@ import java.util.function.Supplier;
 
 /**
  * Builds panels with buttons based on controls, along with any other components, in the order added.
- * {@snippet class = is.codion.manual.javadoc.ControlPanelBuilderSnippets region = toolBar :
- * JToolBar toolBar = Components.toolBar()
- * 				.controls(navigationControls)
- * 				.separator()
- * 				.add(searchField)
- * 				// the settings button aligned to the right
- * 				.glue()
- * 				.control(settingsControl)
- * 				.floatable(false)
- * 				.build();}
+ * {@snippet class = "is.codion.manual.javadoc.ControlPanelBuilderSnippets" region = "toolBar" :
+ * JToolBar toolBar = Components.toolBar() // @start region=toolBar
+ *         .controls(navigationControls)
+ *         .separator()
+ *         .add(searchField)
+ *         // the settings button aligned to the right
+ *         .glue()
+ *         .control(settingsControl)
+ *         .floatable(false)
+ *         .build(); // @end}
  * <p>The button configuration, such as {@link #includeButtonText(boolean)} and {@link #buttons(Consumer)}, applies
  * to the buttons based on the controls, components added via {@link #add(JComponent)} are added as is.
  * <p>Leading, trailing and adjacent duplicate separators are removed.

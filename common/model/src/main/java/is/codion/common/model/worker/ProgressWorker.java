@@ -70,19 +70,19 @@ import static java.util.Objects.requireNonNull;
  * <p>On successful completion, handlers are called in this order:
  * {@code onDone} &rarr; {@code onSuccess} &rarr; {@code onResult(T)} (result-producing tasks only).
  * <p>Builder based usage example:
- * {@snippet class = is.codion.manual.javadoc.ProgressWorkerSnippets region = usage :
- * ProgressWorker.builder()
- * 				.task(this::performTask)
- * 				.onStarted(this::displayDialog)
- * 				.onDone(this::closeDialog)
- * 				.onWorking(this::setBusy)
- * 				.onSuccess(this::handleSuccess)
- * 				.onResult(this::handleResult)
- * 				.onProgress(this::displayProgress)
- * 				.onPublish(this::publishMessage)
- * 				.onCancelled(this::displayCancelledMessage)
- * 				.onException(this::displayException)
- * 				.execute();}
+ * {@snippet class = "is.codion.manual.javadoc.ProgressWorkerSnippets" region = "usage" :
+ * ProgressWorker.builder() // @start region=usage
+ *         .task(this::performTask)
+ *         .onStarted(this::displayDialog)
+ *         .onDone(this::closeDialog)
+ *         .onWorking(this::setBusy)
+ *         .onSuccess(this::handleSuccess)
+ *         .onResult(this::handleResult)
+ *         .onProgress(this::displayProgress)
+ *         .onPublish(this::publishMessage)
+ *         .onCancelled(this::displayCancelledMessage)
+ *         .onException(this::displayException)
+ *         .execute(); // @end}
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result produced by this {@link ProgressWorker}
  * @see #builder()

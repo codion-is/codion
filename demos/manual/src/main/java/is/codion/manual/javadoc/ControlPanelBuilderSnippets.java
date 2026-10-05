@@ -31,15 +31,15 @@ import javax.swing.JToolBar;
  */
 final class ControlPanelBuilderSnippets {
 
-	void toolBar(Controls navigationControls, JTextField searchField, Control settingsControl) {
-		JToolBar toolBar = Components.toolBar() // @start region=toolBar
-						.controls(navigationControls)
-						.separator()
-						.add(searchField)
-						// the settings button aligned to the right
-						.glue()
-						.control(settingsControl)
-						.floatable(false)
-						.build(); // @end
-	}
+  void toolBar(Controls navigationControls, JTextField searchField, Control settingsControl) {
+    JToolBar toolBar = Components.toolBar() // @start region=toolBar
+            .controls(navigationControls)
+            .separator()
+            .add(searchField)
+            // the settings button aligned to the right
+            .glue()
+            .control(settingsControl)
+            .floatable(false)
+            .build(); // @end
+  }
 }

@@ -41,72 +41,72 @@ import static java.util.Objects.requireNonNull;
  * {@link Attribute} interface with column-specific functionality for database operations.
  * <p>
  * Columns are declared in the domain API, and defined in the domain model:
- * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = usage :
- * interface Track {
- * 	EntityType TYPE = DOMAIN.entityType("chinook.track");
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "usage" :
+ * interface Track { // @start region=usage
+ *   EntityType TYPE = DOMAIN.entityType("chinook.track");
  *
- * 	// Column definitions
- * 	Column<Long> ID = TYPE.longColumn("id");
- * 	Column<String> NAME = TYPE.stringColumn("name");
- * 	Column<String> COMPOSER = TYPE.stringColumn("composer");
- * 	Column<Integer> MILLISECONDS = TYPE.integerColumn("milliseconds");
- * 	Column<Integer> RATING = TYPE.integerColumn("rating");
- * 	Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
+ *   // Column definitions
+ *   Column<Long> ID = TYPE.longColumn("id");
+ *   Column<String> NAME = TYPE.stringColumn("name");
+ *   Column<String> COMPOSER = TYPE.stringColumn("composer");
+ *   Column<Integer> MILLISECONDS = TYPE.integerColumn("milliseconds");
+ *   Column<Integer> RATING = TYPE.integerColumn("rating");
+ *   Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
  * }
  *
  * EntityDefinition track() {
- * 	return Track.TYPE.as()
- * 					.attributes(
- * 									Track.ID.as()
- * 													.primaryKey()
- * 													.generator(Generator.identity()),
- * 									Track.NAME.as()
- * 													.column()
- * 													.caption("Name")
- * 													.nullable(false)
- * 													.maximumLength(200),
- * 									Track.COMPOSER.as()
- * 													.column()
- * 													.caption("Composer")
- * 													.maximumLength(220),
- * 									Track.MILLISECONDS.as()
- * 													.column()
- * 													.caption("Duration")
- * 													.nullable(false),
- * 									Track.RATING.as()
- * 													.column()
- * 													.caption("Rating")
- * 													.nullable(false)
- * 													.defaultValue(5)
- * 													.range(1, 10),
- * 									Track.UNITPRICE.as()
- * 													.column()
- * 													.caption("Price")
- * 													.nullable(false)
- * 													.minimum(0)
- * 													.fractionDigits(2))
- * 					.build();
- * }}
+ *   return Track.TYPE.as()
+ *           .attributes(
+ *                   Track.ID.as()
+ *                           .primaryKey()
+ *                           .generator(Generator.identity()),
+ *                   Track.NAME.as()
+ *                           .column()
+ *                           .caption("Name")
+ *                           .nullable(false)
+ *                           .maximumLength(200),
+ *                   Track.COMPOSER.as()
+ *                           .column()
+ *                           .caption("Composer")
+ *                           .maximumLength(220),
+ *                   Track.MILLISECONDS.as()
+ *                           .column()
+ *                           .caption("Duration")
+ *                           .nullable(false),
+ *                   Track.RATING.as()
+ *                           .column()
+ *                           .caption("Rating")
+ *                           .nullable(false)
+ *                           .defaultValue(5)
+ *                           .range(1, 10),
+ *                   Track.UNITPRICE.as()
+ *                           .column()
+ *                           .caption("Price")
+ *                           .nullable(false)
+ *                           .minimum(0)
+ *                           .fractionDigits(2))
+ *           .build();
+ * } // @end}
  * <p>
  * Columns inherit from {@link ColumnConditions} to provide condition creation methods:
- * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = conditions :
- * // Query condition usage (inherited from ColumnConditions)
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "conditions" :
+ * // Query condition usage (inherited from ColumnConditions) // @start region=conditions
  * List<Entity> bachTracks = connection.select(
- * 				Track.COMPOSER.equalTo("Johann Sebastian Bach"));
+ *         Track.COMPOSER.equalTo("Johann Sebastian Bach"));
  *
  * List<Entity> loveSongs = connection.select(
- * 				Track.NAME.likeIgnoreCase("%love%"));
+ *         Track.NAME.likeIgnoreCase("%love%"));
  *
  * List<Entity> longTracks = connection.select(
- * 				Track.MILLISECONDS.greaterThanOrEqualTo(600_000));
+ *         Track.MILLISECONDS.greaterThanOrEqualTo(600_000));
  *
  * List<Entity> expensiveTracks = connection.select(
- * 				Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
+ *         Track.UNITPRICE.greaterThan(BigDecimal.valueOf(0.99)));
  *
  * // Complex conditions
  * List<Entity> liveAlbums = connection.select(and(
- * 				Album.ARTIST_FK.in(artists),
- * 				Album.TITLE.likeIgnoreCase("%live%")));}
+ *         Album.ARTIST_FK.in(artists),
+ *         Album.TITLE.likeIgnoreCase("%live%"))); // @end}
  * @param <T> the column value type
  * @see ColumnConditions
  * @see #as()
@@ -120,9 +120,9 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 	/**
 	 * Returns a {@link ColumnDefinition.Builder} for this column, configured by the given template.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = template :
-	 * Customer.LASTNAME.as(REQUIRED_SEARCHABLE)
-	 * 				.maximumLength(20);}
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "template" :
+	 * Customer.LASTNAME.as(REQUIRED_SEARCHABLE) // @start region=template
+	 *         .maximumLength(20); // @end}
 	 * <p>The template is applied first, any subsequent configuration overriding it.
 	 * <p>Note that a column has {@link Attribute#as(AttributeTemplate)} as well, so the template
 	 * must be typed, an inline lambda being ambiguous between the two.
@@ -172,11 +172,11 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the primary key index 0.
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
-		 * {@snippet class = is.codion.demos.world.javadoc.ColumnSnippets region = primaryKey :
-		 * Country.CODE.as()
-		 * 				.primaryKey()
-		 * 				.caption("Code")
-		 * 				.updatable(true);}
+		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "primaryKey" :
+		 * Country.CODE.as() // @start region=primaryKey
+		 *         .primaryKey()
+		 *         .caption("Code")
+		 *         .updatable(true); // @end}
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with primary key index 0
 		 * @see ColumnDefinition.Builder#nullable(boolean)
@@ -188,17 +188,17 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the given primary key index.
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
-		 * {@snippet class = is.codion.demos.world.javadoc.ColumnSnippets region = primaryKeyIndex :
-		 * CountryLanguage.TYPE.as()
-		 * 				.attributes(
-		 * 								CountryLanguage.COUNTRY_CODE.as()
-		 * 												.primaryKey(0)
-		 * 												.updatable(true),
-		 * 								CountryLanguage.LANGUAGE.as()
-		 * 												.primaryKey(1)
-		 * 												.caption("Language")
-		 * 												.updatable(true))
-		 * 				.build();}
+		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "primaryKeyIndex" :
+		 * CountryLanguage.TYPE.as() // @start region=primaryKeyIndex
+		 *         .attributes(
+		 *                 CountryLanguage.COUNTRY_CODE.as()
+		 *                         .primaryKey(0)
+		 *                         .updatable(true),
+		 *                 CountryLanguage.LANGUAGE.as()
+		 *                         .primaryKey(1)
+		 *                         .caption("Language")
+		 *                         .updatable(true))
+		 *         .build(); // @end}
 		 * @param index the zero-based index of this column in the primary key
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with the given primary key index
@@ -273,17 +273,17 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 * <p>
 	 * The common generators are provided by {@link #identity()}, {@link #sequence(String)} and {@link #queried(String)}.
 	 * A custom generator, setting a random UUID as the key:
-	 * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = generator :
-	 * class UUIDGenerator implements Generator<String> {
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "generator" :
+	 * class UUIDGenerator implements Generator<String> { // @start region=generator
 	 *
-	 * 	@Override
-	 * 	public void beforeInsert(Entity entity, Column<String> column, Database database, Connection connection) {
-	 * 		// Only generate if not already set
-	 * 		if (!entity.present(column)) {
-	 * 			entity.set(column, UUID.randomUUID().toString());
-	 * 		}
-	 * 	}
-	 * }}
+	 *   @Override
+	 *   public void beforeInsert(Entity entity, Column<String> column, Database database, Connection connection) {
+	 *     // Only generate if not already set
+	 *     if (!entity.present(column)) {
+	 *       entity.set(column, UUID.randomUUID().toString());
+	 *     }
+	 *   }
+	 * } // @end}
 	 * @param <T> the generated column type
 	 * @see #sequence(String)
 	 * @see #identity()
@@ -347,24 +347,24 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Instantiates a generator which fetches column values from a sequence prior to insert.
-		 * {@snippet class = is.codion.demos.world.javadoc.ColumnSnippets region = sequence :
-		 * // Oracle or PostgreSQL sequence
+		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "sequence" :
+		 * // Oracle or PostgreSQL sequence // @start region=sequence
 		 * City.TYPE.as()
-		 * 				.attributes(
-		 * 								City.ID.as()
-		 * 												.primaryKey()
-		 * 												.generator(Generator.sequence("world.city_seq")))
-		 * 				.build();
+		 *         .attributes(
+		 *                 City.ID.as()
+		 *                         .primaryKey()
+		 *                         .generator(Generator.sequence("world.city_seq")))
+		 *         .build();
 		 *
 		 * // Usage - the key is fetched from the sequence before insert
 		 * Entity city = entities.entity(City.TYPE)
-		 * 				.with(City.NAME, "Akureyri")
-		 * 				.with(City.COUNTRY_FK, iceland)
-		 * 				.with(City.POPULATION, 20_000)
-		 * 				.build();
+		 *         .with(City.NAME, "Akureyri")
+		 *         .with(City.COUNTRY_FK, iceland)
+		 *         .with(City.POPULATION, 20_000)
+		 *         .build();
 		 *
 		 * Entity.Key key = connection.insert(city);
-		 * Integer generatedId = key.get(City.ID);}
+		 * Integer generatedId = key.get(City.ID); // @end}
 		 * @param <T> the generated column type
 		 * @param sequenceName the sequence name
 		 * @return a sequence based generator
@@ -375,23 +375,23 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Instantiates a generator which fetches column values using the given query prior to insert.
-		 * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = queried :
-		 * // Custom query-based key generation, such as a function call
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "queried" :
+		 * // Custom query-based key generation, such as a function call // @start region=queried
 		 * Invoice.TYPE.as()
-		 * 				.attributes(
-		 * 								Invoice.ID.as()
-		 * 												.primaryKey()
-		 * 												.generator(Generator.queried("SELECT chinook.next_invoice_id()")))
-		 * 				.build();
+		 *         .attributes(
+		 *                 Invoice.ID.as()
+		 *                         .primaryKey()
+		 *                         .generator(Generator.queried("SELECT chinook.next_invoice_id()")))
+		 *         .build();
 		 *
 		 * // Usage - the key is fetched before insert
 		 * Entity invoice = entities.entity(Invoice.TYPE)
-		 * 				.with(Invoice.CUSTOMER_FK, customer)
-		 * 				.with(Invoice.DATE, LocalDate.now())
-		 * 				.build();
+		 *         .with(Invoice.CUSTOMER_FK, customer)
+		 *         .with(Invoice.DATE, LocalDate.now())
+		 *         .build();
 		 *
 		 * Entity.Key key = connection.insert(invoice);
-		 * Long generatedId = key.get(Invoice.ID);}
+		 * Long generatedId = key.get(Invoice.ID); // @end}
 		 * @param <T> the generated column type
 		 * @param query a query for retrieving the column value
 		 * @return a query based column generator
@@ -413,24 +413,24 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Returns a column value generator based on an IDENTITY type column.
-		 * {@snippet class = is.codion.demos.chinook.javadoc.ColumnSnippets region = identity :
-		 * // SQL Server, MySQL auto-increment, or similar
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "identity" :
+		 * // SQL Server, MySQL auto-increment, or similar // @start region=identity
 		 * Customer.TYPE.as()
-		 * 				.attributes(
-		 * 								Customer.ID.as()
-		 * 												.primaryKey()
-		 * 												.generator(Generator.identity()))
-		 * 				.build();
+		 *         .attributes(
+		 *                 Customer.ID.as()
+		 *                         .primaryKey()
+		 *                         .generator(Generator.identity()))
+		 *         .build();
 		 *
 		 * // Usage - the database generates the key on insert
 		 * Entity customer = entities.entity(Customer.TYPE)
-		 * 				.with(Customer.FIRSTNAME, "John")
-		 * 				.with(Customer.LASTNAME, "Doe")
-		 * 				.with(Customer.EMAIL, "john@example.com")
-		 * 				.build();
+		 *         .with(Customer.FIRSTNAME, "John")
+		 *         .with(Customer.LASTNAME, "Doe")
+		 *         .with(Customer.EMAIL, "john@example.com")
+		 *         .build();
 		 *
 		 * Entity.Key key = connection.insert(customer);
-		 * Long generatedId = key.get(Customer.ID);}
+		 * Long generatedId = key.get(Customer.ID); // @end}
 		 * @param <T> the generated column type
 		 * @return an identity based generated column value generator
 		 * @see Statement#getGeneratedKeys()

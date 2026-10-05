@@ -27,11 +27,11 @@ import is.codion.framework.domain.entity.Entity;
  */
 final class EntitiesSnippets {
 
-	void key(Entities entities) {
-		// A composite primary key // @start region=key
-		Entity.Key languageKey = entities.key(CountryLanguage.TYPE)
-						.with(CountryLanguage.COUNTRY_CODE, "ISL")
-						.with(CountryLanguage.LANGUAGE, "Icelandic")
-						.build(); // @end
-	}
+  void key(Entities entities) {
+    // A composite primary key // @start region=key
+    Entity.Key languageKey = entities.key(CountryLanguage.TYPE)
+            .with(CountryLanguage.COUNTRY_CODE, "ISL")
+            .with(CountryLanguage.LANGUAGE, "Icelandic")
+            .build(); // @end
+  }
 }

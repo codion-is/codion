@@ -43,35 +43,35 @@ import static java.util.Objects.requireNonNull;
  * They serve as factories for creating typed attributes (columns, foreign keys, derived attributes)
  * and provide the starting point for defining entity structure.
  * <p>
- * {@snippet class = is.codion.demos.chinook.javadoc.EntityTypeSnippets region = usage :
- * // The domain API
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTypeSnippets" region = "usage" :
+ * // The domain API // @start region=usage
  * public interface Chinook {
  *
- * 	DomainType DOMAIN = domainType(Chinook.class);
+ *   DomainType DOMAIN = domainType(Chinook.class);
  *
- * 	// Define entity types as interfaces for organization
- * 	interface Customer {
- * 		EntityType TYPE = DOMAIN.entityType("chinook.customer");
+ *   // Define entity types as interfaces for organization
+ *   interface Customer {
+ *     EntityType TYPE = DOMAIN.entityType("chinook.customer");
  *
- * 		// Define typed columns
- * 		Column<Long> ID = TYPE.longColumn("id");
- * 		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
- * 		Column<String> LASTNAME = TYPE.stringColumn("lastname");
- * 		Column<String> EMAIL = TYPE.stringColumn("email");
- * 	}
+ *     // Define typed columns
+ *     Column<Long> ID = TYPE.longColumn("id");
+ *     Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+ *     Column<String> LASTNAME = TYPE.stringColumn("lastname");
+ *     Column<String> EMAIL = TYPE.stringColumn("email");
+ *   }
  *
- * 	interface Invoice {
- * 		EntityType TYPE = DOMAIN.entityType("chinook.invoice");
+ *   interface Invoice {
+ *     EntityType TYPE = DOMAIN.entityType("chinook.invoice");
  *
- * 		Column<Long> ID = TYPE.longColumn("id");
- * 		Column<LocalDate> DATE = TYPE.localDateColumn("invoicedate");
- * 		Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
+ *     Column<Long> ID = TYPE.longColumn("id");
+ *     Column<LocalDate> DATE = TYPE.localDateColumn("invoicedate");
+ *     Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
  *
- * 		// Define foreign key to Customer
- * 		Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
- * 		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
- * 	}
- * }}
+ *     // Define foreign key to Customer
+ *     Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
+ *     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+ *   }
+ * } // @end}
  * @see #as()
  * @see DomainType#entityType(String)
  */
@@ -342,32 +342,32 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given attributes.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityTypeSnippets region = foreignKey :
-	 * // Single column foreign key
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTypeSnippets" region = "foreignKey" :
+	 * // Single column foreign key // @start region=foreignKey
 	 * interface Invoice {
-	 * 	EntityType TYPE = DOMAIN.entityType("chinook.invoice");
+	 *   EntityType TYPE = DOMAIN.entityType("chinook.invoice");
 	 *
-	 * 	Column<Long> ID = TYPE.longColumn("id");
-	 * 	Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
+	 *   Column<Long> ID = TYPE.longColumn("id");
+	 *   Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
 	 *
-	 * 	// Define foreign key to Customer entity
-	 * 	ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
-	 * 					CUSTOMER_ID, Customer.ID);
+	 *   // Define foreign key to Customer entity
+	 *   ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
+	 *           CUSTOMER_ID, Customer.ID);
 	 * }
 	 *
 	 * // Usage in entity definition
 	 * EntityDefinition invoice() {
-	 * 	return Invoice.TYPE.as()
-	 * 					.attributes(
-	 * 									Invoice.ID.as()
-	 * 													.primaryKey(),
-	 * 									Invoice.CUSTOMER_ID.as()
-	 * 													.column(),
-	 * 									Invoice.CUSTOMER_FK.as()
-	 * 													.foreignKey()
-	 * 													.caption("Customer"))
-	 * 					.build();
-	 * }}
+	 *   return Invoice.TYPE.as()
+	 *           .attributes(
+	 *                   Invoice.ID.as()
+	 *                           .primaryKey(),
+	 *                   Invoice.CUSTOMER_ID.as()
+	 *                           .column(),
+	 *                   Invoice.CUSTOMER_FK.as()
+	 *                           .foreignKey()
+	 *                           .caption("Customer"))
+	 *           .build();
+	 * } // @end}
 	 * @param name the attribute name
 	 * @param column the column
 	 * @param referencedColumn the referenced column
@@ -378,22 +378,22 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given columns.
-	 * {@snippet class = is.codion.demos.schemabrowser.javadoc.EntityTypeSnippets region = compositeForeignKey :
-	 * // Composite foreign key (two columns)
+	 * {@snippet class = "is.codion.demos.schemabrowser.javadoc.EntityTypeSnippets" region = "compositeForeignKey" :
+	 * // Composite foreign key (two columns) // @start region=compositeForeignKey
 	 * interface TableColumn {
-	 * 	EntityType TYPE = DOMAIN.entityType("column");
+	 *   EntityType TYPE = DOMAIN.entityType("column");
 	 *
-	 * 	Column<String> NAME = TYPE.stringColumn("column_name");
+	 *   Column<String> NAME = TYPE.stringColumn("column_name");
 	 *
-	 * 	// Foreign key columns, referencing the composite primary key of Table
-	 * 	Column<String> SCHEMA = TYPE.stringColumn("table_schema");
-	 * 	Column<String> TABLE_NAME = TYPE.stringColumn("table_name");
+	 *   // Foreign key columns, referencing the composite primary key of Table
+	 *   Column<String> SCHEMA = TYPE.stringColumn("table_schema");
+	 *   Column<String> TABLE_NAME = TYPE.stringColumn("table_name");
 	 *
-	 * 	// Composite foreign key
-	 * 	ForeignKey TABLE_FK = TYPE.foreignKey("table_fk",
-	 * 					SCHEMA, Table.SCHEMA,
-	 * 					TABLE_NAME, Table.NAME);
-	 * }}
+	 *   // Composite foreign key
+	 *   ForeignKey TABLE_FK = TYPE.foreignKey("table_fk",
+	 *           SCHEMA, Table.SCHEMA,
+	 *           TABLE_NAME, Table.NAME);
+	 * } // @end}
 	 * @param name the column name
 	 * @param firstColumn the first column
 	 * @param firstReferencedColumn the first referenced column

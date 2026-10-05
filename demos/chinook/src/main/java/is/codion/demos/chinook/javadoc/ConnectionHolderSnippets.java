@@ -28,7 +28,8 @@ import is.codion.framework.db.local.ConnectionHolder;
  */
 final class ConnectionHolderSnippets {
 
-	void attach(EntityConnection entityConnection, ConnectionPoolWrapper connectionPool, User user) {
-		((ConnectionHolder) entityConnection).attach(connectionPool.connection(user)); // @start region=attach @end
-	}
+  void attach(EntityConnection entityConnection, ConnectionPoolWrapper connectionPool, User user) {
+    // @start region=attach
+    ((ConnectionHolder) entityConnection).attach(connectionPool.connection(user)); // @end
+  }
 }

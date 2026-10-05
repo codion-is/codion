@@ -34,62 +34,62 @@ import java.util.List;
  * loading of referenced entities based on reference depth configuration.
  * <p>
  * Foreign keys inherit from {@link ForeignKeyConditions} to provide condition creation methods:
- * {@snippet class = is.codion.demos.chinook.javadoc.ForeignKeySnippets region = usage :
- * interface Album {
- * 	EntityType TYPE = DOMAIN.entityType("chinook.album");
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeySnippets" region = "usage" :
+ * interface Album { // @start region=usage
+ *   EntityType TYPE = DOMAIN.entityType("chinook.album");
  *
- * 	Column<Long> ID = TYPE.longColumn("id");
- * 	Column<String> TITLE = TYPE.stringColumn("title");
- * 	Column<Long> ARTIST_ID = TYPE.longColumn("artist_id");
+ *   Column<Long> ID = TYPE.longColumn("id");
+ *   Column<String> TITLE = TYPE.stringColumn("title");
+ *   Column<Long> ARTIST_ID = TYPE.longColumn("artist_id");
  *
- * 	// Single-column foreign key
- * 	ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
+ *   // Single-column foreign key
+ *   ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
  * }
  *
  * EntityDefinition album() {
- * 	return Album.TYPE.as()
- * 					.attributes(
- * 									Album.ID.as()
- * 													.primaryKey(),
- * 									Album.TITLE.as()
- * 													.column()
- * 													.caption("Title"),
- * 									Album.ARTIST_ID.as()
- * 													.column(),
- * 									Album.ARTIST_FK.as()
- * 													.foreignKey()
- * 													.caption("Artist")
- * 													.referenceDepth(1)) // Load the artist automatically (1 is the default)
- * 					.build();
+ *   return Album.TYPE.as()
+ *           .attributes(
+ *                   Album.ID.as()
+ *                           .primaryKey(),
+ *                   Album.TITLE.as()
+ *                           .column()
+ *                           .caption("Title"),
+ *                   Album.ARTIST_ID.as()
+ *                           .column(),
+ *                   Album.ARTIST_FK.as()
+ *                           .foreignKey()
+ *                           .caption("Artist")
+ *                           .referenceDepth(1)) // Load the artist automatically (1 is the default)
+ *           .build();
  * }
  *
  * void albums(EntityConnection connection) {
- * 	// Foreign key navigation and usage
- * 	List<Entity> albums = connection.select(all(Album.TYPE));
+ *   // Foreign key navigation and usage
+ *   List<Entity> albums = connection.select(all(Album.TYPE));
  *
- * 	for (Entity album : albums) {
- * 		// Direct foreign key entity access (loaded automatically with reference depth)
- * 		Entity artist = album.get(Album.ARTIST_FK);
- * 		if (artist != null) {
- * 			System.out.println("Artist: " + artist.get(Artist.NAME));
- * 		}
+ *   for (Entity album : albums) {
+ *     // Direct foreign key entity access (loaded automatically with reference depth)
+ *     Entity artist = album.get(Album.ARTIST_FK);
+ *     if (artist != null) {
+ *       System.out.println("Artist: " + artist.get(Artist.NAME));
+ *     }
  *
- * 		// Or use entity() to get the entity even if not loaded
- * 		Entity artistEntity = album.entity(Album.ARTIST_FK);
- * 		if (artistEntity != null) {
- * 			Long artistId = artistEntity.get(Artist.ID); // Always available
- * 		}
- * 	}
+ *     // Or use entity() to get the entity even if not loaded
+ *     Entity artistEntity = album.entity(Album.ARTIST_FK);
+ *     if (artistEntity != null) {
+ *       Long artistId = artistEntity.get(Artist.ID); // Always available
+ *     }
+ *   }
  *
- * 	// Query conditions using foreign keys
- * 	Entity acdc = connection.selectSingle(Artist.NAME.equalTo("AC/DC"));
+ *   // Query conditions using foreign keys
+ *   Entity acdc = connection.selectSingle(Artist.NAME.equalTo("AC/DC"));
  *
- * 	List<Entity> acdcAlbums = connection.select(
- * 					Album.ARTIST_FK.equalTo(acdc));
+ *   List<Entity> acdcAlbums = connection.select(
+ *           Album.ARTIST_FK.equalTo(acdc));
  *
- * 	List<Entity> albumsByTheArtists = connection.select(
- * 					Album.ARTIST_FK.in(connection.select(Artist.NAME.like("The %"))));
- * }}
+ *   List<Entity> albumsByTheArtists = connection.select(
+ *           Album.ARTIST_FK.in(connection.select(Artist.NAME.like("The %"))));
+ * } // @end}
  * @see ForeignKeyConditions
  * @see #as()
  * @see #referencedType()

@@ -46,14 +46,14 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 
 	/**
 	 * The client property key for the associated {@link ComponentValue}
-	 * {@snippet class = is.codion.manual.javadoc.ComponentValueBuilderSnippets region = componentValue :
-	 * JTextField textField =
-	 * 				Components.stringField()
-	 * 								.build();
+	 * {@snippet class = "is.codion.manual.javadoc.ComponentValueBuilderSnippets" region = "componentValue" :
+	 * JTextField textField = // @start region=componentValue
+	 *         Components.stringField()
+	 *                 .build();
 	 *
 	 * ComponentValue<JTextField, String> componentValue =
-	 * 				(ComponentValue<JTextField, String>)
-	 * 								textField.getClientProperty(COMPONENT_VALUE);}
+	 *         (ComponentValue<JTextField, String>)
+	 *                 textField.getClientProperty(COMPONENT_VALUE); // @end}
 	 * @see JComponent#getClientProperty(Object)
 	 */
 	String COMPONENT_VALUE = "componentValue";

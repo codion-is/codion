@@ -60,32 +60,32 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * </ul>
  * <p>
  * Entity definitions are typically created using the builder pattern during domain initialization:
- * {@snippet class = is.codion.demos.chinook.javadoc.EntityDefinitionSnippets region = usage :
- * // Define entity types
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "usage" :
+ * // Define entity types // @start region=usage
  * interface Genre {
- * 	EntityType TYPE = DOMAIN.entityType("chinook.genre");
+ *   EntityType TYPE = DOMAIN.entityType("chinook.genre");
  *
- * 	Column<Long> ID = TYPE.longColumn("id");
- * 	Column<String> NAME = TYPE.stringColumn("name");
+ *   Column<Long> ID = TYPE.longColumn("id");
+ *   Column<String> NAME = TYPE.stringColumn("name");
  * }
  *
  * // Define the entity structure
  * EntityDefinition genre() {
- * 	return Genre.TYPE.as()
- * 					.attributes(
- * 									Genre.ID.as()
- * 													.primaryKey(),
- * 									Genre.NAME.as()
- * 													.column()
- * 													.caption("Name")
- * 													.nullable(false)
- * 													.maximumLength(120))
- * 					.caption("Genres")
- * 					.orderBy(ascending(Genre.NAME))
- * 					.formatter(Genre.NAME)
- * 					.smallDataset(true)
- * 					.build();
- * }}
+ *   return Genre.TYPE.as()
+ *           .attributes(
+ *                   Genre.ID.as()
+ *                           .primaryKey(),
+ *                   Genre.NAME.as()
+ *                           .column()
+ *                           .caption("Name")
+ *                           .nullable(false)
+ *                           .maximumLength(120))
+ *           .caption("Genres")
+ *           .orderBy(ascending(Genre.NAME))
+ *           .formatter(Genre.NAME)
+ *           .smallDataset(true)
+ *           .build();
+ * } // @end}
  * @see EntityType#as()
  * @see Builder
  */
@@ -183,35 +183,35 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * Returns the formatter responsible for providing toString values for this entity type.
-	 * {@snippet class = is.codion.demos.chinook.javadoc.EntityDefinitionSnippets region = formatter :
-	 * // Define custom string representation
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "formatter" :
+	 * // Define custom string representation // @start region=formatter
 	 * Customer.TYPE.as()
-	 * 				.attributes(
-	 * 								Customer.ID.as()
-	 * 												.primaryKey(),
-	 * 								Customer.FIRSTNAME.as()
-	 * 												.column()
-	 * 												.caption("First name"),
-	 * 								Customer.LASTNAME.as()
-	 * 												.column()
-	 * 												.caption("Last name"),
-	 * 								Customer.EMAIL.as()
-	 * 												.column()
-	 * 												.caption("Email"))
-	 * 				.formatter(customer ->
-	 * 								customer.get(Customer.LASTNAME) + ", " +
-	 * 												customer.get(Customer.FIRSTNAME) +
-	 * 												" (" + customer.get(Customer.EMAIL) + ")")
-	 * 				.build();
+	 *         .attributes(
+	 *                 Customer.ID.as()
+	 *                         .primaryKey(),
+	 *                 Customer.FIRSTNAME.as()
+	 *                         .column()
+	 *                         .caption("First name"),
+	 *                 Customer.LASTNAME.as()
+	 *                         .column()
+	 *                         .caption("Last name"),
+	 *                 Customer.EMAIL.as()
+	 *                         .column()
+	 *                         .caption("Email"))
+	 *         .formatter(customer ->
+	 *                 customer.get(Customer.LASTNAME) + ", " +
+	 *                         customer.get(Customer.FIRSTNAME) +
+	 *                         " (" + customer.get(Customer.EMAIL) + ")")
+	 *         .build();
 	 *
 	 * // Usage
 	 * Entity customer = entities.entity(Customer.TYPE)
-	 * 				.with(Customer.FIRSTNAME, "John")
-	 * 				.with(Customer.LASTNAME, "Doe")
-	 * 				.with(Customer.EMAIL, "john@example.com")
-	 * 				.build();
+	 *         .with(Customer.FIRSTNAME, "John")
+	 *         .with(Customer.LASTNAME, "Doe")
+	 *         .with(Customer.EMAIL, "john@example.com")
+	 *         .build();
 	 *
-	 * System.out.println(customer); // "Doe, John (john@example.com)"}
+	 * System.out.println(customer); // "Doe, John (john@example.com)" // @end}
 	 * @return the function responsible for formatting entities of this type
 	 */
 	Function<Entity, String> formatter();
@@ -302,36 +302,36 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 			/**
 			 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
-			 * {@snippet class = is.codion.demos.chinook.javadoc.EntityDefinitionSnippets region = attributes :
-			 * EntityDefinition definition = Customer.TYPE.as()
-			 * 				.attributes(
-			 * 								Customer.ID.as()
-			 * 												.primaryKey(),
-			 * 								Customer.LASTNAME.as()
-			 * 												.column()
-			 * 												.caption("Last name")
-			 * 												.nullable(false)
-			 * 												.maximumLength(20),
-			 * 								Customer.FIRSTNAME.as()
-			 * 												.column()
-			 * 												.caption("First name")
-			 * 												.nullable(false)
-			 * 												.maximumLength(40),
-			 * 								Customer.EMAIL.as()
-			 * 												.column()
-			 * 												.caption("Email")
-			 * 												.nullable(false)
-			 * 												.maximumLength(60),
-			 * 								Customer.COMPANY.as()
-			 * 												.column()
-			 * 												.caption("Company")
-			 * 												.maximumLength(80))
-			 * 				.caption("Customer")
-			 * 				.description("Customer information")
-			 * 				.orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
-			 * 				.formatter(customer ->
-			 * 								customer.get(Customer.LASTNAME) + " (" + customer.get(Customer.EMAIL) + ")")
-			 * 				.build();}
+			 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "attributes" :
+			 * EntityDefinition definition = Customer.TYPE.as() // @start region=attributes
+			 *         .attributes(
+			 *                 Customer.ID.as()
+			 *                         .primaryKey(),
+			 *                 Customer.LASTNAME.as()
+			 *                         .column()
+			 *                         .caption("Last name")
+			 *                         .nullable(false)
+			 *                         .maximumLength(20),
+			 *                 Customer.FIRSTNAME.as()
+			 *                         .column()
+			 *                         .caption("First name")
+			 *                         .nullable(false)
+			 *                         .maximumLength(40),
+			 *                 Customer.EMAIL.as()
+			 *                         .column()
+			 *                         .caption("Email")
+			 *                         .nullable(false)
+			 *                         .maximumLength(60),
+			 *                 Customer.COMPANY.as()
+			 *                         .column()
+			 *                         .caption("Company")
+			 *                         .maximumLength(80))
+			 *         .caption("Customer")
+			 *         .description("Customer information")
+			 *         .orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
+			 *         .formatter(customer ->
+			 *                 customer.get(Customer.LASTNAME) + " (" + customer.get(Customer.EMAIL) + ")")
+			 *         .build(); // @end}
 			 * @param definitionBuilder builder for an attribute definition
 			 * @param additional additional builders for the attribute definitions comprising the entity
 			 * @return a {@link EntityDefinition.Builder} instance
@@ -457,10 +457,10 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 		/**
 		 * Sets the formatter, based the value of the given attribute. Shortcut for:
-		 * {@snippet class = is.codion.demos.chinook.javadoc.EntityDefinitionSnippets region = formatterAttribute :
-		 * builder.formatter(EntityFormatter.builder()
-		 * 				.value(attribute)
-		 * 				.build());}
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "formatterAttribute" :
+		 * builder.formatter(EntityFormatter.builder() // @start region=formatterAttribute
+		 *         .value(attribute)
+		 *         .build()); // @end}
 		 * @param attribute the attribute which value to use when formatting
 		 * @return this {@link Builder} instance
 		 */

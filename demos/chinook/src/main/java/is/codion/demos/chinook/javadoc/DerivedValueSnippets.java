@@ -30,36 +30,36 @@ import java.math.BigDecimal;
  */
 final class DerivedValueSnippets {
 
-	void usage(Entities entities) {
-		// Computes the invoice line total from the quantity and unit price // @start region=usage
-		class InvoiceLineTotal implements DerivedValue<BigDecimal> {
+  void usage(Entities entities) {
+    // Computes the invoice line total from the quantity and unit price // @start region=usage
+    class InvoiceLineTotal implements DerivedValue<BigDecimal> {
 
-			@Override
-			public BigDecimal from(SourceValues values) {
-				Integer quantity = values.get(InvoiceLine.QUANTITY);
-				BigDecimal unitPrice = values.get(InvoiceLine.UNITPRICE);
-				if (unitPrice == null || quantity == null) {
-					return null;
-				}
+      @Override
+      public BigDecimal from(SourceValues values) {
+        Integer quantity = values.get(InvoiceLine.QUANTITY);
+        BigDecimal unitPrice = values.get(InvoiceLine.UNITPRICE);
+        if (unitPrice == null || quantity == null) {
+          return null;
+        }
 
-				return unitPrice.multiply(BigDecimal.valueOf(quantity));
-			}
-		}
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
+      }
+    }
 
-		// In the entity definition
-		InvoiceLine.TOTAL.as()
-						.derived()
-						.from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
-						.with(new InvoiceLineTotal())
-						.caption("Total");
+    // In the entity definition
+    InvoiceLine.TOTAL.as()
+            .derived()
+            .from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
+            .with(new InvoiceLineTotal())
+            .caption("Total");
 
-		// Usage
-		Entity invoiceLine = entities.entity(InvoiceLine.TYPE)
-						.with(InvoiceLine.UNITPRICE, BigDecimal.valueOf(0.99))
-						.with(InvoiceLine.QUANTITY, 2)
-						.build();
+    // Usage
+    Entity invoiceLine = entities.entity(InvoiceLine.TYPE)
+            .with(InvoiceLine.UNITPRICE, BigDecimal.valueOf(0.99))
+            .with(InvoiceLine.QUANTITY, 2)
+            .build();
 
-		// Derived values are computed automatically
-		BigDecimal total = invoiceLine.get(InvoiceLine.TOTAL); // 1.98 // @end
-	}
+    // Derived values are computed automatically
+    BigDecimal total = invoiceLine.get(InvoiceLine.TOTAL); // 1.98 // @end
+  }
 }

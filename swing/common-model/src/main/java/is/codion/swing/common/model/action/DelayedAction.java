@@ -32,13 +32,13 @@ import static java.util.Objects.requireNonNull;
  * prevents the action from executing.
  * <p>
  * Example usage:
- * {@snippet class = is.codion.manual.javadoc.DelayedActionSnippets region = usage :
- * DelayedAction showProgress = delayedAction(() -> {
- * 	progressBar.setVisible(true);
+ * {@snippet class = "is.codion.manual.javadoc.DelayedActionSnippets" region = "usage" :
+ * DelayedAction showProgress = delayedAction(() -> { // @start region=usage
+ *   progressBar.setVisible(true);
  * }, 300);
  *
  * // Later, if operation completes quickly:
- * showProgress.cancel();}
+ * showProgress.cancel(); // @end}
  * @see #delayedAction(Runnable, int)
  */
 public interface DelayedAction {

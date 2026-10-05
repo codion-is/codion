@@ -34,51 +34,51 @@ import java.util.Collection;
  * <p>
  * Foreign key conditions are typically created through the ForeignKeyConditions interface,
  * which all ForeignKey instances implement:
- * {@snippet class = is.codion.demos.chinook.javadoc.ForeignKeyConditionsSnippets region = usage :
- * // Find albums by specific artist
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeyConditionsSnippets" region = "usage" :
+ * // Find albums by specific artist // @start region=usage
  * Entity aliceInChains = connection.selectSingle(
- * 				Artist.NAME.equalTo("Alice In Chains"));
+ *         Artist.NAME.equalTo("Alice In Chains"));
  *
  * List<Entity> aliceInChainsAlbums = connection.select(
- * 				Album.ARTIST_FK.equalTo(aliceInChains));
+ *         Album.ARTIST_FK.equalTo(aliceInChains));
  *
  * // Find tracks by genre
  * Entity metal = connection.selectSingle(
- * 				Genre.NAME.equalToIgnoreCase("metal"));
+ *         Genre.NAME.equalToIgnoreCase("metal"));
  *
  * List<Entity> metalTracks = connection.select(
- * 				Track.GENRE_FK.equalTo(metal));
+ *         Track.GENRE_FK.equalTo(metal));
  *
  * // Find albums by multiple artists
  * List<Entity> theArtists = connection.select(
- * 				Artist.NAME.like("The %"));
+ *         Artist.NAME.like("The %"));
  *
  * List<Entity> albumsByTheArtists = connection.select(
- * 				Album.ARTIST_FK.in(theArtists));
+ *         Album.ARTIST_FK.in(theArtists));
  *
  * // Find tracks without a genre
  * List<Entity> uncategorizedTracks = connection.select(
- * 				Track.GENRE_FK.isNull());
+ *         Track.GENRE_FK.isNull());
  *
  * // Find tracks with a genre
  * List<Entity> categorizedTracks = connection.select(
- * 				Track.GENRE_FK.isNotNull());
+ *         Track.GENRE_FK.isNotNull());
  *
  * // Complex query with foreign key conditions
  * List<Entity> albums = connection.select(and(
- * 				Album.ARTIST_FK.in(theArtists),
- * 				Album.ARTIST_FK.notEqualTo(excludedArtist)));
+ *         Album.ARTIST_FK.in(theArtists),
+ *         Album.ARTIST_FK.notEqualTo(excludedArtist)));
  *
  * // Using with Select for more control
  * List<Entity> rockTracks = connection.select(
- * 				Select.where(Track.GENRE_FK.equalTo(rock))
- * 								.attributes(Track.NAME, Track.ALBUM_FK)
- * 								.orderBy(ascending(Track.NAME)));
+ *         Select.where(Track.GENRE_FK.equalTo(rock))
+ *                 .attributes(Track.NAME, Track.ALBUM_FK)
+ *                 .orderBy(ascending(Track.NAME)));
  *
  * // Foreign key conditions with null handling
  * List<Entity> metalOrUncategorized = connection.select(or(
- * 				Track.GENRE_FK.equalTo(metal),
- * 				Track.GENRE_FK.isNull()));}
+ *         Track.GENRE_FK.equalTo(metal),
+ *         Track.GENRE_FK.isNull())); // @end}
  * @see #conditions(ForeignKey)
  * @see ForeignKey
  * @see Entity

@@ -37,8 +37,8 @@ import java.util.function.Consumer;
  * <p><b>Thread Safety:</b> Listener and consumer management (add/remove) is thread-safe.
  * However, event triggering via {@link #run()} or {@link #accept(Object)} is NOT thread-safe
  * and should be performed from a single thread (such as an application UI thread).</p>
- * {@snippet class = is.codion.manual.javadoc.EventSnippets region = usage :
- * Event<Boolean> event = Event.event();
+ * {@snippet class = "is.codion.manual.javadoc.EventSnippets" region = "usage" :
+ * Event<Boolean> event = Event.event(); // @start region=usage
  *
  * event.addListener(this::doSomething);
  *
@@ -50,13 +50,13 @@ import java.util.function.Consumer;
  *
  * Observer<Boolean> observer = event.observer();
  *
- * observer.addListener(this::doSomethingElse);}
+ * observer.addListener(this::doSomethingElse); // @end}
  * <p>Listeners and Consumers can be added using a {@link java.lang.ref.WeakReference}, so they must be strongly
  * referenced elsewhere, a lambda or method reference only referenced by the observer being garbage collected right away.
- * {@snippet class = is.codion.manual.javadoc.EventSnippets region = weak :
- * // listener and consumer are fields
+ * {@snippet class = "is.codion.manual.javadoc.EventSnippets" region = "weak" :
+ * // listener and consumer are fields // @start region=weak
  * observer.addWeakListener(listener);
- * observer.addWeakConsumer(consumer);}
+ * observer.addWeakConsumer(consumer); // @end}
  * <p>Any weak references that no longer refer to a listener/consumer instance
  * are cleared when listeners or consumers are added or removed.
  * <p>A factory for {@link Event} instances via {@link #event()}.

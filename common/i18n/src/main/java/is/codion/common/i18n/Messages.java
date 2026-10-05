@@ -42,8 +42,8 @@ import static java.util.ResourceBundle.getBundle;
  * </ul>
  * <p>
  * <strong>Usage Examples:</strong><br>
- * {@snippet class = is.codion.manual.javadoc.MessagesSnippets region = usage :
- * // Get localized messages
+ * {@snippet class = "is.codion.manual.javadoc.MessagesSnippets" region = "usage" :
+ * // Get localized messages // @start region=usage
  * String cancelText = Messages.cancel();
  * String okText = Messages.ok();
  *
@@ -53,7 +53,7 @@ import static java.util.ResourceBundle.getBundle;
  *
  * // Use in UI components
  * JButton cancelButton = new JButton(Messages.cancel());
- * cancelButton.setMnemonic(Messages.cancelMnemonic());}
+ * cancelButton.setMnemonic(Messages.cancelMnemonic()); // @end}
  * <p>
  * <strong>Adding New Messages:</strong><br>
  * To add new messages:

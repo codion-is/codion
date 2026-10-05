@@ -27,17 +27,17 @@ import javax.swing.JButton;
  */
 final class MessagesSnippets {
 
-	void usage() {
-		// Get localized messages // @start region=usage
-		String cancelText = Messages.cancel();
-		String okText = Messages.ok();
+  void usage() {
+    // Get localized messages // @start region=usage
+    String cancelText = Messages.cancel();
+    String okText = Messages.ok();
 
-		// Get mnemonics for keyboard navigation
-		char cancelMnemonic = Messages.cancelMnemonic();
-		char clearMnemonic = Messages.clearMnemonic();
+    // Get mnemonics for keyboard navigation
+    char cancelMnemonic = Messages.cancelMnemonic();
+    char clearMnemonic = Messages.clearMnemonic();
 
-		// Use in UI components
-		JButton cancelButton = new JButton(Messages.cancel());
-		cancelButton.setMnemonic(Messages.cancelMnemonic()); // @end
-	}
+    // Use in UI components
+    JButton cancelButton = new JButton(Messages.cancel());
+    cancelButton.setMnemonic(Messages.cancelMnemonic()); // @end
+  }
 }

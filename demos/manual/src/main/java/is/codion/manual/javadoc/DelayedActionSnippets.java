@@ -29,12 +29,12 @@ import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
  */
 final class DelayedActionSnippets {
 
-	void usage(JProgressBar progressBar) {
-		DelayedAction showProgress = delayedAction(() -> { // @start region=usage
-			progressBar.setVisible(true);
-		}, 300);
+  void usage(JProgressBar progressBar) {
+    DelayedAction showProgress = delayedAction(() -> { // @start region=usage
+      progressBar.setVisible(true);
+    }, 300);
 
-		// Later, if operation completes quickly:
-		showProgress.cancel(); // @end
-	}
+    // Later, if operation completes quickly:
+    showProgress.cancel(); // @end
+  }
 }

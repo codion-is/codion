@@ -27,37 +27,37 @@ import is.codion.common.reactive.observer.Observer;
  */
 final class ObservableSnippets {
 
-	void usage() {
-		class Person { // @start region=usage
-			private final Event<String> nameChanged = Event.event();
+  void usage() {
+    class Person { // @start region=usage
+      private final Event<String> nameChanged = Event.event();
 
-			private String name;
+      private String name;
 
-			public String getName() {
-				return name;
-			}
+      public String getName() {
+        return name;
+      }
 
-			public void setName(String name) {
-				this.name = name;
-				nameChanged.accept(name);
-			}
-		}
+      public void setName(String name) {
+        this.name = name;
+        nameChanged.accept(name);
+      }
+    }
 
-		Person person = new Person();
+    Person person = new Person();
 
-		Observable<String> observableName = new Observable<>() {
-			@Override
-			public String get() {
-				return person.getName();
-			}
+    Observable<String> observableName = new Observable<>() {
+      @Override
+      public String get() {
+        return person.getName();
+      }
 
-			@Override
-			public Observer<String> observer() {
-				return person.nameChanged.observer();
-			}
-		};
+      @Override
+      public Observer<String> observer() {
+        return person.nameChanged.observer();
+      }
+    };
 
-		observableName.addConsumer(newName ->
-						System.out.println("Name changed to " + newName)); // @end
-	}
+    observableName.addConsumer(newName ->
+            System.out.println("Name changed to " + newName)); // @end
+  }
 }

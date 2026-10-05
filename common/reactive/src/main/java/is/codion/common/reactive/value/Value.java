@@ -32,30 +32,30 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An observable wrapper for a value.</p>
  * <p>Nullable integer based Value:</p>
- * {@snippet class = is.codion.manual.javadoc.ValueSnippets region = nullable :
- * Value<Integer> value = Value.nullable();
+ * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "nullable" :
+ * Value<Integer> value = Value.nullable(); // @start region=nullable
  * value.set(42);
  * value.addConsumer(this::onValueChange);
- * value.isNullable(); // true}
+ * value.isNullable(); // true // @end}
  * <p>Non-null boolean based Value, using 'false' as a null substitute:</p>
- * {@snippet class = is.codion.manual.javadoc.ValueSnippets region = nonNull :
- * Value<Boolean> value = Value.nonNull(false);
+ * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "nonNull" :
+ * Value<Boolean> value = Value.nonNull(false); // @start region=nonNull
  * value.set(true);
  * value.set(null);
  * value.get(); // false
- * value.isNullable(); // false}
+ * value.isNullable(); // false // @end}
  * <p>Non-null String based Value, using "none" as a null substitute:</p>
- * {@snippet class = is.codion.manual.javadoc.ValueSnippets region = builder :
- * Value<String> value = Value.builder()
- * 				.nonNull("none")
- * 				.value("hello")                  // the initial value
- * 				.notify(Notify.SET)              // notifies listeners when set
- * 				.validator(this::validateString) // using a validator
- * 				.listener(this::onStringSet)     // and a listener
- * 				.build();
+ * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "builder" :
+ * Value<String> value = Value.builder() // @start region=builder
+ *         .nonNull("none")
+ *         .value("hello")                  // the initial value
+ *         .notify(Notify.SET)              // notifies listeners when set
+ *         .validator(this::validateString) // using a validator
+ *         .listener(this::onStringSet)     // and a listener
+ *         .build();
  * value.isNullable(); // false
  * value.set("hey");
- * value.set(null); // reverts to the null substitute: "none"}
+ * value.set(null); // reverts to the null substitute: "none" // @end}
  * <p>A factory for {@link Value} instances.</p>
  * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
  * However, value modifications via {@link #set(Object)} are NOT thread-safe and should be
@@ -105,11 +105,11 @@ public interface Value<T> extends Observable<T> {
 
 	/**
 	 * Updates the value with the result of applying the given function to the current value.
-	 * {@snippet class = is.codion.manual.javadoc.ValueSnippets region = update :
-	 * Value<Integer> value = Value.nonNull(0);
+	 * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "update" :
+	 * Value<Integer> value = Value.nonNull(0); // @start region=update
 	 *
 	 * // increment the value by one
-	 * value.update(currentValue -> currentValue + 1);}
+	 * value.update(currentValue -> currentValue + 1); // @end}
 	 * @param updateFunction a function mapping from the current value to the new value
 	 * @throws NullPointerException in case {@code updateFunction} is null
 	 */

@@ -32,15 +32,15 @@ import static javax.swing.JComponent.WHEN_FOCUSED;
  */
 final class KeyEventsSnippets {
 
-	void usage(Action findNext) {
-		JTextField textField = new JTextField(); // @start region=usage
+  void usage(Action findNext) {
+    JTextField textField = new JTextField(); // @start region=usage
 
-		KeyEvents.builder()
-						.keyCode(VK_DOWN)
-						.onKeyRelease(false)
-						.modifiers(MENU_SHORTCUT_MASK)
-						.condition(WHEN_FOCUSED)
-						.action(findNext)
-						.enable(textField); // @end
-	}
+    KeyEvents.builder()
+            .keyCode(VK_DOWN)
+            .onKeyRelease(false)
+            .modifiers(MENU_SHORTCUT_MASK)
+            .condition(WHEN_FOCUSED)
+            .action(findNext)
+            .enable(textField); // @end
+  }
 }

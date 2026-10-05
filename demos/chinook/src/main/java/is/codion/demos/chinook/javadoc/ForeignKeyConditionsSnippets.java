@@ -38,50 +38,50 @@ import static is.codion.framework.domain.entity.condition.Condition.or;
  */
 final class ForeignKeyConditionsSnippets {
 
-	void usage(EntityConnection connection, Entity excludedArtist, Entity rock) {
-		// Find albums by specific artist // @start region=usage
-		Entity aliceInChains = connection.selectSingle(
-						Artist.NAME.equalTo("Alice In Chains"));
+  void usage(EntityConnection connection, Entity excludedArtist, Entity rock) {
+    // Find albums by specific artist // @start region=usage
+    Entity aliceInChains = connection.selectSingle(
+            Artist.NAME.equalTo("Alice In Chains"));
 
-		List<Entity> aliceInChainsAlbums = connection.select(
-						Album.ARTIST_FK.equalTo(aliceInChains));
+    List<Entity> aliceInChainsAlbums = connection.select(
+            Album.ARTIST_FK.equalTo(aliceInChains));
 
-		// Find tracks by genre
-		Entity metal = connection.selectSingle(
-						Genre.NAME.equalToIgnoreCase("metal"));
+    // Find tracks by genre
+    Entity metal = connection.selectSingle(
+            Genre.NAME.equalToIgnoreCase("metal"));
 
-		List<Entity> metalTracks = connection.select(
-						Track.GENRE_FK.equalTo(metal));
+    List<Entity> metalTracks = connection.select(
+            Track.GENRE_FK.equalTo(metal));
 
-		// Find albums by multiple artists
-		List<Entity> theArtists = connection.select(
-						Artist.NAME.like("The %"));
+    // Find albums by multiple artists
+    List<Entity> theArtists = connection.select(
+            Artist.NAME.like("The %"));
 
-		List<Entity> albumsByTheArtists = connection.select(
-						Album.ARTIST_FK.in(theArtists));
+    List<Entity> albumsByTheArtists = connection.select(
+            Album.ARTIST_FK.in(theArtists));
 
-		// Find tracks without a genre
-		List<Entity> uncategorizedTracks = connection.select(
-						Track.GENRE_FK.isNull());
+    // Find tracks without a genre
+    List<Entity> uncategorizedTracks = connection.select(
+            Track.GENRE_FK.isNull());
 
-		// Find tracks with a genre
-		List<Entity> categorizedTracks = connection.select(
-						Track.GENRE_FK.isNotNull());
+    // Find tracks with a genre
+    List<Entity> categorizedTracks = connection.select(
+            Track.GENRE_FK.isNotNull());
 
-		// Complex query with foreign key conditions
-		List<Entity> albums = connection.select(and(
-						Album.ARTIST_FK.in(theArtists),
-						Album.ARTIST_FK.notEqualTo(excludedArtist)));
+    // Complex query with foreign key conditions
+    List<Entity> albums = connection.select(and(
+            Album.ARTIST_FK.in(theArtists),
+            Album.ARTIST_FK.notEqualTo(excludedArtist)));
 
-		// Using with Select for more control
-		List<Entity> rockTracks = connection.select(
-						Select.where(Track.GENRE_FK.equalTo(rock))
-										.attributes(Track.NAME, Track.ALBUM_FK)
-										.orderBy(ascending(Track.NAME)));
+    // Using with Select for more control
+    List<Entity> rockTracks = connection.select(
+            Select.where(Track.GENRE_FK.equalTo(rock))
+                    .attributes(Track.NAME, Track.ALBUM_FK)
+                    .orderBy(ascending(Track.NAME)));
 
-		// Foreign key conditions with null handling
-		List<Entity> metalOrUncategorized = connection.select(or(
-						Track.GENRE_FK.equalTo(metal),
-						Track.GENRE_FK.isNull())); // @end
-	}
+    // Foreign key conditions with null handling
+    List<Entity> metalOrUncategorized = connection.select(or(
+            Track.GENRE_FK.equalTo(metal),
+            Track.GENRE_FK.isNull())); // @end
+  }
 }

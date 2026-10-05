@@ -25,12 +25,12 @@ import is.codion.framework.domain.entity.query.EntitySelectQuery;
  */
 final class EntitySelectQuerySnippets {
 
-	void with() {
-		EntitySelectQuery.builder() // @start region=with
-						.with("track_revenue")
-						.as("SELECT track_id, SUM(unitprice * quantity) AS revenue FROM chinook.invoiceline GROUP BY track_id")
-						.from("track_revenue")
-						.columns("track_id, revenue")
-						.build(); // @end
-	}
+  void with() {
+    EntitySelectQuery.builder() // @start region=with
+            .with("track_revenue")
+            .as("SELECT track_id, SUM(unitprice * quantity) AS revenue FROM chinook.invoiceline GROUP BY track_id")
+            .from("track_revenue")
+            .columns("track_id, revenue")
+            .build(); // @end
+  }
 }

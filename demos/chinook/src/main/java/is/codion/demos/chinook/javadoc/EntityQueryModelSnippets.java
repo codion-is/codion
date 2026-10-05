@@ -31,33 +31,33 @@ import java.util.List;
  */
 final class EntityQueryModelSnippets {
 
-	void dataSource(EntityTableModel<?, ?> tableModel) {
-		tableModel.query().dataSource().set(query -> { // @start region=dataSource
-			EntityConnection connection = query.connection();
+  void dataSource(EntityTableModel<?, ?> tableModel) {
+    tableModel.query().dataSource().set(query -> { // @start region=dataSource
+      EntityConnection connection = query.connection();
 
-			return connection.select(Employee.LASTNAME.equalTo("Peacock"));
-		}); // @end
-	}
+      return connection.select(Employee.LASTNAME.equalTo("Peacock"));
+    }); // @end
+  }
 
-	void defaults(EntityTableModel<?, ?> tableModel) {
-		// Replace defaults with a minimal set // @start region=defaults
-		EntityQueryModel query = tableModel.query();
-		query.attributes().defaults().set(List.of(Employee.ID, Employee.LASTNAME));
-		tableModel.items().refresh();
+  void defaults(EntityTableModel<?, ?> tableModel) {
+    // Replace defaults with a minimal set // @start region=defaults
+    EntityQueryModel query = tableModel.query();
+    query.attributes().defaults().set(List.of(Employee.ID, Employee.LASTNAME));
+    tableModel.items().refresh();
 
-		// Revert to entity definition defaults
-		query.attributes().defaults().clear();
-		tableModel.items().refresh(); // @end
-	}
+    // Revert to entity definition defaults
+    query.attributes().defaults().clear();
+    tableModel.items().refresh(); // @end
+  }
 
-	void excluded(EntityTableModel<?, ?> tableModel) {
-		// Exclude expensive computed columns // @start region=excluded
-		EntityQueryModel query = tableModel.query();
-		query.attributes().excluded().add(Artist.NUMBER_OF_TRACKS);
-		tableModel.items().refresh();
+  void excluded(EntityTableModel<?, ?> tableModel) {
+    // Exclude expensive computed columns // @start region=excluded
+    EntityQueryModel query = tableModel.query();
+    query.attributes().excluded().add(Artist.NUMBER_OF_TRACKS);
+    tableModel.items().refresh();
 
-		// Re-include the column
-		query.attributes().excluded().remove(Artist.NUMBER_OF_TRACKS);
-		tableModel.items().refresh(); // @end
-	}
+    // Re-include the column
+    query.attributes().excluded().remove(Artist.NUMBER_OF_TRACKS);
+    tableModel.items().refresh(); // @end
+  }
 }
