@@ -69,7 +69,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 
 	@Test
-	void nullConditionModel() {
+	void nullConnection() {
 		assertThrows(NullPointerException.class, () -> new SwingEntityTableModel(Employee.TYPE, null));
 	}
 
@@ -82,6 +82,15 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 										.exclude(Employee.SALARY)));
 		assertEquals(Operator.NOT_EQUAL, tableModel.query().conditions().get(Employee.JOB).operator().get());
 		assertThrows(IllegalArgumentException.class, () -> tableModel.filters().get(Employee.SALARY));
+
+		SwingEntityTableModel typeTableModel = new SwingEntityTableModel(Employee.TYPE, connection(), config -> config
+						.conditions(conditions -> conditions
+										.condition(Employee.JOB, job -> job.operator(Operator.NOT_EQUAL)))
+						.filters(filters -> filters
+										.exclude(Employee.SALARY)));
+		assertEquals(Employee.TYPE, typeTableModel.entityType());
+		assertEquals(Operator.NOT_EQUAL, typeTableModel.query().conditions().get(Employee.JOB).operator().get());
+		assertThrows(IllegalArgumentException.class, () -> typeTableModel.filters().get(Employee.SALARY));
 	}
 
 

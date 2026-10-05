@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.90
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
+### is.codion.swing.framework.model
+- SwingEntityTableModel(EntityType, EntityConnection, Consumer<Config>) added, for configuring the table model without creating an edit model.
 
 ## 0.18.89
 ### is.codion.common.reactive

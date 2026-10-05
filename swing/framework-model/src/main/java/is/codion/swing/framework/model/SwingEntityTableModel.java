@@ -52,7 +52,17 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param connection the connection
 	 */
 	public SwingEntityTableModel(EntityType entityType, EntityConnection connection) {
-		this(new SwingEntityEditModel(entityType, connection));
+		this(entityType, connection, config -> {});
+	}
+
+	/**
+	 * Instantiates a new SwingEntityTableModel.
+	 * @param entityType the entityType
+	 * @param connection the connection
+	 * @param config the table model configuration
+	 */
+	public SwingEntityTableModel(EntityType entityType, EntityConnection connection, Consumer<Config> config) {
+		this(new SwingEntityEditModel(entityType, connection), config);
 	}
 
 	/**
