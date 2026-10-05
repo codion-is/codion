@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.90
+
 ## 0.18.89
 ### is.codion.common.reactive
 - Value.validate() now validates the null value in place of null in case of a non-null value, as set() does, validators of a non-null value linked to another value, such as a component value, previously receiving null.
