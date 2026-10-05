@@ -38,8 +38,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import static is.codion.swing.common.ui.color.Colors.shade;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createCompoundBorder;
 
@@ -139,9 +142,15 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 			int apex = descending ? bottom : top;
 			int[] xPoints = {x, x + arrowSize, x + arrowSize / 2};
 			int[] yPoints = {base, base, apex};
-			g.setColor(c == null ? Color.GRAY : shade(c.getBackground(), SORT_ARROW_SHADE));
-			g.fillPolygon(xPoints, yPoints, xPoints.length);
-			g.drawPolygon(xPoints, yPoints, xPoints.length);
+			Graphics2D g2 = (Graphics2D) g.create();
+			try {
+				g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+				g2.setColor(c == null ? Color.GRAY : shade(c.getBackground(), SORT_ARROW_SHADE));
+				g2.fillPolygon(xPoints, yPoints, xPoints.length);
+			}
+			finally {
+				g2.dispose();
+			}
 		}
 
 		@Override

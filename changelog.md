@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.90
+### is.codion.swing.common.ui
+- FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 
 ## 0.18.89
 ### is.codion.common.reactive
