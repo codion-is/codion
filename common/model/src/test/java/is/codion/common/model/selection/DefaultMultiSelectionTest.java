@@ -189,7 +189,15 @@ public final class DefaultMultiSelectionTest {
 		selection.indexes().set(asList(2, 4));
 		selection.items().remove(asList("a", "b"));
 		assertFalse(selection.present().is());
-		//selecting and adding take the first
+		//the same instance twice, an index of its own for each
+		selection.items().restore(asList("a", "a"));
+		assertEquals(asList(0, 2), selection.indexes().get());
+		//the same instance at several indexes, the selected one kept
+		selection.indexes().set(singletonList(2));
+		selection.item().set("a");
+		assertEquals(singletonList(2), selection.indexes().get());
+		//none selected, selecting and adding take the first
+		selection.clear();
 		selection.items().set(singletonList("a"));
 		assertEquals(singletonList(0), selection.indexes().get());
 		selection.indexes().set(singletonList(3));
@@ -198,6 +206,70 @@ public final class DefaultMultiSelectionTest {
 		selection.item().set("a");
 		assertEquals(singletonList(0), selection.indexes().get());
 		assertFalse(selection.items().contains("x"));
+	}
+
+	@Test
+	void equalInstances() {
+		String a0 = new String("a");
+		String a2 = new String("a");
+		MultiSelection<String> selection = new DefaultMultiSelection<>(new TestItems(asList(a0, "b", a2, "c", new String("a"))));
+		//the same instance
+		selection.items().set(singletonList(a2));
+		assertEquals(singletonList(2), selection.indexes().get());
+		//an equal one, the selected one kept
+		selection.item().set(new String("a"));
+		assertEquals(singletonList(2), selection.indexes().get());
+		selection.items().add(new String("a"));
+		assertEquals(singletonList(2), selection.indexes().get());
+		//none selected, the first
+		selection.indexes().set(singletonList(1));
+		selection.item().set(new String("a"));
+		assertEquals(singletonList(0), selection.indexes().get());
+		//an index of its own for each, the selected one first
+		selection.indexes().set(singletonList(2));
+		selection.items().set(asList(new String("a"), new String("a")));
+		assertEquals(asList(0, 2), selection.indexes().get());
+		selection.items().add(asList(new String("a"), new String("a")));
+		assertEquals(asList(0, 2), selection.indexes().get());
+		selection.items().add(asList(new String("a"), new String("a"), new String("a"), new String("a")));
+		assertEquals(asList(0, 2, 4), selection.indexes().get());
+		//the same instance over a selected equal one
+		selection.indexes().set(singletonList(2));
+		selection.items().add(a0);
+		assertEquals(asList(0, 2), selection.indexes().get());
+		//set(get()) leaves the selection as is
+		selection.indexes().set(asList(2, 4));
+		selection.items().set(selection.items().get());
+		assertEquals(asList(2, 4), selection.indexes().get());
+	}
+
+	@Test
+	void restoreEqualInstances() {
+		String a0 = new String("a");
+		String a2 = new String("a");
+		TestItems items = new TestItems(asList(a0, "b", a2));
+		MultiSelection<String> selection = new DefaultMultiSelection<>(items);
+		//moved, the same instance, rather than the first equal one
+		selection.indexes().set(singletonList(2));
+		List<String> selected = selection.items().get();
+		items.insert(0, "x");
+		selection.items().restore(selected);
+		assertEquals(singletonList(3), selection.indexes().get());
+		assertSame(a2, selection.item().get());
+		//both equal ones, each its own
+		selection.indexes().set(asList(1, 3));
+		selected = selection.items().get();
+		items.remove(0);
+		selection.items().restore(selected);
+		assertEquals(asList(0, 2), selection.indexes().get());
+		//replaced by equal instances, as by a refresh, the first equal ones, each its own
+		items.replace(asList(new String("a"), "b", new String("a")));
+		selection.items().restore(selected);
+		assertEquals(asList(0, 2), selection.indexes().get());
+		//the selection not consulted, a view may have shifted it
+		selection.indexes().set(singletonList(2));
+		selection.items().restore(singletonList(new String("a")));
+		assertEquals(singletonList(0), selection.indexes().get());
 	}
 
 	@Test
@@ -246,6 +318,17 @@ public final class DefaultMultiSelectionTest {
 
 		private void insert(int index, String item) {
 			list.add(index, item);
+			value.set(unmodifiableList(new ArrayList<>(list)));
+		}
+
+		private void remove(int index) {
+			list.remove(index);
+			value.set(unmodifiableList(new ArrayList<>(list)));
+		}
+
+		private void replace(List<String> items) {
+			list.clear();
+			list.addAll(items);
 			value.set(unmodifiableList(new ArrayList<>(list)));
 		}
 

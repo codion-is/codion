@@ -346,6 +346,51 @@ final class DefaultFilterTreeModelTest {
 	}
 
 	@Test
+	void selectionByItemInstances() {
+		//a1 below both a and c, each an instance of its own
+		data.put("c", items("c1", "a1"));
+		Item a1 = new Item("a1", "a1");
+		FilterTreeModel<Item> model = model();
+		TreeSelection<Item> selection = model.selection();
+		model.nodes().refresh();
+		model.expansion().expand(path("a"));
+		model.expansion().expand(path("c"));
+		Item belowC = model.nodes().paths(a1).get(1).item();
+		//the same instance, rather than the first visible equal one
+		selection.item().set(belowC);
+		assertEquals(path("c", "a1"), selection.path().get());
+		selection.clear();
+		selection.items().add(belowC);
+		assertEquals(path("c", "a1"), selection.path().get());
+		//a node of its own for each
+		selection.clear();
+		selection.items().set(asList(a1, a1));
+		assertEquals(asList(path("a", "a1"), path("c", "a1")), selection.paths().get());
+		selection.items().set(asList(a1, a1, a1));
+		assertEquals(asList(path("a", "a1"), path("c", "a1")), selection.paths().get());
+		//set(get()) leaves the selection as is
+		selection.items().set(selection.items().get());
+		assertEquals(asList(path("a", "a1"), path("c", "a1")), selection.paths().get());
+		//restoring does not prefer the selected one
+		selection.path().set(path("c", "a1"));
+		selection.items().restore(singletonList(a1));
+		assertEquals(path("a", "a1"), selection.path().get());
+		selection.items().restore(singletonList(belowC));
+		assertEquals(path("c", "a1"), selection.path().get());
+		//none visible, the same instance in the model, rather than the first equal one
+		model.expansion().collapse(path("a"));
+		model.expansion().collapse(path("c"));
+		selection.item().set(belowC);
+		assertEquals(path("c", "a1"), selection.path().get());
+		assertTrue(model.expansion().expanded(path("c")));
+		assertFalse(model.expansion().expanded(path("a")));
+		//one visible, one hidden, a node of its own for each
+		selection.items().set(asList(a1, a1));
+		assertEquals(asList(path("a", "a1"), path("c", "a1")), selection.paths().get());
+		assertTrue(model.expansion().expanded(path("a")));
+	}
+
+	@Test
 	void selectionByItemNotified() {
 		//the same instance below both a and c
 		AtomicReference<Item> shared = new AtomicReference<>(new Item("s", "s"));

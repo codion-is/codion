@@ -18,6 +18,7 @@
  */
 package is.codion.common.model.component.tree;
 
+import is.codion.common.model.component.tree.FilterTreeModel.VisibleNodes;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -29,9 +30,11 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -51,9 +54,10 @@ import static java.util.stream.Collectors.toList;
 final class DefaultTreeSelection<T> implements TreeSelection<T> {
 
 	private final MultiSelection<NodePath<T>> selection;
+	private final VisibleNodes<T> visible;
 	private final Consumer<Collection<NodePath<T>>> expand;
 	private final Consumer<NodePath<T>> select;
-	private final Function<Set<T>, Collection<NodePath<T>>> occurrences;
+	private final Function<Set<T>, List<NodePath<T>>> occurrences;
 	private final Value<NodePath<T>> path;
 	private final Items<NodePath<T>> paths;
 	private final Value<T> item;
@@ -61,14 +65,17 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 
 	/**
 	 * @param selection the selection of the paths of the visible nodes
+	 * @param visible the visible nodes
 	 * @param expand expands the ancestors of the nodes identified by the given paths which are hidden
 	 * @param select selects the node identified by the given path once it is visible, see {@link #set(NodePath)}
-	 * @param occurrences provides the path of one node holding each of the given items, the first visible one, or the
-	 * first one in the model in case none is visible, the items not in the model, or filtered, left out
+	 * @param occurrences provides the paths of the included nodes holding any of the given items, in the order the nodes
+	 * are shown once their ancestors are expanded
 	 */
-	DefaultTreeSelection(MultiSelection<NodePath<T>> selection, Consumer<Collection<NodePath<T>>> expand,
-											 Consumer<NodePath<T>> select, Function<Set<T>, Collection<NodePath<T>>> occurrences) {
+	DefaultTreeSelection(MultiSelection<NodePath<T>> selection, VisibleNodes<T> visible,
+											 Consumer<Collection<NodePath<T>>> expand, Consumer<NodePath<T>> select,
+											 Function<Set<T>, List<NodePath<T>>> occurrences) {
 		this.selection = requireNonNull(selection);
+		this.visible = requireNonNull(visible);
 		this.expand = requireNonNull(expand);
 		this.select = requireNonNull(select);
 		this.occurrences = requireNonNull(occurrences);
@@ -164,22 +171,78 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	}
 
 	/**
-	 * @return the path of one node holding each of the given items, a selected one, keeping the selection in place,
-	 * otherwise the first visible one, otherwise the first one in the model, the items not found left out
+	 * Returns a distinct path for each of the given items, in order of preference: a visible node holding the same
+	 * instance, otherwise one holding an equal item, a selected one preferred in either case in case of
+	 * {@code preferSelected}, the first one otherwise, and in case of {@code hidden}, a node in the model below a
+	 * collapsed ancestor, holding the same instance, otherwise the first one holding an equal item, in display order,
+	 * the items not found left out.
+	 * @param items the items to find
+	 * @param preferSelected true if selected nodes should be preferred
+	 * @param hidden true if nodes below collapsed ancestors should be included
+	 * @return the paths of nodes holding the given items
 	 */
-	private List<NodePath<T>> occurrences(Collection<T> items) {
-		Set<T> remaining = new LinkedHashSet<>(rejectNulls(items));
-		List<NodePath<T>> occurrences = new ArrayList<>(remaining.size());
-		for (NodePath<T> selected : selection.items().get()) {
-			if (remaining.remove(selected.item())) {
-				occurrences.add(selected);
-			}
+	private List<NodePath<T>> paths(Collection<T> items, boolean preferSelected, boolean hidden) {
+		if (items.isEmpty()) {
+			return emptyList();
 		}
-		if (!remaining.isEmpty()) {
-			occurrences.addAll(this.occurrences.apply(remaining));
+		List<T> toFind = new ArrayList<>(items);
+		Set<T> wanted = new HashSet<>(toFind);
+		boolean[] found = new boolean[toFind.size()];
+		Set<NodePath<T>> paths = new LinkedHashSet<>();
+		Set<NodePath<T>> selected = preferSelected ? new HashSet<>(selection.items().get()) : emptySet();
+		find(toFind, candidates(visible.get(), wanted), selected, found, paths);
+		if (hidden && paths.size() < toFind.size()) {
+			Set<T> remaining = new HashSet<>();
+			for (int i = 0; i < toFind.size(); i++) {
+				if (!found[i]) {
+					remaining.add(toFind.get(i));
+				}
+			}
+			//the visible nodes holding the remaining items have all been taken
+			find(toFind, candidates(occurrences.apply(remaining), remaining), emptySet(), found, paths);
 		}
 
-		return occurrences;
+		return new ArrayList<>(paths);
+	}
+
+	/**
+	 * @return the given paths holding one of the given items, by item, in order
+	 */
+	private static <T> Map<T, List<NodePath<T>>> candidates(List<NodePath<T>> paths, Set<T> items) {
+		Map<T, List<NodePath<T>>> candidates = new HashMap<>();
+		for (NodePath<T> path : paths) {
+			if (items.contains(path.item())) {
+				candidates.computeIfAbsent(path.item(), k -> new ArrayList<>()).add(path);
+			}
+		}
+
+		return candidates;
+	}
+
+	/**
+	 * Finds a path not already found for each item not already found, each preference in turn for all the items before
+	 * the next one: the same instance and selected, the same instance, an equal item and selected, then any.
+	 */
+	private static <T> void find(List<T> items, Map<T, List<NodePath<T>>> candidates, Set<NodePath<T>> selected,
+															 boolean[] found, Set<NodePath<T>> paths) {
+		for (int preference = 0; preference < 4; preference++) {
+			boolean sameInstance = preference < 2;
+			boolean selectedOnly = preference % 2 == 0;
+			for (int i = 0; i < items.size(); i++) {
+				if (!found[i]) {
+					T item = items.get(i);
+					for (NodePath<T> path : candidates.getOrDefault(item, emptyList())) {
+						if (!paths.contains(path)
+										&& (!sameInstance || path.item() == item)
+										&& (!selectedOnly || selected.contains(path))) {
+							paths.add(path);
+							found[i] = true;
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private static <T> boolean sameInstances(List<T> first, List<T> second) {
@@ -307,7 +370,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 				selection.clear();
 			}
 			else {
-				paths.set(occurrences(singletonList(item)));
+				paths.set(paths(singletonList(item), true, true));
 			}
 		}
 
@@ -340,7 +403,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 
 		@Override
 		protected void setValue(List<T> items) {
-			paths.set(occurrences(items));
+			paths.set(paths(rejectNulls(items), true, true));
 		}
 
 		@Override
@@ -356,7 +419,8 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 
 		@Override
 		public void restore(Collection<T> items) {
-			selection.items().restore(occurrences(items));
+			//not preferring the selected nodes, nor expanding, as a selection restores
+			selection.items().restore(paths(rejectNulls(items), false, false));
 		}
 
 		@Override
@@ -367,12 +431,12 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 
 		@Override
 		public void add(T item) {
-			paths.add(occurrences(singletonList(requireNonNull(item))));
+			paths.add(paths(singletonList(requireNonNull(item)), true, true));
 		}
 
 		@Override
 		public void add(Collection<T> items) {
-			paths.add(occurrences(items));
+			paths.add(paths(rejectNulls(items), true, true));
 		}
 
 		@Override

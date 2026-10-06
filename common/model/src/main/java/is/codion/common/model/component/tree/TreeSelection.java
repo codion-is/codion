@@ -37,10 +37,11 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 
 	/**
 	 * {@inheritDoc}
-	 * <p>Setting an item selects one node holding it: a selected one, keeping the selection in place, otherwise the
-	 * first visible one, otherwise the first one in the model, depth first, its ancestors expanded. An item not in the
-	 * model, or filtered, clears the selection. Use {@link #path()} for a particular node, and {@link #set(NodePath)}
-	 * for a node not yet loaded.
+	 * <p>Setting an item selects one node holding it: a visible one holding the same instance, otherwise one holding an
+	 * equal item, an already selected one preferred in either case, keeping the selection in place, otherwise the first
+	 * one, and in case none is visible, the first one in the model, depth first, its ancestors expanded. An item not in
+	 * the model, or filtered, clears the selection. Use {@link #path()} for a particular node, and
+	 * {@link #set(NodePath)} for a node not yet loaded.
 	 * <p>The selection moving between nodes holding the same item instance changes {@link #path()}, not the item.
 	 */
 	@Override
@@ -48,9 +49,10 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 
 	/**
 	 * <p>The items of the selected nodes, in row order, an item selected in several places appearing once for each.
-	 * <p>Setting or adding an item selects one node holding it, as {@link #item()} does, ignoring an item not in the
-	 * model, or filtered, while {@link Items#remove(Object)} and {@link Items#contains(Object)} cover every selected
-	 * node holding it. Use {@link #paths()} for particular nodes.
+	 * <p>Each item set or added selects a node of its own, as {@link #item()} does, ignoring an item not in the model,
+	 * or filtered, while {@link Items#remove(Object)} and {@link Items#contains(Object)} cover every selected node
+	 * holding it, so that {@code set(get())} leaves the selection as is. Restoring prefers neither selected nor hidden
+	 * nodes. Use {@link #paths()} for particular nodes.
 	 * @return the selected items, the items of the selected nodes
 	 */
 	@Override

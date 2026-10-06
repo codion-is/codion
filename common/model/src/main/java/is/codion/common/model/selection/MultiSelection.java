@@ -211,9 +211,12 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 
 	/**
 	 * <p>Manages the selected items.
-	 * <p>An item may be equal to several of the items, at different indexes. Selecting it, via {@link #set(Collection)}
-	 * or {@link #add(Object)}, selects the first of them, while {@link #remove(Object)} and {@link #contains(Object)}
-	 * cover every selected one, and {@link #get()} holds the item at each selected index.
+	 * <p>An item may be equal to several of the items, at different indexes. Each item given to {@link #set(Collection)},
+	 * {@link #add(Collection)} or {@link #restore(Collection)} selects an index of its own: the one holding the same
+	 * instance, otherwise one holding an equal item, an already selected one preferred when setting or adding, keeping
+	 * the selection in place, otherwise the first one. {@link #remove(Object)} and {@link #contains(Object)} cover every
+	 * selected index holding an equal item, and {@link #get()} holds the item at each selected index, so that
+	 * {@code set(get())} leaves the selection as is.
 	 * @param <R> the item type
 	 */
 	interface Items<R> extends Value<List<R>> {
@@ -238,6 +241,10 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * <p>For a model restoring the selection after its items changed: the selected items having moved, been
 		 * replaced or removed, the selection follows along, rather than being changed by request, which is what
 		 * {@link MultiSelection#changing()} is for.
+		 * <p>The current selection is not consulted, a view may have shifted or cleared it while the items changed.
+		 * An item selects the index holding the same instance, which sorting and filtering keep, otherwise the first one
+		 * holding an equal item, so an item replaced by an equal one, as by a refresh, selects the first equal one not
+		 * selected along with it.
 		 * @param items the items to select
 		 * @see IndexStore#restore(Collection)
 		 */

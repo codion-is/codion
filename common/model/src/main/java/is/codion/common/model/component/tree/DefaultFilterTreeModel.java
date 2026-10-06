@@ -318,38 +318,20 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	}
 
 	/**
-	 * Returns the path of one node holding each of the given items: the first visible one, otherwise the first included
-	 * one in the model, depth first, in the order the nodes are shown once their ancestors are expanded, the items not in
-	 * the model, or filtered, left out.
+	 * Returns the paths of the included nodes holding any of the given items, depth first, in the order the nodes are
+	 * shown once their ancestors are expanded.
 	 */
-	private Collection<NodePath<T>> occurrences(Set<T> items) {
-		Map<T, NodePath<T>> occurrences = new HashMap<>(items.size());
-		for (NodePath<T> path : visible.get()) {
-			if (items.contains(path.item())) {
-				occurrences.putIfAbsent(path.item(), path);
-				if (occurrences.size() == items.size()) {
-					return occurrences.values();
-				}
-			}
-		}
-		Set<T> hidden = new HashSet<>(items);
-		hidden.removeAll(occurrences.keySet());
-		collectOccurrences(root, hidden, occurrences);
+	private List<NodePath<T>> occurrences(Set<T> items) {
+		List<NodePath<T>> occurrences = new ArrayList<>();
+		collectOccurrences(root, items, occurrences);
 
-		return occurrences.values();
+		return occurrences;
 	}
 
-	/**
-	 * Collects the path of the first included node below the given one holding each of the given items, depth first,
-	 * removing the items found.
-	 */
-	private void collectOccurrences(Node<T> node, Set<T> items, Map<T, NodePath<T>> occurrences) {
+	private void collectOccurrences(Node<T> node, Set<T> items, List<NodePath<T>> occurrences) {
 		for (Node<T> child : node.includedChildren) {
-			if (items.isEmpty()) {
-				return;
-			}
-			if (items.remove(child.path.item())) {
-				occurrences.put(child.path.item(), child.path);
+			if (items.contains(child.path.item())) {
+				occurrences.add(child.path);
 			}
 			collectOccurrences(child, items, occurrences);
 		}
@@ -884,7 +866,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 		@Override
 		public TreeSelection<T> treeSelection(MultiSelection<NodePath<T>> selection) {
-			return new DefaultTreeSelection<>(selection, DefaultFilterTreeModel.this::expandHidden,
+			return new DefaultTreeSelection<>(selection, visible, DefaultFilterTreeModel.this::expandHidden,
 							DefaultFilterTreeModel.this::selectWhenVisible, DefaultFilterTreeModel.this::occurrences);
 		}
 	}

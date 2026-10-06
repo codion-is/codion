@@ -29,7 +29,11 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,6 +58,9 @@ import static java.util.stream.Collectors.toList;
  * infinitely otherwise.
  */
 final class DefaultMultiSelection<R> implements MultiSelection<R> {
+
+	//the number of items to find below which comparing each item with them beats hashing each item
+	private static final int FEW = 8;
 
 	private final IndexedItems<R> items;
 	private final IndexStore store;
@@ -398,11 +405,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		protected void setValue(List<R> itemsToSelect) {
-			selectedIndexes.set(rejectNulls(itemsToSelect).stream()
-							.mapToInt(items::indexOf)
-							.filter(index -> index >= 0)
-							.boxed()
-							.collect(toList()));
+			selectedIndexes.set(indexesOf(rejectNulls(itemsToSelect), true));
 		}
 
 		@Override
@@ -412,11 +415,8 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		public void restore(Collection<R> itemsToRestore) {
-			store.restore(rejectNulls(itemsToRestore).stream()
-							.mapToInt(items::indexOf)
-							.filter(index -> index >= 0)
-							.boxed()
-							.collect(toList()));
+			//not preferring the selected indexes, which a view may have shifted or cleared while the items changed
+			store.restore(indexesOf(rejectNulls(itemsToRestore), false));
 		}
 
 		@Override
@@ -464,11 +464,94 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private void addInternal(Collection<R> itemsToAdd) {
-			selectedIndexes.add(itemsToAdd.stream()
-							.mapToInt(items::indexOf)
-							.filter(index -> index >= 0)
-							.boxed()
-							.collect(toList()));
+			selectedIndexes.add(indexesOf(itemsToAdd, true));
+		}
+
+		/**
+		 * Returns a distinct index for each of the given items, in order of preference: the index holding the same
+		 * instance, a selected one in case of {@code preferSelected}, then any, otherwise an index holding an equal item,
+		 * a selected one in case of {@code preferSelected}, then the first one, the items not found left out.
+		 * @param itemsToFind the items to find
+		 * @param preferSelected true if selected indexes should be preferred
+		 * @return the indexes of the given items
+		 */
+		private List<Integer> indexesOf(Collection<R> itemsToFind, boolean preferSelected) {
+			if (itemsToFind.isEmpty()) {
+				return emptyList();
+			}
+			List<R> toFind = new ArrayList<>(itemsToFind);
+			if (toFind.size() <= FEW && (!preferSelected || store.size() == 0)) {
+				List<Integer> indexes = firstSameInstances(toFind);
+				if (indexes != null) {
+					return indexes;
+				}
+			}
+			List<R> current = items.get();
+			//the indexes holding an item equal to one of the given ones, in ascending order, comparing a few
+			//items with each one, rather than hashing each one, as most selections are a single item
+			List<R> distinct = new ArrayList<>(new LinkedHashSet<>(toFind));
+			Set<R> wanted = distinct.size() > FEW ? new HashSet<>(distinct) : null;
+			Map<R, List<Integer>> candidates = new HashMap<>();
+			for (int index = 0; index < current.size(); index++) {
+				R item = current.get(index);
+				R found = wanted == null ? equal(distinct, item) : wanted.contains(item) ? item : null;
+				if (found != null) {
+					candidates.computeIfAbsent(found, k -> new ArrayList<>()).add(index);
+				}
+			}
+			Set<Integer> selected = preferSelected ? store.get() : emptySet();
+			boolean[] found = new boolean[toFind.size()];
+			Set<Integer> indexes = new LinkedHashSet<>();
+			//each preference in turn, for all the items, before the next one
+			for (int preference = 0; preference < 4; preference++) {
+				boolean sameInstance = preference < 2;
+				boolean selectedOnly = preference % 2 == 0;
+				for (int i = 0; i < toFind.size(); i++) {
+					if (!found[i]) {
+						R item = toFind.get(i);
+						for (Integer index : candidates.getOrDefault(item, emptyList())) {
+							if (!indexes.contains(index)
+											&& (!sameInstance || current.get(index) == item)
+											&& (!selectedOnly || selected.contains(index))) {
+								indexes.add(index);
+								found[i] = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			return new ArrayList<>(indexes);
+		}
+
+		/**
+		 * The common case, a few items, each the first one equal to it, being the same instance, with no selected indexes
+		 * to prefer, in which case these are the indexes the full search arrives at, without copying and searching all
+		 * the items, as moving them, by sorting or filtering, keeps the instances.
+		 * @return the first index of each of the given items, in case each holds the same instance, otherwise null
+		 */
+		private @Nullable List<Integer> firstSameInstances(List<R> itemsToFind) {
+			List<Integer> indexes = new ArrayList<>(itemsToFind.size());
+			for (R item : itemsToFind) {
+				int index = items.indexOf(item);
+				if (index < 0 || items.get(index) != item || indexes.contains(index)) {
+					return null;
+				}
+				indexes.add(index);
+			}
+
+			return indexes;
+		}
+
+		private @Nullable R equal(List<R> itemsToFind, R item) {
+			for (R itemToFind : itemsToFind) {
+				if (itemToFind == item || itemToFind.equals(item)) {
+					return itemToFind;
+				}
+			}
+
+			return null;
 		}
 
 		private List<Integer> indexesToSelect(Predicate<R> predicate) {
