@@ -174,6 +174,33 @@ public final class DefaultMultiSelectionTest {
 	}
 
 	@Test
+	void equalItems() {
+		MultiSelection<String> selection = new DefaultMultiSelection<>(new TestItems(asList("a", "b", "a", "c", "a")));
+		//selected at a later index only, seen by contains()
+		selection.indexes().set(asList(2, 3));
+		assertEquals(asList("a", "c"), selection.items().get());
+		assertTrue(selection.items().contains("a"));
+		//removed at every selected index
+		selection.indexes().set(asList(0, 2, 3, 4));
+		assertEquals(asList("a", "a", "c", "a"), selection.items().get());
+		selection.items().remove("a");
+		assertEquals(singletonList(3), selection.indexes().get());
+		assertFalse(selection.items().contains("a"));
+		selection.indexes().set(asList(2, 4));
+		selection.items().remove(asList("a", "b"));
+		assertFalse(selection.present().is());
+		//selecting and adding take the first
+		selection.items().set(singletonList("a"));
+		assertEquals(singletonList(0), selection.indexes().get());
+		selection.indexes().set(singletonList(3));
+		selection.items().add("a");
+		assertEquals(asList(0, 3), selection.indexes().get());
+		selection.item().set("a");
+		assertEquals(singletonList(0), selection.indexes().get());
+		assertFalse(selection.items().contains("x"));
+	}
+
+	@Test
 	void adjustingNotifiesOnEveryChange() {
 		// adjusting() is the raw stream, notified whether or not the change is grouped, where the index and item
 		// values notify once a group has ended

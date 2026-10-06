@@ -210,7 +210,10 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	}
 
 	/**
-	 * Manages the selected items.
+	 * <p>Manages the selected items.
+	 * <p>An item may be equal to several of the items, at different indexes. Selecting it, via {@link #set(Collection)}
+	 * or {@link #add(Object)}, selects the first of them, while {@link #remove(Object)} and {@link #contains(Object)}
+	 * cover every selected one, and {@link #get()} holds the item at each selected index.
 	 * @param <R> the item type
 	 */
 	interface Items<R> extends Value<List<R>> {
@@ -259,20 +262,20 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		void add(Collection<R> items);
 
 		/**
-		 * Remove the given item from the selection
+		 * Removes the given item from the selection, at every selected index holding an equal item
 		 * @param item the item to remove from the selection
 		 */
 		void remove(R item);
 
 		/**
-		 * Remove the given items from the selection
+		 * Removes the given items from the selection, at every selected index holding an equal item
 		 * @param items the items to remove from the selection
 		 */
 		void remove(Collection<R> items);
 
 		/**
 		 * @param item the item
-		 * @return true if the given item is selected
+		 * @return true if an item equal to the given one is selected, at any index
 		 */
 		boolean contains(R item);
 	}

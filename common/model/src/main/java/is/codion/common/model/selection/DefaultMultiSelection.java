@@ -441,16 +441,19 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 		@Override
 		public void remove(Collection<R> itemsToRemove) {
-			selectedIndexes.remove(rejectNulls(itemsToRemove).stream()
-							.mapToInt(items::indexOf)
-							.filter(index -> index >= 0)
-							.boxed()
+			//every selected index holding an equal item, not only the first equal item's index
+			Collection<R> toRemove = rejectNulls(itemsToRemove);
+			selectedIndexes.remove(store.get().stream()
+							.filter(index -> index < items.size() && toRemove.contains(items.get(index)))
 							.collect(toList()));
 		}
 
 		@Override
 		public boolean contains(R item) {
-			return isSelectedIndex(items.indexOf(requireNonNull(item)));
+			requireNonNull(item);
+			//any selected index holding an equal item, not only the first equal item's index
+			return store.get().stream()
+							.anyMatch(index -> index < items.size() && item.equals(items.get(index)));
 		}
 
 		@Override

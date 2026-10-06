@@ -11,6 +11,7 @@ Codion Change Log
 - TreeSelection.set(NodePath) added, selecting a node not yet loaded once visible, expanding its ancestors and loading as needed, or the deepest node on its path which exists, a pending selection cancelled by a selection change.
 - AbstractFilterTreeModelBuilder.build(Function, NodesListener), the selection factory now given a SelectionContext, providing the visible nodes and the TreeSelection behaviour a toolkit selection forwards to.
 - FilterTreeModel.Builder.leaves() added, the leaf function given all the children of a node not yet loaded at once, so it can find the leaves among them with a single query, leaf() now its node by node form, the two the same option.
+- MultiSelection.Items, contains() and remove() now cover every selected index holding an equal item, where an item selected at an index after an equal, unselected one went unseen by contains() and was left selected by remove().
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 - ProgressWorkerDialogBuilder.onWorking() added, as in ProgressWorker.Builder.
