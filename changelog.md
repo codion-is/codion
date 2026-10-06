@@ -6,6 +6,7 @@ Codion Change Log
 - ProgressWorker, the onResult handlers are now called before the onSuccess handlers, a success being reported once the result has been handled, where a success message, such as a dialog, delayed handling the result.
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
+- ProgressWorkerDialogBuilder.onWorking() added, as in ProgressWorker.Builder.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 ### is.codion.swing.framework.model

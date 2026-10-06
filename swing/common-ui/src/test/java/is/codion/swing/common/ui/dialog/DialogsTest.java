@@ -76,6 +76,7 @@ public final class DialogsTest {
 						.westComponent(new JPanel())
 						.onException("Fail")
 						.onSuccess("Success", "Success")
+						.onWorking(working -> {})
 						.stringPainted(true)
 						.indeterminate(false)
 						.build();

@@ -150,6 +150,12 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
+	public ProgressWorkerDialogBuilder<T, V> onWorking(Consumer<Boolean> onWorking) {
+		this.progressWorkerBuilder.onWorking(onWorking);
+		return this;
+	}
+
+	@Override
 	public ProgressWorkerDialogBuilder<T, V> onPublish(Consumer<List<V>> onPublish) {
 		this.progressWorkerBuilder.onPublish(onPublish);
 		return this;

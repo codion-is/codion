@@ -205,6 +205,16 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	ProgressWorkerDialogBuilder<T, V> delay(int show, int hide);
 
 	/**
+	 * Adds a handler called on the Event Dispatch Thread with {@code true} when the task is about to start and with
+	 * {@code false} once it is done, before the result, exception or cancellation is handled, convenient for a state
+	 * indicating that work is being performed: {@code onWorking(working::set)}.
+	 * @param onWorking the handler to add
+	 * @return this builder instance
+	 * @see ProgressWorker.Builder#onWorking(Consumer)
+	 */
+	ProgressWorkerDialogBuilder<T, V> onWorking(Consumer<Boolean> onWorking);
+
+	/**
 	 * Adds a handler called on the Event Dispatch Thread when chunks are available for publishing.
 	 * @param onPublish the handler to add
 	 * @return this builder instance
