@@ -25,6 +25,8 @@ import is.codion.common.utilities.Text;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.tree.FilterTree;
 import is.codion.swing.common.ui.control.Control;
@@ -95,6 +97,7 @@ final class EntityTableExportPanel extends JPanel {
 	private final FilterTree<AttributeDefinition<?>> exportTree;
 	private final State singleSelection = State.state();
 	private final State singleParentSelection = State.state();
+	private final State exporting = State.state();
 
 	private final Control saveConfiguration = Control.builder()
 					.command(this::saveConfiguration)
@@ -192,7 +195,7 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void exportToFile() {
-		ExportTask task = model.exportToFile(withExtension(Dialogs.select()
+		ExportTask<Path> task = model.exportToFile(withExtension(Dialogs.select()
 						.files()
 						.owner(this)
 						.filter(new FileNameExtensionFilter(TSV, TSV))
@@ -203,17 +206,20 @@ final class EntityTableExportPanel extends JPanel {
 						.owner(this)
 						.title(MESSAGES.getString("exporting_data"))
 						.control(cancelControl(task.cancel()))
+						.onWorking(exporting::set)
 						.onSuccess(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_file"))
 						.execute();
 	}
 
 	private void exportToClipboard() {
-		ExportTask task = model.exportToClipboard();
+		ExportTask<String> task = model.exportToString();
 		Dialogs.progressWorker()
 						.task(task)
 						.owner(this)
 						.title(MESSAGES.getString("exporting_data"))
 						.control(cancelControl(task.cancel()))
+						.onWorking(exporting::set)
+						.onResult(Utilities::setClipboard)
 						.onSuccess(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_clipboard"))
 						.execute();
 	}
@@ -365,7 +371,7 @@ final class EntityTableExportPanel extends JPanel {
 						.south(borderLayoutPanel()
 										.border(createTitledBorder(MESSAGES.getString("configurations")))
 										.center(comboBox()
-														.model(model.configurationFiles())
+														.model(SwingFilterComboBoxModel.model(model.configurationFiles()))
 														.popupControl(comboBox -> Control.builder()
 																		.command(model::clearConfigurationFiles)
 																		.caption(Messages.clear())
@@ -406,10 +412,12 @@ final class EntityTableExportPanel extends JPanel {
 						.controls(Controls.builder()
 										.control(Control.builder()
 														.command(this::exportToClipboard)
+														.enabled(exporting.not())
 														.caption(MESSAGES.getString("to_clipboard"))
 														.mnemonic(MESSAGES.getString("to_clipboard_mnemonic").charAt(0)))
 										.control(Control.builder()
 														.command(this::exportToFile)
+														.enabled(exporting.not())
 														.caption(MESSAGES.getString("to_file"))
 														.mnemonic(MESSAGES.getString("to_file_mnemonic").charAt(0)))
 										.control(Control.builder()

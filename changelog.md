@@ -15,6 +15,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel, no condition panel is created for a table model without query conditions.
 - EntityTablePanel, the export dialog size is now stored with the table panel settings instead of the export preferences, the export model no longer holding it.
+- EntityTablePanel, the export controls are now disabled while exporting, where a second click before the progress dialog was shown started a second export, the clipboard now set before the success message is shown, the export model no longer Swing based.
 
 ## 0.18.89
 ### is.codion.common.reactive

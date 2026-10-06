@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.component.tree.NodePath;
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
@@ -32,12 +33,15 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static is.codion.framework.db.EntityConnection.Select.all;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -236,6 +240,33 @@ public final class EntityTableExportPanelTest {
 						applied.treeModel().visible().get().stream()
 										.filter(path -> !path.root())
 										.collect(toList()).subList(0, 4));
+	}
+
+	@Test
+	void exportTasks() throws Exception {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
+		tableModel.items().refresh();
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
+		EntityTableExportModel exportModel = tablePanel.exportModel();
+		ProgressReporter<Void> progress = new ProgressReporter<Void>() {
+			@Override
+			public void report(int progress) {}
+
+			@Override
+			public void publish(Void... chunks) {}
+		};
+
+		String text = exportModel.exportToString().execute(progress);
+		assertTrue(text.contains(tableModel.items().included().get(0).get(Employee.NAME)));
+
+		Path file = Files.createTempFile("export", ".tsv");
+		try {
+			assertEquals(file, exportModel.exportToFile(file).execute(progress));
+			assertEquals(text, new String(Files.readAllBytes(file), UTF_8));
+		}
+		finally {
+			Files.deleteIfExists(file);
+		}
 	}
 
 	private static String header(EntityTableExportTreeModel treeModel) {
