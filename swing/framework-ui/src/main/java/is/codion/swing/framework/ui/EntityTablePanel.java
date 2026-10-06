@@ -469,6 +469,7 @@ public class EntityTablePanel extends JPanel {
 
 	private final Map<EntityType, Preferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
+	private final AtomicReference<Dimension> exportDialogSize = new AtomicReference<>();
 
 	private @Nullable EntityTableExportPanel exportPanel;
 	private @Nullable JScrollPane conditionPanelScrollPane;
@@ -1022,6 +1023,10 @@ public class EntityTablePanel extends JPanel {
 		return exportModel;
 	}
 
+	final AtomicReference<Dimension> exportDialogSize() {
+		return exportDialogSize;
+	}
+
 	/**
 	 * Creates a {@link Control} for adding a new entity via the available edit panel.
 	 * @return the add control
@@ -1449,7 +1454,7 @@ public class EntityTablePanel extends JPanel {
 			return null;
 		}
 
-		return new EntityTableExportPanel(exportModel);
+		return new EntityTableExportPanel(exportModel, exportDialogSize);
 	}
 
 	private @Nullable TableConditionPanel<Attribute<?>> createTableConditionPanel() {

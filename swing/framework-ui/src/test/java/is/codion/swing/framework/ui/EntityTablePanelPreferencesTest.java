@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -136,6 +137,20 @@ public class EntityTablePanelPreferencesTest {
 
 		// Verify restored auto-resize mode
 		assertEquals(newMode, tablePanel.table().getAutoResizeMode());
+	}
+
+	@Test
+	void exportDialogSize() {
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		tablePanel.exportDialogSize().set(new Dimension(800, 600));
+
+		tablePanel.store(preferences);
+		tablePanel = new EntityTablePanel(tableModel);
+		assertNull(tablePanel.exportDialogSize().get());
+
+		tablePanel.restore(preferences);
+		assertEquals(new Dimension(800, 600), tablePanel.exportDialogSize().get());
 	}
 
 	@Test

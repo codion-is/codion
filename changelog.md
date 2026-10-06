@@ -11,6 +11,7 @@ Codion Change Log
 - SwingEntityTableModel(Collection, EntityConnection) and SwingEntityTableModel(EntityType, Collection, EntityConnection) replaced by SwingEntityTableModel.of(), for a table model of the given entities, without an item source or query conditions, refreshing it doing nothing.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, no condition panel is created for a table model without query conditions.
+- EntityTablePanel, the export dialog size is now stored with the table panel settings instead of the export preferences, the export model no longer holding it.
 
 ## 0.18.89
 ### is.codion.common.reactive

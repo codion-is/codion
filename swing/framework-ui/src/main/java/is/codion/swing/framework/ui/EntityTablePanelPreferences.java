@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -40,6 +41,7 @@ final class EntityTablePanelPreferences {
 	private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanelPreferences.class);
 
 	private static final String AUTO_RESIZE_MODE = "auto-resize-mode";
+	private static final String EXPORT_DIALOG_SIZE = "export-dialog-size";
 	private static final String EMPTY_JSON_OBJECT = "{}";
 
 	private static final String SETTINGS_KEY = "settings";
@@ -47,6 +49,7 @@ final class EntityTablePanelPreferences {
 
 	private static final String COLUMNS_KEY = "columns";
 	private static final String WIDTH_KEY = "w";
+	private static final String HEIGHT_KEY = "h";
 	private static final String INDEX_KEY = "i";
 
 	private EntityTablePanelPreferences() {}
@@ -135,6 +138,12 @@ final class EntityTablePanelPreferences {
 	private static JSONObject createSettingsPreferences(EntityTablePanel tablePanel) {
 		JSONObject json = new JSONObject();
 		json.put(AUTO_RESIZE_MODE, tablePanel.table().getAutoResizeMode());
+		Dimension exportDialogSize = tablePanel.exportDialogSize().get();
+		if (exportDialogSize != null) {
+			json.put(EXPORT_DIALOG_SIZE, new JSONObject()
+							.put(WIDTH_KEY, exportDialogSize.width)
+							.put(HEIGHT_KEY, exportDialogSize.height));
+		}
 
 		return json;
 	}
@@ -142,6 +151,10 @@ final class EntityTablePanelPreferences {
 	private static void restoreSettingsPreferences(JSONObject settingsPreferences, EntityTablePanel tablePanel) {
 		if (settingsPreferences.has(AUTO_RESIZE_MODE)) {
 			tablePanel.table().setAutoResizeMode(settingsPreferences.getInt(AUTO_RESIZE_MODE));
+		}
+		if (settingsPreferences.has(EXPORT_DIALOG_SIZE)) {
+			JSONObject exportDialogSize = settingsPreferences.getJSONObject(EXPORT_DIALOG_SIZE);
+			tablePanel.exportDialogSize().set(new Dimension(exportDialogSize.getInt(WIDTH_KEY), exportDialogSize.getInt(HEIGHT_KEY)));
 		}
 	}
 

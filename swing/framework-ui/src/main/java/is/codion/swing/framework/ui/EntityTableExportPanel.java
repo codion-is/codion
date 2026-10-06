@@ -54,6 +54,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
@@ -62,6 +63,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -89,6 +91,7 @@ final class EntityTableExportPanel extends JPanel {
 					new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON);
 
 	private final EntityTableExportModel model;
+	private final AtomicReference<Dimension> dialogSize;
 	private final FilterTree<AttributeDefinition<?>> exportTree;
 	private final State singleSelection = State.state();
 	private final State singleParentSelection = State.state();
@@ -121,9 +124,10 @@ final class EntityTableExportPanel extends JPanel {
 	private final ToggleControl allRows;
 	private final ToggleControl selectedRows;
 
-	EntityTableExportPanel(EntityTableExportModel model) {
+	EntityTableExportPanel(EntityTableExportModel model, AtomicReference<Dimension> dialogSize) {
 		super(borderLayout());
 		this.model = model;
+		this.dialogSize = dialogSize;
 		this.exportTree = createTree();
 		this.exportTree.model().selection().items().addConsumer(this::selectionChanged);
 		this.includeAll = Control.builder()
@@ -177,9 +181,8 @@ final class EntityTableExportPanel extends JPanel {
 							.modal(false)
 							.title(MESSAGES.getString("export"))
 							.icon(FrameworkIcons.instance().export().small())
-							.size(model.getDialogSize())
-							.onClosed(event ->
-											model.setDialogSize(event.getWindow().getSize()))
+							.size(dialogSize.get())
+							.onClosed(event -> dialogSize.set(event.getWindow().getSize()))
 							.show();
 		}
 	}

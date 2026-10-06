@@ -36,7 +36,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
 
-import java.awt.Dimension;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +58,6 @@ import static java.util.stream.Collectors.toList;
 
 final class EntityTableExportModel {
 
-	private static final String DIALOG_SIZE_KEY = "dialogSize";
 	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
 	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
 
@@ -73,8 +71,6 @@ final class EntityTableExportModel {
 	private final EntityTableExportTreeModel treeModel;
 	private final State selected;
 	private final State all;
-
-	private @Nullable Dimension dialogSize;
 
 	EntityTableExportModel(EntityTableModel<?, ?> tableModel) {
 		this.tableModel = tableModel;
@@ -133,14 +129,6 @@ final class EntityTableExportModel {
 		return tableModel.entityDefinition().caption();
 	}
 
-	void setDialogSize(Dimension dialogSize) {
-		this.dialogSize = dialogSize;
-	}
-
-	@Nullable Dimension getDialogSize() {
-		return dialogSize;
-	}
-
 	void addConfigurationFiles(Collection<File> configurationFiles) {
 		List<DefaultConfigurationFile> files = configurationFiles.stream()
 						.map(DefaultConfigurationFile::new)
@@ -178,15 +166,6 @@ final class EntityTableExportModel {
 									.filter(configurationFile -> configurationFile.file().equals(file))
 									.findFirst()
 									.ifPresent(configurationFile -> configurationFiles.selection().item().set(configurationFile));
-				}
-			}
-		}
-		if (preferences.has(DIALOG_SIZE_KEY)) {
-			String dialogSizePreferences = preferences.getString(DIALOG_SIZE_KEY);
-			if (dialogSizePreferences != null) {
-				String[] size = dialogSizePreferences.split("x");
-				if (size.length == 2) {
-					dialogSize = new Dimension(Integer.parseInt(size[0]), Integer.parseInt(size[1]));
 				}
 			}
 		}
@@ -232,9 +211,6 @@ final class EntityTableExportModel {
 			json.put(CONFIGURATION_FILES_KEY, recentFiles);
 			configurationFiles.selection().item().optional().ifPresent(selectedConfigurationFile ->
 							json.put(SELECTED_CONFIGURATION_FILE_KEY, selectedConfigurationFile.file().getAbsolutePath()));
-		}
-		if (dialogSize != null) {
-			json.put(DIALOG_SIZE_KEY, dialogSize.width + "x" + dialogSize.height);
 		}
 
 		return json;
