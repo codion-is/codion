@@ -480,7 +480,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 				return emptyList();
 			}
 			List<R> toFind = new ArrayList<>(itemsToFind);
-			if (toFind.size() <= FEW && (!preferSelected || store.size() == 0)) {
+			if (toFind.size() <= FEW && (!preferSelected || noneSelected(toFind))) {
 				List<Integer> indexes = firstSameInstances(toFind);
 				if (indexes != null) {
 					return indexes;
@@ -526,9 +526,23 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		/**
-		 * The common case, a few items, each the first one equal to it, being the same instance, with no selected indexes
-		 * to prefer, in which case these are the indexes the full search arrives at, without copying and searching all
-		 * the items, as moving them, by sorting or filtering, keeps the instances.
+		 * @return true if no selected index holds an item equal to one of the given ones, preferring the selected
+		 * indexes then making no difference
+		 */
+		private boolean noneSelected(List<R> itemsToFind) {
+			for (Integer index : store.get()) {
+				if (index < items.size() && equal(itemsToFind, items.get(index)) != null) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
+		 * The common case, a few items, each the first one equal to it, being the same instance, with no selected index
+		 * holding an equal item to prefer, in which case these are the indexes the full search arrives at, without
+		 * copying and searching all the items, as moving them, by sorting or filtering, keeps the instances.
 		 * @return the first index of each of the given items, in case each holds the same instance, otherwise null
 		 */
 		private @Nullable List<Integer> firstSameInstances(List<R> itemsToFind) {

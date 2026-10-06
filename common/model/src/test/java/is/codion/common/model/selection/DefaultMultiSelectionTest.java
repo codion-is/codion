@@ -237,6 +237,12 @@ public final class DefaultMultiSelectionTest {
 		selection.indexes().set(singletonList(2));
 		selection.items().add(a0);
 		assertEquals(asList(0, 2), selection.indexes().get());
+		//an unrelated one selected, the same instance via the fast path, an equal one selected via the full search
+		selection.indexes().set(singletonList(3));
+		selection.items().add(a0);
+		assertEquals(asList(0, 3), selection.indexes().get());
+		selection.items().set(singletonList(new String("c")));
+		assertEquals(singletonList(3), selection.indexes().get());
 		//set(get()) leaves the selection as is
 		selection.indexes().set(asList(2, 4));
 		selection.items().set(selection.items().get());
