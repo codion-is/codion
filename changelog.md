@@ -14,6 +14,7 @@ Codion Change Log
 - MultiSelection.Items, contains() and remove() now cover every selected index holding an equal item, where an item selected at an index after an equal, unselected one went unseen by contains() and was left selected by remove().
 - TreeSelection now a MultiSelection of the items rather than the paths, an item appearing in several places selecting one node holding it, path() and paths() added for the paths, FilterTreeModel.Builder.onSelectedItem() and onSelectedItems() now receiving items, onSelectedPath() and onSelectedPaths() added.
 - MultiSelection.Items, each item given to set(), add() or restore() now selects an index of its own, the one holding the same instance, otherwise one holding an equal item, an already selected one preferred when setting or adding, where the first equal one was selected, sorting or filtering moving the selection from a later equal item to the first and dropping one of two selected equal items, TreeSelection following the same rule.
+- FilterTreeModel.Expansion, a path below a node not yet loaded which the leaves function reports as a leaf is now ignored by expand() and set(), and pruned once a load reports the leaf, where it was kept.
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 - ProgressWorkerDialogBuilder.onWorking() added, as in ProgressWorker.Builder.

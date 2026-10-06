@@ -256,7 +256,7 @@ public interface FilterTreeModel<T> {
 	 * expansion of nodes below a collapsed node is remembered, their loading waiting until it is expanded again.
 	 * <p>A node which fails to load is collapsed, expanding it again loads it again.
 	 * <p>A path naming a node which does not exist is dropped, when the node above it is loaded, or right away in case
-	 * it is loaded already.
+	 * it is loaded already, or in case it is not yet loaded and reported as a leaf by the leaves function, so never loaded.
 	 * <p>The root is always expanded.
 	 * @param <T> the item type
 	 */

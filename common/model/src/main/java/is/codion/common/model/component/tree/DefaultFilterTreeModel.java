@@ -842,7 +842,8 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 	/**
 	 * @return true if the node identified by the given path is in the model, or may be once the nodes above it
-	 * have been loaded, false if its nearest ancestor in the model is loaded without it
+	 * have been loaded, false if its nearest ancestor in the model is loaded without it, or is not yet loaded and
+	 * reported as a leaf by the leaves function, so never loaded
 	 */
 	private boolean mayExist(NodePath<T> path) {
 		NodePath<T> ancestor = path;
@@ -850,7 +851,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			ancestor = ancestor.parent();
 			Node<T> node = nodeMap.get(ancestor);
 			if (node != null) {
-				return node.children == null;
+				return node.children == null && !node.leaf;
 			}
 		}
 

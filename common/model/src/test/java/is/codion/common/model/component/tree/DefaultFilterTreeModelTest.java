@@ -191,6 +191,16 @@ final class DefaultFilterTreeModelTest {
 		//the others are
 		assertEquals(2, calls("a"));
 		assertTrue(model.nodes().loaded(path("a")));
+		//a path below a leaf names a node which can never exist, ignored by expand() and set()
+		model.expansion().expand(path("b", "b1"));
+		assertFalse(model.expansion().get().contains(path("b", "b1")));
+		model.expansion().set(asList(path("a"), path("b", "b1")));
+		assertEquals(singletonList(path("a")), new ArrayList<>(model.expansion().get()));
+		//kept while the node above it is not loaded, pruned once it loads and reports the leaf
+		model.expansion().set(singletonList(path("c", "c1", "x")));
+		assertEquals(singletonList(path("c", "c1", "x")), new ArrayList<>(model.expansion().get()));
+		model.expansion().expand(path("c"));
+		assertEquals(singletonList(path("c")), new ArrayList<>(model.expansion().get()));
 	}
 
 	@Test
