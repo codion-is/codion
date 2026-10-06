@@ -45,8 +45,8 @@ final class FilterTreeDemo {
 										// Called when a node is first expanded, off the UI thread,
 										// given the path of the node, the items from the top level down
 										.children(path -> files(path.item()))
-										// A file has no children, so no expand handle. Called on the
-										// UI thread each time the tree asks, so it must be fast
+										// A file has no children, so no expand handle. Called along with
+										// the children function, off the UI thread, the result kept
 										.leaf(path -> path.item().isFile())
 										// Sorts siblings
 										.comparator(comparing(File::getName, String.CASE_INSENSITIVE_ORDER))

@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -357,6 +359,91 @@ final class DefaultSwingFilterTreeModelTest {
 		assertTrue(refreshed.await(10, SECONDS));
 		SwingUtilities.invokeAndWait(() ->
 						assertEquals(singletonList(path("a", "new")), model.nodes().children(path("a"))));
+	}
+
+	@Test
+	void asyncLeaf() throws Exception {
+		Set<String> leaves = ConcurrentHashMap.newKeySet();
+		leaves.add("b");
+		List<Boolean> dispatchThread = new CopyOnWriteArrayList<>();
+		CountDownLatch blocked = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		AtomicBoolean block = new AtomicBoolean(false);
+		AtomicReference<SwingFilterTreeModel<String>> reference = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> reference.set(SwingFilterTreeModel.builder()
+						.roots(() -> fetch(""))
+						.children(path -> fetch(path.item()))
+						.leaf(path -> {
+							dispatchThread.add(SwingUtilities.isEventDispatchThread());
+							boolean leaf = leaves.contains(path.item());
+							if (path.item().equals("b") && block.getAndSet(false)) {
+								blocked.countDown();
+								try {
+									release.await(10, SECONDS);
+								}
+								catch (InterruptedException e) {
+									Thread.currentThread().interrupt();
+								}
+							}
+							return leaf;
+						})
+						.build()));
+		SwingFilterTreeModel<String> model = reference.get();
+		CountDownLatch loaded = new CountDownLatch(1);
+		model.visible().addListener(loaded::countDown);
+		SwingUtilities.invokeAndWait(model.nodes()::refresh);
+		assertTrue(loaded.await(10, SECONDS));
+		//called off the dispatch thread, along with the children function, not when asked whether a node is a leaf
+		SwingUtilities.invokeAndWait(() -> {
+			assertFalse(model.nodes().leaf(path("a")));
+			assertTrue(model.nodes().leaf(path("b")));
+			assertTrue(model.isLeaf(path("b")));
+		});
+		assertEquals(asList(false, false), dispatchThread);
+
+		//an older refresh arriving after a newer refresh of a node it covers does not overwrite its leaf status
+		block.set(true);
+		SwingUtilities.invokeAndWait(model.nodes()::refresh);
+		assertTrue(blocked.await(10, SECONDS));
+		leaves.remove("b");
+		data.put("b", asList("b1"));
+		CountDownLatch reloaded = new CountDownLatch(1);
+		model.addTreeModelListener(new TreeModelListener() {
+			@Override
+			public void treeNodesChanged(TreeModelEvent event) {}
+
+			@Override
+			public void treeNodesInserted(TreeModelEvent event) {
+				if (event.getTreePath().getLastPathComponent().equals(path("b"))) {
+					reloaded.countDown();
+				}
+			}
+
+			@Override
+			public void treeNodesRemoved(TreeModelEvent event) {}
+
+			@Override
+			public void treeStructureChanged(TreeModelEvent event) {}
+		});
+		SwingUtilities.invokeAndWait(() -> model.nodes().refresh(path("b")));
+		assertTrue(reloaded.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(() -> {
+			assertFalse(model.nodes().leaf(path("b")));
+			//the refresh of the root still in progress
+			assertTrue(model.nodes().loader().active().is());
+		});
+		CountDownLatch refreshed = new CountDownLatch(1);
+		model.nodes().loader().active().addConsumer(value -> {
+			if (!value) {
+				refreshed.countDown();
+			}
+		});
+		release.countDown();
+		assertTrue(refreshed.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(() -> {
+			assertFalse(model.nodes().leaf(path("b")));
+			assertEquals(singletonList(path("b", "b1")), model.nodes().children(path("b")));
+		});
 	}
 
 	@Test

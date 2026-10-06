@@ -193,6 +193,75 @@ final class DefaultFilterTreeModelTest {
 	}
 
 	@Test
+	void leafFunction() {
+		List<String> called = new ArrayList<>();
+		FilterTreeModel<Item> model = builder()
+						.leaf(path -> {
+							called.add(path.item().id);
+							return !data.containsKey(path.item().id);
+						})
+						.build();
+		model.nodes().refresh();
+		//called for the items loaded, along with them
+		assertEquals(asList("a", "b", "c"), called);
+		called.clear();
+		//not when asked whether a node is a leaf
+		assertFalse(model.nodes().leaf(path("a")));
+		assertTrue(model.nodes().leaf(path("b")));
+		assertTrue(called.isEmpty());
+		model.expansion().expand(path("a"));
+		assertEquals(asList("a1", "a2"), called);
+		called.clear();
+		//a refresh calls it for the nodes not yet loaded, a loaded node being a leaf when it has no children
+		model.nodes().refresh(path("a"));
+		assertEquals(asList("a1", "a2"), called);
+		called.clear();
+		model.nodes().refresh(path("b"));
+		assertEquals(singletonList("b"), called);
+		called.clear();
+		model.nodes().add(path("a"), items("a3"));
+		assertEquals(singletonList("a3"), called);
+		assertTrue(model.nodes().leaf(path("a", "a3")));
+		called.clear();
+		data.put("a3", items("a31"));
+		model.nodes().replace(path("a", "a3"), new Item("a3", "A3"));
+		assertEquals(singletonList("a3"), called);
+		assertFalse(model.nodes().leaf(path("a", "a3")));
+	}
+
+	@Test
+	void leafChanged() {
+		FilterTreeModel<Item> model = new TestBuilder(roots(), children())
+						.leaf(path -> !data.containsKey(path.item().id))
+						.build(new RecordingListener());
+		model.nodes().refresh();
+		events.clear();
+		//kept until loaded again
+		data.put("b", items("b1"));
+		assertTrue(model.nodes().leaf(path("b")));
+		model.nodes().refresh();
+		assertFalse(model.nodes().leaf(path("b")));
+		assertFalse(model.nodes().loaded(path("b")));
+		//the items replaced, then b no longer a leaf
+		assertEvents("changed [] [0, 1, 2]", "changed [] [1]");
+
+		//refreshing a node reported as a leaf loads it, once no longer reported as one
+		data.remove("b");
+		model.nodes().refresh();
+		events.clear();
+		assertTrue(model.nodes().leaf(path("b")));
+		model.nodes().refresh(path("b"));
+		assertTrue(model.nodes().leaf(path("b")));
+		assertEquals(0, calls("b"));
+		assertEvents();
+		data.put("b", items("b1"));
+		model.nodes().refresh(path("b"));
+		assertFalse(model.nodes().leaf(path("b")));
+		assertEquals(singletonList(path("b", "b1")), model.nodes().children(path("b")));
+		assertEvents("changed [] [1]", "inserted [b] [0]");
+	}
+
+	@Test
 	void refresh() {
 		FilterTreeModel<Item> model = model();
 		model.nodes().refresh();

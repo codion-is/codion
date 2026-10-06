@@ -560,7 +560,15 @@ public final class FilterTreeTest {
 	void invariant() throws Exception {
 		for (long seed = 1; seed <= 40; seed++) {
 			long finalSeed = seed;
-			onEDT(() -> invariant(finalSeed, false, 300));
+			onEDT(() -> invariant(finalSeed, false, false, 300));
+		}
+	}
+
+	@Test
+	void invariantLeaf() throws Exception {
+		for (long seed = 201; seed <= 240; seed++) {
+			long finalSeed = seed;
+			onEDT(() -> invariant(finalSeed, finalSeed % 2 == 0, true, 300));
 		}
 	}
 
@@ -568,12 +576,12 @@ public final class FilterTreeTest {
 	void invariantLargeModel() throws Exception {
 		for (long seed = 101; seed <= 120; seed++) {
 			long finalSeed = seed;
-			onEDT(() -> invariant(finalSeed, true, 300));
+			onEDT(() -> invariant(finalSeed, true, false, 300));
 		}
 		//found by longer runs, a node marked expanded by the tree while its layout shows it collapsed
-		onEDT(() -> invariant(40319, true, 1000));
+		onEDT(() -> invariant(40319, true, false, 1000));
 		//found by longer runs, children inserted below a node the layout shows expanded while the model has it collapsed
-		onEDT(() -> invariant(61652, true, 2000));
+		onEDT(() -> invariant(61652, true, false, 2000));
 	}
 
 	private static void onEDT(Runnable runnable) throws Exception {
@@ -597,17 +605,26 @@ public final class FilterTreeTest {
 	/**
 	 * Performs random operations via the model, the tree and the keyboard, asserting that the rows and the
 	 * selection of the tree equal the visible nodes and the selection of the model after each one.
+	 * @param leaf true if a node whose children are known to be empty should be a leaf according to the leaf function,
+	 * its status changing as the operations add and remove children
 	 */
-	private void invariant(long seed, boolean largeModel, int count) {
+	private void invariant(long seed, boolean largeModel, boolean leaf, int count) {
 		Random random = new Random(seed);
 		Map<String, List<String>> nodes = new HashMap<>();
 		AtomicInteger counter = new AtomicInteger();
 		nodes.put("", new ArrayList<>(asList("n" + counter.incrementAndGet(), "n" + counter.incrementAndGet(), "n" + counter.incrementAndGet())));
-		SwingFilterTreeModel<String> model = SwingFilterTreeModel.builder()
+		SwingFilterTreeModel.Builder<String> modelBuilder = SwingFilterTreeModel.builder()
 						.roots(() -> fresh(nodes.getOrDefault("", emptyList())))
 						.children(path -> fresh(nodes.computeIfAbsent(path.item(), item -> randomChildren(random, counter))))
-						.comparator(naturalOrder())
-						.build();
+						.comparator(naturalOrder());
+		if (leaf) {
+			modelBuilder.leaf(path -> {
+				List<String> children = nodes.get(path.item());
+
+				return children != null && children.isEmpty();
+			});
+		}
+		SwingFilterTreeModel<String> model = modelBuilder.build();
 		model.nodes().loader().async().set(false);
 		model.sort().clear();
 		FilterTree.Builder<String> builder = FilterTree.builder()
