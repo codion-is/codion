@@ -18,8 +18,10 @@
  */
 package is.codion.swing.common.model.component.tree;
 
+import is.codion.common.model.component.tree.AbstractFilterTreeModelBuilder.SelectionContext;
 import is.codion.common.model.component.tree.FilterTreeModel.VisibleNodes;
 import is.codion.common.model.component.tree.NodePath;
+import is.codion.common.model.component.tree.TreeSelection;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
@@ -39,11 +41,11 @@ import java.util.TreeSet;
 import static is.codion.common.model.selection.MultiSelection.multiSelection;
 import static is.codion.swing.common.model.component.tree.DefaultSwingFilterTreeModel.createTreePath;
 import static java.util.Collections.unmodifiableSet;
-import static java.util.Objects.requireNonNull;
 
 /**
  * <p>A {@link DefaultTreeSelectionModel} serving as the {@link IndexStore} of a common {@link MultiSelection}, whose
- * index and item facades it forwards to, the indexes being the rows of the visible nodes of the model.
+ * index and item facades it forwards to, the indexes being the rows of the visible nodes of the model, via the
+ * {@link TreeSelection} the model bases on it, see {@link SelectionContext#treeSelection(MultiSelection)}.
  * <p>The selected paths are the canonical state, as in any {@link DefaultTreeSelectionModel}, the rows derived from
  * them via {@link VisibleNodes#indexOf(Object)}, not via the {@link javax.swing.tree.RowMapper} of a {@code JTree},
  * so the selection is correct whether a {@code JTree} is attached or not.
@@ -56,7 +58,7 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 	private final State singleSelection = State.state(false);
 	private final DefaultGrouping grouping = new DefaultGrouping();
 	private final VisibleNodes<T> visible;
-	private final MultiSelection<NodePath<T>> selection;
+	private final TreeSelection<T> selection;
 
 	//true while the model notifies its listeners of structural changes, during which a JTree removes
 	//the selected paths below the nodes changed, re-indexing rather than changing the selection
@@ -64,9 +66,9 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 	//true while a change, for which changing() has been notified, is being made
 	private boolean changingNotified = false;
 
-	DefaultTreeSelection(VisibleNodes<T> visible) {
-		this.visible = requireNonNull(visible);
-		this.selection = multiSelection(visible, new TreeStore());
+	DefaultTreeSelection(SelectionContext<T> context) {
+		this.visible = context.visible();
+		this.selection = context.treeSelection(multiSelection(visible, new TreeStore()));
 		singleSelection.addConsumer(singleSelectionMode ->
 						setSelectionMode(singleSelectionMode ? SINGLE_TREE_SELECTION : DISCONTIGUOUS_TREE_SELECTION));
 	}
@@ -114,6 +116,11 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 	@Override
 	public Items<NodePath<T>> items() {
 		return selection.items();
+	}
+
+	@Override
+	public void set(NodePath<T> path) {
+		selection.set(path);
 	}
 
 	@Override

@@ -20,7 +20,6 @@ package is.codion.common.model.component.tree;
 
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludePredicate;
-import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.selection.MultiSelection.IndexedItems;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
@@ -72,14 +71,14 @@ public interface FilterTreeModel<T> {
 	VisibleNodes<T> visible();
 
 	/**
-	 * <p>The selection, over the {@link #visible()} nodes, so a path can only be selected while visible, expand its
-	 * parent first otherwise.
+	 * <p>The selection, over the {@link #visible()} nodes. Selecting a node hidden below a collapsed ancestor expands
+	 * its ancestors, and a node not yet loaded is selected via {@link TreeSelection#set(NodePath)}.
 	 * <p>The selection is kept by path, through refreshes, filtering, sorting and expansion. A selected node hidden by
 	 * collapsing one of its ancestors is replaced by its nearest visible ancestor, and one removed or filtered is
 	 * dropped from the selection.
 	 * @return the selection
 	 */
-	MultiSelection<NodePath<T>> selection();
+	TreeSelection<T> selection();
 
 	/**
 	 * @return the {@link FilterTreeSort} instance used by this model

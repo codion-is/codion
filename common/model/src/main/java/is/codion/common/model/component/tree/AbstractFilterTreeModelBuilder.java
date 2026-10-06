@@ -132,12 +132,12 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	}
 
 	/**
-	 * Builds a {@link FilterTreeModel} with the default {@link MultiSelection}, refreshed if {@link #refresh()}.
+	 * Builds a {@link FilterTreeModel} with the default {@link TreeSelection}, refreshed if {@link #refresh()}.
 	 * @return a new {@link FilterTreeModel} instance
 	 */
 	@Override
 	public FilterTreeModel<T> build() {
-		FilterTreeModel<T> model = model(MultiSelection::multiSelection, null);
+		FilterTreeModel<T> model = model(context -> context.treeSelection(MultiSelection.multiSelection(context.visible())), null);
 		if (refresh) {
 			model.nodes().refresh();
 		}
@@ -146,15 +146,15 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	}
 
 	/**
-	 * Builds a {@link FilterTreeModel} with the given {@link MultiSelection} and {@link NodesListener}, for a
+	 * Builds a {@link FilterTreeModel} with the given {@link TreeSelection} and {@link NodesListener}, for a
 	 * toolkit builder to wrap in its own model. The model is not refreshed, the toolkit model being the one to
 	 * refresh once it is in place, see {@link #refresh()}.
-	 * @param selection provides the {@link MultiSelection} given the {@link VisibleNodes}
+	 * @param selection provides the {@link TreeSelection}, given the {@link SelectionContext}
 	 * @param listener notified of changes to the included children of nodes, for bridging to the toolkit's
 	 * own change notifications, such as {@code javax.swing.event.TreeModelEvent}s
 	 * @return a new {@link FilterTreeModel} instance, not refreshed
 	 */
-	protected final FilterTreeModel<T> build(Function<VisibleNodes<T>, MultiSelection<NodePath<T>>> selection,
+	protected final FilterTreeModel<T> build(Function<SelectionContext<T>, TreeSelection<T>> selection,
 																					 NodesListener<T> listener) {
 		return model(requireNonNull(selection), requireNonNull(listener));
 	}
@@ -174,8 +174,30 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 		return (B) this;
 	}
 
-	private FilterTreeModel<T> model(Function<VisibleNodes<T>, MultiSelection<NodePath<T>>> selection,
+	private FilterTreeModel<T> model(Function<SelectionContext<T>, TreeSelection<T>> selection,
 																	 @Nullable NodesListener<T> listener) {
 		return new DefaultFilterTreeModel<>(this, selection, listener);
+	}
+
+	/**
+	 * Provides what a toolkit's {@link TreeSelection} needs from the model, see {@link #build(Function, NodesListener)}.
+	 * @param <T> the item type
+	 */
+	public interface SelectionContext<T> {
+
+		/**
+		 * @return the visible nodes, the items the selection indexes
+		 */
+		VisibleNodes<T> visible();
+
+		/**
+		 * Returns a {@link TreeSelection} based on the given selection, adding the tree behaviour: expanding the
+		 * ancestors of the hidden nodes selected via its item and items facades, and {@link TreeSelection#set(NodePath)}.
+		 * A toolkit selection which is a {@link MultiSelection} of its own, a {@code javax.swing.tree.TreeSelectionModel}
+		 * for example, forwards to the one returned.
+		 * @param selection a selection over the {@link #visible()} nodes
+		 * @return a {@link TreeSelection} based on the given selection
+		 */
+		TreeSelection<T> treeSelection(MultiSelection<NodePath<T>> selection);
 	}
 }

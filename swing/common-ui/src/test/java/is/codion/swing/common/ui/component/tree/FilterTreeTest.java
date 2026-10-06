@@ -560,7 +560,7 @@ public final class FilterTreeTest {
 	void invariant() throws Exception {
 		for (long seed = 1; seed <= 40; seed++) {
 			long finalSeed = seed;
-			onEDT(() -> invariant(finalSeed, false, false, 300));
+			onEDT(() -> invariant(finalSeed, false, false, false, 300));
 		}
 	}
 
@@ -568,7 +568,15 @@ public final class FilterTreeTest {
 	void invariantLeaf() throws Exception {
 		for (long seed = 201; seed <= 240; seed++) {
 			long finalSeed = seed;
-			onEDT(() -> invariant(finalSeed, finalSeed % 2 == 0, true, 300));
+			onEDT(() -> invariant(finalSeed, finalSeed % 2 == 0, true, false, 300));
+		}
+	}
+
+	@Test
+	void invariantSelect() throws Exception {
+		for (long seed = 301; seed <= 340; seed++) {
+			long finalSeed = seed;
+			onEDT(() -> invariant(finalSeed, finalSeed % 2 == 0, finalSeed % 3 == 0, true, 300));
 		}
 	}
 
@@ -576,12 +584,12 @@ public final class FilterTreeTest {
 	void invariantLargeModel() throws Exception {
 		for (long seed = 101; seed <= 120; seed++) {
 			long finalSeed = seed;
-			onEDT(() -> invariant(finalSeed, true, false, 300));
+			onEDT(() -> invariant(finalSeed, true, false, false, 300));
 		}
 		//found by longer runs, a node marked expanded by the tree while its layout shows it collapsed
-		onEDT(() -> invariant(40319, true, false, 1000));
+		onEDT(() -> invariant(40319, true, false, false, 1000));
 		//found by longer runs, children inserted below a node the layout shows expanded while the model has it collapsed
-		onEDT(() -> invariant(61652, true, false, 2000));
+		onEDT(() -> invariant(61652, true, false, false, 2000));
 	}
 
 	private static void onEDT(Runnable runnable) throws Exception {
@@ -607,8 +615,9 @@ public final class FilterTreeTest {
 	 * selection of the tree equal the visible nodes and the selection of the model after each one.
 	 * @param leaf true if a node whose children are known to be empty should be a leaf according to the leaf function,
 	 * its status changing as the operations add and remove children
+	 * @param select true if selecting a path, visible or not, should be one of the operations
 	 */
-	private void invariant(long seed, boolean largeModel, boolean leaf, int count) {
+	private void invariant(long seed, boolean largeModel, boolean leaf, boolean select, int count) {
 		Random random = new Random(seed);
 		Map<String, List<String>> nodes = new HashMap<>();
 		AtomicInteger counter = new AtomicInteger();
@@ -640,7 +649,7 @@ public final class FilterTreeTest {
 			trace.events.clear();
 			List<NodePath<String>> visibleBefore = model.visible().get();
 			Collection<NodePath<String>> expandedBefore = model.expansion().get();
-			operations.add(operation(random, model, tree, nodes, counter));
+			operations.add(operation(random, model, tree, nodes, counter, select));
 			try {
 				assertInSync(tree);
 			}
@@ -655,11 +664,12 @@ public final class FilterTreeTest {
 	}
 
 	private String operation(Random random, SwingFilterTreeModel<String> model, FilterTree<String> tree,
-													 Map<String, List<String>> nodes, AtomicInteger counter) {
+													 Map<String, List<String>> nodes, AtomicInteger counter, boolean select) {
 		List<NodePath<String>> visible = model.visible().get();
 		NodePath<String> path = visible.isEmpty() ? nodePath() : visible.get(random.nextInt(visible.size()));
 		int row = visible.isEmpty() ? -1 : visible.indexOf(path);
-		switch (random.nextInt(17)) {
+		//without select the same operations as before, the committed seeds replaying what they found
+		switch (random.nextInt(select ? 18 : 17)) {
 			case 0:
 				model.expansion().expand(path);
 				return "model expand " + path;
@@ -787,10 +797,57 @@ public final class FilterTreeTest {
 				model.expansion().set(expanded.subList(0, expanded.size() / 2));
 				return "set expansion " + expanded.subList(0, expanded.size() / 2);
 			}
+			case 17:
+				return select(random, model, nodes);
 			default:
 				tree.clearSelection();
 				return "tree clear selection";
 		}
+	}
+
+	/**
+	 * Selects a random path down the generated nodes, loaded or not, sometimes one which does not exist. Via
+	 * {@code selection().set()}, asserting that a node on the path is selected, the node itself when visible, or that
+	 * the selection is left as is. Or via {@code item().set()} for a node in the model, hidden or not, asserting that it
+	 * is selected, or the selection cleared in case it is filtered.
+	 */
+	private static String select(Random random, SwingFilterTreeModel<String> model, Map<String, List<String>> nodes) {
+		List<String> items = new ArrayList<>();
+		String parent = "";
+		int depth = 1 + random.nextInt(4);
+		while (items.size() < depth) {
+			List<String> children = nodes.get(parent);
+			if (children == null || children.isEmpty()) {
+				break;
+			}
+			parent = children.get(random.nextInt(children.size()));
+			items.add(parent);
+		}
+		if (items.isEmpty() || random.nextInt(4) == 0) {
+			items.add("missing");
+		}
+		NodePath<String> target = nodePath(items);
+		if (model.nodes().contains(target) && random.nextBoolean()) {
+			model.selection().item().set(target);
+			List<NodePath<String>> selected = model.selection().items().get();
+			List<NodePath<String>> expected = model.nodes().included(target) ? singletonList(target) : emptyList();
+			if (!selected.equals(expected)) {
+				throw new AssertionError("Selected item " + target + ", but selected " + selected);
+			}
+
+			return "select item " + target;
+		}
+		List<NodePath<String>> before = model.selection().items().get();
+		model.selection().set(target);
+		List<NodePath<String>> after = model.selection().items().get();
+		if (model.visible().indexOf(target) >= 0 && !after.equals(singletonList(target))) {
+			throw new AssertionError("Set " + target + ", visible, but selected " + after);
+		}
+		if (!after.equals(before) && (after.size() != 1 || !after.get(0).contains(target))) {
+			throw new AssertionError("Set " + target + ", but selected " + after);
+		}
+
+		return "select " + target;
 	}
 
 	private static void mutate(Random random, List<String> children, AtomicInteger counter) {

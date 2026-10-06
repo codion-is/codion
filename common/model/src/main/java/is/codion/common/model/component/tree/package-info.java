@@ -21,6 +21,7 @@
  * <ul>
  * <li>{@link is.codion.common.model.component.tree.FilterTreeModel}
  * <li>{@link is.codion.common.model.component.tree.NodePath}
+ * <li>{@link is.codion.common.model.component.tree.TreeSelection}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

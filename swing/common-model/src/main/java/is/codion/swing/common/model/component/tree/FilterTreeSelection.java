@@ -19,12 +19,12 @@
 package is.codion.swing.common.model.component.tree;
 
 import is.codion.common.model.component.tree.NodePath;
-import is.codion.common.model.selection.MultiSelection;
+import is.codion.common.model.component.tree.TreeSelection;
 
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * <p>A {@link TreeSelectionModel} serving as the {@link MultiSelection} of a {@link SwingFilterTreeModel}, its indexes
+ * <p>A {@link TreeSelectionModel} serving as the {@link TreeSelection} of a {@link SwingFilterTreeModel}, its indexes
  * the rows of the visible nodes of the model.
  * <p>Single selection mode is {@link TreeSelectionModel#SINGLE_TREE_SELECTION}, multiple selection
  * {@link TreeSelectionModel#DISCONTIGUOUS_TREE_SELECTION}.
@@ -34,4 +34,4 @@ import javax.swing.tree.TreeSelectionModel;
  * @param <T> the item type
  * @see SwingFilterTreeModel#visible()
  */
-public interface FilterTreeSelection<T> extends TreeSelectionModel, MultiSelection<NodePath<T>> {}
+public interface FilterTreeSelection<T> extends TreeSelectionModel, TreeSelection<T> {}

@@ -222,6 +222,86 @@ final class DefaultFilterTreeModelTest {
 	}
 
 	@Test
+	void selectionSet() {
+		FilterTreeModel<Item> model = model();
+		//nothing on the path in the model, the selection left as is
+		model.selection().set(path("a", "a1"));
+		assertFalse(model.selection().present().is());
+		model.nodes().refresh();
+		//a deep path not yet loaded, its ancestors expanded and loaded, the node itself not expanded
+		model.selection().set(path("a", "a1", "a11"));
+		assertEquals(path("a", "a1", "a11"), model.selection().item().get());
+		assertTrue(model.expansion().expanded(path("a", "a1")));
+		assertFalse(model.expansion().expanded(path("a", "a1", "a11")));
+		//replacing the selection
+		model.selection().items().set(asList(path("b"), path("c")));
+		model.selection().set(path("a", "a2"));
+		assertEquals(singletonList(path("a", "a2")), model.selection().items().get());
+		//a path which does not exist, the deepest node on it which does
+		model.selection().set(path("a", "a1", "x", "y"));
+		assertEquals(path("a", "a1"), model.selection().item().get());
+		model.selection().set(path("x"));
+		assertEquals(path("a", "a1"), model.selection().item().get());
+		//filtered, its nearest visible ancestor
+		model.nodes().predicate().set(path -> !path.item().id.equals("a11"));
+		model.selection().set(path("a", "a1", "a11"));
+		assertEquals(path("a", "a1"), model.selection().item().get());
+		model.nodes().predicate().clear();
+		assertThrows(IllegalArgumentException.class, () -> model.selection().set(ROOT));
+
+		//below a leaf according to the leaf function, which is not loaded
+		FilterTreeModel<Item> withLeaf = builder()
+						.leaf(path -> !data.containsKey(path.item().id))
+						.build();
+		withLeaf.nodes().refresh();
+		withLeaf.selection().set(path("b", "b1"));
+		assertEquals(path("b"), withLeaf.selection().item().get());
+		assertFalse(withLeaf.nodes().loaded(path("b")));
+		assertEquals(0, calls("b"));
+	}
+
+	@Test
+	void selectHidden() {
+		FilterTreeModel<Item> model = model();
+		model.nodes().refresh();
+		model.expansion().expand(path("a", "a1"));
+		model.expansion().collapse(path("a"));
+		//hidden below a collapsed ancestor, its ancestors expanded
+		model.selection().item().set(path("a", "a1", "a11"));
+		assertEquals(path("a", "a1", "a11"), model.selection().item().get());
+		assertTrue(model.expansion().expanded(path("a", "a1")));
+		model.expansion().collapse(path("a"));
+		assertEquals(path("a"), model.selection().item().get());
+		model.selection().items().set(asList(path("a", "a1"), path("a", "a2")));
+		assertEquals(asList(path("a", "a1"), path("a", "a2")), model.selection().items().get());
+		model.expansion().collapse(path("a"));
+		model.selection().items().add(path("a", "a1", "a11"));
+		assertEquals(asList(path("a"), path("a", "a1", "a11")), model.selection().items().get());
+		model.expansion().collapse(path("a"));
+		model.selection().items().add(asList(path("a", "a2"), path("b")));
+		assertEquals(asList(path("a"), path("a", "a2"), path("b")), model.selection().items().get());
+		//not in the model, not yet loaded, clearing the selection as for any item
+		model.selection().item().set(path("c", "c1"));
+		assertFalse(model.selection().present().is());
+		assertFalse(model.nodes().loaded(path("c")));
+		//filtered, ignored, its ancestors not expanded
+		model.expansion().collapse(path("a"));
+		model.nodes().predicate().set(path -> !path.item().id.equals("a2"));
+		model.selection().items().set(singletonList(path("a", "a2")));
+		assertFalse(model.selection().present().is());
+		assertFalse(model.expansion().expanded(path("a")));
+		model.nodes().predicate().clear();
+		//removing and restoring do not expand
+		model.selection().items().remove(path("a", "a1"));
+		assertFalse(model.expansion().expanded(path("a")));
+		//notified once per change
+		List<NodePath<Item>> notified = new ArrayList<>();
+		model.selection().item().addConsumer(notified::add);
+		model.selection().item().set(path("a", "a1"));
+		assertEquals(singletonList(path("a", "a1")), notified);
+	}
+
+	@Test
 	void leafFunction() {
 		List<String> called = new ArrayList<>();
 		FilterTreeModel<Item> model = builder()
@@ -933,7 +1013,7 @@ final class DefaultFilterTreeModelTest {
 		}
 
 		private FilterTreeModel<Item> build(NodesListener<Item> listener) {
-			return build(MultiSelection::multiSelection, listener);
+			return build(context -> context.treeSelection(MultiSelection.multiSelection(context.visible())), listener);
 		}
 	}
 

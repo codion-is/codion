@@ -19,6 +19,7 @@
 package is.codion.common.model.component.tree;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.model.component.tree.AbstractFilterTreeModelBuilder.SelectionContext;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludePredicate;
 import is.codion.common.model.filter.SortOrder;
@@ -84,7 +85,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	private final DefaultVisibleNodes visible = new DefaultVisibleNodes();
 	private final DefaultIncludePredicate<T> predicate = new DefaultIncludePredicate<>();
 	private final DefaultSort sort;
-	private final MultiSelection<NodePath<T>> selection;
+	private final TreeSelection<T> selection;
 
 	//the groups of children touched by the current mutation, with their state before it, see touch()
 	private final Map<Node<T>, Snapshot<T>> snapshots = new LinkedHashMap<>();
@@ -100,9 +101,13 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	//true when nodes have been added, removed or had their items replaced by the current mutation
 	private boolean nodesChanged = false;
 	private long sequence = 0;
+	//the path of the node to select once visible, null when none is pending, see TreeSelection.set(NodePath)
+	private @Nullable NodePath<T> pendingSelection;
+	//true while the pending selection is being made, so that its selection change does not cancel it
+	private boolean selectingPending = false;
 
 	DefaultFilterTreeModel(AbstractFilterTreeModelBuilder<T, ?> builder,
-												 Function<VisibleNodes<T>, MultiSelection<NodePath<T>>> selectionFactory,
+												 Function<SelectionContext<T>, TreeSelection<T>> selectionFactory,
 												 @Nullable NodesListener<T> listener) {
 		this.roots = builder.roots;
 		this.children = builder.children;
@@ -112,7 +117,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		this.sort = new DefaultSort(builder.comparator);
 		this.root = new Node<>(nodePath(), null, true);
 		this.nodeMap.put(root.path, root);
-		this.selection = selectionFactory.apply(visible);
+		this.selection = selectionFactory.apply(new DefaultSelectionContext());
 		builder.selectionListeners.forEach(selection.indexes()::addListener);
 		builder.itemSelectedListeners.forEach(selection.item()::addConsumer);
 		builder.itemsSelectedListeners.forEach(selection.items()::addConsumer);
@@ -121,6 +126,9 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		this.predicate.set(builder.included);
 		this.predicate.addListener(this::filter);
 		this.sort.changed.addListener(this::sortChanged);
+		//a selection change from outside, by the application or the user, cancels a pending selection,
+		//the model restoring the selection after a mutation not notifying changing()
+		this.selection.changing().addListener(this::cancelPendingSelection);
 	}
 
 	@Override
@@ -139,7 +147,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	}
 
 	@Override
-	public MultiSelection<NodePath<T>> selection() {
+	public TreeSelection<T> selection() {
 		return selection;
 	}
 
@@ -213,6 +221,98 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		loadExpanded();
 		//the mutation may have cancelled loads
 		loader.updateActive();
+		resolvePendingSelection();
+	}
+
+	/**
+	 * Selects the node identified by the given path once it is visible, see {@link TreeSelection#set(NodePath)}.
+	 */
+	private void selectWhenVisible(NodePath<T> path) {
+		if (path.root()) {
+			throw new IllegalArgumentException("The root can not be selected");
+		}
+		pendingSelection = path;
+		expansion.expand(path.parent());
+		resolvePendingSelection();
+	}
+
+	/**
+	 * Resolves the pending selection, in case the model shows how far its path goes: selects the node in case it
+	 * exists, otherwise the deepest node on the path which does, once it is loaded, or neither loaded nor being loaded,
+	 * so that the rest of the path does not exist or can not be loaded. Pending while a load at or above that node is
+	 * in progress, which may bring the rest of the path.
+	 */
+	private void resolvePendingSelection() {
+		NodePath<T> path = pendingSelection;
+		if (path == null) {
+			return;
+		}
+		NodePath<T> stopped = path;
+		while (!nodeMap.containsKey(stopped)) {
+			stopped = stopped.parent();
+		}
+		if (!stopped.equals(path) && loader.loading(stopped)) {
+			return;
+		}
+		pendingSelection = null;
+		selectResolved(stopped);
+	}
+
+	/**
+	 * Selects the given node, or its nearest visible ancestor, leaving the selection as is in case of none.
+	 */
+	private void selectResolved(NodePath<T> path) {
+		NodePath<T> visiblePath = path;
+		while (!visiblePath.root() && visible.indexOf(visiblePath) < 0) {
+			visiblePath = visiblePath.parent();
+		}
+		if (visiblePath.root()) {
+			return;
+		}
+		selectingPending = true;
+		try {
+			selection.items().set(singletonList(visiblePath));
+		}
+		catch (CancelException e) {
+			//vetoed, the pending selection ends unselected
+		}
+		finally {
+			selectingPending = false;
+		}
+	}
+
+	private void cancelPendingSelection() {
+		if (!selectingPending) {
+			pendingSelection = null;
+		}
+	}
+
+	/**
+	 * Expands the ancestors of the nodes identified by the given paths which are in the model and included but hidden
+	 * below a collapsed ancestor, so that they can be selected, ancestors before descendants, in a single mutation.
+	 */
+	private void expandHidden(Collection<NodePath<T>> paths) {
+		Set<NodePath<T>> toExpand = new LinkedHashSet<>();
+		for (NodePath<T> path : paths) {
+			Node<T> node = nodeMap.get(path);
+			if (node != null && node != root && node.included && visible.indexOf(path) < 0) {
+				NodePath<T> ancestor = path.parent();
+				while (!ancestor.root()) {
+					if (!expanded.contains(ancestor)) {
+						toExpand.add(ancestor);
+					}
+					ancestor = ancestor.parent();
+				}
+			}
+		}
+		if (!toExpand.isEmpty()) {
+			List<NodePath<T>> ancestors = new ArrayList<>(toExpand);
+			ancestors.sort(comparingInt(NodePath::depth));
+			mutate(() -> {
+				expanded.addAll(ancestors);
+				pendingExpanded.addAll(ancestors);
+			});
+		}
 	}
 
 	private void commit() {
@@ -712,6 +812,20 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		return true;
 	}
 
+	private final class DefaultSelectionContext implements SelectionContext<T> {
+
+		@Override
+		public VisibleNodes<T> visible() {
+			return visible;
+		}
+
+		@Override
+		public TreeSelection<T> treeSelection(MultiSelection<NodePath<T>> selection) {
+			return new DefaultTreeSelection<>(selection, DefaultFilterTreeModel.this::expandHidden,
+							DefaultFilterTreeModel.this::selectWhenVisible);
+		}
+	}
+
 	private final class DefaultNodes implements Nodes<T> {
 
 		@Override
@@ -979,6 +1093,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 					expansion.collapse(task.path);
 				}
 				loadExpanded();
+				resolvePendingSelection();
 			}
 			finally {
 				updateActive();
@@ -1006,7 +1121,18 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		 * Cancels the loads in progress at or below the given path, the caller being the one to call
 		 * {@link #updateActive()}, once the load replacing them, if any, has been started.
 		 * @param path the path
+		 * @return true if a load at or above the given path is in progress, which may change the children of the node
 		 */
+		private boolean loading(NodePath<T> path) {
+			for (NodePath<T> taskPath : tasks.keySet()) {
+				if (taskPath.contains(path)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		private void cancel(NodePath<T> path) {
 			Iterator<LoadTask> iterator = tasks.values().iterator();
 			while (iterator.hasNext()) {

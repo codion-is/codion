@@ -22,6 +22,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.component.tree.FilterTreeModel;
 import is.codion.common.model.component.tree.NodePath;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -447,6 +448,90 @@ final class DefaultSwingFilterTreeModelTest {
 	}
 
 	@Test
+	void asyncSelectionSet() throws Exception {
+		//pending until the path is loaded
+		BlockingChildren children = new BlockingChildren();
+		SwingFilterTreeModel<String> model = asyncModel(children);
+		children.block("a");
+		SwingUtilities.invokeAndWait(() -> model.selection().set(path("a", "a1")));
+		children.awaitBlocked();
+		SwingUtilities.invokeAndWait(() -> assertFalse(model.selection().present().is()));
+		children.release();
+		awaitIdle(model);
+		SwingUtilities.invokeAndWait(() -> assertEquals(path("a", "a1"), model.selection().item().get()));
+
+		//cancelled by a selection change from outside
+		SwingFilterTreeModel<String> cancelled = asyncModel(children);
+		children.block("a");
+		SwingUtilities.invokeAndWait(() -> cancelled.selection().set(path("a", "a1")));
+		children.awaitBlocked();
+		SwingUtilities.invokeAndWait(() -> cancelled.selection().items().set(singletonList(path("b"))));
+		children.release();
+		awaitIdle(cancelled);
+		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList(path("b")), cancelled.selection().items().get()));
+
+		//replaced by another reveal
+		SwingFilterTreeModel<String> replaced = asyncModel(children);
+		children.block("a");
+		SwingUtilities.invokeAndWait(() -> replaced.selection().set(path("a", "a1")));
+		children.awaitBlocked();
+		SwingUtilities.invokeAndWait(() -> replaced.selection().set(path("b")));
+		children.release();
+		awaitIdle(replaced);
+		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList(path("b")), replaced.selection().items().get()));
+
+		//a failed load, the deepest node on the path which exists
+		SwingFilterTreeModel<String> failed = asyncModel(children);
+		children.block("a");
+		children.fail = true;
+		SwingUtilities.invokeAndWait(() -> failed.selection().set(path("a", "a1")));
+		children.awaitBlocked();
+		children.release();
+		awaitIdle(failed);
+		children.fail = false;
+		SwingUtilities.invokeAndWait(() -> {
+			assertEquals(path("a"), failed.selection().item().get());
+			assertFalse(failed.nodes().loaded(path("a")));
+		});
+
+		//not cancelled by a refresh, which restarts the load
+		SwingFilterTreeModel<String> refreshed = asyncModel(children);
+		children.block("a");
+		SwingUtilities.invokeAndWait(() -> refreshed.selection().set(path("a", "a1")));
+		children.awaitBlocked();
+		SwingUtilities.invokeAndWait(() -> refreshed.nodes().refresh(path("a")));
+		children.release();
+		awaitIdle(refreshed);
+		SwingUtilities.invokeAndWait(() -> assertEquals(path("a", "a1"), refreshed.selection().item().get()));
+
+		//an ancestor collapsed while pending, its nearest visible ancestor
+		SwingFilterTreeModel<String> collapsed = asyncModel(children);
+		children.block("a");
+		SwingUtilities.invokeAndWait(() -> collapsed.selection().set(path("a", "a1")));
+		children.awaitBlocked();
+		SwingUtilities.invokeAndWait(() -> collapsed.expansion().collapse(path("a")));
+		children.release();
+		awaitIdle(collapsed);
+		SwingUtilities.invokeAndWait(() -> {
+			assertTrue(collapsed.nodes().loaded(path("a")));
+			assertEquals(path("a"), collapsed.selection().item().get());
+		});
+
+		//a node on the path removed while pending, nothing left to select
+		SwingFilterTreeModel<String> removed = asyncModel(children);
+		children.block("a");
+		SwingUtilities.invokeAndWait(() -> removed.selection().set(path("a", "a1")));
+		children.awaitBlocked();
+		SwingUtilities.invokeAndWait(() -> removed.nodes().remove(singletonList(path("a"))));
+		children.release();
+		awaitIdle(removed);
+		SwingUtilities.invokeAndWait(() -> {
+			assertFalse(removed.nodes().contains(path("a")));
+			assertFalse(removed.selection().present().is());
+		});
+	}
+
+	@Test
 	void asyncCancelled() throws Exception {
 		CountDownLatch blocked = new CountDownLatch(1);
 		CountDownLatch release = new CountDownLatch(1);
@@ -833,6 +918,82 @@ final class DefaultSwingFilterTreeModelTest {
 	private void assertEvents(String... expected) {
 		assertEquals(asList(expected), events);
 		events.clear();
+	}
+
+	/**
+	 * @return a model loading asynchronously, its roots loaded
+	 */
+	private SwingFilterTreeModel<String> asyncModel(BlockingChildren children) throws Exception {
+		AtomicReference<SwingFilterTreeModel<String>> reference = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> reference.set(SwingFilterTreeModel.builder()
+						.roots(() -> fetch(""))
+						.children(children)
+						.onLoadException(exception -> {})
+						.build()));
+		SwingFilterTreeModel<String> model = reference.get();
+		SwingUtilities.invokeAndWait(model.nodes()::refresh);
+		awaitIdle(model);
+
+		return model;
+	}
+
+	/**
+	 * Waits until no load is in progress, the results applied on the dispatch thread.
+	 */
+	private static void awaitIdle(SwingFilterTreeModel<String> model) throws Exception {
+		AtomicBoolean active = new AtomicBoolean(true);
+		long timeout = System.currentTimeMillis() + 10_000;
+		while (active.get() && System.currentTimeMillis() < timeout) {
+			SwingUtilities.invokeAndWait(() -> active.set(model.nodes().loader().active().is()));
+			if (active.get()) {
+				Thread.sleep(10);
+			}
+		}
+		assertFalse(active.get(), "Loading did not finish");
+	}
+
+	/**
+	 * Loads the children of an item, blocking until released, once, and failing then when told to.
+	 */
+	private final class BlockingChildren implements Function<NodePath<String>, Collection<String>> {
+
+		private volatile @Nullable String blocking;
+		private volatile CountDownLatch blocked = new CountDownLatch(1);
+		private volatile CountDownLatch release = new CountDownLatch(1);
+		private volatile boolean fail = false;
+
+		@Override
+		public Collection<String> apply(NodePath<String> path) {
+			if (path.item().equals(blocking)) {
+				blocking = null;
+				blocked.countDown();
+				try {
+					release.await(10, SECONDS);
+				}
+				catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+				if (fail) {
+					throw new IllegalStateException("Failed to load " + path);
+				}
+			}
+
+			return fetch(path.item());
+		}
+
+		private void block(String item) {
+			blocked = new CountDownLatch(1);
+			release = new CountDownLatch(1);
+			blocking = item;
+		}
+
+		private void awaitBlocked() throws InterruptedException {
+			assertTrue(blocked.await(10, SECONDS));
+		}
+
+		private void release() {
+			release.countDown();
+		}
 	}
 
 	private static NodePath<String> path(String... items) {

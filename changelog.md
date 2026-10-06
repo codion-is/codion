@@ -7,6 +7,9 @@ Codion Change Log
 - FilterTreeModel.Builder.leaf(), the leaf function is now called along with the children function when nodes are loaded, off the UI thread when loading asynchronously, its result kept until a refresh reaches the node, instead of each time a view asks whether a node is a leaf, so it may query a database or list a directory.
 - FilterTreeModel.Nodes.leaf(), a loaded node is now a leaf when it has no included children, the leaf function only deciding for nodes not yet loaded, where a loaded node it reported as a leaf hid its children in a view, out of step with the visible nodes.
 - FilterTreeModel.Nodes.paths() added, the paths of the nodes holding a given item, which may appear in several places.
+- TreeSelection added, the selection of a FilterTreeModel, a node hidden below a collapsed ancestor now selected via its item() or items() having its ancestors expanded, where it cleared the selection, or was ignored when added.
+- TreeSelection.set(NodePath) added, selecting a node not yet loaded once visible, expanding its ancestors and loading as needed, or the deepest node on its path which exists, a pending selection cancelled by a selection change.
+- AbstractFilterTreeModelBuilder.build(Function, NodesListener), the selection factory now given a SelectionContext, providing the visible nodes and the TreeSelection behaviour a toolkit selection forwards to.
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 - ProgressWorkerDialogBuilder.onWorking() added, as in ProgressWorker.Builder.
