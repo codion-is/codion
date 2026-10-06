@@ -61,7 +61,6 @@ final class FilterTreeDemo {
 										.formatter(File::getName)
 										.doubleClick(Control.command(() ->
 														model.selection().item().optional()
-																		.map(NodePath::item)
 																		.ifPresent(System.out::println)))
 										.build();
 		// end::tree[]
@@ -87,12 +86,21 @@ final class FilterTreeDemo {
 
 	static void selection(SwingFilterTreeModel<File> model) {
 		// tag::selection[]
-		// The selection is over the visible nodes, kept by path
+		// The selection is over the visible nodes, by item
 		model.selection().items().addConsumer(selected ->
-						selected.forEach(path -> System.out.println(path.item())));
+						selected.forEach(System.out::println));
 
-		List<NodePath<File>> topLevel = model.nodes().children(nodePath());
-		model.selection().items().set(topLevel);
+		File home = new File(System.getProperty("user.home"));
+		File documents = new File(home, "Documents");
+		model.selection().item().set(documents);
+
+		// The paths of the selected nodes, for when the
+		// same item appears in several places
+		List<NodePath<File>> selected = model.selection().paths().get();
+
+		// Selects a node not yet loaded, once its
+		// ancestors have been expanded and loaded
+		model.selection().set(nodePath(asList(documents, new File(documents, "notes.txt"))));
 		// end::selection[]
 	}
 

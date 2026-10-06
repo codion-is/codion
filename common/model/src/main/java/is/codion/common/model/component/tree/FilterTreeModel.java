@@ -71,8 +71,9 @@ public interface FilterTreeModel<T> {
 	VisibleNodes<T> visible();
 
 	/**
-	 * <p>The selection, over the {@link #visible()} nodes. Selecting a node hidden below a collapsed ancestor expands
-	 * its ancestors, and a node not yet loaded is selected via {@link TreeSelection#set(NodePath)}.
+	 * <p>The selection, over the {@link #visible()} nodes, by item, with {@link TreeSelection#paths()} addressing
+	 * particular nodes, the same item appearing in several places. Selecting a node hidden below a collapsed ancestor
+	 * expands its ancestors, and a node not yet loaded is selected via {@link TreeSelection#set(NodePath)}.
 	 * <p>The selection is kept by path, through refreshes, filtering, sorting and expansion. A selected node hidden by
 	 * collapsing one of its ancestors is replaced by its nearest visible ancestor, and one removed or filtered is
 	 * dropped from the selection.
@@ -305,7 +306,7 @@ public interface FilterTreeModel<T> {
 
 	/**
 	 * <p>The visible nodes, the included nodes whose ancestors are all expanded, in depth first order, the root excluded.
-	 * <p>These are the rows a view displays, and the items the {@link FilterTreeModel#selection()} indexes.
+	 * <p>These are the rows a view displays, and the {@link FilterTreeModel#selection()} indexes.
 	 * <p>Notified once per mutation, when the visible nodes changed.
 	 * @param <T> the item type
 	 */
@@ -459,16 +460,32 @@ public interface FilterTreeModel<T> {
 		B onSelectionChanged(Runnable listener);
 
 		/**
-		 * @param item receives the path of the selected node
+		 * @param item receives the item of the selected node
 		 * @return this builder instance
+		 * @see TreeSelection#item()
 		 */
-		B onSelectedItem(Consumer<NodePath<T>> item);
+		B onSelectedItem(Consumer<T> item);
 
 		/**
-		 * @param items receives the paths of the selected nodes
+		 * @param items receives the items of the selected nodes
 		 * @return this builder instance
+		 * @see TreeSelection#items()
 		 */
-		B onSelectedItems(Consumer<List<NodePath<T>>> items);
+		B onSelectedItems(Consumer<List<T>> items);
+
+		/**
+		 * @param path receives the path of the selected node
+		 * @return this builder instance
+		 * @see TreeSelection#path()
+		 */
+		B onSelectedPath(Consumer<NodePath<T>> path);
+
+		/**
+		 * @param paths receives the paths of the selected nodes
+		 * @return this builder instance
+		 * @see TreeSelection#paths()
+		 */
+		B onSelectedPaths(Consumer<List<NodePath<T>>> paths);
 
 		/**
 		 * @param index receives the selected index

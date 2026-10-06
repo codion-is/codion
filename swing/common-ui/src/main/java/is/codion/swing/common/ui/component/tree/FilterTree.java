@@ -152,7 +152,7 @@ public final class FilterTree<T> extends JTree {
 		//a node not loaded is collapsed without the visible nodes changing, one failing to load for example
 		treeModel.expansion().collapsed().addConsumer(path -> reconcile(path, false));
 		ScrollToSelected scroll = new ScrollToSelected();
-		treeModel.selection().items().addConsumer(scroll);
+		treeModel.selection().paths().addConsumer(scroll);
 		treeModel.sort().observer().addListener(scroll::scrollLater);
 		ControlMap controlMap = builder.controlMap;
 		controlMap.control(EXPAND).set(Control.command(this::expandSelected));
@@ -389,7 +389,7 @@ public final class FilterTree<T> extends JTree {
 
 	private void expandSelected() {
 		Set<NodePath<T>> expanded = new LinkedHashSet<>(treeModel.expansion().get());
-		for (NodePath<T> path : treeModel.selection().items().get()) {
+		for (NodePath<T> path : treeModel.selection().paths().get()) {
 			if (!treeModel.nodes().leaf(path)) {
 				expanded.add(path);
 				addLoadedDescendants(path, expanded);
@@ -408,14 +408,14 @@ public final class FilterTree<T> extends JTree {
 	}
 
 	private void collapseSelected() {
-		List<NodePath<T>> selected = treeModel.selection().items().get();
+		List<NodePath<T>> selected = treeModel.selection().paths().get();
 		List<NodePath<T>> expanded = new ArrayList<>(treeModel.expansion().get());
 		expanded.removeIf(path -> selected.stream().anyMatch(selectedPath -> selectedPath.contains(path)));
 		treeModel.expansion().set(expanded);
 	}
 
 	private void refreshSelected() {
-		List<NodePath<T>> selected = treeModel.selection().items().get();
+		List<NodePath<T>> selected = treeModel.selection().paths().get();
 		if (selected.isEmpty()) {
 			treeModel.nodes().refresh();
 		}

@@ -68,7 +68,7 @@ include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTree
 
 === Selection
 
-The selection is a *MultiSelection* over the visible nodes, its items the paths of the selected nodes, and the selection model of the tree. A selected node hidden by collapsing an ancestor is replaced by the collapsed ancestor, as a *JTree* does.
+The selection is a {url-javadoc}{common-model}/is/codion/common/model/component/tree/TreeSelection.html[TreeSelection], a *MultiSelection* over the visible nodes, its items the items of the selected nodes, and the selection model of the tree. Since the same item may appear in several places, selecting an item selects one node holding it, while its paths address particular nodes. Selecting a node hidden below a collapsed ancestor expands the ancestor, and a node not yet loaded is selected once its ancestors have been loaded. A selected node hidden by collapsing an ancestor is replaced by the collapsed ancestor, as a *JTree* does.
 
 [source,java,indent=0]
 ----

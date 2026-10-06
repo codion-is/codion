@@ -157,8 +157,8 @@ public final class FilterTreeTest {
 							.model(model)
 							.build();
 			model.expansion().expand(path("a"));
-			model.selection().items().set(singletonList(path("a", "a2")));
-			model.selection().item().addListener(() -> {
+			model.selection().paths().set(singletonList(path("a", "a2")));
+			model.selection().path().addListener(() -> {
 				throw new CancelException();
 			});
 			//collapsed via the tree, a listener vetoing the selection change following it, as an editor vetoing
@@ -289,11 +289,11 @@ public final class FilterTreeTest {
 		//load a and a1, then collapse them
 		model.expansion().expand(path("a", "a1"));
 		model.expansion().set(emptyList());
-		model.selection().items().set(singletonList(path("a")));
+		model.selection().paths().set(singletonList(path("a")));
 		perform(tree, FilterTree.ControlKeys.EXPAND);
 		assertTrue(model.expansion().expanded(path("a", "a1")));
 		assertInSync(tree);
-		model.selection().items().set(singletonList(path("a")));
+		model.selection().paths().set(singletonList(path("a")));
 		perform(tree, FilterTree.ControlKeys.COLLAPSE);
 		assertTrue(model.expansion().get().isEmpty());
 		assertInSync(tree);
@@ -303,7 +303,7 @@ public final class FilterTreeTest {
 		perform(tree, FilterTree.ControlKeys.REFRESH);
 		assertEquals(3, tree.getRowCount());
 		data.put("b", singletonList("b1"));
-		model.selection().items().set(singletonList(path("b")));
+		model.selection().paths().set(singletonList(path("b")));
 		perform(tree, FilterTree.ControlKeys.REFRESH);
 		assertTrue(model.nodes().loaded(path("b")));
 		assertInSync(tree);
@@ -326,7 +326,7 @@ public final class FilterTreeTest {
 						.model(model)
 						.build();
 		//a leaf is neither expanded nor loaded
-		model.selection().items().set(singletonList(path("b")));
+		model.selection().paths().set(singletonList(path("b")));
 		perform(tree, FilterTree.ControlKeys.EXPAND);
 		perform(tree, FilterTree.ControlKeys.REFRESH);
 		assertTrue(model.expansion().get().isEmpty());
@@ -353,7 +353,7 @@ public final class FilterTreeTest {
 		tree.dispatchEvent(click);
 		assertEquals(0, performed.get());
 		assertEquals(1, clicked.size());
-		model.selection().items().set(singletonList(path("b")));
+		model.selection().paths().set(singletonList(path("b")));
 		tree.dispatchEvent(click);
 		assertEquals(1, performed.get());
 		tree.doubleClick().clear();
@@ -394,7 +394,7 @@ public final class FilterTreeTest {
 			JScrollPane scrollPane = new JScrollPane(tree);
 			scrollPane.setSize(200, 150);
 			layout(scrollPane);
-			model.selection().items().set(singletonList(path("r15")));
+			model.selection().paths().set(singletonList(path("r15")));
 			reference.set(tree);
 			scrollPaneReference.set(scrollPane);
 		});
@@ -422,7 +422,7 @@ public final class FilterTreeTest {
 		onEDT(() -> {
 			assertEquals(0, scrollPane.getViewport().getViewPosition().y);
 			//a node out of view selected
-			model.selection().items().set(singletonList(path("r30")));
+			model.selection().paths().set(singletonList(path("r30")));
 		});
 		onEDT(() -> {});
 		onEDT(() -> {
@@ -436,7 +436,7 @@ public final class FilterTreeTest {
 			assertTrue(tree.getVisibleRect().intersects(tree.getRowBounds(tree.getSelectionRows()[0])));
 			int position = scrollPane.getViewport().getViewPosition().y;
 			tree.scrollTo().selected().set(false);
-			model.selection().items().set(singletonList(path("r10")));
+			model.selection().paths().set(singletonList(path("r10")));
 			layout(scrollPane);
 			assertEquals(position, scrollPane.getViewport().getViewPosition().y);
 		});
@@ -482,10 +482,10 @@ public final class FilterTreeTest {
 		Rectangle bounds = tree.getRowBounds(1);
 		tree.getPopupLocation(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(),
 						0, bounds.x + 1, bounds.y + 1, 1, true, MouseEvent.BUTTON3));
-		assertEquals(singletonList(path("b")), model.selection().items().get());
+		assertEquals(singletonList(path("b")), model.selection().paths().get());
 		tree.getPopupLocation(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(),
 						0, 1, 190, 1, true, MouseEvent.BUTTON3));
-		assertTrue(model.selection().items().get().isEmpty());
+		assertTrue(model.selection().paths().get().isEmpty());
 	}
 
 	@Test
@@ -788,7 +788,7 @@ public final class FilterTreeTest {
 				}
 				return "no updateUI";
 			case 14:
-				model.selection().items().set(singletonList(path));
+				model.selection().paths().set(singletonList(path));
 				perform(tree, random.nextBoolean() ? FilterTree.ControlKeys.EXPAND : FilterTree.ControlKeys.COLLAPSE);
 				return "expand/collapse subtree " + path;
 			case 15: {
@@ -808,8 +808,9 @@ public final class FilterTreeTest {
 	/**
 	 * Selects a random path down the generated nodes, loaded or not, sometimes one which does not exist. Via
 	 * {@code selection().set()}, asserting that a node on the path is selected, the node itself when visible, or that
-	 * the selection is left as is. Or via {@code item().set()} for a node in the model, hidden or not, asserting that it
-	 * is selected, or the selection cleared in case it is filtered.
+	 * the selection is left as is. Or via {@code path().set()} or {@code item().set()}, the generated items being unique,
+	 * for a node in the model, hidden or not, asserting that it is selected, or the selection cleared in case it is
+	 * filtered.
 	 */
 	private static String select(Random random, SwingFilterTreeModel<String> model, Map<String, List<String>> nodes) {
 		List<String> items = new ArrayList<>();
@@ -828,18 +829,24 @@ public final class FilterTreeTest {
 		}
 		NodePath<String> target = nodePath(items);
 		if (model.nodes().contains(target) && random.nextBoolean()) {
-			model.selection().item().set(target);
-			List<NodePath<String>> selected = model.selection().items().get();
+			boolean byItem = random.nextBoolean();
+			if (byItem) {
+				model.selection().item().set(target.item());
+			}
+			else {
+				model.selection().path().set(target);
+			}
+			List<NodePath<String>> selected = model.selection().paths().get();
 			List<NodePath<String>> expected = model.nodes().included(target) ? singletonList(target) : emptyList();
 			if (!selected.equals(expected)) {
-				throw new AssertionError("Selected item " + target + ", but selected " + selected);
+				throw new AssertionError("Selected " + (byItem ? "item " : "path ") + target + ", but selected " + selected);
 			}
 
-			return "select item " + target;
+			return (byItem ? "select item " : "select path ") + target;
 		}
-		List<NodePath<String>> before = model.selection().items().get();
+		List<NodePath<String>> before = model.selection().paths().get();
 		model.selection().set(target);
-		List<NodePath<String>> after = model.selection().items().get();
+		List<NodePath<String>> after = model.selection().paths().get();
 		if (model.visible().indexOf(target) >= 0 && !after.equals(singletonList(target))) {
 			throw new AssertionError("Set " + target + ", visible, but selected " + after);
 		}
@@ -903,7 +910,7 @@ public final class FilterTreeTest {
 				treeSelection.add(selectionPath.getLastPathComponent());
 			}
 		}
-		assertEquals(new HashSet<>(model.selection().items().get()), treeSelection, "selected paths");
+		assertEquals(new HashSet<>(model.selection().paths().get()), treeSelection, "selected paths");
 	}
 
 	private static void perform(FilterTree<String> tree, ControlKey<?> controlKey) {

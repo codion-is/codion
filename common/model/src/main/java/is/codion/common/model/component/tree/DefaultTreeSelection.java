@@ -29,38 +29,53 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static is.codion.common.utilities.Nulls.rejectNulls;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
- * A {@link TreeSelection} based on a {@link MultiSelection} over the visible nodes, its item and items facades
- * expanding the ancestors of hidden nodes before selecting them, forwarding the notifications of the selection.
+ * A {@link TreeSelection} based on a {@link MultiSelection} of the paths of the visible nodes, its path facades
+ * expanding the ancestors of hidden nodes before selecting them, its item facades mapping the items to the paths of
+ * the nodes holding them, forwarding the notifications of the selection.
  */
 final class DefaultTreeSelection<T> implements TreeSelection<T> {
 
 	private final MultiSelection<NodePath<T>> selection;
 	private final Consumer<Collection<NodePath<T>>> expand;
 	private final Consumer<NodePath<T>> select;
-	private final Value<NodePath<T>> item;
-	private final Items<NodePath<T>> items;
+	private final Function<Set<T>, Collection<NodePath<T>>> occurrences;
+	private final Value<NodePath<T>> path;
+	private final Items<NodePath<T>> paths;
+	private final Value<T> item;
+	private final Items<T> items;
 
 	/**
-	 * @param selection the selection over the visible nodes
+	 * @param selection the selection of the paths of the visible nodes
 	 * @param expand expands the ancestors of the nodes identified by the given paths which are hidden
 	 * @param select selects the node identified by the given path once it is visible, see {@link #set(NodePath)}
+	 * @param occurrences provides the path of one node holding each of the given items, the first visible one, or the
+	 * first one in the model in case none is visible, the items not in the model, or filtered, left out
 	 */
 	DefaultTreeSelection(MultiSelection<NodePath<T>> selection, Consumer<Collection<NodePath<T>>> expand,
-											 Consumer<NodePath<T>> select) {
+											 Consumer<NodePath<T>> select, Function<Set<T>, Collection<NodePath<T>>> occurrences) {
 		this.selection = requireNonNull(selection);
 		this.expand = requireNonNull(expand);
 		this.select = requireNonNull(select);
-		this.item = new ExpandingItem();
-		this.items = new ExpandingItems();
+		this.occurrences = requireNonNull(occurrences);
+		this.path = new SelectedPath();
+		this.paths = new SelectedPaths();
+		this.item = new SelectedItem();
+		this.items = new SelectedItems();
 	}
 
 	@Override
@@ -74,7 +89,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	}
 
 	@Override
-	public Value<NodePath<T>> item() {
+	public Value<T> item() {
 		return item;
 	}
 
@@ -109,8 +124,18 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	}
 
 	@Override
-	public Items<NodePath<T>> items() {
+	public Items<T> items() {
 		return items;
+	}
+
+	@Override
+	public Value<NodePath<T>> path() {
+		return path;
+	}
+
+	@Override
+	public Items<NodePath<T>> paths() {
+		return paths;
 	}
 
 	@Override
@@ -138,9 +163,41 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		select.accept(requireNonNull(path));
 	}
 
-	private final class ExpandingItem extends AbstractValue<NodePath<T>> {
+	/**
+	 * @return the path of one node holding each of the given items, a selected one, keeping the selection in place,
+	 * otherwise the first visible one, otherwise the first one in the model, the items not found left out
+	 */
+	private List<NodePath<T>> occurrences(Collection<T> items) {
+		Set<T> remaining = new LinkedHashSet<>(rejectNulls(items));
+		List<NodePath<T>> occurrences = new ArrayList<>(remaining.size());
+		for (NodePath<T> selected : selection.items().get()) {
+			if (remaining.remove(selected.item())) {
+				occurrences.add(selected);
+			}
+		}
+		if (!remaining.isEmpty()) {
+			occurrences.addAll(this.occurrences.apply(remaining));
+		}
 
-		private ExpandingItem() {
+		return occurrences;
+	}
+
+	private static <T> boolean sameInstances(List<T> first, List<T> second) {
+		if (first.size() != second.size()) {
+			return false;
+		}
+		for (int i = 0; i < first.size(); i++) {
+			if (first.get(i) != second.get(i)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private final class SelectedPath extends AbstractValue<NodePath<T>> {
+
+		private SelectedPath() {
 			selection.item().addListener(this::notifyObserver);
 		}
 
@@ -158,9 +215,9 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 	}
 
-	private final class ExpandingItems extends AbstractValue<List<NodePath<T>>> implements Items<NodePath<T>> {
+	private final class SelectedPaths extends AbstractValue<List<NodePath<T>>> implements Items<NodePath<T>> {
 
-		private ExpandingItems() {
+		private SelectedPaths() {
 			super(emptyList());
 			selection.items().addListener(this::notifyObserver);
 		}
@@ -221,6 +278,139 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		@Override
 		public boolean contains(NodePath<T> path) {
 			return selection.items().contains(path);
+		}
+
+		@Override
+		public Optional<List<NodePath<T>>> optional() {
+			return selection.items().optional();
+		}
+	}
+
+	private final class SelectedItem extends AbstractValue<T> {
+
+		private @Nullable T lastNotified;
+
+		private SelectedItem() {
+			selection.item().addListener(this::onChanged);
+		}
+
+		@Override
+		protected @Nullable T getValue() {
+			NodePath<T> selected = selection.item().get();
+
+			return selected == null ? null : selected.item();
+		}
+
+		@Override
+		protected void setValue(@Nullable T item) {
+			if (item == null) {
+				selection.clear();
+			}
+			else {
+				paths.set(occurrences(singletonList(item)));
+			}
+		}
+
+		private void onChanged() {
+			//by identity, as the item facade of a selection does, the selection moving between nodes
+			//holding the same instance changing the path only
+			T current = getValue();
+			if (lastNotified != current) {
+				lastNotified = current;
+				notifyObserver();
+			}
+		}
+	}
+
+	private final class SelectedItems extends AbstractValue<List<T>> implements Items<T> {
+
+		private List<T> lastNotified = emptyList();
+
+		private SelectedItems() {
+			super(emptyList());
+			selection.items().addListener(this::onChanged);
+		}
+
+		@Override
+		protected List<T> getValue() {
+			return unmodifiableList(selection.items().get().stream()
+							.map(NodePath::item)
+							.collect(toList()));
+		}
+
+		@Override
+		protected void setValue(List<T> items) {
+			paths.set(occurrences(items));
+		}
+
+		@Override
+		public void set(Collection<T> items) {
+			setValue(new ArrayList<>(requireNonNull(items)));
+		}
+
+		@Override
+		public void set(Predicate<T> predicate) {
+			requireNonNull(predicate);
+			selection.items().set(path -> predicate.test(path.item()));
+		}
+
+		@Override
+		public void restore(Collection<T> items) {
+			selection.items().restore(occurrences(items));
+		}
+
+		@Override
+		public void add(Predicate<T> predicate) {
+			requireNonNull(predicate);
+			selection.items().add(path -> predicate.test(path.item()));
+		}
+
+		@Override
+		public void add(T item) {
+			paths.add(occurrences(singletonList(requireNonNull(item))));
+		}
+
+		@Override
+		public void add(Collection<T> items) {
+			paths.add(occurrences(items));
+		}
+
+		@Override
+		public void remove(T item) {
+			remove(singletonList(requireNonNull(item)));
+		}
+
+		@Override
+		public void remove(Collection<T> items) {
+			//every selected node holding an equal item
+			Set<T> toRemove = new HashSet<>(rejectNulls(items));
+			selection.items().remove(selection.items().get().stream()
+							.filter(path -> toRemove.contains(path.item()))
+							.collect(toList()));
+		}
+
+		@Override
+		public boolean contains(T item) {
+			requireNonNull(item);
+
+			return selection.items().get().stream()
+							.anyMatch(path -> item.equals(path.item()));
+		}
+
+		@Override
+		public Optional<List<T>> optional() {
+			List<T> selectedItems = getOrThrow();
+
+			return selectedItems.isEmpty() ? Optional.empty() : Optional.of(selectedItems);
+		}
+
+		private void onChanged() {
+			//by identity, see SelectedItem
+			List<T> current = getValue();
+			if (!sameInstances(lastNotified, current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 	}
 }

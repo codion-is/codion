@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -230,22 +231,22 @@ final class DefaultFilterTreeModelTest {
 		model.nodes().refresh();
 		//a deep path not yet loaded, its ancestors expanded and loaded, the node itself not expanded
 		model.selection().set(path("a", "a1", "a11"));
-		assertEquals(path("a", "a1", "a11"), model.selection().item().get());
+		assertEquals(path("a", "a1", "a11"), model.selection().path().get());
 		assertTrue(model.expansion().expanded(path("a", "a1")));
 		assertFalse(model.expansion().expanded(path("a", "a1", "a11")));
 		//replacing the selection
-		model.selection().items().set(asList(path("b"), path("c")));
+		model.selection().paths().set(asList(path("b"), path("c")));
 		model.selection().set(path("a", "a2"));
-		assertEquals(singletonList(path("a", "a2")), model.selection().items().get());
+		assertEquals(singletonList(path("a", "a2")), model.selection().paths().get());
 		//a path which does not exist, the deepest node on it which does
 		model.selection().set(path("a", "a1", "x", "y"));
-		assertEquals(path("a", "a1"), model.selection().item().get());
+		assertEquals(path("a", "a1"), model.selection().path().get());
 		model.selection().set(path("x"));
-		assertEquals(path("a", "a1"), model.selection().item().get());
+		assertEquals(path("a", "a1"), model.selection().path().get());
 		//filtered, its nearest visible ancestor
 		model.nodes().predicate().set(path -> !path.item().id.equals("a11"));
 		model.selection().set(path("a", "a1", "a11"));
-		assertEquals(path("a", "a1"), model.selection().item().get());
+		assertEquals(path("a", "a1"), model.selection().path().get());
 		model.nodes().predicate().clear();
 		assertThrows(IllegalArgumentException.class, () -> model.selection().set(ROOT));
 
@@ -255,9 +256,130 @@ final class DefaultFilterTreeModelTest {
 						.build();
 		withLeaf.nodes().refresh();
 		withLeaf.selection().set(path("b", "b1"));
-		assertEquals(path("b"), withLeaf.selection().item().get());
+		assertEquals(path("b"), withLeaf.selection().path().get());
 		assertFalse(withLeaf.nodes().loaded(path("b")));
 		assertEquals(0, calls("b"));
+	}
+
+	@Test
+	void selectionByItem() {
+		//a1 below both a and c
+		data.put("c", items("c1", "a1"));
+		Item a1 = new Item("a1", "a1");
+		FilterTreeModel<Item> model = model();
+		TreeSelection<Item> selection = model.selection();
+		model.nodes().refresh();
+		model.expansion().expand(path("c"));
+		//the first visible node holding the item, the one below a not loaded
+		selection.item().set(a1);
+		assertEquals(path("c", "a1"), selection.path().get());
+		assertEquals(a1, selection.item().get());
+		assertEquals(singletonList(a1), selection.items().get());
+		assertFalse(model.expansion().expanded(path("a")));
+		//a selected one, keeping the selection in place, rather than the first visible one
+		model.expansion().expand(path("a"));
+		selection.paths().set(asList(path("b"), path("c", "a1")));
+		selection.item().set(a1);
+		assertEquals(singletonList(path("c", "a1")), selection.paths().get());
+		selection.items().set(asList(new Item("b", "b"), a1));
+		assertEquals(asList(path("b"), path("c", "a1")), selection.paths().get());
+		//none visible, the first one in the model, its ancestors expanded
+		model.expansion().collapse(path("a"));
+		model.expansion().collapse(path("c"));
+		assertEquals(asList(path("b"), path("c")), selection.paths().get());
+		selection.item().set(a1);
+		assertEquals(path("a", "a1"), selection.path().get());
+		assertTrue(model.expansion().expanded(path("a")));
+		assertFalse(model.expansion().expanded(path("c")));
+		//the first visible one, rather than the first one in the model
+		model.expansion().expand(path("c"));
+		model.expansion().collapse(path("a"));
+		selection.clear();
+		selection.item().set(a1);
+		assertEquals(path("c", "a1"), selection.path().get());
+		assertFalse(model.expansion().expanded(path("a")));
+		//selected in two places, appearing twice, covered by contains() and remove()
+		selection.paths().set(asList(path("a", "a1"), path("c", "a1"), path("c", "c1")));
+		assertTrue(model.expansion().expanded(path("c")));
+		assertEquals(asList(a1, new Item("c1", "c1"), a1), selection.items().get());
+		assertTrue(selection.items().contains(a1));
+		//adding one selected does nothing
+		selection.items().add(a1);
+		assertEquals(3, selection.count());
+		selection.items().remove(a1);
+		assertEquals(singletonList(path("c", "c1")), selection.paths().get());
+		assertFalse(selection.items().contains(a1));
+		//adding one not selected, the first visible
+		selection.items().add(a1);
+		assertEquals(asList(path("a", "a1"), path("c", "c1")), selection.paths().get());
+		selection.items().remove(asList(a1, new Item("c1", "c1")));
+		assertFalse(selection.present().is());
+		//not in the model, or filtered
+		selection.paths().set(singletonList(path("b")));
+		selection.item().set(new Item("x", "x"));
+		assertFalse(selection.present().is());
+		selection.paths().set(singletonList(path("b")));
+		selection.items().add(new Item("x", "x"));
+		assertEquals(singletonList(path("b")), selection.paths().get());
+		model.nodes().predicate().set(path -> !path.item().id.equals("a1"));
+		selection.item().set(a1);
+		assertFalse(selection.present().is());
+		model.nodes().predicate().clear();
+		//by predicate, over the visible nodes
+		selection.items().set(item -> item.id.startsWith("a"));
+		assertEquals(asList(path("a"), path("a", "a1"), path("a", "a2"), path("c", "a1")), selection.paths().get());
+		selection.items().set(item -> item.id.equals("b"));
+		selection.items().add(item -> item.id.equals("c1"));
+		assertEquals(asList(path("b"), path("c", "c1")), selection.paths().get());
+		//restoring, not expanding
+		model.expansion().collapse(path("a"));
+		model.expansion().collapse(path("c"));
+		selection.items().restore(asList(a1, new Item("b", "b")));
+		assertEquals(singletonList(path("b")), selection.paths().get());
+		assertFalse(model.expansion().expanded(path("a")));
+		assertFalse(model.expansion().expanded(path("c")));
+		//null clears
+		selection.item().set(null);
+		assertFalse(selection.present().is());
+		assertFalse(selection.items().optional().isPresent());
+		assertFalse(selection.paths().optional().isPresent());
+	}
+
+	@Test
+	void selectionByItemNotified() {
+		//the same instance below both a and c
+		AtomicReference<Item> shared = new AtomicReference<>(new Item("s", "s"));
+		FilterTreeModel<Item> model = FilterTreeModel.builder()
+						.roots(() -> items("a", "c"))
+						.children(path -> path.item().id.equals("s") ? emptyList() : singletonList(shared.get()))
+						.build();
+		TreeSelection<Item> selection = model.selection();
+		model.nodes().refresh();
+		model.expansion().expand(path("a"));
+		model.expansion().expand(path("c"));
+		List<Item> item = new ArrayList<>();
+		List<List<Item>> items = new ArrayList<>();
+		List<NodePath<Item>> path = new ArrayList<>();
+		List<List<NodePath<Item>>> paths = new ArrayList<>();
+		selection.item().addConsumer(item::add);
+		selection.items().addConsumer(items::add);
+		selection.path().addConsumer(path::add);
+		selection.paths().addConsumer(paths::add);
+		selection.path().set(path("a", "s"));
+		assertEquals(asList(1, 1, 1, 1), asList(item.size(), items.size(), path.size(), paths.size()));
+		//to another node holding the same instance, the path changes, not the item
+		selection.path().set(path("c", "s"));
+		assertSame(shared.get(), selection.item().get());
+		assertEquals(asList(1, 1, 2, 2), asList(item.size(), items.size(), path.size(), paths.size()));
+		//the instance of an ancestor replaced by a refresh, the item unchanged
+		model.nodes().refresh();
+		assertEquals(path("c", "s"), selection.path().get());
+		assertEquals(asList(1, 1, 3, 3), asList(item.size(), items.size(), path.size(), paths.size()));
+		//the instance of the item replaced by a refresh
+		shared.set(new Item("s", "S"));
+		model.nodes().refresh();
+		assertSame(shared.get(), selection.item().get());
+		assertEquals(asList(2, 2, 4, 4), asList(item.size(), items.size(), path.size(), paths.size()));
 	}
 
 	@Test
@@ -267,37 +389,37 @@ final class DefaultFilterTreeModelTest {
 		model.expansion().expand(path("a", "a1"));
 		model.expansion().collapse(path("a"));
 		//hidden below a collapsed ancestor, its ancestors expanded
-		model.selection().item().set(path("a", "a1", "a11"));
-		assertEquals(path("a", "a1", "a11"), model.selection().item().get());
+		model.selection().path().set(path("a", "a1", "a11"));
+		assertEquals(path("a", "a1", "a11"), model.selection().path().get());
 		assertTrue(model.expansion().expanded(path("a", "a1")));
 		model.expansion().collapse(path("a"));
-		assertEquals(path("a"), model.selection().item().get());
-		model.selection().items().set(asList(path("a", "a1"), path("a", "a2")));
-		assertEquals(asList(path("a", "a1"), path("a", "a2")), model.selection().items().get());
+		assertEquals(path("a"), model.selection().path().get());
+		model.selection().paths().set(asList(path("a", "a1"), path("a", "a2")));
+		assertEquals(asList(path("a", "a1"), path("a", "a2")), model.selection().paths().get());
 		model.expansion().collapse(path("a"));
-		model.selection().items().add(path("a", "a1", "a11"));
-		assertEquals(asList(path("a"), path("a", "a1", "a11")), model.selection().items().get());
+		model.selection().paths().add(path("a", "a1", "a11"));
+		assertEquals(asList(path("a"), path("a", "a1", "a11")), model.selection().paths().get());
 		model.expansion().collapse(path("a"));
-		model.selection().items().add(asList(path("a", "a2"), path("b")));
-		assertEquals(asList(path("a"), path("a", "a2"), path("b")), model.selection().items().get());
+		model.selection().paths().add(asList(path("a", "a2"), path("b")));
+		assertEquals(asList(path("a"), path("a", "a2"), path("b")), model.selection().paths().get());
 		//not in the model, not yet loaded, clearing the selection as for any item
-		model.selection().item().set(path("c", "c1"));
+		model.selection().path().set(path("c", "c1"));
 		assertFalse(model.selection().present().is());
 		assertFalse(model.nodes().loaded(path("c")));
 		//filtered, ignored, its ancestors not expanded
 		model.expansion().collapse(path("a"));
 		model.nodes().predicate().set(path -> !path.item().id.equals("a2"));
-		model.selection().items().set(singletonList(path("a", "a2")));
+		model.selection().paths().set(singletonList(path("a", "a2")));
 		assertFalse(model.selection().present().is());
 		assertFalse(model.expansion().expanded(path("a")));
 		model.nodes().predicate().clear();
 		//removing and restoring do not expand
-		model.selection().items().remove(path("a", "a1"));
+		model.selection().paths().remove(path("a", "a1"));
 		assertFalse(model.expansion().expanded(path("a")));
 		//notified once per change
 		List<NodePath<Item>> notified = new ArrayList<>();
-		model.selection().item().addConsumer(notified::add);
-		model.selection().item().set(path("a", "a1"));
+		model.selection().path().addConsumer(notified::add);
+		model.selection().path().set(path("a", "a1"));
 		assertEquals(singletonList(path("a", "a1")), notified);
 	}
 
@@ -445,11 +567,11 @@ final class DefaultFilterTreeModelTest {
 		assertEquals(1, calls("a"));
 		assertEquals(1, calls("a1"));
 		assertEquals(1, calls("c"));
-		model.selection().items().set(singletonList(path("a", "a1")));
-		NodePath<Item> selected = model.selection().item().getOrThrow();
+		model.selection().paths().set(singletonList(path("a", "a1")));
+		NodePath<Item> selected = model.selection().path().getOrThrow();
 		List<NodePath<Item>> selectedItems = new ArrayList<>();
 		List<List<Integer>> selectedIndexes = new ArrayList<>();
-		model.selection().item().addConsumer(selectedItems::add);
+		model.selection().path().addConsumer(selectedItems::add);
 		model.selection().indexes().addConsumer(selectedIndexes::add);
 
 		rename("a1", "A1");
@@ -468,7 +590,7 @@ final class DefaultFilterTreeModelTest {
 		assertEquals(asList(path("a"), path("a", "a1"), path("a", "a1", "a11"),
 						path("a", "a2"), path("a", "a3"), path("b"), path("c")), model.visible().get());
 		//the selection kept, the selected path holding the fresh instance
-		NodePath<Item> refreshed = model.selection().item().getOrThrow();
+		NodePath<Item> refreshed = model.selection().path().getOrThrow();
 		assertEquals(selected, refreshed);
 		assertNotSame(selected, refreshed);
 		assertEquals("A1", refreshed.item().name);
@@ -490,13 +612,13 @@ final class DefaultFilterTreeModelTest {
 		FilterTreeModel<Item> model = model();
 		model.nodes().refresh();
 		model.expansion().expand(path("a", "a1"));
-		model.selection().items().set(asList(path("a", "a1", "a11"), path("b")));
+		model.selection().paths().set(asList(path("a", "a1", "a11"), path("b")));
 		data.put("a", items("a2"));
 		model.nodes().refresh();
 		assertFalse(model.nodes().contains(path("a", "a1")));
 		assertFalse(model.nodes().contains(path("a", "a1", "a11")));
 		assertFalse(model.expansion().get().contains(path("a", "a1")));
-		assertEquals(singletonList(path("b")), model.selection().items().get());
+		assertEquals(singletonList(path("b")), model.selection().paths().get());
 		//a1 back, its expansion forgotten
 		data.put("a", items("a1", "a2"));
 		model.nodes().refresh(path("a"));
@@ -517,7 +639,7 @@ final class DefaultFilterTreeModelTest {
 		model.nodes().refresh();
 		model.expansion().set(asList(path("a"), path("a", "a1"), path("c")));
 		assertEquals(7, model.visible().size());
-		model.selection().items().set(asList(path("b"), path("a", "a2")));
+		model.selection().paths().set(asList(path("b"), path("a", "a2")));
 		model.nodes().predicate().set(path -> path.item().id.equals("a11"));
 		//the match keeps its ancestors
 		assertEquals(asList(path("a"), path("a", "a1"), path("a", "a1", "a11")), model.visible().get());
@@ -529,7 +651,7 @@ final class DefaultFilterTreeModelTest {
 		assertTrue(model.nodes().loaded(path("c")));
 		assertFalse(model.nodes().included(path("c", "c1")));
 		//filtered nodes dropped from the selection
-		assertTrue(model.selection().items().get().isEmpty());
+		assertTrue(model.selection().paths().get().isEmpty());
 		model.nodes().predicate().set(path -> path.item().id.equals("c1"));
 		assertEquals(asList(path("c"), path("c", "c1")), model.visible().get());
 		model.nodes().predicate().clear();
@@ -578,11 +700,11 @@ final class DefaultFilterTreeModelTest {
 		data.put("a", items("a2", "a1"));
 		model.nodes().refresh();
 		model.expansion().expand(path("a"));
-		model.selection().items().set(singletonList(path("a", "a2")));
+		model.selection().paths().set(singletonList(path("a", "a2")));
 		assertEquals(asList(path("a"), path("a", "a1"), path("a", "a2"), path("b"), path("c")), model.visible().get());
 		model.sort().descending();
 		assertEquals(asList(path("c"), path("b"), path("a"), path("a", "a2"), path("a", "a1")), model.visible().get());
-		assertEquals(singletonList(path("a", "a2")), model.selection().items().get());
+		assertEquals(singletonList(path("a", "a2")), model.selection().paths().get());
 		assertEquals(3, model.selection().index().get());
 		model.sort().clear();
 		assertFalse(model.sort().sorted());
@@ -665,52 +787,58 @@ final class DefaultFilterTreeModelTest {
 		FilterTreeModel<Item> model = model();
 		model.nodes().refresh();
 		model.expansion().expand(path("a", "a1"));
-		model.selection().items().set(asList(path("a", "a1", "a11"), path("a", "a2"), path("b")));
+		model.selection().paths().set(asList(path("a", "a1", "a11"), path("a", "a2"), path("b")));
 		model.expansion().collapse(path("a", "a1"));
-		assertEquals(asList(path("a", "a1"), path("a", "a2"), path("b")), model.selection().items().get());
+		assertEquals(asList(path("a", "a1"), path("a", "a2"), path("b")), model.selection().paths().get());
 		model.expansion().collapse(path("a"));
-		assertEquals(asList(path("a"), path("b")), model.selection().items().get());
+		assertEquals(asList(path("a"), path("b")), model.selection().paths().get());
 	}
 
 	@Test
 	void selectionIndexes() {
 		FilterTreeModel<Item> model = model();
 		model.nodes().refresh();
-		model.selection().items().set(singletonList(path("c")));
+		model.selection().paths().set(singletonList(path("c")));
 		assertEquals(2, model.selection().index().get());
 		AtomicInteger itemEvents = new AtomicInteger();
 		AtomicInteger indexEvents = new AtomicInteger();
-		model.selection().item().addListener(itemEvents::incrementAndGet);
+		model.selection().path().addListener(itemEvents::incrementAndGet);
 		model.selection().index().addListener(indexEvents::incrementAndGet);
 		model.expansion().expand(path("a"));
 		assertEquals(4, model.selection().index().get());
-		assertEquals(path("c"), model.selection().item().get());
+		assertEquals(path("c"), model.selection().path().get());
 		assertEquals(0, itemEvents.get());
 		assertEquals(1, indexEvents.get());
 		//a hidden path can not be selected
-		model.selection().items().set(singletonList(path("c", "c1")));
-		assertTrue(model.selection().items().get().isEmpty());
+		model.selection().paths().set(singletonList(path("c", "c1")));
+		assertTrue(model.selection().paths().get().isEmpty());
 	}
 
 	@Test
 	void selectionListeners() {
 		AtomicInteger selectionChanged = new AtomicInteger();
-		List<NodePath<Item>> selectedItem = new ArrayList<>();
-		List<List<NodePath<Item>>> selectedItems = new ArrayList<>();
+		List<Item> selectedItem = new ArrayList<>();
+		List<List<Item>> selectedItems = new ArrayList<>();
+		List<NodePath<Item>> selectedPath = new ArrayList<>();
+		List<List<NodePath<Item>>> selectedPaths = new ArrayList<>();
 		List<Integer> selectedIndex = new ArrayList<>();
 		List<List<Integer>> selectedIndexes = new ArrayList<>();
 		FilterTreeModel<Item> model = builder()
 						.onSelectionChanged(selectionChanged::incrementAndGet)
 						.onSelectedItem(selectedItem::add)
 						.onSelectedItems(selectedItems::add)
+						.onSelectedPath(selectedPath::add)
+						.onSelectedPaths(selectedPaths::add)
 						.onSelectedIndex(selectedIndex::add)
 						.onSelectedIndexes(selectedIndexes::add)
 						.refresh(true)
 						.build();
-		model.selection().items().set(asList(path("b"), path("c")));
+		model.selection().paths().set(asList(path("b"), path("c")));
 		assertEquals(1, selectionChanged.get());
-		assertEquals(singletonList(path("b")), selectedItem);
-		assertEquals(singletonList(asList(path("b"), path("c"))), selectedItems);
+		assertEquals(items("b"), selectedItem);
+		assertEquals(singletonList(items("b", "c")), selectedItems);
+		assertEquals(singletonList(path("b")), selectedPath);
+		assertEquals(singletonList(asList(path("b"), path("c"))), selectedPaths);
 		assertEquals(singletonList(1), selectedIndex);
 		assertEquals(singletonList(asList(1, 2)), selectedIndexes);
 	}
@@ -747,17 +875,17 @@ final class DefaultFilterTreeModelTest {
 		assertThrows(IllegalArgumentException.class, () -> model.nodes().add(path("a"), items("a1")));
 		assertThrows(IllegalArgumentException.class, () -> model.nodes().add(path("a"), items("a4", "a4")));
 
-		model.selection().items().set(singletonList(path("a", "a2")));
+		model.selection().paths().set(singletonList(path("a", "a2")));
 		model.nodes().remove(asList(path("a", "a2"), path("x")));
 		assertFalse(model.nodes().contains(path("a", "a2")));
-		assertTrue(model.selection().items().get().isEmpty());
+		assertTrue(model.selection().paths().get().isEmpty());
 		assertThrows(IllegalArgumentException.class, () -> model.nodes().remove(singletonList(ROOT)));
 
 		//an equal item replaces the instance
-		model.selection().items().set(singletonList(path("a", "a1")));
+		model.selection().paths().set(singletonList(path("a", "a1")));
 		Item replacement = new Item("a1", "A1");
 		model.nodes().replace(path("a", "a1"), replacement);
-		assertSame(replacement, model.selection().item().getOrThrow().item());
+		assertSame(replacement, model.selection().path().getOrThrow().item());
 		assertSame(replacement, model.nodes().children(path("a")).get(0).item());
 		assertThrows(IllegalArgumentException.class, () -> model.nodes().replace(ROOT, replacement));
 		assertThrows(IllegalArgumentException.class, () -> model.nodes().replace(path("a", "a1"), new Item("a3", "a3")));
@@ -769,19 +897,19 @@ final class DefaultFilterTreeModelTest {
 		FilterTreeModel<Item> model = model();
 		model.nodes().refresh();
 		model.expansion().expand(path("a"));
-		model.selection().items().set(singletonList(path("a", "a1")));
+		model.selection().paths().set(singletonList(path("a", "a1")));
 		AtomicInteger notifications = new AtomicInteger();
 		List<NodePath<Item>> collapsed = new ArrayList<>();
 		model.visible().addListener(notifications::incrementAndGet);
 		model.expansion().collapsed().addConsumer(collapsed::add);
 		//a listener throwing once the selection has been restored, as an editor vetoing the change of its entity
 		//does, does not prevent the collapse, which the visible nodes and the expansion still notify
-		model.selection().item().addListener(() -> {
+		model.selection().path().addListener(() -> {
 			throw new CancelException();
 		});
 		assertThrows(CancelException.class, () -> model.expansion().collapse(path("a")));
 		assertEquals(paths("a", "b", "c"), model.visible().get());
-		assertEquals(singletonList(path("a")), model.selection().items().get());
+		assertEquals(singletonList(path("a")), model.selection().paths().get());
 		assertEquals(1, notifications.get());
 		assertEquals(singletonList(path("a")), collapsed);
 	}
@@ -791,19 +919,19 @@ final class DefaultFilterTreeModelTest {
 		FilterTreeModel<Item> model = model();
 		model.nodes().refresh();
 		model.expansion().expand(path("a"));
-		model.selection().items().set(asList(path("a", "a1"), path("b")));
+		model.selection().paths().set(asList(path("a", "a1"), path("b")));
 		AtomicInteger changing = new AtomicInteger();
 		model.selection().changing().addListener(changing::incrementAndGet);
 		//the selection following the nodes is not a change by request: the rows of the selected nodes shifting,
 		model.expansion().expand(path("a", "a1"));
-		assertEquals(asList(path("a", "a1"), path("b")), model.selection().items().get());
+		assertEquals(asList(path("a", "a1"), path("b")), model.selection().paths().get());
 		//a selected node being removed,
 		model.nodes().remove(singletonList(path("b")));
 		//or replaced by the ancestor collapsed
 		model.expansion().collapse(path("a"));
-		assertEquals(singletonList(path("a")), model.selection().items().get());
+		assertEquals(singletonList(path("a")), model.selection().paths().get());
 		assertEquals(0, changing.get());
-		model.selection().items().set(singletonList(path("c")));
+		model.selection().paths().set(singletonList(path("c")));
 		assertEquals(1, changing.get());
 	}
 
@@ -812,7 +940,7 @@ final class DefaultFilterTreeModelTest {
 		FilterTreeModel<Item> model = model();
 		model.nodes().refresh();
 		model.expansion().expand(path("a"));
-		model.selection().items().set(asList(path("a", "a1"), path("b")));
+		model.selection().paths().set(asList(path("a", "a1"), path("b")));
 		AtomicInteger notifications = new AtomicInteger();
 		model.visible().addListener(notifications::incrementAndGet);
 		AtomicBoolean add = new AtomicBoolean(true);
@@ -824,7 +952,7 @@ final class DefaultFilterTreeModelTest {
 		});
 		model.nodes().remove(singletonList(path("a", "a1")));
 		assertEquals(asList(path("a"), path("a", "a2"), path("b"), path("c"), path("d")), model.visible().get());
-		assertEquals(singletonList(path("b")), model.selection().items().get());
+		assertEquals(singletonList(path("b")), model.selection().paths().get());
 		assertEquals(1, notifications.get());
 	}
 
@@ -833,13 +961,13 @@ final class DefaultFilterTreeModelTest {
 		FilterTreeModel<Item> model = model();
 		model.nodes().refresh();
 		model.expansion().expand(path("a", "a1"));
-		model.selection().items().set(singletonList(path("a", "a1", "a11")));
+		model.selection().paths().set(singletonList(path("a", "a1", "a11")));
 		model.nodes().replace(path("a"), new Item("x", "x"));
 		assertFalse(model.nodes().contains(path("a")));
 		assertTrue(model.nodes().contains(path("x", "a1", "a11")));
 		assertTrue(model.expansion().expanded(path("x", "a1")));
 		assertFalse(model.expansion().get().contains(path("a")));
-		assertEquals(singletonList(path("x", "a1", "a11")), model.selection().items().get());
+		assertEquals(singletonList(path("x", "a1", "a11")), model.selection().paths().get());
 		assertEquals(asList(path("x"), path("x", "a1"), path("x", "a1", "a11"), path("x", "a2"), path("b"), path("c")),
 						model.visible().get());
 	}

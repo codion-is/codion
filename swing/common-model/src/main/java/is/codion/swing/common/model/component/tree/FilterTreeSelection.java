@@ -29,7 +29,7 @@ import javax.swing.tree.TreeSelectionModel;
  * <p>Single selection mode is {@link TreeSelectionModel#SINGLE_TREE_SELECTION}, multiple selection
  * {@link TreeSelectionModel#DISCONTIGUOUS_TREE_SELECTION}.
  * <p>The {@link javax.swing.tree.TreePath}s of the {@link TreeSelectionModel} identify the selected nodes, while
- * holding the items the nodes had when selected. The paths provided by {@link #item()} and {@link #items()} are
+ * holding the items the nodes had when selected. The paths provided by {@link #path()} and {@link #paths()} are
  * the current ones, holding the items a refresh has replaced them with, see {@link NodePath}.
  * @param <T> the item type
  * @see SwingFilterTreeModel#visible()

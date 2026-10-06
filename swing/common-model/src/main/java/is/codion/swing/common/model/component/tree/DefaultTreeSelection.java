@@ -43,9 +43,9 @@ import static is.codion.swing.common.model.component.tree.DefaultSwingFilterTree
 import static java.util.Collections.unmodifiableSet;
 
 /**
- * <p>A {@link DefaultTreeSelectionModel} serving as the {@link IndexStore} of a common {@link MultiSelection}, whose
- * index and item facades it forwards to, the indexes being the rows of the visible nodes of the model, via the
- * {@link TreeSelection} the model bases on it, see {@link SelectionContext#treeSelection(MultiSelection)}.
+ * <p>A {@link DefaultTreeSelectionModel} serving as the {@link IndexStore} of a common {@link MultiSelection} of
+ * paths, the indexes being the rows of the visible nodes of the model, forwarding to the {@link TreeSelection} the
+ * model bases on it, see {@link SelectionContext#treeSelection(MultiSelection)}.
  * <p>The selected paths are the canonical state, as in any {@link DefaultTreeSelectionModel}, the rows derived from
  * them via {@link VisibleNodes#indexOf(Object)}, not via the {@link javax.swing.tree.RowMapper} of a {@code JTree},
  * so the selection is correct whether a {@code JTree} is attached or not.
@@ -109,13 +109,23 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 	}
 
 	@Override
-	public Value<NodePath<T>> item() {
+	public Value<T> item() {
 		return selection.item();
 	}
 
 	@Override
-	public Items<NodePath<T>> items() {
+	public Items<T> items() {
 		return selection.items();
+	}
+
+	@Override
+	public Value<NodePath<T>> path() {
+		return selection.path();
+	}
+
+	@Override
+	public Items<NodePath<T>> paths() {
+		return selection.paths();
 	}
 
 	@Override

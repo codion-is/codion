@@ -151,7 +151,7 @@ final class DefaultSwingFilterTreeModelTest {
 		FilterTreeSelection<String> selection = model.selection();
 		model.nodes().refresh();
 		model.expansion().expand(path("a"));
-		selection.items().set(singletonList(path("b")));
+		selection.paths().set(singletonList(path("b")));
 		assertEquals(3, selection.index().get());
 		assertTrue(selection.isPathSelected(model.treePath(path("b"))));
 		assertEquals(1, selection.getSelectionCount());
@@ -160,7 +160,7 @@ final class DefaultSwingFilterTreeModelTest {
 		List<List<Integer>> indexes = new ArrayList<>();
 		List<NodePath<String>> items = new ArrayList<>();
 		selection.indexes().addConsumer(indexes::add);
-		selection.item().addConsumer(items::add);
+		selection.path().addConsumer(items::add);
 		model.expansion().collapse(path("a"));
 		assertEquals(1, selection.index().get());
 		assertEquals(singletonList(singletonList(1)), indexes);
@@ -169,28 +169,37 @@ final class DefaultSwingFilterTreeModelTest {
 
 		//via the TreeSelectionModel
 		selection.setSelectionPaths(new TreePath[] {model.treePath(path("a")), model.treePath(path("b"))});
-		assertEquals(asList(path("a"), path("b")), selection.items().get());
+		assertEquals(asList(path("a"), path("b")), selection.paths().get());
 		assertEquals(asList(0, 1), selection.indexes().get());
 		selection.removeSelectionPath(model.treePath(path("a")));
-		assertEquals(singletonList(path("b")), selection.items().get());
+		assertEquals(singletonList(path("b")), selection.paths().get());
 		selection.clearSelection();
-		assertTrue(selection.items().get().isEmpty());
+		assertTrue(selection.paths().get().isEmpty());
 
 		//collapsing a node with a selected descendant selects it
 		model.expansion().expand(path("a"));
-		selection.items().set(singletonList(path("a", "a2")));
+		selection.paths().set(singletonList(path("a", "a2")));
 		model.expansion().collapse(path("a"));
-		assertEquals(singletonList(path("a")), selection.items().get());
+		assertEquals(singletonList(path("a")), selection.paths().get());
 		assertArrayEquals(new TreePath[] {model.treePath(path("a"))}, selection.getSelectionPaths());
 
 		//refreshed instances
 		model.expansion().expand(path("a"));
-		selection.items().set(singletonList(path("a", "a1")));
-		NodePath<String> selected = selection.item().getOrThrow();
+		selection.paths().set(singletonList(path("a", "a1")));
+		NodePath<String> selected = selection.path().getOrThrow();
 		items.clear();
 		model.nodes().refresh();
-		assertEquals(selected, selection.item().get());
+		assertEquals(selected, selection.path().get());
 		assertEquals(1, items.size());
+
+		//by item, the items of the selected nodes
+		selection.item().set("b");
+		assertArrayEquals(new TreePath[] {model.treePath(path("b"))}, selection.getSelectionPaths());
+		selection.addSelectionPath(model.treePath(path("a", "a1")));
+		assertEquals(asList("a1", "b"), selection.items().get());
+		selection.items().remove("b");
+		assertArrayEquals(new TreePath[] {model.treePath(path("a", "a1"))}, selection.getSelectionPaths());
+		assertEquals("a1", selection.item().get());
 	}
 
 	@Test
@@ -224,16 +233,16 @@ final class DefaultSwingFilterTreeModelTest {
 		assertEquals(1, changing.get());
 		selection.addSelectionPath(model.treePath(path("b")));
 		assertEquals(2, changing.get());
-		assertEquals(singletonList(path("b")), selection.items().get());
+		assertEquals(singletonList(path("b")), selection.paths().get());
 		//a change made by a listener in response is a change of its own
-		selection.items().addConsumer(items -> {
+		selection.paths().addConsumer(items -> {
 			if (items.equals(singletonList(path("a")))) {
 				selection.setSelectionPath(model.treePath(path("b")));
 			}
 		});
 		selection.setSelectionPath(model.treePath(path("a")));
 		assertEquals(4, changing.get());
-		assertEquals(singletonList(path("b")), selection.items().get());
+		assertEquals(singletonList(path("b")), selection.paths().get());
 	}
 
 	@Test
@@ -242,7 +251,7 @@ final class DefaultSwingFilterTreeModelTest {
 		FilterTreeSelection<String> selection = model.selection();
 		model.nodes().refresh();
 		model.expansion().expand(path("a"));
-		selection.items().set(singletonList(path("a", "a1")));
+		selection.paths().set(singletonList(path("a", "a1")));
 		AtomicBoolean veto = new AtomicBoolean(true);
 		List<Object> changing = new ArrayList<>();
 		selection.changing().addListener(() -> {
@@ -252,10 +261,10 @@ final class DefaultSwingFilterTreeModelTest {
 			}
 		});
 		assertThrows(CancelException.class, () -> selection.setSelectionPath(model.treePath(path("b"))));
-		assertEquals(singletonList(path("a", "a1")), selection.items().get());
-		assertThrows(CancelException.class, () -> selection.items().set(singletonList(path("b"))));
+		assertEquals(singletonList(path("a", "a1")), selection.paths().get());
+		assertThrows(CancelException.class, () -> selection.paths().set(singletonList(path("b"))));
 		assertThrows(CancelException.class, selection::clearSelection);
-		assertEquals(singletonList(path("a", "a1")), selection.items().get());
+		assertEquals(singletonList(path("a", "a1")), selection.paths().get());
 		veto.set(false);
 		changing.clear();
 		//structural changes do not pass the veto point
@@ -279,10 +288,10 @@ final class DefaultSwingFilterTreeModelTest {
 		model.nodes().refresh(path("a"));
 		assertTrue(changing.isEmpty());
 		//restored
-		assertEquals(singletonList(path("a", "a1")), selection.items().get());
+		assertEquals(singletonList(path("a", "a1")), selection.paths().get());
 		//nor does the model restoring the selection, here replacing the selected node with the ancestor collapsed
 		model.expansion().collapse(path("a"));
-		assertEquals(singletonList(path("a")), selection.items().get());
+		assertEquals(singletonList(path("a")), selection.paths().get());
 		assertTrue(changing.isEmpty());
 	}
 
@@ -458,17 +467,17 @@ final class DefaultSwingFilterTreeModelTest {
 		SwingUtilities.invokeAndWait(() -> assertFalse(model.selection().present().is()));
 		children.release();
 		awaitIdle(model);
-		SwingUtilities.invokeAndWait(() -> assertEquals(path("a", "a1"), model.selection().item().get()));
+		SwingUtilities.invokeAndWait(() -> assertEquals(path("a", "a1"), model.selection().path().get()));
 
 		//cancelled by a selection change from outside
 		SwingFilterTreeModel<String> cancelled = asyncModel(children);
 		children.block("a");
 		SwingUtilities.invokeAndWait(() -> cancelled.selection().set(path("a", "a1")));
 		children.awaitBlocked();
-		SwingUtilities.invokeAndWait(() -> cancelled.selection().items().set(singletonList(path("b"))));
+		SwingUtilities.invokeAndWait(() -> cancelled.selection().paths().set(singletonList(path("b"))));
 		children.release();
 		awaitIdle(cancelled);
-		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList(path("b")), cancelled.selection().items().get()));
+		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList(path("b")), cancelled.selection().paths().get()));
 
 		//replaced by another reveal
 		SwingFilterTreeModel<String> replaced = asyncModel(children);
@@ -478,7 +487,7 @@ final class DefaultSwingFilterTreeModelTest {
 		SwingUtilities.invokeAndWait(() -> replaced.selection().set(path("b")));
 		children.release();
 		awaitIdle(replaced);
-		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList(path("b")), replaced.selection().items().get()));
+		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList(path("b")), replaced.selection().paths().get()));
 
 		//a failed load, the deepest node on the path which exists
 		SwingFilterTreeModel<String> failed = asyncModel(children);
@@ -490,7 +499,7 @@ final class DefaultSwingFilterTreeModelTest {
 		awaitIdle(failed);
 		children.fail = false;
 		SwingUtilities.invokeAndWait(() -> {
-			assertEquals(path("a"), failed.selection().item().get());
+			assertEquals(path("a"), failed.selection().path().get());
 			assertFalse(failed.nodes().loaded(path("a")));
 		});
 
@@ -502,7 +511,7 @@ final class DefaultSwingFilterTreeModelTest {
 		SwingUtilities.invokeAndWait(() -> refreshed.nodes().refresh(path("a")));
 		children.release();
 		awaitIdle(refreshed);
-		SwingUtilities.invokeAndWait(() -> assertEquals(path("a", "a1"), refreshed.selection().item().get()));
+		SwingUtilities.invokeAndWait(() -> assertEquals(path("a", "a1"), refreshed.selection().path().get()));
 
 		//an ancestor collapsed while pending, its nearest visible ancestor
 		SwingFilterTreeModel<String> collapsed = asyncModel(children);
@@ -514,7 +523,7 @@ final class DefaultSwingFilterTreeModelTest {
 		awaitIdle(collapsed);
 		SwingUtilities.invokeAndWait(() -> {
 			assertTrue(collapsed.nodes().loaded(path("a")));
-			assertEquals(path("a"), collapsed.selection().item().get());
+			assertEquals(path("a"), collapsed.selection().path().get());
 		});
 
 		//a node on the path removed while pending, nothing left to select
@@ -735,7 +744,7 @@ final class DefaultSwingFilterTreeModelTest {
 			String message = "Seed " + seed + ", after: " + operations.subList(Math.max(0, operations.size() - 8), operations.size());
 			assertEquals(common.visible().get(), swing.visible().get(), message);
 			assertEquals(common.selection().indexes().get(), swing.selection().indexes().get(), message);
-			assertEquals(common.selection().items().get(), swing.selection().items().get(), message);
+			assertEquals(common.selection().paths().get(), swing.selection().paths().get(), message);
 			assertEquals(common.selection().count(), swing.selection().count(), message);
 			TreePath[] selectionPaths = swing.selection().getSelectionPaths();
 			Set<Object> selected = new HashSet<>();
@@ -744,7 +753,7 @@ final class DefaultSwingFilterTreeModelTest {
 					selected.add(selectionPath.getLastPathComponent());
 				}
 			}
-			assertEquals(new HashSet<>(swing.selection().items().get()), selected, message);
+			assertEquals(new HashSet<>(swing.selection().paths().get()), selected, message);
 		}
 	}
 
@@ -846,11 +855,11 @@ final class DefaultSwingFilterTreeModelTest {
 				if (!path.root()) {
 					//via the TreeSelectionModel
 					if (random.nextBoolean()) {
-						common.selection().items().set(singletonList(path));
+						common.selection().paths().set(singletonList(path));
 						swing.selection().setSelectionPath(swing.treePath(path));
 					}
 					else {
-						common.selection().items().add(path);
+						common.selection().paths().add(path);
 						swing.selection().addSelectionPath(swing.treePath(path));
 					}
 				}

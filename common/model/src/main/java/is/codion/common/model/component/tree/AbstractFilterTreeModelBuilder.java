@@ -51,8 +51,10 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	final Supplier<Collection<T>> roots;
 	final Function<NodePath<T>, Collection<T>> children;
 	final List<Runnable> selectionListeners = new ArrayList<>();
-	final List<Consumer<NodePath<T>>> itemSelectedListeners = new ArrayList<>();
-	final List<Consumer<List<NodePath<T>>>> itemsSelectedListeners = new ArrayList<>();
+	final List<Consumer<T>> itemSelectedListeners = new ArrayList<>();
+	final List<Consumer<List<T>>> itemsSelectedListeners = new ArrayList<>();
+	final List<Consumer<NodePath<T>>> pathSelectedListeners = new ArrayList<>();
+	final List<Consumer<List<NodePath<T>>>> pathsSelectedListeners = new ArrayList<>();
 	final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
 	final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
 
@@ -118,14 +120,26 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	}
 
 	@Override
-	public final B onSelectedItem(Consumer<NodePath<T>> item) {
+	public final B onSelectedItem(Consumer<T> item) {
 		itemSelectedListeners.add(requireNonNull(item));
 		return self();
 	}
 
 	@Override
-	public final B onSelectedItems(Consumer<List<NodePath<T>>> items) {
+	public final B onSelectedItems(Consumer<List<T>> items) {
 		itemsSelectedListeners.add(requireNonNull(items));
+		return self();
+	}
+
+	@Override
+	public final B onSelectedPath(Consumer<NodePath<T>> path) {
+		pathSelectedListeners.add(requireNonNull(path));
+		return self();
+	}
+
+	@Override
+	public final B onSelectedPaths(Consumer<List<NodePath<T>>> paths) {
+		pathsSelectedListeners.add(requireNonNull(paths));
 		return self();
 	}
 
@@ -201,11 +215,11 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 		VisibleNodes<T> visible();
 
 		/**
-		 * Returns a {@link TreeSelection} based on the given selection, adding the tree behaviour: expanding the
-		 * ancestors of the hidden nodes selected via its item and items facades, and {@link TreeSelection#set(NodePath)}.
+		 * Returns a {@link TreeSelection} based on the given selection of paths, adding the tree behaviour: the items of
+		 * the selected nodes, expanding the ancestors of the hidden nodes selected, and {@link TreeSelection#set(NodePath)}.
 		 * A toolkit selection which is a {@link MultiSelection} of its own, a {@code javax.swing.tree.TreeSelectionModel}
 		 * for example, forwards to the one returned.
-		 * @param selection a selection over the {@link #visible()} nodes
+		 * @param selection a selection of the paths of the {@link #visible()} nodes
 		 * @return a {@link TreeSelection} based on the given selection
 		 */
 		TreeSelection<T> treeSelection(MultiSelection<NodePath<T>> selection);

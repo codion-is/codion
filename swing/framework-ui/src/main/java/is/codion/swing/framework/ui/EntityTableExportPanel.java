@@ -132,7 +132,7 @@ final class EntityTableExportPanel extends JPanel {
 		this.model = model;
 		this.dialogSize = dialogSize;
 		this.exportTree = createTree();
-		this.exportTree.model().selection().items().addConsumer(this::selectionChanged);
+		this.exportTree.model().selection().paths().addConsumer(this::selectionChanged);
 		this.includeAll = Control.builder()
 						.command(model.treeModel()::includeAll)
 						.caption(MESSAGES.getString("columns_all"))
@@ -271,7 +271,7 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private List<NodePath<AttributeDefinition<?>>> selectedPaths() {
-		return exportTree.model().selection().items().get();
+		return exportTree.model().selection().paths().get();
 	}
 
 	private void toggleSelected() {

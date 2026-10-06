@@ -124,12 +124,12 @@ public final class EntityTableExportPanelTest {
 		model.expansion().expand(manager);
 		List<NodePath<AttributeDefinition<?>>> before = model.nodes().children(ROOT);
 		List<NodePath<AttributeDefinition<?>>> moved = asList(before.get(1), before.get(2));
-		model.selection().items().set(moved);
+		model.selection().paths().set(moved);
 
 		treeModel.move(moved, true);
 		assertEquals(asList(before.get(1), before.get(2), before.get(0)), model.nodes().children(ROOT).subList(0, 3));
 		//selection and expansion kept, paths identifying nodes rather than positions
-		assertEquals(moved, model.selection().items().get());
+		assertEquals(moved, model.selection().paths().get());
 		assertTrue(model.expansion().expanded(manager));
 		assertTrue(model.nodes().loaded(manager));
 		//already first
@@ -138,12 +138,12 @@ public final class EntityTableExportPanelTest {
 
 		treeModel.move(moved, false);
 		assertEquals(before.subList(0, 3), model.nodes().children(ROOT).subList(0, 3));
-		assertEquals(moved, model.selection().items().get());
+		assertEquals(moved, model.selection().paths().get());
 
 		//drag and drop, after the last
 		treeModel.move(moved, before.size());
 		assertEquals(moved, model.nodes().children(ROOT).subList(before.size() - 2, before.size()));
-		assertEquals(moved, model.selection().items().get());
+		assertEquals(moved, model.selection().paths().get());
 	}
 
 	@Test

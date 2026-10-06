@@ -24,37 +24,59 @@ import is.codion.common.reactive.value.Value;
 import java.util.function.Function;
 
 /**
- * <p>The selection of a {@link FilterTreeModel}, over its {@link FilterTreeModel#visible() visible} nodes, the indexes
- * being their rows and the items their paths.
- * <p>Selecting a node by its path, via {@link #item()} or {@link #items()}, expands its ancestors in case it is hidden
- * below a collapsed one, so that it can be selected right away. A node not yet in the model, its parent not loaded, is
+ * <p>The selection of a {@link FilterTreeModel}, over its {@link FilterTreeModel#visible() visible} nodes, addressed by
+ * row via the indexes, by item via the items, and by node via {@link #path()} and {@link #paths()}.
+ * <p>The same item may appear in several places in a tree. Selecting by item selects one node holding it, while the
+ * paths address particular nodes. A node hidden below a collapsed ancestor, selected by item or by path, has its
+ * ancestors expanded, so that it can be selected right away. A node not yet in the model, its parent not loaded, is
  * selected via {@link #set(NodePath)}, which loads as needed and selects it once it is visible.
  * @param <T> the item type
  * @see FilterTreeModel#selection()
  */
-public interface TreeSelection<T> extends MultiSelection<NodePath<T>> {
+public interface TreeSelection<T> extends MultiSelection<T> {
 
 	/**
 	 * {@inheritDoc}
+	 * <p>Setting an item selects one node holding it: a selected one, keeping the selection in place, otherwise the
+	 * first visible one, otherwise the first one in the model, depth first, its ancestors expanded. An item not in the
+	 * model, or filtered, clears the selection. Use {@link #path()} for a particular node, and {@link #set(NodePath)}
+	 * for a node not yet loaded.
+	 * <p>The selection moving between nodes holding the same item instance changes {@link #path()}, not the item.
+	 */
+	@Override
+	Value<T> item();
+
+	/**
+	 * <p>The items of the selected nodes, in row order, an item selected in several places appearing once for each.
+	 * <p>Setting or adding an item selects one node holding it, as {@link #item()} does, ignoring an item not in the
+	 * model, or filtered, while {@link Items#remove(Object)} and {@link Items#contains(Object)} cover every selected
+	 * node holding it. Use {@link #paths()} for particular nodes.
+	 * @return the selected items, the items of the selected nodes
+	 */
+	@Override
+	Items<T> items();
+
+	/**
+	 * <p>The path of the selected node, as {@link #item()} is its item.
 	 * <p>Setting the path of a node hidden below a collapsed ancestor expands its ancestors and selects it, while the
 	 * path of a node not in the model, or filtered, clears the selection. Use {@link #set(NodePath)} for a node not yet
 	 * loaded.
+	 * @return the {@link Value} controlling the path of the selected node
 	 */
-	@Override
-	Value<NodePath<T>> item();
+	Value<NodePath<T>> path();
 
 	/**
+	 * <p>The paths of the selected nodes, in row order, as {@link #items()} are their items.
 	 * <p>Setting or adding the paths of nodes hidden below collapsed ancestors expands their ancestors and selects them,
 	 * while the paths of nodes not in the model, or filtered, are ignored. Use {@link #set(NodePath)} for a node not yet
 	 * loaded.
-	 * @return the selected items, the paths of the selected nodes
+	 * @return the {@link Items} controlling the paths of the selected nodes
 	 */
-	@Override
-	Items<NodePath<T>> items();
+	Items<NodePath<T>> paths();
 
 	/**
 	 * <p>Selects the node identified by the given path once it is visible, replacing the selection, expanding its
-	 * ancestors and loading as needed. The node itself is not expanded. Where {@link #item()} takes effect right away,
+	 * ancestors and loading as needed. The node itself is not expanded. Where {@link #path()} takes effect right away,
 	 * on a node in the model, this takes effect once the nodes on the path have been loaded, before this method returns
 	 * when loading synchronously.
 	 * <p>A node which exists but is not visible, being filtered or below a node collapsed since, is replaced by its

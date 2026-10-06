@@ -121,6 +121,8 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		builder.selectionListeners.forEach(selection.indexes()::addListener);
 		builder.itemSelectedListeners.forEach(selection.item()::addConsumer);
 		builder.itemsSelectedListeners.forEach(selection.items()::addConsumer);
+		builder.pathSelectedListeners.forEach(selection.path()::addConsumer);
+		builder.pathsSelectedListeners.forEach(selection.paths()::addConsumer);
 		builder.indexSelectedListeners.forEach(selection.index()::addConsumer);
 		builder.indexesSelectedListeners.forEach(selection.indexes()::addConsumer);
 		this.predicate.set(builder.included);
@@ -191,19 +193,19 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			recommit = true;
 			return;
 		}
-		List<NodePath<T>> selected = selection.items().get();
+		List<NodePath<T>> selected = selection.paths().get();
 		boolean selectionGrouping = selection.grouping().is();
 		selection.grouping().set(true);
 		mutating = true;
 		try {
 			mutation.run();
 			commit();
-			selection.items().restore(restore(selected, mapping));
+			selection.paths().restore(restore(selected, mapping));
 			while (recommit || !snapshots.isEmpty()) {
 				//a mutation made by a selection listener, while the selection was being restored
-				List<NodePath<T>> restored = selection.items().get();
+				List<NodePath<T>> restored = selection.paths().get();
 				commit();
-				selection.items().restore(restore(restored, UnaryOperator.identity()));
+				selection.paths().restore(restore(restored, UnaryOperator.identity()));
 			}
 		}
 		finally {
@@ -271,7 +273,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		}
 		selectingPending = true;
 		try {
-			selection.items().set(singletonList(visiblePath));
+			selection.paths().set(singletonList(visiblePath));
 		}
 		catch (CancelException e) {
 			//vetoed, the pending selection ends unselected
@@ -312,6 +314,44 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				expanded.addAll(ancestors);
 				pendingExpanded.addAll(ancestors);
 			});
+		}
+	}
+
+	/**
+	 * Returns the path of one node holding each of the given items: the first visible one, otherwise the first included
+	 * one in the model, depth first, in the order the nodes are shown once their ancestors are expanded, the items not in
+	 * the model, or filtered, left out.
+	 */
+	private Collection<NodePath<T>> occurrences(Set<T> items) {
+		Map<T, NodePath<T>> occurrences = new HashMap<>(items.size());
+		for (NodePath<T> path : visible.get()) {
+			if (items.contains(path.item())) {
+				occurrences.putIfAbsent(path.item(), path);
+				if (occurrences.size() == items.size()) {
+					return occurrences.values();
+				}
+			}
+		}
+		Set<T> hidden = new HashSet<>(items);
+		hidden.removeAll(occurrences.keySet());
+		collectOccurrences(root, hidden, occurrences);
+
+		return occurrences.values();
+	}
+
+	/**
+	 * Collects the path of the first included node below the given one holding each of the given items, depth first,
+	 * removing the items found.
+	 */
+	private void collectOccurrences(Node<T> node, Set<T> items, Map<T, NodePath<T>> occurrences) {
+		for (Node<T> child : node.includedChildren) {
+			if (items.isEmpty()) {
+				return;
+			}
+			if (items.remove(child.path.item())) {
+				occurrences.put(child.path.item(), child.path);
+			}
+			collectOccurrences(child, items, occurrences);
 		}
 	}
 
@@ -845,7 +885,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		@Override
 		public TreeSelection<T> treeSelection(MultiSelection<NodePath<T>> selection) {
 			return new DefaultTreeSelection<>(selection, DefaultFilterTreeModel.this::expandHidden,
-							DefaultFilterTreeModel.this::selectWhenVisible);
+							DefaultFilterTreeModel.this::selectWhenVisible, DefaultFilterTreeModel.this::occurrences);
 		}
 	}
 
