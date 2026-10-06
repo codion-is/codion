@@ -121,7 +121,7 @@ final class EntityDependenciesPanel extends JPanel {
 	}
 
 	private static EntityTablePanel createTablePanel(Collection<Entity> entities, EntityConnection connection) {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities, connection);
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(entities, connection);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditions(false));
 		tablePanel.configurePopupMenu(layout -> layout.clear()
 						.control(EDIT_ATTRIBUTE_CONTROLS)

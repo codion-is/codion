@@ -66,27 +66,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	/**
-	 * Instantiates a new SwingEntityTableModel containing the given entities.
-	 * @param entities the entities to populate the model with
-	 * @param connection the connection
-	 * @throws IllegalArgumentException in case {@code entities} is empty
-	 */
-	public SwingEntityTableModel(Collection<Entity> entities, EntityConnection connection) {
-		this(entityType(entities), entities, connection);
-	}
-
-	/**
-	 * Instantiates a new SwingEntityTableModel containing the given entities.
-	 * @param entityType the entity type
-	 * @param entities the entities to populate the model with
-	 * @param connection the connection
-	 * @throws IllegalArgumentException in case {@code entities} is empty
-	 */
-	public SwingEntityTableModel(EntityType entityType, Collection<Entity> entities, EntityConnection connection) {
-		this(new SwingEntityEditModel(entityType, connection), requireNonNull(entities));
-	}
-
-	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
 	 */
@@ -200,6 +179,31 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
+	/**
+	 * Returns a table model of the given entities, without an item source or query conditions: refreshing its items
+	 * does nothing. The items still change via {@link #items()}, and via its edit model on insert, update and delete.
+	 * @param entities the entities, of the same type
+	 * @param connection the connection
+	 * @return a new SwingEntityTableModel of the given entities
+	 * @throws IllegalArgumentException in case {@code entities} is empty
+	 * @see #of(EntityType, Collection, EntityConnection)
+	 */
+	public static SwingEntityTableModel of(Collection<Entity> entities, EntityConnection connection) {
+		return of(entityType(entities), entities, connection);
+	}
+
+	/**
+	 * Returns a table model of the given entities, without an item source or query conditions: refreshing its items
+	 * does nothing. The items still change via {@link #items()}, and via its edit model on insert, update and delete.
+	 * @param entityType the entity type
+	 * @param entities the entities, possibly none
+	 * @param connection the connection
+	 * @return a new SwingEntityTableModel of the given entities
+	 */
+	public static SwingEntityTableModel of(EntityType entityType, Collection<Entity> entities, EntityConnection connection) {
+		return new SwingEntityTableModel(new SwingEntityEditModel(entityType, connection), requireNonNull(entities));
+	}
+
 	@Override
 	protected final SwingFilterTableModel<Entity, Attribute<?>> filterModel() {
 		return (SwingFilterTableModel<Entity, Attribute<?>>) super.filterModel();
@@ -266,5 +270,4 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 			replace(entities);
 		}
 	}
-
 }

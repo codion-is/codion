@@ -61,7 +61,7 @@ public class EntityTablePanelPreferencesTest {
 
 	@Test
 	void columnVisibilityAndOrder() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
@@ -86,7 +86,7 @@ public class EntityTablePanelPreferencesTest {
 
 	@Test
 	void columnWidth() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
@@ -113,7 +113,7 @@ public class EntityTablePanelPreferencesTest {
 
 	@Test
 	void autoResizeMode() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 
 		// Get initial value for comparison
@@ -140,7 +140,7 @@ public class EntityTablePanelPreferencesTest {
 
 	@Test
 	void emptyPreferences() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
@@ -159,7 +159,7 @@ public class EntityTablePanelPreferencesTest {
 	@Test
 	void preferencesForMissingColumn() {
 		// Save preferences with current columns
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
@@ -183,7 +183,7 @@ public class EntityTablePanelPreferencesTest {
 
 	@Test
 	void newColumnNotHiddenByOldPreferences() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
@@ -213,7 +213,7 @@ public class EntityTablePanelPreferencesTest {
 	@Test
 	void roundTrip() {
 		// Comprehensive round-trip test
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 

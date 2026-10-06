@@ -99,10 +99,12 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 		List<Entity> entities = entityObjectMapper(model().entities())
 						.deserializeEntities(String.join("\n", Files.readAllLines(file.toPath())));
 
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities, model().connection());
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(entities, model().connection());
 		tableModel.editor().settings().readOnly().set(true);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel,
-						config -> config.includePopupMenu(false));
+						config -> config
+										.includeConditions(false)
+										.includePopupMenu(false));
 
 		Dialogs.builder()
 						.component(tablePanel.initialize())

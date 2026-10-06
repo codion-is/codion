@@ -76,13 +76,13 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 
 	/**
-	 * Instantiates a table model whose items are not provided by its query model.
+	 * Instantiates a table model whose items are not provided by its query model, the query model having no conditions.
 	 * @param editModel the edit model
 	 * @param filterModel the filter model
 	 */
 	protected AbstractEntityTableModel(E editModel, FilterTableModel<Entity, Attribute<?>> filterModel) {
 		this.editModel = requireNonNull(editModel);
-		this.queryModel = queryModel(editModel, conditions -> {});
+		this.queryModel = queryModel(editModel, conditions -> excludeAll(conditions, editModel.entityDefinition()));
 		this.filterModel = requireNonNull(filterModel);
 		bindEvents();
 	}
@@ -389,6 +389,11 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		conditions.accept(builder);
 
 		return new DefaultEntityQueryModel(builder.build());
+	}
+
+	private static void excludeAll(EntityConditions.Builder conditions, EntityDefinition definition) {
+		definition.columns().get().forEach(conditions::exclude);
+		definition.foreignKeys().get().forEach(conditions::exclude);
 	}
 
 	private static final class DefaultConfig implements Config {

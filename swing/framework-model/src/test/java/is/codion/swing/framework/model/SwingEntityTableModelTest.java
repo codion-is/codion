@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<
@@ -41,7 +42,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 	@Override
 	protected SwingEntityTableModel createTestTableModel() {
-		return new SwingEntityTableModel(Detail.TYPE, testEntities, connection());
+		return SwingEntityTableModel.of(testEntities, connection());
 	}
 
 	@Override
@@ -71,6 +72,16 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void nullConnection() {
 		assertThrows(NullPointerException.class, () -> new SwingEntityTableModel(Employee.TYPE, null));
+	}
+
+	@Test
+	void of() {
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, connection());
+		assertTrue(tableModel.query().conditions().get().isEmpty());
+		tableModel.items().refresh();
+		assertEquals(testEntities.size(), tableModel.items().get().size());
+		assertTrue(SwingEntityTableModel.of(Detail.TYPE, emptyList(), connection()).items().get().isEmpty());
+		assertThrows(IllegalArgumentException.class, () -> SwingEntityTableModel.of(emptyList(), connection()));
 	}
 
 	@Test

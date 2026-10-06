@@ -49,6 +49,7 @@ import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.INSPECT_
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityTablePanelTest {
@@ -60,6 +61,14 @@ public class EntityTablePanelTest {
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
+
+	@Test
+	void tableModelWithoutConditions() {
+		// a table model of the given entities has no query conditions, so no condition panel
+		EntityTablePanel tablePanel = new EntityTablePanel(SwingEntityTableModel.of(Employee.TYPE, emptyList(), CONNECTION));
+		tablePanel.initialize();
+		assertThrows(IllegalStateException.class, tablePanel::conditions);
+	}
 
 	@Test
 	void conditionAndFilterPanels() {

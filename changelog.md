@@ -4,8 +4,13 @@ Codion Change Log
 ## 0.18.90
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
+### is.codion.framework.model
+- AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel(EntityType, EntityConnection, Consumer<Config>) added, for configuring the table model without creating an edit model.
+- SwingEntityTableModel(Collection, EntityConnection) and SwingEntityTableModel(EntityType, Collection, EntityConnection) replaced by SwingEntityTableModel.of(), for a table model of the given entities, without an item source or query conditions, refreshing it doing nothing.
+### is.codion.swing.framework.ui
+- EntityTablePanel, no condition panel is created for a table model without query conditions.
 
 ## 0.18.89
 ### is.codion.common.reactive

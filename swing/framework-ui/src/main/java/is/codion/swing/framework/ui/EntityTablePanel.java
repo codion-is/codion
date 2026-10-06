@@ -1453,7 +1453,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private @Nullable TableConditionPanel<Attribute<?>> createTableConditionPanel() {
-		if (!configuration.includeConditions) {
+		if (!configuration.includeConditions || model.query().conditions().get().isEmpty()) {
 			return null;
 		}
 		TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
