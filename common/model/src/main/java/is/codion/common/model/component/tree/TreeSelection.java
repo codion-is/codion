@@ -21,7 +21,7 @@ package is.codion.common.model.component.tree;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.value.Value;
 
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 /**
  * <p>The selection of a {@link FilterTreeModel}, over its {@link FilterTreeModel#visible() visible} nodes, the indexes
@@ -59,14 +59,14 @@ public interface TreeSelection<T> extends MultiSelection<NodePath<T>> {
 	 * when loading synchronously.
 	 * <p>A node which exists but is not visible, being filtered or below a node collapsed since, is replaced by its
 	 * nearest visible ancestor. In case the path turns out not to exist, or can not be loaded further, a load failing
-	 * or a node being a leaf according to the leaf function, the deepest node on the path which does exist is selected,
+	 * or a node being a leaf according to the leaves function, the deepest node on the path which does exist is selected,
 	 * or its nearest visible ancestor. The selection is left as is in case no node on the path is in the model.
 	 * <p>A pending selection is cancelled by a selection change from outside, by the application or the user, and
 	 * replaced by another one, while loading and refreshing do not cancel it. A selection change vetoed via
 	 * {@link #changing()} ends it unselected.
 	 * @param path the path of the node to select
 	 * @throws IllegalArgumentException in case of the root path
-	 * @see FilterTreeModel.Builder#leaf(Predicate)
+	 * @see FilterTreeModel.Builder#leaves(Function)
 	 */
 	void set(NodePath<T> path);
 }

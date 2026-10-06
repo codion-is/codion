@@ -46,7 +46,7 @@ import java.util.function.Supplier;
  * {@link Loader#async()} is enabled and a dispatch context is bound, the UI thread on UI platforms.
  * <p>Expansion is model state, see {@link #expansion()}, so it survives refreshes, and the selection is kept by path,
  * see {@link #selection()}.
- * <p>The model is confined to the UI thread, the roots supplier, the children function and the leaf function alone
+ * <p>The model is confined to the UI thread, the roots supplier, the children function and the leaves function alone
  * being called off it.
  * <p>The Swing-specific {@code is.codion.swing.common.model.component.tree.SwingFilterTreeModel} extends this with
  * {@code javax.swing.tree.TreeModel}.
@@ -136,11 +136,11 @@ public interface FilterTreeModel<T> {
 		boolean loaded(NodePath<T> path);
 
 		/**
-		 * Returns true if the given node is a leaf: a node not yet loaded which the leaf function reported as a leaf
-		 * when last called for it, or a loaded node without any included children. Does not call the leaf function.
+		 * Returns true if the given node is a leaf: a node not yet loaded which the leaves function reported as a leaf
+		 * when last called for it, or a loaded node without any included children. Does not call the leaves function.
 		 * @param path the path
 		 * @return true if the node identified by the given path is a leaf, or not in the model
-		 * @see Builder#leaf(Predicate)
+		 * @see Builder#leaves(Function)
 		 */
 		boolean leaf(NodePath<T> path);
 
@@ -156,8 +156,8 @@ public interface FilterTreeModel<T> {
 
 		/**
 		 * <p>Reloads the children of the node identified by the given path, and below them every loaded node still
-		 * present, so what was loaded stays loaded, calling the leaf function for the children not yet loaded, see
-		 * {@link Builder#leaf(Predicate)}. A node not yet loaded is loaded, unless the leaf function, called for it
+		 * present, so what was loaded stays loaded, calling the leaves function for the children not yet loaded, see
+		 * {@link Builder#leaves(Function)}. A node not yet loaded is loaded, unless the leaves function, called for it
 		 * again, reports it as a leaf.
 		 * <p>Nodes are kept by item, a node whose item is still present keeping its expansion, selection and loaded
 		 * subtree, its item replaced with the fresh instance. Nodes no longer present are removed, along with their
@@ -171,7 +171,7 @@ public interface FilterTreeModel<T> {
 
 		/**
 		 * <p>Adds the given items as children of the given loaded parent, appended or at their sorted position when
-		 * sorting. Items are added unloaded, the leaf function called for them on the calling thread.
+		 * sorting. Items are added unloaded, the leaves function called for them on the calling thread.
 		 * <p>Has no effect in case the parent is not loaded, the items arriving when it loads.
 		 * @param parent the parent path
 		 * @param items the items to add
@@ -188,7 +188,7 @@ public interface FilterTreeModel<T> {
 		void remove(Collection<NodePath<T>> paths);
 
 		/**
-		 * <p>Replaces the item of the node identified by the given path, the leaf function called for the replacement
+		 * <p>Replaces the item of the node identified by the given path, the leaves function called for the replacement
 		 * on the calling thread.
 		 * <p>An item equal to the current one replaces the instance, the node keeping its expansion, selection and
 		 * subtree. A different item changes the identity of the node, along with the paths below it, the expansion and
@@ -395,17 +395,30 @@ public interface FilterTreeModel<T> {
 		}
 
 		/**
-		 * <p>The leaf function decides whether a node not yet loaded is a leaf, a loaded node being a leaf when it has
+		 * <p>The leaves function decides which nodes not yet loaded are leaves, a loaded node being a leaf when it has
 		 * no included children. Without one, a node not yet loaded is not a leaf, so a view displays an expand handle
 		 * until it is loaded.
-		 * <p>It is called for each item the roots supplier and the children function return, along with them, so on a
-		 * background thread when loading asynchronously, its result kept until a refresh reaches the node. A view
-		 * asking whether a node is a leaf does not call it, so it may be slow, querying a database or listing a
-		 * directory for example. {@link Nodes#add(NodePath, Collection)} and {@link Nodes#replace(NodePath, Object)}
-		 * call it on the calling thread.
-		 * <p>A node not yet loaded, which the leaf function reports as a leaf, is not loaded when expanded, so the
-		 * children function is not called for it, nor when refreshed, unless the leaf function, called for it again,
+		 * <p>It is given the nodes not yet loaded among the items the roots supplier or the children function return,
+		 * all of a node's children at once, so it can find the leaves among them with a single query, and returns those
+		 * which are leaves. It is called along with the children function, so on a background thread when loading
+		 * asynchronously, its result kept until a refresh reaches the nodes. A view asking whether a node is a leaf does
+		 * not call it, so it may be slow. {@link Nodes#add(NodePath, Collection)} calls it with the nodes added, and
+		 * {@link Nodes#replace(NodePath, Object)} with the node replaced, on the calling thread.
+		 * <p>A node not yet loaded, which the leaves function reports as a leaf, is not loaded when expanded, so the
+		 * children function is not called for it, nor when refreshed, unless the leaves function, called for it again,
 		 * no longer reports it as a leaf, see {@link Nodes#refresh(NodePath)}.
+		 * <p>Replaces the function set via {@link #leaf(Predicate)}, the same option.
+		 * @param leaves given the paths of nodes not yet loaded, returns those which are leaves, paths not given being
+		 * ignored
+		 * @return this builder instance
+		 * @see Nodes#leaf(NodePath)
+		 */
+		B leaves(Function<List<NodePath<T>>, Collection<NodePath<T>>> leaves);
+
+		/**
+		 * <p>The leaves function, node by node, for when a node can tell whether it is a leaf on its own, from its item
+		 * for example, see {@link #leaves(Function)}.
+		 * <p>Replaces the function set via {@link #leaves(Function)}, the same option.
 		 * @param leaf returns true if the node identified by the given path is a leaf
 		 * @return this builder instance
 		 * @see Nodes#leaf(NodePath)

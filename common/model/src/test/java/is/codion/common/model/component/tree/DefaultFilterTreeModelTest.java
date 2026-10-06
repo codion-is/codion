@@ -302,6 +302,72 @@ final class DefaultFilterTreeModelTest {
 	}
 
 	@Test
+	void leaves() {
+		List<List<String>> calls = new ArrayList<>();
+		FilterTreeModel<Item> model = builder()
+						.leaves(paths -> {
+							calls.add(paths.stream()
+											.map(path -> path.item().id)
+											.collect(toList()));
+							return paths.stream()
+											.filter(path -> !data.containsKey(path.item().id))
+											.collect(toList());
+						})
+						.build();
+		model.nodes().refresh();
+		//once per loaded parent, with its children not yet loaded
+		assertEquals(singletonList(asList("a", "b", "c")), calls);
+		assertFalse(model.nodes().leaf(path("a")));
+		assertTrue(model.nodes().leaf(path("b")));
+		calls.clear();
+		model.expansion().expand(path("a", "a1"));
+		assertEquals(asList(asList("a1", "a2"), singletonList("a11")), calls);
+		calls.clear();
+		//a refresh, once per node reloaded, with its children not yet loaded
+		model.nodes().refresh(path("a"));
+		assertEquals(asList(singletonList("a2"), singletonList("a11")), calls);
+		calls.clear();
+		//a node not yet loaded, refreshed on its own
+		model.nodes().refresh(path("b"));
+		assertEquals(singletonList(singletonList("b")), calls);
+		calls.clear();
+		//once with all the items added
+		model.nodes().add(path("a"), items("a3", "a4"));
+		assertEquals(singletonList(asList("a3", "a4")), calls);
+		assertTrue(model.nodes().leaf(path("a", "a3")));
+		calls.clear();
+		model.nodes().replace(path("a", "a3"), new Item("a3", "A3"));
+		assertEquals(singletonList(singletonList("a3")), calls);
+
+		//paths not given are ignored
+		FilterTreeModel<Item> other = builder()
+						.leaves(paths -> singletonList(path("x")))
+						.build();
+		other.nodes().refresh();
+		assertFalse(other.nodes().leaf(path("b")));
+		assertFalse(other.nodes().contains(path("x")));
+		//a null result rejected
+		FilterTreeModel<Item> nullResult = builder()
+						.leaves(paths -> null)
+						.build();
+		assertThrows(NullPointerException.class, () -> nullResult.nodes().refresh());
+
+		//the same option, the last one set used
+		FilterTreeModel<Item> lastLeaves = builder()
+						.leaf(path -> true)
+						.leaves(paths -> emptyList())
+						.build();
+		lastLeaves.nodes().refresh();
+		assertFalse(lastLeaves.nodes().leaf(path("b")));
+		FilterTreeModel<Item> lastLeaf = builder()
+						.leaves(paths -> emptyList())
+						.leaf(path -> true)
+						.build();
+		lastLeaf.nodes().refresh();
+		assertTrue(lastLeaf.nodes().leaf(path("a")));
+	}
+
+	@Test
 	void leafFunction() {
 		List<String> called = new ArrayList<>();
 		FilterTreeModel<Item> model = builder()

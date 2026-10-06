@@ -69,7 +69,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 	private final Supplier<Collection<T>> roots;
 	private final Function<NodePath<T>, Collection<T>> children;
-	private final @Nullable Predicate<NodePath<T>> leaf;
+	private final @Nullable Function<List<NodePath<T>>, Collection<NodePath<T>>> leaves;
 	private final @Nullable NodesListener<T> listener;
 	private final Consumer<Exception> onLoadException;
 
@@ -111,7 +111,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 												 @Nullable NodesListener<T> listener) {
 		this.roots = builder.roots;
 		this.children = builder.children;
-		this.leaf = builder.leaf;
+		this.leaves = builder.leaves;
 		this.listener = listener;
 		this.onLoadException = builder.onLoadException == null ? new RethrowExceptionHandler() : builder.onLoadException;
 		this.sort = new DefaultSort(builder.comparator);
@@ -411,11 +411,11 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	}
 
 	/**
-	 * Sets the leaf status the leaf function reported for the given node, touching it in case it changed, unless a
+	 * Sets the leaf status the leaves function reported for the given node, touching it in case it changed, unless a
 	 * later load, add or replace has already set it.
 	 * @param node the node
 	 * @param leaf the leaf status
-	 * @param sequence the load, add or replace calling the leaf function
+	 * @param sequence the load, add or replace calling the leaves function
 	 */
 	private void leaf(Node<T> node, boolean leaf, long sequence) {
 		if (node.leafSequence > sequence) {
@@ -431,10 +431,26 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	/**
 	 * Called off the UI thread when loading asynchronously.
 	 * @param path the path
-	 * @return true if the leaf function reports the node identified by the given path as a leaf, false without one
+	 * @return true if the leaves function reports the node identified by the given path as a leaf, false without one
 	 */
 	private boolean testLeaf(NodePath<T> path) {
-		return leaf != null && leaf.test(path);
+		return testLeaves(singletonList(path)).contains(path);
+	}
+
+	/**
+	 * Called off the UI thread when loading asynchronously.
+	 * @param paths the paths
+	 * @return the given paths which the leaves function reports as leaves, an empty set without one
+	 */
+	private Set<NodePath<T>> testLeaves(List<NodePath<T>> paths) {
+		if (leaves == null || paths.isEmpty()) {
+			return emptySet();
+		}
+		Set<NodePath<T>> leafPaths = new HashSet<>(requireNonNull(leaves.apply(unmodifiableList(paths)),
+						"The leaves function may not return null"));
+		leafPaths.retainAll(paths);
+
+		return leafPaths;
 	}
 
 	private List<NodePath<T>> restore(List<NodePath<T>> selected, UnaryOperator<NodePath<T>> mapping) {
@@ -715,17 +731,17 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 	/**
 	 * Called off the UI thread when loading asynchronously, accessing the roots supplier, the children function and
-	 * the leaf function alone, never the model.
+	 * the leaves function alone, never the model.
 	 * @param path the path of the node to load
 	 * @param loadedBelow the paths of the loaded nodes below, which are loaded as well
-	 * @param refresh true if the leaf function should be called for the node as well, in case it is not yet loaded,
-	 * which is not loaded in case the leaf function reports it as a leaf
+	 * @param refresh true if the leaves function should be called for the node as well, in case it is not yet loaded,
+	 * which is not loaded in case the leaves function reports it as a leaf
 	 * @param interruptible true if loading should stop when the thread is interrupted
 	 * @return the children, and the leaf status of the nodes reached which are not yet loaded
 	 */
 	private Fetched<T> fetch(NodePath<T> path, Set<NodePath<T>> loadedBelow, boolean refresh, boolean interruptible) {
 		Fetched<T> result = new Fetched<>();
-		if (refresh && leaf != null && !path.root() && !loadedBelow.contains(path)) {
+		if (refresh && leaves != null && !path.root() && !loadedBelow.contains(path)) {
 			boolean pathLeaf = testLeaf(path);
 			result.leaves.put(path, pathLeaf);
 			if (pathLeaf) {
@@ -739,15 +755,22 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			NodePath<T> parent = queue.removeFirst();
 			List<T> items = validate(parent.root() ? roots.get() : children.apply(parent));
 			result.children.put(parent, items);
+			//a loaded node is a leaf when it has no included children, whatever the leaves function reports
+			List<NodePath<T>> unloaded = new ArrayList<>(items.size());
 			for (T item : items) {
 				NodePath<T> child = parent.child(item);
 				if (loadedBelow.contains(child)) {
 					queue.addLast(child);
 				}
-				else if (leaf != null) {
-					//a loaded node is a leaf when it has no included children, whatever the leaf function reports
-					interrupted(interruptible);
-					result.leaves.put(child, testLeaf(child));
+				else {
+					unloaded.add(child);
+				}
+			}
+			if (leaves != null && !unloaded.isEmpty()) {
+				interrupted(interruptible);
+				Set<NodePath<T>> leafPaths = testLeaves(unloaded);
+				for (NodePath<T> child : unloaded) {
+					result.leaves.put(child, leafPaths.contains(child));
 				}
 			}
 		}
@@ -899,13 +922,14 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			for (Node<T> child : node.children) {
 				siblings.add(child.path.item());
 			}
-			Map<T, Boolean> leaves = new HashMap<>();
+			List<NodePath<T>> paths = new ArrayList<>(items.size());
 			for (T item : items) {
 				if (!siblings.add(item)) {
 					throw new IllegalArgumentException(SIBLINGS_MUST_BE_DISTINCT + item);
 				}
-				leaves.put(item, testLeaf(node.path.child(item)));
+				paths.add(node.path.child(item));
 			}
+			Set<NodePath<T>> leafPaths = testLeaves(paths);
 			long leafSequence = ++sequence;
 			mutate(() -> {
 				touch(node);
@@ -913,7 +937,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				List<Node<T>> nodeChildren = new ArrayList<>(requireNonNull(node.children));
 				for (T item : items) {
 					Node<T> child = new Node<>(node.path.child(item), node, predicate.get() == null);
-					child.leaf = leaves.get(item);
+					child.leaf = leafPaths.contains(child.path);
 					child.leafSequence = leafSequence;
 					nodeMap.put(child.path, child);
 					nodeChildren.add(child);
@@ -1035,12 +1059,12 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 		/**
 		 * @param node the node to load
-		 * @param refresh true if the leaf function should be called for the node as well, which is otherwise not loaded
-		 * in case it is not yet loaded and the leaf function has reported it as a leaf
+		 * @param refresh true if the leaves function should be called for the node as well, which is otherwise not loaded
+		 * in case it is not yet loaded and the leaves function has reported it as a leaf
 		 */
 		private void load(Node<T> node, boolean refresh) {
 			if (!refresh && node.children == null && node.leaf) {
-				//a leaf according to the leaf function is not loaded, the children function not called for it
+				//a leaf according to the leaves function is not loaded, the children function not called for it
 				return;
 			}
 			cancel(node.path);
@@ -1506,9 +1530,9 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		private @Nullable Boolean passes;
 		//the load that last set the children
 		private long loadSequence = 0;
-		//true if the leaf function reported the node as a leaf when last called for it, while not yet loaded, false without one
+		//true if the leaves function reported the node as a leaf when last called for it, while not yet loaded, false without one
 		private boolean leaf = false;
-		//the load, add or replace that last called the leaf function for the node
+		//the load, add or replace that last called the leaves function for the node
 		private long leafSequence = 0;
 
 		private Node(NodePath<T> path, @Nullable Node<T> parent, boolean included) {
@@ -1530,7 +1554,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 		//the children by parent path, parents before children
 		private final Map<NodePath<T>, List<T>> children = new LinkedHashMap<>();
-		//the leaf status the leaf function reported, by path
+		//the leaf status the leaves function reported, by path
 		private final Map<NodePath<T>, Boolean> leaves = new HashMap<>();
 	}
 

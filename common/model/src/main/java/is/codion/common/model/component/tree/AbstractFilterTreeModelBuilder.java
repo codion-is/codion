@@ -34,6 +34,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A base class for {@link FilterTreeModel.Builder} implementations. A toolkit builder extends this class, adding
@@ -55,7 +56,7 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
 	final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
 
-	@Nullable Predicate<NodePath<T>> leaf;
+	@Nullable Function<List<NodePath<T>>, Collection<NodePath<T>>> leaves;
 	@Nullable Comparator<T> comparator;
 	@Nullable Predicate<NodePath<T>> included;
 	@Nullable Consumer<Exception> onLoadException;
@@ -72,8 +73,17 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	}
 
 	@Override
+	public final B leaves(Function<List<NodePath<T>>, Collection<NodePath<T>>> leaves) {
+		this.leaves = requireNonNull(leaves);
+		return self();
+	}
+
+	@Override
 	public final B leaf(Predicate<NodePath<T>> leaf) {
-		this.leaf = requireNonNull(leaf);
+		requireNonNull(leaf);
+		this.leaves = paths -> paths.stream()
+						.filter(leaf)
+						.collect(toList());
 		return self();
 	}
 
