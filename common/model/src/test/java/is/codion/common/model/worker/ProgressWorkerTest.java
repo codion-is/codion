@@ -490,7 +490,7 @@ public final class ProgressWorkerTest {
 							.onSuccess(() -> calls.add("success"))
 							.onResult(calls::add));
 			assertEquals("onDone", dispatcher.nextUncaught().getMessage());
-			assertEquals(asList("working true", "done", "working false", "success", "result"), calls);
+			assertEquals(asList("working true", "done", "working false", "result", "success"), calls);
 		}
 	}
 

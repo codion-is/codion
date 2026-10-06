@@ -213,7 +213,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 
 	/**
 	 * Adds a handler called on the Event Dispatch Thread after a successful run,
-	 * before any {@link #onResult(Consumer)} handlers.
+	 * after any {@link #onResult(Consumer)} handlers.
 	 * @param onSuccess the handler to add
 	 * @return this Builder instance
 	 */
@@ -221,7 +221,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 
 	/**
 	 * Adds a handler called on the Event Dispatch Thread when the result of a successful run is available,
-	 * after any {@link #onSuccess(Runnable)} handlers.
+	 * before any {@link #onSuccess(Runnable)} handlers.
 	 * @param onResult the handler to add
 	 * @return this Builder instance
 	 */
@@ -229,7 +229,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 
 	/**
 	 * Adds a handler that displays a message dialog after a successful run,
-	 * before any {@link #onResult(Consumer)} handlers.
+	 * after any {@link #onResult(Consumer)} handlers.
 	 * @param title the dialog title
 	 * @param message the message to display
 	 * @return this Builder instance

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.90
+### is.codion.common.model
+- ProgressWorker, the onResult handlers are now called before the onSuccess handlers, a success being reported once the result has been handled, where a success message, such as a dialog, delayed handling the result.
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 ### is.codion.framework.model

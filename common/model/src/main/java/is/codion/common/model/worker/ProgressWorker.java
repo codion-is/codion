@@ -68,7 +68,8 @@ import static java.util.Objects.requireNonNull;
  * Additional handlers can then be added via the builder and are called after.
  * </ul>
  * <p>On successful completion, handlers are called in this order:
- * {@code onDone} &rarr; {@code onSuccess} &rarr; {@code onResult(T)} (result-producing tasks only).
+ * {@code onDone} &rarr; {@code onResult(T)} (result-producing tasks only) &rarr; {@code onSuccess},
+ * a success being reported once the result has been handled.
  * <p>Builder based usage example:
  * {@snippet class = "is.codion.manual.javadoc.ProgressWorkerSnippets" region = "usage" :
  * ProgressWorker.builder() // @start region=usage
@@ -247,8 +248,8 @@ public final class ProgressWorker<T, V> {
 			T result = get();
 
 			return () -> {
-				exceptions.run(onSuccess);
 				exceptions.accept(onResult, result);
+				exceptions.run(onSuccess);
 			};
 		}
 		catch (CancellationException e) {
@@ -458,7 +459,7 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Called using the {@link Dispatcher} after a successful task execution,
-		 * before {@link ResultTaskHandler#onResult(Object)} or
+		 * after {@link ResultTaskHandler#onResult(Object)} or
 		 * {@link ProgressResultTaskHandler#onResult(Object)} for result-producing tasks.
 		 */
 		default void onSuccess() {}
@@ -501,7 +502,7 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Called using the {@link Dispatcher} after a successful execution,
-		 * after {@link Handler#onSuccess()}.
+		 * before {@link Handler#onSuccess()}.
 		 * @param result the task result
 		 */
 		default void onResult(T result) {}
@@ -549,7 +550,7 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Called using the {@link Dispatcher} after a successful execution,
-		 * after {@link Handler#onSuccess()}.
+		 * before {@link Handler#onSuccess()}.
 		 * @param result the task result
 		 */
 		default void onResult(T result) {}
@@ -613,7 +614,7 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Adds a handler called using the {@link Dispatcher} after a successful task run,
-		 * before any {@link #onResult(Consumer)} handlers.
+		 * after any {@link #onResult(Consumer)} handlers.
 		 * @param onSuccess the handler to add
 		 * @return this builder instance
 		 */
@@ -621,7 +622,7 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Adds a handler called using the {@link Dispatcher} when the result of a successful run is available,
-		 * after any {@link #onSuccess(Runnable)} handlers.
+		 * before any {@link #onSuccess(Runnable)} handlers.
 		 * @param onResult the handler to add
 		 * @return this builder instance
 		 */
