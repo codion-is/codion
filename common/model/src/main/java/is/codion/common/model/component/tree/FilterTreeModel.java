@@ -114,6 +114,15 @@ public interface FilterTreeModel<T> {
 		boolean contains(NodePath<T> path);
 
 		/**
+		 * Returns the paths of the nodes holding the given item, included or filtered, depth first, since the same item
+		 * may appear in several places. A node is in the model once its parent has been loaded.
+		 * @param item the item
+		 * @return the current paths of the nodes holding the given item, an empty list in case of none
+		 * @see NodePath
+		 */
+		List<NodePath<T>> paths(T item);
+
+		/**
 		 * @param path the path
 		 * @return true if the node identified by the given path is in the model and included, passing the predicate
 		 * or having a loaded descendant that does, the root always included

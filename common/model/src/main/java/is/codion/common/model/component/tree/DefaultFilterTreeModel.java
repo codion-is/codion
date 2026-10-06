@@ -506,6 +506,20 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		}
 	}
 
+	/**
+	 * Collects the paths of the nodes below the given one holding the given item, included or filtered, depth first.
+	 */
+	private void collectPaths(Node<T> node, T item, List<NodePath<T>> paths) {
+		if (node.children != null) {
+			for (Node<T> child : node.children) {
+				if (child.path.item().equals(item)) {
+					paths.add(child.path);
+				}
+				collectPaths(child, item, paths);
+			}
+		}
+	}
+
 	private void collectUnloaded(Node<T> node, List<NodePath<T>> toLoad) {
 		for (Node<T> child : node.includedChildren) {
 			if (expanded.contains(child.path)) {
@@ -710,6 +724,15 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		@Override
 		public boolean contains(NodePath<T> path) {
 			return nodeMap.containsKey(requireNonNull(path));
+		}
+
+		@Override
+		public List<NodePath<T>> paths(T item) {
+			requireNonNull(item);
+			List<NodePath<T>> paths = new ArrayList<>();
+			collectPaths(root, item, paths);
+
+			return unmodifiableList(paths);
 		}
 
 		@Override

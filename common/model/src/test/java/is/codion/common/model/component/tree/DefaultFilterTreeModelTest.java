@@ -193,6 +193,35 @@ final class DefaultFilterTreeModelTest {
 	}
 
 	@Test
+	void paths() {
+		data.put("c", items("c1", "a1"));
+		Item a1 = new Item("a1", "a1");
+		FilterTreeModel<Item> model = model();
+		//not in the model until its parent is loaded
+		assertTrue(model.nodes().paths(a1).isEmpty());
+		model.nodes().refresh();
+		assertEquals(paths("a"), model.nodes().paths(new Item("a", "a")));
+		assertTrue(model.nodes().paths(a1).isEmpty());
+		model.expansion().expand(path("a"));
+		model.expansion().expand(path("c"));
+		//wherever it appears, depth first
+		assertEquals(asList(path("a", "a1"), path("c", "a1")), model.nodes().paths(a1));
+		//filtered nodes included
+		model.nodes().predicate().set(path -> !path.item().id.equals("a1"));
+		assertFalse(model.nodes().included(path("a", "a1")));
+		assertEquals(asList(path("a", "a1"), path("c", "a1")), model.nodes().paths(a1));
+		model.nodes().predicate().clear();
+		//the current paths, holding the items the model holds
+		rename("a1", "A1");
+		model.nodes().refresh();
+		model.nodes().paths(a1).forEach(path -> assertEquals("A1", path.item().name));
+		model.nodes().remove(singletonList(path("c", "a1")));
+		assertEquals(singletonList(path("a", "a1")), model.nodes().paths(a1));
+		assertTrue(model.nodes().paths(new Item("x", "x")).isEmpty());
+		assertThrows(UnsupportedOperationException.class, () -> model.nodes().paths(a1).add(path("b")));
+	}
+
+	@Test
 	void leafFunction() {
 		List<String> called = new ArrayList<>();
 		FilterTreeModel<Item> model = builder()
