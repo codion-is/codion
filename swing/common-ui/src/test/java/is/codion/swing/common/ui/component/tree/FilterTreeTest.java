@@ -33,12 +33,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeWillExpandListener;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
@@ -253,6 +258,25 @@ public final class FilterTreeTest {
 		label = (JLabel) withIcons.getCellRenderer().getTreeCellRendererComponent(withIcons, path("b"), false, false, true, 1, false);
 		assertNotSame(icon, label.getIcon());
 		withIcons.updateUI();
+	}
+
+	@Test
+	void lookAndFeelSwitch() throws Exception {
+		LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
+		try {
+			UIManager.setLookAndFeel(new MetalLookAndFeel());
+			FilterTree<String> customRenderer = customRendererTree();
+			FilterTree<String> iconRenderer = iconRendererTree();
+			UIManager.setLookAndFeel(new NimbusLookAndFeel());
+			customRenderer.updateUI();
+			iconRenderer.updateUI();
+			//the nodes measured with the renderer updated, as in a tree created with the look and feel
+			assertEquals(customRendererTree().getRowBounds(0), customRenderer.getRowBounds(0));
+			assertEquals(iconRendererTree().getRowBounds(0), iconRenderer.getRowBounds(0));
+		}
+		finally {
+			UIManager.setLookAndFeel(lookAndFeel);
+		}
 	}
 
 	@Test
@@ -825,6 +849,26 @@ public final class FilterTreeTest {
 
 	private List<String> fetch(String parent) {
 		return fresh(data.getOrDefault(parent, emptyList()));
+	}
+
+	private FilterTree<String> customRendererTree() {
+		SwingFilterTreeModel<String> model = model();
+		model.nodes().refresh();
+
+		return FilterTree.builder()
+						.model(model)
+						.cellRenderer(new DefaultTreeCellRenderer())
+						.build();
+	}
+
+	private FilterTree<String> iconRendererTree() {
+		SwingFilterTreeModel<String> model = model();
+		model.nodes().refresh();
+
+		return FilterTree.builder()
+						.model(model)
+						.icon(item -> null)
+						.build();
 	}
 
 	private static NodePath<String> path(String... items) {

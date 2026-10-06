@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 - ProgressWorkerDialogBuilder.onWorking() added, as in ProgressWorker.Builder.
+- FilterTree, the cell renderer is now updated before the UI on a look and feel switch, the nodes being measured with the renderer of the previous look and feel, cutting off their text when a custom renderer or the icon renderer was used.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 ### is.codion.swing.framework.model

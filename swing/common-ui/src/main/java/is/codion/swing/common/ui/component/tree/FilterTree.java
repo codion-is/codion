@@ -75,9 +75,7 @@ import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
 import static java.awt.event.KeyEvent.*;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.enumeration;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 
@@ -218,13 +216,16 @@ public final class FilterTree<T> extends JTree {
 		}
 	}
 
+	/**
+	 * Updates the cell renderer before the UI, which measures the nodes with it when installed.
+	 */
 	@Override
 	public void updateUI() {
-		super.updateUI();
 		TreeCellRenderer renderer = getCellRenderer();
 		if (renderer instanceof JComponent) {
 			Utilities.updateUI((JComponent) renderer);
 		}
+		super.updateUI();
 	}
 
 	/**
