@@ -434,13 +434,14 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 	/**
 	 * Sets the leaf status the leaves function reported for the given node, touching it in case it changed, unless a
-	 * later load, add or replace has already set it.
+	 * later load, add or replace has already set it, or the node has been loaded meanwhile, a loaded node being a leaf
+	 * when it has no included children, whatever the leaves function reports.
 	 * @param node the node
 	 * @param leaf the leaf status
 	 * @param sequence the load, add or replace calling the leaves function
 	 */
 	private void leaf(Node<T> node, boolean leaf, long sequence) {
-		if (node.leafSequence > sequence) {
+		if (node.children != null || node.leafSequence > sequence) {
 			return;
 		}
 		if (node.leaf != leaf) {
