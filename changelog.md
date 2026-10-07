@@ -18,6 +18,7 @@ Codion Change Log
 - DefaultFilterTreeModel, a leaf status reported by the leaves function for a node loaded meanwhile is now dropped, where it touched the node, rebuilding its included children unchanged.
 - MultiSelection.Items, set() and add() with a few items now take the indexOf() fast path when no selected index holds an equal item, where any selection present caused a full search of the items.
 - FilterTreeModel.Builder.comparators() added, the comparator for the children of each parent, given its path, comparator() its form for the same comparator for all, FilterTreeSort.compare() comparing by the comparator of the top level.
+- FilterTreeModel.Nodes.add() and replace(), the leaves function is now called off the UI thread when loading asynchronously, the items added being leaves and a replaced node keeping its leaf status until it reports, where it was called on the calling thread, a query on the UI thread for an entity tree.
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 - ProgressWorkerDialogBuilder.onWorking() added, as in ProgressWorker.Builder.

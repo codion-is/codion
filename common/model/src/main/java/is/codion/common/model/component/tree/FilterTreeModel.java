@@ -172,7 +172,8 @@ public interface FilterTreeModel<T> {
 
 		/**
 		 * <p>Adds the given items as children of the given loaded parent, appended or at their sorted position when
-		 * sorting. Items are added unloaded, the leaves function called for them on the calling thread.
+		 * sorting. Items are added unloaded, the leaves function called for them off the UI thread when loading
+		 * asynchronously, the items being leaves until it reports, otherwise on the calling thread.
 		 * <p>Has no effect in case the parent is not loaded, the items arriving when it loads.
 		 * @param parent the parent path
 		 * @param items the items to add
@@ -190,7 +191,8 @@ public interface FilterTreeModel<T> {
 
 		/**
 		 * <p>Replaces the item of the node identified by the given path, the leaves function called for the replacement
-		 * on the calling thread.
+		 * off the UI thread when loading asynchronously, the node keeping its leaf status until it reports, otherwise on
+		 * the calling thread.
 		 * <p>An item equal to the current one replaces the instance, the node keeping its expansion, selection and
 		 * subtree. A different item changes the identity of the node, along with the paths below it, the expansion and
 		 * selection carried over to the new paths.
@@ -233,7 +235,8 @@ public interface FilterTreeModel<T> {
 		/**
 		 * <p>Changes to this state are triggered on the UI thread when loading asynchronously,
 		 * otherwise on the calling thread.
-		 * @return an observable indicating that a load is in progress
+		 * @return an observable indicating that a load is in progress, or a call to the leaves function for nodes added or
+		 * replaced
 		 */
 		ObservableState active();
 

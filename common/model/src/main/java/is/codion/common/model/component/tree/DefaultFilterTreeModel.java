@@ -954,7 +954,9 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				}
 				paths.add(node.path.child(item));
 			}
-			Set<NodePath<T>> leafPaths = testLeaves(paths);
+			//asynchronously, the items are leaves until the leaves function reports otherwise
+			boolean asynchronous = leaves != null && loader.asynchronous();
+			Set<NodePath<T>> leafPaths = asynchronous ? new HashSet<>(paths) : testLeaves(paths);
 			long leafSequence = ++sequence;
 			mutate(() -> {
 				touch(node);
@@ -969,6 +971,9 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				}
 				node.children = nodeChildren;
 			});
+			if (asynchronous) {
+				loader.leaves(paths, leafSequence);
+			}
 		}
 
 		@Override
@@ -1006,13 +1011,18 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			}
 			Node<T> parent = requireNonNull(node.parent);
 			NodePath<T> after = parent.path.child(item);
+			//asynchronously, the node keeps its leaf status until the leaves function reports
+			boolean asynchronous = leaves != null && node.children == null && loader.asynchronous();
+			boolean leafStatus = asynchronous ? node.leaf : node.children == null && testLeaf(after);
 			if (item.equals(node.path.item())) {
-				boolean leafStatus = node.children == null && testLeaf(after);
 				long leafSequence = ++sequence;
 				mutate(() -> {
 					replaceItem(node, item);
 					DefaultFilterTreeModel.this.leaf(node, leafStatus, leafSequence);
 				});
+				if (asynchronous) {
+					loader.leaves(singletonList(after), leafSequence);
+				}
 				return;
 			}
 			for (Node<T> sibling : requireNonNull(parent.children)) {
@@ -1020,7 +1030,6 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 					throw new IllegalArgumentException(SIBLINGS_MUST_BE_DISTINCT + item);
 				}
 			}
-			boolean leafStatus = node.children == null && testLeaf(after);
 			long leafSequence = ++sequence;
 			NodePath<T> before = node.path;
 			UnaryOperator<NodePath<T>> mapping = new PathMapping<>(before, after);
@@ -1040,6 +1049,9 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				}
 				expanded.addAll(remapped);
 			}, mapping);
+			if (asynchronous) {
+				loader.leaves(singletonList(after), leafSequence);
+			}
 		}
 
 		@Override
@@ -1056,6 +1068,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	private final class DefaultLoader implements Loader<T> {
 
 		private final Map<NodePath<T>, LoadTask> tasks = new HashMap<>();
+		private final Set<LeafTask> leafTasks = new HashSet<>();
 		private final State async = State.state(FilterModel.ASYNC.getOrThrow());
 		private final State active = State.state();
 		private final Event<Exception> exception = Event.event();
@@ -1094,7 +1107,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			}
 			cancel(node.path);
 			LoadTask task = new LoadTask(node.path, loadedBelow(node), refresh, ++sequence);
-			if (async.is() && Dispatcher.instance().bound()) {
+			if (asynchronous()) {
 				tasks.put(node.path, task);
 				updateActive();
 				task.worker = ProgressWorker.builder()
@@ -1104,6 +1117,27 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			else {
 				loadSynchronously(task);
 			}
+		}
+
+		/**
+		 * @return true if loading is asynchronous, a dispatch context being bound
+		 */
+		private boolean asynchronous() {
+			return async.is() && Dispatcher.instance().bound();
+		}
+
+		/**
+		 * Calls the leaves function for the given paths off the UI thread, for the nodes added or replaced.
+		 * @param paths the paths
+		 * @param sequence the add or replace
+		 */
+		private void leaves(List<NodePath<T>> paths, long sequence) {
+			LeafTask task = new LeafTask(unmodifiableList(new ArrayList<>(paths)), sequence);
+			leafTasks.add(task);
+			updateActive();
+			task.worker = ProgressWorker.builder()
+							.task(task)
+							.execute();
 		}
 
 		private void loadSynchronously(LoadTask task) {
@@ -1191,10 +1225,18 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 					task.worker.cancel(true);
 				}
 			}
+			Iterator<LeafTask> leafIterator = leafTasks.iterator();
+			while (leafIterator.hasNext()) {
+				LeafTask task = leafIterator.next();
+				if (task.worker != null && task.paths.stream().allMatch(path::contains)) {
+					leafIterator.remove();
+					task.worker.cancel(true);
+				}
+			}
 		}
 
 		private void updateActive() {
-			active.set(!tasks.isEmpty() || synchronous > 0);
+			active.set(!tasks.isEmpty() || !leafTasks.isEmpty() || synchronous > 0);
 		}
 
 		private void onException(Exception exception) {
@@ -1264,6 +1306,60 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			//cancelled by the children function, a cancel() having removed the task already
 			if (loader.tasks.get(path) == this) {
 				loader.failed(this, null);
+			}
+		}
+	}
+
+	/**
+	 * Calls the leaves function off the UI thread for the nodes added or replaced, the result applied unless a later
+	 * load, add or replace has set the leaf status of a node meanwhile, or it has been loaded or removed.
+	 */
+	private final class LeafTask implements ResultTaskHandler<Set<NodePath<T>>> {
+
+		private final List<NodePath<T>> paths;
+		private final long sequence;
+
+		private @Nullable ProgressWorker<?, ?> worker;
+
+		private LeafTask(List<NodePath<T>> paths, long sequence) {
+			this.paths = paths;
+			this.sequence = sequence;
+		}
+
+		@Override
+		public Set<NodePath<T>> execute() throws Exception {
+			return testLeaves(paths);
+		}
+
+		@Override
+		public void onResult(Set<NodePath<T>> leafPaths) {
+			if (loader.leafTasks.remove(this)) {
+				try {
+					mutate(() -> paths.forEach(path -> {
+						Node<T> node = nodeMap.get(path);
+						if (node != null) {
+							leaf(node, leafPaths.contains(path), sequence);
+						}
+					}));
+				}
+				finally {
+					loader.updateActive();
+				}
+			}
+		}
+
+		@Override
+		public void onException(Exception exception) {
+			if (loader.leafTasks.remove(this)) {
+				loader.updateActive();
+				loader.onException(exception);
+			}
+		}
+
+		@Override
+		public void onCancelled() {
+			if (loader.leafTasks.remove(this)) {
+				loader.updateActive();
 			}
 		}
 	}

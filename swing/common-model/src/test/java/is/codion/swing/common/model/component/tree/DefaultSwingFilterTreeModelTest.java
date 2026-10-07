@@ -44,10 +44,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
@@ -454,6 +456,259 @@ final class DefaultSwingFilterTreeModelTest {
 			assertFalse(model.nodes().leaf(path("b")));
 			assertEquals(singletonList(path("b", "b1")), model.nodes().children(path("b")));
 		});
+	}
+
+	@Test
+	void asyncLeavesAddReplace() throws Exception {
+		BlockingLeaf leaf = new BlockingLeaf();
+		List<Exception> exceptions = new CopyOnWriteArrayList<>();
+		AtomicReference<SwingFilterTreeModel<String>> reference = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> reference.set(SwingFilterTreeModel.builder()
+						.roots(() -> fetch(""))
+						.children(path -> fetch(path.item()))
+						.leaf(leaf)
+						.onLoadException(exceptions::add)
+						.build()));
+		SwingFilterTreeModel<String> model = reference.get();
+		SwingUtilities.invokeAndWait(model.nodes()::refresh);
+		awaitIdle(model);
+		SwingUtilities.invokeAndWait(() -> model.expansion().expand(path("a")));
+		awaitIdle(model);
+
+		//added, a leaf until the leaves function, called off the dispatch thread, reports otherwise
+		data.put("x", singletonList("x1"));
+		leaf.block("x");
+		SwingUtilities.invokeAndWait(() -> {
+			model.nodes().add(path("a"), singletonList("x"));
+			assertTrue(model.nodes().contains(path("a", "x")));
+			assertTrue(model.nodes().leaf(path("a", "x")));
+			assertTrue(model.nodes().loader().active().is());
+		});
+		leaf.awaitBlocked();
+		leaf.release();
+		awaitIdle(model);
+		SwingUtilities.invokeAndWait(() -> assertFalse(model.nodes().leaf(path("a", "x"))));
+
+		//replaced, keeping its leaf status until the leaves function reports
+		data.remove("x");
+		leaf.block("x");
+		SwingUtilities.invokeAndWait(() -> {
+			model.nodes().replace(path("a", "x"), "x");
+			assertFalse(model.nodes().leaf(path("a", "x")));
+		});
+		leaf.awaitBlocked();
+		leaf.release();
+		awaitIdle(model);
+		SwingUtilities.invokeAndWait(() -> assertTrue(model.nodes().leaf(path("a", "x"))));
+		assertFalse(leaf.dispatchThread.contains(true));
+
+		//a refresh meanwhile, cancelling the call, its result never applied
+		leaf.block("y");
+		SwingUtilities.invokeAndWait(() -> model.nodes().add(path("a"), singletonList("y")));
+		leaf.awaitBlocked();
+		data.put("a", asList("a1", "a2", "y"));
+		data.put("y", singletonList("y1"));
+		SwingUtilities.invokeAndWait(() -> model.nodes().refresh(path("a")));
+		CountDownLatch reported = new CountDownLatch(1);
+		long timeout = System.currentTimeMillis() + 10_000;
+		while (reported.getCount() > 0 && System.currentTimeMillis() < timeout) {
+			SwingUtilities.invokeAndWait(() -> {
+				if (!model.nodes().leaf(path("a", "y"))) {
+					reported.countDown();
+				}
+			});
+			Thread.sleep(10);
+		}
+		assertTrue(reported.await(1, SECONDS));
+		//the blocked call reports a leaf, as it was when called
+		leaf.release();
+		awaitIdle(model);
+		SwingUtilities.invokeAndWait(() -> assertFalse(model.nodes().leaf(path("a", "y"))));
+
+		//a replace reporting meanwhile, the older add reporting last, its stale result dropped
+		leaf.block("v");
+		SwingUtilities.invokeAndWait(() -> model.nodes().add(path("a"), singletonList("v")));
+		leaf.awaitBlocked();
+		data.put("v", singletonList("v1"));
+		SwingUtilities.invokeAndWait(() -> model.nodes().replace(path("a", "v"), "v"));
+		CountDownLatch replaced = new CountDownLatch(1);
+		timeout = System.currentTimeMillis() + 10_000;
+		while (replaced.getCount() > 0 && System.currentTimeMillis() < timeout) {
+			SwingUtilities.invokeAndWait(() -> {
+				if (!model.nodes().leaf(path("a", "v"))) {
+					replaced.countDown();
+				}
+			});
+			Thread.sleep(10);
+		}
+		assertTrue(replaced.await(1, SECONDS));
+		leaf.release();
+		awaitIdle(model);
+		SwingUtilities.invokeAndWait(() -> assertFalse(model.nodes().leaf(path("a", "v"))));
+
+		//a failure, the item staying a leaf
+		leaf.fail("z");
+		SwingUtilities.invokeAndWait(() -> model.nodes().add(path("a"), singletonList("z")));
+		awaitIdle(model);
+		assertEquals(1, exceptions.size());
+		SwingUtilities.invokeAndWait(() -> assertTrue(model.nodes().leaf(path("a", "z"))));
+
+		//synchronously, on the calling thread
+		data.put("w", singletonList("w1"));
+		leaf.dispatchThread.clear();
+		SwingUtilities.invokeAndWait(() -> {
+			model.nodes().loader().async().set(false);
+			model.nodes().add(path("a"), singletonList("w"));
+			assertFalse(model.nodes().leaf(path("a", "w")));
+		});
+		assertEquals(singletonList(true), leaf.dispatchThread);
+	}
+
+	/**
+	 * Random adds, replaces, refreshes, expansions and removals, the leaves function called off the dispatch thread,
+	 * taking a while, so that the calls overlap. Once idle, every node not yet loaded must be a leaf exactly when it has
+	 * no children, the stale results of the calls overtaken dropped.
+	 * <p>An add, replace or remove waits while a load is in progress, overlapping the leaves function calls only, since
+	 * a load fetched before an edit undoes it once applied, a removed node returning, for example.
+	 */
+	@Test
+	void asyncLeavesInvariant() throws Exception {
+		for (long seed = 1; seed <= 20; seed++) {
+			asyncLeavesInvariant(seed, 60);
+		}
+	}
+
+	private void asyncLeavesInvariant(long seed, int operations) throws Exception {
+		Random random = new Random(seed);
+		Map<String, List<String>> tree = new ConcurrentHashMap<>();
+		AtomicInteger counter = new AtomicInteger();
+		tree.put("", asList("n" + counter.incrementAndGet(), "n" + counter.incrementAndGet()));
+		AtomicReference<SwingFilterTreeModel<String>> reference = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> reference.set(SwingFilterTreeModel.builder()
+						.roots(() -> new ArrayList<>(tree.getOrDefault("", emptyList())))
+						.children(path -> new ArrayList<>(tree.getOrDefault(path.item(), emptyList())))
+						.leaf(path -> {
+							boolean leaf = tree.getOrDefault(path.item(), emptyList()).isEmpty();
+							try {
+								Thread.sleep(ThreadLocalRandom.current().nextInt(3));
+							}
+							catch (InterruptedException e) {
+								Thread.currentThread().interrupt();
+							}
+
+							return leaf;
+						})
+						.build()));
+		SwingFilterTreeModel<String> model = reference.get();
+		SwingUtilities.invokeAndWait(model.nodes()::refresh);
+		awaitIdle(model);
+		List<String> operationsLog = new ArrayList<>();
+		for (int i = 0; i < operations; i++) {
+			AtomicReference<String> operation = new AtomicReference<>();
+			SwingUtilities.invokeAndWait(() -> operation.set(asyncLeavesOperation(random, model, tree, counter)));
+			operationsLog.add(operation.get());
+			if (random.nextInt(4) == 0 || i == operations - 1) {
+				awaitIdle(model);
+				SwingUtilities.invokeAndWait(() -> {
+					List<NodePath<String>> unloaded = new ArrayList<>();
+					collectUnloaded(model, nodePath(), unloaded);
+					for (NodePath<String> path : unloaded) {
+						boolean leaf = tree.getOrDefault(path.item(), emptyList()).isEmpty();
+						if (model.nodes().leaf(path) != leaf) {
+							throw new AssertionError("Seed " + seed + ", " + path + " leaf " + model.nodes().leaf(path) +
+											", expected " + leaf + ", after " + operationsLog.subList(Math.max(0, operationsLog.size() - 8), operationsLog.size()));
+						}
+					}
+				});
+			}
+		}
+	}
+
+	private static String asyncLeavesOperation(Random random, SwingFilterTreeModel<String> model,
+																						 Map<String, List<String>> tree, AtomicInteger counter) {
+		List<NodePath<String>> visible = model.visible().get();
+		NodePath<String> path = visible.isEmpty() ? nodePath() : visible.get(random.nextInt(visible.size()));
+		int operation = random.nextInt(6);
+		if ((operation <= 1 || operation == 5) && loading(model, nodePath())) {
+			return "wait";
+		}
+		switch (operation) {
+			case 0: {
+				//add below a loaded node, the new item having children or not
+				NodePath<String> parent = random.nextInt(4) == 0 || !model.nodes().loaded(path) ? nodePath() : path;
+				String item = "n" + counter.incrementAndGet();
+				if (random.nextBoolean()) {
+					tree.put(item, singletonList("n" + counter.incrementAndGet()));
+				}
+				List<String> siblings = new ArrayList<>(tree.getOrDefault(parent.root() ? "" : parent.item(), emptyList()));
+				siblings.add(item);
+				tree.put(parent.root() ? "" : parent.item(), siblings);
+				model.nodes().add(parent, singletonList(item));
+				return "add " + parent.child(item);
+			}
+			case 1: {
+				//replace, the item gaining or losing its children
+				if (path.root()) {
+					return "no replace";
+				}
+				if (tree.getOrDefault(path.item(), emptyList()).isEmpty()) {
+					tree.put(path.item(), singletonList("n" + counter.incrementAndGet()));
+				}
+				else {
+					tree.remove(path.item());
+				}
+				model.nodes().replace(path, path.item());
+				return "replace " + path;
+			}
+			case 2:
+				model.nodes().refresh(path);
+				return "refresh " + path;
+			case 3:
+				model.expansion().expand(path);
+				return "expand " + path;
+			case 4:
+				model.expansion().collapse(path);
+				return "collapse " + path;
+			default: {
+				if (path.root()) {
+					return "no remove";
+				}
+				String parent = path.parent().root() ? "" : path.parent().item();
+				List<String> siblings = new ArrayList<>(tree.getOrDefault(parent, emptyList()));
+				siblings.remove(path.item());
+				tree.put(parent, siblings);
+				model.nodes().remove(singletonList(path));
+				return "remove " + path;
+			}
+		}
+	}
+
+	/**
+	 * @return true if a load is in progress at or below the given path
+	 */
+	private static boolean loading(SwingFilterTreeModel<String> model, NodePath<String> path) {
+		if (model.nodes().loader().active(path)) {
+			return true;
+		}
+		for (NodePath<String> child : model.nodes().children(path)) {
+			if (model.nodes().loaded(child) && loading(model, child)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static void collectUnloaded(SwingFilterTreeModel<String> model, NodePath<String> parent,
+																			List<NodePath<String>> unloaded) {
+		for (NodePath<String> child : model.nodes().children(parent)) {
+			if (model.nodes().loaded(child)) {
+				collectUnloaded(model, child, unloaded);
+			}
+			else {
+				unloaded.add(child);
+			}
+		}
 	}
 
 	@Test
@@ -959,6 +1214,60 @@ final class DefaultSwingFilterTreeModelTest {
 			}
 		}
 		assertFalse(active.get(), "Loading did not finish");
+	}
+
+	/**
+	 * A leaf when it has no children, as when called, blocking until released for an item, once, or failing for an item,
+	 * recording whether it was called on the dispatch thread.
+	 */
+	private final class BlockingLeaf implements Predicate<NodePath<String>> {
+
+		private final List<Boolean> dispatchThread = new CopyOnWriteArrayList<>();
+
+		private volatile @Nullable String blocking;
+		private volatile @Nullable String failing;
+		private volatile CountDownLatch blocked = new CountDownLatch(1);
+		private volatile CountDownLatch release = new CountDownLatch(1);
+
+		@Override
+		public boolean test(NodePath<String> path) {
+			dispatchThread.add(SwingUtilities.isEventDispatchThread());
+			if (path.item().equals(failing)) {
+				failing = null;
+				throw new IllegalStateException("Failed for " + path);
+			}
+			boolean leaf = !data.containsKey(path.item());
+			if (path.item().equals(blocking)) {
+				blocking = null;
+				blocked.countDown();
+				try {
+					release.await(10, SECONDS);
+				}
+				catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+			}
+
+			return leaf;
+		}
+
+		private void block(String item) {
+			blocked = new CountDownLatch(1);
+			release = new CountDownLatch(1);
+			blocking = item;
+		}
+
+		private void fail(String item) {
+			failing = item;
+		}
+
+		private void awaitBlocked() throws InterruptedException {
+			assertTrue(blocked.await(10, SECONDS));
+		}
+
+		private void release() {
+			release.countDown();
+		}
 	}
 
 	/**
