@@ -1,0 +1,79 @@
+= EntityTreeModel
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:url-javadoc: link:../api
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTreeModel.html[EntityTreeModel] is a {url-javadoc}{common-model}/is/codion/common/model/component/tree/FilterTreeModel.html[FilterTreeModel] of entities, arranged by foreign keys: the children of a node are the entities referencing it via the configured foreign keys, selected when the node is first expanded.
+
+== Self-referencing trees
+
+A foreign key referencing its own entity type applies at every level, so the depth comes from the data. The roots are the entities whose self-referencing foreign keys are null, the top of the hierarchy.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=selfReferencingTree]
+----
+
+== Master/detail trees
+
+Foreign keys referencing other entity types form a fixed number of levels.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=masterDetailTree]
+----
+
+The two may be mixed. An entity type referenced via several foreign keys has children of several types, ordered by type, in the order the foreign keys were configured.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=mixedTree]
+----
+
+An entity may appear in several places in a tree, below its department and below its manager for example, each node identified by its path.
+
+== Roots and children
+
+The roots, and the children via each foreign key, can be configured with a condition, the `Select` they are selected with, its where condition already set, and a comparator. A roots condition replaces the default one, while a children condition is combined with the foreign key condition, which the tree owns, so it can not be left out. The children condition also applies when finding which nodes have children, while a limit or an offset leaves nodes out.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=treeQueries]
+----
+
+Siblings of different entity types are ordered by type, in the order their foreign keys were configured. Siblings of one type are ordered by the first of:
+
+. the comparator of the roots, or of the foreign key;
+. the order by of their select, keeping the query order;
+. the comparator of the tree, specified via the builder's `comparator()`;
+. the comparator of the entity type.
+
+== Leaves
+
+Whether a node is a leaf is decided when its parent is loaded, along with its siblings, so a node never expanded shows whether it has children:
+
+* a node of an entity type no configured foreign key references is always a leaf, without a query;
+* for the others, a single query per foreign key referencing their type finds which of the siblings are referenced.
+
+The leaf detection can be replaced via the builder's `leaf()` or `leaves()`, for example with a domain attribute stating whether an entity has children.
+
+== Selection
+
+The selection is by item, an entity selecting one node holding it, while the paths of the selected nodes identify particular nodes.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=treeSelection]
+----
+
+== Updates
+
+The model updates when refreshed, `nodes().refresh(path)` reloading a node and the loaded nodes below it exactly, while `nodes().add()`, `replace()` and `remove()` apply edits in memory.
+
+== Swing
+
+The {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/component/SwingEntityTreeModel.html[SwingEntityTreeModel] is the Swing `TreeModel` based version, for a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/tree/FilterTree.html[FilterTree].
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=entityTree]
+----

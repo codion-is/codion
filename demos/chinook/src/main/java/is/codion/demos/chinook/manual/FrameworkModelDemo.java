@@ -18,12 +18,15 @@
  */
 package is.codion.demos.chinook.manual;
 
+import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
+import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
+import is.codion.demos.chinook.domain.api.Chinook.Employee;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
@@ -39,6 +42,7 @@ import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.framework.model.EntityEditor.PersistEvents;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.framework.model.EntityTreeModel;
 import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.framework.model.ModelLink;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -52,6 +56,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
+import static java.util.Comparator.comparing;
 
 public final class FrameworkModelDemo {
 
@@ -509,6 +514,75 @@ public final class FrameworkModelDemo {
 						.setConditionOnInsert(true)
 						.build());
 		// end::foreignKeyLink[]
+	}
+
+	// EntityTreeModel examples
+	void selfReferencingTree(EntityConnection connection) {
+		// tag::selfReferencingTree[]
+		// The employees by who they report to,
+		// the ones reporting to nobody as roots
+		EntityTreeModel treeModel = EntityTreeModel.builder()
+						.roots(Employee.TYPE)
+						.connection(connection)
+						.children(Employee.REPORTSTO_FK)
+						.refresh(true)
+						.build();
+		// end::selfReferencingTree[]
+	}
+
+	void masterDetailTree(EntityConnection connection) {
+		// tag::masterDetailTree[]
+		// The artists, their albums and the album tracks
+		EntityTreeModel treeModel = EntityTreeModel.builder()
+						.roots(Artist.TYPE)
+						.connection(connection)
+						.children(Album.ARTIST_FK)
+						.children(Track.ALBUM_FK)
+						.build();
+		// end::masterDetailTree[]
+	}
+
+	void mixedTree(EntityConnection connection) {
+		// tag::mixedTree[]
+		// The employees by who they report to,
+		// each with the customers they support
+		EntityTreeModel treeModel = EntityTreeModel.builder()
+						.roots(Employee.TYPE)
+						.connection(connection)
+						.children(Employee.REPORTSTO_FK)
+						.children(Customer.SUPPORTREP_FK)
+						.build();
+		// end::mixedTree[]
+	}
+
+	void treeQueries(EntityConnection connection) {
+		// tag::treeQueries[]
+		EntityTreeModel treeModel = EntityTreeModel.builder()
+						.roots(Artist.TYPE, artists -> artists
+										// Replaces the default roots condition
+										.condition(() -> Artist.NAME.like("A%"))
+										// The query order is kept
+										.select(select -> select.orderBy(OrderBy.ascending(Artist.NAME))))
+						.connection(connection)
+						.children(Album.ARTIST_FK, albums -> albums
+										// Combined with the foreign key condition
+										.condition(() -> Album.RATING.greaterThanOrEqualTo(5))
+										.select(select -> select.referenceDepth(0))
+										// In place of the comparator of the entity type
+										.comparator(comparing(album -> album.get(Album.TITLE), String.CASE_INSENSITIVE_ORDER)))
+						.build();
+		// end::treeQueries[]
+	}
+
+	void treeSelection(EntityTreeModel treeModel, Entity employee) {
+		// tag::treeSelection[]
+		// Selects the node holding the employee, expanding its
+		// ancestors in case it is hidden below a collapsed one
+		treeModel.selection().item().set(employee);
+
+		// The path of the selected node, from the top level down
+		NodePath<Entity> path = treeModel.selection().path().get();
+		// end::treeSelection[]
 	}
 
 	// Helper methods referenced in examples

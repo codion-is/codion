@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.manual;
 
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
+import is.codion.demos.chinook.domain.api.Chinook.Employee;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.MediaType;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
@@ -30,6 +31,7 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.multi.MultiInput;
+import is.codion.swing.common.ui.component.tree.FilterTree;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -38,6 +40,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.component.SwingEntityTreeModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
@@ -67,6 +70,22 @@ final class FrameworkUIDemo {
 						.columns(20)
 						.build();
 		// end::basicSearchField[]
+	}
+
+	void entityTree(EntityConnection connection) {
+		// tag::entityTree[]
+		SwingEntityTreeModel treeModel = SwingEntityTreeModel.builder()
+						.roots(Employee.TYPE)
+						.connection(connection)
+						.children(Employee.REPORTSTO_FK)
+						.children(Customer.SUPPORTREP_FK)
+						.refresh(true)
+						.build();
+
+		FilterTree<Entity> tree = FilterTree.builder()
+						.model(treeModel)
+						.build();
+		// end::entityTree[]
 	}
 
 	void multiValueSearchField(ForeignKeyConditionModel customerCondition) {
