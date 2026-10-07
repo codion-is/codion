@@ -958,6 +958,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			boolean asynchronous = leaves != null && loader.asynchronous();
 			Set<NodePath<T>> leafPaths = asynchronous ? new HashSet<>(paths) : testLeaves(paths);
 			long leafSequence = ++sequence;
+			List<LoadTask> overtaken = loader.overtaken(node.path);
 			mutate(() -> {
 				touch(node);
 				nodesChanged = true;
@@ -970,6 +971,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 					nodeChildren.add(child);
 				}
 				node.children = nodeChildren;
+				loader.restart(overtaken);
 			});
 			if (asynchronous) {
 				loader.leaves(paths, leafSequence);
@@ -981,6 +983,12 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			for (NodePath<T> path : rejectNulls(paths)) {
 				if (path.root()) {
 					throw new IllegalArgumentException("The root can not be removed");
+				}
+			}
+			List<LoadTask> overtaken = new ArrayList<>();
+			for (NodePath<T> path : paths) {
+				if (nodeMap.containsKey(path)) {
+					overtaken.addAll(loader.overtaken(path.parent()));
 				}
 			}
 			mutate(() -> {
@@ -996,6 +1004,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 						unregister(node);
 					}
 				}
+				loader.restart(overtaken);
 			});
 		}
 
@@ -1016,9 +1025,11 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			boolean leafStatus = asynchronous ? node.leaf : node.children == null && testLeaf(after);
 			if (item.equals(node.path.item())) {
 				long leafSequence = ++sequence;
+				List<LoadTask> overtaken = loader.overtaken(path);
 				mutate(() -> {
 					replaceItem(node, item);
 					DefaultFilterTreeModel.this.leaf(node, leafStatus, leafSequence);
+					loader.restart(overtaken);
 				});
 				if (asynchronous) {
 					loader.leaves(singletonList(after), leafSequence);
@@ -1033,6 +1044,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			long leafSequence = ++sequence;
 			NodePath<T> before = node.path;
 			UnaryOperator<NodePath<T>> mapping = new PathMapping<>(before, after);
+			List<LoadTask> overtaken = loader.overtaken(path);
 			mutate(() -> {
 				//the loads in progress at or below the path, the expanded ones are loaded again by their new paths
 				loader.cancel(before);
@@ -1048,6 +1060,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 					}
 				}
 				expanded.addAll(remapped);
+				loader.restart(overtaken);
 			}, mapping);
 			if (asynchronous) {
 				loader.leaves(singletonList(after), leafSequence);
@@ -1231,6 +1244,42 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				if (task.worker != null && task.paths.stream().allMatch(path::contains)) {
 					leafIterator.remove();
 					task.worker.cancel(true);
+				}
+			}
+		}
+
+		/**
+		 * Cancels the asynchronous loads in progress at or above the given path, the parent of a node about to be added
+		 * or removed, or a node about to be replaced, since their results, fetched before the edit, would undo it once applied.
+		 * @param path the path
+		 * @return the loads cancelled, to restart once the edit has been made, see {@link #restart(List)}
+		 */
+		private List<LoadTask> overtaken(NodePath<T> path) {
+			List<LoadTask> overtaken = new ArrayList<>();
+			Iterator<LoadTask> iterator = tasks.values().iterator();
+			while (iterator.hasNext()) {
+				LoadTask task = iterator.next();
+				if (task.worker != null && task.path.contains(path)) {
+					iterator.remove();
+					task.worker.cancel(true);
+					overtaken.add(task);
+				}
+			}
+
+			return overtaken;
+		}
+
+		/**
+		 * Starts the given loads again, cancelled by an edit, for the nodes still present, so that they fetch the
+		 * children as they are after it. Called from within the mutation making the edit, so that the loader is not
+		 * reported as inactive in between.
+		 * @param overtaken the loads cancelled by an edit
+		 */
+		private void restart(List<LoadTask> overtaken) {
+			for (LoadTask task : overtaken) {
+				Node<T> node = nodeMap.get(task.path);
+				if (node != null) {
+					load(node, task.refresh);
 				}
 			}
 		}

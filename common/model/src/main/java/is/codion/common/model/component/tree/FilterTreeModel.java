@@ -175,6 +175,8 @@ public interface FilterTreeModel<T> {
 		 * sorting. Items are added unloaded, the leaves function called for them off the UI thread when loading
 		 * asynchronously, the items being leaves until it reports, otherwise on the calling thread.
 		 * <p>Has no effect in case the parent is not loaded, the items arriving when it loads.
+		 * <p>A load in progress at or above the parent is started again, so that its result, fetched before the items
+		 * were added, does not undo it.
 		 * @param parent the parent path
 		 * @param items the items to add
 		 * @throws IllegalArgumentException in case an item is already a child of the parent or repeated
@@ -182,8 +184,10 @@ public interface FilterTreeModel<T> {
 		void add(NodePath<T> parent, Collection<T> items);
 
 		/**
-		 * Removes the nodes identified by the given paths, along with their subtrees and expansion.
+		 * <p>Removes the nodes identified by the given paths, along with their subtrees and expansion.
 		 * Paths not in the model are ignored.
+		 * <p>A load in progress at or above the parent of a node removed is started again, so that its result, fetched
+		 * before the node was removed, does not bring it back.
 		 * @param paths the paths of the nodes to remove
 		 * @throws IllegalArgumentException in case of the root path
 		 */
@@ -197,6 +201,8 @@ public interface FilterTreeModel<T> {
 		 * subtree. A different item changes the identity of the node, along with the paths below it, the expansion and
 		 * selection carried over to the new paths.
 		 * <p>A path not in the model is ignored.
+		 * <p>A load in progress at or above the node is started again, so that its result, fetched before the item was
+		 * replaced, does not undo it.
 		 * @param path the path of the node
 		 * @param item the replacement item
 		 * @throws IllegalArgumentException in case of the root path, or in case a sibling already holds the item

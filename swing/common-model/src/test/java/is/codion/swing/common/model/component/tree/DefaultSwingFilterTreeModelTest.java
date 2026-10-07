@@ -48,6 +48,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -59,6 +60,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Comparator.naturalOrder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -565,11 +567,59 @@ final class DefaultSwingFilterTreeModelTest {
 	}
 
 	/**
+	 * An edit made while a refresh of the parent is in flight, the refresh having fetched the children before the edit,
+	 * which its result would undo once applied, so it is started again.
+	 */
+	@Test
+	void asyncEditDuringRefresh() throws Exception {
+		//a removed node not brought back, the refresh still bringing the others
+		SwingFilterTreeModel<String> model = editDuringRefresh(asList("a2", "a3"), model1 ->
+						model1.nodes().remove(singletonList(path("a", "a1"))));
+		SwingUtilities.invokeAndWait(() -> assertEquals(asList(path("a", "a2"), path("a", "a3")), model.nodes().children(path("a"))));
+		//an added node not removed
+		SwingFilterTreeModel<String> added = editDuringRefresh(asList("a1", "a2", "a4"), model1 ->
+						model1.nodes().add(path("a"), singletonList("a4")));
+		SwingUtilities.invokeAndWait(() -> assertEquals(asList(path("a", "a1"), path("a", "a2"), path("a", "a4")), added.nodes().children(path("a"))));
+		//a replaced node not reverted
+		SwingFilterTreeModel<String> replaced = editDuringRefresh(asList("a1", "a5"), model1 ->
+						model1.nodes().replace(path("a", "a2"), "a5"));
+		SwingUtilities.invokeAndWait(() -> assertEquals(asList(path("a", "a1"), path("a", "a5")), replaced.nodes().children(path("a"))));
+	}
+
+	/**
+	 * Refreshes the expanded a, blocking once it has fetched the children, while the data changes to the given children
+	 * of a and the edit mirrors that change in the model, then releases the refresh and waits until idle.
+	 */
+	private SwingFilterTreeModel<String> editDuringRefresh(List<String> children, Consumer<SwingFilterTreeModel<String>> edit) throws Exception {
+		data.put("a", asList("a1", "a2"));
+		BlockingLeaf leaf = new BlockingLeaf();
+		AtomicReference<SwingFilterTreeModel<String>> reference = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> reference.set(SwingFilterTreeModel.builder()
+						.roots(() -> fetch(""))
+						.children(path -> fetch(path.item()))
+						.leaf(leaf)
+						.build()));
+		SwingFilterTreeModel<String> model = reference.get();
+		SwingUtilities.invokeAndWait(model.nodes()::refresh);
+		awaitIdle(model);
+		SwingUtilities.invokeAndWait(() -> model.expansion().expand(path("a")));
+		awaitIdle(model);
+		leaf.block("a1");
+		SwingUtilities.invokeAndWait(() -> model.nodes().refresh(path("a")));
+		leaf.awaitBlocked();
+		data.put("a", children);
+		SwingUtilities.invokeAndWait(() -> edit.accept(model));
+		leaf.release();
+		awaitIdle(model);
+
+		return model;
+	}
+
+	/**
 	 * Random adds, replaces, refreshes, expansions and removals, the leaves function called off the dispatch thread,
 	 * taking a while, so that the calls overlap. Once idle, every node not yet loaded must be a leaf exactly when it has
-	 * no children, the stale results of the calls overtaken dropped.
-	 * <p>An add, replace or remove waits while a load is in progress, overlapping the leaves function calls only, since
-	 * a load fetched before an edit undoes it once applied, a removed node returning, for example.
+	 * no children, the stale results of the calls overtaken dropped, and every node loaded must have the children it
+	 * has in the data, edits made while loading not undone by the loads overtaken.
 	 */
 	@Test
 	void asyncLeavesInvariant() throws Exception {
@@ -610,6 +660,18 @@ final class DefaultSwingFilterTreeModelTest {
 			if (random.nextInt(4) == 0 || i == operations - 1) {
 				awaitIdle(model);
 				SwingUtilities.invokeAndWait(() -> {
+					List<NodePath<String>> loaded = new ArrayList<>();
+					collectLoaded(model, nodePath(), loaded);
+					for (NodePath<String> path : loaded) {
+						Set<String> children = model.nodes().children(path).stream()
+										.map(NodePath::item)
+										.collect(toSet());
+						Set<String> expected = new HashSet<>(tree.getOrDefault(path.root() ? "" : path.item(), emptyList()));
+						if (!children.equals(expected)) {
+							throw new AssertionError("Seed " + seed + ", " + path + " children " + children +
+											", expected " + expected + ", after " + operationsLog.subList(Math.max(0, operationsLog.size() - 8), operationsLog.size()));
+						}
+					}
 					List<NodePath<String>> unloaded = new ArrayList<>();
 					collectUnloaded(model, nodePath(), unloaded);
 					for (NodePath<String> path : unloaded) {
@@ -628,11 +690,7 @@ final class DefaultSwingFilterTreeModelTest {
 																						 Map<String, List<String>> tree, AtomicInteger counter) {
 		List<NodePath<String>> visible = model.visible().get();
 		NodePath<String> path = visible.isEmpty() ? nodePath() : visible.get(random.nextInt(visible.size()));
-		int operation = random.nextInt(6);
-		if ((operation <= 1 || operation == 5) && loading(model, nodePath())) {
-			return "wait";
-		}
-		switch (operation) {
+		switch (random.nextInt(6)) {
 			case 0: {
 				//add below a loaded node, the new item having children or not
 				NodePath<String> parent = random.nextInt(4) == 0 || !model.nodes().loaded(path) ? nodePath() : path;
@@ -647,15 +705,18 @@ final class DefaultSwingFilterTreeModelTest {
 				return "add " + parent.child(item);
 			}
 			case 1: {
-				//replace, the item gaining or losing its children
+				//replace, an item not yet loaded gaining or losing its children, deciding its leaf status, while replacing
+				//the item of a loaded node does not change its children
 				if (path.root()) {
 					return "no replace";
 				}
-				if (tree.getOrDefault(path.item(), emptyList()).isEmpty()) {
-					tree.put(path.item(), singletonList("n" + counter.incrementAndGet()));
-				}
-				else {
-					tree.remove(path.item());
+				if (!model.nodes().loaded(path)) {
+					if (tree.getOrDefault(path.item(), emptyList()).isEmpty()) {
+						tree.put(path.item(), singletonList("n" + counter.incrementAndGet()));
+					}
+					else {
+						tree.remove(path.item());
+					}
 				}
 				model.nodes().replace(path, path.item());
 				return "replace " + path;
@@ -683,20 +744,14 @@ final class DefaultSwingFilterTreeModelTest {
 		}
 	}
 
-	/**
-	 * @return true if a load is in progress at or below the given path
-	 */
-	private static boolean loading(SwingFilterTreeModel<String> model, NodePath<String> path) {
-		if (model.nodes().loader().active(path)) {
-			return true;
-		}
+	private static void collectLoaded(SwingFilterTreeModel<String> model, NodePath<String> path,
+																		List<NodePath<String>> loaded) {
+		loaded.add(path);
 		for (NodePath<String> child : model.nodes().children(path)) {
-			if (model.nodes().loaded(child) && loading(model, child)) {
-				return true;
+			if (model.nodes().loaded(child)) {
+				collectLoaded(model, child, loaded);
 			}
 		}
-
-		return false;
 	}
 
 	private static void collectUnloaded(SwingFilterTreeModel<String> model, NodePath<String> parent,
