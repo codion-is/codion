@@ -114,7 +114,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		this.leaves = builder.leaves;
 		this.listener = listener;
 		this.onLoadException = builder.onLoadException == null ? new RethrowExceptionHandler() : builder.onLoadException;
-		this.sort = new DefaultSort(builder.comparator);
+		this.sort = new DefaultSort(builder.comparators);
 		this.root = new Node<>(nodePath(), null, true);
 		this.nodeMap.put(root.path, root);
 		this.selection = selectionFactory.apply(new DefaultSelectionContext());
@@ -411,8 +411,9 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				included.add(child);
 			}
 		}
-		if (sort.sorted()) {
-			included.sort((child, other) -> sort.compare(child.path.item(), other.path.item()));
+		Comparator<T> comparator = sort.comparator(node.path);
+		if (comparator != null) {
+			included.sort((child, other) -> comparator.compare(child.path.item(), other.path.item()));
 		}
 		List<NodePath<T>> paths = new ArrayList<>(included.size());
 		for (Node<T> child : included) {
@@ -1448,31 +1449,40 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 	private final class DefaultSort implements FilterTreeSort<T> {
 
-		private final @Nullable Comparator<T> comparator;
+		private final @Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators;
 		private final Event<Boolean> changed = Event.event();
 		private final Value<SortOrder> order;
 
-		private DefaultSort(@Nullable Comparator<T> comparator) {
-			this.comparator = comparator;
+		private DefaultSort(@Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators) {
+			this.comparators = comparators;
 			this.order = Value.builder()
-							.nonNull(comparator == null ? SortOrder.UNSORTED : SortOrder.ASCENDING)
+							.nonNull(comparators == null ? SortOrder.UNSORTED : SortOrder.ASCENDING)
 							.consumer(sortOrder -> changed.accept(sorted()))
 							.build();
 		}
 
 		@Override
 		public int compare(T item, T other) {
+			Comparator<T> comparator = comparator(root.path);
+
+			return comparator == null ? 0 : comparator.compare(item, other);
+		}
+
+		/**
+		 * @param parent the parent path
+		 * @return the comparator for the children of the given parent, in the current sort order, null in case they
+		 * are not sorted
+		 */
+		private @Nullable Comparator<T> comparator(NodePath<T> parent) {
+			if (!sorted()) {
+				return null;
+			}
+			Comparator<T> comparator = requireNonNull(comparators).apply(parent);
 			if (comparator == null) {
-				return 0;
+				return null;
 			}
-			switch (order.getOrThrow()) {
-				case ASCENDING:
-					return comparator.compare(item, other);
-				case DESCENDING:
-					return comparator.compare(other, item);
-				default:
-					return 0;
-			}
+
+			return order.getOrThrow() == SortOrder.DESCENDING ? comparator.reversed() : comparator;
 		}
 
 		@Override
@@ -1497,7 +1507,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 		@Override
 		public boolean sorted() {
-			return comparator != null && order.getOrThrow() != SortOrder.UNSORTED;
+			return comparators != null && order.getOrThrow() != SortOrder.UNSORTED;
 		}
 
 		@Override
@@ -1506,7 +1516,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		}
 
 		private void order(SortOrder sortOrder) {
-			if (comparator != null) {
+			if (comparators != null) {
 				order.set(sortOrder);
 			}
 		}

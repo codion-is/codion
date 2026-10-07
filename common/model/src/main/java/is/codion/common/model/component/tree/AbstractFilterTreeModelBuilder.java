@@ -59,7 +59,7 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
 
 	@Nullable Function<List<NodePath<T>>, Collection<NodePath<T>>> leaves;
-	@Nullable Comparator<T> comparator;
+	@Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators;
 	@Nullable Predicate<NodePath<T>> included;
 	@Nullable Consumer<Exception> onLoadException;
 
@@ -91,7 +91,13 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 
 	@Override
 	public final B comparator(@Nullable Comparator<T> comparator) {
-		this.comparator = comparator;
+		this.comparators = comparator == null ? null : parent -> comparator;
+		return self();
+	}
+
+	@Override
+	public final B comparators(Function<NodePath<T>, @Nullable Comparator<T>> comparators) {
+		this.comparators = requireNonNull(comparators);
 		return self();
 	}
 

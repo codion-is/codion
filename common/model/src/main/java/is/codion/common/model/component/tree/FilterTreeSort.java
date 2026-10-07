@@ -21,12 +21,24 @@ package is.codion.common.model.component.tree;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.SortOrder;
 
+import java.util.function.Function;
+
 /**
  * <p>Handles the sorting of a {@link FilterTreeModel}, the comparator applied within each group of siblings.
  * <p>Unsorted, siblings are in the order the children function returned them.
  * @param <T> the item type
  */
 public interface FilterTreeSort<T> extends FilterModel.Sort<T> {
+
+	/**
+	 * Compares by the comparator of the top level, the children of the root, in the current sort order, the comparator
+	 * for each parent applying when sorting its children, see {@link FilterTreeModel.Builder#comparators(Function)}.
+	 * @param item the item
+	 * @param other the other item
+	 * @return the comparison result, 0 when not sorted
+	 */
+	@Override
+	int compare(T item, T other);
 
 	/**
 	 * Sorts ascending

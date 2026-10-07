@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -742,6 +743,59 @@ final class DefaultFilterTreeModelTest {
 		assertEquals(asList(path("a"), path("a", "a1"), path("c"), path("e")), model.visible().get());
 		model.nodes().filter();
 		assertEquals(asList(path("a"), path("a", "a1"), path("e")), model.visible().get());
+	}
+
+	@Test
+	void comparators() {
+		data.put("", items("c", "a", "b"));
+		data.put("a", items("a2", "a3", "a1"));
+		data.put("c", items("c2", "c1"));
+		//the top level ascending, the children of a descending, the children of c in the children function's order
+		FilterTreeModel<Item> model = builder()
+						.comparators(parent -> {
+							if (parent.root()) {
+								return comparing(item -> item.name);
+							}
+
+							return parent.item().id.equals("a") ? Comparator.<Item, String>comparing(item -> item.name).reversed() : null;
+						})
+						.build();
+		assertTrue(model.sort().sorted());
+		model.nodes().refresh();
+		model.expansion().expand(path("a"));
+		model.expansion().expand(path("c"));
+		assertEquals(paths("a", "b", "c"), model.nodes().children(ROOT));
+		assertEquals(asList(path("a", "a3"), path("a", "a2"), path("a", "a1")), model.nodes().children(path("a")));
+		assertEquals(asList(path("c", "c2"), path("c", "c1")), model.nodes().children(path("c")));
+		//by the comparator of the top level
+		assertTrue(model.sort().compare(new Item("a", "a"), new Item("b", "b")) < 0);
+		//descending reverses each comparator
+		model.sort().descending();
+		assertEquals(paths("c", "b", "a"), model.nodes().children(ROOT));
+		assertEquals(asList(path("a", "a1"), path("a", "a2"), path("a", "a3")), model.nodes().children(path("a")));
+		assertEquals(asList(path("c", "c2"), path("c", "c1")), model.nodes().children(path("c")));
+		assertTrue(model.sort().compare(new Item("a", "a"), new Item("b", "b")) > 0);
+		//the children function's order for all
+		model.sort().clear();
+		assertEquals(paths("c", "a", "b"), model.nodes().children(ROOT));
+		assertEquals(asList(path("a", "a2"), path("a", "a3"), path("a", "a1")), model.nodes().children(path("a")));
+		assertEquals(0, model.sort().compare(new Item("a", "a"), new Item("b", "b")));
+		//an added child at its sorted position
+		model.sort().ascending();
+		model.nodes().add(path("a"), items("a4"));
+		assertEquals(asList(path("a", "a4"), path("a", "a3"), path("a", "a2"), path("a", "a1")), model.nodes().children(path("a")));
+		//the last one set wins
+		FilterTreeModel<Item> same = builder()
+						.comparators(parent -> null)
+						.comparator(comparing(item -> item.name))
+						.build();
+		same.nodes().refresh();
+		assertEquals(paths("a", "b", "c"), same.nodes().children(ROOT));
+		FilterTreeModel<Item> none = builder()
+						.comparator(comparing(item -> item.name))
+						.comparator(null)
+						.build();
+		assertFalse(none.sort().sorted());
 	}
 
 	@Test

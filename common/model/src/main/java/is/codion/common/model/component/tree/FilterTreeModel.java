@@ -427,10 +427,24 @@ public interface FilterTreeModel<T> {
 		B leaf(Predicate<NodePath<T>> leaf);
 
 		/**
-		 * @param comparator the comparator to use when sorting siblings
+		 * Specifies the comparator to use when sorting siblings, the same for all, see {@link #comparators(Function)}.
+		 * @param comparator the comparator to use when sorting siblings, null for none
 		 * @return this builder instance
 		 */
 		B comparator(@Nullable Comparator<T> comparator);
+
+		/**
+		 * <p>Specifies the comparator to use when sorting the children of each parent, given the path of the parent,
+		 * the root path for the top level, a null comparator leaving the children in the order the children function
+		 * returned them in.
+		 * <p>Called each time the children of a parent are sorted, when they are loaded, added, replaced, refreshed or
+		 * filtered, or when the sort order changes. Sets the same option as {@link #comparator(Comparator)}, so the last
+		 * one set wins.
+		 * @param comparators provides the comparator for the children of a parent, given its path
+		 * @return this builder instance
+		 * @see FilterTreeModel#sort()
+		 */
+		B comparators(Function<NodePath<T>, @Nullable Comparator<T>> comparators);
 
 		/**
 		 * @param included the predicate controlling which nodes are included
