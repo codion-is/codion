@@ -21,14 +21,25 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 final class DefaultMenuItemBuilder<B extends MenuItemBuilder<B>> extends AbstractButtonBuilder<JMenuItem, Void, B>
 				implements MenuItemBuilder<B> {
 
+	private @Nullable KeyStroke accelerator;
+
 	DefaultMenuItemBuilder() {
 		horizontalAlignment(SwingConstants.LEADING);
+	}
+
+	@Override
+	public B accelerator(@Nullable KeyStroke accelerator) {
+		this.accelerator = accelerator;
+		return self();
 	}
 
 	@Override
@@ -39,6 +50,14 @@ final class DefaultMenuItemBuilder<B extends MenuItemBuilder<B>> extends Abstrac
 	@Override
 	protected ComponentValue<JMenuItem, Void> createValue(JMenuItem component) {
 		return new MenuItemComponentValue(component);
+	}
+
+	@Override
+	void configureButton(JMenuItem menuItem) {
+		// after the action, which sets the accelerator
+		if (accelerator != null) {
+			menuItem.setAccelerator(accelerator);
+		}
 	}
 
 	private static final class MenuItemComponentValue extends AbstractComponentValue<JMenuItem, Void> {

@@ -18,12 +18,25 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 /**
  * Builds a JMenuItem.
  */
 public interface MenuItemBuilder<B extends MenuItemBuilder<B>> extends ButtonBuilder<JMenuItem, Void, B> {
+
+	/**
+	 * Sets the accelerator displayed by the menu item, in place of any accelerator of its action.
+	 * <p>Note that Swing binds the accelerator as well, in the window of a menu bar containing the menu item,
+	 * and while a popup menu containing it is showing.
+	 * @param accelerator the accelerator, null for the one of the action, if any
+	 * @return this builder instance
+	 * @see JMenuItem#setAccelerator(KeyStroke)
+	 */
+	B accelerator(@Nullable KeyStroke accelerator);
 
 	/**
 	 * @param <B> the builder type

@@ -23,7 +23,10 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.enumValue;
@@ -96,4 +99,14 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 	 * @return this builder instance
 	 */
 	B persistMenu(PersistMenu persistMenu);
+
+	/**
+	 * Sets the accelerator displayed by the menu item, in place of any accelerator of its action.
+	 * <p>Note that Swing binds the accelerator as well, in the window of a menu bar containing the menu item,
+	 * and while a popup menu containing it is showing.
+	 * @param accelerator the accelerator, null for the one of the action, if any
+	 * @return this builder instance
+	 * @see JMenuItem#setAccelerator(KeyStroke)
+	 */
+	B accelerator(@Nullable KeyStroke accelerator);
 }

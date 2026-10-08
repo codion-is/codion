@@ -356,11 +356,18 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 		if (selected != null) {
 			button.setSelected(selected);
 		}
+		configureButton(button);
 
 		return button;
 	}
 
 	protected abstract C createButton();
+
+	/**
+	 * Called once the button has been created and configured, the action included.
+	 * @param button the button
+	 */
+	void configureButton(C button) {}
 
 	private static final class ActionPropertyChangeListener implements PropertyChangeListener {
 

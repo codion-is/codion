@@ -24,7 +24,10 @@ import is.codion.swing.common.ui.component.button.DefaultToggleButtonBuilder.Obs
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 
 	private final List<ObservableState> linkedObservableStates = new ArrayList<>(1);
 	private PersistMenu persistMenu = PERSIST_MENU.getOrThrow();
+	private @Nullable KeyStroke accelerator;
 
 	AbstractToggleMenuItemBuilder() {
 		horizontalAlignment(SwingConstants.LEADING);
@@ -60,6 +64,12 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	@Override
 	public final B persistMenu(PersistMenu persistMenu) {
 		this.persistMenu = requireNonNull(persistMenu);
+		return self();
+	}
+
+	@Override
+	public final B accelerator(@Nullable KeyStroke accelerator) {
+		this.accelerator = accelerator;
 		return self();
 	}
 
@@ -98,5 +108,13 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	@Override
 	protected final boolean supportsNull() {
 		return false;
+	}
+
+	@Override
+	final void configureButton(C menuItem) {
+		// after the action, which sets the accelerator
+		if (accelerator != null) {
+			menuItem.setAccelerator(accelerator);
+		}
 	}
 }

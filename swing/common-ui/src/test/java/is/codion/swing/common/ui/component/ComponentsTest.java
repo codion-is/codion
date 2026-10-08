@@ -70,6 +70,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -517,6 +518,47 @@ public final class ComponentsTest {
 		Components.menuItem();
 		Control control = Control.command(() -> {});
 		Components.menuItem().control(control).buildValue();
+	}
+
+	@Test
+	void menuItemAccelerator() {
+		KeyStroke accelerator = KeyStroke.getKeyStroke("ctrl alt C");
+		KeyStroke actionAccelerator = KeyStroke.getKeyStroke("ctrl alt D");
+		// set after the action, which sets the accelerator
+		assertEquals(accelerator, Components.menuItem()
+						.control(Control.command(() -> {}))
+						.accelerator(accelerator)
+						.build()
+						.getAccelerator());
+		// in place of the one of the action
+		Control control = Control.builder()
+						.command(() -> {})
+						.keyStroke(actionAccelerator)
+						.build();
+		assertEquals(accelerator, Components.menuItem()
+						.control(control)
+						.accelerator(accelerator)
+						.build()
+						.getAccelerator());
+		assertEquals(actionAccelerator, Components.menuItem()
+						.control(control)
+						.accelerator(null)
+						.build()
+						.getAccelerator());
+		// toggle menu items
+		ToggleControl toggleControl = Control.builder()
+						.toggle(State.state())
+						.build();
+		assertEquals(accelerator, Components.checkBoxMenuItem()
+						.toggle(toggleControl)
+						.accelerator(accelerator)
+						.build()
+						.getAccelerator());
+		assertEquals(accelerator, Components.radioButtonMenuItem()
+						.toggle(toggleControl)
+						.accelerator(accelerator)
+						.build()
+						.getAccelerator());
 	}
 
 	@Test

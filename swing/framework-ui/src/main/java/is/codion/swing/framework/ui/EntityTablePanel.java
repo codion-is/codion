@@ -121,6 +121,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1602,12 +1603,36 @@ public class EntityTablePanel extends JPanel {
 				return;
 			}
 
+			Map<Control, KeyStroke> keyStrokes = controlKeyStrokes();
 			JPopupMenu popupMenu = menu()
 							.controls(popupControls)
+							// displays the key strokes the table panel binds
+							.controlMenuItem(control -> menuItem()
+											.control(control)
+											.accelerator(keyStrokes.get(control))
+											.build())
+							.toggleControlMenuItem(control -> checkBoxMenuItem()
+											.toggle(control)
+											.accelerator(keyStrokes.get(control))
+											.build())
 							.buildPopupMenu();
 			table.setComponentPopupMenu(popupMenu);
 			tableScrollPane.setComponentPopupMenu(popupMenu);
 		}
+	}
+
+	private Map<Control, KeyStroke> controlKeyStrokes() {
+		ControlMap controlMap = configuration.controlMap;
+		Map<Control, KeyStroke> keyStrokes = new IdentityHashMap<>();
+		controlMap.keys().forEach(controlKey -> {
+			Control control = controlMap.control(controlKey).get();
+			KeyStroke keyStroke = controlMap.keyStroke(controlKey).get();
+			if (control != null && keyStroke != null) {
+				keyStrokes.put(control, keyStroke);
+			}
+		});
+
+		return keyStrokes;
 	}
 
 	private void addDoubleClickAction() {

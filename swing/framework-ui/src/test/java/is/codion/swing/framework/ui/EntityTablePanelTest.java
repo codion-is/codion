@@ -40,12 +40,18 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -295,6 +301,24 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
+	void popupMenuKeyStrokes() {
+		// the popup menu items show the key strokes of their controls, nested and toggle ones included
+		KeyStroke singleSelection = KeyStroke.getKeyStroke(VK_A, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK);
+		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config -> config
+						.includeSingleSelectionControl(true)
+						.keyStroke(SINGLE_SELECTION, keyStroke -> keyStroke.set(singleSelection)));
+		tablePanel.initialize();
+		List<JMenuItem> menuItems = menuItems(tablePanel.table().getComponentPopupMenu(), new ArrayList<>());
+		JMenuItem copyCell = menuItems.stream()
+						.filter(menuItem -> menuItem.getAction() == tablePanel.control(COPY_CELL).get())
+						.findFirst()
+						.orElseThrow(IllegalStateException::new);
+		assertEquals(COPY_CELL.defaultKeystroke().get(), copyCell.getAccelerator());
+		assertTrue(menuItems.stream()
+						.anyMatch(menuItem -> menuItem instanceof JCheckBoxMenuItem && singleSelection.equals(menuItem.getAccelerator())));
+	}
+
+	@Test
 	void tableControlsReplaced() {
 		// the table panel controls replace the table ones, which have no key stroke
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
@@ -336,6 +360,20 @@ public class EntityTablePanelTest {
 		finally {
 			Database.URL.set(url);
 		}
+	}
+
+	private static List<JMenuItem> menuItems(Container container, List<JMenuItem> menuItems) {
+		Component[] components = container instanceof JMenu ? ((JMenu) container).getMenuComponents() : container.getComponents();
+		for (Component component : components) {
+			if (component instanceof JMenu) {
+				menuItems((JMenu) component, menuItems);
+			}
+			else if (component instanceof JMenuItem) {
+				menuItems.add((JMenuItem) component);
+			}
+		}
+
+		return menuItems;
 	}
 
 	private static KeyStroke keyStroke(int index) {
