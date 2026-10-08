@@ -23,14 +23,17 @@ import is.codion.swing.common.ui.control.Control;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import java.nio.file.Paths;
 
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_A;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class KeyEventsTest {
@@ -58,6 +61,78 @@ public class KeyEventsTest {
 						.onKeyRelease(true);
 		builder.enable(comboBox);
 		builder.disable(comboBox);
+	}
+
+	@Test
+	void alreadyBound() {
+		JTextField textField = new JTextField();
+		KeyStroke keyStroke = KeyStroke.getKeyStroke(VK_ENTER, CTRL_DOWN_MASK);
+		Control control = command(() -> {});
+		KeyEvents.Builder builder = KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(control);
+		builder.enable(textField);
+		// the same action again
+		builder.enable(textField);
+		// a different one, unnamed as well
+		KeyEvents.Builder other = KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(command(() -> {}));
+		assertThrows(IllegalStateException.class, () -> other.enable(textField));
+		// once disabled
+		builder.disable(textField);
+		other.enable(textField);
+		assertNotSame(control, textField.getActionMap().get(textField.getInputMap().get(keyStroke)));
+		// under another condition
+		KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.action(control)
+						.enable(textField);
+		// a look and feel binding
+		KeyStroke selectAll = KeyStroke.getKeyStroke(VK_A, CTRL_DOWN_MASK);
+		assertNotNull(textField.getInputMap().get(selectAll));
+		KeyEvents.builder()
+						.keyStroke(selectAll)
+						.action(control)
+						.enable(textField);
+	}
+
+	@Test
+	void replace() {
+		KeyStroke keyStroke = KeyStroke.getKeyStroke(VK_ENTER, CTRL_DOWN_MASK);
+		Control control = command(() -> {});
+		Control replacement = command(() -> {});
+		// nothing bound
+		JTextField textField = new JTextField();
+		KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(control)
+						.replace(textField);
+		assertSame(control, textField.getActionMap().get(textField.getInputMap().get(keyStroke)));
+		KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(replacement)
+						.replace(textField);
+		assertSame(replacement, textField.getActionMap().get(textField.getInputMap().get(keyStroke)));
+		// the editor of an editable combo box as well
+		JComboBox<String> comboBox = new JComboBox<>();
+		comboBox.setEditable(true);
+		JComponent editor = (JComponent) comboBox.getEditor().getEditorComponent();
+		KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(control)
+						.enable(comboBox);
+		assertThrows(IllegalStateException.class, () -> KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(replacement)
+						.enable(comboBox));
+		KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(replacement)
+						.replace(comboBox);
+		assertSame(replacement, comboBox.getActionMap().get(comboBox.getInputMap().get(keyStroke)));
+		assertSame(replacement, editor.getActionMap().get(editor.getInputMap().get(keyStroke)));
 	}
 
 	@Test

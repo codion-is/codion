@@ -33,7 +33,6 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,9 +127,9 @@ public final class LogLevelPanel extends JPanel {
 						.build();
 		KeyEvents.builder()
 						.keyCode(KeyEvent.VK_F)
-						.modifiers(InputEvent.CTRL_DOWN_MASK)
+						.modifiers(KeyEvents.MENU_SHORTCUT_MASK)
 						.action(command(filterField::requestFocusInWindow))
-						.enable(table);
+						.replace(table);
 		add(scrollPane()
 						.view(table)
 						.build(), BorderLayout.CENTER);

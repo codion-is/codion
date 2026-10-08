@@ -21,10 +21,12 @@ package is.codion.swing.common.ui.key;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.Action;
+import javax.swing.InputMap;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
+import javax.swing.plaf.UIResource;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.util.Collection;
@@ -117,6 +119,9 @@ public final class KeyEvents {
 	/**
 	 * A Builder for adding a key event to a component, with a default onKeyRelease trigger
 	 * and condition {@link JComponent#WHEN_FOCUSED}.
+	 * <p>A key stroke already bound to a different action on a component, under the same condition, is rejected
+	 * when enabled, the binding must be disabled first, or replaced via {@link #replace(JComponent...)}.
+	 * Bindings installed by the look and feel can be overridden.
 	 * @see KeyEvents#builder()
 	 */
 	public interface Builder {
@@ -169,7 +174,8 @@ public final class KeyEvents {
 		 * Builds the key event and enables it on the given components
 		 * @param components the components
 		 * @return this builder instance
-		 * @throws IllegalStateException in case no action has been set
+		 * @throws IllegalStateException in case no action has been set or in case the key stroke is already bound
+		 * to a different action on a component, under the same condition
 		 */
 		Builder enable(JComponent... components);
 
@@ -177,9 +183,28 @@ public final class KeyEvents {
 		 * Builds the key event and enables it on the given components
 		 * @param components the components
 		 * @return this builder instance
-		 * @throws IllegalStateException in case no action has been set
+		 * @throws IllegalStateException in case no action has been set or in case the key stroke is already bound
+		 * to a different action on a component, under the same condition
 		 */
 		Builder enable(Collection<JComponent> components);
+
+		/**
+		 * Builds the key event and enables it on the given components, replacing any existing binding
+		 * of the key stroke under the same condition.
+		 * @param components the components
+		 * @return this builder instance
+		 * @throws IllegalStateException in case no action has been set
+		 */
+		Builder replace(JComponent... components);
+
+		/**
+		 * Builds the key event and enables it on the given components, replacing any existing binding
+		 * of the key stroke under the same condition.
+		 * @param components the components
+		 * @return this builder instance
+		 * @throws IllegalStateException in case no action has been set
+		 */
+		Builder replace(Collection<JComponent> components);
 
 		/**
 		 * Disables this key event on the given components
@@ -258,7 +283,20 @@ public final class KeyEvents {
 		@Override
 		public Builder enable(Collection<JComponent> components) {
 			for (JComponent component : requireNonNull(components)) {
-				enable(requireNonNull(component), actionMapKey(component));
+				enable(requireNonNull(component), actionMapKey(component), false);
+			}
+			return this;
+		}
+
+		@Override
+		public Builder replace(JComponent... components) {
+			return replace(asList(components));
+		}
+
+		@Override
+		public Builder replace(Collection<JComponent> components) {
+			for (JComponent component : requireNonNull(components)) {
+				enable(requireNonNull(component), actionMapKey(component), true);
 			}
 			return this;
 		}
@@ -278,7 +316,7 @@ public final class KeyEvents {
 
 		private Object actionMapKey(JComponent component) {
 			if (action == null) {
-				throw new IllegalStateException("Unable to enable/disable a key event without an associated action");
+				throw new IllegalStateException("Unable to enable, replace or disable a key event without an associated action");
 			}
 
 			return createActionMapKey(component);
@@ -294,14 +332,34 @@ public final class KeyEvents {
 							.toString();
 		}
 
-		private void enable(JComponent component, Object actionMapKey) {
+		private void enable(JComponent component, Object actionMapKey, boolean replace) {
+			if (!replace) {
+				validateNotBound(component);
+			}
 			component.getActionMap().put(actionMapKey, action);
 			component.getInputMap(condition).put(keyStroke, actionMapKey);
 			if (component instanceof JComboBox<?>) {
-				enable((JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent(), actionMapKey);
+				enable((JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent(), actionMapKey, replace);
 			}
 			if (component instanceof JSpinner && ((JSpinner) component).getEditor() instanceof JSpinner.DefaultEditor) {
-				enable(((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField());
+				JComponent textField = ((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField();
+				enable(textField, actionMapKey(textField), replace);
+			}
+		}
+
+		private void validateNotBound(JComponent component) {
+			// the component's own bindings, not the look and feel ones
+			for (InputMap inputMap = component.getInputMap(condition);
+					 inputMap != null && !(inputMap instanceof UIResource); inputMap = inputMap.getParent()) {
+				KeyStroke[] keyStrokes = inputMap.keys();
+				if (keyStrokes != null && asList(keyStrokes).contains(keyStroke)) {
+					Object actionMapKey = inputMap.get(keyStroke);
+					Action bound = actionMapKey == null ? null : component.getActionMap().get(actionMapKey);
+					if (bound != null && bound != action) {
+						throw new IllegalStateException("Key stroke '" + keyStroke + "' is already bound to '" + actionMapKey
+										+ "' on " + component.getClass().getName());
+					}
+				}
 			}
 		}
 

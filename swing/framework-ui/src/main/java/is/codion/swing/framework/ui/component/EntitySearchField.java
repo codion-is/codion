@@ -924,14 +924,11 @@ public final class EntitySearchField extends HintTextField {
 											.keyCode(VK_ENTER)
 											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.action(selectControl))
-							.keyEvent(KeyEvents.builder()
-											.keyCode(VK_F)
-											.modifiers(MENU_SHORTCUT_MASK)
-											.action(command(this::requestSearchFieldFocus)))
+							// selects, instead of finding the next search result
 							.onBuild(t -> KeyEvents.builder()
 											.keyCode(VK_ENTER)
 											.action(selectControl)
-											.enable(t.searchField()))
+											.replace(t.searchField()))
 							.build();
 
 			//sort ascending by the first search column (definition-ordered by default)
@@ -939,10 +936,6 @@ public final class EntitySearchField extends HintTextField {
 			filterTable.columns().visible().set(searchField.model.columns().toArray(new Attribute[0]));
 
 			return filterTable;
-		}
-
-		private void requestSearchFieldFocus() {
-			table.searchField().requestFocusInWindow();
 		}
 
 		private final class SelectCommand implements Control.Command {

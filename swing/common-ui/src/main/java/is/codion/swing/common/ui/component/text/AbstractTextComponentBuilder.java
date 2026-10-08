@@ -223,14 +223,16 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 			new MaximumTextFieldLength(textComponent.getDocument(), maximumLength);
 		}
 		if (controlDeleteWord) {
-			keyEvent(KeyEvents.builder()
+			KeyEvents.builder()
 							.keyCode(VK_DELETE)
 							.modifiers(MENU_SHORTCUT_MASK)
-							.action(new DeleteNextWordAction()));
-			keyEvent(KeyEvents.builder()
+							.action(new DeleteNextWordAction())
+							.enable(textComponent);
+			KeyEvents.builder()
 							.keyCode(VK_BACK_SPACE)
 							.modifiers(MENU_SHORTCUT_MASK)
-							.action(new DeletePreviousWordAction()));
+							.action(new DeletePreviousWordAction())
+							.enable(textComponent);
 		}
 		Caret caret = textComponent.getCaret();
 		if (caret instanceof DefaultCaret) {

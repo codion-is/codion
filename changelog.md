@@ -40,6 +40,10 @@ Codion Change Log
 - ControlMap.keys() added, the keys of the controls in the map.
 - Controls.ControlsKey, a key stroke is now rejected with an IllegalArgumentException, as a default and in a ControlMap, where it was accepted without effect.
 - FilterTable.ControlKeys.FOCUS_SEARCH_FIELD, the key name is now focusSearchField, as the constant.
+- KeyEvents.Builder.enable(), a key stroke already bound to a different action on a component, under the same condition, is now rejected with an IllegalStateException, the binding to be disabled first, where it was silently replaced, look and feel bindings excepted.
+- KeyEvents.Builder.replace() added, enabling the key event in place of any binding of its key stroke on a component, under the same condition.
+- TextFieldBuilder and TextAreaBuilder, the key events for deleting a word are now enabled on the component, where each build added them to the builder, a builder built twice binding them twice.
+- LogLevelPanel, CTRL-F now replaces the table's search field binding, focusing the filter field, using the menu shortcut key, Command on macOS, instead of Control.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.
@@ -57,6 +61,7 @@ Codion Change Log
 - EntityEditPanel, the key events are now bound when the panel is initialized instead of constructed, where a control set in setupControls(), or by an EntityPanel, was not the one bound.
 - EntityTablePanel.setupKeyboardActions(), EntityPanel.setupKeyboardActions() and setupNavigation() now private, the key events bound on initialization.
 - EntityTablePanel.ControlKeys.COPY_CELL, COPY_COLUMN and FOCUS_SEARCH_FIELD now replace the FilterTable keys of the same name, which have no key stroke in a table panel, COPY_CELL and COPY_COLUMN given the defaults CTRL-ALT-C and CTRL-ALT-SHIFT-C, where the key strokes had to be configured on the table, or kept in step with the panel.
+- EntitySearchField, the table selector no longer binds CTRL-F on its table, which binds it already, ENTER in the search field now replaced explicitly by selecting.
 
 ## 0.18.89
 ### is.codion.common.reactive
