@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
+import is.codion.swing.common.ui.component.renderer.RowColors;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.Results;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -31,7 +32,6 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -59,7 +59,6 @@ import static javax.swing.BorderFactory.*;
 final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<R, C, T> {
 
 	private static final double DOUBLE_DARKENING_FACTOR = 0.8;
-	private static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
 
 	private final Settings<R, C, T> settings;
 	private final Class<T> type;
@@ -235,11 +234,10 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 	private static final class Settings<R, C, T> {
 
-		private final boolean alternateRowColoring;
+		private final RowColors rowColors;
 		private final boolean filterIndicator;
 		private final boolean focusedCellIndicator;
 		private final boolean setBorder;
-		private final boolean inactiveSelection;
 		private final CellColor<R, C, T> backgroundColor;
 		private final CellColor<R, C, T> foregroundColor;
 		private final Collection<Customizer<R, C>> customizers = new ArrayList<>();
@@ -250,8 +248,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private UISettings<C> uiSettings;
 
 		private Settings(SettingsBuilder<R, C, T> builder) {
-			this.uiSettings = new UISettings<>(builder.leftPadding, builder.rightPadding);
-			this.alternateRowColoring = builder.alternateRowColoring;
+			this.rowColors = new RowColors("Table", builder.alternateRowColoring, builder.inactiveSelection);
+			this.uiSettings = new UISettings<>(builder.leftPadding, builder.rightPadding, rowColors.foreground());
 			this.filterIndicator = builder.filterIndicator;
 			if (filterIndicator) {
 				customizers.add(new FilterIndicator<>());
@@ -260,7 +258,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.backgroundColor = builder.backgroundColor;
 			this.focusedCellIndicator = builder.focusedCellIndicator;
 			this.setBorder = builder.setBorder;
-			this.inactiveSelection = builder.inactiveSelection;
 			this.foregroundColor = builder.foregroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
 			this.toolTip = builder.toolTip;
@@ -268,16 +265,17 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private void update() {
-			uiSettings = uiSettings.update();
+			rowColors.update();
+			uiSettings = uiSettings.update(rowColors.foreground());
 		}
 
 		private void configure(FilterTable<R, C> filterTable, JComponent component, T value,
 													 boolean isSelected, boolean hasFocus, int rowIndex, int columnIndex) {
 			R row = filterTable.model().items().included().get(rowIndex);
 			C identifier = filterTable.columns().columnAt(columnIndex).identifier();
-			boolean alternateRow = alternateRow(rowIndex);
 			Color foreground = foregroundColor(filterTable, row, identifier, value, isSelected);
-			Color background = backgroundColor(filterTable, row, identifier, value, isSelected, alternateRow);
+			Color background = rowColors.background(filterTable.getBackground(), rowIndex,
+							backgroundColor.get(filterTable, row, identifier, value), isSelected, filterTable.getSelectionBackground());
 			if (component instanceof JCheckBox) {
 				((JCheckBox) component).setBorderPainted(true);
 			}
@@ -295,18 +293,15 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			customize(filterTable, row, identifier, component);
 		}
 
-		// the selection foreground wins over the cell foreground, which may not be readable on the selection background
+		// The selection colors of the table itself, which the look and feel may change, for example
+		// from the focused to the unfocused ones when the table loses the focus, as FlatLaf does
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
-			if (selected) {
-				return selectionForeground(filterTable);
-			}
-			Color foreground = foregroundColor.get(filterTable, row, identifier, value);
-
-			return foreground == null ? uiSettings.foreground() : foreground;
+			return rowColors.foreground(selected ? null : foregroundColor.get(filterTable, row, identifier, value),
+							selected, filterTable.getSelectionForeground());
 		}
 
 		private Color backgroundColor(FilterTable<R, C> filterTable, int rowIndex, R row, C identifier, JComponent component) {
-			component.setBackground(backgroundColor(filterTable, rowIndex));
+			component.setBackground(rowColors.background(filterTable.getBackground(), rowIndex));
 			customize(filterTable, row, identifier, component);
 
 			return component.getBackground();
@@ -318,119 +313,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 					customizer.customize(filterTable, row, identifier, component);
 				}
 			}
-		}
-
-		private Color backgroundColor(FilterTable<R, C> filterTable, int row) {
-			boolean alternateRow = alternateRow(row);
-			if (alternateRowColoring) {
-				return alternateRow ? alternateBackground(filterTable) : background(filterTable);
-			}
-			else {
-				if (uiSettings.alternateRowColor() == null) {
-					return background(filterTable);
-				}
-				// If UIManager's Table.alternateRowColor is set, respect it
-				return alternateRow ? uiSettings.alternateRowColor() : background(filterTable);
-			}
-		}
-
-		private Color backgroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
-			return alternateRowColoring ?
-							backgroundAlternating(filterTable, row, identifier, value, selected, alternateRow) :
-							backgroundNonAlternating(filterTable, row, identifier, value, selected, alternateRow);
-		}
-
-		private Color backgroundAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
-			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
-			cellBackgroundColor = backgroundAlternating(filterTable, cellBackgroundColor, alternateRow, selected);
-			if (cellBackgroundColor != null) {
-				return cellBackgroundColor;
-			}
-
-			return alternateRow ? alternateBackground(filterTable) : background(filterTable);
-		}
-
-		private Color backgroundNonAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
-			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
-			cellBackgroundColor = backgroundNonAlternating(filterTable, cellBackgroundColor, selected);
-			if (cellBackgroundColor != null) {
-				return cellBackgroundColor;
-			}
-			if (uiSettings.alternateRowColor() == null) {
-				return background(filterTable);
-			}
-			// If UIManager's Table.alternateRowColor is set, respect it
-			return alternateRow ? uiSettings.alternateRowColor() : background(filterTable);
-		}
-
-		private Color backgroundAlternating(FilterTable<R, C> filterTable, Color cellBackgroundColor, boolean alternateRow, boolean selected) {
-			if (cellBackgroundColor != null && alternateRow) {
-				cellBackgroundColor = shade(cellBackgroundColor);
-			}
-			if (selected) {
-				Color selectionBackground = alternateRow ? alternateSelectionBackground(filterTable) : selectionBackground(filterTable);
-				if (cellBackgroundColor == null) {
-					return selectionBackground;
-				}
-
-				return blendColors(cellBackgroundColor, selectionBackground);
-			}
-
-			return cellBackgroundColor;
-		}
-
-		private Color backgroundNonAlternating(FilterTable<R, C> filterTable, Color cellBackgroundColor, boolean selected) {
-			if (selected) {
-				if (cellBackgroundColor == null) {
-					return selectionBackground(filterTable);
-				}
-
-				return blendColors(cellBackgroundColor, selectionBackground(filterTable));
-			}
-
-			return cellBackgroundColor;
-		}
-
-		// The selection colors of the table itself, which the look and feel may change, for example
-		// from the focused to the unfocused ones when the table loses the focus, as FlatLaf does
-		private Color selectionForeground(FilterTable<R, C> filterTable) {
-			return selectionColor(filterTable.getSelectionForeground(), uiSettings.selectionForeground());
-		}
-
-		private Color selectionBackground(FilterTable<R, C> filterTable) {
-			return selectionColor(filterTable.getSelectionBackground(), uiSettings.selectionBackground());
-		}
-
-		private Color alternateSelectionBackground(FilterTable<R, C> filterTable) {
-			return shade(selectionBackground(filterTable));
-		}
-
-		// A selection color set by the look and feel, such as FlatLaf's inactive one while the table is not focused,
-		// is replaced by the default one of the look and feel, unless inactive selection is enabled
-		private Color selectionColor(@Nullable Color tableColor, Color defaultColor) {
-			//qualified, since UIResource alone is the one nested in DefaultTableCellRenderer
-			if (tableColor == null || (!inactiveSelection && tableColor instanceof javax.swing.plaf.UIResource)) {
-				return defaultColor;
-			}
-
-			return tableColor;
-		}
-
-		// The background of the table itself, the reference for shading the alternate rows
-		private Color background(FilterTable<R, C> filterTable) {
-			Color background = filterTable.getBackground();
-
-			return background == null ? uiSettings.background() : background;
-		}
-
-		private Color alternateBackground(FilterTable<R, C> filterTable) {
-			Color alternateRowColor = uiSettings.alternateRowColor();
-
-			return alternateRowColor == null ? shade(background(filterTable)) : alternateRowColor;
-		}
-
-		private static boolean alternateRow(int rowIndex) {
-			return rowIndex % 2 != 0;
 		}
 
 		private void setComponentBorder(JComponent component, boolean hasFocus, boolean searchResult, boolean currentSearchResult) {
@@ -448,14 +330,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 					component.setBorder(uiSettings.cellBorder());
 				}
 			}
-		}
-
-		private static Color blendColors(Color color1, Color color2) {
-			int r = (int) (color1.getRed() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getRed() * SELECTION_COLOR_BLEND_RATIO);
-			int g = (int) (color1.getGreen() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getGreen() * SELECTION_COLOR_BLEND_RATIO);
-			int b = (int) (color1.getBlue() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getBlue() * SELECTION_COLOR_BLEND_RATIO);
-
-			return new Color(r, g, b, color1.getAlpha());
 		}
 	}
 
@@ -809,50 +683,20 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private final int leftPadding;
 		private final int rightPadding;
-		private final Color foreground;
-		private final Color background;
-		private final Color alternateRowColor;
-		private final Color selectionForeground;
-		private final Color selectionBackground;
 		private final Border cellBorder;
 		private final Border focusedCellBorder;
 		private final Border currentSearchResultBorder;
 
-		private UISettings(int leftPadding, int rightPadding) {
+		private UISettings(int leftPadding, int rightPadding, Color foreground) {
 			this.leftPadding = leftPadding;
 			this.rightPadding = rightPadding;
-			foreground = UIManager.getColor("Table.foreground");
-			background = UIManager.getColor("Table.background");
-			alternateRowColor = UIManager.getColor("Table.alternateRowColor");
-			selectionForeground = UIManager.getColor("Table.selectionForeground");
-			selectionBackground = UIManager.getColor("Table.selectionBackground");
 			cellBorder = createEmptyBorder(0, leftPadding, 0, rightPadding);
-			focusedCellBorder = createFocusedCellBorder();
-			currentSearchResultBorder = createCurrentSearchResultBorder();
+			focusedCellBorder = createFocusedCellBorder(foreground);
+			currentSearchResultBorder = createCurrentSearchResultBorder(foreground);
 		}
 
-		private UISettings<C> update() {
-			return new UISettings<>(leftPadding, rightPadding);
-		}
-
-		private Color foreground() {
-			return foreground;
-		}
-
-		private Color background() {
-			return background;
-		}
-
-		private Color alternateRowColor() {
-			return alternateRowColor;
-		}
-
-		private Color selectionForeground() {
-			return selectionForeground;
-		}
-
-		private Color selectionBackground() {
-			return selectionBackground;
+		private UISettings<C> update(Color foreground) {
+			return new UISettings<>(leftPadding, rightPadding, foreground);
 		}
 
 		private Border cellBorder() {
@@ -871,12 +715,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return currentSearchResultBorder;
 		}
 
-		private CompoundBorder createFocusedCellBorder() {
+		private CompoundBorder createFocusedCellBorder(Color foreground) {
 			return createCompoundBorder(createLineBorder(darker(foreground, DOUBLE_DARKENING_FACTOR),
 							FOCUSED_CELL_BORDER_THICKNESS), cellBorder);
 		}
 
-		private CompoundBorder createCurrentSearchResultBorder() {
+		private CompoundBorder createCurrentSearchResultBorder(Color foreground) {
 			return createCompoundBorder(createLineBorder(darker(foreground, DOUBLE_DARKENING_FACTOR),
 							FOCUSED_CELL_BORDER_THICKNESS * 2), cellBorder);
 		}

@@ -45,6 +45,7 @@ Codion Change Log
 - TextFieldBuilder and TextAreaBuilder, the key events for deleting a word are now enabled on the component, where each build added them to the builder, a builder built twice binding them twice.
 - LogLevelPanel, CTRL-F now replaces the table's search field binding, focusing the filter field, using the menu shortcut key, Command on macOS, instead of Control.
 - MenuItemBuilder.accelerator() and ToggleMenuItemBuilder.accelerator() added, the accelerator displayed by the menu item, in place of any of its action.
+- FilterTableCellRenderer, the row colors moved to an internal RowColors, for sharing with the list and tree renderers, a selection color set by the look and feel now kept when the look and feel has no default one, where the selected cells were left without a selection color.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.
