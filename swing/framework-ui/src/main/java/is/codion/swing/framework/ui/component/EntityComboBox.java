@@ -230,7 +230,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke the keyStroke to assign to the given control
+		 * @param keyStroke the keyStroke to assign to the given control, null for none
 		 * @return this builder instance
 		 */
 		Builder keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke);

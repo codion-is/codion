@@ -381,10 +381,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke the keyStroke to assign to the given control
+		 * @param keyStroke the keyStroke to assign to the given control, null for none
 		 * @return this builder instance
 		 */
-		Builder<T> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
+		Builder<T> keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke);
 	}
 
 	/**
@@ -480,7 +480,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 
 		@Override
-		public Builder<T> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+		public Builder<T> keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}

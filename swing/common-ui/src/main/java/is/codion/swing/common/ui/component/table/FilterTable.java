@@ -1822,10 +1822,10 @@ public final class FilterTable<R, C> extends JTable {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke the keyStroke to assign to the given control
+		 * @param keyStroke the keyStroke to assign to the given control, null for none
 		 * @return this builder instance
 		 */
-		Builder<R, C> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
+		Builder<R, C> keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke);
 
 		/**
 		 * Overrides {@link #rowHeightFromFontSize(boolean)}
@@ -2208,7 +2208,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+		public Builder<R, C> keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
@@ -2401,24 +2401,15 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (columnReordering && move(e)) {
-				moveSelectedColumn(e.getKeyCode() == moveLeft.getKeyCode());
+			KeyStroke keyStroke = getKeyStrokeForEvent(e);
+			if (columnReordering && (keyStroke.equals(moveLeft) || keyStroke.equals(moveRight))) {
+				moveSelectedColumn(keyStroke.equals(moveLeft));
 				e.consume();
 			}
-			else if (columnResizing && resize(e)) {
-				resizeSelectedColumn(e.getKeyCode() == increaseSize.getKeyCode());
+			else if (columnResizing && (keyStroke.equals(increaseSize) || keyStroke.equals(decreaseSize))) {
+				resizeSelectedColumn(keyStroke.equals(increaseSize));
 				e.consume();
 			}
-		}
-
-		private boolean move(KeyEvent e) {
-			return (moveLeft != null && moveLeft.equals(getKeyStrokeForEvent(e))) ||
-							(moveRight != null && moveRight.equals(getKeyStrokeForEvent(e)));
-		}
-
-		private boolean resize(KeyEvent e) {
-			return (decreaseSize != null && decreaseSize.equals(getKeyStrokeForEvent(e))) ||
-							(increaseSize != null && increaseSize.equals(getKeyStrokeForEvent(e)));
 		}
 
 		private void moveSelectedColumn(boolean left) {

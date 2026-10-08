@@ -730,7 +730,7 @@ public final class FilterTree<T> extends JTree {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke the key stroke to assign to the given control
+		 * @param keyStroke the keyStroke to assign to the given control, null for none
 		 * @return this builder instance
 		 * @see ControlKeys
 		 */

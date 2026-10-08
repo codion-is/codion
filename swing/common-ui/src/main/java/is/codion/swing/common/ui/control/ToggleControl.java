@@ -21,9 +21,9 @@ package is.codion.swing.common.ui.control;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 
-import javax.swing.KeyStroke;
+import org.jspecify.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
+import javax.swing.KeyStroke;
 
 /**
  * <p>A Control for toggling a boolean value.
@@ -64,15 +64,15 @@ public interface ToggleControl extends Control {
 	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
 	 */
 	static ControlKey<ToggleControl> key(String name) {
-		return new DefaultControlKey<>(name, null);
+		return key(name, null);
 	}
 
 	/**
 	 * @param name the control name
-	 * @param defaultKeyStroke the default keystroke
+	 * @param defaultKeyStroke the default keystroke, null for none
 	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
 	 */
-	static ControlKey<ToggleControl> key(String name, KeyStroke defaultKeyStroke) {
-		return new DefaultControlKey<>(name, requireNonNull(defaultKeyStroke));
+	static ControlKey<ToggleControl> key(String name, @Nullable KeyStroke defaultKeyStroke) {
+		return new DefaultControlKey<>(name, defaultKeyStroke);
 	}
 }

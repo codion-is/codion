@@ -66,10 +66,12 @@ public final class ControlKeyTest {
 		assertEquals("toggleView", toggleWithKey.name());
 		assertEquals(f2, toggleWithKey.defaultKeystroke().get());
 
+		// Null keystroke for none
+		assertNull(ToggleControl.key("toggleView", null).defaultKeystroke().get());
+
 		// Null name should throw
 		assertThrows(NullPointerException.class, () -> ToggleControl.key(null));
 		assertThrows(NullPointerException.class, () -> ToggleControl.key(null, f2));
-		assertThrows(NullPointerException.class, () -> ToggleControl.key("test", null));
 	}
 
 	@Test

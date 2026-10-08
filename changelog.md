@@ -34,6 +34,9 @@ Codion Change Log
 - FilterTableColumnModel, a locked column model now rejects a change to the visibility of a column with an IllegalArgumentException, as validators do, instead of an IllegalStateException.
 - AbstractTextComponentValue, TextInput and FileInput, an edit now notifies the value once, where replacing text, by typing over a selection or setting the value, first notified the intermediate text left by the removal, null, which a linked value rejecting it threw on, the text left empty.
 - TextAreaBuilder, the text area now has a document validating each edit before it is applied, as a text field does, where it only had one with a case or a maximum length configured.
+- CalendarPanel, TemporalField, TextInput and FilterTable builders, keyStroke() now declares the key stroke nullable, null for no key binding, as already accepted.
+- FilterTable, the column move and resize keys are now told apart by the whole key stroke, where unbinding one direction made the other throw a NullPointerException, and directions sharing a key code moved or resized the same way.
+- ToggleControl.key(name, keyStroke) now accepts a null key stroke, for no default, as CommandControl.key() does.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.
@@ -45,6 +48,7 @@ Codion Change Log
 - EntityTablePanel, no condition panel is created for a table model without query conditions.
 - EntityTablePanel, the export dialog size is now stored with the table panel settings instead of the export preferences, the export model no longer holding it.
 - EntityTablePanel, the export controls are now disabled while exporting, where a second click before the progress dialog was shown started a second export, the clipboard now set before the success message is shown, the export model no longer Swing based.
+- TabbedDetailLayout and EntitySearchField builders, keyStroke() now declares the key stroke nullable, null for no key binding, as already accepted.
 
 ## 0.18.89
 ### is.codion.common.reactive

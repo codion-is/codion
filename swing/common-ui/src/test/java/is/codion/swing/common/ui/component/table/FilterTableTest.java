@@ -39,9 +39,12 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -57,7 +60,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.command;
+import static java.awt.event.KeyEvent.CHAR_UNDEFINED;
+import static java.awt.event.KeyEvent.KEY_PRESSED;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.stream.Collectors.toList;
@@ -956,6 +962,52 @@ public class FilterTableTest {
 //		Dialogs.builder()
 //						.component(new JScrollPane(table))
 //						.show();
+	}
+
+	@Test
+	void moveResizeColumnWithoutKeyStroke() {
+		// one direction unbound, the other still works
+		FilterTable<List<Object>, Integer> table = FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.keyStroke(MOVE_COLUMN_LEFT, null)
+						.keyStroke(INCREASE_COLUMN_SIZE, null)
+						.build();
+		table.getColumnModel().getSelectionModel().setSelectionInterval(0, 0);
+		assertTrue(press(table, MOVE_COLUMN_RIGHT.defaultKeystroke().getOrThrow()));
+		assertEquals(0, table.columns().columnAt(1).identifier());
+		assertFalse(press(table, MOVE_COLUMN_LEFT.defaultKeystroke().getOrThrow()));
+		table.getColumnModel().getSelectionModel().setSelectionInterval(1, 1);
+		int width = table.columns().columnAt(1).getWidth();
+		assertTrue(press(table, DECREASE_COLUMN_SIZE.defaultKeystroke().getOrThrow()));
+		assertTrue(table.columns().columnAt(1).getWidth() < width);
+		assertFalse(press(table, INCREASE_COLUMN_SIZE.defaultKeystroke().getOrThrow()));
+	}
+
+	@Test
+	void moveColumnKeyStrokesSharingKeyCode() {
+		// directions told apart by their modifiers
+		KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.ALT_DOWN_MASK);
+		KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+		FilterTable<List<Object>, Integer> table = FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.keyStroke(MOVE_COLUMN_LEFT, left)
+						.keyStroke(MOVE_COLUMN_RIGHT, right)
+						.build();
+		table.getColumnModel().getSelectionModel().setSelectionInterval(0, 0);
+		assertTrue(press(table, right));
+		assertEquals(0, table.columns().columnAt(1).identifier());
+		table.getColumnModel().getSelectionModel().setSelectionInterval(1, 1);
+		assertTrue(press(table, left));
+		assertEquals(0, table.columns().columnAt(0).identifier());
+	}
+
+	/** Presses the key stroke through the component's key listeners, returning whether it was consumed */
+	private static boolean press(JComponent component, KeyStroke keyStroke) {
+		KeyEvent event = new KeyEvent(component, KEY_PRESSED, System.currentTimeMillis(),
+						keyStroke.getModifiers(), keyStroke.getKeyCode(), CHAR_UNDEFINED);
+		asList(component.getKeyListeners()).forEach(listener -> listener.keyPressed(event));
+
+		return event.isConsumed();
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,

@@ -243,10 +243,10 @@ public final class TextInput extends JPanel {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke the keyStroke to assign to the given control
+		 * @param keyStroke the keyStroke to assign to the given control, null for none
 		 * @return this builder instance
 		 */
-		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
+		Builder keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke);
 	}
 
 	private CommandControl createTextAreaControl(DefaultBuilder builder) {
@@ -393,7 +393,7 @@ public final class TextInput extends JPanel {
 		}
 
 		@Override
-		public TextInput.Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+		public TextInput.Builder keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}

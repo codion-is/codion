@@ -269,10 +269,10 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke the keyStroke to assign to the given control
+		 * @param keyStroke the keyStroke to assign to the given control, null for none
 		 * @return this builder instance
 		 */
-		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
+		Builder keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke);
 
 		/**
 		 * @return a new {@link TabbedDetailLayout} instance based on this builder
@@ -733,7 +733,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+		public Builder keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
