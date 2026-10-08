@@ -44,6 +44,11 @@ final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValu
 	}
 
 	@Override
+	protected boolean validateChanges() {
+		return false; //edited as text, passing through intermediate values
+	}
+
+	@Override
 	protected void setComponentValue(@Nullable T value) {
 		component().set(value);
 	}

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.90
+### is.codion.common.reactive
+- AbstractValue.shouldNotify() added, called before the listeners are notified, only notified in case it returns true, for a value whose state changes outside set() to validate a change before it is notified.
 ### is.codion.common.model
 - ProgressWorker, the onResult handlers are now called before the onSuccess handlers, a success being reported once the result has been handled, where a success message, such as a dialog, delayed handling the result.
 - FilterTreeModel.Builder.leaf(), the leaf function is now called along with the children function when nodes are loaded, off the UI thread when loading asynchronously, its result kept until a refresh reaches the node, instead of each time a view asks whether a node is a leaf, so it may query a database or list a directory.
@@ -27,6 +29,9 @@ Codion Change Log
 - ToggleControl, performing it now toggles the value, a nullable one in the order false, null, true, where it did nothing, so a toggle control bound to a key, or based on a plain button or menu item, had no effect.
 - ButtonBuilder.action() and control(), a ToggleControl given to a toggle button or toggle menu item builder now has its value linked to the button, as by toggle(), where the button toggled itself, out of step with the value.
 - ColumnConditionPanel.ControlKeys.CLEAR now CommandControl based.
+- AbstractComponentValue, a change made in the component is now validated before it is notified, a rejected change restored once the event making it has completed and its exception rethrown on the EDT, where the component kept the rejected value, out of step with a linked value, the exception escaping the Swing listener, a toggle button left pressed.
+- AbstractComponentValue.validateChanges() added, false for components edited as text, which pass through intermediate values.
+- FilterTableColumnModel, a locked column model now rejects a change to the visibility of a column with an IllegalArgumentException, as validators do, instead of an IllegalStateException.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.

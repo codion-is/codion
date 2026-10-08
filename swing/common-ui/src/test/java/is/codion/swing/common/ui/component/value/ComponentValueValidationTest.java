@@ -18,15 +18,30 @@
  */
 package is.codion.swing.common.ui.component.value;
 
+import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.text.TemporalField;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import java.awt.event.ItemEvent;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -205,5 +220,164 @@ public final class ComponentValueValidationTest {
 		// Valid value works
 		assertDoesNotThrow(() -> field.set("valid"));
 		assertEquals("valid", field.get());
+	}
+
+	@Test
+	void rejectedChangeRestored() throws Exception {
+		List<Throwable> rethrown = new ArrayList<>();
+		Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> rethrown.add(exception));
+		try {
+			State state = State.state();
+			state.addValidator(value -> {
+				if (value) {
+					throw new IllegalArgumentException("rejected");
+				}
+			});
+			AtomicInteger notified = new AtomicInteger();
+			state.addListener(notified::incrementAndGet);
+			ComponentValue<JToggleButton, Boolean> toggleButtonValue = Components.toggleButton()
+							.link(state)
+							.buildValue();
+			AtomicInteger componentValueNotified = new AtomicInteger();
+			toggleButtonValue.addListener(componentValueNotified::incrementAndGet);
+			JToggleButton toggleButton = toggleButtonValue.component();
+			List<Integer> itemEvents = new ArrayList<>();
+			toggleButton.addItemListener(event -> itemEvents.add(event.getStateChange()));
+			JCheckBox checkBox = Components.checkBox()
+							.link(state)
+							.build();
+			Value<String> item = Value.nullable("a");
+			item.addValidator(value -> {
+				if ("x".equals(value)) {
+					throw new IllegalArgumentException("rejected");
+				}
+			});
+			JComboBox<String> comboBox = Components.comboBox()
+							.model(new DefaultComboBoxModel<>(new String[] {"a", "b", "x"}))
+							.link(item)
+							.build();
+			Value<Integer> number = Value.nullable(4);
+			number.addValidator(value -> {
+				if (value != null && value == 5) {
+					throw new IllegalArgumentException("rejected");
+				}
+			});
+			JSpinner spinner = Components.integerSpinner()
+							.link(number)
+							.build();
+			SwingUtilities.invokeAndWait(() -> {
+				toggleButton.doClick();
+				// not notified, the button pressed no longer
+				assertFalse(state.is());
+				assertFalse(toggleButton.getModel().isPressed());
+				checkBox.doClick();
+				comboBox.setSelectedItem("x");
+				spinner.setValue(5);
+			});
+			// restored once the event making the change has completed
+			SwingUtilities.invokeAndWait(() -> {});
+			assertFalse(toggleButton.isSelected());
+			assertFalse(checkBox.isSelected());
+			assertFalse(state.is());
+			assertEquals(0, notified.get());
+			assertEquals(0, componentValueNotified.get());
+			// in order, the change and the restore
+			assertEquals(asList(ItemEvent.SELECTED, ItemEvent.DESELECTED), itemEvents);
+			assertEquals("a", comboBox.getSelectedItem());
+			assertEquals("a", item.get());
+			assertEquals(4, spinner.getValue());
+			assertEquals(4, number.get());
+			// rethrown on the Event Dispatch Thread
+			assertEquals(4, rethrown.size());
+			rethrown.forEach(exception -> assertInstanceOf(IllegalArgumentException.class, exception));
+			// a valid change after a rejected one
+			SwingUtilities.invokeAndWait(() -> comboBox.setSelectedItem("b"));
+			assertEquals("b", item.get());
+		}
+		finally {
+			Thread.setDefaultUncaughtExceptionHandler(handler);
+		}
+	}
+
+	@Test
+	void rejectedChangeOwnValidator() throws Exception {
+		List<Throwable> rethrown = new ArrayList<>();
+		Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> rethrown.add(exception));
+		try {
+			// a change made in an unlinked component, validated by its own validators
+			ComponentValue<JCheckBox, Boolean> checkBoxValue = Components.checkBox()
+							.validator(value -> {
+								if (value) {
+									throw new IllegalArgumentException("rejected");
+								}
+							})
+							.buildValue();
+			// a component value of its own, never set, its initial value restored
+			SpinnerValue spinnerValue = new SpinnerValue(new JSpinner(new SpinnerNumberModel(4, 0, 10, 1)));
+			spinnerValue.addValidator(value -> {
+				if (value != null && value == 5) {
+					throw new IllegalArgumentException("rejected");
+				}
+			});
+			SwingUtilities.invokeAndWait(() -> {
+				checkBoxValue.component().doClick();
+				spinnerValue.component().setValue(5);
+			});
+			SwingUtilities.invokeAndWait(() -> {});
+			assertFalse(checkBoxValue.component().isSelected());
+			assertFalse(checkBoxValue.getOrThrow());
+			assertEquals(4, spinnerValue.component().getValue());
+			assertEquals(4, spinnerValue.get());
+			assertEquals(2, rethrown.size());
+		}
+		finally {
+			Thread.setDefaultUncaughtExceptionHandler(handler);
+		}
+	}
+
+	@Test
+	void textChangesNotValidatedOnNotify() throws Exception {
+		// edited as text, passing through intermediate values, an edit in progress is not restored
+		Value<LocalDate> date = Value.nullable(LocalDate.of(2026, 10, 8));
+		date.addValidator(value -> {
+			if (value == null) {
+				throw new IllegalArgumentException("required");
+			}
+		});
+		ComponentValue<TemporalField<LocalDate>, LocalDate> dateValue = Components.localDateField()
+						.dateTimePattern("dd.MM.yyyy")
+						.link(date)
+						.buildValue();
+		TemporalField<LocalDate> field = dateValue.component();
+		SwingUtilities.invokeAndWait(() -> {
+			// deleting the last digit, the field holding no date, which the linked value rejects
+			field.select(field.getText().length() - 1, field.getText().length());
+			assertThrows(IllegalArgumentException.class, () -> field.replaceSelection(""));
+		});
+		SwingUtilities.invokeAndWait(() -> {});
+		// not restored
+		assertNull(field.get());
+		SwingUtilities.invokeAndWait(() -> field.replaceSelection("7"));
+		assertEquals(LocalDate.of(2027, 10, 8), date.get());
+	}
+
+	private static final class SpinnerValue extends AbstractComponentValue<JSpinner, Integer> {
+
+		private SpinnerValue(JSpinner spinner) {
+			super(spinner);
+			spinner.addChangeListener(event -> notifyObserver());
+		}
+
+		@Override
+		protected Integer getComponentValue() {
+			return (Integer) component().getValue();
+		}
+
+		@Override
+		protected void setComponentValue(@Nullable Integer value) {
+			component().setValue(value == null ? 0 : value);
+		}
 	}
 }

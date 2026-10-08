@@ -11,6 +11,10 @@ Binding model data to UI components is accomplished by linking a {url-javadoc}{c
 include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=basics]
 ----
 
+A change made in a component is validated before it reaches the linked value, by the validators of both.
+A change they reject is undone once the event making it has completed, and the exception rethrown on the Event Dispatch Thread, so the component and the value never disagree.
+Text fields validate an edit before it is applied instead, since text passes through intermediate values while being typed.
+
 == Text
 
 === TextField

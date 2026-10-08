@@ -302,6 +302,11 @@ public final class FileInput extends JPanel {
 		}
 
 		@Override
+		protected boolean validateChanges() {
+			return false; //edited as text, passing through intermediate values
+		}
+
+		@Override
 		protected @Nullable Path getComponentValue() {
 			String filePath = component().pathField.getText();
 			if (filePath.isEmpty()) {
@@ -322,6 +327,11 @@ public final class FileInput extends JPanel {
 		private ByteArrayInputPanelValue(FileInput fileInput) {
 			super(fileInput);
 			fileInput.pathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
+		}
+
+		@Override
+		protected boolean validateChanges() {
+			return false; //edited as text, passing through intermediate values
 		}
 
 		@Override

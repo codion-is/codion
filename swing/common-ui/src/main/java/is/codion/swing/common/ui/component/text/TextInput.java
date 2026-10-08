@@ -441,6 +441,11 @@ public final class TextInput extends JPanel {
 		}
 
 		@Override
+		protected boolean validateChanges() {
+			return false; //edited as text, passing through intermediate values
+		}
+
+		@Override
 		protected @Nullable String getComponentValue() {
 			return component().getText();
 		}

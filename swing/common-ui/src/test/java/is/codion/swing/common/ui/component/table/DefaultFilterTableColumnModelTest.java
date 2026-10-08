@@ -140,17 +140,17 @@ public class DefaultFilterTableColumnModelTest {
 						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
 
 		columnModel.locked().set(true);
-		assertThrows(IllegalStateException.class, () -> columnModel.visible(0).set(false));
+		assertThrows(IllegalArgumentException.class, () -> columnModel.visible(0).set(false));
 		columnModel.locked().set(false);
 		columnModel.visible(0).set(false);
 		columnModel.locked().set(true);
-		assertThrows(IllegalStateException.class, () -> columnModel.visible(0).set(true));
-		assertThrows(IllegalStateException.class, () -> columnModel.visible().set(0));
+		assertThrows(IllegalArgumentException.class, () -> columnModel.visible(0).set(true));
+		assertThrows(IllegalArgumentException.class, () -> columnModel.visible().set(0));
 
 		columnModel.locked().set(false);
 		columnModel.visible().set(3, 2, 1);
 		columnModel.locked().set(true);
-		assertThrows(IllegalStateException.class, () -> columnModel.visible().set(1, 0, 2));
+		assertThrows(IllegalArgumentException.class, () -> columnModel.visible().set(1, 0, 2));
 	}
 
 	@Test

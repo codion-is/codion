@@ -324,6 +324,11 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		}
 
 		@Override
+		protected boolean validateChanges() {
+			return false; //edited as text, passing through intermediate values
+		}
+
+		@Override
 		protected @Nullable T getComponentValue() {
 			return component().get();
 		}

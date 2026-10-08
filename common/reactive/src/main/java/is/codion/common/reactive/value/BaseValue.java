@@ -253,16 +253,32 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	protected abstract void setValue(@Nullable T value);
 
 	/**
-	 * Notifies the underlying observer that the underlying value has changed or at least that it may have changed
+	 * Notifies the underlying observer that the underlying value has changed or at least that it may have changed,
+	 * in case {@link #shouldNotify(Object)} allows it.
 	 */
 	protected final void notifyObserver() {
-		notifying++;
-		try {
-			notifyListeners(get());
+		T value = get();
+		if (shouldNotify(value)) {
+			notifying++;
+			try {
+				notifyListeners(value);
+			}
+			finally {
+				notifying--;
+			}
 		}
-		finally {
-			notifying--;
-		}
+	}
+
+	/**
+	 * Called by {@link #notifyObserver()} before the listeners are notified, with the value they are to receive,
+	 * the listeners only notified in case this method returns true. Allows a value whose state changes outside
+	 * {@link #set(Object)}, held by a component for example, to validate a change before it is notified.
+	 * <p>Returns true by default.
+	 * @param value the value the listeners are to receive
+	 * @return true if the listeners should be notified
+	 */
+	protected boolean shouldNotify(@Nullable T value) {
+		return true;
 	}
 
 	/**

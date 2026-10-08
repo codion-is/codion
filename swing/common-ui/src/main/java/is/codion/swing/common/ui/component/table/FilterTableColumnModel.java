@@ -71,6 +71,7 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	/**
 	 * Returns a {@link State} instance controlling whether this model is locked or not.
 	 * A locked column model does not allow adding or removing of columns, but columns can be reordered.
+	 * The visible state of a column rejects a change with an {@link IllegalArgumentException} while locked.
 	 * @return a {@link State} controlling whether this model is locked or not
 	 */
 	State locked();

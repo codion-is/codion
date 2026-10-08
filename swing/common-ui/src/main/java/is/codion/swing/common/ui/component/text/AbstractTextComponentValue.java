@@ -87,6 +87,16 @@ public abstract class AbstractTextComponentValue<C extends JTextComponent, T> ex
 		}
 	}
 
+	/**
+	 * Returns false, a text edit being validated by the document filter, if any, before it is applied, and notified in
+	 * steps, such as when replacing a selection.
+	 * @return false
+	 */
+	@Override
+	protected final boolean validateChanges() {
+		return false;
+	}
+
 	private final class NotifyOnNumberChanged implements Consumer<Number> {
 		@Override
 		public void accept(Number value) {
