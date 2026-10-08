@@ -92,8 +92,5 @@ final class ContinentPanel extends EntityPanel {
 
 		add(tablePanel().initialize(), BorderLayout.CENTER);
 		add(tabbedPane, BorderLayout.SOUTH);
-
-		setupKeyboardActions();
-		setupNavigation();
 	}
 }

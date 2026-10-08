@@ -20,12 +20,17 @@ package is.codion.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.KeyStroke;
+import java.util.HashSet;
+import java.util.Set;
+
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.awt.event.KeyEvent.VK_S;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultControlMapTest {
@@ -51,5 +56,25 @@ public final class DefaultControlMapTest {
 		assertEquals(copy.controls().size(), controlMap.controls().size());
 		assertSame(copy.control(ControlKeys.COMMAND_CONTROL).get(), controlMap.control(ControlKeys.COMMAND_CONTROL).get());
 		assertSame(copy.keyStroke(ControlKeys.COMMAND_CONTROL).get(), controlMap.keyStroke(ControlKeys.COMMAND_CONTROL).get());
+	}
+
+	@Test
+	void keys() {
+		ControlMap controlMap = new DefaultControlMap(ControlKeys.class);
+		Set<ControlKey<?>> keys = new HashSet<>(asList(ControlKeys.COMMAND_CONTROL, ControlKeys.CONTROLS, ControlKeys.TOGGLE_CONTROL));
+		assertEquals(keys, new HashSet<>(controlMap.keys()));
+		assertEquals(keys, new HashSet<>(controlMap.copy().keys()));
+		assertThrows(UnsupportedOperationException.class, () -> controlMap.keys().clear());
+	}
+
+	@Test
+	void controlsKeyStroke() {
+		ControlMap controlMap = new DefaultControlMap(ControlKeys.class);
+		KeyStroke keyStroke = keyStroke(VK_INSERT);
+		assertThrows(IllegalArgumentException.class, () -> controlMap.keyStroke(ControlKeys.CONTROLS).set(keyStroke));
+		assertThrows(IllegalArgumentException.class, () -> controlMap.copy().keyStroke(ControlKeys.CONTROLS).set(keyStroke));
+		assertThrows(IllegalArgumentException.class, () -> Controls.key("controls").defaultKeystroke().set(keyStroke));
+		controlMap.keyStroke(ControlKeys.CONTROLS).set(null);
+		assertNull(controlMap.keyStroke(ControlKeys.CONTROLS).get());
 	}
 }

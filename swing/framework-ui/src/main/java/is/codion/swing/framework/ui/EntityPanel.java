@@ -67,6 +67,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -123,6 +124,8 @@ public class EntityPanel extends JPanel {
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityPanel.class, getBundle(EntityPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
+	private static final Set<ControlKey<?>> NAVIGATION_CONTROL_KEYS =
+					new HashSet<>(asList(NAVIGATE_UP, NAVIGATE_DOWN, NAVIGATE_LEFT, NAVIGATE_RIGHT));
 
 	private static final String VIEW = "view";
 	private static final String TABLE = "table";
@@ -187,6 +190,11 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * The standard controls available in a entity panel
+	 * <p>A control given a key stroke is available while the entity panel, or a component within it, has the focus,
+	 * the edit panel included when displayed in a window, the navigation controls only when keyboard navigation is
+	 * enabled, see {@link Config#keyboardNavigation(boolean)}. Two controls available in the same place, the table panel
+	 * and edit panel controls the entity panel makes available included, can not have the same key stroke, the panel
+	 * throwing an {@link IllegalStateException} when initialized.
 	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
@@ -723,83 +731,20 @@ public class EntityPanel extends JPanel {
 		return defaultPanel;
 	}
 
-	/**
-	 * Sets up the keyboard actions.
-	 * @see ControlKeys
-	 */
-	protected final void setupKeyboardActions() {
+	private void setupKeyboardActions() {
+		ControlKeyBindings bindings = new ControlKeyBindings();
+		Consumer<KeyEvents.Builder> addKeyEvent = keyEvent -> addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 		if (containsTablePanel()) {
-			tablePanel.configuration.controlMap.keyEvent(FOCUS_TABLE).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITION_VIEW).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTER_VIEW).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(FOCUS_SEARCH_FIELD).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this));
-			if (editControlPanel != null) {
-				tablePanel.configuration.controlMap.keyEvent(FOCUS_SEARCH_FIELD).ifPresent(keyEvent ->
-								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(FOCUS_TABLE).ifPresent(keyEvent ->
-								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITION_VIEW).ifPresent(keyEvent ->
-								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
-								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTER_VIEW).ifPresent(keyEvent ->
-								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
-								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.enable(editControlPanel));
-			}
+			asList(FOCUS_TABLE, TOGGLE_CONDITION_VIEW, SELECT_CONDITION, TOGGLE_FILTER_VIEW, SELECT_FILTER, FOCUS_SEARCH_FIELD)
+							.forEach(controlKey -> bindings.bind(tablePanel.configuration.controlMap, controlKey, addKeyEvent));
 		}
-		if (editControlPanel != null && editPanel != null) {
-			configuration.controlMap.keyEvent(FOCUS_EDIT_PANEL).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this, editControlPanel));
-			editPanel.configuration.controlMap.keyEvent(SELECT_INPUT_FIELD).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this, editControlPanel));
-			configuration.controlMap.keyEvent(TOGGLE_EDIT_PANEL).ifPresent(keyEvent ->
-							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.enable(this, editControlPanel));
+		if (containsEditPanel()) {
+			bindings.bind(editPanel.configuration.controlMap, SELECT_INPUT_FIELD, addKeyEvent);
 		}
-		if (configuration.keyboardNavigation) {
-			setupNavigation();
-		}
-	}
-
-	/**
-	 * Sets up the navigation keyboard shortcuts.
-	 * @see ControlKeys#NAVIGATE_UP
-	 * @see ControlKeys#NAVIGATE_DOWN
-	 * @see ControlKeys#NAVIGATE_LEFT
-	 * @see ControlKeys#NAVIGATE_RIGHT
-	 */
-	protected final void setupNavigation() {
-		configuration.controlMap.keyEvent(NAVIGATE_UP).ifPresent(keyEvent ->
-						addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
-		configuration.controlMap.keyEvent(NAVIGATE_DOWN).ifPresent(keyEvent ->
-						addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
-		configuration.controlMap.keyEvent(NAVIGATE_LEFT).ifPresent(keyEvent ->
-						addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
-		configuration.controlMap.keyEvent(NAVIGATE_RIGHT).ifPresent(keyEvent ->
-						addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
+		ControlMap controlMap = configuration.controlMap;
+		controlMap.keys().stream()
+						.filter(controlKey -> configuration.keyboardNavigation || !NAVIGATION_CONTROL_KEYS.contains(controlKey))
+						.forEach(controlKey -> bindings.bind(controlMap, controlKey, addKeyEvent));
 	}
 
 	/**

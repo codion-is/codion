@@ -100,11 +100,12 @@ public interface Controls extends Control {
 	 * @return a new {@link ControlsKey} for identifying a {@link Controls} instance
 	 */
 	static ControlsKey key(String name, @Nullable Layout defaultLayout) {
-		return new DefaultControlsKey(name, null, defaultLayout);
+		return new DefaultControlsKey(name, defaultLayout);
 	}
 
 	/**
-	 * A {@link ControlKey} for {@link Controls} instances
+	 * A {@link ControlKey} for {@link Controls} instances.
+	 * <p>Controls can not have a keystroke, the {@link #defaultKeystroke()} rejecting one with an {@link IllegalArgumentException}.
 	 */
 	interface ControlsKey extends ControlKey<Controls> {
 

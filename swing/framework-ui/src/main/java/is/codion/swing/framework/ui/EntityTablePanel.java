@@ -120,6 +120,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -195,9 +196,19 @@ public class EntityTablePanel extends JPanel {
 	private static final MessageBundle EDIT_PANEL_MESSAGES =
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
+	private static final Set<ControlKey<?>> TABLE_CONTROL_KEYS = new HashSet<>(asList(
+					ADD, EDIT, EDIT_ATTRIBUTE, DELETE, DECREMENT_SELECTION, INCREMENT_SELECTION, INSPECT_QUERY,
+					VIEW_ENTITY, POPUP_MENU, CLEAR_SELECTION, COPY_CELL, COPY_COLUMN, COPY_ROWS, VIEW_DEPENDENCIES));
 
 	/**
 	 * The Controls available in a {@link EntityTablePanel}
+	 * <p>A control given a key stroke is available while the table panel, or a component within it, has the focus,
+	 * apart from the ones acting on the table, available while the table has the focus:
+	 * {@link #ADD}, {@link #EDIT}, {@link #EDIT_ATTRIBUTE}, {@link #DELETE}, {@link #DECREMENT_SELECTION},
+	 * {@link #INCREMENT_SELECTION}, {@link #INSPECT_QUERY}, {@link #VIEW_ENTITY}, {@link #POPUP_MENU},
+	 * {@link #CLEAR_SELECTION}, {@link #COPY_CELL}, {@link #COPY_COLUMN}, {@link #COPY_ROWS} and {@link #VIEW_DEPENDENCIES}.
+	 * Two controls available in the same place can not have the same key stroke, the panel throwing an
+	 * {@link IllegalStateException} when initialized.
 	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
@@ -762,60 +773,6 @@ public class EntityTablePanel extends JPanel {
 		return new SouthPanel();
 	}
 
-	/**
-	 * Sets up the keyboard shortcuts.
-	 * @see ControlKeys#REFRESH
-	 * @see ControlKeys#FOCUS_TABLE
-	 * @see ControlKeys#SELECT_CONDITION
-	 * @see ControlKeys#TOGGLE_CONDITION_VIEW
-	 * @see ControlKeys#SELECT_FILTER
-	 * @see ControlKeys#TOGGLE_FILTER_VIEW
-	 * @see ControlKeys#PRINT
-	 * @see ControlKeys#FOCUS_SEARCH_FIELD
-	 * @see ControlKeys#ADD
-	 * @see ControlKeys#EDIT
-	 * @see ControlKeys#EDIT_ATTRIBUTE
-	 * @see ControlKeys#DELETE
-	 * @see ControlKeys#DECREMENT_SELECTION
-	 * @see ControlKeys#INCREMENT_SELECTION
-	 * @see ControlKeys#VIEW_ENTITY
-	 * @see ControlKeys#POPUP_MENU
-	 */
-	protected void setupKeyboardActions() {
-		configuration.controlMap.keyEvent(REFRESH).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(FOCUS_TABLE).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(TOGGLE_CONDITION_VIEW).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(TOGGLE_FILTER_VIEW).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(PRINT).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(FOCUS_SEARCH_FIELD).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(ADD).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(EDIT).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(EDIT_ATTRIBUTE).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(DELETE).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(DECREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(INCREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(INSPECT_QUERY).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(VIEW_ENTITY).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(POPUP_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
-	}
 
 	/**
 	 * Configures the toolbar controls layout.<br>
@@ -1431,6 +1388,21 @@ public class EntityTablePanel extends JPanel {
 						.enabled(model.query().conditions().modified())
 						.icon(ICONS.refresh())
 						.build();
+	}
+
+	private void setupKeyboardActions() {
+		ControlMap controlMap = configuration.controlMap;
+		ControlKeyBindings tableBindings = new ControlKeyBindings();
+		ControlKeyBindings panelBindings = new ControlKeyBindings();
+		controlMap.keys().forEach(controlKey -> {
+			if (TABLE_CONTROL_KEYS.contains(controlKey)) {
+				tableBindings.bind(controlMap, controlKey, keyEvent -> keyEvent.enable(table));
+			}
+			else {
+				panelBindings.bind(controlMap, controlKey, keyEvent ->
+								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).enable(this));
+			}
+		});
 	}
 
 	private JToolBar createRefreshButtonToolBar() {

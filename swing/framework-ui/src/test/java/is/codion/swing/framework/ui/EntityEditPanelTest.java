@@ -24,6 +24,7 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
@@ -31,9 +32,16 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
+import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.VK_A;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -140,6 +148,48 @@ public final class EntityEditPanelTest {
 	}
 
 	@Test
+	void keyStrokes() {
+		// every control given a key stroke is bound on the panel, one set in setupControls() included
+		List<ControlKey<?>> controlKeys = new ArrayList<>(controlMap(EntityEditPanel.ControlKeys.class).keys());
+		CommandControl selectInputField = Control.builder().command(() -> {}).build();
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		EntityEditPanel editPanel = new EntityEditPanel(editModel, config ->
+						controlKeys.forEach(controlKey -> config.keyStroke(controlKey, keyStroke ->
+										keyStroke.set(keyStroke(controlKeys.indexOf(controlKey)))))) {
+			@Override
+			protected void setupControls() {
+				control(SELECT_INPUT_FIELD).set(selectInputField);
+			}
+
+			@Override
+			protected void initializeUI() {}
+		};
+		editPanel.initialize();
+		for (ControlKey<?> controlKey : controlKeys) {
+			Control control = editPanel.control(controlKey).get();
+			if (control != null) {
+				assertTrue(bound(editPanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+								keyStroke(controlKeys.indexOf(controlKey)), control), controlKey.name());
+			}
+		}
+		assertTrue(bound(editPanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+						keyStroke(controlKeys.indexOf(SELECT_INPUT_FIELD)), selectInputField));
+		assertTrue(bound(editPanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+						keyStroke(controlKeys.indexOf(INSERT)), editPanel.control(INSERT).get()));
+	}
+
+	@Test
+	void keyStrokeCollision() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		EntityEditPanel editPanel = new EntityEditPanel(editModel, config ->
+						config.keyStroke(CLEAR, keyStroke -> keyStroke.set(SELECT_INPUT_FIELD.defaultKeystroke().get()))) {
+			@Override
+			protected void initializeUI() {}
+		};
+		assertThrows(IllegalStateException.class, editPanel::initialize);
+	}
+
+	@Test
 	void controlSetInSetupControls() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
 		CommandControl insert = Control.builder().command(() -> {}).build();
@@ -154,5 +204,15 @@ public final class EntityEditPanelTest {
 		};
 		editPanel.initialize();
 		assertSame(insert, editPanel.control(INSERT).get());
+	}
+
+	private static KeyStroke keyStroke(int index) {
+		return KeyStroke.getKeyStroke(VK_A + index % 26, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK | (index < 26 ? 0 : META_DOWN_MASK));
+	}
+
+	private static boolean bound(JComponent component, int condition, KeyStroke keyStroke, Control control) {
+		Object actionKey = component.getInputMap(condition).get(keyStroke);
+
+		return actionKey != null && component.getActionMap().get(actionKey) == control;
 	}
 }

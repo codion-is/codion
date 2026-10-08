@@ -19,27 +19,29 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.reactive.value.Value;
+import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.common.ui.key.KeyEvents;
+
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.KeyStroke;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static is.codion.swing.common.ui.control.DefaultControlsKey.noKeyStroke;
 import static java.lang.reflect.Modifier.*;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 final class DefaultControlMap implements ControlMap {
 
-	private final Map<ControlKey<?>, Value<Control>> controls = new HashMap<>();
-	private final Map<ControlKey<?>, Value<KeyStroke>> keyStrokes = new HashMap<>();
+	private final Map<ControlKey<?>, Value<Control>> controls = new LinkedHashMap<>();
+	private final Map<ControlKey<?>, Value<KeyStroke>> keyStrokes = new LinkedHashMap<>();
 
 	DefaultControlMap(Class<?> controlKeysClass) {
 		this(Stream.of(controlKeysClass.getFields())
@@ -49,17 +51,22 @@ final class DefaultControlMap implements ControlMap {
 	}
 
 	private DefaultControlMap(Collection<ControlKey<?>> controlKeys) {
-		controls.putAll(controlKeys.stream()
-						.collect(toMap(Function.identity(), controlKey -> Value.nullable())));
-		keyStrokes.putAll(controlKeys.stream()
-						.collect(toMap(Function.identity(), controlKey -> Value.nullable(controlKey.defaultKeystroke().get()))));
+		controlKeys.forEach(controlKey -> {
+			controls.put(controlKey, Value.nullable());
+			keyStrokes.put(controlKey, keyStrokeValue(controlKey, controlKey.defaultKeystroke().get()));
+		});
 	}
 
 	private DefaultControlMap(DefaultControlMap controlMap) {
 		controlMap.controls.forEach((controlKey, controlValue) ->
 						controls.put(controlKey, Value.nullable(controlValue.get())));
 		controlMap.keyStrokes.forEach((controlKey, keyStrokeValue) ->
-						keyStrokes.put(controlKey, Value.nullable(keyStrokeValue.get())));
+						keyStrokes.put(controlKey, keyStrokeValue(controlKey, keyStrokeValue.get())));
+	}
+
+	@Override
+	public Collection<ControlKey<?>> keys() {
+		return unmodifiableCollection(controls.keySet());
 	}
 
 	@Override
@@ -103,6 +110,15 @@ final class DefaultControlMap implements ControlMap {
 	@Override
 	public ControlMap copy() {
 		return new DefaultControlMap(this);
+	}
+
+	private static Value<KeyStroke> keyStrokeValue(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
+		Value<KeyStroke> value = Value.nullable(keyStroke);
+		if (controlKey instanceof ControlsKey) {
+			value.addValidator(noKeyStroke((ControlsKey) controlKey));
+		}
+
+		return value;
 	}
 
 	private static boolean publicStaticFinalControlKey(Field field) {

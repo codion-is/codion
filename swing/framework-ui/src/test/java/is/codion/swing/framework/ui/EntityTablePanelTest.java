@@ -30,6 +30,8 @@ import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlKey;
+import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Detail;
@@ -40,16 +42,21 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.common.utilities.Operator.*;
-import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.INSPECT_QUERY;
-import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
+import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.VK_A;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityTablePanelTest {
@@ -236,6 +243,46 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
+	void keyStrokes() {
+		// every control given a key stroke is bound, the ones acting on the table on the table, the others on the panel
+		List<ControlKey<?>> controlKeys = controlMap(EntityTablePanel.ControlKeys.class).keys().stream()
+						.filter(controlKey -> !(controlKey instanceof ControlsKey))
+						.collect(toList());
+		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config ->
+						controlKeys.forEach(controlKey -> config.keyStroke(controlKey, keyStroke ->
+										keyStroke.set(keyStroke(controlKeys.indexOf(controlKey))))));
+		tablePanel.initialize();
+		for (ControlKey<?> controlKey : controlKeys) {
+			Control control = tablePanel.control(controlKey).get();
+			if (control != null) {
+				KeyStroke keyStroke = keyStroke(controlKeys.indexOf(controlKey));
+				assertTrue(bound(tablePanel.table(), JComponent.WHEN_FOCUSED, keyStroke, control)
+								|| bound(tablePanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, keyStroke, control), controlKey.name());
+			}
+		}
+		assertTrue(bound(tablePanel.table(), JComponent.WHEN_FOCUSED,
+						keyStroke(controlKeys.indexOf(CLEAR_SELECTION)), tablePanel.control(CLEAR_SELECTION).get()));
+		assertTrue(bound(tablePanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+						keyStroke(controlKeys.indexOf(RESET_COLUMNS)), tablePanel.control(RESET_COLUMNS).get()));
+	}
+
+	@Test
+	void keyStrokeCollision() {
+		// two controls available in the same place can not have the same key stroke
+		KeyStroke refresh = REFRESH.defaultKeystroke().getOrThrow();
+		EntityTablePanel collision = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config ->
+						config.keyStroke(RESET_COLUMNS, keyStroke -> keyStroke.set(refresh)));
+		String message = assertThrows(IllegalStateException.class, collision::initialize).getMessage();
+		assertTrue(message.contains(REFRESH.name()) && message.contains(RESET_COLUMNS.name()));
+		// a table control may have the key stroke of a panel control, available while the table has the focus
+		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config ->
+						config.keyStroke(CLEAR_SELECTION, keyStroke -> keyStroke.set(refresh)));
+		tablePanel.initialize();
+		assertTrue(bound(tablePanel.table(), JComponent.WHEN_FOCUSED, refresh, tablePanel.control(CLEAR_SELECTION).get()));
+		assertTrue(bound(tablePanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, refresh, tablePanel.control(REFRESH).get()));
+	}
+
+	@Test
 	void inspectQueryControl() {
 		EntityTablePanel excluded = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
 		excluded.initialize();
@@ -259,5 +306,15 @@ public class EntityTablePanelTest {
 		finally {
 			Database.URL.set(url);
 		}
+	}
+
+	private static KeyStroke keyStroke(int index) {
+		return KeyStroke.getKeyStroke(VK_A + index % 26, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK | (index < 26 ? 0 : META_DOWN_MASK));
+	}
+
+	private static boolean bound(JComponent component, int condition, KeyStroke keyStroke, Control control) {
+		Object actionKey = component.getInputMap(condition).get(keyStroke);
+
+		return actionKey != null && component.getActionMap().get(actionKey) == control;
 	}
 }

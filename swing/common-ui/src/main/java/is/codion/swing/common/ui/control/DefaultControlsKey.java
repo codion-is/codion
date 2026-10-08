@@ -35,9 +35,10 @@ final class DefaultControlsKey implements ControlsKey {
 	private final Value<KeyStroke> defaultKeyStroke;
 	private final @Nullable Layout defaultLayout;
 
-	DefaultControlsKey(String name, @Nullable KeyStroke defaultKeyStroke, @Nullable Layout defaultLayout) {
+	DefaultControlsKey(String name, @Nullable Layout defaultLayout) {
 		this.name = requireNonNull(name);
-		this.defaultKeyStroke = Value.nullable(defaultKeyStroke);
+		this.defaultKeyStroke = Value.nullable();
+		this.defaultKeyStroke.addValidator(noKeyStroke(this));
 		this.defaultLayout = defaultLayout;
 	}
 
@@ -59,5 +60,13 @@ final class DefaultControlsKey implements ControlsKey {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	static Value.Validator<KeyStroke> noKeyStroke(ControlsKey controlsKey) {
+		return keyStroke -> {
+			if (keyStroke != null) {
+				throw new IllegalArgumentException("Controls can not have a keystroke: " + controlsKey);
+			}
+		};
 	}
 }

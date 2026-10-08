@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.TestDomain.Department;
@@ -28,8 +29,13 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.*;
+import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.VK_R;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityPanelTest {
@@ -72,6 +78,33 @@ public final class EntityPanelTest {
 
 		EntityPanel testPanel = deptPanel;
 		assertThrows(IllegalArgumentException.class, () -> testPanel.detail().add(testPanel));
+	}
+
+	@Test
+	void keyStrokes() {
+		// every control given a key stroke is bound on the panel, the navigation controls only with keyboard navigation
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION);
+		KeyStroke refresh = KeyStroke.getKeyStroke(VK_R, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK);
+		EntityPanel panel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {
+			@Override
+			protected void initializeUI() {}
+		}, config -> config
+						.keyStroke(REFRESH, keyStroke -> keyStroke.set(refresh))
+						.keyboardNavigation(false));
+		panel.initialize();
+		assertTrue(bound(panel, refresh, panel.control(REFRESH).get()));
+		assertTrue(bound(panel, FOCUS_EDIT_PANEL.defaultKeystroke().get(), panel.control(FOCUS_EDIT_PANEL).get()));
+		assertNotNull(panel.control(NAVIGATE_UP).get());
+		assertNull(panel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(NAVIGATE_UP.defaultKeystroke().get()));
+	}
+
+	@Test
+	void keyStrokeCollision() {
+		// with a table panel control the entity panel makes available
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION);
+		EntityPanel panel = new EntityPanel(deptModel, config -> config.keyStroke(REFRESH, keyStroke ->
+						keyStroke.set(EntityTablePanel.ControlKeys.FOCUS_TABLE.defaultKeystroke().get())));
+		assertThrows(IllegalStateException.class, panel::initialize);
 	}
 
 	@Test
@@ -162,5 +195,11 @@ public final class EntityPanelTest {
 		};
 		deptPanel.initialize();
 		assertEquals(1, initializations.get());
+	}
+
+	private static boolean bound(JComponent component, KeyStroke keyStroke, Control control) {
+		Object actionKey = component.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(keyStroke);
+
+		return actionKey != null && component.getActionMap().get(actionKey) == control;
 	}
 }

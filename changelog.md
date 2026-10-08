@@ -37,6 +37,8 @@ Codion Change Log
 - CalendarPanel, TemporalField, TextInput and FilterTable builders, keyStroke() now declares the key stroke nullable, null for no key binding, as already accepted.
 - FilterTable, the column move and resize keys are now told apart by the whole key stroke, where unbinding one direction made the other throw a NullPointerException, and directions sharing a key code moved or resized the same way.
 - ToggleControl.key(name, keyStroke) now accepts a null key stroke, for no default, as CommandControl.key() does.
+- ControlMap.keys() added, the keys of the controls in the map.
+- Controls.ControlsKey, a key stroke is now rejected with an IllegalArgumentException, as a default and in a ControlMap, where it was accepted without effect.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.
@@ -49,6 +51,10 @@ Codion Change Log
 - EntityTablePanel, the export dialog size is now stored with the table panel settings instead of the export preferences, the export model no longer holding it.
 - EntityTablePanel, the export controls are now disabled while exporting, where a second click before the progress dialog was shown started a second export, the clipboard now set before the success message is shown, the export model no longer Swing based.
 - TabbedDetailLayout and EntitySearchField builders, keyStroke() now declares the key stroke nullable, null for no key binding, as already accepted.
+- EntityTablePanel, EntityEditPanel and EntityPanel, every control given a key stroke is now bound, where a key stroke configured for a control without a default one was ignored, the ControlKeys javadoc stating where each is available.
+- EntityTablePanel, EntityEditPanel and EntityPanel, two controls available in the same place with the same key stroke are now rejected with an IllegalStateException on initialization, where one silently replaced the other.
+- EntityEditPanel, the key events are now bound when the panel is initialized instead of constructed, where a control set in setupControls(), or by an EntityPanel, was not the one bound.
+- EntityTablePanel.setupKeyboardActions(), EntityPanel.setupKeyboardActions() and setupNavigation() now private, the key events bound on initialization.
 
 ## 0.18.89
 ### is.codion.common.reactive

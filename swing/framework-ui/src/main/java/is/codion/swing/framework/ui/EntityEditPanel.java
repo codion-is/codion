@@ -154,6 +154,8 @@ public abstract class EntityEditPanel extends JPanel {
 
 	/**
 	 * The controls available for {@link EntityEditPanel}s.
+	 * <p>A control given a key stroke is available while the edit panel, or a component within it, has the focus.
+	 * Two controls can not have the same key stroke, the panel throwing an {@link IllegalStateException} when initialized.
 	 * Note that changing the shortcut keystroke after a panel
 	 * has been initialized has no effect on its controls.
 	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
@@ -249,7 +251,6 @@ public abstract class EntityEditPanel extends JPanel {
 		this.controlsLayout = createControlsLayout();
 		this.inputFocus = new InputFocus();
 		createControls();
-		setupKeyboardActions();
 		if (model.editor().entity().exists().not().is()) {
 			model.editor().entity().defaults();
 		}
@@ -338,6 +339,7 @@ public abstract class EntityEditPanel extends JPanel {
 			try {
 				setupControls();
 				initializeUI();
+				setupKeyboardActions();
 			}
 			finally {
 				initializing = false;
@@ -804,15 +806,11 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	private void setupKeyboardActions() {
-		configuration.controlMap.keyEvent(VIEW_ENTITY).ifPresent(keyEvent ->
+		ControlMap controlMap = configuration.controlMap;
+		ControlKeyBindings bindings = new ControlKeyBindings();
+		controlMap.keys().forEach(controlKey -> bindings.bind(controlMap, controlKey, keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(INSPECT_EDITOR).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
-		configuration.controlMap.keyEvent(SELECT_INPUT_FIELD).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this));
+										.enable(this)));
 	}
 
 	private void viewEntity() {

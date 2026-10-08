@@ -39,11 +39,18 @@ public interface ControlMap {
 	<T extends Control> Value<T> control(ControlKey<T> controlKey);
 
 	/**
+	 * @return the keys of the controls in this map
+	 */
+	Collection<ControlKey<?>> keys();
+
+	/**
 	 * @return all available controls
 	 */
 	Collection<Value<Control>> controls();
 
 	/**
+	 * <p>Note that a {@link Controls} instance can not have a keystroke, its {@link Value} rejecting one
+	 * with an {@link IllegalArgumentException}.
 	 * @param controlKey the control key
 	 * @return the {@link Value} controlling the keyStroke for the given control
 	 * @throws IllegalArgumentException in case no control is associated with the given control key
