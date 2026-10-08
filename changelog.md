@@ -26,6 +26,7 @@ Codion Change Log
 - FilterTree, the cell renderer is now updated before the UI on a look and feel switch, the nodes being measured with the renderer of the previous look and feel, cutting off their text when a custom renderer or the icon renderer was used.
 - ToggleControl, performing it now toggles the value, a nullable one in the order false, null, true, where it did nothing, so a toggle control bound to a key, or based on a plain button or menu item, had no effect.
 - ButtonBuilder.action() and control(), a ToggleControl given to a toggle button or toggle menu item builder now has its value linked to the button, as by toggle(), where the button toggled itself, out of step with the value.
+- ColumnConditionPanel.ControlKeys.CLEAR now CommandControl based.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.

@@ -136,7 +136,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * Clears the model.<br>
 		 * Default key stroke: CTRL-SHIFT-ENTER
 		 */
-		public static final ControlKey<ToggleControl> CLEAR = ToggleControl.key("clear", keyStroke(VK_ENTER, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> CLEAR = CommandControl.key("clear", keyStroke(VK_ENTER, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Select the previous condition operator.<br>
 		 * Default key stroke: CTRL-UP ARROW
