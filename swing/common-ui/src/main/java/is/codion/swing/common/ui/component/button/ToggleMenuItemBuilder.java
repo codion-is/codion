@@ -63,8 +63,11 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 									PersistMenu.class, PersistMenu.ALWAYS);
 
 	/**
+	 * Links the value of the given toggle control to the menu item, the menu item toggling it, the control providing
+	 * the caption, icon and enabled state.
 	 * @param toggleControl the toggle control to base this toggle menu item on
 	 * @return this builder instance
+	 * @throws IllegalArgumentException in case the value is nullable
 	 */
 	B toggle(ToggleControl toggleControl);
 

@@ -43,7 +43,7 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 			throw new IllegalArgumentException("This toggle button builder does not support a nullable value");
 		}
 		link(toggleControl.value());
-		action(toggleControl);
+		linkedToggleControl(toggleControl);
 		return self();
 	}
 
@@ -84,6 +84,11 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 	@Override
 	protected boolean supportsNull() {
 		return false;
+	}
+
+	@Override
+	final B toggleControl(ToggleControl toggleControl) {
+		return toggle(toggleControl);
 	}
 
 	static final class ObservableStateLink {

@@ -22,6 +22,9 @@ include::{dir-source}/is/codion/manual/swing/common/ui/control/ControlsDemo.java
 
 == ToggleControl
 
+A {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/control/ToggleControl.html[ToggleControl] toggles a boolean value, a nullable one in the order false, null, true.
+Performing it toggles the value, so it can be bound to a key or based on a plain button, while a toggle button or a toggle menu item based on it has its value linked to the button, which toggles it.
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/swing/common/ui/control/ControlsDemo.java[tags=toggleControl]

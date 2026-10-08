@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ToggleControl;
 
 import org.jspecify.annotations.Nullable;
 
@@ -74,6 +75,8 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 	private @Nullable ButtonGroup buttonGroup;
 	private @Nullable Boolean selected;
 	private @Nullable Action action;
+	// true when the action is a toggle control whose value is linked to the button model, which toggles it
+	private boolean toggleControlLinked = false;
 
 	protected AbstractButtonBuilder() {}
 
@@ -217,7 +220,11 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 
 	@Override
 	public final B action(@Nullable Action action) {
+		if (action instanceof ToggleControl) {
+			return toggleControl((ToggleControl) action);
+		}
 		this.action = action;
+		this.toggleControlLinked = false;
 		return self();
 	}
 
@@ -237,11 +244,33 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 		return self();
 	}
 
+	/**
+	 * Called with a {@link ToggleControl} given as the action, setting it as the action, performed when the button is
+	 * pressed. Toggle builders link its value instead, see {@link #linkedToggleControl(ToggleControl)}.
+	 * @param toggleControl the toggle control
+	 * @return this builder instance
+	 */
+	B toggleControl(ToggleControl toggleControl) {
+		this.action = toggleControl;
+		this.toggleControlLinked = false;
+		return self();
+	}
+
+	/**
+	 * Sets the given toggle control as the action, its value linked to the button model, which toggles it, so the
+	 * control is presented, but not performed when the button is pressed, see {@link LinkedToggleAction}.
+	 * @param toggleControl the toggle control
+	 */
+	final void linkedToggleControl(ToggleControl toggleControl) {
+		this.action = toggleControl;
+		this.toggleControlLinked = true;
+	}
+
 	@Override
 	protected final C createComponent() {
 		C button = createButton();
 		if (action != null) {
-			button.setAction(action);
+			button.setAction(toggleControlLinked ? new LinkedToggleAction((ToggleControl) action) : action);
 			Color background = (Color) action.getValue(BACKGROUND);
 			if (background != null) {
 				button.setBackground(background);

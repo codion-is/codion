@@ -202,6 +202,9 @@ public interface ButtonBuilder<C extends AbstractButton, T, B extends ButtonBuil
 	B selected(boolean selected);
 
 	/**
+	 * <p>A {@link is.codion.swing.common.ui.control.ToggleControl} given to a toggle button or a toggle menu item
+	 * builder has its value linked to the button, as by {@link ToggleButtonBuilder#toggle(is.codion.swing.common.ui.control.ToggleControl)},
+	 * while other buttons perform it when pressed, toggling the value.
 	 * @param action the button action
 	 * @return this builder instance
 	 * @see AbstractButton#setAction(Action)
@@ -211,6 +214,7 @@ public interface ButtonBuilder<C extends AbstractButton, T, B extends ButtonBuil
 	/**
 	 * @param control the control to base the button on
 	 * @return this builder instance
+	 * @see #action(Action)
 	 */
 	B control(Control control);
 

@@ -43,7 +43,16 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {/*Not required*/}
+	public void actionPerformed(ActionEvent e) {
+		if (value.isNullable()) {
+			// false -> null -> true, as NullableCheckBox
+			Boolean current = value.get();
+			value.set(current == null ? Boolean.TRUE : (current ? Boolean.FALSE : null));
+		}
+		else {
+			value.set(!value.getOrThrow());
+		}
+	}
 
 	@Override
 	public ToggleControlBuilder copy() {

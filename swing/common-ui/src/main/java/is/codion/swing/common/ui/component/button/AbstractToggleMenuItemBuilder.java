@@ -48,7 +48,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 			throw new IllegalArgumentException("A toggle menu item does not support a nullable value");
 		}
 		link(toggleControl.value());
-		action(toggleControl);
+		linkedToggleControl(toggleControl);
 		return self();
 	}
 
@@ -73,6 +73,11 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	public final B link(ObservableState linkedState) {
 		linkedObservableStates.add(requireNonNull(linkedState));
 		return (B) this;
+	}
+
+	@Override
+	final B toggleControl(ToggleControl toggleControl) {
+		return toggle(toggleControl);
 	}
 
 	protected abstract JMenuItem createMenuItem(PersistMenu persistMenu);

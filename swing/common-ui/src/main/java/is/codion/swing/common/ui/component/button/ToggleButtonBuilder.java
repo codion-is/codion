@@ -33,8 +33,11 @@ import java.util.function.Supplier;
 public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> extends ButtonBuilder<C, Boolean, B> {
 
 	/**
+	 * Links the value of the given toggle control to the button, the button toggling it, the control providing the
+	 * caption, icon and enabled state.
 	 * @param toggleControl the toggle control to base this toggle button on
 	 * @return this builder instance
+	 * @throws IllegalArgumentException in case the value is nullable and the button can not represent null
 	 */
 	B toggle(ToggleControl toggleControl);
 

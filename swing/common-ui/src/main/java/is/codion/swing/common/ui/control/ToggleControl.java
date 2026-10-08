@@ -26,7 +26,10 @@ import javax.swing.KeyStroke;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Control for toggling a boolean value.
+ * <p>A Control for toggling a boolean value.
+ * <p>Performing it toggles the value, a nullable one in the order false, null, true, as a {@code NullableCheckBox}
+ * does. A toggle button or a toggle menu item based on it links its value to the button instead, the button toggling
+ * it, the control providing the caption, icon and enabled state.
  */
 public interface ToggleControl extends Control {
 
