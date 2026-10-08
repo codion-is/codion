@@ -62,6 +62,7 @@ Codion Change Log
 - EntityTablePanel.setupKeyboardActions(), EntityPanel.setupKeyboardActions() and setupNavigation() now private, the key events bound on initialization.
 - EntityTablePanel.ControlKeys.COPY_CELL, COPY_COLUMN and FOCUS_SEARCH_FIELD now replace the FilterTable keys of the same name, which have no key stroke in a table panel, COPY_CELL and COPY_COLUMN given the defaults CTRL-ALT-C and CTRL-ALT-SHIFT-C, where the key strokes had to be configured on the table, or kept in step with the panel.
 - EntitySearchField, the table selector no longer binds CTRL-F on its table, which binds it already, ENTER in the search field now replaced explicitly by selecting.
+- EntityTablePanel, F5 no longer bound to the condition refresh button, a binding which could neither be configured nor removed, preventing F5 from being assigned to a table panel control.
 
 ## 0.18.89
 ### is.codion.common.reactive

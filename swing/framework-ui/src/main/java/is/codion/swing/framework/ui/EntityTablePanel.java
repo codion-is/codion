@@ -1406,12 +1406,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private JToolBar createRefreshButtonToolBar() {
-		KeyEvents.builder()
-						.keyCode(VK_F5)
-						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.action(conditionRefreshControl)
-						.enable(this);
-
 		return toolBar()
 						.action(conditionRefreshControl)
 						.floatable(false)

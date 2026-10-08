@@ -139,7 +139,6 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.addAll(new JLabel(MESSAGES.getString("show_popup_menu")), new JLabel(CTRL + "G"))
 						.addAll(new JLabel(MESSAGES.getString("print")), new JLabel(CTRL + "P"))
 						.addAll(new JLabel(MESSAGES.getString("refresh")), new JLabel(ALT + "R"))
-						.addAll(new JLabel(MESSAGES.getString("refresh_button")), new JLabel("F5"))
 						.addAll(new JLabel(MESSAGES.getString("toggle_condition_panel")), new JLabel(CTRL + ALT + "S"))
 						.addAll(new JLabel(MESSAGES.getString("select_condition_panel")), new JLabel(CTRL + "S"))
 						.addAll(new JLabel(MESSAGES.getString("toggle_filter_panel")), new JLabel(CTRL + ALT + "F"))

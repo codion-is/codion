@@ -55,6 +55,7 @@ import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.VK_A;
+import static java.awt.event.KeyEvent.VK_F5;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -281,6 +282,16 @@ public class EntityTablePanelTest {
 		tablePanel.initialize();
 		assertTrue(bound(tablePanel.table(), JComponent.WHEN_FOCUSED, refresh, tablePanel.control(CLEAR_SELECTION).get()));
 		assertTrue(bound(tablePanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, refresh, tablePanel.control(REFRESH).get()));
+	}
+
+	@Test
+	void refreshOnF5() {
+		// as in the manual
+		KeyStroke f5 = KeyStroke.getKeyStroke(VK_F5, 0);
+		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config ->
+						config.keyStroke(REFRESH, keyStroke -> keyStroke.set(f5)));
+		tablePanel.initialize();
+		assertTrue(bound(tablePanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, f5, tablePanel.control(REFRESH).get()));
 	}
 
 	@Test

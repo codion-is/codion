@@ -938,7 +938,6 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |previous_next_year|Previous/next year|Fyrra/næsta ár
 |print|Print (if printing is available)|Prenta (ef prentun er til staðar)
 |refresh|Refresh|Endurhlaða
-|refresh_button|Refresh, when condition panel is visible and button enabled|Endurhlaða, þegar leitarflötur er sýnilegur og hnappur virkur
 |refresh_table_data|Refresh table data|Endurhlaða gögnum
 |resize_left_right|Resize left/right|Stækka/minnka
 |resize_selected_column|Resize selected column|Breyta stærð á völdum dálk
