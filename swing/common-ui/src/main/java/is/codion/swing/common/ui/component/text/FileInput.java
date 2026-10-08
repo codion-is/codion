@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
@@ -298,7 +297,7 @@ public final class FileInput extends JPanel {
 
 		private PathInputPanelValue(FileInput fileInput) {
 			super(fileInput);
-			fileInput.pathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
+			ParsingDocumentFilter.addTextListener(fileInput.pathField.getDocument(), this::notifyObserver);
 		}
 
 		@Override
@@ -326,7 +325,7 @@ public final class FileInput extends JPanel {
 
 		private ByteArrayInputPanelValue(FileInput fileInput) {
 			super(fileInput);
-			fileInput.pathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
+			ParsingDocumentFilter.addTextListener(fileInput.pathField.getDocument(), this::notifyObserver);
 		}
 
 		@Override

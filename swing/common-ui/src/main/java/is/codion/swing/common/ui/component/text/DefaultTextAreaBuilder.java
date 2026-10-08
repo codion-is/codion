@@ -84,13 +84,8 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<JTextAre
 
 	@Override
 	protected JTextArea createTextComponent() {
-		JTextArea textArea = new JTextArea(rows, columns);
-		if (document != null) {
-			textArea.setDocument(document);
-		}
-		else {
-			document = textArea.getDocument();
-		}
+		// a document with a filter validating and applying each edit as a whole, as a text field has
+		JTextArea textArea = new JTextArea(document == null ? new SizedDocument(-1) : document, null, rows, columns);
 		if (autoscrolls != null) {
 			textArea.setAutoscrolls(autoscrolls);
 		}

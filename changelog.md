@@ -32,6 +32,8 @@ Codion Change Log
 - AbstractComponentValue, a change made in the component is now validated before it is notified, a rejected change restored once the event making it has completed and its exception rethrown on the EDT, where the component kept the rejected value, out of step with a linked value, the exception escaping the Swing listener, a toggle button left pressed.
 - AbstractComponentValue.validateChanges() added, false for components edited as text, which pass through intermediate values.
 - FilterTableColumnModel, a locked column model now rejects a change to the visibility of a column with an IllegalArgumentException, as validators do, instead of an IllegalStateException.
+- AbstractTextComponentValue, TextInput and FileInput, an edit now notifies the value once, where replacing text, by typing over a selection or setting the value, first notified the intermediate text left by the removal, null, which a linked value rejecting it threw on, the text left empty.
+- TextAreaBuilder, the text area now has a document validating each edit before it is applied, as a text field does, where it only had one with a case or a maximum length configured.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.

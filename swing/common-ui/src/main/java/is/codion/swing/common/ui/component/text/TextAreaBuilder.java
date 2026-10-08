@@ -72,6 +72,8 @@ public interface TextAreaBuilder extends TextComponentBuilder<JTextArea, String,
 	TextAreaBuilder tabSize(int tabSize);
 
 	/**
+	 * Specifies the document, replacing the default one, which validates each edit before it is applied, and notifies
+	 * the component value once for each edit.
 	 * @param document the document
 	 * @return this builder instance
 	 * @see JTextArea#setDocument(Document)

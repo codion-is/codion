@@ -19,9 +19,12 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.reactive.value.Value.Validator;
+import is.codion.swing.common.model.component.text.DocumentAdapter;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -44,6 +47,8 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 	private final Parser<T> parser;
 	private final Set<SilentValidator<T>> silentValidators = new LinkedHashSet<>();
 	private final Set<Validator<T>> validators = new LinkedHashSet<>();
+	// true while a replacement is being applied, a removal followed by an insertion, the removal leaving an intermediate text
+	private boolean replacing = false;
 
 	ParsingDocumentFilter(Parser<T> parser) {
 		this.parser = requireNonNull(parser);
@@ -69,7 +74,7 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		builder.replace(offset, offset + length, transformedString);
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
 		if (validate(parseResult, singleCharacter(transformedString))) {
-			apply(filterBypass, offset, length, transformedString, parseResult, attributeSet);
+			apply(new ReplacementBypass(filterBypass), offset, length, transformedString, parseResult, attributeSet);
 		}
 	}
 
@@ -144,6 +149,29 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		filterBypass.replace(offset, length, string, attributeSet);
 	}
 
+	/**
+	 * Adds a listener notified when the text of the given document changes. The document notifies a replacement in
+	 * steps, a removal followed by an insertion, the removal leaving an intermediate text. With a
+	 * {@link ParsingDocumentFilter}, a replacement it applies is notified once, by the insertion, a change made outside
+	 * the filter, by undoing an edit for example, being notified as the document notifies it.
+	 * @param document the document
+	 * @param listener the listener
+	 */
+	static void addTextListener(Document document, Runnable listener) {
+		DocumentFilter documentFilter = document instanceof AbstractDocument ? ((AbstractDocument) document).getDocumentFilter() : null;
+		if (documentFilter instanceof ParsingDocumentFilter<?>) {
+			ParsingDocumentFilter<?> parsingDocumentFilter = (ParsingDocumentFilter<?>) documentFilter;
+			document.addDocumentListener((DocumentAdapter) event -> {
+				if (!parsingDocumentFilter.replacing || event.getType() != DocumentEvent.EventType.REMOVE) {
+					listener.run();
+				}
+			});
+		}
+		else {
+			document.addDocumentListener((DocumentAdapter) event -> listener.run());
+		}
+	}
+
 	private static boolean singleCharacter(String string) {
 		return string.length() <= 1;
 	}
@@ -154,6 +182,41 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 	 * @param <T> the value type
 	 */
 	interface SilentValidator<T> extends Validator<T> {}
+
+	private final class ReplacementBypass extends FilterBypass {
+
+		private final FilterBypass filterBypass;
+
+		private ReplacementBypass(FilterBypass filterBypass) {
+			this.filterBypass = filterBypass;
+		}
+
+		@Override
+		public Document getDocument() {
+			return filterBypass.getDocument();
+		}
+
+		@Override
+		public void remove(int offset, int length) throws BadLocationException {
+			filterBypass.remove(offset, length);
+		}
+
+		@Override
+		public void insertString(int offset, String string, @Nullable AttributeSet attributeSet) throws BadLocationException {
+			filterBypass.insertString(offset, string, attributeSet);
+		}
+
+		@Override
+		public void replace(int offset, int length, @Nullable String string, @Nullable AttributeSet attributeSet) throws BadLocationException {
+			replacing = length > 0 && string != null && !string.isEmpty();
+			try {
+				filterBypass.replace(offset, length, string, attributeSet);
+			}
+			finally {
+				replacing = false;
+			}
+		}
+	}
 
 	private static final class StringParser implements Parser<String> {
 		@Override

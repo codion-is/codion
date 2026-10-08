@@ -18,13 +18,11 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
@@ -79,7 +77,7 @@ public abstract class AbstractTextComponentValue<C extends JTextComponent, T> ex
 				((NumberDocument<Number>) document).observable().addConsumer(new NotifyOnNumberChanged());
 			}
 			else {
-				document.addDocumentListener(new NotifyOnContentsChanged());
+				ParsingDocumentFilter.addTextListener(document, this::notifyObserver);
 			}
 		}
 		else {
@@ -100,13 +98,6 @@ public abstract class AbstractTextComponentValue<C extends JTextComponent, T> ex
 	private final class NotifyOnNumberChanged implements Consumer<Number> {
 		@Override
 		public void accept(Number value) {
-			notifyObserver();
-		}
-	}
-
-	private final class NotifyOnContentsChanged implements DocumentAdapter {
-		@Override
-		public void contentsChanged(DocumentEvent e) {
 			notifyObserver();
 		}
 	}

@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
@@ -45,7 +44,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -437,7 +435,7 @@ public final class TextInput extends JPanel {
 
 		private TextInputValue(TextInput textInput) {
 			super(textInput);
-			textInput.textField().getDocument().addDocumentListener(new NotifyListeners());
+			ParsingDocumentFilter.addTextListener(textInput.textField().getDocument(), this::notifyObserver);
 		}
 
 		@Override
@@ -453,14 +451,6 @@ public final class TextInput extends JPanel {
 		@Override
 		protected void setComponentValue(@Nullable String value) {
 			component().setText(value);
-		}
-
-		private final class NotifyListeners implements DocumentAdapter {
-
-			@Override
-			public void contentsChanged(DocumentEvent e) {
-				notifyObserver();
-			}
 		}
 	}
 }

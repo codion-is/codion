@@ -19,12 +19,20 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.reactive.value.Value;
+import is.codion.swing.common.ui.component.text.TextInput;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
+import javax.swing.undo.UndoManager;
+import java.util.ArrayList;
+import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StringValuesTest {
@@ -121,5 +129,73 @@ public class StringValuesTest {
 		assertEquals('2', value.get());
 		value.clear();
 		assertTrue(value.component().getText().isEmpty());
+	}
+
+	@Test
+	void editNotifiedOnce() throws Exception {
+		// a replacement is a removal followed by an insertion, the removal leaving an intermediate text
+		ComponentValue<JTextField, String> fieldValue = Components.stringField().buildValue();
+		ComponentValue<JTextArea, String> areaValue = Components.textArea().buildValue();
+		ComponentValue<TextInput, String> inputValue = Components.textInput().buildValue();
+		assertNotified(fieldValue, fieldValue.component());
+		assertNotified(areaValue, areaValue.component());
+		assertNotified(inputValue, inputValue.component().textField());
+	}
+
+	@Test
+	void replaceLinkedRejectingEmpty() throws Exception {
+		Value<String> value = Value.builder()
+						.nullable("abc")
+						.validator(text -> {
+							if (text == null || text.isEmpty()) {
+								throw new IllegalArgumentException("required");
+							}
+						})
+						.build();
+		ComponentValue<JTextField, String> fieldValue = Components.stringField()
+						.link(value)
+						.buildValue();
+		JTextField field = fieldValue.component();
+		SwingUtilities.invokeAndWait(() -> {
+			// typing over a selection
+			field.selectAll();
+			field.replaceSelection("x");
+		});
+		assertEquals("x", field.getText());
+		assertEquals("x", value.get());
+		// setting the component value
+		fieldValue.set("xyz");
+		assertEquals("xyz", field.getText());
+		assertEquals("xyz", value.get());
+	}
+
+	@Test
+	void undoNotified() throws Exception {
+		// an edit made outside the document filter, as undoing one is, notified as the document notifies it
+		ComponentValue<JTextField, String> fieldValue = Components.stringField().buildValue();
+		JTextField field = fieldValue.component();
+		UndoManager undoManager = new UndoManager();
+		field.getDocument().addUndoableEditListener(undoManager);
+		SwingUtilities.invokeAndWait(() -> field.replaceSelection("abc"));
+		List<String> notified = new ArrayList<>();
+		fieldValue.addConsumer(notified::add);
+		SwingUtilities.invokeAndWait(undoManager::undo);
+		assertEquals("", field.getText());
+		assertNull(fieldValue.get());
+		assertEquals(singletonList(null), notified);
+	}
+
+	private static void assertNotified(ComponentValue<?, String> value, JTextComponent textComponent) throws Exception {
+		value.set("abc");
+		List<String> notified = new ArrayList<>();
+		value.addConsumer(notified::add);
+		SwingUtilities.invokeAndWait(() -> {
+			textComponent.selectAll();
+			textComponent.replaceSelection("x");
+		});
+		assertEquals(singletonList("x"), notified);
+		notified.clear();
+		value.set("abc");
+		assertEquals(singletonList("abc"), notified);
 	}
 }
