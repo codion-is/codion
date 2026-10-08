@@ -23,11 +23,13 @@ import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.component.tree.SwingFilterTreeModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.renderer.RowColors;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
@@ -43,6 +45,7 @@ import javax.swing.JTree;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeModelEvent;
@@ -55,10 +58,15 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -69,6 +77,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.swing.common.ui.component.tree.FilterTree.ControlKeys.*;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
@@ -88,12 +97,49 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * selection of the model, its {@link SwingFilterTreeModel#selection()} being the selection model of the tree.
  * <p>The root is hidden, the root handles shown, and the nodes rendered via {@link #convertValueToText(Object, boolean, boolean, boolean, int, boolean)},
  * formatting the item of each node, see {@link Builder#formatter(Function)}.
+ * <p>The tree paints the background of each row across its width, before the look and feel paints the nodes, with
+ * alternate row coloring and the item colors blended with the selection colors when selected, as
+ * {@link is.codion.swing.common.ui.component.table.FilterTable} paints its rows, see {@link Builder#background(Function)}.
+ * Look and feels painting the selection themselves, such as Nimbus, paint it in their own colors.
  * <p>The tree selects the row under the mouse before a popup menu is shown, unless it is already selected,
  * clearing the selection below the last row.
  * @param <T> the item type
  * @see #builder()
  */
 public final class FilterTree<T> extends JTree {
+
+	/**
+	 * Specifies whether alternate row coloring is enabled by default.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see Builder#alternateRowColoring(boolean)
+	 */
+	public static final PropertyValue<Boolean> ALTERNATE_ROW_COLORING =
+					booleanValue(FilterTree.class.getName() + ".alternateRowColoring", true);
+
+	/**
+	 * Specifies whether selected rows use the inactive selection colors of the look and feel while the tree is not
+	 * focused, such as FlatLaf's, instead of the default ones.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> INACTIVE_SELECTION =
+					booleanValue(FilterTree.class.getName() + ".inactiveSelection", false);
+
+	/**
+	 * Specifies whether alternating row backgrounds are painted below the nodes to fill the viewport.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see Builder#rowsFillViewport(boolean)
+	 */
+	public static final PropertyValue<Boolean> ROWS_FILL_VIEWPORT =
+					booleanValue(FilterTree.class.getName() + ".rowsFillViewport", false);
 
 	/**
 	 * The controls.
@@ -123,6 +169,10 @@ public final class FilterTree<T> extends JTree {
 
 	private final SwingFilterTreeModel<T> treeModel;
 	private final Function<T, String> formatter;
+	private final RowColors rowColors;
+	private final @Nullable Function<T, @Nullable Color> background;
+	private final @Nullable Function<T, @Nullable Color> foreground;
+	private final boolean rowsFillViewport;
 	private final Value<Action> doubleClick;
 	private final Event<MouseEvent> doubleClicked = Event.event();
 	private final State scrollToSelected;
@@ -138,11 +188,24 @@ public final class FilterTree<T> extends JTree {
 		super(builder.treeModel);
 		this.treeModel = builder.treeModel;
 		this.formatter = builder.formatter;
+		this.rowColors = new RowColors("Tree", builder.alternateRowColoring, INACTIVE_SELECTION.getOrThrow());
+		this.background = builder.background;
+		this.foreground = builder.foreground;
+		this.rowsFillViewport = builder.rowsFillViewport;
 		this.doubleClick = Value.nullable(builder.doubleClick);
 		this.scrollToSelected = State.state(builder.scrollToSelected);
 		super.setSelectionModel(treeModel.selection());
 		setRootVisible(false);
 		setShowsRootHandles(true);
+		if (builder.cellRenderer == null) {
+			setCellRenderer(new DefaultCellRenderer<>(builder));
+		}
+		if (builder.toolTip != null) {
+			ToolTipManager.sharedInstance().registerComponent(this);
+		}
+		if (INACTIVE_SELECTION.getOrThrow()) {
+			addFocusListener(new RepaintOnFocusChange());
+		}
 		addTreeWillExpandListener(new ExpandModel());
 		addTreeExpansionListener(new ExpansionReconciler());
 		//after the listeners of the tree and its UI, see setUI()
@@ -221,6 +284,10 @@ public final class FilterTree<T> extends JTree {
 	 */
 	@Override
 	public void updateUI() {
+		//null when called during construction
+		if (rowColors != null) {
+			rowColors.update();
+		}
 		TreeCellRenderer renderer = getCellRenderer();
 		if (renderer instanceof JComponent) {
 			Utilities.updateUI((JComponent) renderer);
@@ -270,6 +337,27 @@ public final class FilterTree<T> extends JTree {
 		}
 
 		return super.getPopupLocation(event);
+	}
+
+	/**
+	 * Paints the background of each row across the width of the tree, before the look and feel paints the nodes, in
+	 * place of the background the look and feel paints, see {@link Builder#background(Function)}.
+	 * @param graphics the graphics
+	 */
+	@Override
+	protected void paintComponent(Graphics graphics) {
+		if (!isOpaque() || ui == null) {
+			super.paintComponent(graphics);
+			return;
+		}
+		Graphics scratchGraphics = graphics.create();
+		try {
+			paintRows(scratchGraphics);
+			ui.paint(scratchGraphics, this);
+		}
+		finally {
+			scratchGraphics.dispose();
+		}
 	}
 
 	/**
@@ -385,6 +473,61 @@ public final class FilterTree<T> extends JTree {
 		}
 
 		return getRowForPath(treeModel.treePath(children.get(0))) >= 0;
+	}
+
+	private void paintRows(Graphics graphics) {
+		Rectangle clip = graphics.getClipBounds();
+		if (clip == null) {
+			clip = new Rectangle(0, 0, getWidth(), getHeight());
+		}
+		int clipBottom = clip.y + clip.height;
+		graphics.setColor(getBackground());
+		graphics.fillRect(clip.x, clip.y, clip.width, clip.height);
+		int rowCount = getRowCount();
+		int row = rowCount == 0 ? 0 : Math.max(getClosestRowForLocation(0, clip.y), 0);
+		int y = getInsets().top;
+		int rowHeight = getRowHeight();
+		for (; row < rowCount; row++) {
+			Rectangle bounds = getRowBounds(row);
+			if (bounds.y >= clipBottom) {
+				return;
+			}
+			graphics.setColor(rowBackground(row, (NodePath<T>) getPathForRow(row).getLastPathComponent(), isRowSelected(row)));
+			graphics.fillRect(0, bounds.y, getWidth(), bounds.height);
+			y = bounds.y + bounds.height;
+			rowHeight = bounds.height;
+		}
+		if (rowsFillViewport) {
+			fillViewportRows(graphics, row, y, rowHeight > 0 ? rowHeight : getFontMetrics(getFont()).getHeight(), clipBottom);
+		}
+	}
+
+	/**
+	 * Paints the remaining rows, below the nodes, filling the viewport
+	 */
+	private void fillViewportRows(Graphics graphics, int row, int y, int rowHeight, int clipBottom) {
+		for (; y < clipBottom; row++, y += rowHeight) {
+			graphics.setColor(rowColors.background(getBackground(), row));
+			graphics.fillRect(0, y, getWidth(), rowHeight);
+		}
+	}
+
+	private Color rowBackground(int row, NodePath<T> path, boolean selected) {
+		T item = path.root() ? null : path.item();
+
+		return rowColors.background(getBackground(), row, item == null || background == null ? null : background.apply(item),
+						selected, focused() ? null : rowColors.selectionInactiveBackground());
+	}
+
+	private Color rowForeground(NodePath<T> path, boolean selected) {
+		T item = path.root() || selected ? null : path.item();
+
+		return rowColors.foreground(item == null || foreground == null ? null : foreground.apply(item),
+						selected, focused() ? null : rowColors.selectionInactiveForeground());
+	}
+
+	private boolean focused() {
+		return KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner() == this;
 	}
 
 	private void expandSelected() {
@@ -549,6 +692,22 @@ public final class FilterTree<T> extends JTree {
 		}
 	}
 
+	/**
+	 * Repaints the selection in the active or inactive colors, see {@link #INACTIVE_SELECTION}.
+	 */
+	private final class RepaintOnFocusChange implements FocusListener {
+
+		@Override
+		public void focusGained(FocusEvent event) {
+			repaint();
+		}
+
+		@Override
+		public void focusLost(FocusEvent event) {
+			repaint();
+		}
+	}
+
 	private final class DoubleClickListener extends MouseAdapter {
 
 		@Override
@@ -643,6 +802,44 @@ public final class FilterTree<T> extends JTree {
 		Builder<T> icon(Function<T, @Nullable Icon> icon);
 
 		/**
+		 * The tree paints the row backgrounds whatever its cell renderer, which shows them unless it paints its own.
+		 * @param background provides the background of each row, given its item, null for the default one, shaded on
+		 * alternate rows and blended with the selection background when selected
+		 * @return this builder instance
+		 */
+		Builder<T> background(Function<T, @Nullable Color> background);
+
+		/**
+		 * Ignored in case a {@link #cellRenderer(TreeCellRenderer)} is specified.
+		 * @param foreground provides the foreground of each node, given its item, null for the default one, selected
+		 * nodes using the selection foreground
+		 * @return this builder instance
+		 */
+		Builder<T> foreground(Function<T, @Nullable Color> foreground);
+
+		/**
+		 * Ignored in case a {@link #cellRenderer(TreeCellRenderer)} is specified.
+		 * @param toolTip provides the tool tip of each node, given its item, null for none
+		 * @return this builder instance
+		 */
+		Builder<T> toolTip(Function<T, @Nullable String> toolTip);
+
+		/**
+		 * @param alternateRowColoring true if alternate row coloring should be enabled
+		 * @return this builder instance
+		 * @see #ALTERNATE_ROW_COLORING
+		 */
+		Builder<T> alternateRowColoring(boolean alternateRowColoring);
+
+		/**
+		 * @param rowsFillViewport true if alternating row backgrounds should be painted below the nodes to fill the viewport
+		 * @return this builder instance
+		 * @see #ROWS_FILL_VIEWPORT
+		 */
+		Builder<T> rowsFillViewport(boolean rowsFillViewport);
+
+		/**
+		 * Replaces the default cell renderer, the tree still painting the row backgrounds, see {@link #background(Function)}.
 		 * @param cellRenderer the cell renderer, its value a {@link NodePath}
 		 * @return this builder instance
 		 * @see JTree#setCellRenderer(TreeCellRenderer)
@@ -761,27 +958,51 @@ public final class FilterTree<T> extends JTree {
 		Builder<T> treeSelectionListener(TreeSelectionListener treeSelectionListener);
 	}
 
-	private static final class IconRenderer<T> extends DefaultTreeCellRenderer {
+	/**
+	 * The look and feel renderer, colored as the tree paints the row, its label area painted in the same color.
+	 */
+	private static final class DefaultCellRenderer<T> extends DefaultTreeCellRenderer {
 
-		private final Function<T, @Nullable Icon> icon;
+		private final @Nullable Function<T, @Nullable Icon> icon;
+		private final @Nullable Function<T, @Nullable String> toolTip;
 
-		private IconRenderer(Function<T, @Nullable Icon> icon) {
-			this.icon = icon;
+		private DefaultCellRenderer(DefaultBuilder<T> builder) {
+			this.icon = builder.icon;
+			this.toolTip = builder.toolTip;
 		}
 
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
 																									boolean leaf, int row, boolean hasFocus) {
-			Component component = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+			if (!(tree instanceof FilterTree) || !(value instanceof NodePath)) {
+				return super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+			}
+			FilterTree<T> filterTree = (FilterTree<T>) tree;
 			NodePath<T> path = (NodePath<T>) value;
-			if (!path.root()) {
-				Icon nodeIcon = icon.apply(path.item());
+			Color background = filterTree.rowBackground(row, path, selected);
+			setBackgroundSelectionColor(background);
+			setBackgroundNonSelectionColor(background);
+			super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+			if (!dropCell(tree, row)) {
+				setForeground(filterTree.rowForeground(path, selected));
+			}
+			T item = path.root() ? null : path.item();
+			if (item != null && icon != null) {
+				Icon nodeIcon = icon.apply(item);
 				if (nodeIcon != null) {
 					setIcon(nodeIcon);
 				}
 			}
+			setToolTipText(item == null || toolTip == null ? null : toolTip.apply(item));
 
-			return component;
+			return this;
+		}
+
+		// the drop cell colors, set by the default renderer
+		private static boolean dropCell(JTree tree, int row) {
+			JTree.DropLocation dropLocation = tree.getDropLocation();
+
+			return dropLocation != null && dropLocation.getChildIndex() == -1 && tree.getRowForPath(dropLocation.getPath()) == row;
 		}
 	}
 
@@ -806,6 +1027,11 @@ public final class FilterTree<T> extends JTree {
 
 		private Function<T, String> formatter = String::valueOf;
 		private @Nullable Function<T, @Nullable Icon> icon;
+		private @Nullable Function<T, @Nullable Color> background;
+		private @Nullable Function<T, @Nullable Color> foreground;
+		private @Nullable Function<T, @Nullable String> toolTip;
+		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
+		private boolean rowsFillViewport = ROWS_FILL_VIEWPORT.getOrThrow();
 		private @Nullable TreeCellRenderer cellRenderer;
 		private @Nullable TreeUI ui;
 		private @Nullable Boolean dragEnabled;
@@ -832,6 +1058,36 @@ public final class FilterTree<T> extends JTree {
 		@Override
 		public Builder<T> icon(Function<T, @Nullable Icon> icon) {
 			this.icon = requireNonNull(icon);
+			return this;
+		}
+
+		@Override
+		public Builder<T> background(Function<T, @Nullable Color> background) {
+			this.background = requireNonNull(background);
+			return this;
+		}
+
+		@Override
+		public Builder<T> foreground(Function<T, @Nullable Color> foreground) {
+			this.foreground = requireNonNull(foreground);
+			return this;
+		}
+
+		@Override
+		public Builder<T> toolTip(Function<T, @Nullable String> toolTip) {
+			this.toolTip = requireNonNull(toolTip);
+			return this;
+		}
+
+		@Override
+		public Builder<T> alternateRowColoring(boolean alternateRowColoring) {
+			this.alternateRowColoring = alternateRowColoring;
+			return this;
+		}
+
+		@Override
+		public Builder<T> rowsFillViewport(boolean rowsFillViewport) {
+			this.rowsFillViewport = rowsFillViewport;
 			return this;
 		}
 
@@ -939,9 +1195,6 @@ public final class FilterTree<T> extends JTree {
 			}
 			if (cellRenderer != null) {
 				tree.setCellRenderer(cellRenderer);
-			}
-			else if (icon != null) {
-				tree.setCellRenderer(new IconRenderer<>(icon));
 			}
 			if (dragEnabled != null) {
 				tree.setDragEnabled(dragEnabled);

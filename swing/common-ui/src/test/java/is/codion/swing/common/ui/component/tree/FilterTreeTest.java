@@ -41,6 +41,8 @@ import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeWillExpandListener;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.UIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -48,10 +50,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,6 +72,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
+import static is.codion.swing.common.ui.color.Colors.shade;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -258,6 +264,135 @@ public final class FilterTreeTest {
 		label = (JLabel) withIcons.getCellRenderer().getTreeCellRendererComponent(withIcons, path("b"), false, false, true, 1, false);
 		assertNotSame(icon, label.getIcon());
 		withIcons.updateUI();
+	}
+
+	@Test
+	void rendererColors() {
+		SwingFilterTreeModel<String> model = model();
+		model.nodes().refresh();
+		model.expansion().expand(path("a"));
+		// a, a1, a2, b
+		FilterTree<String> tree = FilterTree.builder()
+						.model(model)
+						.background(item -> item.equals("a2") ? Color.PINK : null)
+						.foreground(item -> item.equals("a2") ? Color.RED : null)
+						.toolTip(item -> item.equals("a2") ? "Tip" : null)
+						.build();
+		tree.setBackground(Color.WHITE);
+		Color selection = UIManager.getColor("Tree.selectionBackground");
+		// the row colors, alternate rows shaded from the tree background
+		assertEquals(Color.WHITE, renderer(tree, 0).getBackgroundNonSelectionColor());
+		assertEquals(shade(Color.WHITE), renderer(tree, 1).getBackgroundNonSelectionColor());
+		DefaultTreeCellRenderer renderer = renderer(tree, 2);
+		assertEquals(Color.PINK, renderer.getBackgroundNonSelectionColor());
+		assertEquals(Color.RED, renderer.getForeground());
+		assertEquals("Tip", renderer.getToolTipText());
+		assertNull(renderer(tree, 0).getToolTipText());
+		// the selection, shaded on alternate rows, blended with the item background, the selection foreground winning
+		tree.setSelectionRows(new int[] {1, 2});
+		assertEquals(shade(selection), renderer(tree, 1).getBackgroundSelectionColor());
+		renderer = renderer(tree, 2);
+		assertNotEquals(selection, renderer.getBackgroundSelectionColor());
+		assertNotEquals(Color.PINK, renderer.getBackgroundSelectionColor());
+		assertEquals(UIManager.getColor("Tree.selectionForeground"), renderer.getForeground());
+		// not UIResource instances, which the look and feel replaces
+		assertFalse(renderer(tree, 0).getBackgroundNonSelectionColor() instanceof UIResource);
+		assertFalse(renderer.getForeground() instanceof UIResource);
+	}
+
+	@Test
+	void inactiveSelection() {
+		Color inactive = new ColorUIResource(Color.GRAY);
+		UIManager.put("Tree.selectionInactiveBackground", inactive);
+		try {
+			SwingFilterTreeModel<String> model = model();
+			model.nodes().refresh();
+			FilterTree<String> tree = FilterTree.builder()
+							.model(model)
+							.alternateRowColoring(false)
+							.build();
+			tree.setSelectionRow(0);
+			// the default selection colors while not focused
+			assertEquals(UIManager.getColor("Tree.selectionBackground"), renderer(tree, 0).getBackgroundSelectionColor());
+			FilterTree.INACTIVE_SELECTION.set(true);
+			try {
+				// unless enabled
+				tree = FilterTree.builder()
+								.model(model)
+								.alternateRowColoring(false)
+								.build();
+				tree.setSelectionRow(0);
+				assertEquals(inactive, renderer(tree, 0).getBackgroundSelectionColor());
+			}
+			finally {
+				FilterTree.INACTIVE_SELECTION.set(false);
+			}
+		}
+		finally {
+			UIManager.put("Tree.selectionInactiveBackground", null);
+		}
+	}
+
+	@Test
+	void rowBackgrounds() {
+		SwingFilterTreeModel<String> model = model();
+		model.nodes().refresh();
+		model.expansion().expand(path("a"));
+		// a, a1, a2, b
+		FilterTree<String> tree = FilterTree.builder()
+						.model(model)
+						.background(item -> item.equals("a2") ? Color.PINK : null)
+						.rowsFillViewport(true)
+						.build();
+		tree.setBackground(Color.WHITE);
+		tree.setSelectionRow(3);
+		BufferedImage image = paint(tree);
+		// across the tree, beyond the node labels
+		int x = image.getWidth() - 2;
+		assertEquals(Color.WHITE.getRGB(), image.getRGB(x, center(tree, 0)));
+		assertEquals(shade(Color.WHITE).getRGB(), image.getRGB(x, center(tree, 1)));
+		assertEquals(Color.PINK.getRGB(), image.getRGB(x, center(tree, 2)));
+		assertEquals(shade(UIManager.getColor("Tree.selectionBackground")).getRGB(), image.getRGB(x, center(tree, 3)));
+		// the rows below the nodes
+		Rectangle last = tree.getRowBounds(3);
+		int below = last.y + last.height + last.height / 2;
+		assertEquals(Color.WHITE.getRGB(), image.getRGB(x, below));
+		assertEquals(shade(Color.WHITE).getRGB(), image.getRGB(x, below + last.height));
+
+		// a custom renderer, the tree still painting the rows, not filling the viewport by default
+		tree = FilterTree.builder()
+						.model(model)
+						.cellRenderer(new DefaultTreeCellRenderer())
+						.build();
+		tree.setBackground(Color.WHITE);
+		image = paint(tree);
+		assertEquals(shade(Color.WHITE).getRGB(), image.getRGB(x, center(tree, 1)));
+		assertEquals(Color.WHITE.getRGB(), image.getRGB(x, below + last.height));
+	}
+
+	private static DefaultTreeCellRenderer renderer(FilterTree<String> tree, int row) {
+		return (DefaultTreeCellRenderer) tree.getCellRenderer().getTreeCellRendererComponent(tree,
+						tree.getPathForRow(row).getLastPathComponent(), tree.isRowSelected(row), false, true, row, false);
+	}
+
+	private static int center(FilterTree<String> tree, int row) {
+		Rectangle bounds = tree.getRowBounds(row);
+
+		return bounds.y + bounds.height / 2;
+	}
+
+	private static BufferedImage paint(FilterTree<String> tree) {
+		JScrollPane scrollPane = new JScrollPane(tree);
+		scrollPane.setSize(200, 300);
+		scrollPane.doLayout();
+		scrollPane.getViewport().doLayout();
+		assertTrue(tree.getHeight() > tree.getPreferredSize().height);
+		BufferedImage image = new BufferedImage(tree.getWidth(), tree.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics = image.createGraphics();
+		tree.paint(graphics);
+		graphics.dispose();
+
+		return image;
 	}
 
 	@Test

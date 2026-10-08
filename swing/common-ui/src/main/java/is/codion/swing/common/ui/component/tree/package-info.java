@@ -24,6 +24,13 @@
  * <li>{@link is.codion.swing.common.ui.component.tree.TreeBuilder}, for a {@link javax.swing.JTree} over any
  * {@link javax.swing.tree.TreeModel}
  * </ul>
+ * <p>
+ * Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.swing.common.ui.component.tree.FilterTree#ALTERNATE_ROW_COLORING}
+ * <li>{@link is.codion.swing.common.ui.component.tree.FilterTree#INACTIVE_SELECTION}
+ * <li>{@link is.codion.swing.common.ui.component.tree.FilterTree#ROWS_FILL_VIEWPORT}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.tree;

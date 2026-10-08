@@ -50,6 +50,8 @@ Codion Change Log
 - FilterList, the items are now rendered with alternate row coloring, their colors blended with the selection colors as FilterTable rows, unless a cell renderer is specified, FilterList.ALTERNATE_ROW_COLORING, INACTIVE_SELECTION and ROWS_FILL_VIEWPORT added.
 - FilterList.Builder.formatter(), background(), foreground(), toolTip(), alternateRowColoring() and rowsFillViewport() added, FilterList.getNextMatch() matching the typed prefix against the formatted items.
 - MultiInput, the member list now formats its items via FilterList.Builder.formatter() instead of a cell renderer.
+- FilterTree, the tree now paints the background of each row across its width before the look and feel paints the nodes, with alternate row coloring and the item colors blended with the selection colors as FilterTable rows, the selection a full row in look and feels painting it behind the node only, FilterTree.ALTERNATE_ROW_COLORING, INACTIVE_SELECTION and ROWS_FILL_VIEWPORT added.
+- FilterTree.Builder.background(), foreground(), toolTip(), alternateRowColoring() and rowsFillViewport() added, the default cell renderer now installed by the tree, the icon renderer folded into it.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.

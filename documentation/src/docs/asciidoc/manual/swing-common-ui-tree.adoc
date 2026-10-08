@@ -57,6 +57,15 @@ include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTree
 include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTreeDemo.java[tags=tree]
 ----
 
+=== Rendering
+
+The tree paints the background of each row across its width, before the look and feel paints the nodes, with alternate row coloring and the item colors blended with the selection colors, as a FilterTable paints its rows. It paints the row backgrounds whatever the cell renderer, while the foreground, icon and tool tip apply to the default one.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/tree/FilterTreeDemo.java[tags=rendering]
+----
+
 === Expansion
 
 Expansion is model state rather than view state, so it survives refreshes, and the tree follows the model, whether a node is expanded via the model, by the mouse or by the keyboard. Expanding a node not yet loaded loads it.

@@ -23,6 +23,7 @@ import is.codion.swing.common.model.component.tree.SwingFilterTreeModel;
 import is.codion.swing.common.ui.component.tree.FilterTree;
 import is.codion.swing.common.ui.control.Control;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
@@ -64,6 +65,22 @@ final class FilterTreeDemo {
 																		.ifPresent(System.out::println)))
 										.build();
 		// end::tree[]
+	}
+
+	static void rendering(SwingFilterTreeModel<File> model) {
+		// tag::rendering[]
+		FilterTree<File> tree =
+						FilterTree.builder()
+										.model(model)
+										.formatter(File::getName)
+										// The background of a row, painted across the tree, shaded on
+										// alternate rows and blended with the selection when selected
+										.background(file -> file.canWrite() ? null : Color.LIGHT_GRAY)
+										.toolTip(File::getAbsolutePath)
+										// The alternate rows painted below the nodes as well
+										.rowsFillViewport(true)
+										.build();
+		// end::rendering[]
 	}
 
 	static void expansion(SwingFilterTreeModel<File> model) {

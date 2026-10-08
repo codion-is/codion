@@ -72,6 +72,22 @@ public final class RowColors {
 	}
 
 	/**
+	 * @return the inactive selection background of the look and feel, used while the component is not focused,
+	 * as FlatLaf provides, null if none
+	 */
+	public @Nullable Color selectionInactiveBackground() {
+		return colors.selectionInactiveBackground;
+	}
+
+	/**
+	 * @return the inactive selection foreground of the look and feel, used while the component is not focused,
+	 * as FlatLaf provides, null if none
+	 */
+	public @Nullable Color selectionInactiveForeground() {
+		return colors.selectionInactiveForeground;
+	}
+
+	/**
 	 * @param background the background of the component, null for the one of the look and feel
 	 * @param row the row
 	 * @return the background of the given row, unselected and without an item color
@@ -171,6 +187,8 @@ public final class RowColors {
 		private final @Nullable Color alternateRowColor;
 		private final @Nullable Color selectionForeground;
 		private final @Nullable Color selectionBackground;
+		private final @Nullable Color selectionInactiveForeground;
+		private final @Nullable Color selectionInactiveBackground;
 
 		private UIColors(String prefix) {
 			foreground = UIManager.getColor(prefix + ".foreground");
@@ -178,6 +196,8 @@ public final class RowColors {
 			alternateRowColor = UIManager.getColor(prefix + ".alternateRowColor");
 			selectionForeground = UIManager.getColor(prefix + ".selectionForeground");
 			selectionBackground = UIManager.getColor(prefix + ".selectionBackground");
+			selectionInactiveForeground = UIManager.getColor(prefix + ".selectionInactiveForeground");
+			selectionInactiveBackground = UIManager.getColor(prefix + ".selectionInactiveBackground");
 		}
 	}
 }
