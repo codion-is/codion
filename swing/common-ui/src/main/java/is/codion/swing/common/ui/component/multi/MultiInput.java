@@ -40,17 +40,14 @@ import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -69,7 +66,6 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static is.codion.common.i18n.Messages.clear;
@@ -300,7 +296,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		return FilterList.builder()
 						.model(members)
 						.items()
-						.cellRenderer(new Renderer<>(this::format))
+						.formatter(this::format)
 						.visibleRowCount(visibleRowCount())
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_DELETE)
@@ -625,22 +621,6 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		@Override
 		public void focusGained(FocusEvent e) {
 			component.requestFocusInWindow();
-		}
-	}
-
-	private static final class Renderer<T> implements ListCellRenderer<T> {
-
-		private final Function<T, String> formatter;
-		private final DefaultListCellRenderer listCellRenderer = new DefaultListCellRenderer();
-
-		private Renderer(Function<T, String> formatter) {
-			this.formatter = formatter;
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends T> list, T value,
-		                                              int index, boolean isSelected, boolean cellHasFocus) {
-			return listCellRenderer.getListCellRendererComponent(list, formatter.apply(value), index, isSelected, cellHasFocus);
 		}
 	}
 

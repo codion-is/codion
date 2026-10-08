@@ -31,6 +31,8 @@ import static java.util.Objects.requireNonNull;
  * <p>The row colors of a table, list or tree: alternate row shading, item colors and selection colors.
  * <p>The look and feel colors are those under the given prefix, such as {@code Table.selectionBackground},
  * cached until {@link #update()} is called.
+ * <p>The colors returned are never {@link UIResource}s, which the Synth based look and feels, such as Nimbus, replace
+ * with the colors of their own style when painting a renderer, see {@link javax.swing.plaf.synth.SynthStyle#getColor}.
  */
 public final class RowColors {
 
@@ -77,10 +79,10 @@ public final class RowColors {
 	public Color background(@Nullable Color background, int row) {
 		boolean alternateRow = alternateRow(row);
 		if (alternateRowColoring) {
-			return alternateRow ? alternateBackground(background) : background(background);
+			return plain(alternateRow ? alternateBackground(background) : background(background));
 		}
 		// If the look and feel sets an alternate row color, respect it
-		return alternateRow && colors.alternateRowColor != null ? colors.alternateRowColor : background(background);
+		return plain(alternateRow && colors.alternateRowColor != null ? colors.alternateRowColor : background(background));
 	}
 
 	/**
@@ -104,10 +106,10 @@ public final class RowColors {
 				selection = shade(selection);
 			}
 
-			return itemBackground == null ? selection : blend(itemBackground, selection);
+			return itemBackground == null ? plain(selection) : blend(itemBackground, selection);
 		}
 
-		return itemBackground == null ? background(background, row) : itemBackground;
+		return itemBackground == null ? background(background, row) : plain(itemBackground);
 	}
 
 	/**
@@ -120,10 +122,10 @@ public final class RowColors {
 	public Color foreground(@Nullable Color itemForeground, boolean selected, @Nullable Color selectionForeground) {
 		Color selection = selected ? selectionColor(selectionForeground, colors.selectionForeground) : null;
 		if (selection != null) {
-			return selection;
+			return plain(selection);
 		}
 
-		return itemForeground == null ? colors.foreground : itemForeground;
+		return plain(itemForeground == null ? colors.foreground : itemForeground);
 	}
 
 	// A selection color set by the look and feel, such as FlatLaf's inactive one while the component is not focused,
@@ -144,6 +146,10 @@ public final class RowColors {
 
 	private Color alternateBackground(@Nullable Color background) {
 		return colors.alternateRowColor == null ? shade(background(background)) : colors.alternateRowColor;
+	}
+
+	private static Color plain(Color color) {
+		return color instanceof UIResource ? new Color(color.getRGB(), true) : color;
 	}
 
 	private static boolean alternateRow(int row) {

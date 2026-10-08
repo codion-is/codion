@@ -46,6 +46,10 @@ Codion Change Log
 - LogLevelPanel, CTRL-F now replaces the table's search field binding, focusing the filter field, using the menu shortcut key, Command on macOS, instead of Control.
 - MenuItemBuilder.accelerator() and ToggleMenuItemBuilder.accelerator() added, the accelerator displayed by the menu item, in place of any of its action.
 - FilterTableCellRenderer, the row colors moved to an internal RowColors, for sharing with the list and tree renderers, a selection color set by the look and feel now kept when the look and feel has no default one, where the selected cells were left without a selection color.
+- FilterTableCellRenderer, the colors set on a cell are no longer UIResource instances, which the Synth based look and feels, such as Nimbus, replace with the colors of their own style.
+- FilterList, the items are now rendered with alternate row coloring, their colors blended with the selection colors as FilterTable rows, unless a cell renderer is specified, FilterList.ALTERNATE_ROW_COLORING, INACTIVE_SELECTION and ROWS_FILL_VIEWPORT added.
+- FilterList.Builder.formatter(), background(), foreground(), toolTip(), alternateRowColoring() and rowsFillViewport() added, FilterList.getNextMatch() matching the typed prefix against the formatted items.
+- MultiInput, the member list now formats its items via FilterList.Builder.formatter() instead of a cell renderer.
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.
@@ -67,6 +71,7 @@ Codion Change Log
 - EntityTablePanel, F5 no longer bound to the condition refresh button, a binding which could neither be configured nor removed, preventing F5 from being assigned to a table panel control.
 - EntityApplicationPanel.displayKeyboardShortcuts(), the overview now shows the default key strokes of the controls, leaving out those without one, where it listed fixed key strokes, out of step with any configured ones, and a save shortcut which does not exist.
 - EntityTablePanel, the popup menu items now display the key strokes the table panel binds their controls to.
+- EntitySearchField, the list selector now formats its items via FilterList.Builder.formatter() instead of a cell renderer, typing a prefix now matching the formatted items.
 
 ## 0.18.89
 ### is.codion.common.reactive

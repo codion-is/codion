@@ -24,10 +24,12 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.UIResource;
 import java.awt.Color;
 
 import static is.codion.swing.common.ui.color.Colors.shade;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class RowColorsTest {
 
@@ -141,11 +143,33 @@ public final class RowColorsTest {
 	}
 
 	@Test
+	void plainColors() {
+		// as Nimbus paints a renderer with its own colors in place of UIResource ones
+		UIManager.put(PREFIX + ".foreground", new ColorUIResource(FOREGROUND));
+		UIManager.put(PREFIX + ".background", new ColorUIResource(BACKGROUND));
+		UIManager.put(PREFIX + ".selectionForeground", null);
+		UIManager.put(PREFIX + ".selectionBackground", null);
+		RowColors colors = new RowColors(PREFIX, false, false);
+		Color selection = new ColorUIResource(Color.BLUE);
+		assertPlain(selection, colors.background(null, 0, null, true, selection));
+		assertPlain(selection, colors.foreground(null, true, selection));
+		assertPlain(BACKGROUND, colors.background(null, 0));
+		assertPlain(BACKGROUND, colors.background(new ColorUIResource(BACKGROUND), 0, null, false, null));
+		assertPlain(ITEM, colors.background(null, 0, new ColorUIResource(ITEM), false, null));
+		assertPlain(FOREGROUND, colors.foreground(null, false, null));
+	}
+
+	@Test
 	void update() {
 		RowColors colors = new RowColors(PREFIX, false, false);
 		UIManager.put(PREFIX + ".background", Color.YELLOW);
 		assertEquals(BACKGROUND, colors.background(null, 0));
 		colors.update();
 		assertEquals(Color.YELLOW, colors.background(null, 0));
+	}
+
+	private static void assertPlain(Color expected, Color color) {
+		assertEquals(expected, color);
+		assertFalse(color instanceof UIResource);
 	}
 }

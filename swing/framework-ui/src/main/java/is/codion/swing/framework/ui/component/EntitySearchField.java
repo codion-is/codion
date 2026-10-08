@@ -62,7 +62,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -71,14 +70,12 @@ import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
@@ -759,7 +756,6 @@ public final class EntitySearchField extends HintTextField {
 
 		private final EntitySearchField searchField;
 		private final FilterList<Entity> list;
-		private final Function<Entity, String> formatter;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.TRAILING)
@@ -769,7 +765,6 @@ public final class EntitySearchField extends HintTextField {
 		private DefaultListSelector(EntitySearchField searchField) {
 			this.searchField = requireNonNull(searchField);
 			this.list = createList();
-			this.formatter = searchField.formatter;
 			this.selectorPanel = borderLayoutPanel()
 							.center(scrollPane()
 											.view(list))
@@ -814,21 +809,9 @@ public final class EntitySearchField extends HintTextField {
 							.model(listModel)
 							.selectedItem()
 							.mouseListener(new DoubleClickListener())
-							.cellRenderer(new Renderer())
+							.formatter(searchField.formatter)
 							.onBuild(new RemoveDefaultEnterAction())
 							.build();
-		}
-
-		private final class Renderer implements ListCellRenderer<Entity> {
-
-			private final ListCellRenderer<Object> listCellRenderer = new DefaultListCellRenderer();
-
-			@Override
-			public Component getListCellRendererComponent(JList<? extends Entity> list, Entity value,
-																										int index, boolean isSelected, boolean cellHasFocus) {
-				return listCellRenderer.getListCellRendererComponent(list,
-								formatter.apply(value), index, isSelected, cellHasFocus);
-			}
 		}
 
 		private final class SelectCommand implements Control.Command {

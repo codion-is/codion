@@ -39,6 +39,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableHeaderRenderer;
@@ -278,6 +279,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		FilterTable.ROWS_FILL_VIEWPORT.set(true);
 		FilterTable.STOP_EDIT_ON_FOCUS_LOST.set(false);
+		FilterList.ROWS_FILL_VIEWPORT.set(true);
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR.set(true);

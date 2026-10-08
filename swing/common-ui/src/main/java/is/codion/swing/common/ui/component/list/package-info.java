@@ -18,6 +18,13 @@
  */
 /**
  * <p>List builders and selection utilities.
+ * <p>
+ * Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.swing.common.ui.component.list.FilterList#ALTERNATE_ROW_COLORING}
+ * <li>{@link is.codion.swing.common.ui.component.list.FilterList#INACTIVE_SELECTION}
+ * <li>{@link is.codion.swing.common.ui.component.list.FilterList#ROWS_FILL_VIEWPORT}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.list;

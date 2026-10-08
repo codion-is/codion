@@ -27,19 +27,28 @@ import javax.swing.DropMode;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListSelectionListener;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T, B>>
 				extends AbstractComponentValueBuilder<FilterList<T>, V, B> implements FilterList.Builder<V, T, B> {
 
-	private final SwingFilterListModel<T> listModel;
-	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
+	final SwingFilterListModel<T> listModel;
 
-	private @Nullable ListCellRenderer<? super T> cellRenderer;
+	@Nullable ListCellRenderer<? super T> cellRenderer;
+	@Nullable Function<T, String> formatter;
+	@Nullable Function<T, @Nullable Color> background;
+	@Nullable Function<T, @Nullable Color> foreground;
+	@Nullable Function<T, @Nullable String> toolTip;
+	boolean alternateRowColoring = FilterList.ALTERNATE_ROW_COLORING.getOrThrow();
+	boolean rowsFillViewport = FilterList.ROWS_FILL_VIEWPORT.getOrThrow();
+
+	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
 
 	private @Nullable Integer visibleRowCount;
 	private @Nullable Boolean dragEnabled;
@@ -77,6 +86,42 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	}
 
 	@Override
+	public final B formatter(Function<T, String> formatter) {
+		this.formatter = requireNonNull(formatter);
+		return self();
+	}
+
+	@Override
+	public final B background(Function<T, @Nullable Color> background) {
+		this.background = requireNonNull(background);
+		return self();
+	}
+
+	@Override
+	public final B foreground(Function<T, @Nullable Color> foreground) {
+		this.foreground = requireNonNull(foreground);
+		return self();
+	}
+
+	@Override
+	public final B toolTip(Function<T, @Nullable String> toolTip) {
+		this.toolTip = requireNonNull(toolTip);
+		return self();
+	}
+
+	@Override
+	public final B alternateRowColoring(boolean alternateRowColoring) {
+		this.alternateRowColoring = alternateRowColoring;
+		return self();
+	}
+
+	@Override
+	public final B rowsFillViewport(boolean rowsFillViewport) {
+		this.rowsFillViewport = rowsFillViewport;
+		return self();
+	}
+
+	@Override
 	public final B cellRenderer(@Nullable ListCellRenderer<? super T> cellRenderer) {
 		this.cellRenderer = cellRenderer;
 		return self();
@@ -101,10 +146,7 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	}
 
 	protected final FilterList<T> createList() {
-		FilterList<T> list = new FilterList<>(listModel);
-		if (cellRenderer != null) {
-			list.setCellRenderer(cellRenderer);
-		}
+		FilterList<T> list = new FilterList<>(this);
 		listSelectionListeners.forEach(new AddListSelectionListener(list));
 		if (visibleRowCount != null) {
 			list.setVisibleRowCount(visibleRowCount);
