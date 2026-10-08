@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
+import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -280,6 +281,24 @@ public class EntityTablePanelTest {
 		tablePanel.initialize();
 		assertTrue(bound(tablePanel.table(), JComponent.WHEN_FOCUSED, refresh, tablePanel.control(CLEAR_SELECTION).get()));
 		assertTrue(bound(tablePanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, refresh, tablePanel.control(REFRESH).get()));
+	}
+
+	@Test
+	void tableControlsReplaced() {
+		// the table panel controls replace the table ones, which have no key stroke
+		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
+		tablePanel.initialize();
+		KeyStroke copyCell = COPY_CELL.defaultKeystroke().getOrThrow();
+		KeyStroke focusSearchField = FOCUS_SEARCH_FIELD.defaultKeystroke().getOrThrow();
+		assertTrue(bound(tablePanel.table(), JComponent.WHEN_FOCUSED, copyCell, tablePanel.control(COPY_CELL).get()));
+		assertNull(tablePanel.table().getInputMap(JComponent.WHEN_FOCUSED).get(focusSearchField));
+		assertTrue(bound(tablePanel, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, focusSearchField, tablePanel.control(FOCUS_SEARCH_FIELD).get()));
+		// unless configured for the table
+		KeyStroke keyStroke = KeyStroke.getKeyStroke(VK_A, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK);
+		EntityTablePanel configured = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config ->
+						config.table(builder -> builder.keyStroke(FilterTable.ControlKeys.FOCUS_SEARCH_FIELD, keyStroke)));
+		configured.initialize();
+		assertNotNull(configured.table().getInputMap(JComponent.WHEN_FOCUSED).get(keyStroke));
 	}
 
 	@Test

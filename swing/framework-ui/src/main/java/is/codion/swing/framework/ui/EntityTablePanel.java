@@ -376,17 +376,17 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> CLEAR_SELECTION = CommandControl.key("clearSelection");
 		/**
-		 * A {@link Control} for copying the selected cell data.
-		 * <p>The keystroke is owned by {@link FilterTable.ControlKeys#COPY_CELL} on the underlying table;
-		 * remap it there via {@code config.table(builder -> builder.keyStroke(FilterTable.ControlKeys.COPY_CELL, ...))}.
+		 * A {@link Control} for copying the selected cell data.<br>
+		 * Default key stroke: CTRL-ALT-C
+		 * <p>Replaces {@link FilterTable.ControlKeys#COPY_CELL}, which has no key stroke in a table panel.
 		 */
-		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell");
+		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
-		 * A {@link Control} for copying the selected column data.
-		 * <p>The keystroke is owned by {@link FilterTable.ControlKeys#COPY_COLUMN} on the underlying table;
-		 * remap it there via {@code config.table(builder -> builder.keyStroke(FilterTable.ControlKeys.COPY_COLUMN, ...))}.
+		 * A {@link Control} for copying the selected column data.<br>
+		 * Default key stroke: CTRL-ALT-SHIFT-C
+		 * <p>Replaces {@link FilterTable.ControlKeys#COPY_COLUMN}, which has no key stroke in a table panel.
 		 */
-		public static final ControlKey<CommandControl> COPY_COLUMN = CommandControl.key("copyColumn");
+		public static final ControlKey<CommandControl> COPY_COLUMN = CommandControl.key("copyColumn", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * A {@link Control} for copying the table rows with header.
 		 */
@@ -424,7 +424,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Requests focus for the table search field, if one is available.<br>
 		 * Default key stroke: CTRL-F
-		 * <p>Note that the same control key exists in {@link FilterTable.ControlKeys#FOCUS_SEARCH_FIELD}, you would usually want to keep these in sync.
+		 * <p>Replaces {@link FilterTable.ControlKeys#FOCUS_SEARCH_FIELD}, which has no key stroke in a table panel.
 		 */
 		public static final ControlKey<CommandControl> FOCUS_SEARCH_FIELD = CommandControl.key("focusSearchField", keyStroke(VK_F, MENU_SHORTCUT_MASK));
 
@@ -2183,6 +2183,10 @@ public class EntityTablePanel extends JPanel {
 			this.entityDefinition = tablePanel.model.entityDefinition();
 			this.tableBuilder = FilterTable.builder()
 							.model(tablePanel.model)
+							// replaced by the table panel controls
+							.keyStroke(FilterTable.ControlKeys.COPY_CELL, null)
+							.keyStroke(FilterTable.ControlKeys.COPY_COLUMN, null)
+							.keyStroke(FilterTable.ControlKeys.FOCUS_SEARCH_FIELD, null)
 							.name(entityDefinition.type().toString())
 							.summaryValues(new EntitySummaryValuesFactory(entityDefinition, tablePanel.model))
 							.cellRenderers(new EntityTableCellRenderers())

@@ -324,7 +324,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * Default key stroke: CTRL-F
 		 * @see #createSearchField()
 		 */
-		public static final ControlKey<CommandControl> FOCUS_SEARCH_FIELD = CommandControl.key("requestSearchFieldFocus", keyStroke(VK_F, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> FOCUS_SEARCH_FIELD = CommandControl.key("focusSearchField", keyStroke(VK_F, MENU_SHORTCUT_MASK));
 
 		private ControlKeys() {}
 	}
