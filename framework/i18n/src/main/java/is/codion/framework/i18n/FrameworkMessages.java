@@ -60,7 +60,6 @@ public final class FrameworkMessages {
 	private static final String ADD = "add";
 	private static final String ADD_MNEMONIC = "add_mnemonic";
 	private static final String ADD_TIP = "add_tip";
-	private static final String SAVE_MNEMONIC = "save_mnemonic";
 	private static final String CONFIRM_EXIT = "confirm_exit";
 	private static final String CONFIRM_EXIT_TITLE = "confirm_exit_title";
 	private static final String MODIFIED_WARNING = "modified_warning";
@@ -273,13 +272,6 @@ public final class FrameworkMessages {
 	 */
 	public static String addTip() {
 		return get(ADD_TIP);
-	}
-
-	/**
-	 * @return save mnemonic
-	 */
-	public static char saveMnemonic() {
-		return get(SAVE_MNEMONIC).charAt(0);
 	}
 
 	/**

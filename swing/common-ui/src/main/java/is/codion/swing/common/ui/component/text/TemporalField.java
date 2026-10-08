@@ -373,7 +373,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		/**
 		 * @param adjustable whether the date can be adjusted using the keyboard
-		 * (UP/DOWN arrows by default) to increment/decrement of date component under cursor
+		 * (UP/DOWN arrows by default) to increment/decrement the date component under cursor
 		 * @return this builder instance
 		 * @see #ADJUSTABLE
 		 */

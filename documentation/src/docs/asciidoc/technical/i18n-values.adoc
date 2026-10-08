@@ -942,7 +942,6 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |resize_left_right|Resize left/right|Stækka/minnka
 |resize_selected_column|Resize selected column|Breyta stærð á völdum dálk
 |resizing|Resizing|Stærð
-|save|Save|Vista
 |select_condition_panel|Select a condition panel|Velja leitarflöt
 |select_filter_panel|Select a filter panel|Velja sýjunarflöt
 |select_next|Select next|Velja næstu

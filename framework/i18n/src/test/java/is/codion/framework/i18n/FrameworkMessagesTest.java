@@ -52,7 +52,6 @@ public class FrameworkMessagesTest {
 		FrameworkMessages.add();
 		FrameworkMessages.addMnemonic();
 		FrameworkMessages.addTip();
-		FrameworkMessages.saveMnemonic();
 		FrameworkMessages.confirmExit();
 		FrameworkMessages.confirmExitTitle();
 		FrameworkMessages.modifiedWarning();

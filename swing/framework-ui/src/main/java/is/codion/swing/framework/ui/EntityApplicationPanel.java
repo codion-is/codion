@@ -393,7 +393,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * Displays a keyboard shortcut overview panel.
+	 * Displays a keyboard shortcut overview panel, showing the default key strokes of the controls,
+	 * see {@link is.codion.swing.common.ui.control.ControlKey#defaultKeystroke()}.
 	 */
 	public final void displayKeyboardShortcuts() {
 		KeyboardShortcutsPanel shortcutsPanel = new KeyboardShortcutsPanel();
