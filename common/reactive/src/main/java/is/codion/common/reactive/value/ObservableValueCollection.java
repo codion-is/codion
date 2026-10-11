@@ -20,7 +20,6 @@ package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.Observable;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -34,7 +33,7 @@ import java.util.Optional;
 public interface ObservableValueCollection<T, C extends Collection<T>> extends Observable<C>, Iterable<T> {
 
 	@Override
-	@NonNull C get();
+	C get();
 
 	/**
 	 * Returns true if this collection contains the specified element

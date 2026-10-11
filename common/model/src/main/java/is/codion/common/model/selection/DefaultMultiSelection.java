@@ -182,10 +182,6 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		selectedItems.onChanged();
 	}
 
-	private boolean isSelectedIndex(int index) {
-		return store.contains(index);
-	}
-
 	private static void checkIndex(int index, int size) {
 		if (index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
@@ -345,6 +341,10 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 				notifyObserver();
 			}
 		}
+
+		private boolean isSelectedIndex(int index) {
+			return store.contains(index);
+		}
 	}
 
 	private final class SelectedItem extends AbstractValue<R> {
@@ -494,7 +494,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			Map<R, List<Integer>> candidates = new HashMap<>();
 			for (int index = 0; index < current.size(); index++) {
 				R item = current.get(index);
-				R found = wanted == null ? equal(distinct, item) : wanted.contains(item) ? item : null;
+				R found = wanted == null ? findEqual(distinct, item) : wanted.contains(item) ? item : null;
 				if (found != null) {
 					candidates.computeIfAbsent(found, k -> new ArrayList<>()).add(index);
 				}
@@ -531,7 +531,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		 */
 		private boolean noneSelected(List<R> itemsToFind) {
 			for (Integer index : store.get()) {
-				if (index < items.size() && equal(itemsToFind, items.get(index)) != null) {
+				if (index < items.size() && findEqual(itemsToFind, items.get(index)) != null) {
 					return false;
 				}
 			}
@@ -558,7 +558,10 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			return indexes;
 		}
 
-		private @Nullable R equal(List<R> itemsToFind, R item) {
+		/**
+		 * @return the one of the given items to find equal to the given item, null if none is
+		 */
+		private @Nullable R findEqual(List<R> itemsToFind, R item) {
 			for (R itemToFind : itemsToFind) {
 				if (itemToFind == item || itemToFind.equals(item)) {
 					return itemToFind;

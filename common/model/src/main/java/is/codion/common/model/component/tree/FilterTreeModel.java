@@ -26,7 +26,6 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -325,7 +324,7 @@ public interface FilterTreeModel<T> {
 		 * @return an unmodifiable snapshot of the visible nodes
 		 */
 		@Override
-		@NonNull List<NodePath<T>> get();
+		List<NodePath<T>> get();
 	}
 
 	/**

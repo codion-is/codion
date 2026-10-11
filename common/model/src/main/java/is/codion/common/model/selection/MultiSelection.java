@@ -23,8 +23,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 
-import org.jspecify.annotations.NonNull;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -164,7 +162,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	interface Indexes extends Value<List<Integer>> {
 
 		@Override
-		@NonNull List<Integer> get();
+		List<Integer> get();
 
 		/**
 		 * Adds the given index to the selected indexes
@@ -222,7 +220,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	interface Items<R> extends Value<List<R>> {
 
 		@Override
-		@NonNull List<R> get();
+		List<R> get();
 
 		/**
 		 * @param items the items to select

@@ -29,7 +29,6 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -354,7 +353,7 @@ public interface FilterModel<T> {
 		 * @return the included items or an empty list if all items are excluded
 		 */
 		@Override
-		@NonNull List<T> get();
+		List<T> get();
 
 		/**
 		 * @return the {@link IncludePredicate} controlling which items should be included
@@ -494,7 +493,7 @@ public interface FilterModel<T> {
 		 * @return the excluded items or an empty collection in case of no excluded items
 		 */
 		@Override
-		@NonNull Collection<T> get();
+		Collection<T> get();
 
 		/**
 		 * Returns true if the given item is excluded.

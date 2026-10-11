@@ -18,7 +18,6 @@
  */
 package is.codion.common.reactive.value;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -37,7 +36,7 @@ import java.util.Optional;
 public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, ObservableValueCollection<T, C> {
 
 	@Override
-	@NonNull C get();
+	C get();
 
 	@Override
 	default boolean isNullable() {
