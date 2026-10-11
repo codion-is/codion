@@ -28,9 +28,9 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
  * referencing the parent, from the table model entity type to itself.
  * <p>The tree follows the included items, reloaded synchronously after each change, so it shows the rows the table
  * model shows, siblings in the order of the rows. Sorting or filtering the table model does the same to the tree.
- * <p>The selection is kept in sync with the table model selection both ways, an entity selected in the table model
- * having its ancestors expanded in the tree. The single selection mode of the tree follows the one of the table model,
- * so change the latter.
+ * <p>The selection is kept in sync with the table model selection both ways, an entity selected in the table model,
+ * or by item in the tree, having its ancestors expanded in the tree. The single selection mode of the tree follows the
+ * one of the table model, so change the latter.
  * <p>An entity whose parent is not among the included items is an orphan, hidden along with everything below it, unless
  * shown as a root, see {@link #orphansAsRoots()}. An entity on a cycle of parents is reachable from no root, so neither
  * it nor anything below it is in the tree.

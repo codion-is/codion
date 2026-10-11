@@ -29,7 +29,8 @@ import java.util.function.Function;
  * <p>The same item may appear in several places in a tree. Selecting by item selects one node holding it, while the
  * paths address particular nodes. A node hidden below a collapsed ancestor, selected by item or by path, has its
  * ancestors expanded, so that it can be selected right away. A node not yet in the model, its parent not loaded, is
- * selected via {@link #set(NodePath)}, which loads as needed and selects it once it is visible.
+ * selected via {@link #set(NodePath)}, which loads as needed and selects it once it is visible, or by item, in case the
+ * model provides the paths of items, see {@link FilterTreeModel.Builder#path(Function)}.
  * @param <T> the item type
  * @see FilterTreeModel#selection()
  */
@@ -40,8 +41,9 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	 * <p>Setting an item selects one node holding it: a visible one holding the same instance, otherwise one holding an
 	 * equal item, an already selected one preferred in either case, keeping the selection in place, otherwise the first
 	 * one, and in case none is visible, the first one in the model, depth first, its ancestors expanded. An item not in
-	 * the model, or filtered, clears the selection. Use {@link #path()} for a particular node, and
-	 * {@link #set(NodePath)} for a node not yet loaded.
+	 * the model, its path provided by the model, has its ancestors expanded and loaded, see
+	 * {@link FilterTreeModel.Builder#path(Function)}. An item not in the model otherwise, or filtered, clears the
+	 * selection. Use {@link #path()} for a particular node, and {@link #set(NodePath)} for a node not yet loaded.
 	 * <p>The selection moving between nodes holding the same item instance changes {@link #path()}, not the item.
 	 */
 	@Override
@@ -49,7 +51,8 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 
 	/**
 	 * <p>The items of the selected nodes, in row order, an item selected in several places appearing once for each.
-	 * <p>Each item set or added selects a node of its own, as {@link #item()} does, ignoring an item not in the model,
+	 * <p>Each item set or added selects a node of its own, as {@link #item()} does, an item not in the model having its
+	 * ancestors expanded and loaded in case the model provides its path, ignoring an item not in the model otherwise,
 	 * or filtered, while {@link Items#remove(Object)} and {@link Items#contains(Object)} cover every selected node
 	 * holding it, so that {@code set(get())} leaves the selection as is. Restoring prefers neither selected nor hidden
 	 * nodes. Use {@link #paths()} for particular nodes.

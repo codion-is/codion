@@ -58,6 +58,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	private final Consumer<Collection<NodePath<T>>> expand;
 	private final Consumer<NodePath<T>> select;
 	private final Function<Set<T>, List<NodePath<T>>> occurrences;
+	private final Consumer<Set<T>> reveal;
 	private final Value<NodePath<T>> path;
 	private final Items<NodePath<T>> paths;
 	private final Value<T> item;
@@ -70,15 +71,18 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	 * @param select selects the node identified by the given path once it is visible, see {@link #set(NodePath)}
 	 * @param occurrences provides the paths of the included nodes holding any of the given items, in the order the nodes
 	 * are shown once their ancestors are expanded
+	 * @param reveal expands the ancestors of the nodes holding the given items which are not in the model, loading them,
+	 * in case the model provides their paths
 	 */
 	DefaultTreeSelection(MultiSelection<NodePath<T>> selection, VisibleNodes<T> visible,
 											 Consumer<Collection<NodePath<T>>> expand, Consumer<NodePath<T>> select,
-											 Function<Set<T>, List<NodePath<T>>> occurrences) {
+											 Function<Set<T>, List<NodePath<T>>> occurrences, Consumer<Set<T>> reveal) {
 		this.selection = requireNonNull(selection);
 		this.visible = requireNonNull(visible);
 		this.expand = requireNonNull(expand);
 		this.select = requireNonNull(select);
 		this.occurrences = requireNonNull(occurrences);
+		this.reveal = requireNonNull(reveal);
 		this.path = new SelectedPath();
 		this.paths = new SelectedPaths();
 		this.item = new SelectedItem();
@@ -200,6 +204,17 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 			}
 			//the visible nodes holding the remaining items have all been taken
 			find(toFind, candidates(occurrences.apply(remaining), remaining), emptySet(), found, paths);
+			if (paths.size() < toFind.size()) {
+				//the remaining items are not in the model, their ancestors expanded and loaded, in case the model provides their paths
+				remaining.clear();
+				for (int i = 0; i < toFind.size(); i++) {
+					if (!found[i]) {
+						remaining.add(toFind.get(i));
+					}
+				}
+				reveal.accept(remaining);
+				find(toFind, candidates(occurrences.apply(remaining), remaining), emptySet(), found, paths);
+			}
 		}
 
 		return new ArrayList<>(paths);

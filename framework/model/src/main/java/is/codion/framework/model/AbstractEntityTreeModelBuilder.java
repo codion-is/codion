@@ -114,6 +114,13 @@ public abstract class AbstractEntityTreeModelBuilder<B extends EntityTreeModel.B
 	}
 
 	@Override
+	public final B path(Function<Entity, @Nullable NodePath<Entity>> path) {
+		requireNonNull(path);
+		options.add(builder -> builder.path(path));
+		return self();
+	}
+
+	@Override
 	public final B comparator(@Nullable Comparator<Entity> comparator) {
 		this.comparator = comparator;
 		this.comparatorSet = true;

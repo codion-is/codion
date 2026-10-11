@@ -206,6 +206,35 @@ public final class DefaultEntityTableTreeModelTest {
 	}
 
 	@Test
+	void treeSelectionByItem() {
+		TestEntityTableModel tableModel = tableModel();
+		tableModel.items().refresh();
+		EntityTableTreeModel tree = tree(tableModel);
+		// nothing expanded, ALLEN not in the tree model, its parent not loaded
+		NodePath<Entity> allen = path(tableModel, "KING", "JONES", "BLAKE", "ALLEN");
+		assertFalse(tree.nodes().contains(allen));
+		tree.selection().item().set(employee(tableModel, "ALLEN"));
+		assertEquals(allen, tree.selection().path().get());
+		assertTrue(tree.expansion().expanded(allen.parent()));
+		assertEquals(singletonList(employee(tableModel, "ALLEN")), tableModel.selection().items().get());
+		// several, one in the tree model, one not, in row order
+		tree.expansion().collapse(path(tableModel, "KING"));
+		NodePath<Entity> miller = path(tableModel, "KING", "CLARK", "MILLER");
+		assertFalse(tree.nodes().contains(miller));
+		tree.selection().items().set(asList(employee(tableModel, "ALLEN"), employee(tableModel, "MILLER")));
+		assertEquals(asList(miller, allen), tree.selection().paths().get());
+		tree.selection().clear();
+		tree.selection().items().add(employee(tableModel, "WARD"));
+		assertEquals(singletonList(path(tableModel, "KING", "WARD")), tree.selection().paths().get());
+		// an entity not in the tree, an orphan not shown as a root, is ignored
+		tableModel.filters().get(Employee.NAME).operands().equal().set("JONES");
+		tableModel.filters().get(Employee.NAME).operator().set(Operator.NOT_EQUAL);
+		tableModel.filters().get(Employee.NAME).enabled().set(true);
+		tree.selection().items().set(asList(employee(tableModel, "ALLEN"), employee(tableModel, "MILLER")));
+		assertEquals(singletonList(miller), tree.selection().paths().get());
+	}
+
+	@Test
 	void singleSelection() {
 		TestEntityTableModel tableModel = tableModel();
 		tableModel.items().refresh();

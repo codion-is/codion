@@ -70,6 +70,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	private final Supplier<Collection<T>> roots;
 	private final Function<NodePath<T>, Collection<T>> children;
 	private final @Nullable Function<List<NodePath<T>>, Collection<NodePath<T>>> leaves;
+	private final @Nullable Function<T, @Nullable NodePath<T>> path;
 	private final @Nullable NodesListener<T> listener;
 	private final Consumer<Exception> onLoadException;
 
@@ -112,6 +113,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		this.roots = builder.roots;
 		this.children = builder.children;
 		this.leaves = builder.leaves;
+		this.path = builder.path;
 		this.listener = listener;
 		this.onLoadException = builder.onLoadException == null ? new RethrowExceptionHandler() : builder.onLoadException;
 		this.sort = new DefaultSort(builder.comparators);
@@ -313,6 +315,35 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			mutate(() -> {
 				expanded.addAll(ancestors);
 				pendingExpanded.addAll(ancestors);
+			});
+		}
+	}
+
+	/**
+	 * Expands the ancestors of the nodes holding the given items which are not in the model, their paths provided by the
+	 * path function, ancestors before descendants, in a single mutation, loading them.
+	 */
+	private void reveal(Set<T> items) {
+		if (path == null) {
+			return;
+		}
+		Set<NodePath<T>> toExpand = new LinkedHashSet<>();
+		for (T item : items) {
+			NodePath<T> itemPath = path.apply(item);
+			if (itemPath != null && !itemPath.root() && !nodeMap.containsKey(itemPath) && mayExist(itemPath)) {
+				NodePath<T> ancestor = itemPath.parent();
+				while (!ancestor.root()) {
+					if (!expanded.contains(ancestor)) {
+						toExpand.add(ancestor);
+					}
+					ancestor = ancestor.parent();
+				}
+			}
+		}
+		if (!toExpand.isEmpty()) {
+			mutate(() -> {
+				expanded.addAll(toExpand);
+				pendingExpanded.addAll(toExpand);
 			});
 		}
 	}
@@ -870,7 +901,8 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		@Override
 		public TreeSelection<T> treeSelection(MultiSelection<NodePath<T>> selection) {
 			return new DefaultTreeSelection<>(selection, visible, DefaultFilterTreeModel.this::expandHidden,
-							DefaultFilterTreeModel.this::selectWhenVisible, DefaultFilterTreeModel.this::occurrences);
+							DefaultFilterTreeModel.this::selectWhenVisible, DefaultFilterTreeModel.this::occurrences,
+							DefaultFilterTreeModel.this::reveal);
 		}
 	}
 

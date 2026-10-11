@@ -62,6 +62,7 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	@Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators;
 	@Nullable Predicate<NodePath<T>> included;
 	@Nullable Consumer<Exception> onLoadException;
+	@Nullable Function<T, @Nullable NodePath<T>> path;
 
 	private boolean refresh = false;
 
@@ -86,6 +87,12 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 		this.leaves = paths -> paths.stream()
 						.filter(leaf)
 						.collect(toList());
+		return self();
+	}
+
+	@Override
+	public final B path(Function<T, @Nullable NodePath<T>> path) {
+		this.path = requireNonNull(path);
 		return self();
 	}
 

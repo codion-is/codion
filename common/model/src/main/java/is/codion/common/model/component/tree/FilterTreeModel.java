@@ -436,6 +436,19 @@ public interface FilterTreeModel<T> {
 		B leaf(Predicate<NodePath<T>> leaf);
 
 		/**
+		 * <p>The path function, the inverse of the children function, providing the path of the node holding an item, so
+		 * that an item not yet in the model, its parent not loaded, can be selected via {@link TreeSelection#item()} or
+		 * {@link TreeSelection#items()}, which expand its ancestors, loading them, as for an item below a collapsed ancestor.
+		 * <p>Called on the UI thread, for the items not in the model only. The item is selected right away when loading
+		 * synchronously, while loading asynchronously only its ancestors are expanded, {@link TreeSelection#set(NodePath)}
+		 * selecting a node once it is loaded.
+		 * @param path returns the path of the node holding the given item, null in case it is not in the tree
+		 * @return this builder instance
+		 * @see TreeSelection#item()
+		 */
+		B path(Function<T, @Nullable NodePath<T>> path);
+
+		/**
 		 * Specifies the comparator to use when sorting siblings, the same for all, see {@link #comparators(Function)}.
 		 * @param comparator the comparator to use when sorting siblings, null for none
 		 * @return this builder instance

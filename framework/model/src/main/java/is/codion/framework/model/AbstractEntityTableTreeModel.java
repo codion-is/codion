@@ -80,7 +80,9 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 		this.parentsFirst = State.state(builder.parentsFirst);
 		this.treeModel = requireNonNull(requireNonNull(treeModel).build(() -> index().roots,
 						path -> index().children(path.item()),
-						treeModelBuilder -> treeModelBuilder.leaf(path -> index().children(path.item()).isEmpty())));
+						treeModelBuilder -> treeModelBuilder
+										.leaf(path -> index().children(path.item()).isEmpty())
+										.path(entity -> index().path(entity))));
 		// in memory, from the included items
 		this.treeModel.nodes().loader().async().set(false);
 		this.treeModel.selection().singleSelection().set(tableModel.selection().singleSelection().is());
@@ -189,18 +191,7 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 	}
 
 	private void select(List<Entity> entities) {
-		List<NodePath<Entity>> paths = new ArrayList<>(entities.size());
-		for (Entity entity : entities) {
-			NodePath<Entity> path = index().path(entity);
-			if (path != null) {
-				NodePath<Entity> parentPath = path.parent();
-				if (!parentPath.root()) {
-					treeModel.expansion().expand(parentPath);
-				}
-				paths.add(path);
-			}
-		}
-		treeModel.selection().paths().set(paths);
+		treeModel.selection().items().set(entities);
 	}
 
 	/**

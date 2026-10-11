@@ -22,6 +22,7 @@ Codion Change Log
 - FilterTreeModel.Builder.comparators() added, the comparator for the children of each parent, given its path, comparator() its form for the same comparator for all, FilterTreeSort.compare() comparing by the comparator of the top level.
 - FilterTreeModel.Nodes.add() and replace(), the leaves function is now called off the UI thread when loading asynchronously, the items added being leaves and a replaced node keeping its leaf status until it reports, where it was called on the calling thread, a query on the UI thread for an entity tree.
 - FilterTreeModel.Nodes.add(), remove() and replace(), a load in progress at or above the parent, or the node replaced, is now started again, where its result, fetched before the edit, undid it once applied, bringing a removed node back for example.
+- FilterTreeModel.Builder.path() added, the path function, the inverse of the children function, an item not in the model, its parent not loaded, now selected via TreeSelection.item() or items() having its ancestors expanded and loaded, where it was ignored.
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 - ProgressWorkerDialogBuilder.onWorking() added, as in ProgressWorker.Builder.
@@ -56,6 +57,7 @@ Codion Change Log
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.
 - EntityTableTreeModel added, the included items of an EntityTableModel as a FilterTreeModel, arranged by a self-referencing foreign key, following the items, its selection in sync with the table selection, orphansAsRoots() and parentsFirst() as states, AbstractEntityTableTreeModel and AbstractEntityTableTreeModelBuilder the base for toolkit models.
+- EntityTableTreeModel, an entity selected by item in the tree, its parent not loaded, now has its ancestors expanded, as one selected in the table model, the tree model given the paths of the entities, where it was ignored, AbstractEntityTreeModelBuilder.path() added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel(EntityType, EntityConnection, Consumer<Config>) added, for configuring the table model without creating an edit model.
 - SwingEntityTableModel(Collection, EntityConnection) and SwingEntityTableModel(EntityType, Collection, EntityConnection) replaced by SwingEntityTableModel.of(), for a table model of the given entities, without an item source or query conditions, refreshing it doing nothing.

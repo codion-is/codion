@@ -480,6 +480,60 @@ final class DefaultFilterTreeModelTest {
 	}
 
 	@Test
+	void selectionByItemNotLoaded() {
+		//without the path function, an item not in the model clears the selection
+		FilterTreeModel<Item> model = model();
+		model.nodes().refresh();
+		model.selection().path().set(path("b"));
+		model.selection().item().set(new Item("a11", "a11"));
+		assertFalse(model.selection().present().is());
+		assertFalse(model.nodes().loaded(path("a")));
+		//with it, the ancestors of an item not in the model expanded and loaded
+		List<Item> provided = new ArrayList<>();
+		model = builder()
+						.path(item -> {
+							provided.add(item);
+							//x a stale path, the node not in the tree
+							return item.id.equals("x") ? path("a", "x") : itemPath(item.id);
+						})
+						.build();
+		model.nodes().refresh();
+		model.expansion().expand(path("a"));
+		List<NodePath<Item>> expanded = new ArrayList<>();
+		model.expansion().expanded().addConsumer(expanded::add);
+		TreeSelection<Item> selection = model.selection();
+		selection.items().add(new Item("a11", "a11"));
+		assertEquals(path("a", "a1", "a11"), selection.path().get());
+		//the ancestors not already expanded
+		assertEquals(singletonList(path("a", "a1")), expanded);
+		assertEquals(items("a11"), provided);
+		model.expansion().collapse(path("a"));
+		selection.item().set(new Item("c1", "c1"));
+		assertEquals(path("c", "c1"), selection.path().get());
+		assertEquals(items("a11", "c1"), provided);
+		//called for the items not in the model only, the selection in row order
+		model.expansion().collapse(path("a"));
+		model.expansion().collapse(path("c"));
+		selection.items().set(items("c1", "a2"));
+		assertEquals(asList(path("a", "a2"), path("c", "c1")), selection.paths().get());
+		assertEquals(items("a11", "c1"), provided);
+		//an item not in the tree, its path null, clears the selection
+		selection.item().set(new Item("y", "y"));
+		assertFalse(selection.present().is());
+		assertEquals(items("a11", "c1", "y"), provided);
+		//a path to a node which does not exist, below a loaded node, ignored, its ancestors not expanded
+		model.expansion().collapse(path("a"));
+		selection.item().set(new Item("x", "x"));
+		assertFalse(selection.present().is());
+		assertFalse(model.expansion().expanded(path("a")));
+		//a filtered node in the model, ignored, its ancestors not expanded
+		model.nodes().predicate().set(path -> !path.item().id.equals("a2"));
+		selection.item().set(new Item("a2", "a2"));
+		assertFalse(selection.present().is());
+		assertFalse(model.expansion().expanded(path("a")));
+	}
+
+	@Test
 	void leaves() {
 		List<List<String>> calls = new ArrayList<>();
 		FilterTreeModel<Item> model = builder()
@@ -1262,6 +1316,36 @@ final class DefaultFilterTreeModelTest {
 		data.values().forEach(items -> items.stream()
 						.filter(item -> item != null && item.id.equals(id))
 						.forEach(item -> item.name = name));
+	}
+
+	/**
+	 * @return the path of the item with the given id, from the data, null in case it is not in the tree
+	 */
+	private @Nullable NodePath<Item> itemPath(String id) {
+		List<Item> items = new ArrayList<>();
+		String current = id;
+		while (!current.isEmpty()) {
+			items.add(0, new Item(current, current));
+			String parent = parentId(current);
+			if (parent == null) {
+				return null;
+			}
+			current = parent;
+		}
+
+		return nodePath(items);
+	}
+
+	private @Nullable String parentId(String id) {
+		for (Map.Entry<String, List<Item>> entry : data.entrySet()) {
+			for (Item item : entry.getValue()) {
+				if (item != null && item.id.equals(id)) {
+					return entry.getKey();
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private int calls(String parent) {
