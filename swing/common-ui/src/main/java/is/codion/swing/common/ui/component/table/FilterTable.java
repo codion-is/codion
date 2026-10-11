@@ -281,14 +281,14 @@ public final class FilterTable<R, C> extends JTable {
 		public static final ControlKey<CommandControl> MOVE_COLUMN_RIGHT = CommandControl.key("moveColumnRight", keyStroke(VK_RIGHT, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Decreases the size of the selected column.<br>
-		 * Default key stroke: CTRL-SUBTRACT
+		 * Default key stroke: ALT-LEFT
 		 */
-		public static final ControlKey<CommandControl> DECREASE_COLUMN_SIZE = CommandControl.key("decreaseColumnSize", keyStroke(VK_SUBTRACT, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> DECREASE_COLUMN_SIZE = CommandControl.key("decreaseColumnSize", keyStroke(VK_LEFT, ALT_DOWN_MASK));
 		/**
 		 * Increases the size of the selected column.<br>
-		 * Default key stroke: CTRL-ADD
+		 * Default key stroke: ALT-RIGHT
 		 */
-		public static final ControlKey<CommandControl> INCREASE_COLUMN_SIZE = CommandControl.key("increaseColumnSize", keyStroke(VK_ADD, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> INCREASE_COLUMN_SIZE = CommandControl.key("increaseColumnSize", keyStroke(VK_RIGHT, ALT_DOWN_MASK));
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
 		 * Default key stroke: CTRL-ALT-C

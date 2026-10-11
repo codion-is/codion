@@ -284,10 +284,6 @@ final class KeyboardShortcutsPanel extends JPanel {
 				return "←";
 			case VK_RIGHT:
 				return "→";
-			case VK_ADD:
-				return "+";
-			case VK_SUBTRACT:
-				return "-";
 			default:
 				return KeyEvent.getKeyText(keyCode);
 		}

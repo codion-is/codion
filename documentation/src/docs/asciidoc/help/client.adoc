@@ -237,7 +237,7 @@ NOTE: Codion does not support cascading deletes. All deletions must be explicit.
 You can adjust column widths to better view your data:
 
 * **Resize with mouse** - Drag the column border in the header
-* **Resize with keyboard** - Select a column and use kbd:[Ctrl + &#x002B;] to increase width or kbd:[Ctrl + &#x2212;] to decrease width
+* **Resize with keyboard** - Select a column and use kbd:[Alt + &#x2192;] to increase width or kbd:[Alt + &#x2190;] to decrease width
 * **Auto-resize mode** - Access the table popup menu (right-click or kbd:[Ctrl + G]), navigate to *Columns* → *Auto-resize* and select a resize mode:
 ** *Off* - Columns stay at their manually set widths
 ** *Next column* - Adjusting one column affects the next column
@@ -703,7 +703,7 @@ NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for all shortcuts 
 |kbd:[Ctrl + Alt + C]|Copy selected cell to clipboard
 |kbd:[Ctrl + Alt + Shift + C]|Copy selected column cells to clipboard
 |kbd:[Ctrl + Shift + &#x2190;/&#x2192;]|Move selected column
-|kbd:[Ctrl + &#x002B;/&#x2212;]|Resize selected column
+|kbd:[Alt + &#x2190;/&#x2192;]|Resize selected column
 |kbd:[Ctrl + Shift + &#x2191;/&#x2193;]|Move selection
 |kbd:[Ctrl + G]|Show popup menu
 |kbd:[Ctrl + P]|Print (if available)

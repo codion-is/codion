@@ -80,9 +80,9 @@ import java.util.function.Function;
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.swing.common.ui.component.tree.FilterTree.ControlKeys.*;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
-import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -149,14 +149,14 @@ public final class FilterTree<T> extends JTree {
 
 		/**
 		 * Expands the selected nodes along with their loaded descendants.<br>
-		 * Default key stroke: CTRL-ADD
+		 * Default key stroke: ALT-RIGHT
 		 */
-		public static final ControlKey<CommandControl> EXPAND = CommandControl.key("expand", keyStroke(VK_ADD, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> EXPAND = CommandControl.key("expand", keyStroke(VK_RIGHT, ALT_DOWN_MASK));
 		/**
 		 * Collapses the selected nodes along with their descendants.<br>
-		 * Default key stroke: CTRL-SUBTRACT
+		 * Default key stroke: ALT-LEFT
 		 */
-		public static final ControlKey<CommandControl> COLLAPSE = CommandControl.key("collapse", keyStroke(VK_SUBTRACT, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> COLLAPSE = CommandControl.key("collapse", keyStroke(VK_LEFT, ALT_DOWN_MASK));
 		/**
 		 * Refreshes the children of the selected nodes, along with their loaded descendants,
 		 * the whole tree in case of no selection.<br>
