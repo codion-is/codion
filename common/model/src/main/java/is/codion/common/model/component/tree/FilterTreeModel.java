@@ -75,7 +75,7 @@ public interface FilterTreeModel<T> {
 	 * particular nodes, the same item appearing in several places. Selecting a node hidden below a collapsed ancestor
 	 * expands its ancestors, and a node not yet loaded is selected via {@link TreeSelection#set(NodePath)}.
 	 * <p>The selection is kept by path, through refreshes, filtering, sorting and expansion. A selected node hidden by
-	 * collapsing one of its ancestors is replaced by its nearest visible ancestor, and one removed or filtered is
+	 * collapsing one of its ancestors is replaced by its nearest visible ancestor, and one removed or excluded is
 	 * dropped from the selection.
 	 * @return the selection
 	 */
@@ -109,12 +109,12 @@ public interface FilterTreeModel<T> {
 
 		/**
 		 * @param path the path
-		 * @return true if the node identified by the given path is in the model, included or filtered
+		 * @return true if the node identified by the given path is in the model, included or excluded
 		 */
 		boolean contains(NodePath<T> path);
 
 		/**
-		 * Returns the paths of the nodes holding the given item, included or filtered, depth first, since the same item
+		 * Returns the paths of the nodes holding the given item, included or excluded, depth first, since the same item
 		 * may appear in several places. A node is in the model once its parent has been loaded.
 		 * @param item the item
 		 * @return the current paths of the nodes holding the given item, an empty list in case of none
@@ -213,7 +213,7 @@ public interface FilterTreeModel<T> {
 		 * <p>Controls which nodes are included. A node is included when it passes the predicate, or when one of its
 		 * loaded descendants does, so a match keeps its ancestors. Setting the predicate filters the nodes.
 		 * <p>Filtering applies to the loaded nodes only, a node not yet loaded can not be included on account of its
-		 * descendants. Filtered nodes stay in the model, so clearing the predicate includes them again without a reload.
+		 * descendants. Excluded nodes stay in the model, so clearing the predicate includes them again without a reload.
 		 * <p>To hide whole subtrees, have the children function return fewer children and refresh, which keeps the
 		 * expansion and selection of the remaining nodes.
 		 * @return the {@link IncludePredicate} controlling which nodes are included
@@ -460,7 +460,7 @@ public interface FilterTreeModel<T> {
 		 * the root path for the top level, a null comparator leaving the children in the order the children function
 		 * returned them in.
 		 * <p>Called each time the children of a parent are sorted, when they are loaded, added, replaced, refreshed or
-		 * filtered, or when the sort order changes. Sets the same option as {@link #comparator(Comparator)}, so the last
+		 * excluded, or when the sort order changes. Sets the same option as {@link #comparator(Comparator)}, so the last
 		 * one set wins.
 		 * @param comparators provides the comparator for the children of a parent, given its path
 		 * @return this builder instance

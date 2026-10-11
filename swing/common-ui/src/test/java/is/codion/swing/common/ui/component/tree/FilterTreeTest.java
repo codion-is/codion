@@ -944,8 +944,7 @@ public final class FilterTreeTest {
 	 * Selects a random path down the generated nodes, loaded or not, sometimes one which does not exist. Via
 	 * {@code selection().set()}, asserting that a node on the path is selected, the node itself when visible, or that
 	 * the selection is left as is. Or via {@code path().set()} or {@code item().set()}, the generated items being unique,
-	 * for a node in the model, hidden or not, asserting that it is selected, or the selection cleared in case it is
-	 * filtered.
+	 * for a node in the model, hidden or not, asserting that it is selected, or the selection cleared in case it is excluded.
 	 */
 	private static String select(Random random, SwingFilterTreeModel<String> model, Map<String, List<String>> nodes) {
 		List<String> items = new ArrayList<>();

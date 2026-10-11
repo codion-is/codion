@@ -162,7 +162,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * If true, the selection is cleared when the selected item is excluded from
 		 * the model, otherwise the selected item can potentially represent a value
 		 * which is not currently included in the model
-		 * @param filterSelected true if the selected item should be filtered, false by default
+		 * @param filterSelected true if the selection is cleared when the selected item is excluded, false by default
 		 * @return this builder instance
 		 * @see IncludedItems#predicate()
 		 */

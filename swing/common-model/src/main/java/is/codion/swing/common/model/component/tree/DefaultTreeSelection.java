@@ -326,7 +326,7 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 				paths[index++] = createTreePath(visible.get(row));
 			}
 			//the selection does not change when the rows are unchanged, only the paths without a row being dropped,
-			//the paths of nodes removed or filtered with no JTree attached to remove them
+			//the paths of nodes removed or excluded with no JTree attached to remove them
 			if (notifyChanging && rowsChanged) {
 				changing.run();
 			}

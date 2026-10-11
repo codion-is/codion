@@ -218,7 +218,7 @@ final class DefaultFilterTreeModelTest {
 		model.expansion().expand(path("c"));
 		//wherever it appears, depth first
 		assertEquals(asList(path("a", "a1"), path("c", "a1")), model.nodes().paths(a1));
-		//filtered nodes included
+		//excluded nodes included
 		model.nodes().predicate().set(path -> !path.item().id.equals("a1"));
 		assertFalse(model.nodes().included(path("a", "a1")));
 		assertEquals(asList(path("a", "a1"), path("c", "a1")), model.nodes().paths(a1));
@@ -254,7 +254,7 @@ final class DefaultFilterTreeModelTest {
 		assertEquals(path("a", "a1"), model.selection().path().get());
 		model.selection().set(path("x"));
 		assertEquals(path("a", "a1"), model.selection().path().get());
-		//filtered, its nearest visible ancestor
+		//excluded, its nearest visible ancestor
 		model.nodes().predicate().set(path -> !path.item().id.equals("a11"));
 		model.selection().set(path("a", "a1", "a11"));
 		assertEquals(path("a", "a1"), model.selection().path().get());
@@ -325,7 +325,7 @@ final class DefaultFilterTreeModelTest {
 		assertEquals(asList(path("a", "a1"), path("c", "c1")), selection.paths().get());
 		selection.items().remove(asList(a1, new Item("c1", "c1")));
 		assertFalse(selection.present().is());
-		//not in the model, or filtered
+		//not in the model, or excluded
 		selection.paths().set(singletonList(path("b")));
 		selection.item().set(new Item("x", "x"));
 		assertFalse(selection.present().is());
@@ -462,7 +462,7 @@ final class DefaultFilterTreeModelTest {
 		model.selection().path().set(path("c", "c1"));
 		assertFalse(model.selection().present().is());
 		assertFalse(model.nodes().loaded(path("c")));
-		//filtered, ignored, its ancestors not expanded
+		//excluded, ignored, its ancestors not expanded
 		model.expansion().collapse(path("a"));
 		model.nodes().predicate().set(path -> !path.item().id.equals("a2"));
 		model.selection().paths().set(singletonList(path("a", "a2")));
@@ -526,7 +526,7 @@ final class DefaultFilterTreeModelTest {
 		selection.item().set(new Item("x", "x"));
 		assertFalse(selection.present().is());
 		assertFalse(model.expansion().expanded(path("a")));
-		//a filtered node in the model, ignored, its ancestors not expanded
+		//a excluded node in the model, ignored, its ancestors not expanded
 		model.nodes().predicate().set(path -> !path.item().id.equals("a2"));
 		selection.item().set(new Item("a2", "a2"));
 		assertFalse(selection.present().is());
@@ -756,11 +756,11 @@ final class DefaultFilterTreeModelTest {
 		assertTrue(model.nodes().included(path("a")));
 		assertFalse(model.nodes().included(path("b")));
 		assertTrue(model.nodes().included(ROOT));
-		//filtered nodes stay loaded
+		//excluded nodes stay loaded
 		assertTrue(model.nodes().contains(path("c", "c1")));
 		assertTrue(model.nodes().loaded(path("c")));
 		assertFalse(model.nodes().included(path("c", "c1")));
-		//filtered nodes dropped from the selection
+		//excluded nodes dropped from the selection
 		assertTrue(model.selection().paths().get().isEmpty());
 		model.nodes().predicate().set(path -> path.item().id.equals("c1"));
 		assertEquals(asList(path("c"), path("c", "c1")), model.visible().get());
@@ -781,14 +781,14 @@ final class DefaultFilterTreeModelTest {
 		hidden.add("b");
 		model.nodes().filter();
 		assertEquals(paths("a", "c"), model.visible().get());
-		//new nodes filtered
+		//new nodes excluded
 		data.put("", items("a", "b", "c", "d"));
 		hidden.add("d");
 		model.nodes().refresh();
 		assertEquals(paths("a", "c"), model.visible().get());
 		model.nodes().add(ROOT, items("e"));
 		assertEquals(paths("a", "c", "e"), model.visible().get());
-		//the nodes are not tested again until filtered, only the ones loaded, added or replaced
+		//the nodes are not tested again until excluded, only the ones loaded, added or replaced
 		hidden.add("c");
 		hidden.add("a2");
 		model.expansion().expand(path("a"));

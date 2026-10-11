@@ -678,7 +678,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	}
 
 	/**
-	 * Collects the paths of the nodes below the given one holding the given item, included or filtered, depth first.
+	 * Collects the paths of the nodes below the given one holding the given item, included or excluded, depth first.
 	 */
 	private void collectPaths(Node<T> node, T item, List<NodePath<T>> paths) {
 		if (node.children != null) {

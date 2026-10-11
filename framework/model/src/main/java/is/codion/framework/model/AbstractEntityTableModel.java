@@ -252,7 +252,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	 * @param entities the updated entities, mapped to their original primary key
 	 */
 	private void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
-		for (Entity entity : items().filtered().get()) {
+		for (Entity entity : items().excluded().get()) {
 			for (Map.Entry<Entity.Key, Entity> entry : entities.entrySet()) {
 				replace(foreignKey, entity, entry.getKey(), entry.getValue());
 			}

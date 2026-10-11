@@ -175,17 +175,17 @@ public final class DefaultFilterComboBoxModelTest {
 		testModel.items().included().predicate().set(item -> !item.equals(ANNA));
 		assertEquals(4, testModel.items().included().size());
 		assertFalse(testModel.items().included().contains(ANNA));
-		assertTrue(testModel.items().filtered().contains(ANNA));
+		assertTrue(testModel.items().excluded().contains(ANNA));
 		testModel.items().included().predicate().set(item -> item.equals(ANNA));
 		assertEquals(1, testModel.items().included().size());
 		assertTrue(testModel.items().included().contains(ANNA));
 
 		assertEquals(1, testModel.items().included().size());
-		assertEquals(4, testModel.items().filtered().size());
+		assertEquals(4, testModel.items().excluded().size());
 		assertEquals(5, testModel.items().get().size());
 
 		testModel.items().add(BJORN);//already contained
-		assertEquals(4, testModel.items().filtered().size());
+		assertEquals(4, testModel.items().excluded().size());
 
 		assertFalse(testModel.items().included().contains(BJORN));
 		assertTrue(testModel.items().contains(BJORN));
@@ -193,7 +193,7 @@ public final class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void remove() {
-		//remove filtered item
+		//remove excluded item
 		testModel.items().included().predicate().set(item -> !item.equals(BJORN));
 		testModel.items().remove(BJORN);
 		testModel.items().included().predicate().clear();
@@ -212,14 +212,14 @@ public final class DefaultFilterComboBoxModelTest {
 		testModel.items().included().predicate().set(item -> !item.startsWith("t"));
 		testModel.items().remove(item -> item != null && item.contains("n"));
 		assertEquals(3, testModel.items().size());
-		assertEquals(1, testModel.items().filtered().size());
+		assertEquals(1, testModel.items().excluded().size());
 		assertEquals(2, testModel.items().included().size());
 	}
 
 	@Test
 	void add() {
 		testModel.items().clear();
-		//add filtered item
+		//add excluded item
 		testModel.items().included().predicate().set(item -> !item.equals(BJORN));
 		testModel.items().add(BJORN);
 		assertFalse(testModel.items().included().contains(BJORN));
@@ -281,7 +281,7 @@ public final class DefaultFilterComboBoxModelTest {
 		assertTrue(testModel.items().included().contains(KALLI));
 		assertFalse(testModel.items().contains(karl));
 		assertTrue(testModel.items().contains(BJORN));
-		assertTrue(testModel.items().filtered().contains(BJORN));
+		assertTrue(testModel.items().excluded().contains(BJORN));
 		assertFalse(testModel.items().contains(bjorn));
 	}
 
@@ -301,7 +301,7 @@ public final class DefaultFilterComboBoxModelTest {
 		model.items().clear();
 		assertEquals(2, includedCounter.get());
 
-		model.items().add(BJORN);//filtered
+		model.items().add(BJORN);//excluded
 		assertEquals(2, includedCounter.get());
 
 		model.items().add(ANNA);//included
@@ -310,10 +310,10 @@ public final class DefaultFilterComboBoxModelTest {
 		model.items().add(asList(KALLI, SIGGI));//included
 		assertEquals(5, includedCounter.get());
 
-		model.items().remove(BJORN);//filtered
+		model.items().remove(BJORN);//excluded
 		assertEquals(5, includedCounter.get());
 
-		model.items().add(asList(BJORN, TOMAS));//filtered and included
+		model.items().add(asList(BJORN, TOMAS));//excluded and included
 		assertEquals(6, includedCounter.get());
 
 		model.items().included().predicate().clear();
@@ -477,19 +477,19 @@ public final class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void addItemNotDuplicatedAcrossPartitions() {
-		//F7g: an item lingering in filtered whose stateful predicate flips must not end up in both partitions
+		//F7g: an item lingering in excluded whose stateful predicate flips must not end up in both partitions
 		boolean[] hideKalli = {true};
 		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
 						.items(asList(ANNA, KALLI))
 						.build();
 		model.items().included().predicate().set(item -> !(hideKalli[0] && item.equals(KALLI)));
-		assertTrue(model.items().filtered().contains(KALLI));
+		assertTrue(model.items().excluded().contains(KALLI));
 
 		//external state changes so KALLI now passes, without a predicate.set(), then re-add it
 		hideKalli[0] = false;
 		model.items().add(KALLI);
 		assertTrue(model.items().included().contains(KALLI));
-		assertFalse(model.items().filtered().contains(KALLI));
+		assertFalse(model.items().excluded().contains(KALLI));
 	}
 
 	@Test

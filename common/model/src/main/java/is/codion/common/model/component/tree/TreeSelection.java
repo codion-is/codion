@@ -42,7 +42,7 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	 * equal item, an already selected one preferred in either case, keeping the selection in place, otherwise the first
 	 * one, and in case none is visible, the first one in the model, depth first, its ancestors expanded. An item not in
 	 * the model, its path provided by the model, has its ancestors expanded and loaded, see
-	 * {@link FilterTreeModel.Builder#path(Function)}. An item not in the model otherwise, or filtered, clears the
+	 * {@link FilterTreeModel.Builder#path(Function)}. An item not in the model otherwise, or excluded, clears the
 	 * selection. Use {@link #path()} for a particular node, and {@link #set(NodePath)} for a node not yet loaded.
 	 * <p>The selection moving between nodes holding the same item instance changes {@link #path()}, not the item.
 	 */
@@ -53,7 +53,7 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	 * <p>The items of the selected nodes, in row order, an item selected in several places appearing once for each.
 	 * <p>Each item set or added selects a node of its own, as {@link #item()} does, an item not in the model having its
 	 * ancestors expanded and loaded in case the model provides its path, ignoring an item not in the model otherwise,
-	 * or filtered, while {@link Items#remove(Object)} and {@link Items#contains(Object)} cover every selected node
+	 * or excluded, while {@link Items#remove(Object)} and {@link Items#contains(Object)} cover every selected node
 	 * holding it, so that {@code set(get())} leaves the selection as is. Restoring prefers neither selected nor hidden
 	 * nodes. Use {@link #paths()} for particular nodes.
 	 * @return the selected items, the items of the selected nodes
@@ -64,7 +64,7 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	/**
 	 * <p>The path of the selected node, as {@link #item()} is its item.
 	 * <p>Setting the path of a node hidden below a collapsed ancestor expands its ancestors and selects it, while the
-	 * path of a node not in the model, or filtered, clears the selection. Use {@link #set(NodePath)} for a node not yet
+	 * path of a node not in the model, or excluded, clears the selection. Use {@link #set(NodePath)} for a node not yet
 	 * loaded.
 	 * @return the {@link Value} controlling the path of the selected node
 	 */
@@ -73,7 +73,7 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	/**
 	 * <p>The paths of the selected nodes, in row order, as {@link #items()} are their items.
 	 * <p>Setting or adding the paths of nodes hidden below collapsed ancestors expands their ancestors and selects them,
-	 * while the paths of nodes not in the model, or filtered, are ignored. Use {@link #set(NodePath)} for a node not yet
+	 * while the paths of nodes not in the model, or excluded, are ignored. Use {@link #set(NodePath)} for a node not yet
 	 * loaded.
 	 * @return the {@link Items} controlling the paths of the selected nodes
 	 */
@@ -84,7 +84,7 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	 * ancestors and loading as needed. The node itself is not expanded. Where {@link #path()} takes effect right away,
 	 * on a node in the model, this takes effect once the nodes on the path have been loaded, before this method returns
 	 * when loading synchronously.
-	 * <p>A node which exists but is not visible, being filtered or below a node collapsed since, is replaced by its
+	 * <p>A node which exists but is not visible, being excluded or below a node collapsed since, is replaced by its
 	 * nearest visible ancestor. In case the path turns out not to exist, or can not be loaded further, a load failing
 	 * or a node being a leaf according to the leaves function, the deepest node on the path which does exist is selected,
 	 * or its nearest visible ancestor. The selection is left as is in case no node on the path is in the model.

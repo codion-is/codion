@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.filter;
 
-import is.codion.common.model.filter.FilterModel.FilteredItems;
+import is.codion.common.model.filter.FilterModel.ExcludedItems;
 import is.codion.common.model.filter.FilterModel.IncludePredicate;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
@@ -63,7 +63,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	//the included ones also held by the included items, sorted when sorting is enabled, otherwise in this order
 	private final List<Entry<R>> entries = new ArrayList<>();
 	private final DefaultIncludedItems included;
-	private final DefaultFilteredItems filtered;
+	private final DefaultExcludedItems excluded;
 	private final Collection<ItemsListener> listeners;
 
 	private final MultiSelection<R> selection;
@@ -82,7 +82,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		this.entrySort = (entry, other) -> sort.compare(entry.item, other.item);
 		this.validator = builder.validator;
 		this.included = new DefaultIncludedItems(builder.included);
-		this.filtered = new DefaultFilteredItems();
+		this.excluded = new DefaultExcludedItems();
 		this.selection = builder.selection.apply(included);
 		this.listeners = new ArrayList<>(builder.listeners);
 		//the refresher feeds these items, hence built here rather than handed in
@@ -149,10 +149,10 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		requireNonNull(item);
 		preserveSelection(() -> {
 			synchronized (lock) {
-				Entry<R> filteredEntry = filtered.entry(item);
-				if (filteredEntry != null) {
-					entries.remove(filteredEntry);
-					filtered.notifyChanges();
+				Entry<R> excludedEntry = excluded.entry(item);
+				if (excludedEntry != null) {
+					entries.remove(excludedEntry);
+					excluded.notifyChanges();
 				}
 				else {
 					int index = included.indexOf(item);
@@ -176,7 +176,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				Set<R> toRemove = new HashSet<>(items);
 				//entries are identified by identity, not overriding equals()
 				Set<Entry<R>> removed = new HashSet<>();
-				//a filtered item first, as before, one per item
+				//an excluded item first, as before, one per item
 				for (Entry<R> entry : entries) {
 					if (toRemove.isEmpty()) {
 						break;
@@ -185,7 +185,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 						removed.add(entry);
 					}
 				}
-				boolean filteredRemoved = !removed.isEmpty();
+				boolean excludedRemoved = !removed.isEmpty();
 				boolean includedRemoved = false;
 				ListIterator<Entry<R>> iterator = included.entries.listIterator(included.entries.size());
 				while (!toRemove.isEmpty() && iterator.hasPrevious()) {
@@ -202,8 +202,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				if (includedRemoved) {
 					included.notifyChanges();
 				}
-				if (filteredRemoved) {
-					filtered.notifyChanges();
+				if (excludedRemoved) {
+					excluded.notifyChanges();
 				}
 			}
 
@@ -216,7 +216,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		requireNonNull(predicate);
 		preserveSelection(() -> {
 			synchronized (lock) {
-				int filteredSize = filtered.size();
+				int excludedSize = excluded.size();
 				Set<Entry<R>> removed = new HashSet<>();
 				ListIterator<Entry<R>> iterator = included.entries.listIterator(included.entries.size());
 				while (iterator.hasPrevious()) {
@@ -232,8 +232,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				if (!removed.isEmpty()) {
 					included.notifyChanges();
 				}
-				if (filtered.size() != filteredSize) {
-					filtered.notifyChanges();
+				if (excluded.size() != excludedSize) {
+					excluded.notifyChanges();
 				}
 			}
 
@@ -256,7 +256,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		preserveSelection(() -> {
 			synchronized (lock) {
 				Map<R, R> toReplace = new HashMap<>(items);
-				//the filtered items first, a replacement now included taking its place in the order among the included ones
+				//the excluded items first, a replacement now included taking its place in the order among the included ones
 				int includedBefore = 0;
 				for (Entry<R> entry : entries) {
 					if (toReplace.isEmpty()) {
@@ -288,7 +288,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 							notifyUpdated(index, index);
 						}
 						else {
-							//the replacement no longer passes the include predicate, move it to filtered.
+							//the replacement no longer passes the include predicate, move it to excluded.
 							//notify per-item as we go: previousIndex() tracks the live shrinking list, so
 							//each deleted(index, index) is valid at fire time (as in remove(Collection))
 							iterator.remove();
@@ -297,7 +297,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 						}
 					}
 				}
-				filtered.notifyChanges();
+				excluded.notifyChanges();
 				included.notifyChanges();
 				included.sort();
 			}
@@ -321,8 +321,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public FilteredItems<R> filtered() {
-		return filtered;
+	public ExcludedItems<R> excluded() {
+		return excluded;
 	}
 
 	@Override
@@ -365,7 +365,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				//the rows changed - and how a JTable comes to clear the selection preserveSelection() restores
 				notifyChanged();
 				included.notifyChanges();
-				filtered.notifyChanges();
+				excluded.notifyChanges();
 			}
 
 			return null;
@@ -376,15 +376,15 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void clear() {
 		synchronized (lock) {
 			int includedSize = included.entries.size();
-			int filteredSize = filtered.size();
+			int excludedSize = excluded.size();
 			entries.clear();
 			included.entries.clear();
 			if (includedSize > 0) {
 				notifyDeleted(0, includedSize - 1);
 				included.notifyChanges();
 			}
-			if (filteredSize > 0) {
-				filtered.notifyChanges();
+			if (excludedSize > 0) {
+				excluded.notifyChanges();
 			}
 		}
 	}
@@ -434,7 +434,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				//the selection change following it for example, in which case it must still be notified
 				if (!grouping) {
 					included.notifyPending();
-					filtered.notifyPending();
+					excluded.notifyPending();
 				}
 			}
 		}
@@ -480,7 +480,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			}
 		}
 		if (includedEntries.size() < addedEntries.size()) {
-			filtered.notifyChanges();
+			excluded.notifyChanges();
 		}
 
 		return !includedEntries.isEmpty();
@@ -737,7 +737,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private final class DefaultFilteredItems implements FilteredItems<R> {
+	private final class DefaultExcludedItems implements ExcludedItems<R> {
 
 		private final Event<Collection<R>> changed = Event.event();
 
@@ -779,7 +779,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		/**
 		 * @param item the item
-		 * @return the first filtered entry holding the given item, null if none is found
+		 * @return the first excluded entry holding the given item, null if none is found
 		 */
 		private @Nullable Entry<R> entry(R item) {
 			for (Entry<R> entry : entries) {

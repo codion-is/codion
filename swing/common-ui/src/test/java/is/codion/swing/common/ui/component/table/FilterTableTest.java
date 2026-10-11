@@ -1010,10 +1010,10 @@ public class FilterTableTest {
 		return event.isConsumed();
 	}
 
-	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
+	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeExcluded,
 																							 SwingFilterTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {
-			if (includeFiltered) {
+			if (includeExcluded) {
 				if (!model.items().contains(row)) {
 					return false;
 				}

@@ -2719,7 +2719,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Specifies whether the status panel is included on the south panel,
 		 * that is, the one displaying statistics on the number of rows in the table,
-		 * selected, filtered etc.
+		 * selected, excluded etc.
 		 * <p>Has no effect if south panel is not included.
 		 * @return this Config instance
 		 * @see #includeSouthPanel(boolean)
@@ -2923,28 +2923,28 @@ public class EntityTablePanel extends JPanel {
 		@Override
 		public String apply(SwingEntityTableModel tableModel) {
 			int rowCount = tableModel.items().included().size();
-			int filteredCount = tableModel.items().filtered().size();
-			if (rowCount == 0 && filteredCount == 0) {
+			int excludedCount = tableModel.items().excluded().size();
+			if (rowCount == 0 && excludedCount == 0) {
 				return "";
 			}
 			int selectionCount = tableModel.selection().count();
-			int totalCount = rowCount + filteredCount;
+			int totalCount = rowCount + excludedCount;
 			boolean limited = tableModel.query().limit().is(totalCount);
 			StringBuilder builder = new StringBuilder();
 			if (limited) {
 				builder.append(MESSAGES.getString("limited_to")).append(" ");
 			}
 			builder.append(FORMAT.format(totalCount));
-			if (selectionCount > 0 || filteredCount > 0) {
+			if (selectionCount > 0 || excludedCount > 0) {
 				builder.append(" (");
-				if (filteredCount > 0) {
+				if (excludedCount > 0) {
 					if (rowCount > 0 && limited) {
 						builder.append(FORMAT.format(rowCount)).append(" - ");
 					}
-					builder.append(FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("filtered"));
+					builder.append(FORMAT.format(excludedCount)).append(" ").append(MESSAGES.getString("filtered"));
 				}
 				if (selectionCount > 0) {
-					if (filteredCount > 0) {
+					if (excludedCount > 0) {
 						builder.append(" - ");
 					}
 					builder.append(FORMAT.format(selectionCount)).append(" ").append(MESSAGES.getString("selected"));
@@ -3150,7 +3150,7 @@ public class EntityTablePanel extends JPanel {
 			model.items().refresher().active().addConsumer(this::refresherActive);
 			model.selection().adjusting().addListener(this::updateStatusMessage);
 			model.items().included().addListener(this::updateStatusMessage);
-			model.items().filtered().addListener(this::updateStatusMessage);
+			model.items().excluded().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
 				setComponentPopupMenu(menu()
 								.control(Control.builder()

@@ -40,7 +40,7 @@ public interface ForeignKeyFilter {
 
 	/**
 	 * Filters the model so that only entities referencing the given keys are included.
-	 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are filtered.
+	 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are excluded.
 	 * @param keys the keys to filter by
 	 * @throws IllegalArgumentException in case a key is not of the referenced entity type
 	 */

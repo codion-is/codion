@@ -104,7 +104,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		deptTableModel.items().filter();
 
-		assertTrue(deptTableModel.items().filtered().get().isEmpty());
+		assertTrue(deptTableModel.items().excluded().get().isEmpty());
 	}
 
 	@Test

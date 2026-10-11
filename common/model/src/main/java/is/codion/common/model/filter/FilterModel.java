@@ -134,7 +134,7 @@ public interface FilterModel<T> {
 		void refresh(Consumer<Collection<T>> onResult);
 
 		/**
-		 * @return all items, included and filtered, in order
+		 * @return all items, included and excluded, in order
 		 */
 		Collection<T> get();
 
@@ -149,7 +149,7 @@ public interface FilterModel<T> {
 		 * <p>If the item passes the {@link IncludedItems#predicate()} it is appended
 		 * to the included items, which are then sorted if sorting is enabled.
 		 * <p>If the item does not pass the {@link IncludedItems#predicate()},
-		 * it will be filtered right away.
+		 * it will be excluded right away.
 		 * @param item the item to add
 		 */
 		void add(T item);
@@ -159,7 +159,7 @@ public interface FilterModel<T> {
 		 * <p>Items that pass the {@link IncludedItems#predicate()} are appended
 		 * to the included items, which are then sorted if sorting is enabled.
 		 * <p>If no items pass the {@link IncludedItems#predicate()}, they will
-		 * be filtered right away.
+		 * be excluded right away.
 		 * @param items the items to add
 		 */
 		void add(Collection<T> items);
@@ -185,7 +185,7 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Replaces the first occurrence of the given item. If the item is not found this method has no effect.
 		 * <p>Note that this method respects the include predicate, so a
-		 * currently filtered item may be replaced with an included item and vice versa.
+		 * currently excluded item may be replaced with an included item and vice versa.
 		 * <p>If the included items change they are sorted if sorting is enabled.
 		 * <p>A selected item being replaced stays selected as its replacement, the selection's item observers being
 		 * notified with it, unless the replacement is no longer included, in which case it is dropped from the selection.
@@ -198,7 +198,7 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Replaces the given map keys with their respective values.
 		 * <p>Note that this method respects the include predicate, so a
-		 * currently filtered item may be replaced with an included item and vice versa.
+		 * currently excluded item may be replaced with an included item and vice versa.
 		 * <p>If the included items change they are sorted if sorting is enabled.
 		 * <p>Selected items being replaced stay selected as their replacements, see {@link #replace(Object, Object)}.
 		 * @param replacements the items to replace mapped to their replacements
@@ -216,19 +216,19 @@ public interface FilterModel<T> {
 		IncludedItems<T> included();
 
 		/**
-		 * @return a {@link FilteredItems} providing access to the filtered items
+		 * @return a {@link ExcludedItems} providing access to the excluded items
 		 */
-		FilteredItems<T> filtered();
+		ExcludedItems<T> excluded();
 
 		/**
-		 * Returns true if the model contains the given item, as included or filtered.
+		 * Returns true if the model contains the given item, as included or excluded.
 		 * @param item the item
 		 * @return true if this model contains the item
 		 */
 		boolean contains(T item);
 
 		/**
-		 * @return the total number of items, included and filtered
+		 * @return the total number of items, included and excluded
 		 */
 		int size();
 
@@ -351,7 +351,7 @@ public interface FilterModel<T> {
 		/**
 		 * Returns an unmodifiable snapshot, stable and safe to iterate; it does not reflect subsequent changes
 		 * to the model. Use {@link #get(int)} and {@link #size()} for indexed access, which avoids the copy.
-		 * @return the included items or an empty list if all items are filtered
+		 * @return the included items or an empty list if all items are excluded
 		 */
 		@Override
 		@NonNull List<T> get();
@@ -391,7 +391,7 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>Adds the given item at the given index and sorts the included items if sorting is enabled.
-		 * <p>Note that if the item does not pass the {@link IncludedItems#predicate()} it is filtered right away and the method returns false.
+		 * <p>Note that if the item does not pass the {@link IncludedItems#predicate()} it is excluded right away and the method returns false.
 		 * @param index the index
 		 * @param item the item to add
 		 * @return true if the item was added to the included items
@@ -401,7 +401,7 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>Adds the given items at the given index and sorts the included items if sorting is enabled.
-		 * <p>Note that if an item does not pass the {@link IncludedItems#predicate()} it is filtered right away.
+		 * <p>Note that if an item does not pass the {@link IncludedItems#predicate()} it is excluded right away.
 		 * @param index the index at which to add the items
 		 * @param items the items to add
 		 * @return true if one or more of the items was added to the included items
@@ -481,30 +481,30 @@ public interface FilterModel<T> {
 	}
 
 	/**
-	 * <p>The filtered items, the ones not passing the {@link IncludePredicate}.
+	 * <p>The excluded items, the ones not passing the {@link IncludePredicate}.
 	 * <p>Notifications are delivered once a mutation has completed and the selection has been
 	 * restored, and once per mutation, see {@link IncludedItems}.
 	 * @param <T> the item type
 	 */
-	interface FilteredItems<T> extends Observable<Collection<T>> {
+	interface ExcludedItems<T> extends Observable<Collection<T>> {
 
 		/**
 		 * Returns an unmodifiable snapshot, stable and safe to iterate; it does not reflect subsequent changes
 		 * to the model.
-		 * @return the filtered items or an empty collection in case of no filtered items
+		 * @return the excluded items or an empty collection in case of no excluded items
 		 */
 		@Override
 		@NonNull Collection<T> get();
 
 		/**
-		 * Returns true if the given item is filtered.
+		 * Returns true if the given item is excluded.
 		 * @param item the item
-		 * @return true if the item is filtered
+		 * @return true if the item is excluded
 		 */
 		boolean contains(T item);
 
 		/**
-		 * @return the number of filtered items
+		 * @return the number of excluded items
 		 */
 		int size();
 	}

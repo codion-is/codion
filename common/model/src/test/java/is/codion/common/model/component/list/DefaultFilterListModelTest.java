@@ -93,10 +93,10 @@ final class DefaultFilterListModelTest {
 
 		model.items().included().predicate().set(string -> !string.startsWith("T"));
 		assertEquals(2, model.items().included().size());
-		assertEquals(1, model.items().filtered().size());
+		assertEquals(1, model.items().excluded().size());
 		assertTrue(model.items().included().contains(ONE));
 		assertTrue(model.items().included().contains(FOUR));
-		assertTrue(model.items().filtered().contains(THREE));
+		assertTrue(model.items().excluded().contains(THREE));
 	}
 
 	@Test
@@ -107,12 +107,12 @@ final class DefaultFilterListModelTest {
 
 		// Initially all included
 		assertEquals(5, model.items().included().size());
-		assertEquals(0, model.items().filtered().size());
+		assertEquals(0, model.items().excluded().size());
 
 		// Filter items containing 'e' - apple, cherry, date, elderberry
 		model.items().included().predicate().set(s -> s.contains("e"));
 		assertEquals(4, model.items().included().size());
-		assertEquals(1, model.items().filtered().size()); // only banana
+		assertEquals(1, model.items().excluded().size()); // only banana
 		assertTrue(model.items().included().contains("apple"));
 		assertTrue(model.items().included().contains("cherry"));
 		assertTrue(model.items().included().contains("date"));
@@ -127,7 +127,7 @@ final class DefaultFilterListModelTest {
 		// Clear filter
 		model.items().included().predicate().clear();
 		assertEquals(5, model.items().included().size());
-		assertEquals(0, model.items().filtered().size());
+		assertEquals(0, model.items().excluded().size());
 	}
 
 	@Test
@@ -196,7 +196,7 @@ final class DefaultFilterListModelTest {
 
 		assertEquals(0, model.items().size());
 		assertEquals(0, model.items().included().size());
-		assertEquals(0, model.items().filtered().size());
+		assertEquals(0, model.items().excluded().size());
 
 		// Operations on empty model should not throw
 		model.items().included().predicate().set(s -> true);
@@ -238,7 +238,7 @@ final class DefaultFilterListModelTest {
 						.included(s -> s.length() > 3)
 						.build();
 		assertEquals(2, filteredModel.items().included().size()); // THREE and FOUR
-		assertEquals(2, filteredModel.items().filtered().size()); // ONE and TWO
+		assertEquals(2, filteredModel.items().excluded().size()); // ONE and TWO
 	}
 
 	@Test

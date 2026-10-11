@@ -64,7 +64,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultFilterModelItemsTest {
 
 	private static final String ITEM_PREFIX = "item";
-	private static final String FILTERED_PREFIX = "filtered";
+	private static final String EXCLUDED_PREFIX = "excluded";
 	private static final String INCLUDED_PREFIX = "included";
 
 	@Nested
@@ -94,19 +94,19 @@ public class DefaultFilterModelItemsTest {
 
 			assertEquals(1, items.size());
 			assertEquals(1, items.included().size());
-			assertEquals(0, items.filtered().size());
+			assertEquals(0, items.excluded().size());
 			assertTrue(items.contains(ITEM_PREFIX + "1"));
 		}
 
 		@Test
-		@DisplayName("Add single item to filtered")
+		@DisplayName("Add single item to excluded")
 		void add_singleItem_shouldAddToExcluded() {
 			includePredicate.setPredicate(item -> !item.startsWith(ITEM_PREFIX));
 			items.add(ITEM_PREFIX + "1");
 
 			assertEquals(1, items.size());
 			assertEquals(0, items.included().size());
-			assertEquals(1, items.filtered().size());
+			assertEquals(1, items.excluded().size());
 			assertTrue(items.contains(ITEM_PREFIX + "1"));
 		}
 
@@ -116,20 +116,20 @@ public class DefaultFilterModelItemsTest {
 			includePredicate.setPredicate(item -> item.startsWith(INCLUDED_PREFIX));
 			List<String> itemsToAdd = asList(
 							INCLUDED_PREFIX + "1",
-							FILTERED_PREFIX + "1",
+							EXCLUDED_PREFIX + "1",
 							INCLUDED_PREFIX + "2",
-							FILTERED_PREFIX + "2"
+							EXCLUDED_PREFIX + "2"
 			);
 
 			items.add(itemsToAdd);
 
 			assertEquals(4, items.size());
 			assertEquals(2, items.included().size());
-			assertEquals(2, items.filtered().size());
+			assertEquals(2, items.excluded().size());
 			assertTrue(items.included().contains(INCLUDED_PREFIX + "1"));
 			assertTrue(items.included().contains(INCLUDED_PREFIX + "2"));
-			assertTrue(items.filtered().contains(FILTERED_PREFIX + "1"));
-			assertTrue(items.filtered().contains(FILTERED_PREFIX + "2"));
+			assertTrue(items.excluded().contains(EXCLUDED_PREFIX + "1"));
+			assertTrue(items.excluded().contains(EXCLUDED_PREFIX + "2"));
 		}
 
 		@Test
@@ -143,7 +143,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Remove single item from filtered")
+		@DisplayName("Remove single item from excluded")
 		void remove_singleItem_shouldRemoveFromExcluded() {
 			includePredicate.setPredicate(item -> false);
 			items.add(ITEM_PREFIX + "1");
@@ -161,7 +161,7 @@ public class DefaultFilterModelItemsTest {
 			items.included().predicate().set(item -> !item.startsWith("T"));
 			items.remove(item -> item.length() == 3);
 			assertEquals(3, items.size());
-			assertEquals(1, items.filtered().size());
+			assertEquals(1, items.excluded().size());
 			assertEquals(2, items.included().size());
 		}
 
@@ -178,7 +178,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Replace item moving from included to filtered")
+		@DisplayName("Replace item moving from included to excluded")
 		void replace_itemMovingToExcluded_shouldMoveCorrectly() {
 			includePredicate.setPredicate(item -> !item.contains("replaced"));
 			items.add(ITEM_PREFIX + "1");
@@ -187,12 +187,12 @@ public class DefaultFilterModelItemsTest {
 
 			assertEquals(1, items.size());
 			assertEquals(0, items.included().size());
-			assertEquals(1, items.filtered().size());
-			assertTrue(items.filtered().contains(ITEM_PREFIX + "1_replaced"));
+			assertEquals(1, items.excluded().size());
+			assertTrue(items.excluded().contains(ITEM_PREFIX + "1_replaced"));
 		}
 
 		@Test
-		@DisplayName("Replace moving an included item to filtered fires a structural delete (F1)")
+		@DisplayName("Replace moving an included item to excluded fires a structural delete (F1)")
 		void replace_itemMovingToExcluded_firesDeleted() {
 			RangeRecorder recorder = new RangeRecorder();
 			TestInclude include = new TestInclude();
@@ -212,7 +212,7 @@ public class DefaultFilterModelItemsTest {
 			//the row at index 1 must be reported deleted so the table row count stays in sync
 			assertEquals(1, recorder.deleted.size());
 			assertArrayEquals(new int[] {1, 1}, recorder.deleted.get(0));
-			assertTrue(model.filtered().contains("b_x"));
+			assertTrue(model.excluded().contains("b_x"));
 			assertEquals(2, model.included().size());
 		}
 
@@ -239,13 +239,13 @@ public class DefaultFilterModelItemsTest {
 		void clear_shouldRemoveAll() {
 			items.add(asList("a", "b", "c"));
 			includePredicate.setPredicate(item -> false);
-			items.add(asList("d", "e", "f")); // These go to filtered
+			items.add(asList("d", "e", "f")); // These go to excluded
 
 			items.clear();
 
 			assertEquals(0, items.size());
 			assertEquals(0, items.included().size());
-			assertEquals(0, items.filtered().size());
+			assertEquals(0, items.excluded().size());
 		}
 
 		@Test
@@ -297,7 +297,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Filter moves items from included to filtered")
+		@DisplayName("Filter moves items from included to excluded")
 		void filter_movesItemsToExcluded() {
 			items.add(asList("keep1", "filter1", "keep2", "filter2"));
 			includePredicate.setPredicate(item -> item.startsWith("keep"));
@@ -306,25 +306,25 @@ public class DefaultFilterModelItemsTest {
 
 			assertEquals(4, items.size());
 			assertEquals(2, items.included().size());
-			assertEquals(2, items.filtered().size());
+			assertEquals(2, items.excluded().size());
 			assertTrue(items.included().contains("keep1"));
 			assertTrue(items.included().contains("keep2"));
-			assertTrue(items.filtered().contains("filter1"));
-			assertTrue(items.filtered().contains("filter2"));
+			assertTrue(items.excluded().contains("filter1"));
+			assertTrue(items.excluded().contains("filter2"));
 		}
 
 		@Test
-		@DisplayName("Filter moves items from filtered to included")
+		@DisplayName("Filter moves items from excluded to included")
 		void filter_movesItemsToVisible() {
 			includePredicate.setPredicate(item -> false);
 			items.add(asList("item1", "item2", "item3"));
-			assertEquals(3, items.filtered().size());
+			assertEquals(3, items.excluded().size());
 
 			includePredicate.setPredicate(item -> true);
 			items.filter();
 
 			assertEquals(3, items.included().size());
-			assertEquals(0, items.filtered().size());
+			assertEquals(0, items.excluded().size());
 		}
 
 		@Test
@@ -336,13 +336,13 @@ public class DefaultFilterModelItemsTest {
 			items.filter();
 
 			assertEquals(4, items.size());
-			assertEquals(3, items.filtered().size());
+			assertEquals(3, items.excluded().size());
 
 			includePredicate.setPredicate(item -> true);
 			items.filter();
 
 			assertEquals(4, items.included().size());
-			assertEquals(0, items.filtered().size());
+			assertEquals(0, items.excluded().size());
 		}
 
 		@Test
@@ -637,16 +637,16 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("All items in order, included and filtered alike")
+		@DisplayName("All items in order, included and excluded alike")
 		void get_shouldKeepOrder() {
 			items.included().predicate().set(item -> !item.equals("b"));
 			assertEquals(asList("a", "b", "c", "d", "e"), new ArrayList<>(items.get()));
-			assertEquals(singletonList("b"), new ArrayList<>(items.filtered().get()));
+			assertEquals(singletonList("b"), new ArrayList<>(items.excluded().get()));
 		}
 
 		@Test
-		@DisplayName("A replaced filtered item keeps its place")
-		void replaceFiltered_shouldKeepPlace() {
+		@DisplayName("A replaced excluded item keeps its place")
+		void replaceExcluded_shouldKeepPlace() {
 			items.included().predicate().set(item -> !item.equals("b"));
 			items.replace("b", "x");
 			assertEquals(asList("a", "x", "c", "d", "e"), items.included().get());
@@ -678,10 +678,10 @@ public class DefaultFilterModelItemsTest {
 			String equal = new String("a");
 			items.set(asList("a", "b", "a", equal));
 			items.included().predicate().set(item -> item != equal);
-			assertEquals(1, items.filtered().size());
+			assertEquals(1, items.excluded().size());
 			items.remove(item -> item.equals("a"));
 			assertEquals(singletonList("b"), new ArrayList<>(items.get()));
-			assertEquals(0, items.filtered().size());
+			assertEquals(0, items.excluded().size());
 		}
 	}
 
@@ -920,7 +920,7 @@ public class DefaultFilterModelItemsTest {
 	}
 
 	@Test
-	void replaceIntoFilteredDropsFromSelection() {
+	void replaceIntoExcludedDropsFromSelection() {
 		AtomicReference<MultiSelection<Versioned>> selection = new AtomicReference<>();
 		Items<Versioned> items = Items.builder()
 						.<Versioned>selection(included -> selection.updateAndGet(current -> MultiSelection.multiSelection(included)))
@@ -947,24 +947,24 @@ public class DefaultFilterModelItemsTest {
 						.build();
 		items.included().predicate().set(row -> row.version == 0);
 		Versioned b = new Versioned("b", 0);
-		Versioned filtered = new Versioned("d", 1);
-		items.add(asList(new Versioned("a", 0), b, new Versioned("c", 0), filtered));
+		Versioned excluded = new Versioned("d", 1);
+		items.add(asList(new Versioned("a", 0), b, new Versioned("c", 0), excluded));
 		selection.get().item().set(b);
 		AtomicInteger includedChanged = new AtomicInteger();
-		AtomicInteger filteredChanged = new AtomicInteger();
+		AtomicInteger excludedChanged = new AtomicInteger();
 		items.included().addListener(includedChanged::incrementAndGet);
-		items.filtered().addListener(filteredChanged::incrementAndGet);
+		items.excluded().addListener(excludedChanged::incrementAndGet);
 		// vetoing the selection change following the removal, as an editor with unsaved changes does
 		selection.get().item().addListener(() -> {
 			throw new CancelException();
 		});
 
-		assertThrows(CancelException.class, () -> items.remove(asList(b, filtered)));
+		assertThrows(CancelException.class, () -> items.remove(asList(b, excluded)));
 		// the removal has been made, and is notified regardless
 		assertEquals(asList(new Versioned("a", 0), new Versioned("c", 0)), items.included().get());
-		assertTrue(items.filtered().get().isEmpty());
+		assertTrue(items.excluded().get().isEmpty());
 		assertEquals(1, includedChanged.get());
-		assertEquals(1, filteredChanged.get());
+		assertEquals(1, excludedChanged.get());
 	}
 
 	// equal by key only, the shape of a row a refresh replaces with a fresher instance

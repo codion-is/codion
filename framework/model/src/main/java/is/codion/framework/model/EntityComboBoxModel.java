@@ -71,7 +71,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	EntityDefinition entityDefinition();
 
 	/**
-	 * Selects the entity with the given primary key, whether included or filtered.
+	 * Selects the entity with the given primary key, whether included or excluded.
 	 * If the entity is not available in the model this method returns silently without changing the selection.
 	 * @param primaryKey the primary key of the entity to select
 	 */
@@ -214,11 +214,11 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * Specifies whether filtering the model affects the currently selected item.
-		 * If true, the selection is cleared when the selected item is filtered from
+		 * If true, the selection is cleared when the selected item is excluded from
 		 * the model, otherwise the selected item can potentially represent a value
 		 * which is not currently included in the model
 		 * This is false by default.
-		 * @param filterSelected if true then the selected item is cleared when filtered
+		 * @param filterSelected if true then the selected item is cleared when excluded
 		 * @return this builder instance
 		 * @see IncludedItems#predicate()
 		 */

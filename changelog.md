@@ -23,6 +23,7 @@ Codion Change Log
 - FilterTreeModel.Nodes.add() and replace(), the leaves function is now called off the UI thread when loading asynchronously, the items added being leaves and a replaced node keeping its leaf status until it reports, where it was called on the calling thread, a query on the UI thread for an entity tree.
 - FilterTreeModel.Nodes.add(), remove() and replace(), a load in progress at or above the parent, or the node replaced, is now started again, where its result, fetched before the edit, undid it once applied, bringing a removed node back for example.
 - FilterTreeModel.Builder.path() added, the path function, the inverse of the children function, an item not in the model, its parent not loaded, now selected via TreeSelection.item() or items() having its ancestors expanded and loaded, where it was ignored.
+- FilterModel.Items.filtered() renamed excluded(), FilterModel.FilteredItems renamed ExcludedItems, the counterparts of included() and IncludedItems.
 ### is.codion.swing.common.ui
 - FilterTableHeaderRenderer sort arrows now drawn with antialiasing enabled.
 - ProgressWorkerDialogBuilder.onWorking() added, as in ProgressWorker.Builder.
