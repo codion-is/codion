@@ -19,9 +19,12 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.tree.FilterTreeModel;
+import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+
+import java.util.Collection;
 
 /**
  * <p>The included items of an {@link EntityTableModel} as a {@link FilterTreeModel}, arranged by a foreign key
@@ -33,7 +36,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
  * one of the table model, so change the latter.
  * <p>An entity whose parent is not among the included items is an orphan, hidden along with everything below it, unless
  * shown as a root, see {@link #orphansAsRoots()}. An entity on a cycle of parents is reachable from no root, so neither
- * it nor anything below it is in the tree.
+ * it nor anything below it is in the tree. The included items reachable from no root are available via
+ * {@link #unreachable()}.
  * <p>Edit the table model rather than the tree, since a change made via {@link #nodes()} lasts only until the next
  * change to the included items.
  * <p>The table model holds the listeners of the tree model weakly, so it does not keep a tree model no longer in use,
@@ -57,10 +61,30 @@ public interface EntityTableTreeModel extends FilterTreeModel<Entity> {
 	State parentsFirst();
 
 	/**
+	 * @return the {@link UnreachableItems}, the included items reachable from no root, so not in the tree
+	 */
+	UnreachableItems unreachable();
+
+	/**
 	 * @return a {@link Builder.TableModelStep} instance
 	 */
 	static Builder.TableModelStep builder() {
 		return DefaultEntityTableTreeModel.DefaultBuilder.TABLE_MODEL;
+	}
+
+	/**
+	 * <p>The included items reachable from no root, so not in the tree: the orphans not shown as roots, along with
+	 * everything below them, and the entities on, or below, a cycle of parents.
+	 * <p>Notified each time the tree has been rebuilt, following a change to the included items, to
+	 * {@link #orphansAsRoots()} or to {@link #parentsFirst()}.
+	 */
+	interface UnreachableItems extends Observable<Collection<Entity>> {
+
+		/**
+		 * @return an unmodifiable collection of the unreachable items, empty in case the tree shows all the included items
+		 */
+		@Override
+		Collection<Entity> get();
 	}
 
 	/**

@@ -59,6 +59,7 @@ Codion Change Log
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.
 - EntityTableTreeModel added, the included items of an EntityTableModel as a FilterTreeModel, arranged by a self-referencing foreign key, following the items, its selection in sync with the table selection, orphansAsRoots() and parentsFirst() as states, AbstractEntityTableTreeModel and AbstractEntityTableTreeModelBuilder the base for toolkit models.
 - EntityTableTreeModel, an entity selected by item in the tree, its parent not loaded, now has its ancestors expanded, as one selected in the table model, the tree model given the paths of the entities, where it was ignored, AbstractEntityTreeModelBuilder.path() added.
+- EntityTableTreeModel.unreachable() added, the included items reachable from no root, so not in the tree, the orphans not shown as roots, along with everything below them, and those on, or below, a cycle of parents.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel(EntityType, EntityConnection, Consumer<Config>) added, for configuring the table model without creating an edit model.
 - SwingEntityTableModel(Collection, EntityConnection) and SwingEntityTableModel(EntityType, Collection, EntityConnection) replaced by SwingEntityTableModel.of(), for a table model of the given entities, without an item source or query conditions, refreshing it doing nothing.

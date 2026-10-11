@@ -32,14 +32,19 @@ import is.codion.framework.model.test.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityTableTreeModelTest {
@@ -125,7 +130,7 @@ public final class DefaultEntityTableTreeModelTest {
 		TestEntityTableModel tableModel = tableModel();
 		tableModel.items().refresh();
 		EntityTableTreeModel tree = tree(tableModel);
-		// a filtered parent hides everything below it
+		// an excluded parent hides everything below it
 		tableModel.filters().get(Employee.NAME).operator().set(Operator.NOT_EQUAL);
 		tableModel.filters().get(Employee.NAME).operands().equal().set("JONES");
 		assertEquals(names("KING"), items(tree, nodePath()));
@@ -149,6 +154,33 @@ public final class DefaultEntityTableTreeModelTest {
 	}
 
 	@Test
+	void unreachable() {
+		TestEntityTableModel tableModel = tableModel();
+		tableModel.items().refresh();
+		EntityTableTreeModel tree = tree(tableModel);
+		assertTrue(tree.unreachable().get().isEmpty());
+		List<List<String>> roots = new ArrayList<>();
+		tree.unreachable().addListener(() -> roots.add(items(tree, nodePath())));
+		// an excluded parent makes everything below it unreachable
+		tableModel.filters().get(Employee.NAME).operator().set(Operator.NOT_EQUAL);
+		tableModel.filters().get(Employee.NAME).operands().equal().set("JONES");
+		assertEquals(new HashSet<>(names("BLAKE", "ADAMS", "FORD", "PAUL", "SCOTT", "MARTIN", "BAKER", "JAMES", "TREVOR", "ALLEN", "TURNER")),
+						names(tree.unreachable().get()));
+		// none with the orphans shown as roots, notified once the tree has been rebuilt
+		tree.orphansAsRoots().set(true);
+		assertTrue(tree.unreachable().get().isEmpty());
+		assertEquals(names("BLAKE", "KING", "ADAMS", "FORD", "PAUL", "SCOTT", "MARTIN"), roots.get(roots.size() - 1));
+		// a table selection made by a listener is followed by the tree
+		tree.unreachable().addListener(() -> tableModel.selection().item().set(employee(tableModel, "MILLER")));
+		tree.orphansAsRoots().set(false);
+		assertEquals(11, tree.unreachable().get().size());
+		assertEquals(names("KING"), roots.get(roots.size() - 1));
+		assertEquals(path(tableModel, "KING", "CLARK", "MILLER"), tree.selection().path().get());
+		tableModel.filters().get(Employee.NAME).operands().equal().set(null);
+		assertTrue(tree.unreachable().get().isEmpty());
+	}
+
+	@Test
 	void cycles() {
 		Entity root = employee(1, "ROOT", null);
 		Entity first = employee(2, "FIRST", 3);
@@ -164,6 +196,7 @@ public final class DefaultEntityTableTreeModelTest {
 						.build();
 		tableModel.items().set(asList(root, first, second, below, self));
 		assertEquals(names("ROOT"), items(tree, nodePath()));
+		assertEquals(new HashSet<>(asList(first, second, below, self)), new HashSet<>(tree.unreachable().get()));
 		for (Entity entity : asList(first, second, below, self)) {
 			tableModel.selection().item().set(entity);
 			assertFalse(tree.selection().present().is());
@@ -356,5 +389,11 @@ public final class DefaultEntityTableTreeModelTest {
 
 	private static List<String> names(String... names) {
 		return Collections.unmodifiableList(asList(names));
+	}
+
+	private static Set<String> names(Collection<Entity> entities) {
+		return entities.stream()
+						.map(entity -> entity.get(Employee.NAME))
+						.collect(toSet());
 	}
 }

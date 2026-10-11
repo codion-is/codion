@@ -22,18 +22,24 @@ import is.codion.common.model.component.tree.FilterTreeModel;
 import is.codion.common.model.component.tree.FilterTreeSort;
 import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.model.component.tree.TreeSelection;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -41,7 +47,9 @@ import java.util.function.Supplier;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * <p>A base class for {@link EntityTableTreeModel} implementations, based on a tree model built by a toolkit, a
@@ -57,6 +65,7 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 	private final ForeignKey parent;
 	private final State orphansAsRoots;
 	private final State parentsFirst;
+	private final DefaultUnreachableItems unreachable = new DefaultUnreachableItems();
 	private final M treeModel;
 
 	//we keep references to these listeners, since the table model only holds them weakly
@@ -103,6 +112,11 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 	@Override
 	public final State parentsFirst() {
 		return parentsFirst;
+	}
+
+	@Override
+	public final UnreachableItems unreachable() {
+		return unreachable;
 	}
 
 	@Override
@@ -163,6 +177,8 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 		finally {
 			synchronizing = wasSynchronizing;
 		}
+		// after synchronizing, so that a listener changing the table selection has the tree selection follow
+		unreachable.set(index().unreachable);
 	}
 
 	private void treeSelectionChanged(List<Entity> entities) {
@@ -212,6 +228,28 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 						Consumer<FilterTreeModel.Builder<Entity, ?>> options);
 	}
 
+	private static final class DefaultUnreachableItems implements UnreachableItems {
+
+		private final Event<Collection<Entity>> event = Event.event();
+
+		private Collection<Entity> items = emptyList();
+
+		@Override
+		public Collection<Entity> get() {
+			return items;
+		}
+
+		@Override
+		public Observer<Collection<Entity>> observer() {
+			return event.observer();
+		}
+
+		private void set(Collection<Entity> unreachable) {
+			items = unreachable;
+			event.accept(items);
+		}
+	}
+
 	private static final class Index {
 
 		private final ForeignKey parent;
@@ -219,6 +257,7 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 		private final Map<Entity.Key, Entity> entities;
 		private final Map<Entity.Key, List<Entity>> children = new HashMap<>();
 		private final List<Entity> roots;
+		private final List<Entity> unreachable;
 
 		private Index(List<Entity> items, ForeignKey parent, boolean orphansAsRoots, boolean parentsFirst) {
 			this.parent = parent;
@@ -248,6 +287,7 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 			else {
 				roots = topLevel;
 			}
+			unreachable = unreachable(distinct);
 		}
 
 		private List<Entity> children(Entity entity) {
@@ -274,6 +314,24 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 			}
 
 			return null;
+		}
+
+		/**
+		 * @return the given items not below a root, in the given order
+		 */
+		private List<Entity> unreachable(List<Entity> items) {
+			Set<Entity.Key> inTree = new HashSet<>(items.size());
+			// no cycle is below a root, so this ends
+			Deque<Entity> descending = new ArrayDeque<>(roots);
+			while (!descending.isEmpty()) {
+				Entity entity = descending.pop();
+				inTree.add(entity.primaryKey());
+				descending.addAll(children(entity));
+			}
+
+			return unmodifiableList(items.stream()
+							.filter(entity -> !inTree.contains(entity.primaryKey()))
+							.collect(toList()));
 		}
 
 		/**
