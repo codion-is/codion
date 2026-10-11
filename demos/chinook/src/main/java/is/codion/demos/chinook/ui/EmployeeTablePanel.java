@@ -18,20 +18,81 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.common.reactive.state.State;
+import is.codion.demos.chinook.domain.api.Chinook.Employee;
+import is.codion.swing.common.ui.component.tree.FilterTree;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.model.component.SwingEntityTableTreeModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
+import static is.codion.swing.common.ui.component.Components.splitPane;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_H;
 
 public final class EmployeeTablePanel extends EntityTablePanel {
+
+	// tag::tableTree[]
+	private final JScrollPane treeScrollPane;
+	private final JSplitPane splitPane = splitPane()
+					.continuousLayout(true)
+					.build();
+	private final State treeVisible = State.builder()
+					.consumer(this::treeVisible)
+					.build();
 
 	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
 		// We provide a EmployeeEditPanel instance, which is then accessible
 		// via double click, popup menu (Add/Edit) or keyboard shortcuts:
 		// INSERT to add a new employee or CTRL-INSERT to edit the selected one.
 		super(tableModel, new EmployeeEditPanel(tableModel.editModel()));
+		// The employees in the table, arranged by who they report to
+		this.treeScrollPane = FilterTree.builder()
+						.model(SwingEntityTableTreeModel.builder()
+										.tableModel(tableModel)
+										.parent(Employee.REPORTSTO_FK)
+										.build())
+						.scrollPane()
+						.preferredWidth(200)
+						.build();
+		ToggleControl toggleTree = Control.builder()
+						.toggle(treeVisible)
+						.icon(FrameworkIcons.instance().get("tree"))
+						.build();
+		configureToolBar(layout -> layout.clear()
+						.control(toggleTree)
+						.separator()
+						.defaults());
+		// CTRL-ALT-H toggles the tree, wherever the focus is within the panel
+		KeyEvents.builder()
+						.keyCode(VK_H)
+						.modifiers(MENU_SHORTCUT_MASK | ALT_DOWN_MASK)
+						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.action(toggleTree)
+						.enable(this);
 	}
+
+	@Override
+	protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
+		splitPane.setRightComponent(tableComponent);
+		super.layoutPanel(splitPane, southPanel);
+	}
+
+	private void treeVisible(boolean visible) {
+		splitPane.setLeftComponent(visible ? treeScrollPane : null);
+	}
+	// end::tableTree[]
 
 	@Override
 	protected void setupControls() {

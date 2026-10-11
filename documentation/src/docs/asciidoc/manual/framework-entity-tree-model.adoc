@@ -77,3 +77,33 @@ The {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/compone
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=entityTree]
 ----
+
+== Over a table model
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableTreeModel.html[EntityTableTreeModel] arranges the rows of a table model as a tree, by a foreign key referencing the parent, without queries of its own.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=tableTree]
+----
+
+The tree follows the rows the table model shows, its included items, siblings in the order of the rows, so sorting or filtering the table does the same to the tree.
+Its selection is kept in sync with the table selection, an entity selected in the table having its ancestors expanded in the tree.
+An entity whose parent is not among the rows is an orphan, hidden along with everything below it, unless `orphansAsRoots()` is set, while `parentsFirst()` puts the siblings with children before those without.
+Edits go through the table model, which the tree follows, rather than through the tree.
+
+Where the table holds only part of a large hierarchy, an `EntityTreeModel`, loading each level as it is expanded, is the better fit.
+
+The {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/component/SwingEntityTableTreeModel.html[SwingEntityTableTreeModel] is the Swing version, its `FilterTree` placed by the application, beside the table by overriding `layoutPanel()`:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/EmployeeTablePanel.java[tags=tableTree]
+----
+
+or in a dialog, the tree built once and shown again, keeping its expansion and selection:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=tableTreeDialog]
+----

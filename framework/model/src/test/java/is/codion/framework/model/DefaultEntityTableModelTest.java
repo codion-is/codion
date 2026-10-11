@@ -122,7 +122,7 @@ public final class DefaultEntityTableModelTest extends
 
 		private final EntityRowEditor rowEditor;
 
-		private TestEntityTableModel(TestEntityEditModel editModel) {
+		TestEntityTableModel(TestEntityEditModel editModel) {
 			this(editModel, config -> {});
 		}
 

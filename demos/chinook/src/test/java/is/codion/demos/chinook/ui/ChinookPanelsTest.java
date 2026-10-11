@@ -50,6 +50,7 @@ public final class ChinookPanelsTest {
 		FrameworkIcons icons = FrameworkIcons.instance();
 		icons.put("plus", ChinookAppPanel.class.getResource("plus.svg"));
 		icons.put("minus", ChinookAppPanel.class.getResource("minus.svg"));
+		icons.put("tree", ChinookAppPanel.class.getResource("tree.svg"));
 	}
 
 	private final EntityConnection connection =

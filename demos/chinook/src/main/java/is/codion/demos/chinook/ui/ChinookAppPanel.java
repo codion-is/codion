@@ -43,6 +43,7 @@ import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableHeaderRenderer;
+import is.codion.swing.common.ui.component.tree.FilterTree;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -257,6 +258,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		icons.put("plus", ChinookAppPanel.class.getResource("plus.svg"));
 		icons.put("minus", ChinookAppPanel.class.getResource("minus.svg"));
 		icons.put("graph-pie", ChinookAppPanel.class.getResource("graph-pie.svg"));
+		icons.put("tree", ChinookAppPanel.class.getResource("tree.svg"));
 		// tag::configuration[]
 		Completion.MODE.set(Completion.Mode.AUTOCOMPLETE);
 		EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
@@ -277,9 +279,10 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		EntityTablePanel.Config.INCLUDE_INSPECTOR.set(true);
 		EntityTablePanel.Config.INCLUDE_EXPORT.set(true);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		FilterTable.ROWS_FILL_VIEWPORT.set(true);
 		FilterTable.STOP_EDIT_ON_FOCUS_LOST.set(false);
+		FilterTable.ROWS_FILL_VIEWPORT.set(true);
 		FilterList.ROWS_FILL_VIEWPORT.set(true);
+		FilterTree.ROWS_FILL_VIEWPORT.set(true);
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR.set(true);

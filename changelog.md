@@ -55,10 +55,12 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityTableModel, a table model whose items are not provided by its query model now has no query conditions, which had no effect.
 - EntityTreeModel added, a FilterTreeModel of entities arranged by foreign keys, self-referencing, master/detail or both, with batched leaf detection, AbstractEntityTreeModel and AbstractEntityTreeModelBuilder the base for toolkit models.
+- EntityTableTreeModel added, the included items of an EntityTableModel as a FilterTreeModel, arranged by a self-referencing foreign key, following the items, its selection in sync with the table selection, orphansAsRoots() and parentsFirst() as states, AbstractEntityTableTreeModel and AbstractEntityTableTreeModelBuilder the base for toolkit models.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel(EntityType, EntityConnection, Consumer<Config>) added, for configuring the table model without creating an edit model.
 - SwingEntityTableModel(Collection, EntityConnection) and SwingEntityTableModel(EntityType, Collection, EntityConnection) replaced by SwingEntityTableModel.of(), for a table model of the given entities, without an item source or query conditions, refreshing it doing nothing.
 - SwingEntityTreeModel added, the Swing TreeModel based EntityTreeModel, for a FilterTree.
+- SwingEntityTableTreeModel added, the Swing TreeModel based EntityTableTreeModel, for a FilterTree.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, no condition panel is created for a table model without query conditions.
 - EntityTablePanel, the export dialog size is now stored with the table panel settings instead of the export preferences, the export model no longer holding it.

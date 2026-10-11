@@ -29,6 +29,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.tree.FilterTree;
@@ -40,13 +41,17 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.model.component.SwingEntityTableTreeModel;
 import is.codion.swing.framework.model.component.SwingEntityTreeModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 import is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -87,6 +92,47 @@ final class FrameworkUIDemo {
 						.build();
 		// end::entityTree[]
 	}
+
+	// tag::tableTreeDialog[]
+	static final class EmployeeTablePanel extends EntityTablePanel {
+
+		private JScrollPane hierarchy;
+
+		EmployeeTablePanel(SwingEntityTableModel tableModel) {
+			super(tableModel);
+			configurePopupMenu(layout -> layout
+							.separator()
+							.control(Control.builder()
+											.command(this::displayHierarchy)
+											.caption("Hierarchy")));
+		}
+
+		private void displayHierarchy() {
+			if (hierarchy == null) {
+				// Built once, keeping its expansion and selection between dialogs
+				hierarchy = FilterTree.builder()
+								.model(SwingEntityTableTreeModel.builder()
+												.tableModel(model())
+												.parent(Employee.REPORTSTO_FK)
+												.build())
+								.scrollPane()
+								.preferredWidth(250)
+								.build();
+			}
+			if (hierarchy.isShowing()) {
+				Ancestor.window().of(hierarchy).toFront();
+			}
+			else {
+				Dialogs.builder()
+								.component(hierarchy)
+								.owner(this)
+								.title("Hierarchy")
+								.modal(false)
+								.show();
+			}
+		}
+	}
+	// end::tableTreeDialog[]
 
 	void multiValueSearchField(ForeignKeyConditionModel customerCondition) {
 		// tag::multiValueSearchField[]

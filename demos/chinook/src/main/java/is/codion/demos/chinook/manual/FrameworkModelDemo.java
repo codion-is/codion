@@ -49,6 +49,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.model.component.SwingEntityTableTreeModel;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -583,6 +584,26 @@ public final class FrameworkModelDemo {
 		// The path of the selected node, from the top level down
 		NodePath<Entity> path = treeModel.selection().path().get();
 		// end::treeSelection[]
+	}
+
+	void tableTree(EntityConnection connection) {
+		// tag::tableTree[]
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, connection);
+
+		// The employees in the table, arranged by who they report to
+		SwingEntityTableTreeModel treeModel = SwingEntityTableTreeModel.builder()
+						.tableModel(tableModel)
+						.parent(Employee.REPORTSTO_FK)
+						.build();
+
+		// An employee whose manager is not among the rows is hidden by
+		// default, along with their reports, here shown as a root instead
+		treeModel.orphansAsRoots().set(true);
+
+		// The tree follows the rows, selecting in the
+		// table selects in the tree and vice versa
+		tableModel.items().refresh();
+		// end::tableTree[]
 	}
 
 	// Helper methods referenced in examples
