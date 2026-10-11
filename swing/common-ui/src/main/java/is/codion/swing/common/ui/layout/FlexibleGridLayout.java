@@ -355,7 +355,7 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 		 * the width it lacks, the other columns keeping their preferred width. Call for each growing column.
 		 * <p>By default the difference is divided equally between all columns, as it is when none of the
 		 * columns specified exists. A label column in a two column form typically keeps its preferred width:
-		 * {@snippet class = "is.codion.manual.javadoc.FlexibleGridLayoutSnippets" region = "growColumn" :
+		 * {@snippet class = "is.codion.manual.javadoc.FlexibleGridLayoutSnippets" region = "growColumn":
 		 * FlexibleGridLayout.builder() // @start region=growColumn
 		 *         .rows(0)
 		 *         .columns(2)

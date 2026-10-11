@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * Attributes are typically created through entity type factory methods and then configured
  * using the {@link #as()} method to create attribute definitions:
- * {@snippet class = "is.codion.demos.chinook.javadoc.AttributeSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.AttributeSnippets" region = "usage":
  * interface InvoiceLine { // @start region=usage
  *   EntityType TYPE = DOMAIN.entityType("chinook.invoiceline");
  *

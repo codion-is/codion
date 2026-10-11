@@ -37,7 +37,7 @@ import java.util.function.Consumer;
  * <p><b>Thread Safety:</b> Listener and consumer management (add/remove) is thread-safe.
  * However, event triggering via {@link #run()} or {@link #accept(Object)} is NOT thread-safe
  * and should be performed from a single thread (such as an application UI thread).</p>
- * {@snippet class = "is.codion.manual.javadoc.EventSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.EventSnippets" region = "usage":
  * Event<Boolean> event = Event.event(); // @start region=usage
  *
  * event.addListener(this::doSomething);
@@ -53,7 +53,7 @@ import java.util.function.Consumer;
  * observer.addListener(this::doSomethingElse); // @end}
  * <p>Listeners and Consumers can be added using a {@link java.lang.ref.WeakReference}, so they must be strongly
  * referenced elsewhere, a lambda or method reference only referenced by the observer being garbage collected right away.
- * {@snippet class = "is.codion.manual.javadoc.EventSnippets" region = "weak" :
+ * {@snippet class = "is.codion.manual.javadoc.EventSnippets" region = "weak":
  * // listener and consumer are fields // @start region=weak
  * observer.addWeakListener(listener);
  * observer.addWeakConsumer(consumer); // @end}

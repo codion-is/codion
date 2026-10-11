@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
  * prevents the action from executing.
  * <p>
  * Example usage:
- * {@snippet class = "is.codion.manual.javadoc.DelayedActionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.DelayedActionSnippets" region = "usage":
  * DelayedAction showProgress = delayedAction(() -> { // @start region=usage
  *   progressBar.setVisible(true);
  * }, 300);

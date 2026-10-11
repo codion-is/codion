@@ -42,7 +42,7 @@ import static java.util.ResourceBundle.getBundle;
  * </ul>
  * <p>
  * <strong>Usage Examples:</strong><br>
- * {@snippet class = "is.codion.manual.javadoc.MessagesSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.MessagesSnippets" region = "usage":
  * // Get localized messages // @start region=usage
  * String cancelText = Messages.cancel();
  * String okText = Messages.ok();

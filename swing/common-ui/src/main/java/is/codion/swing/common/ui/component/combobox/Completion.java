@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Selects an item in a JComboBox based on values typed on the keyboard.
- * {@snippet class = "is.codion.manual.javadoc.CompletionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.CompletionSnippets" region = "usage":
  * Completion.builder() // @start region=usage
  *         .mode(Mode.AUTOCOMPLETE)
  *         .normalize(false)

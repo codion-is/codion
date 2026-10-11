@@ -922,7 +922,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |expand_collapse|Expand/collapse|Stækka/minnka alveg
 |find_next|Find next|Finna næstu
 |find_previous|Find previous|Finna síðustu
-|increment_decrement|Increment/decrement based to cursor position|Hækka/lækka út frá staðsetningu bendils
+|increment_decrement|Increment/decrement based on the cursor position|Hækka/lækka út frá staðsetningu bendils
 |move_focus_to_table|Move focus to table|Færa fókus í töflu
 |move_selected_column|Move selected column|Færa valinn dálk
 |move_selection|Move selection|Færa val

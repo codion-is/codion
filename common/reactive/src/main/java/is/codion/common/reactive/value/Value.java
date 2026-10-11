@@ -32,20 +32,20 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An observable wrapper for a value.</p>
  * <p>Nullable integer based Value:</p>
- * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "nullable" :
+ * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "nullable":
  * Value<Integer> value = Value.nullable(); // @start region=nullable
  * value.set(42);
  * value.addConsumer(this::onValueChange);
  * value.isNullable(); // true // @end}
  * <p>Non-null boolean based Value, using 'false' as a null substitute:</p>
- * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "nonNull" :
+ * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "nonNull":
  * Value<Boolean> value = Value.nonNull(false); // @start region=nonNull
  * value.set(true);
  * value.set(null);
  * value.get(); // false
  * value.isNullable(); // false // @end}
  * <p>Non-null String based Value, using "none" as a null substitute:</p>
- * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "builder" :
+ * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "builder":
  * Value<String> value = Value.builder() // @start region=builder
  *         .nonNull("none")
  *         .value("hello")                  // the initial value
@@ -105,7 +105,7 @@ public interface Value<T> extends Observable<T> {
 
 	/**
 	 * Updates the value with the result of applying the given function to the current value.
-	 * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "update" :
+	 * {@snippet class = "is.codion.manual.javadoc.ValueSnippets" region = "update":
 	 * Value<Integer> value = Value.nonNull(0); // @start region=update
 	 *
 	 * // increment the value by one

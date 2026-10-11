@@ -48,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  * but once added, methods cannot be removed from the builder.
  * <p>
  * Note that if the {@link Object#equals(Object)} method is not proxied the resulting proxy is equal only to itself.
- * {@snippet class = "is.codion.manual.javadoc.ProxyBuilderSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.ProxyBuilderSnippets" region = "usage":
  * List<String> list = new ArrayList<>(); // @start region=usage
  *
  * ProxyBuilder<List<String>> builder = ProxyBuilder.of(new TypeReference<List<String>>() {})

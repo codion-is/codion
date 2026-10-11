@@ -36,7 +36,7 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  * Transient attributes are useful for UI state, temporary calculations and values the record carries without
  * storing. They are editable fields wherever the framework builds components from attribute definitions, which is
  * what makes them the way a form holds something the table does not store:
- * {@snippet class = "is.codion.demos.chinook.javadoc.TransientAttributeDefinitionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.TransientAttributeDefinitionSnippets" region = "usage":
  * interface Customer { // @start region=usage
  *   EntityType TYPE = DOMAIN.entityType("chinook.customer");
  *

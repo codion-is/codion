@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
  * A wrapper for a value, providing a change observer.
  * <p><b>Thread Safety:</b> Listener management is thread-safe,
  * value access thread-safety is implementation dependent.
- * {@snippet class = "is.codion.manual.javadoc.ObservableSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.ObservableSnippets" region = "usage":
  * class Person { // @start region=usage
  *   private final Event<String> nameChanged = Event.event();
  *

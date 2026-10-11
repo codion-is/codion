@@ -84,7 +84,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * All configuration is done via an Observable/Value-based API, allowing reactive UI updates.
  * <b>Image</b>
  * <p>An image is loaded via the builder or controlled via the {@link #image()} Value:</p>
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "image" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "image":
  * ImagePane pane = ImagePane.builder() // @start region=image
  *         .image(bufferedImage)
  *         .build();
@@ -97,7 +97,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * <b>Zooming</b>
  * Zooming can be controlled interactively using either the mouse scroll wheel (default) or mouse buttons,
  * or programmatically via the {@link #zoom()} Value. To change the zoom device:
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "zoomDevice" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "zoomDevice":
  * ImagePane pane = ImagePane.builder() // @start region=zoomDevice
  *         .zoomDevice(ZoomDevice.MOUSE_BUTTON)
  *         .build();
@@ -107,11 +107,11 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * When using {@code ZoomDevice.MOUSE_BUTTON}, the left mouse button zooms in and the right button zooms out.
  * Each step zooms by one increment (default 20%), zooming in multiplying the zoom level by 1 + increment and
  * zooming out dividing it, so zooming in and back out returns to the same level. The zoom increment can be controlled:
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "zoomIncrement" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "zoomIncrement":
  * // @start region=zoomIncrement
  * pane.zoomIncrement().set(0.3); // 30% increment // @end}
  * For programmatic zoom control, set the zoom device to {@code ZoomDevice.NONE} and use the {@link #zoom()} Value:
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "zoom" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "zoom":
  * // @start region=zoom
  * pane.zoom().set(2.0); // Zoom to 200% // @end}
  * The zoom level, like the coordinate translation, is available once an image is set and the pane has a size,
@@ -123,7 +123,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * There are no lower or upper zoom level limits.
  * <b>Auto-Resize</b>
  * When auto-resize is enabled, the image automatically re-fits to the pane whenever the pane is resized:
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "autoResize" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "autoResize":
  * ImagePane pane = ImagePane.builder() // @start region=autoResize
  *         .autoResize(true)
  *         .build();
@@ -138,7 +138,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * in the upper left corner. The navigation image is a small replica of the main image. Clicking on any point
  * of the navigation image displays that part of the image in the pane, centered. The navigation image can
  * be enabled/disabled via the {@link #navigable()} State:
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "navigable" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "navigable":
  * ImagePane pane = ImagePane.builder() // @start region=navigable
  *         .navigable(true)
  *         .build();
@@ -146,7 +146,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * // Or toggle reactively
  * pane.navigable().set(false); // @end}
  * The image can be dragged with the left mouse button when {@link #movable()} is enabled (default):
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "movable" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "movable":
  * // @start region=movable
  * pane.movable().set(false); // Disable dragging // @end}
  * For programmatic navigation, use {@link #center()}.
@@ -163,7 +163,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * <p>
  * The {@link #origin()} Value provides access to the current image origin (top-left corner position in pane coordinates),
  * which can be used to programmatically position the image to make specific regions visible:
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "origin" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "origin":
  * // Move image to show a specific region // @start region=origin
  * pane.origin().set(new Point(-200, -100));
  *
@@ -171,7 +171,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * pane.origin().addConsumer(origin ->
  *         System.out.println("Image origin: " + origin)); // @end}
  * <b>Example Usage</b>
- * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "usage":
  * BufferedImage image = ImageIO.read(new File("photo.jpg")); // @start region=usage
  *
  * ImagePane pane = ImagePane.builder()
@@ -354,7 +354,7 @@ public final class ImagePane extends JPanel {
 	 * The origin is typically negative when the image is zoomed in and larger than the pane,
 	 * representing how much of the image is scrolled off the top-left edge of the pane.
 	 * <b>Example Usage</b>
-	 * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "originUsage" :
+	 * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "originUsage":
 	 * // Center image coordinates (500, 300) in the pane, as center().onImage() does // @start region=originUsage
 	 * Point2D.Double panePoint = pane.coordinates().toPane(new Point2D.Double(500, 300));
 	 * Point origin = pane.origin().getOrThrow();
@@ -490,7 +490,7 @@ public final class ImagePane extends JPanel {
 		 * The overlay painter receives the Graphics2D context for drawing and the ImagePane for accessing
 		 * coordinate conversion methods and pane state.
 		 * <b>Example - Drawing Grid Lines</b>
-		 * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "gridOverlay" :
+		 * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "gridOverlay":
 		 * ImagePane imagePane = ImagePane.builder() // @start region=gridOverlay
 		 *         .image(image)
 		 *         .overlay((g2d, pane) -> {
@@ -505,7 +505,7 @@ public final class ImagePane extends JPanel {
 		 *         })
 		 *         .build(); // @end}
 		 * <b>Example - Highlighting Regions</b>
-		 * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "regionOverlay" :
+		 * {@snippet class = "is.codion.manual.javadoc.ImagePaneSnippets" region = "regionOverlay":
 		 * List<Rectangle> taggedRegions = taggedRegions(); // @start region=regionOverlay
 		 *
 		 * ImagePane imagePane = ImagePane.builder()

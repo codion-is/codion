@@ -42,7 +42,7 @@ import java.util.List;
  * for a custom condition. The actual SQL generation logic is provided via a {@link ConditionString}
  * when defining the entity.
  * <p>
- * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "notInPlaylist" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "notInPlaylist":
  * // Define a custom condition type for finding tracks not in a playlist // @start region=notInPlaylist
  * interface Track {
  *   EntityType TYPE = DOMAIN.entityType("chinook.track");
@@ -74,7 +74,7 @@ import java.util.List;
  * } // @end}
  * <p>
  * Example with multiple columns:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "multipleColumns" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "multipleColumns":
  * interface Invoice { // @start region=multipleColumns
  *   EntityType TYPE = DOMAIN.entityType("chinook.invoice");
  *
@@ -103,7 +103,7 @@ import java.util.List;
  * } // @end}
  * <p>
  * Example without columns or values:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "noValues" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionTypeSnippets" region = "noValues":
  * interface Track { // @start region=noValues
  *   EntityType TYPE = DOMAIN.entityType("chinook.track");
  *

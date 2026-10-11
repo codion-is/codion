@@ -71,7 +71,7 @@ import static java.util.Objects.requireNonNull;
  * {@code onDone} &rarr; {@code onResult(T)} (result-producing tasks only) &rarr; {@code onSuccess},
  * a success being reported once the result has been handled.
  * <p>Builder based usage example:
- * {@snippet class = "is.codion.manual.javadoc.ProgressWorkerSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.ProgressWorkerSnippets" region = "usage":
  * ProgressWorker.builder() // @start region=usage
  *         .task(this::performTask)
  *         .onStarted(this::displayDialog)

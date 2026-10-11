@@ -305,7 +305,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * split up for use with a background thread.
 	 * <p>A {@link EditorTask} captures entity state and, where applicable, fires "before" events at creation time.
 	 * It should be executed promptly after creation, not cached for later use.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditorSnippets" region = "task" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditorSnippets" region = "task":
 	 * // Must be called on the UI thread, fires "before" events and captures entity state // @start region=task
 	 * EditorTask<Entity> task = editor.tasks().insert();
 	 *
@@ -1090,7 +1090,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * propagating in the current cascade is given its derived value but propagates no further - so a pair
 		 * deriving from each other settles after one lap whether or not it ever reaches a fixpoint. When setting
 		 * values in an entity, each attribute is propagated to once, the assignment included.
-		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditorSnippets" region = "propagate" :
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditorSnippets" region = "propagate":
 		 * // Populate billing address fields when customer changes // @start region=propagate
 		 * editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
 		 *         customer -> customer == null ? null : customer.get(Customer.ADDRESS));

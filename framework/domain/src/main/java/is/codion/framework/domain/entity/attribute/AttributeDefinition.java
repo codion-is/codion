@@ -50,7 +50,7 @@ import static is.codion.common.utilities.Configuration.*;
  * </ul>
  * <p>
  * AttributeDefinitions are created using the builder pattern through attribute definers:
- * {@snippet class = "is.codion.demos.world.javadoc.AttributeDefinitionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.world.javadoc.AttributeDefinitionSnippets" region = "usage":
  * interface Country { // @start region=usage
  *   EntityType TYPE = DOMAIN.entityType("world.country");
  *

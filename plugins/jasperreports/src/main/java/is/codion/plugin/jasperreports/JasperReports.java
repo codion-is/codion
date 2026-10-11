@@ -73,7 +73,7 @@ public final class JasperReports {
 	 * Returns a report producing the result of the given export when filled, instead of a {@link JasperPrint}.
 	 * <p>The export runs wherever the report is filled, on the server in case of a remote connection, so a
 	 * report exported to {@link JRExport#PDF} reaches the client as bytes, requiring no reporting engine there.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "export" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "export":
 	 * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=export
 	 *
 	 * add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), PDF)); // @end}
@@ -114,7 +114,7 @@ public final class JasperReports {
 	 * Reconstructs a {@link JasperPrint} from the bytes {@link JRExport#SERIALIZED} produced, for a client
 	 * receiving them from a report exported to it, letting a client with the reporting engine keep a
 	 * {@link JasperPrint} report over a connection which can not transfer one, such as a JSON one.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "loadPrint" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "loadPrint":
 	 * // @start region=loadPrint
 	 * JasperPrint print = loadPrint(connection.report(Customer.REPORT, parameters)); // @end}
 	 * @param bytes the bytes {@link JRExport#SERIALIZED} produced

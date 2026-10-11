@@ -779,7 +779,7 @@ public class EntityTablePanel extends JPanel {
 	 * Configures the toolbar controls layout.<br>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "configureToolBar" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "configureToolBar":
 	 * configureToolBar(layout -> layout.clear() // @start region=configureToolBar
 	 *         .control(ControlKeys.REFRESH)
 	 *         .separator()
@@ -814,7 +814,7 @@ public class EntityTablePanel extends JPanel {
 	 * Configures the popup menu controls layout.<br>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "configurePopupMenu" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "configurePopupMenu":
 	 * configurePopupMenu(layout -> layout.clear() // @start region=configurePopupMenu
 	 *         .control(ControlKeys.REFRESH)
 	 *         .separator()
@@ -936,7 +936,7 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Returns the key used to identify user preferences for this table panel, that is column positions, widths and such.
 	 * The default implementation is:
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "preferencesKey" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "preferencesKey":
 	 * // @start region=preferencesKey
 	 * return model().getClass().getSimpleName() + "-" + model().entityType(); // @end}
 	 * Override in case this key is not unique within the application.
@@ -2099,7 +2099,7 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies the default popup menu layout.
-		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "popupMenuLayout" :
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "popupMenuLayout":
 		 * EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList( // @start region=popupMenuLayout
 		 *         EntityTablePanel.ControlKeys.REFRESH,
 		 *         null, // <- separator
@@ -2121,7 +2121,7 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies the default toolbar layout.
-		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "toolBarLayout" :
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "toolBarLayout":
 		 * EntityTablePanel.Config.TOOLBAR_LAYOUT.set(Controls.layout(asList( // @start region=toolBarLayout
 		 *         EntityTablePanel.ControlKeys.TOGGLE_CONDITION_VIEW,
 		 *         EntityTablePanel.ControlKeys.TOGGLE_FILTER_VIEW,

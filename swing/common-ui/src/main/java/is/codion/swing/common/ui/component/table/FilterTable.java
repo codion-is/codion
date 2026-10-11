@@ -692,7 +692,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * <p>The {@link Action} is only triggered if enabled.
 	 * <p>The {@link ActionEvent} propagated when this action is performed, contains the associated {@link MouseEvent} as source.
-	 * {@snippet class = "is.codion.manual.javadoc.FilterTableSnippets" region = "doubleClick" :
+	 * {@snippet class = "is.codion.manual.javadoc.FilterTableSnippets" region = "doubleClick":
 	 * @Override // @start region=doubleClick
 	 * public void actionPerformed(ActionEvent event) {
 	 *   MouseEvent mouseEvent = (MouseEvent) event.getSource();
@@ -1112,7 +1112,7 @@ public final class FilterTable<R, C> extends JTable {
 						});
 	}
 
-	private void configureTableHeader(DefaultBuilder<R, C>	builder) {
+	private void configureTableHeader(DefaultBuilder<R, C> builder) {
 		if (builder.headerless) {
 			setTableHeader(null);
 		}
@@ -1150,7 +1150,7 @@ public final class FilterTable<R, C> extends JTable {
 		return controls;
 	}
 
-	private void bindEvents(DefaultBuilder<R, C>	builder) {
+	private void bindEvents(DefaultBuilder<R, C> builder) {
 		columns().columnHidden().addConsumer(this::onColumnHidden);
 		if (getTableHeader() != null) {
 			Runnable repaintHeader = getTableHeader()::repaint;

@@ -30,7 +30,7 @@ import java.util.Map;
  * <p>Identified by a plain {@link is.codion.framework.domain.report.ReportType}, created via
  * {@link is.codion.framework.domain.report.ReportType#reportType(String)}, since a report type names
  * a report and says nothing of the engine backing it:
- * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "print" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "print":
  * ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("customer_report"); // @start region=print
  *
  * add(REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper")); // @end}
@@ -38,7 +38,7 @@ import java.util.Map;
  * {@link JasperReports#export(JRReport, JRExport)}, in which case the report produces
  * whatever that export produces, a PDF for example, in which case the client never
  * sees a JasperReports type:
- * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "export" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "export":
  * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=export
  *
  * add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), PDF)); // @end}

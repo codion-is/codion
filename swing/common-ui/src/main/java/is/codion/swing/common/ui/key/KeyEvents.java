@@ -40,7 +40,7 @@ import static javax.swing.KeyStroke.getKeyStroke;
 
 /**
  * A factory for key event builders.
- * {@snippet class = "is.codion.manual.javadoc.KeyEventsSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.KeyEventsSnippets" region = "usage":
  * JTextField textField = new JTextField(); // @start region=usage
  *
  * KeyEvents.builder()

@@ -36,7 +36,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * providing access to entity definitions and factory methods for creating entity instances and keys.
  * <p>
  * Typically accessed through a domain instance:
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "usage":
  * Domain domain = new ChinookImpl(); // @start region=usage
  * Entities entities = domain.entities();
  *
@@ -51,7 +51,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42L); // @end}
  * <p>
  * Or via an EntityConnection:
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "connection" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "connection":
  * // @start region=connection
  * Entities entities = connection.entities(); // @end}
  * @see #entity(EntityType)
@@ -119,7 +119,7 @@ public sealed interface Entities permits DefaultEntities {
 
 	/**
 	 * Creates a new {@link Entity.Builder} instance for the given entityType
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "entity" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "entity":
 	 * // Build an entity with initial values // @start region=entity
 	 * Entity customer = entities.entity(Customer.TYPE)
 	 *         .with(Customer.FIRSTNAME, "John")
@@ -139,7 +139,7 @@ public sealed interface Entities permits DefaultEntities {
 
 	/**
 	 * Creates a new {@link Entity.Key.Builder} instance for the given entityType
-	 * {@snippet class = "is.codion.demos.world.javadoc.EntitiesSnippets" region = "key" :
+	 * {@snippet class = "is.codion.demos.world.javadoc.EntitiesSnippets" region = "key":
 	 * // A composite primary key // @start region=key
 	 * Entity.Key languageKey = entities.key(CountryLanguage.TYPE)
 	 *         .with(CountryLanguage.COUNTRY_CODE, "ISL")
@@ -152,7 +152,7 @@ public sealed interface Entities permits DefaultEntities {
 
 	/**
 	 * Creates a new {@link Entity.Key} instance of the given entityType, initialised with the given value
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "primaryKey" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "primaryKey":
 	 * // Create a single-value primary key // @start region=primaryKey
 	 * Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42L);
 	 *
@@ -177,7 +177,7 @@ public sealed interface Entities permits DefaultEntities {
 
 	/**
 	 * Creates new {@link Entity.Key} instances of the given entityType, initialised with the given values
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "primaryKeys" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "primaryKeys":
 	 * // Create multiple keys at once // @start region=primaryKeys
 	 * List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, 1L, 2L, 3L, 4L, 5L);
 	 *
@@ -195,7 +195,7 @@ public sealed interface Entities permits DefaultEntities {
 
 	/**
 	 * Creates new {@link Entity.Key} instances of the given entityType, initialised with the given values
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "primaryKeysCollection" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitiesSnippets" region = "primaryKeysCollection":
 	 * // Create multiple keys at once // @start region=primaryKeysCollection
 	 * List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, List.of(1L, 2L, 3L, 4L, 5L)); // @end}
 	 * @param entityType the entityType

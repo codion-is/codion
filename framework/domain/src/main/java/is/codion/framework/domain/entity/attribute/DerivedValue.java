@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * Derived attributes are defined using value providers that receive source values
  * and compute the derived result:
- * {@snippet class = "is.codion.demos.chinook.javadoc.DerivedValueSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.DerivedValueSnippets" region = "usage":
  * // Computes the invoice line total from the quantity and unit price // @start region=usage
  * class InvoiceLineTotal implements DerivedValue<BigDecimal> {
  *

@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 
 /**
  * A basic TypeReference implementation, capturing a generic type via an anonymous subclass:
- * {@snippet class = "is.codion.manual.javadoc.TypeReferenceSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.TypeReferenceSnippets" region = "usage":
  * // @start region=usage
  * TypeReference<List<String>> reference = new TypeReference<>() {}; // @end}
  * <p>The captured type {@code T} must itself be a parameterized type; for plain classes use the

@@ -34,7 +34,7 @@ import java.util.List;
  * <p>
  * Custom conditions provide the flexibility to use any SQL construct while maintaining
  * type safety and parameter binding:
- * {@snippet class = "is.codion.demos.chinook.javadoc.CustomConditionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.CustomConditionSnippets" region = "usage":
  * // Define custom condition types in the entity interface // @start region=usage
  * interface Track {
  *   EntityType TYPE = DOMAIN.entityType("chinook.track");

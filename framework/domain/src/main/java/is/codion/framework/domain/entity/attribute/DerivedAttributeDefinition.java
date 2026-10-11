@@ -32,7 +32,7 @@ import java.util.List;
  * These attributes provide calculated fields, formatting, aggregation, and other computed values.
  * <p>
  * Derived attributes can be cached for performance or computed on-demand:
- * {@snippet class = "is.codion.demos.chinook.javadoc.DerivedAttributeDefinitionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.DerivedAttributeDefinitionSnippets" region = "usage":
  * interface Employee { // @start region=usage
  *   EntityType TYPE = DOMAIN.entityType("chinook.employee");
  *

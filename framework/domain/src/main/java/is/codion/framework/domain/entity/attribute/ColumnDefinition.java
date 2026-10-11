@@ -39,7 +39,7 @@ import java.sql.SQLException;
  * database value conversion logic.
  * <p>
  * Column definitions are created through the column builder API:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnDefinitionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnDefinitionSnippets" region = "usage":
  * interface Invoice { // @start region=usage
  *   EntityType TYPE = DOMAIN.entityType("chinook.invoice");
  *

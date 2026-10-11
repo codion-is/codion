@@ -38,7 +38,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * for referenced entities.
  * <p>
  * Foreign key definitions control the loading strategy and behavior of entity relationships:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeyDefinitionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeyDefinitionSnippets" region = "usage":
  * // Reference depth 0, the invoice is not loaded // @start region=usage
  * InvoiceLine.INVOICE_FK.as()
  *         .foreignKey()

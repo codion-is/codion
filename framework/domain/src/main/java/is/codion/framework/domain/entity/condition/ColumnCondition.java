@@ -30,7 +30,7 @@ import is.codion.framework.domain.entity.attribute.Column;
  * <p>
  * Column conditions are typically created through the ColumnConditions interface, which
  * all Column instances implement:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnConditionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnConditionSnippets" region = "usage":
  * // Equality conditions // @start region=usage
  * List<Entity> teenSpirit = connection.select(
  *         Track.NAME.equalTo("Smells Like Teen Spirit"));

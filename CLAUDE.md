@@ -136,7 +136,7 @@ These are established across the codebase. New code follows them, and code that 
     - `// @end` at the end of the last line, after any comment of its own: `customer.modified(Customer.FIRSTNAME); // false // @end`;
     - a one-line region starts on a line of its own, `// @start region=name`, since IntelliJ renders `@start … @end` in one comment as an empty region.
   - **The inline copy** is the region's lines verbatim, markup included, and closes on its last code line: `...; // @end}`. IntelliJ removes the space in a closing ` * }` on a line of its own, which javadoc then reads as indentation.
-  - **The attributes are spaced and quoted:** `{@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "select" :`. IntelliJ cuts an unquoted value off at its first dot, so the snippet doesn't render. It also filters a hybrid snippet's inline body by the region, which is why the copy keeps the markup. IntelliJ shows the snippets from the sources jars this way, to everyone using the jars.
+  - **The attributes are spaced and quoted, with no space before the colon:** `{@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "select":`. IntelliJ's formatter removes a space there. IntelliJ cuts an unquoted value off at its first dot, so the snippet doesn't render. It also filters a hybrid snippet's inline body by the region, which is why the copy keeps the markup. IntelliJ shows the snippets from the sources jars this way, to everyone using the jars.
   - **Javadoc formatting is off** in the project code style, as IntelliJ's javadoc formatter trims the line holding the closing brace.
 
 ## Where to Find Working Examples

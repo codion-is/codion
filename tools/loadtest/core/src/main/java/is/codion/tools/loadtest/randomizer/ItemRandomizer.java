@@ -26,7 +26,7 @@ import java.util.Optional;
 
 /**
  * ItemRandomizer provides a way to randomly choose an item based on a weight value.
- * {@snippet class = "is.codion.manual.javadoc.ItemRandomizerSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.ItemRandomizerSnippets" region = "usage":
  * String one = "one"; // @start region=usage
  * String two = "two";
  * String three = "three";

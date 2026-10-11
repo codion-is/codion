@@ -32,7 +32,7 @@ import java.util.ServiceLoader;
  * <p>Discovered via {@link ServiceLoader}, so an implementation is registered in
  * {@code META-INF/services/is.codion.common.db.database.SessionContext}, and applied by the Codion server.
  * All registered instances are applied, shared ones first, and removed in reverse.
- * {@snippet class = "is.codion.manual.javadoc.SessionContextSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.SessionContextSnippets" region = "usage":
  * class AuditContext implements SessionContext { // @start region=usage
  *
  *   @Override

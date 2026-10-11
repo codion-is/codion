@@ -91,7 +91,7 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 		 * CTEs are prepended to the query using the WITH clause.
 		 * <p>
 		 * Example:
-		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySelectQuerySnippets" region = "with" :
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntitySelectQuerySnippets" region = "with":
 		 * EntitySelectQuery.builder() // @start region=with
 		 *         .with("track_revenue")
 		 *         .as("SELECT track_id, SUM(unitprice * quantity) AS revenue FROM chinook.invoiceline GROUP BY track_id")

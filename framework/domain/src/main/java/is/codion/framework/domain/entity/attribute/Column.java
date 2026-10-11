@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  * {@link Attribute} interface with column-specific functionality for database operations.
  * <p>
  * Columns are declared in the domain API, and defined in the domain model:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "usage":
  * interface Track { // @start region=usage
  *   EntityType TYPE = DOMAIN.entityType("chinook.track");
  *
@@ -89,7 +89,7 @@ import static java.util.Objects.requireNonNull;
  * } // @end}
  * <p>
  * Columns inherit from {@link ColumnConditions} to provide condition creation methods:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "conditions" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "conditions":
  * // Query condition usage (inherited from ColumnConditions) // @start region=conditions
  * List<Entity> bachTracks = connection.select(
  *         Track.COMPOSER.equalTo("Johann Sebastian Bach"));
@@ -120,7 +120,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 	/**
 	 * Returns a {@link ColumnDefinition.Builder} for this column, configured by the given template.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "template" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "template":
 	 * Customer.LASTNAME.as(REQUIRED_SEARCHABLE) // @start region=template
 	 *         .maximumLength(20); // @end}
 	 * <p>The template is applied first, any subsequent configuration overriding it.
@@ -172,7 +172,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the primary key index 0.
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
-		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "primaryKey" :
+		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "primaryKey":
 		 * Country.CODE.as() // @start region=primaryKey
 		 *         .primaryKey()
 		 *         .caption("Code")
@@ -188,7 +188,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the given primary key index.
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
-		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "primaryKeyIndex" :
+		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "primaryKeyIndex":
 		 * CountryLanguage.TYPE.as() // @start region=primaryKeyIndex
 		 *         .attributes(
 		 *                 CountryLanguage.COUNTRY_CODE.as()
@@ -273,7 +273,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 * <p>
 	 * The common generators are provided by {@link #identity()}, {@link #sequence(String)} and {@link #queried(String)}.
 	 * A custom generator, setting a random UUID as the key:
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "generator" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "generator":
 	 * class UUIDGenerator implements Generator<String> { // @start region=generator
 	 *
 	 *   @Override
@@ -347,7 +347,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Instantiates a generator which fetches column values from a sequence prior to insert.
-		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "sequence" :
+		 * {@snippet class = "is.codion.demos.world.javadoc.ColumnSnippets" region = "sequence":
 		 * // Oracle or PostgreSQL sequence // @start region=sequence
 		 * City.TYPE.as()
 		 *         .attributes(
@@ -375,7 +375,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Instantiates a generator which fetches column values using the given query prior to insert.
-		 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "queried" :
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "queried":
 		 * // Custom query-based key generation, such as a function call // @start region=queried
 		 * Invoice.TYPE.as()
 		 *         .attributes(
@@ -413,7 +413,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * Returns a column value generator based on an IDENTITY type column.
-		 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "identity" :
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.ColumnSnippets" region = "identity":
 		 * // SQL Server, MySQL auto-increment, or similar // @start region=identity
 		 * Customer.TYPE.as()
 		 *         .attributes(

@@ -108,7 +108,7 @@ import static javax.swing.SwingConstants.VERTICAL;
 
 /**
  * A panel representing an Entity via an EntityModel, which facilitates browsing and editing of records.
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntityPanelSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityPanelSnippets" region = "usage":
  * SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connection); // @start region=usage
  * EntityPanel entityPanel = new EntityPanel(entityModel);
  * entityPanel.initialize();
@@ -650,7 +650,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Returns the key used to identify user preferences for this panel, delegating to the model by default.
 	 * The default implementation is:
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityPanelSnippets" region = "preferencesKey" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityPanelSnippets" region = "preferencesKey":
 	 * // @start region=preferencesKey
 	 * return model().preferencesKey(); // @end}
 	 * Override the model's {@link EntityModel#preferencesKey()} in case this key is not unique within the
@@ -666,7 +666,7 @@ public class EntityPanel extends JPanel {
 	 * Configures the controls layout.<br>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityPanelSnippets" region = "configureControls" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityPanelSnippets" region = "configureControls":
 	 * configureControls(layout -> layout // @start region=configureControls
 	 *         .separator()
 	 *         .control(createCustomControl())); // @end}

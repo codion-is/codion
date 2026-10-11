@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A class encapsulating a boolean state.
- * {@snippet class = "is.codion.manual.javadoc.StateSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.StateSnippets" region = "usage":
  * State state = State.state(); // @start region=usage
  *
  * ObservableState observable = state.observable();
@@ -222,7 +222,7 @@ public interface State extends ObservableState {
 	 *   <li>Once the returned {@link State} is no longer reachable and is garbage collected,
 	 *       the synchronization is automatically cleaned up</li>
 	 * </ul>
-	 * {@snippet class = "is.codion.manual.javadoc.StateSnippets" region = "contains" :
+	 * {@snippet class = "is.codion.manual.javadoc.StateSnippets" region = "contains":
 	 * ValueSet<String> tags = ValueSet.valueSet(); // @start region=contains
 	 * State containsImportant = State.contains(tags, "important");
 	 *

@@ -51,7 +51,7 @@ import static java.util.stream.Collectors.toMap;
  * {@link Condition.All} indicates no condition, as in, all entities should be returned.
  * <p>
  * Conditions are typically created using column factory methods and combined using logical operators:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ConditionSnippets" region = "usage":
  * // Simple conditions using column factory methods // @start region=usage
  * List<Entity> theArtists = connection.select(
  *         Artist.NAME.like("The %"));

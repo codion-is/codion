@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 /**
  * A builder for a JTabbedPane.
- * {@snippet class = "is.codion.manual.javadoc.TabbedPaneBuilderSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.TabbedPaneBuilderSnippets" region = "usage":
  * Components.tabbedPane() // @start region=usage
  *         .tab("First Tab", new JLabel("First"))
  *         .tab("Second Tab", new JLabel("Second"))

@@ -28,7 +28,7 @@ import java.util.function.Function;
 /**
  * Formats {@link Entity} instances into their string representations.
  * Instances are built via {@link #builder()}.
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntityFormatterSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityFormatterSnippets" region = "usage":
  * Entity track = connection.selectSingle(Track.NAME.equalTo("Come As You Are")); // @start region=usage
  *
  * EntityFormatter formatter = EntityFormatter.builder()

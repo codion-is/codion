@@ -31,7 +31,7 @@ import java.util.List;
  * ascending/descending order, null value handling, and case-insensitive sorting for strings.
  * <p>
  * OrderBy can be used in entity definitions as default ordering, or in queries for custom sorting:
- * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "usage":
  * // Default ordering for the entity // @start region=usage
  * Customer.TYPE.as()
  *         .attributes(
@@ -126,7 +126,7 @@ public sealed interface OrderBy permits DefaultOrderBy {
 
 	/**
 	 * Builds a {@link OrderBy} instance.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "builder" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "builder":
 	 * // Complex ordering with multiple columns and options // @start region=builder
 	 * OrderBy order = OrderBy.builder()
 	 *         .descending(Track.RATING) // Highest rated first
@@ -237,7 +237,7 @@ public sealed interface OrderBy permits DefaultOrderBy {
 
 	/**
 	 * Creates an ascending OrderBy for the given columns.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "ascending" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "ascending":
 	 * // Single column ascending // @start region=ascending
 	 * OrderBy byName = OrderBy.ascending(Artist.NAME);
 	 *
@@ -269,7 +269,7 @@ public sealed interface OrderBy permits DefaultOrderBy {
 
 	/**
 	 * Creates a descending OrderBy for the given columns.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "descending" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.OrderBySnippets" region = "descending":
 	 * // Single column descending // @start region=descending
 	 * OrderBy byDateDescending = OrderBy.descending(Invoice.DATE);
 	 *

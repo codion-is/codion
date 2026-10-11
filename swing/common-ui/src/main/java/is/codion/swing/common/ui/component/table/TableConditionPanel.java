@@ -114,7 +114,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	/**
 	 * Note that the {@link Controls} instance returned has no caption defined, copy it to add a caption.
-	 * {@snippet class = "is.codion.manual.javadoc.TableConditionPanelSnippets" region = "controls" :
+	 * {@snippet class = "is.codion.manual.javadoc.TableConditionPanelSnippets" region = "controls":
 	 * Controls conditionControls = conditionPanel.controls().copy() // @start region=controls
 	 *         .caption("Filters")
 	 *         .build(); // @end}

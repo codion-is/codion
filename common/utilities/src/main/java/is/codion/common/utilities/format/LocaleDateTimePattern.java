@@ -45,7 +45,7 @@ import static java.util.stream.Collectors.toList;
  * <p>
  * Orders the year and month parts according to locale,
  * with two-digit month and day parts and two or four digit year.
- * {@snippet class = "is.codion.manual.javadoc.LocaleDateTimePatternSnippets" region = "usage" :
+ * {@snippet class = "is.codion.manual.javadoc.LocaleDateTimePatternSnippets" region = "usage":
  * LocaleDateTimePattern pattern = LocaleDateTimePattern.builder() // @start region=usage
  *         .delimiterDash()
  *         .yearFourDigits()

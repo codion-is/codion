@@ -60,7 +60,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * </ul>
  * <p>
  * Entity definitions are typically created using the builder pattern during domain initialization:
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "usage":
  * // Define entity types // @start region=usage
  * interface Genre {
  *   EntityType TYPE = DOMAIN.entityType("chinook.genre");
@@ -183,7 +183,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * Returns the formatter responsible for providing toString values for this entity type.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "formatter" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "formatter":
 	 * // Define custom string representation // @start region=formatter
 	 * Customer.TYPE.as()
 	 *         .attributes(
@@ -302,7 +302,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 			/**
 			 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
-			 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "attributes" :
+			 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "attributes":
 			 * EntityDefinition definition = Customer.TYPE.as() // @start region=attributes
 			 *         .attributes(
 			 *                 Customer.ID.as()
@@ -457,7 +457,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 		/**
 		 * Sets the formatter, based the value of the given attribute. Shortcut for:
-		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "formatterAttribute" :
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityDefinitionSnippets" region = "formatterAttribute":
 		 * builder.formatter(EntityFormatter.builder() // @start region=formatterAttribute
 		 *         .value(attribute)
 		 *         .build()); // @end}

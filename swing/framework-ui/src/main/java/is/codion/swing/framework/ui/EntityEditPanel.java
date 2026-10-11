@@ -119,7 +119,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * (accessible via {@link #editor()}) — it holds the edited values, the validation state and the
  * insert/update/delete tasks. Subclasses implement {@link #initializeUI()} to create and lay out
  * the input components.
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditPanelSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditPanelSnippets" region = "usage":
  * class CustomerEditPanel extends EntityEditPanel { // @start region=usage
  *
  *   CustomerEditPanel(SwingEntityEditModel editModel) {
@@ -607,7 +607,7 @@ public abstract class EntityEditPanel extends JPanel {
 	/**
 	 * Initializes this EntityEditPanel UI, that is, creates and lays out the components
 	 * required for editing the underlying entity type.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditPanelSnippets" region = "initializeUI" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditPanelSnippets" region = "initializeUI":
 	 * @Override // @start region=initializeUI
 	 * protected void initializeUI() {
 	 *   create().textField(Employee.FIRSTNAME);
@@ -626,7 +626,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * <p>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditPanelSnippets" region = "configureControls" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditPanelSnippets" region = "configureControls":
 	 * configureControls(layout -> layout // @start region=configureControls
 	 *         .separator()
 	 *         .control(createCustomControl())); // @end}

@@ -34,7 +34,7 @@ import java.util.Collection;
  * <p>
  * Foreign key conditions are typically created through the ForeignKeyConditions interface,
  * which all ForeignKey instances implement:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeyConditionsSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeyConditionsSnippets" region = "usage":
  * // Find albums by specific artist // @start region=usage
  * Entity aliceInChains = connection.selectSingle(
  *         Artist.NAME.equalTo("Alice In Chains"));

@@ -38,12 +38,16 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 
 	/**
 	 * {@inheritDoc}
-	 * <p>Setting an item selects one node holding it: a visible one holding the same instance, otherwise one holding an
-	 * equal item, an already selected one preferred in either case, keeping the selection in place, otherwise the first
-	 * one, and in case none is visible, the first one in the model, depth first, its ancestors expanded. An item not in
-	 * the model, its path provided by the model, has its ancestors expanded and loaded, see
-	 * {@link FilterTreeModel.Builder#path(Function)}. An item not in the model otherwise, or excluded, clears the
-	 * selection. Use {@link #path()} for a particular node, and {@link #set(NodePath)} for a node not yet loaded.
+	 * <p>Setting an item selects one node holding it, in order of preference:
+	 * <ol>
+	 * <li>a visible node holding the same instance, an already selected one first, keeping the selection in place</li>
+	 * <li>a visible node holding an equal item, an already selected one first</li>
+	 * <li>a node hidden below a collapsed ancestor, one holding the same instance, otherwise the first one holding an
+	 * equal item, depth first, its ancestors expanded</li>
+	 * </ol>
+	 * An item not in the model, or excluded, clears the selection. Use {@link #path()} for a particular node, and
+	 * {@link #set(NodePath)} for a node not yet loaded.
+	 * <p>A change vetoed via {@link #changing()} leaves the ancestors expanded.
 	 * <p>The selection moving between nodes holding the same item instance changes {@link #path()}, not the item.
 	 */
 	@Override

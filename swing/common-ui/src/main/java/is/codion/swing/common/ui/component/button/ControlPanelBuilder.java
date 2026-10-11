@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 /**
  * Builds panels with buttons based on controls, along with any other components, in the order added.
- * {@snippet class = "is.codion.manual.javadoc.ControlPanelBuilderSnippets" region = "toolBar" :
+ * {@snippet class = "is.codion.manual.javadoc.ControlPanelBuilderSnippets" region = "toolBar":
  * JToolBar toolBar = Components.toolBar() // @start region=toolBar
  *         .controls(navigationControls)
  *         .separator()

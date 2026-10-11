@@ -43,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  * They serve as factories for creating typed attributes (columns, foreign keys, derived attributes)
  * and provide the starting point for defining entity structure.
  * <p>
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTypeSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTypeSnippets" region = "usage":
  * // The domain API // @start region=usage
  * public interface Chinook {
  *
@@ -342,7 +342,7 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given attributes.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTypeSnippets" region = "foreignKey" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTypeSnippets" region = "foreignKey":
 	 * // Single column foreign key // @start region=foreignKey
 	 * interface Invoice {
 	 *   EntityType TYPE = DOMAIN.entityType("chinook.invoice");
@@ -378,7 +378,7 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given columns.
-	 * {@snippet class = "is.codion.demos.schemabrowser.javadoc.EntityTypeSnippets" region = "compositeForeignKey" :
+	 * {@snippet class = "is.codion.demos.schemabrowser.javadoc.EntityTypeSnippets" region = "compositeForeignKey":
 	 * // Composite foreign key (two columns) // @start region=compositeForeignKey
 	 * interface TableColumn {
 	 *   EntityType TYPE = DOMAIN.entityType("column");

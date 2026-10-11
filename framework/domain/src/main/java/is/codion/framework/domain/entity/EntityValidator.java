@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  * that considers the entity's current state and relationships.
  * <p>
  * Custom validators can be implemented for complex business logic:
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "usage":
  * // Custom validator for Customer entity // @start region=usage
  * class CustomerValidator implements EntityValidator {
  *
@@ -100,7 +100,7 @@ public interface EntityValidator {
 	/**
 	 * Returns true if the value based on the given attribute accepts a null value for the given entity,
 	 * by default this method simply returns the nullable state of the underlying attribute.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "nullable" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "nullable":
 	 * // Context-aware nullable validation // @start region=nullable
 	 * class CustomerValidator implements EntityValidator {
 	 *
@@ -165,7 +165,7 @@ public interface EntityValidator {
 	 * {@link Entity#exists()} all values are validated, otherwise only modified values are validated.
 	 * Use the {@link #STRICT_VALIDATION} configuration value to change the default behaviour
 	 * or override {@link #strict()} in order to configure the strictness of a specific instance.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "validate" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "validate":
 	 * // Validation during entity lifecycle // @start region=validate
 	 * Entity customer = entities.entity(Customer.TYPE)
 	 *         .with(Customer.FIRSTNAME, "John")
@@ -241,7 +241,7 @@ public interface EntityValidator {
 	 * out-of-season record, the count that reads like a typo and is not. Rejecting those either blocks a true record or
 	 * teaches the user to enter a plausible lie; warning captures the doubt at the one moment the evidence is at hand.
 	 * <p>Called whenever the entity is revalidated, which is on every value change, so keep implementations cheap.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "warning" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "warning":
 	 * class TrackValidator implements EntityValidator { // @start region=warning
 	 *
 	 *   private static final int HOUR_MS = 3_600_000;

@@ -80,7 +80,7 @@ import static java.util.stream.StreamSupport.stream;
  * <p>Transaction Management</p>
  * All insert, update, and delete operations automatically commit unless run within an explicit transaction.
  * {@link #execute(FunctionType)} and {@link #execute(ProcedureType)} do not perform transaction control.
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "transactions" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "transactions":
  * // Automatic transaction management // @start region=transactions
  * Entity artist = connection.insertSelect(newArtist);
  *
@@ -123,7 +123,7 @@ import static java.util.stream.StreamSupport.stream;
  * and {@link #updateSelect(Entity)} return freshly selected instances rather than the ones given.
  *
  * <p>Basic Usage</p>
- * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "usage":
  * EntityConnection connection = EntityConnection.builder() // @start region=usage
  *         .domain(Chinook.DOMAIN)
  *         .user(User.parse("scott:tiger"))
@@ -227,7 +227,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * than fetched again for each operation. Contrast with {@code LocalEntityConnection.localEntityConnection},
 	 * which wraps a connection supplied by the caller and hands it back on {@link #close()}, for scoped use such
 	 * as a pooled connection on a server.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "builder" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "builder":
 	 * // Configure connection type // @start region=builder
 	 * System.setProperty("codion.client.connectionType", "remote");
 	 *
@@ -380,7 +380,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * NOTE: A transaction should ALWAYS be used in conjunction with a try/catch block,<br>
 	 * in order for the transaction to be properly ended in case of an exception.<br>
 	 * A transaction should always be started OUTSIDE the try/catch block.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "startTransaction" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "startTransaction":
 	 * // Very important, should NOT be inside the try block // @start region=startTransaction
 	 * connection.startTransaction();
 	 * try {
@@ -425,7 +425,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * <p>While active, entity select results are cached and identical selects (by {@link Select} equality)
 	 * return the cached result. Intended for short-lived, read-only scopes, such as application or model
 	 * initialization, where the same lookup entities would otherwise be selected repeatedly:
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "cacheQueries" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "cacheQueries":
 	 * try (QueryCache cache = connection.cacheQueries()) { // @start region=cacheQueries
 	 *   // initialize application models
 	 * } // @end}
@@ -491,7 +491,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Inserts the given entity, returning the primary key.
 	 * Performs a commit unless a transaction is open.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "insert" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "insert":
 	 * Entities entities = connection.entities(); // @start region=insert
 	 *
 	 * Entity artist = entities.entity(Artist.TYPE)
@@ -511,7 +511,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * <p>
 	 * The returned entity includes any lazy-loaded attributes (defined with
 	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were contained in the entity being inserted.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "insertSelect" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "insertSelect":
 	 * Entity album = entities.entity(Album.TYPE) // @start region=insertSelect
 	 *         .with(Album.ARTIST_FK, artist)
 	 *         .with(Album.TITLE, "Abbey Road")
@@ -614,7 +614,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Performs an update based on the given update, updating the columns found
 	 * in the {@link Update#values()} map, using the associated value.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "update" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "update":
 	 * // Update all customers without email // @start region=update
 	 * int updatedCount = connection.update(
 	 *         Update.where(Customer.EMAIL.isNull())
@@ -778,7 +778,7 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * Selects entities based on the given condition
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "selectCondition" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "selectCondition":
 	 * // Select all jazz tracks // @start region=selectCondition
 	 * Entity jazz = connection.selectSingle(Genre.NAME.equalTo("Jazz"));
 	 * List<Entity> jazzTracks = connection.select(Track.GENRE_FK.equalTo(jazz));
@@ -795,7 +795,7 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * Selects entities based on the given select
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "select" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "select":
 	 * // Select with ordering and limit // @start region=select
 	 * List<Entity> recentInvoices = connection.select(
 	 *         Select.where(Invoice.CUSTOMER_FK.equalTo(customer))
@@ -885,7 +885,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * monitor, so do not perform other operations on the same connection while iterating, and on databases whose
 	 * cursors do not survive a commit (such as PostgreSQL) wrap the iteration in a transaction to keep the cursor open.
 	 * <p>Always use try-with-resources to ensure proper cleanup:
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "iteratorCondition" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "iteratorCondition":
 	 * try (EntityResultIterator iterator = connection.iterator(condition)) { // @start region=iteratorCondition
 	 *   while (iterator.hasNext()) {
 	 *     Entity entity = iterator.next();
@@ -913,7 +913,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * monitor, so do not perform other operations on the same connection while iterating, and on databases whose
 	 * cursors do not survive a commit (such as PostgreSQL) wrap the iteration in a transaction to keep the cursor open.
 	 * <p>Always use try-with-resources to ensure proper cleanup:
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "iteratorSelect" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "iteratorSelect":
 	 * try (EntityResultIterator iterator = connection.iterator(select)) { // @start region=iteratorSelect
 	 *   while (iterator.hasNext()) {
 	 *     Entity entity = iterator.next();
@@ -947,7 +947,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * If a transaction is already open on the connection, the code is executed within the existing transaction
 	 * without starting a new one. The outermost caller controls the transaction boundary (commit/rollback).
 	 * This allows nested calls without requiring explicit transaction state checks.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "transaction" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "transaction":
 	 * EntityConnection.transaction(connection, () -> { // @start region=transaction
 	 *   // Delete the playlist tracks
 	 *   connection.delete(PlaylistTrack.PLAYLIST_FK.in(playlists));
@@ -975,7 +975,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * If a transaction is already open on the connection, the code is executed within the existing transaction
 	 * without starting a new one. The outermost caller controls the transaction boundary (commit/rollback).
 	 * This allows nested calls without requiring explicit transaction state checks.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "transactionResult" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "transactionResult":
 	 * Entity randomPlaylist = EntityConnection.transaction(connection, () -> // @start region=transactionResult
 	 *         connection.execute(Playlist.RANDOM_PLAYLIST, parameters)); // @end}
 	 * @param <T> the result type
@@ -1189,7 +1189,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * An interface encapsulating select query parameters.
 	 * A factory for {@link Builder} instances via
 	 * {@link Select#all(EntityType)}, {@link Select#where(Condition)} and {@link Select#having(Condition)}.
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "selectInterface" :
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "selectInterface":
 	 * // Simple select with condition // @start region=selectInterface
 	 * List<Entity> metalTracks = connection.select(
 	 *         Select.where(Track.GENRE_FK.equalTo(metal)));
@@ -1289,7 +1289,7 @@ public interface EntityConnection extends AutoCloseable {
 		 * <p>
 		 * Note that attributes required by included foreign keys cannot be excluded, even if listed
 		 * in {@link #exclude()}, as foreign keys need their reference columns to function.
-		 * {@snippet class = "is.codion.demos.world.javadoc.EntityConnectionSnippets" region = "include" :
+		 * {@snippet class = "is.codion.demos.world.javadoc.EntityConnectionSnippets" region = "include":
 		 * // Include a lazy blob column along with all defaults // @start region=include
 		 * List<Entity> countries = connection.select(
 		 *         Select.all(Country.TYPE)
@@ -1312,7 +1312,7 @@ public interface EntityConnection extends AutoCloseable {
 		 * <p>
 		 * Note that primary key attributes are always included regardless of exclusions,
 		 * and attributes required by included foreign keys cannot be excluded.
-		 * {@snippet class = "is.codion.demos.world.javadoc.EntityConnectionSnippets" region = "exclude" :
+		 * {@snippet class = "is.codion.demos.world.javadoc.EntityConnectionSnippets" region = "exclude":
 		 * // Exclude an expensive subquery column // @start region=exclude
 		 * List<Entity> countries = connection.select(
 		 *         Select.all(Country.TYPE)
@@ -1421,7 +1421,7 @@ public interface EntityConnection extends AutoCloseable {
 			 * without having to explicitly list all default attributes.
 			 * <p>
 			 * The final attribute set is: {@code (attributes ∪ include) \ exclude}
-			 * {@snippet class = "is.codion.demos.world.javadoc.EntityConnectionSnippets" region = "builderInclude" :
+			 * {@snippet class = "is.codion.demos.world.javadoc.EntityConnectionSnippets" region = "builderInclude":
 			 * // Include the lazy FLAG column with all defaults // @start region=builderInclude
 			 * Select.all(Country.TYPE)
 			 *         .include(Country.FLAG);
@@ -1462,7 +1462,7 @@ public interface EntityConnection extends AutoCloseable {
 			 * as foreign keys need their reference columns to function properly.
 			 * <p>
 			 * The final attribute set is: {@code (attributes ∪ include) \ exclude}
-			 * {@snippet class = "is.codion.demos.world.javadoc.EntityConnectionSnippets" region = "builderExclude" :
+			 * {@snippet class = "is.codion.demos.world.javadoc.EntityConnectionSnippets" region = "builderExclude":
 			 * // Exclude the expensive subquery columns // @start region=builderExclude
 			 * Select.all(Country.TYPE)
 			 *         .exclude(Country.NO_OF_CITIES, Country.NO_OF_LANGUAGES);

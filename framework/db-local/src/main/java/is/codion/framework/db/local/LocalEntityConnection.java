@@ -36,7 +36,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
 /**
  * EntityConnection implementation based on a local JDBC connection.
  * A factory for {@link LocalEntityConnection} instances.
- * {@snippet class = "is.codion.demos.chinook.javadoc.LocalEntityConnectionSnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.LocalEntityConnectionSnippets" region = "usage":
  * Domain domain = new ChinookImpl(); // @start region=usage
  * String url = "jdbc:h2:file:/path/to/database";
  * Database database = DatabaseFactory.instance(url).create(url);

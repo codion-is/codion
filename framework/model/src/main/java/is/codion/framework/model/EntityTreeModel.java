@@ -95,7 +95,7 @@ public interface EntityTreeModel extends FilterTreeModel<Entity> {
 			/**
 			 * <p>Configures the query selecting the roots. A condition replaces the default one, the self-referencing
 			 * foreign keys being null, which it may include if needed.
-			 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTreeModelSnippets" region = "roots" :
+			 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTreeModelSnippets" region = "roots":
 			 * EntityTreeModel.builder() // @start region=roots
 			 *         .roots(Employee.TYPE, roots -> roots
 			 *                 .condition(() -> Employee.LASTNAME.equalTo("Edwards"))
@@ -135,7 +135,7 @@ public interface EntityTreeModel extends FilterTreeModel<Entity> {
 		 * <p>Adds the entities referencing a node via the given foreign key as its children, see
 		 * {@link #children(ForeignKey)}, configuring the query selecting them. A condition is combined with the
 		 * foreign key condition, and applies when finding which nodes have children as well.
-		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTreeModelSnippets" region = "children" :
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTreeModelSnippets" region = "children":
 		 * builder.children(Employee.REPORTSTO_FK, children -> children // @start region=children
 		 *         .condition(() -> Employee.EMAIL.isNotNull())
 		 *         .select(select -> select.referenceDepth(0))); // @end}

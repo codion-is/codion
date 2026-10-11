@@ -34,7 +34,7 @@ import java.util.List;
  * loading of referenced entities based on reference depth configuration.
  * <p>
  * Foreign keys inherit from {@link ForeignKeyConditions} to provide condition creation methods:
- * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeySnippets" region = "usage" :
+ * {@snippet class = "is.codion.demos.chinook.javadoc.ForeignKeySnippets" region = "usage":
  * interface Album { // @start region=usage
  *   EntityType TYPE = DOMAIN.entityType("chinook.album");
  *
