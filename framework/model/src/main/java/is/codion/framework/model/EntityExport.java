@@ -24,15 +24,11 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.DefaultEntityExport.DefaultEntityTypeStep;
 import is.codion.framework.model.EntityExport.Builder.EntityTypeStep;
 
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -88,21 +84,21 @@ public interface EntityExport {
 
 			/**
 			 * @param entityType the entity type
-			 * @return the {@link ExportAttributesStep}
+			 * @return the {@link AttributesStep}
 			 */
-			ExportAttributesStep entityType(EntityType entityType);
+			AttributesStep entityType(EntityType entityType);
 		}
 
 		/**
-		 * Specifies the export attributes
+		 * Specifies the attributes to export
 		 */
-		interface ExportAttributesStep {
+		interface AttributesStep {
 
 			/**
-			 * @param attributes receives the export attributes builder
+			 * @param attributes receives the {@link Attributes} instance, to add the attributes to export to
 			 * @return a new {@link EntitiesStep}
 			 */
-			EntitiesStep attributes(Consumer<ExportAttributes.Builder> attributes);
+			EntitiesStep attributes(Consumer<Attributes> attributes);
 		}
 
 		/**
@@ -137,82 +133,32 @@ public interface EntityExport {
 	}
 
 	/**
-	 * Attribute settings for exporting entity data with denormalized foreign key references.
+	 * <p>The attributes to export, each one a column, in the order they are added.
+	 * <p>An attribute of a referenced entity is added along with the foreign keys leading to it, its column header
+	 * being their captions followed by its own, separated by a space, {@code add(Invoice.CUSTOMER_FK, Customer.LASTNAME)}
+	 * for example, with the header "Customer Last name". A foreign key added on its own exports the referenced entity
+	 * as a string.
 	 */
-	interface ExportAttributes {
+	interface Attributes {
 
 		/**
-		 * @return the entity type
+		 * Adds an attribute to export.
+		 * @param path the attribute, preceded by the foreign keys leading to it in case it belongs to a referenced entity
+		 * @return this {@link Attributes} instance
+		 * @throws IllegalArgumentException in case the path is empty, an attribute other than the last one is not a
+		 * foreign key, or an attribute does not belong to the entity the preceding foreign key references, the first one
+		 * to the entity being exported
 		 */
-		EntityType entityType();
+		Attributes add(Attribute<?>... path);
 
 		/**
-		 * @return the attributes to include in the export
+		 * Adds an attribute to export.
+		 * @param path the attribute, preceded by the foreign keys leading to it in case it belongs to a referenced entity
+		 * @return this {@link Attributes} instance
+		 * @throws IllegalArgumentException in case the path is empty, an attribute other than the last one is not a
+		 * foreign key, or an attribute does not belong to the entity the preceding foreign key references, the first one
+		 * to the entity being exported
 		 */
-		Collection<Attribute<?>> include();
-
-		/**
-		 * @return the comparator used to order exported attributes
-		 */
-		Comparator<Attribute<?>> comparator();
-
-		/**
-		 * Returns an {@link ExportAttributes} instance for the given foreign key,
-		 * or an empty optional if this foreign key should not be traversed
-		 * @param foreignKey the foreign key
-		 * @return an {@link ExportAttributes} instance for the given foreign key
-		 */
-		Optional<ExportAttributes> attributes(ForeignKey foreignKey);
-
-		/**
-		 * Builds {@link ExportAttributes}
-		 */
-		interface Builder {
-
-			/**
-			 * @param attributes the attributes to include
-			 * @return this builder
-			 */
-			Builder include(Attribute<?>... attributes);
-
-			/**
-			 * @param attributes the attributes to include
-			 * @return this builder
-			 */
-			Builder include(Collection<Attribute<?>> attributes);
-
-			/**
-			 * Any attributes not in this list appear last, in alphabetical order by caption
-			 * @param attributes the attribute order
-			 * @return this builder
-			 */
-			Builder order(Attribute<?>... attributes);
-
-			/**
-			 * Any attributes not in this list appear last, in alphabetical order by caption
-			 * @param attributes the attribute order
-			 * @return this builder
-			 */
-			Builder order(List<Attribute<?>> attributes);
-
-			/**
-			 * @param comparator the comparator to use when ordering the export attributes
-			 * @return this builder
-			 */
-			Builder order(Comparator<Attribute<?>> comparator);
-
-			/**
-			 * Configures the {@link ExportAttributes} for the given foreign key
-			 * @param foreignKey the foreign key
-			 * @param attributes receives the {@link ExportAttributes.Builder} instance
-			 * @return this builder
-			 */
-			Builder attributes(ForeignKey foreignKey, Consumer<Builder> attributes);
-
-			/**
-			 * @return a new {@link ExportAttributes} instance
-			 */
-			ExportAttributes build();
-		}
+		Attributes add(List<Attribute<?>> path);
 	}
 }

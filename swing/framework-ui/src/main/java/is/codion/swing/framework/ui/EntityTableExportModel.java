@@ -28,7 +28,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityExport;
-import is.codion.framework.model.EntityExport.ExportAttributes;
+import is.codion.framework.model.EntityExport.Attributes;
 import is.codion.framework.model.EntityTableModel;
 
 import org.json.JSONArray;
@@ -248,7 +248,7 @@ final class EntityTableExportModel {
 
 		protected final EntityConnection connection;
 		protected final EntityType entityType;
-		protected final Consumer<ExportAttributes.Builder> attributes;
+		protected final Consumer<Attributes> attributes;
 		protected final Iterator<Entity> entities;
 		protected final int maximum;
 
@@ -256,7 +256,7 @@ final class EntityTableExportModel {
 		protected final State cancel = State.state(false);
 
 		protected ExportTask(EntityConnection connection, EntityType entityType,
-		                     Consumer<ExportAttributes.Builder> attributes,
+		                     Consumer<Attributes> attributes,
 		                     Iterator<Entity> entities, int maximum) {
 			this.connection = connection;
 			this.entityType = entityType;
@@ -279,7 +279,7 @@ final class EntityTableExportModel {
 			private final Path file;
 
 			private ExportToFileTask(EntityConnection connection, EntityType entityType,
-			                         Consumer<ExportAttributes.Builder> attributes,
+			                         Consumer<Attributes> attributes,
 			                         Path file, Iterator<Entity> entities, int maximum) {
 				super(connection, entityType, attributes, entities, maximum);
 				this.file = file;
@@ -318,8 +318,8 @@ final class EntityTableExportModel {
 		private static final class ExportToString extends ExportTask<String> {
 
 			private ExportToString(EntityConnection connection, EntityType entityType,
-			                          Consumer<ExportAttributes.Builder> attributes,
-			                          Iterator<Entity> entities, int maximum) {
+														 Consumer<Attributes> attributes,
+														 Iterator<Entity> entities, int maximum) {
 				super(connection, entityType, attributes, entities, maximum);
 			}
 

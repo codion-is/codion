@@ -24,11 +24,10 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.model.EntityExport.ExportAttributes;
+import is.codion.framework.model.EntityExport.Attributes;
 import is.codion.swing.common.model.component.tree.SwingFilterTreeModel;
 
 import org.json.JSONArray;
@@ -245,10 +244,13 @@ final class EntityTableExportTreeModel {
 		return json;
 	}
 
-	ExportAttributes attributes(ExportAttributes.Builder attributes) {
-		populate(nodePath(), attributes);
-
-		return attributes.build();
+	/**
+	 * Adds the included attributes, in the order of the export, a foreign key followed by the attributes included
+	 * below it.
+	 * @param attributes the attributes to add to
+	 */
+	void attributes(Attributes attributes) {
+		add(nodePath(), attributes);
 	}
 
 	/**
@@ -406,24 +408,16 @@ final class EntityTableExportTreeModel {
 		order.put(parent, ordered);
 	}
 
-	private void populate(NodePath<AttributeDefinition<?>> parent, ExportAttributes.Builder attributes) {
-		List<Attribute<?>> include = new ArrayList<>();
-		List<Attribute<?>> attributeOrder = new ArrayList<>();
+	private void add(NodePath<AttributeDefinition<?>> parent, Attributes attributes) {
 		for (AttributeDefinition<?> definition : order(parent)) {
 			NodePath<AttributeDefinition<?>> path = parent.child(definition);
 			if (included.contains(path)) {
-				include.add(definition.attribute());
+				attributes.add(path.items().stream()
+								.map(AttributeDefinition::attribute)
+								.collect(toList()));
 			}
-			if (includesData(path)) {
-				attributeOrder.add(definition.attribute());
-			}
-		}
-		attributes.include(include).order(attributeOrder);
-		for (AttributeDefinition<?> definition : order(parent)) {
-			NodePath<AttributeDefinition<?>> path = parent.child(definition);
 			if (definition instanceof ForeignKeyDefinition && includedCount(path) > 0) {
-				attributes.attributes(((ForeignKeyDefinition) definition).attribute(), foreignKeyAttributes ->
-								populate(path, foreignKeyAttributes));
+				add(path, attributes);
 			}
 		}
 	}

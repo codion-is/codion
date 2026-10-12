@@ -26,8 +26,11 @@ import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.model.EntityExport.Attributes;
 import is.codion.framework.model.ExportDomain.Department;
 import is.codion.framework.model.ExportDomain.Employee;
 
@@ -36,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -43,8 +47,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,7 +72,7 @@ public final class DefaultEntityExportTest {
 		StringBuilder empty = new StringBuilder();
 		assertThrows(IllegalStateException.class, () -> EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
-						.attributes(builder -> {})
+						.attributes(attributes -> {})
 						.entities(connection.select(Select.all(Employee.TYPE)
 														.orderBy(ascending(Employee.NAME))
 														.build())
@@ -77,19 +81,12 @@ public final class DefaultEntityExportTest {
 						.export());
 		assertEquals("", empty.toString());
 
-		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
-						.entityType(Employee.TYPE)
-						.attributes(attributes -> attributes.include(Department.NAME)));
-		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
-						.entityType(Employee.TYPE)
-						.attributes(attributes -> attributes.order(Department.NAME)));
-
 		Set<Entity.Key> jones = singleton(connection.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
 
 		StringBuilder output = new StringBuilder();
 		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
-						.attributes(employee -> employee.include(Employee.NAME))
+						.attributes(employee -> employee.add(Employee.NAME))
 						.keys(jones.iterator())
 						.output(output::append)
 						.export();
@@ -98,33 +95,68 @@ public final class DefaultEntityExportTest {
 		output = new StringBuilder();
 		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
-						.attributes(employee -> employee.include(Employee.NAME, Employee.JOB))
+						.attributes(employee -> employee
+										.add(Employee.NAME)
+										.add(Employee.JOB)
+										.add(Employee.COMMISSION)
+										.add(Employee.HIREDATE))
 						.keys(jones.iterator())
 						.output(output::append)
 						.export();
-		assertEquals("Job	Name\nMANAGER	JONES\n", output.toString());
+		assertEquals("Name\tJob\tCommission\tHiredate\nJONES\tMANAGER\t\t04-02-1981\n", output.toString());
 
 		output = new StringBuilder();
 		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee
-										.include(Employee.NAME, Employee.JOB, Employee.HIREDATE, Employee.COMMISSION)
-										.order(Employee.NAME, Employee.JOB))
+										.add(Employee.DEPARTMENT)
+										.add(Employee.NAME)
+										.add(Employee.JOB)
+										.add(Employee.MGR))
 						.keys(jones.iterator())
 						.output(output::append)
 						.export();
-		assertEquals("Name	Job	Commission	Hiredate\nJONES	MANAGER		04-02-1981\n", output.toString());
+		assertEquals("deptno\tName\tJob\tmgr\n20\tJONES\tMANAGER\t8\n", output.toString());
+	}
 
-		output = new StringBuilder();
+	@Test
+	void invalidPaths() {
+		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
+						.entityType(Employee.TYPE)
+						.attributes(attributes -> attributes.add()));
+		// an attribute of another entity
+		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
+						.entityType(Employee.TYPE)
+						.attributes(attributes -> attributes.add(Department.NAME)));
+		// only the last attribute may be other than a foreign key
+		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
+						.entityType(Employee.TYPE)
+						.attributes(attributes -> attributes.add(Employee.NAME, Employee.JOB)));
+		// an attribute not of the referenced entity
+		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
+						.entityType(Employee.TYPE)
+						.attributes(attributes -> attributes.add(Employee.DEPARTMENT_FK, Employee.NAME)));
+	}
+
+	@Test
+	void anyOrder() {
+		Set<Entity.Key> jones = singleton(CONNECTION.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
+
+		// the attributes of a referenced entity need not follow each other
+		StringBuilder output = new StringBuilder();
 		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee
-										.include(Employee.NAME, Employee.JOB, Employee.DEPARTMENT, Employee.MGR)
-										.order(Employee.DEPARTMENT, Employee.NAME, Employee.JOB))
+										.add(Employee.DEPARTMENT_FK, Department.NAME)
+										.add(Employee.NAME)
+										.add(Employee.MGR_FK, Employee.NAME)
+										.add(Employee.DEPARTMENT_FK, Department.LOCATION)
+										.add(Employee.DEPARTMENT_FK))
 						.keys(jones.iterator())
 						.output(output::append)
 						.export();
-		assertEquals("deptno	Name	Job	mgr\n20	JONES	MANAGER	8\n", output.toString());
+		assertEquals("Department Name\tName\tManager Name\tDepartment Location\tDepartment\n" +
+						"RESEARCH\tJONES\tKING\tDALLAS\tRESEARCH\n", output.toString());
 	}
 
 	@Test
@@ -132,8 +164,10 @@ public final class DefaultEntityExportTest {
 		StringBuilder output = new StringBuilder();
 		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
-						.attributes(attributes ->
-										attributes.include(Employee.DEPARTMENT_LOCATION, Employee.INITIAL, Employee.INITIAL_LOWER))
+						.attributes(attributes -> attributes
+										.add(Employee.DEPARTMENT_LOCATION)
+										.add(Employee.INITIAL)
+										.add(Employee.INITIAL_LOWER))
 						.keys(singletonList(ENTITIES.key(Employee.TYPE)
 										.with(Employee.ID, 3)// Jones
 										.build()).iterator())
@@ -144,11 +178,6 @@ public final class DefaultEntityExportTest {
 
 	@Test
 	void employee() throws IOException {
-		Collection<Attribute<?>> employeeAttributes = ENTITIES.definition(Employee.TYPE).attributes().definitions().stream()
-						.filter(attributeDefinition -> !attributeDefinition.hidden())
-						.map(AttributeDefinition::attribute)
-						.collect(toList());
-
 		StringBuilder output = new StringBuilder();
 		EntityConnection connection = CONNECTION;
 		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
@@ -156,7 +185,7 @@ public final class DefaultEntityExportTest {
 						.build())) {
 			EntityExport.builder(CONNECTION)
 							.entityType(Employee.TYPE)
-							.attributes(employee -> employee.include(employeeAttributes))
+							.attributes(employee -> captionOrder(Employee.TYPE).forEach(employee::add))
 							.entities(iterator)
 							.output(output::append)
 							.export();
@@ -175,9 +204,10 @@ public final class DefaultEntityExportTest {
 						.build())) {
 			EntityExport.builder(CONNECTION)
 							.entityType(Employee.TYPE)
-							.attributes(employee -> employee.include(Employee.NAME)
-											.attributes(Employee.DEPARTMENT_FK, department ->
-															department.include(Department.NAME, Department.LOCATION)))
+							.attributes(employee -> employee
+											.add(Employee.DEPARTMENT_FK, Department.LOCATION)
+											.add(Employee.DEPARTMENT_FK, Department.NAME)
+											.add(Employee.NAME))
 							.entities(iterator)
 							.output(output::append)
 							.export();
@@ -197,11 +227,10 @@ public final class DefaultEntityExportTest {
 			EntityExport.builder(CONNECTION)
 							.entityType(Employee.TYPE)
 							.attributes(employee -> employee
-											.include(Employee.NAME)
-											.attributes(Employee.MGR_FK, manager ->
-															manager.include(Employee.NAME)
-																			.attributes(Employee.DEPARTMENT_FK, managerDepartment ->
-																							managerDepartment.include(Department.NAME, Department.LOCATION))))
+											.add(Employee.MGR_FK, Employee.DEPARTMENT_FK, Department.LOCATION)
+											.add(Employee.MGR_FK, Employee.DEPARTMENT_FK, Department.NAME)
+											.add(Employee.MGR_FK, Employee.NAME)
+											.add(Employee.NAME))
 							.entities(iterator)
 							.output(output::append)
 							.export();
@@ -213,15 +242,6 @@ public final class DefaultEntityExportTest {
 
 	@Test
 	void test() throws IOException {
-		Collection<Attribute<?>> employeeAttributes = ENTITIES.definition(Employee.TYPE).attributes().definitions().stream()
-						.filter(attributeDefinition -> !attributeDefinition.hidden())
-						.map(AttributeDefinition::attribute)
-						.collect(toList());
-		Collection<Attribute<?>> departmentAttributes = ENTITIES.definition(Department.TYPE).attributes().definitions().stream()
-						.filter(attributeDefinition -> !attributeDefinition.hidden())
-						.map(AttributeDefinition::attribute)
-						.collect(toList());
-
 		StringBuilder output = new StringBuilder();
 		AtomicInteger count = new AtomicInteger();
 		EntityConnection connection = CONNECTION;
@@ -230,14 +250,10 @@ public final class DefaultEntityExportTest {
 						.build())) {
 			EntityExport.builder(CONNECTION)
 							.entityType(Employee.TYPE)
-							.attributes(employee -> employee
-											.include(employeeAttributes)
-											.attributes(Employee.DEPARTMENT_FK, department ->
-															department.include(departmentAttributes))
-											.attributes(Employee.MGR_FK, manager ->
-															manager.include(employeeAttributes)
-																			.attributes(Employee.MGR_FK, managersManager ->
-																							managersManager.include(employeeAttributes))))
+							.attributes(employee -> captionOrder(employee, emptyList(), Employee.TYPE, asList(
+											singletonList(Employee.DEPARTMENT_FK),
+											singletonList(Employee.MGR_FK),
+											asList(Employee.MGR_FK, Employee.MGR_FK))))
 							.entities(iterator)
 							.output(output::append)
 							.processed(entity -> count.getAndIncrement())
@@ -255,7 +271,7 @@ public final class DefaultEntityExportTest {
 
 		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
-						.attributes(employee -> employee.include(employeeAttributes))
+						.attributes(employee -> captionOrder(Employee.TYPE).forEach(employee::add))
 						.keys(keys.iterator())
 						.output(line -> {})
 						.export());
@@ -278,9 +294,10 @@ public final class DefaultEntityExportTest {
 		StringBuilder output = new StringBuilder();
 		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
-						.attributes(attributes -> attributes.include(Employee.NAME)
-										.attributes(Employee.DEPARTMENT_FK, dept ->
-														dept.include(Department.NAME, Department.LOCATION)))
+						.attributes(attributes -> attributes
+										.add(Employee.DEPARTMENT_FK, Department.LOCATION)
+										.add(Employee.DEPARTMENT_FK, Department.NAME)
+										.add(Employee.NAME))
 						.entities(singletonList(employee).iterator())
 						.output(output::append)
 						.export();
@@ -304,9 +321,10 @@ public final class DefaultEntityExportTest {
 		StringBuilder output = new StringBuilder();
 		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
-						.attributes(attributes -> attributes.include(Employee.NAME)
-										.attributes(Employee.DEPARTMENT_FK, dept ->
-														dept.include(Department.NAME, Department.LOCATION)))
+						.attributes(attributes -> attributes
+										.add(Employee.DEPARTMENT_FK, Department.LOCATION)
+										.add(Employee.DEPARTMENT_FK, Department.NAME)
+										.add(Employee.NAME))
 						.entities(singletonList(employee).iterator())
 						.output(output::append)
 						.export();
@@ -314,23 +332,32 @@ public final class DefaultEntityExportTest {
 		assertEquals("Department Location\tDepartment Name\tName\nNEW YORK\tACCOUNTING\tAGENT\n", output.toString());
 	}
 
-	@Test
-	void orderRemainderSortedByCaption() {
-		Set<Entity.Key> jones = singleton(CONNECTION
-						.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
+	/**
+	 * @return the attributes of the given entity type which are not hidden, by caption
+	 */
+	private static List<Attribute<?>> captionOrder(EntityType entityType) {
+		return ENTITIES.definition(entityType).attributes().definitions().stream()
+						.filter(definition -> !definition.hidden())
+						.sorted(comparing(AttributeDefinition::caption))
+						.map(AttributeDefinition::attribute)
+						.collect(toList());
+	}
 
-		StringBuilder output = new StringBuilder();
-		EntityExport.builder(CONNECTION)
-						.entityType(Employee.TYPE)
-						.attributes(employee -> employee
-										.include(Employee.NAME, Employee.JOB, Employee.COMMISSION, Employee.HIREDATE)
-										//the unordered remainder follows, by caption, as it would without an order
-										.order(Employee.NAME))
-						.keys(jones.iterator())
-						.output(output::append)
-						.export();
-
-		assertEquals("Name\tCommission\tHiredate\tJob\nJONES\t\t04-02-1981\tMANAGER\n", output.toString());
+	/**
+	 * Adds the attributes of the given entity type which are not hidden, by caption, the given foreign keys followed
+	 * by the attributes of the entity they reference, the order the export had before the attributes were ordered as
+	 * added, which the expected output files follow.
+	 */
+	private static void captionOrder(Attributes attributes, List<Attribute<?>> parent, EntityType entityType,
+																	 Collection<List<Attribute<?>>> foreignKeys) {
+		for (Attribute<?> attribute : captionOrder(entityType)) {
+			List<Attribute<?>> path = new ArrayList<>(parent);
+			path.add(attribute);
+			attributes.add(path);
+			if (foreignKeys.contains(path)) {
+				captionOrder(attributes, path, ((ForeignKey) attribute).referencedType(), foreignKeys);
+			}
+		}
 	}
 
 	private static String textFileContents(Class<?> resourceClass, String resourceName) throws IOException {
