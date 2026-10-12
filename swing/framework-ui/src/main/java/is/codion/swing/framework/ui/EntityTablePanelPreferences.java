@@ -75,14 +75,17 @@ final class EntityTablePanelPreferences {
 		catch (Exception e) {
 			LOG.error("Error while storing column preferences", e);
 		}
-		try {
-			String exportPreferences = new ExportPreferences(tablePanel.exportModel()).preferences().toString();
-			if (!EMPTY_JSON_OBJECT.equals(exportPreferences)) {
-				preferences.put(EXPORT_KEY, exportPreferences);
+		EntityTableExportModel exportModel = tablePanel.exportModel();
+		if (exportModel != null) {
+			try {
+				String exportPreferences = new ExportPreferences(exportModel).preferences().toString();
+				if (!EMPTY_JSON_OBJECT.equals(exportPreferences)) {
+					preferences.put(EXPORT_KEY, exportPreferences);
+				}
 			}
-		}
-		catch (Exception e) {
-			LOG.error("Error while storing export preferences", e);
+			catch (Exception e) {
+				LOG.error("Error while storing export preferences", e);
+			}
 		}
 	}
 
@@ -110,14 +113,17 @@ final class EntityTablePanelPreferences {
 		catch (Exception e) {
 			LOG.error("Error while restoring column preferences", e);
 		}
-		try {
-			String exportJson = preferences.get(EXPORT_KEY, EMPTY_JSON_OBJECT);
-			if (!EMPTY_JSON_OBJECT.equals(exportJson)) {
-				new ExportPreferences(exportJson).restore(tablePanel.exportModel());
+		EntityTableExportModel exportModel = tablePanel.exportModel();
+		if (exportModel != null) {
+			try {
+				String exportJson = preferences.get(EXPORT_KEY, EMPTY_JSON_OBJECT);
+				if (!EMPTY_JSON_OBJECT.equals(exportJson)) {
+					new ExportPreferences(exportJson).restore(exportModel);
+				}
 			}
-		}
-		catch (Exception e) {
-			LOG.error("Error while restoring export preferences", e);
+			catch (Exception e) {
+				LOG.error("Error while restoring export preferences", e);
+			}
 		}
 	}
 

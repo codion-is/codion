@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.91
 ### is.codion.common.model
 - TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
+### is.codion.swing.framework.ui
+- EntityTablePanel, the export model is now only created when the export is included, the unused columns_default export messages removed, and the Icelandic export help text escaped and corrected.
 
 ## 0.18.90
 ### is.codion.common.reactive

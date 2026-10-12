@@ -2,7 +2,7 @@
 = Exporting data
 :url-javadoc: link:../api
 
-The table export tool produces denormalized, tab-separated output from the rows of an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] — to the clipboard or to a file — and is available in the table popup menu's *Export...* submenu.
+The table export tool produces denormalized, tab-separated output from the rows of an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] — to the clipboard or to a file — and is available via *Export...* in the table popup menu.
 
 What sets it apart from a plain copy is *foreign key traversal*: the export dialog presents the entity's attributes as a tree, where each foreign key expands into the attributes of the referenced entity, recursively.
 Including *Track → Album → Artist → Name* exports the artist name as a column alongside the track's own attributes — denormalized flat output from normalized data, without writing a query.
@@ -16,7 +16,7 @@ Including *Track → Album → Artist → Name* exports the artist name as a col
 
 == Configurations
 
-An export configuration — the included attributes, their order and the target — can be *named, saved and opened later*, and reappears in the export dialog as long as the configuration file exists.
+An export configuration — the included attributes and their order — can be *named, saved and opened later*, and reappears in the export dialog as long as the configuration file exists.
 The active configuration is saved in user preferences on application exit, so a routinely used export is a two-keystroke affair.
 
 == Enabling

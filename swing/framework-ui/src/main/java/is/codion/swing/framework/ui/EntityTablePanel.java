@@ -472,7 +472,7 @@ public class EntityTablePanel extends JPanel {
 	private final Controls.Layout popupMenuLayout;
 	private final Controls.Layout toolBarLayout;
 	private final SwingEntityTableModel model;
-	private final EntityTableExportModel exportModel;
+	private final @Nullable EntityTableExportModel exportModel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
@@ -542,7 +542,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
-		this.exportModel = new EntityTableExportModel(model);
+		this.exportModel = configuration.includeExport ? new EntityTableExportModel(model) : null;
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();
@@ -977,7 +977,7 @@ public class EntityTablePanel extends JPanel {
 		return exportPanel;
 	}
 
-	final EntityTableExportModel exportModel() {
+	final @Nullable EntityTableExportModel exportModel() {
 		return exportModel;
 	}
 
@@ -1417,7 +1417,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private @Nullable EntityTableExportPanel createExportPanel() {
-		if (!configuration.includeExport) {
+		if (exportModel == null) {
 			return null;
 		}
 
@@ -1986,7 +1986,7 @@ public class EntityTablePanel extends JPanel {
 						booleanValue(EntityTablePanel.class.getName() + ".includeClearControl", false);
 
 		/**
-		 * Specifies whether to include an export panel (Copy -> Copy Expanded...).
+		 * Specifies whether to include an export panel, see {@link ControlKeys#EXPORT}.
 		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false
@@ -2319,7 +2319,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeExport true if an export panel should be included (Copy -> Copy Expanded...)
+		 * @param includeExport true if an export panel should be included, see {@link ControlKeys#EXPORT}
 		 * @return this Config instance
 		 */
 		public Config includeExport(boolean includeExport) {

@@ -77,6 +77,22 @@ public final class EntityTableExportPanelTest {
 	}
 
 	@Test
+	void exportExcluded() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(false));
+		assertNull(tablePanel.exportModel());
+		assertNull(tablePanel.exportPanel());
+
+		// The export preferences are left as they are, for when the export is included again
+		Preferences prefs = jsonPreferences();
+		String exportPreferences = "{\"configurationFiles\":[\"/configuration.json\"]}";
+		prefs.put("export", exportPreferences);
+		EntityTablePanelPreferences.restore(prefs, tablePanel);
+		EntityTablePanelPreferences.store(prefs, tablePanel);
+		assertEquals(exportPreferences, prefs.get("export", ""));
+	}
+
+	@Test
 	void cyclicalForeignKeyExpansion() {
 		SwingFilterTreeModel<AttributeDefinition<?>> model = exportTreeModel().treeModel();
 
