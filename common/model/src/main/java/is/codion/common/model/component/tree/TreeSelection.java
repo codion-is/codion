@@ -29,7 +29,7 @@ import java.util.function.Function;
  * <p>The same item may appear in several places in a tree. Selecting by item selects one node holding it, while the
  * paths address particular nodes. A node hidden below a collapsed ancestor, selected by item or by path, has its
  * ancestors expanded, so that it can be selected right away. A node not yet in the model, its parent not loaded, is
- * selected via {@link #set(NodePath)}, which loads as needed and selects it once it is visible, or by item, in case the
+ * selected via {@link #pending()}, which loads as needed and selects it once it is visible, or by item, in case the
  * model provides the paths of items, see {@link FilterTreeModel.Builder#path(Function)}.
  * @param <T> the item type
  * @see FilterTreeModel#selection()
@@ -46,7 +46,7 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	 * equal item, depth first, its ancestors expanded</li>
 	 * </ol>
 	 * An item not in the model, or excluded, clears the selection. Use {@link #path()} for a particular node, and
-	 * {@link #set(NodePath)} for a node not yet loaded.
+	 * {@link #pending()} for a node not yet loaded.
 	 * <p>A change vetoed via {@link #changing()} leaves the ancestors expanded.
 	 * <p>The selection moving between nodes holding the same item instance changes {@link #path()}, not the item.
 	 */
@@ -68,7 +68,7 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	/**
 	 * <p>The path of the selected node, as {@link #item()} is its item.
 	 * <p>Setting the path of a node hidden below a collapsed ancestor expands its ancestors and selects it, while the
-	 * path of a node not in the model, or excluded, clears the selection. Use {@link #set(NodePath)} for a node not yet
+	 * path of a node not in the model, or excluded, clears the selection. Use {@link #pending()} for a node not yet
 	 * loaded.
 	 * @return the {@link Value} controlling the path of the selected node
 	 */
@@ -77,27 +77,40 @@ public interface TreeSelection<T> extends MultiSelection<T> {
 	/**
 	 * <p>The paths of the selected nodes, in row order, as {@link #items()} are their items.
 	 * <p>Setting or adding the paths of nodes hidden below collapsed ancestors expands their ancestors and selects them,
-	 * while the paths of nodes not in the model, or excluded, are ignored. Use {@link #set(NodePath)} for a node not yet
+	 * while the paths of nodes not in the model, or excluded, are ignored. Use {@link #pending()} for a node not yet
 	 * loaded.
 	 * @return the {@link Items} controlling the paths of the selected nodes
 	 */
 	Items<NodePath<T>> paths();
 
 	/**
-	 * <p>Selects the node identified by the given path once it is visible, replacing the selection, expanding its
-	 * ancestors and loading as needed. The node itself is not expanded. Where {@link #path()} takes effect right away,
-	 * on a node in the model, this takes effect once the nodes on the path have been loaded, before this method returns
-	 * when loading synchronously.
-	 * <p>A node which exists but is not visible, being excluded or below a node collapsed since, is replaced by its
-	 * nearest visible ancestor. In case the path turns out not to exist, or can not be loaded further, a load failing
-	 * or a node being a leaf according to the leaves function, the deepest node on the path which does exist is selected,
-	 * or its nearest visible ancestor. The selection is left as is in case no node on the path is in the model.
-	 * <p>A pending selection is cancelled by a selection change from outside, by the application or the user, and
-	 * replaced by another one, while loading and refreshing do not cancel it. A selection change vetoed via
-	 * {@link #changing()} ends it unselected.
-	 * @param path the path of the node to select
-	 * @throws IllegalArgumentException in case of the root path
-	 * @see FilterTreeModel.Builder#leaves(Function)
+	 * @return the {@link Pending} selection, of nodes selected once they are loaded
 	 */
-	void set(NodePath<T> path);
+	Pending<T> pending();
+
+	/**
+	 * The pending selection, selecting nodes by path once they are visible, expanding their ancestors and loading as
+	 * needed.
+	 * @param <T> the item type
+	 */
+	interface Pending<T> {
+
+		/**
+		 * <p>Selects the node identified by the given path once it is visible, replacing the selection, expanding its
+		 * ancestors and loading as needed. The node itself is not expanded. Where {@link TreeSelection#path()} takes
+		 * effect right away, on a node in the model, this takes effect once the nodes on the path have been loaded, before
+		 * this method returns when loading synchronously.
+		 * <p>A node which exists but is not visible, being excluded or below a node collapsed since, is replaced by its
+		 * nearest visible ancestor. In case the path turns out not to exist, or can not be loaded further, a load failing
+		 * or a node being a leaf according to the leaves function, the deepest node on the path which does exist is selected,
+		 * or its nearest visible ancestor. The selection is left as is in case no node on the path is in the model.
+		 * <p>A pending selection is cancelled by a selection change from outside, by the application or the user, and
+		 * replaced by another one, while loading and refreshing do not cancel it. A selection change vetoed via
+		 * {@link TreeSelection#changing()} ends it unselected.
+		 * @param path the path of the node to select
+		 * @throws IllegalArgumentException in case of the root path
+		 * @see FilterTreeModel.Builder#leaves(Function)
+		 */
+		void set(NodePath<T> path);
+	}
 }

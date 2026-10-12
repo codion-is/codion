@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.91
+### is.codion.common.model
+- TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
 
 ## 0.18.90
 ### is.codion.common.reactive

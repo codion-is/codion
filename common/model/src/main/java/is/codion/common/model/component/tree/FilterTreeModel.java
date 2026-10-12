@@ -72,7 +72,7 @@ public interface FilterTreeModel<T> {
 	/**
 	 * <p>The selection, over the {@link #visible()} nodes, by item, with {@link TreeSelection#paths()} addressing
 	 * particular nodes, the same item appearing in several places. Selecting a node hidden below a collapsed ancestor
-	 * expands its ancestors, and a node not yet loaded is selected via {@link TreeSelection#set(NodePath)}.
+	 * expands its ancestors, and a node not yet loaded is selected via {@link TreeSelection.Pending#set(NodePath)}.
 	 * <p>The selection is kept by path, through refreshes, filtering, sorting and expansion. A selected node hidden by
 	 * collapsing one of its ancestors is replaced by its nearest visible ancestor, and one removed or excluded is
 	 * dropped from the selection.
@@ -439,8 +439,8 @@ public interface FilterTreeModel<T> {
 		 * that an item not yet in the model, its parent not loaded, can be selected via {@link TreeSelection#item()} or
 		 * {@link TreeSelection#items()}, which expand its ancestors, loading them, as for an item below a collapsed ancestor.
 		 * <p>Called on the UI thread, for the items not in the model only. The item is selected right away when loading
-		 * synchronously, while loading asynchronously only its ancestors are expanded, {@link TreeSelection#set(NodePath)}
-		 * selecting a node once it is loaded.
+		 * synchronously, while loading asynchronously only its ancestors are expanded,
+		 * {@link TreeSelection.Pending#set(NodePath)} selecting a node once it is loaded.
 		 * @param path returns the path of the node holding the given item, null in case it is not in the tree
 		 * @return this builder instance
 		 * @see TreeSelection#item()

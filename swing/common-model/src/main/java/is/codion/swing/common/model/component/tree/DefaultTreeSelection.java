@@ -129,8 +129,8 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 	}
 
 	@Override
-	public void set(NodePath<T> path) {
-		selection.set(path);
+	public Pending<T> pending() {
+		return selection.pending();
 	}
 
 	@Override

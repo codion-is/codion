@@ -229,9 +229,9 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 
 		/**
 		 * Returns a {@link TreeSelection} based on the given selection of paths, adding the tree behaviour: the items of
-		 * the selected nodes, expanding the ancestors of the hidden nodes selected, and {@link TreeSelection#set(NodePath)}.
-		 * A toolkit selection which is a {@link MultiSelection} of its own, a {@code javax.swing.tree.TreeSelectionModel}
-		 * for example, forwards to the one returned.
+		 * the selected nodes, expanding the ancestors of the hidden nodes selected, and
+		 * {@link TreeSelection.Pending#set(NodePath)}. A toolkit selection which is a {@link MultiSelection} of its own, a
+		 * {@code javax.swing.tree.TreeSelectionModel} for example, forwards to the one returned.
 		 * @param selection a selection of the paths of the {@link #visible()} nodes
 		 * @return a {@link TreeSelection} based on the given selection
 		 */

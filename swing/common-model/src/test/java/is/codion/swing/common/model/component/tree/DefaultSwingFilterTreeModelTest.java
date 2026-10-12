@@ -772,7 +772,7 @@ final class DefaultSwingFilterTreeModelTest {
 		BlockingChildren children = new BlockingChildren();
 		SwingFilterTreeModel<String> model = asyncModel(children);
 		children.block("a");
-		SwingUtilities.invokeAndWait(() -> model.selection().set(path("a", "a1")));
+		SwingUtilities.invokeAndWait(() -> model.selection().pending().set(path("a", "a1")));
 		children.awaitBlocked();
 		SwingUtilities.invokeAndWait(() -> assertFalse(model.selection().present().is()));
 		children.release();
@@ -782,7 +782,7 @@ final class DefaultSwingFilterTreeModelTest {
 		//cancelled by a selection change from outside
 		SwingFilterTreeModel<String> cancelled = asyncModel(children);
 		children.block("a");
-		SwingUtilities.invokeAndWait(() -> cancelled.selection().set(path("a", "a1")));
+		SwingUtilities.invokeAndWait(() -> cancelled.selection().pending().set(path("a", "a1")));
 		children.awaitBlocked();
 		SwingUtilities.invokeAndWait(() -> cancelled.selection().paths().set(singletonList(path("b"))));
 		children.release();
@@ -792,9 +792,9 @@ final class DefaultSwingFilterTreeModelTest {
 		//replaced by another reveal
 		SwingFilterTreeModel<String> replaced = asyncModel(children);
 		children.block("a");
-		SwingUtilities.invokeAndWait(() -> replaced.selection().set(path("a", "a1")));
+		SwingUtilities.invokeAndWait(() -> replaced.selection().pending().set(path("a", "a1")));
 		children.awaitBlocked();
-		SwingUtilities.invokeAndWait(() -> replaced.selection().set(path("b")));
+		SwingUtilities.invokeAndWait(() -> replaced.selection().pending().set(path("b")));
 		children.release();
 		awaitIdle(replaced);
 		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList(path("b")), replaced.selection().paths().get()));
@@ -803,7 +803,7 @@ final class DefaultSwingFilterTreeModelTest {
 		SwingFilterTreeModel<String> failed = asyncModel(children);
 		children.block("a");
 		children.fail = true;
-		SwingUtilities.invokeAndWait(() -> failed.selection().set(path("a", "a1")));
+		SwingUtilities.invokeAndWait(() -> failed.selection().pending().set(path("a", "a1")));
 		children.awaitBlocked();
 		children.release();
 		awaitIdle(failed);
@@ -816,7 +816,7 @@ final class DefaultSwingFilterTreeModelTest {
 		//not cancelled by a refresh, which restarts the load
 		SwingFilterTreeModel<String> refreshed = asyncModel(children);
 		children.block("a");
-		SwingUtilities.invokeAndWait(() -> refreshed.selection().set(path("a", "a1")));
+		SwingUtilities.invokeAndWait(() -> refreshed.selection().pending().set(path("a", "a1")));
 		children.awaitBlocked();
 		SwingUtilities.invokeAndWait(() -> refreshed.nodes().refresh(path("a")));
 		children.release();
@@ -826,7 +826,7 @@ final class DefaultSwingFilterTreeModelTest {
 		//an ancestor collapsed while pending, its nearest visible ancestor
 		SwingFilterTreeModel<String> collapsed = asyncModel(children);
 		children.block("a");
-		SwingUtilities.invokeAndWait(() -> collapsed.selection().set(path("a", "a1")));
+		SwingUtilities.invokeAndWait(() -> collapsed.selection().pending().set(path("a", "a1")));
 		children.awaitBlocked();
 		SwingUtilities.invokeAndWait(() -> collapsed.expansion().collapse(path("a")));
 		children.release();
@@ -839,7 +839,7 @@ final class DefaultSwingFilterTreeModelTest {
 		//a node on the path removed while pending, nothing left to select
 		SwingFilterTreeModel<String> removed = asyncModel(children);
 		children.block("a");
-		SwingUtilities.invokeAndWait(() -> removed.selection().set(path("a", "a1")));
+		SwingUtilities.invokeAndWait(() -> removed.selection().pending().set(path("a", "a1")));
 		children.awaitBlocked();
 		SwingUtilities.invokeAndWait(() -> removed.nodes().remove(singletonList(path("a"))));
 		children.release();

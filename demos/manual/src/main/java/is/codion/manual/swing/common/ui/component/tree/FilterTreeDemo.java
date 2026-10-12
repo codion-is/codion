@@ -117,7 +117,7 @@ final class FilterTreeDemo {
 
 		// Selects a node not yet loaded, once its
 		// ancestors have been expanded and loaded
-		model.selection().set(nodePath(asList(documents, new File(documents, "notes.txt"))));
+		model.selection().pending().set(nodePath(asList(documents, new File(documents, "notes.txt"))));
 		// end::selection[]
 	}
 

@@ -237,36 +237,36 @@ final class DefaultFilterTreeModelTest {
 	void selectionSet() {
 		FilterTreeModel<Item> model = model();
 		//nothing on the path in the model, the selection left as is
-		model.selection().set(path("a", "a1"));
+		model.selection().pending().set(path("a", "a1"));
 		assertFalse(model.selection().present().is());
 		model.nodes().refresh();
 		//a deep path not yet loaded, its ancestors expanded and loaded, the node itself not expanded
-		model.selection().set(path("a", "a1", "a11"));
+		model.selection().pending().set(path("a", "a1", "a11"));
 		assertEquals(path("a", "a1", "a11"), model.selection().path().get());
 		assertTrue(model.expansion().expanded(path("a", "a1")));
 		assertFalse(model.expansion().expanded(path("a", "a1", "a11")));
 		//replacing the selection
 		model.selection().paths().set(asList(path("b"), path("c")));
-		model.selection().set(path("a", "a2"));
+		model.selection().pending().set(path("a", "a2"));
 		assertEquals(singletonList(path("a", "a2")), model.selection().paths().get());
 		//a path which does not exist, the deepest node on it which does
-		model.selection().set(path("a", "a1", "x", "y"));
+		model.selection().pending().set(path("a", "a1", "x", "y"));
 		assertEquals(path("a", "a1"), model.selection().path().get());
-		model.selection().set(path("x"));
+		model.selection().pending().set(path("x"));
 		assertEquals(path("a", "a1"), model.selection().path().get());
 		//excluded, its nearest visible ancestor
 		model.nodes().predicate().set(path -> !path.item().id.equals("a11"));
-		model.selection().set(path("a", "a1", "a11"));
+		model.selection().pending().set(path("a", "a1", "a11"));
 		assertEquals(path("a", "a1"), model.selection().path().get());
 		model.nodes().predicate().clear();
-		assertThrows(IllegalArgumentException.class, () -> model.selection().set(ROOT));
+		assertThrows(IllegalArgumentException.class, () -> model.selection().pending().set(ROOT));
 
 		//below a leaf according to the leaf function, which is not loaded
 		FilterTreeModel<Item> withLeaf = builder()
 						.leaf(path -> !data.containsKey(path.item().id))
 						.build();
 		withLeaf.nodes().refresh();
-		withLeaf.selection().set(path("b", "b1"));
+		withLeaf.selection().pending().set(path("b", "b1"));
 		assertEquals(path("b"), withLeaf.selection().path().get());
 		assertFalse(withLeaf.nodes().loaded(path("b")));
 		assertEquals(0, calls("b"));

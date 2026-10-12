@@ -63,12 +63,13 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	private final Items<NodePath<T>> paths;
 	private final Value<T> item;
 	private final Items<T> items;
+	private final Pending<T> pending = new PendingSelection();
 
 	/**
 	 * @param selection the selection of the paths of the visible nodes
 	 * @param visible the visible nodes
 	 * @param expand expands the ancestors of the nodes identified by the given paths which are hidden
-	 * @param select selects the node identified by the given path once it is visible, see {@link #set(NodePath)}
+	 * @param select selects the node identified by the given path once it is visible, see {@link Pending#set(NodePath)}
 	 * @param occurrences provides the paths of the included nodes holding any of the given items, in the order the nodes
 	 * are shown once their ancestors are expanded
 	 * @param reveal expands the ancestors of the nodes holding the given items which are not in the model, loading them,
@@ -170,8 +171,8 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	}
 
 	@Override
-	public void set(NodePath<T> path) {
-		select.accept(requireNonNull(path));
+	public Pending<T> pending() {
+		return pending;
 	}
 
 	/**
@@ -361,6 +362,14 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		@Override
 		public Optional<List<NodePath<T>>> optional() {
 			return selection.items().optional();
+		}
+	}
+
+	private final class PendingSelection implements Pending<T> {
+
+		@Override
+		public void set(NodePath<T> path) {
+			select.accept(requireNonNull(path));
 		}
 	}
 

@@ -102,7 +102,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	//true when nodes have been added, removed or had their items replaced by the current mutation
 	private boolean nodesChanged = false;
 	private long sequence = 0;
-	//the path of the node to select once visible, null when none is pending, see TreeSelection.set(NodePath)
+	//the path of the node to select once visible, null when none is pending, see TreeSelection.Pending#set(NodePath)
 	private @Nullable NodePath<T> pendingSelection;
 	//true while the pending selection is being made, so that its selection change does not cancel it
 	private boolean selectingPending = false;
@@ -229,7 +229,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	}
 
 	/**
-	 * Selects the node identified by the given path once it is visible, see {@link TreeSelection#set(NodePath)}.
+	 * Selects the node identified by the given path once it is visible, see {@link TreeSelection.Pending#set(NodePath)}.
 	 */
 	private void selectWhenVisible(NodePath<T> path) {
 		if (path.root()) {
