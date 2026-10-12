@@ -542,7 +542,8 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
-		this.exportModel = configuration.includeExport ? new EntityTableExportModel(model) : null;
+		this.exportModel = configuration.includeExport ?
+						new EntityTableExportModel(model, () -> table.columns().visible().get()) : null;
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();

@@ -27,6 +27,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityExport;
 import is.codion.framework.model.EntityExport.Attributes;
 import is.codion.framework.model.EntityTableModel;
@@ -49,8 +50,9 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import static is.codion.swing.framework.ui.EntityTableExportTreeModel.ENTITY_TYPE_KEY;
+import static is.codion.swing.framework.ui.EntityTableExportColumns.ENTITY_TYPE_KEY;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -67,14 +69,19 @@ final class EntityTableExportModel {
 
 	private final EntityConnection connection;
 	private final FilterComboBoxModel<ConfigurationFile> configurationFiles;
-	private final EntityTableExportTreeModel treeModel;
+	private final EntityTableExportColumns columns;
 	private final State selected;
 	private final State all;
 
-	EntityTableExportModel(EntityTableModel<?, ?> tableModel) {
+	/**
+	 * @param tableModel the table model
+	 * @param defaultColumns supplies the default columns, the visible table columns
+	 */
+	EntityTableExportModel(EntityTableModel<?, ?> tableModel, Supplier<List<Attribute<?>>> defaultColumns) {
 		this.tableModel = tableModel;
 		this.connection = tableModel.connection();
-		this.treeModel = new EntityTableExportTreeModel(tableModel.entityDefinition().type(), tableModel.connection().entities());
+		this.columns = new EntityTableExportColumns(tableModel.entityDefinition().type(),
+						tableModel.connection().entities(), defaultColumns);
 		this.configurationFiles = FilterComboBoxModel.builder()
 						.items(this::refreshConfigurationFiles)
 						.nullItem(NULL_CONFIGURATION_FILE)
@@ -84,8 +91,7 @@ final class EntityTableExportModel {
 		this.all = State.state(!selected.is());
 		State.group(selected, all).fallback(all);
 		this.tableModel.selection().present().addConsumer(selected::set);
-		this.treeModel.includeNone();
-		this.treeModel.includeAll();
+		this.columns.reset();
 	}
 
 	ExportTask<String> exportToString() {
@@ -94,18 +100,18 @@ final class EntityTableExportModel {
 		List<Entity> entities = exportEntities();
 
 		return new ExportTask.ExportToString(connection, tableModel.entityType(),
-						treeModel::attributes, entities.iterator(), entities.size());
+						columns::attributes, entities.iterator(), entities.size());
 	}
 
 	ExportTask<Path> exportToFile(Path file) {
 		List<Entity> entities = exportEntities();
 
 		return new ExportTask.ExportToFileTask(connection, tableModel.entityType(),
-						treeModel::attributes, requireNonNull(file), entities.iterator(), entities.size());
+						columns::attributes, requireNonNull(file), entities.iterator(), entities.size());
 	}
 
-	EntityTableExportTreeModel treeModel() {
-		return treeModel;
+	EntityTableExportColumns columns() {
+		return columns;
 	}
 
 	FilterComboBoxModel<ConfigurationFile> configurationFiles() {
@@ -172,7 +178,7 @@ final class EntityTableExportModel {
 
 	void writeConfig(File file) {
 		try {
-			Files.write(file.toPath(), treeModel.toJson().toString(2).getBytes(UTF_8));
+			Files.write(file.toPath(), columns.toJson().toString(2).getBytes(UTF_8));
 			addAndSelect(new DefaultConfigurationFile(file));
 		}
 		catch (IOException e) {
@@ -225,12 +231,10 @@ final class EntityTableExportModel {
 
 	private void configurationFileSelected(@Nullable ConfigurationFile configurationFile) {
 		if (configurationFile == null) {
-			treeModel.showHidden().set(false);
-			treeModel.includeNone();
-			treeModel.includeAll();
+			columns.reset();
 		}
 		else {
-			treeModel.applyConfiguration(configurationFile.json());
+			columns.apply(configurationFile.json());
 		}
 	}
 

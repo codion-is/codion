@@ -815,39 +815,40 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |===
 |key|default|is_IS
 
+|available|Available|Í boði
+|clear|Clear|Hreinsa
+|clear_mnemonic|L|H
 |close|Close|Loka
 |close_mnemonic|C|K
 |columns|Columns|Dálkar
-|columns_all|All|Alla
-|columns_all_mnemonic|L|L
-|columns_none|None|Enga
-|columns_none_mnemonic|N|E
 |configuration_file|Configuration file|Stilliskrá
 |configurations|Configurations|Stillingar
 |data_exported|Data exported|Gögn afrituð
-|excluded|Excluded|Ónotaðir
 |export|Export|Flytja út
 |exported_to_clipboard|Exported to clipboard|Afritað á klippiborð
 |exported_to_file|Exported to file|Afritað í skrá
 |exporting_data|Exporting data|Flyt út gögn
 |help|Help|Hjálp
-|help_text|Use ALT-click or space to toggle included columns, SHIFT-space to toggle subcolumns.
+|help_text|Check the columns to export in the tree on the left, by clicking a check box or with SPACE,
+SHIFT-SPACE checking the columns below a foreign key, or drag them to the list on the right.
 
-Use ALT-Up/Down arrows to move the included columns.|Notið ALT-smella eða stafabil til að velja/afvelja dálka, SHIFT-stafabil til að velja/afvelja undirdálka.
+The list on the right holds the columns in the order of the export,
+use ALT-Up/Down or drag to move them, and DELETE to remove them.|Hakið við dálkana sem á að flytja út í trénu til vinstri, með því að smella á hakreit eða með stafabili,
+SHIFT-stafabil hakar við dálkana undir tilvísun, eða dragið þá yfir í listann til hægri.
 
-Notið ALT-Upp/Niður örvar til að færa valda dálka.
-|hide_excluded|Hide|Fela
-|hide_excluded_mnemonic|D|F
-|include|Include|Velja
-|move|Move|Færa
+Listinn til hægri sýnir dálkana í útflutningsröð,
+notið ALT-Upp/Niður örvar eða dragið til að færa þá, og DELETE til að fjarlægja þá.
+|move_down|Move down|Færa niður
+|move_up|Move up|Færa upp
+|remove|Remove|Fjarlægja
 |rows_all|All rows|Allar færslur
 |rows_all_mnemonic|A|A
 |rows_selected|Selected rows|Valdar færslur
 |rows_selected_mnemonic|E|R
-|show_excluded|Show|Sýna
-|show_excluded_mnemonic|W|N
 |show_hidden|Show hidden columns|Birta falda dálka
 |show_hidden_mnemonic|H|B
+|table_columns|Table columns|Töfludálkar
+|table_columns_mnemonic|T|T
 |to_clipboard|To clipboard|Á klippiborð
 |to_clipboard_mnemonic|P|P
 |to_file|To file|Í skrá

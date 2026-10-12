@@ -9,7 +9,9 @@ Including *Track → Album → Artist → Name* exports the artist name as a col
 
 == Using it
 
-* The attribute tree is navigated with the keyboard; SPACE toggles whether an attribute is included.
+* Attributes are checked in the tree, by clicking their check box or with SPACE, SHIFT-SPACE checking the attributes below a foreign key, and a search field filters the tree by caption.
+* The checked attributes are listed beside the tree, as the columns in the order of the export, moved by dragging or with ALT-Up/Down and removed with DELETE. A column of a referenced entity can go anywhere, not only next to its foreign key.
+* The columns default to the visible table columns, in the table's order.
 * Foreign key nodes expand on demand, so cyclic references are a non-issue — expansion goes as deep as you take it.
 * The export covers the *selected* rows or *all* rows.
 * Output goes to the clipboard or a *.tsv* file, ready for a spreadsheet.

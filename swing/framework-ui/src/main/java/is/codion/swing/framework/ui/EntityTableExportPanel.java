@@ -21,13 +21,13 @@ package is.codion.swing.framework.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.reactive.state.State;
-import is.codion.common.utilities.Text;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.tree.FilterTree;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -44,6 +44,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -51,14 +52,17 @@ import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Point;
+import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseAdapter;
@@ -78,9 +82,12 @@ import static is.codion.swing.framework.ui.EntityTableExportModel.NULL_CONFIGURA
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.joining;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
+import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 final class EntityTableExportPanel extends JPanel {
 
@@ -89,14 +96,16 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final String TSV = "tsv";
 	private static final String JSON = "json";
+	private static final String PATH_SEPARATOR = " \u203A ";
 	private static final FileNameExtensionFilter CONFIGURATION_FILE =
 					new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON);
+	private static final DataFlavor PATHS = new DataFlavor(TransferablePaths.class, "Attribute paths");
 
 	private final EntityTableExportModel model;
 	private final AtomicReference<Dimension> dialogSize;
-	private final FilterTree<AttributeDefinition<?>> exportTree;
-	private final State singleSelection = State.state();
-	private final State singleParentSelection = State.state();
+	private final AttributeRenderer attributeRenderer = new AttributeRenderer();
+	private final FilterTree<AttributeDefinition<?>> attributeTree;
+	private final FilterList<NodePath<AttributeDefinition<?>>> columnList;
 	private final State exporting = State.state();
 
 	private final Control saveConfiguration = Control.builder()
@@ -109,20 +118,11 @@ final class EntityTableExportPanel extends JPanel {
 					.caption(Messages.open())
 					.mnemonic(Messages.openMnemonic())
 					.build();
-	private final Control moveUp = Control.builder()
-					.command(this::moveSelectionUp)
-					.enabled(singleParentSelection)
-					.icon(FrameworkIcons.instance().up())
-					.build();
-	private final Control moveDown = Control.builder()
-					.command(this::moveSelectionDown)
-					.enabled(singleParentSelection)
-					.icon(FrameworkIcons.instance().down())
-					.build();
-	private final Control includeAll;
-	private final Control includeNone;
-	private final Control hideExcluded;
-	private final Control showExcluded;
+	private final Control moveUp;
+	private final Control moveDown;
+	private final Control removeColumns;
+	private final Control tableColumns;
+	private final Control clearColumns;
 	private final ToggleControl showHidden;
 	private final ToggleControl allRows;
 	private final ToggleControl selectedRows;
@@ -131,30 +131,36 @@ final class EntityTableExportPanel extends JPanel {
 		super(borderLayout());
 		this.model = model;
 		this.dialogSize = dialogSize;
-		this.exportTree = createTree();
-		this.exportTree.model().selection().paths().addConsumer(this::selectionChanged);
-		this.includeAll = Control.builder()
-						.command(model.treeModel()::includeAll)
-						.caption(MESSAGES.getString("columns_all"))
-						.mnemonic(MESSAGES.getString("columns_all_mnemonic").charAt(0))
+		this.moveUp = Control.builder()
+						.command(() -> model.columns().move(selectedColumns(), true))
+						.enabled(model.columns().list().selection().present())
+						.icon(FrameworkIcons.instance().up())
+						.description(MESSAGES.getString("move_up"))
 						.build();
-		this.includeNone = Control.builder()
-						.command(model.treeModel()::includeNone)
-						.caption(MESSAGES.getString("columns_none"))
-						.mnemonic(MESSAGES.getString("columns_none_mnemonic").charAt(0))
+		this.moveDown = Control.builder()
+						.command(() -> model.columns().move(selectedColumns(), false))
+						.enabled(model.columns().list().selection().present())
+						.icon(FrameworkIcons.instance().down())
+						.description(MESSAGES.getString("move_down"))
 						.build();
-		this.hideExcluded = Control.builder()
-						.command(model.treeModel()::hideExcluded)
-						.caption(MESSAGES.getString("hide_excluded"))
-						.mnemonic(MESSAGES.getString("hide_excluded_mnemonic").charAt(0))
+		this.removeColumns = Control.builder()
+						.command(() -> model.columns().remove(selectedColumns()))
+						.enabled(model.columns().list().selection().present())
+						.icon(FrameworkIcons.instance().delete())
+						.description(MESSAGES.getString("remove"))
 						.build();
-		this.showExcluded = Control.builder()
-						.command(model.treeModel()::showExcluded)
-						.caption(MESSAGES.getString("show_excluded"))
-						.mnemonic(MESSAGES.getString("show_excluded_mnemonic").charAt(0))
+		this.tableColumns = Control.builder()
+						.command(model.columns()::reset)
+						.caption(MESSAGES.getString("table_columns"))
+						.mnemonic(MESSAGES.getString("table_columns_mnemonic").charAt(0))
+						.build();
+		this.clearColumns = Control.builder()
+						.command(model.columns()::clear)
+						.caption(MESSAGES.getString("clear"))
+						.mnemonic(MESSAGES.getString("clear_mnemonic").charAt(0))
 						.build();
 		this.showHidden = Control.builder()
-						.toggle(model.treeModel().showHidden())
+						.toggle(model.columns().showHidden())
 						.caption(MESSAGES.getString("show_hidden"))
 						.mnemonic(MESSAGES.getString("show_hidden_mnemonic").charAt(0))
 						.build();
@@ -168,9 +174,13 @@ final class EntityTableExportPanel extends JPanel {
 						.caption(MESSAGES.getString("rows_all"))
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
-		model.treeModel().configuration().addListener(this::expandIncludedNodes);
+		this.attributeTree = createAttributeTree();
+		this.columnList = createColumnList();
+		if (model.configurationFiles().selection().item().isNull()) {
+			//the table columns as they are when the export is first shown, with the column preferences applied
+			model.columns().reset();
+		}
 		initializeUI();
-		expandIncludedNodes();
 	}
 
 	void show(JComponent dialogOwner) {
@@ -233,24 +243,34 @@ final class EntityTableExportPanel extends JPanel {
 						.build();
 	}
 
-	private FilterTree<AttributeDefinition<?>> createTree() {
+	private FilterTree<AttributeDefinition<?>> createAttributeTree() {
 		return FilterTree.builder()
-						.model(model.treeModel().treeModel())
-						.cellRenderer(new AttributeRenderer(model.treeModel()))
-						.mouseListener(new ExportTreeMouseListener())
+						.model(model.columns().tree())
+						.cellRenderer(attributeRenderer)
+						.mouseListener(new ToggleOnCheckBoxClick())
 						.dragEnabled(true)
-						.dropMode(DropMode.INSERT)
 						.transferHandler(new AttributeTransferHandler())
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_SPACE)
-										.action(command(this::toggleSelected)))
+										.action(command(() -> model.columns().toggle(selectedAttributes()))))
 						.keyEvent(KeyEvents.builder()
 										.modifiers(SHIFT_DOWN_MASK)
 										.keyCode(VK_SPACE)
-										.action(Control.builder()
-														.command(this::toggleChildren)
-														.enabled(singleSelection)
-														.build()))
+										.action(command(() -> model.columns().toggleChildren(selectedAttributes()))))
+						.build();
+	}
+
+	private FilterList<NodePath<AttributeDefinition<?>>> createColumnList() {
+		return FilterList.builder()
+						.model(model.columns().list())
+						.items()
+						.formatter(EntityTableExportPanel::caption)
+						.dragEnabled(true)
+						.dropMode(DropMode.INSERT)
+						.transferHandler(new ColumnTransferHandler())
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_DELETE)
+										.action(removeColumns))
 						.keyEvent(KeyEvents.builder()
 										.modifiers(ALT_DOWN_MASK)
 										.keyCode(VK_UP)
@@ -262,36 +282,12 @@ final class EntityTableExportPanel extends JPanel {
 						.build();
 	}
 
-	private void moveSelectionUp() {
-		model.treeModel().move(selectedPaths(), true);
+	private List<NodePath<AttributeDefinition<?>>> selectedAttributes() {
+		return attributeTree.model().selection().paths().get();
 	}
 
-	private void moveSelectionDown() {
-		model.treeModel().move(selectedPaths(), false);
-	}
-
-	private List<NodePath<AttributeDefinition<?>>> selectedPaths() {
-		return exportTree.model().selection().paths().get();
-	}
-
-	private void toggleSelected() {
-		model.treeModel().toggle(selectedPaths());
-	}
-
-	private void toggleChildren() {
-		List<NodePath<AttributeDefinition<?>>> selected = selectedPaths();
-		if (selected.size() == 1) {
-			model.treeModel().toggleAll(exportTree.model().nodes().children(selected.get(0)));
-		}
-	}
-
-	private void selectionChanged(List<NodePath<AttributeDefinition<?>>> selected) {
-		//require a shared parent, the move operations reordering the children of a single parent
-		singleParentSelection.set(!selected.isEmpty() && selected.stream()
-						.map(NodePath::parent)
-						.distinct()
-						.count() == 1);
-		singleSelection.set(selected.size() == 1);
+	private List<NodePath<AttributeDefinition<?>>> selectedColumns() {
+		return columnList.model().selection().items().get();
 	}
 
 	private void openConfigurationFiles() {
@@ -336,38 +332,11 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void initializeUI() {
-		GridLayout buttonLayout = new GridLayout(1, 0, 0, 0);
 		add(borderLayoutPanel()
 						.border(emptyBorder())
-						.center(borderLayoutPanel()
-										.border(createTitledBorder(MESSAGES.getString("columns")))
-										.center(scrollPane()
-														.view(exportTree))
-										.east(borderLayoutPanel()
-														.north(flexibleGridLayoutPanel(0, 1)
-																		.add(panel()
-																						.layout(buttonLayout)
-																						.border(createTitledBorder(MESSAGES.getString("include")))
-																						.add(button()
-																										.control(includeAll))
-																						.add(button()
-																										.control(includeNone)))
-																		.add(panel()
-																						.layout(buttonLayout)
-																						.border(createTitledBorder(MESSAGES.getString("excluded")))
-																						.add(button()
-																										.control(showExcluded))
-																						.add(button()
-																										.control(hideExcluded)))
-																		.add(panel()
-																						.layout(buttonLayout)
-																						.border(createTitledBorder(MESSAGES.getString("move")))
-																						.add(button()
-																										.control(moveUp))
-																						.add(button()
-																										.control(moveDown)))))
-										.south(checkBox()
-														.toggle(showHidden)))
+						.center(gridLayoutPanel(1, 2)
+										.add(createAttributesPanel())
+										.add(createColumnsPanel()))
 						.south(borderLayoutPanel()
 										.border(createTitledBorder(MESSAGES.getString("configurations")))
 										.center(comboBox()
@@ -384,6 +353,41 @@ final class EntityTableExportPanel extends JPanel {
 														.transferFocusOnEnter(true)))
 						.build(), BorderLayout.CENTER);
 		add(createSouthPanel(), BorderLayout.SOUTH);
+	}
+
+	private JPanel createAttributesPanel() {
+		return borderLayoutPanel()
+						.border(createTitledBorder(MESSAGES.getString("available")))
+						.north(stringField()
+										.link(model.columns().search())
+										.hint(Messages.search() + "...")
+										.selectAllOnFocusGained(true))
+						.center(scrollPane()
+										.view(attributeTree))
+						.south(checkBox()
+										.toggle(showHidden))
+						.build();
+	}
+
+	private JPanel createColumnsPanel() {
+		return borderLayoutPanel()
+						.border(createTitledBorder(MESSAGES.getString("columns")))
+						.center(scrollPane()
+										.view(columnList))
+						.east(borderLayoutPanel()
+										.north(flexibleGridLayoutPanel(0, 1)
+														.add(button()
+																		.control(moveUp))
+														.add(button()
+																		.control(moveDown))
+														.add(button()
+																		.control(removeColumns))))
+						.south(buttonPanel()
+										.controls(Controls.builder()
+														.control(tableColumns)
+														.control(clearColumns))
+										.fixedButtonSize(false))
+						.build();
 	}
 
 	private JPanel createSouthPanel() {
@@ -441,15 +445,25 @@ final class EntityTableExportPanel extends JPanel {
 						.show();
 	}
 
-	private void expandIncludedNodes() {
-		exportTree.model().expansion().set(model.treeModel().includedParents());
+	/**
+	 * @return the captions on the given path, separated
+	 */
+	private static String caption(NodePath<AttributeDefinition<?>> path) {
+		return path.items().stream()
+						.map(AttributeDefinition::caption)
+						.collect(joining(PATH_SEPARATOR));
 	}
 
-	private final class ExportTreeMouseListener extends MouseAdapter {
+	private final class ToggleOnCheckBoxClick extends MouseAdapter {
+
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			if (e.isAltDown()) {
-				toggleSelected();
+		public void mouseClicked(MouseEvent event) {
+			if (isLeftMouseButton(event)) {
+				TreePath treePath = attributeTree.getPathForLocation(event.getX(), event.getY());
+				Rectangle bounds = treePath == null ? null : attributeTree.getPathBounds(treePath);
+				if (bounds != null && event.getX() < bounds.x + attributeRenderer.checkBoxWidth()) {
+					model.columns().toggle(singletonList((NodePath<AttributeDefinition<?>>) treePath.getLastPathComponent()));
+				}
 			}
 		}
 	}
@@ -475,37 +489,63 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
-	private static final class TransferableAttributeNodes implements Transferable {
-
-		private static final DataFlavor FLAVOR = new DataFlavor(NodePath.class, "AttributeNodeDataFlavor");
+	private static final class TransferablePaths implements Transferable {
 
 		private final List<NodePath<AttributeDefinition<?>>> paths;
 
-		private TransferableAttributeNodes(List<NodePath<AttributeDefinition<?>>> paths) {
+		private TransferablePaths(List<NodePath<AttributeDefinition<?>>> paths) {
 			this.paths = paths;
 		}
 
 		@Override
 		public DataFlavor[] getTransferDataFlavors() {
-			return new DataFlavor[] {FLAVOR};
+			return new DataFlavor[] {PATHS};
 		}
 
 		@Override
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
-			return flavor == FLAVOR;
+			return PATHS.equals(flavor);
 		}
 
 		@Override
-		public List<NodePath<AttributeDefinition<?>>> getTransferData(DataFlavor flavor) {
-			return paths;
+		public TransferablePaths getTransferData(DataFlavor flavor) {
+			return this;
+		}
+
+		private static List<NodePath<AttributeDefinition<?>>> paths(TransferHandler.TransferSupport support) {
+			try {
+				return ((TransferablePaths) support.getTransferable().getTransferData(PATHS)).paths;
+			}
+			catch (Exception e) {
+				return emptyList();
+			}
 		}
 	}
 
+	/**
+	 * Drags the selected attributes, to be dropped onto the columns.
+	 */
 	private final class AttributeTransferHandler extends TransferHandler {
 
 		@Override
 		protected Transferable createTransferable(JComponent component) {
-			return new TransferableAttributeNodes(singleParentSelection.is() ? selectedPaths() : emptyList());
+			return new TransferablePaths(selectedAttributes());
+		}
+
+		@Override
+		public int getSourceActions(JComponent component) {
+			return TransferHandler.COPY;
+		}
+	}
+
+	/**
+	 * Drags the selected columns, to move them, and receives attributes dropped from the tree, to insert them.
+	 */
+	private final class ColumnTransferHandler extends TransferHandler {
+
+		@Override
+		protected Transferable createTransferable(JComponent component) {
+			return new TransferablePaths(selectedColumns());
 		}
 
 		@Override
@@ -515,40 +555,21 @@ final class EntityTableExportPanel extends JPanel {
 
 		@Override
 		public boolean canImport(TransferSupport support) {
-			Point dropPoint = support.getDropLocation().getDropPoint();
-			TreePath treePath = exportTree.getPathForRow(exportTree.getRowForLocation(dropPoint.x, dropPoint.y));
-			if (treePath == null) {
-				return false;
-			}
-			List<NodePath<AttributeDefinition<?>>> paths = paths(support);
-			if (paths.isEmpty()) {
-				return false;
-			}
-			NodePath<AttributeDefinition<?>> path = (NodePath<AttributeDefinition<?>>) treePath.getLastPathComponent();
-			// Not allow dropping on any of the selected nodes, and only allow nodes under the same parent to be moved
-			return !selectedPaths().contains(path) && paths.get(0).parent().equals(path.parent());
+			return support.isDrop() && support.isDataFlavorSupported(PATHS);
 		}
 
 		@Override
 		public boolean importData(TransferSupport support) {
-			int dropIndex = ((JTree.DropLocation) support.getDropLocation()).getChildIndex();
-			List<NodePath<AttributeDefinition<?>>> paths = paths(support);
-			if (dropIndex == -1 || paths.isEmpty()) {
+			if (!canImport(support)) {
 				return false;
 			}
-			model.treeModel().move(paths, dropIndex);
+			List<NodePath<AttributeDefinition<?>>> paths = TransferablePaths.paths(support);
+			if (paths.isEmpty()) {
+				return false;
+			}
+			model.columns().insert(paths, ((JList.DropLocation) support.getDropLocation()).getIndex());
 
 			return true;
-		}
-
-		private List<NodePath<AttributeDefinition<?>>> paths(TransferSupport support) {
-			try {
-				return (List<NodePath<AttributeDefinition<?>>>) support.getTransferable()
-								.getTransferData(TransferableAttributeNodes.FLAVOR);
-			}
-			catch (Exception e) {
-				return emptyList();
-			}
 		}
 	}
 
@@ -583,39 +604,69 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
-	private static final class AttributeRenderer extends DefaultTreeCellRenderer {
+	/**
+	 * Renders each attribute with a check box, checked when it is a column, a foreign key followed by the number of
+	 * columns below it. The check box and the label are painted side by side, rather than the check box as the icon
+	 * of the label, since some look and feels, such as Nimbus, measure and paint a component wrongly while measuring
+	 * or painting another one.
+	 */
+	private final class AttributeRenderer extends JPanel implements TreeCellRenderer {
 
-		/**
-		 * To make drag'n drop easier, otherwise the renderer can be
-		 * too slim, making it difficult to hit as a drag target.
-		 */
-		private static final int MIN_LENGTH = 25;
+		private final DefaultTreeCellRenderer label = new DefaultTreeCellRenderer();
+		private final JCheckBox checkBox = new JCheckBox();
 
-		private final EntityTableExportTreeModel treeModel;
-
-		private AttributeRenderer(EntityTableExportTreeModel treeModel) {
-			this.treeModel = treeModel;
+		private AttributeRenderer() {
+			super(new BorderLayout());
+			configure();
+			add(checkBox, BorderLayout.WEST);
+			add(label, BorderLayout.CENTER);
 		}
 
 		@Override
-		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-			Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-			NodePath<AttributeDefinition<?>> path = (NodePath<AttributeDefinition<?>>) value;
-			if (!path.root()) {
-				StringBuilder builder = new StringBuilder(path.item().caption());
-				if (treeModel.included(path)) {
-					builder.insert(0, "+");
-				}
-				if (path.item() instanceof ForeignKeyDefinition) {
-					int includedCount = treeModel.includedCount(path);
-					if (includedCount > 0) {
-						builder.append(" (").append(includedCount).append(")");
-					}
-				}
-				setText(Text.rightPad(builder.toString(), MIN_LENGTH, ' '));
+		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
+																									boolean leaf, int row, boolean hasFocus) {
+			label.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+			label.setIcon(null);
+			Color inactiveForeground = UIManager.getColor("Tree.selectionInactiveForeground");
+			if (selected && inactiveForeground != null &&
+							KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner() != tree) {
+				//look and feels, such as FlatLaf, adjusting only a DefaultTreeCellRenderer to the inactive selection
+				label.setForeground(inactiveForeground);
 			}
+			NodePath<AttributeDefinition<?>> path = (NodePath<AttributeDefinition<?>>) value;
+			checkBox.setVisible(!path.root());
+			if (!path.root()) {
+				checkBox.setSelected(model.columns().included(path));
+				String caption = path.item().caption();
+				int includedCount = path.item() instanceof ForeignKeyDefinition ? model.columns().includedCount(path) : 0;
+				label.setText(includedCount > 0 ? caption + " (" + includedCount + ")" : caption);
+			}
+			//the label, a DefaultTreeCellRenderer, does not invalidate this panel when its text changes,
+			//which would otherwise keep the preferred size it had when last validated, truncating the text
+			invalidate();
 
-			return component;
+			return this;
+		}
+
+		@Override
+		public void updateUI() {
+			super.updateUI();
+			//null when called during construction
+			if (label != null) {
+				label.updateUI();
+				checkBox.updateUI();
+				configure();
+			}
+		}
+
+		private int checkBoxWidth() {
+			return checkBox.getPreferredSize().width;
+		}
+
+		private void configure() {
+			setOpaque(false);
+			checkBox.setOpaque(false);
+			checkBox.setBorder(createEmptyBorder());
 		}
 	}
 }
