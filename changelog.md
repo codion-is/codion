@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.91
+
 ## 0.18.90
 ### is.codion.common.reactive
 - AbstractValue.shouldNotify() added, called before the listeners are notified, only notified in case it returns true, for a value whose state changes outside set() to validate a change before it is notified.
