@@ -49,6 +49,8 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
@@ -117,7 +119,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 
 	private static final int MAXIMUM_VISIBLE_ROWS = 8;
 	private static final int MINIMUM_VISIBLE_ROWS = 3;
-	private static final String WIDEST_COUNT = "00";
+	// the members button fits at least two digits, keeping its width while the count stays below 100
+	private static final String TWO_DIGITS = "00";
 	private static final int TITLE_MARGIN = 24;
 
 	private final ComponentValue<C, T> componentValue;
@@ -146,7 +149,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		this.caption = builder.caption;
 		JComponent component = componentValue.component();
 		component.setInheritsPopupMenu(true);
-		membersButton = createMembersButton(component, builder.buttonFocusable);
+		membersButton = createMembersButton(builder.buttonFocusable);
+		sizeMembersButton();
 		add(component, BorderLayout.CENTER);
 		add(membersButton, BorderLayout.EAST);
 		addFocusListener(new InputFocusAdapter(component));
@@ -202,6 +206,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 		if (membersButton != null) {
 			membersButton.updateUI();
+			sizeMembersButton();
 		}
 		if (dialog != null) {
 			updateComponentTreeUI(dialog);
@@ -309,19 +314,31 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		return Math.max(MINIMUM_VISIBLE_ROWS, Math.min(MAXIMUM_VISIBLE_ROWS, members.getSize()));
 	}
 
-	private JToggleButton createMembersButton(JComponent component, boolean focusable) {
-		int height = component.getPreferredSize().height;
-		int width = Math.max(height, component.getFontMetrics(component.getFont()).stringWidth(WIDEST_COUNT) + 10);
-
+	private JToggleButton createMembersButton(boolean focusable) {
 		return toggleButton()
 						.toggle(Control.builder()
 										.toggle(membersVisible)
 										.enabled(State.and(enabled, present))
 										.build())
-						.preferredSize(new Dimension(width, height))
+						// as narrow as the look and feel makes a single character button, its margin leaving no room for two digits
+						.margin(new Insets(2, 2, 2, 2))
 						.name("MultiInput:membersButton" + caption())
 						.focusable(focusable)
 						.build();
+	}
+
+	/**
+	 * Sizes the members button to fit its count, and at least two digits, at least as wide as the component is high,
+	 * following the look and feel, its font and insets.
+	 */
+	private void sizeMembersButton() {
+		int height = componentValue.component().getPreferredSize().height;
+		Insets insets = membersButton.getInsets();
+		FontMetrics metrics = membersButton.getFontMetrics(membersButton.getFont());
+		String text = membersButton.getText();
+		// no text before the members first change
+		int textWidth = Math.max(metrics.stringWidth(TWO_DIGITS), text == null ? 0 : metrics.stringWidth(text));
+		membersButton.setPreferredSize(new Dimension(Math.max(height, textWidth + insets.left + insets.right), height));
 	}
 
 	private void bindKeys(JComponent component, boolean addOnEnter) {
@@ -527,6 +544,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 			followField.positionMembers();
 		}
 		membersButton.setText(String.valueOf(included.size()));
+		// measuring the text, its change revalidating the layout
+		sizeMembersButton();
 		membersButton.setToolTipText(included.isEmpty() ? null : included.stream()
 						.map(this::format)
 						.collect(Collectors.joining("<br>", "<html>", "</html>")));
