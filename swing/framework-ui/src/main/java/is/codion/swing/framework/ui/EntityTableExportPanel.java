@@ -31,7 +31,8 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
-import is.codion.swing.common.ui.component.list.FilterList;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.tree.FilterTree;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -40,6 +41,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.framework.ui.EntityTableExportColumns.ExportColumn;
 import is.codion.swing.framework.ui.EntityTableExportModel.ConfigurationFile;
 import is.codion.swing.framework.ui.EntityTableExportModel.ExportTask;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -57,6 +59,7 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
@@ -101,7 +104,6 @@ import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.joining;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -113,7 +115,6 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final String TSV = "tsv";
 	private static final String JSON = "json";
-	private static final String PATH_SEPARATOR = " › ";
 	private static final FileNameExtensionFilter CONFIGURATION_FILE =
 					new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON);
 	private static final DataFlavor PATHS = new DataFlavor(TransferablePaths.class, "Attribute paths");
@@ -149,6 +150,11 @@ final class EntityTableExportPanel extends JPanel {
 		 */
 		static final ControlKey<CommandControl> REMOVE = CommandControl.key("remove", keyStroke(VK_DELETE));
 		/**
+		 * Edits the header of the selected column.<br>
+		 * Default key stroke: F2
+		 */
+		static final ControlKey<CommandControl> EDIT_HEADER = CommandControl.key("editHeader", keyStroke(VK_F2));
+		/**
 		 * Moves the focus to the search field.<br>
 		 * Default key stroke: CTRL-F
 		 */
@@ -183,6 +189,7 @@ final class EntityTableExportPanel extends JPanel {
 	private final Control moveUp;
 	private final Control moveDown;
 	private final Control removeColumns;
+	private final Control editHeader;
 	private final Control tableColumns;
 	private final Control clearColumns;
 	private final Control openConfiguration;
@@ -192,7 +199,7 @@ final class EntityTableExportPanel extends JPanel {
 	private final ToggleControl allRows;
 	private final ToggleControl selectedRows;
 	private final FilterTree<AttributeDefinition<?>> attributeTree;
-	private final FilterList<NodePath<AttributeDefinition<?>>> columnList;
+	private final FilterTable<NodePath<AttributeDefinition<?>>, ExportColumn> columnTable;
 	private final JComboBox<ConfigurationFile> configurationFilesComboBox;
 	private final JTextField searchField;
 
@@ -200,7 +207,7 @@ final class EntityTableExportPanel extends JPanel {
 		super(borderLayout());
 		this.model = model;
 		this.dialogSize = dialogSize;
-		ObservableState columnsSelected = model.columns().list().selection().present();
+		ObservableState columnsSelected = model.columns().table().selection().present();
 		this.toggle = Control.builder()
 						.command(() -> model.columns().toggle(selectedAttributes()))
 						.caption(MESSAGES.getString("toggle"))
@@ -235,6 +242,12 @@ final class EntityTableExportPanel extends JPanel {
 						.icon(FrameworkIcons.instance().delete())
 						.description(MESSAGES.getString("remove"))
 						.keyStroke(REMOVE.defaultKeystroke().get())
+						.build();
+		this.editHeader = Control.builder()
+						.command(this::editHeader)
+						.caption(MESSAGES.getString("edit_header"))
+						.enabled(model.columns().table().selection().single())
+						.keyStroke(EDIT_HEADER.defaultKeystroke().get())
 						.build();
 		this.tableColumns = Control.builder()
 						.command(model.columns()::reset)
@@ -284,7 +297,7 @@ final class EntityTableExportPanel extends JPanel {
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
 		this.attributeTree = createAttributeTree();
-		this.columnList = createColumnList();
+		this.columnTable = createColumnTable();
 		this.searchField = createSearchField();
 		this.configurationFilesComboBox = createConfigurationFilesComboBox();
 		//the table columns as they are when the export is first shown, with the column preferences applied
@@ -400,23 +413,40 @@ final class EntityTableExportPanel extends JPanel {
 						.build();
 	}
 
-	private FilterList<NodePath<AttributeDefinition<?>>> createColumnList() {
-		return FilterList.builder()
-						.model(model.columns().list())
-						.items()
-						.formatter(EntityTableExportPanel::caption)
+	private FilterTable<NodePath<AttributeDefinition<?>>, ExportColumn> createColumnTable() {
+		return FilterTable.builder()
+						.model(model.columns().table())
+						.columns(EntityTableExportPanel::configureColumn)
+						.cellRenderer(ExportColumn.HEADER, String.class, renderer -> renderer
+										.foreground(this::headerForeground))
+						.sortable(false)
+						.columnReordering(false)
+						.autoStartsEdit(false)
+						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+						.fillsViewportHeight(true)
+						.stopEditOnFocusLost(true)
 						.dragEnabled(true)
-						.dropMode(DropMode.INSERT)
+						.dropMode(DropMode.INSERT_ROWS)
 						.transferHandler(new ColumnTransferHandler())
-						.popupControls(list -> Controls.builder()
+						//the rows in the order of the export and the columns fixed, so no sorting or column moving,
+						//Alt-Up/Down moving the export columns instead, and Ctrl-F focusing the attribute search
+						.keyStroke(FilterTable.ControlKeys.TOGGLE_NEXT_SORT_ORDER, null)
+						.keyStroke(FilterTable.ControlKeys.TOGGLE_PREVIOUS_SORT_ORDER, null)
+						.keyStroke(FilterTable.ControlKeys.TOGGLE_NEXT_SORT_ORDER_ADD, null)
+						.keyStroke(FilterTable.ControlKeys.TOGGLE_PREVIOUS_SORT_ORDER_ADD, null)
+						.keyStroke(FilterTable.ControlKeys.MOVE_COLUMN_LEFT, null)
+						.keyStroke(FilterTable.ControlKeys.MOVE_COLUMN_RIGHT, null)
+						.keyStroke(FilterTable.ControlKeys.FOCUS_SEARCH_FIELD, null)
+						.popupControls(table -> Controls.builder()
 										.control(moveUp)
 										.control(moveDown)
 										.control(removeColumns)
+										.control(editHeader)
 										.separator()
 										.control(tableColumns)
 										.control(clearColumns)
 										.build())
-						.onBuild(this::configureColumnListKeyEvents)
+						.onBuild(this::configureColumnTableKeyEvents)
 						.build();
 	}
 
@@ -452,7 +482,7 @@ final class EntityTableExportPanel extends JPanel {
 	private void configureKeyEvents() {
 		focus(FOCUS_SEARCH_FIELD, searchField);
 		focus(FOCUS_ATTRIBUTES, attributeTree);
-		focus(FOCUS_COLUMNS, columnList);
+		focus(FOCUS_COLUMNS, columnTable);
 		focus(FOCUS_CONFIGURATIONS, configurationFilesComboBox);
 	}
 
@@ -475,7 +505,7 @@ final class EntityTableExportPanel extends JPanel {
 						.enable(attributes));
 	}
 
-	private void configureColumnListKeyEvents(FilterList<NodePath<AttributeDefinition<?>>> columns) {
+	private void configureColumnTableKeyEvents(FilterTable<NodePath<AttributeDefinition<?>>, ExportColumn> columns) {
 		REMOVE.defaultKeystroke().optional().ifPresent(keyStroke -> KeyEvents.builder()
 						.keyStroke(keyStroke)
 						.action(removeColumns)
@@ -488,6 +518,33 @@ final class EntityTableExportPanel extends JPanel {
 						.keyStroke(keyStroke)
 						.action(moveDown)
 						.enable(columns));
+		//replaces the table's own, which edits the lead cell, the attribute cell after a row is selected
+		EDIT_HEADER.defaultKeystroke().optional().ifPresent(keyStroke -> KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(editHeader)
+						.enable(columns));
+	}
+
+	private void editHeader() {
+		int row = columnTable.getSelectedRow();
+		if (row >= 0 && columnTable.editCellAt(row, columnTable.convertColumnIndexToView(ExportColumn.HEADER.ordinal()))) {
+			Component editor = columnTable.getEditorComponent();
+			if (editor != null) {
+				editor.requestFocusInWindow();
+			}
+		}
+	}
+
+	private static void configureColumn(FilterTableColumn.Builder<ExportColumn> column) {
+		column.headerValue(MESSAGES.getString(column.identifier() == ExportColumn.ATTRIBUTE ? "attribute" : "header"));
+	}
+
+	/**
+	 * @return the inactive foreground for a default header, so the headers set stand out
+	 */
+	private @Nullable Color headerForeground(FilterTable<NodePath<AttributeDefinition<?>>, ExportColumn> table,
+																					 NodePath<AttributeDefinition<?>> path, ExportColumn identifier, String header) {
+		return model.columns().defaultHeader(path) ? UIManager.getColor("Label.disabledForeground") : null;
 	}
 
 	private void focusAttributes() {
@@ -519,7 +576,7 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private List<NodePath<AttributeDefinition<?>>> selectedColumns() {
-		return columnList.model().selection().items().get();
+		return columnTable.model().selection().items().get();
 	}
 
 	private void openConfigurationFiles() {
@@ -573,7 +630,7 @@ final class EntityTableExportPanel extends JPanel {
 						.center(splitPane()
 										.leftComponent(createAttributesPanel())
 										.rightComponent(createColumnsPanel())
-										.resizeWeight(0.5)
+										.resizeWeight(0.33)
 										.continuousLayout(true))
 						.south(createConfigurationsPanel())
 						.build(), BorderLayout.CENTER);
@@ -593,7 +650,7 @@ final class EntityTableExportPanel extends JPanel {
 		return borderLayoutPanel()
 						.border(createTitledBorder(withKeyStroke(MESSAGES.getString("columns"), FOCUS_COLUMNS)))
 						.center(scrollPane()
-										.view(columnList))
+										.view(columnTable))
 						.east(borderLayoutPanel()
 										.north(gridLayoutPanel(0, 1)
 														.add(button()
@@ -693,15 +750,6 @@ final class EntityTableExportPanel extends JPanel {
 		return controlKey.defaultKeystroke().optional()
 						.map(keyStroke -> text + " (" + KeyboardShortcutsPanel.text(keyStroke) + ")")
 						.orElse(text);
-	}
-
-	/**
-	 * @return the captions on the given path, separated
-	 */
-	private static String caption(NodePath<AttributeDefinition<?>> path) {
-		return path.items().stream()
-						.map(AttributeDefinition::caption)
-						.collect(joining(PATH_SEPARATOR));
 	}
 
 	/**
@@ -839,7 +887,7 @@ final class EntityTableExportPanel extends JPanel {
 			if (paths.isEmpty()) {
 				return false;
 			}
-			model.columns().insert(paths, ((JList.DropLocation) support.getDropLocation()).getIndex());
+			model.columns().insert(paths, ((JTable.DropLocation) support.getDropLocation()).getRow());
 
 			return true;
 		}

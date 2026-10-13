@@ -18,7 +18,10 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.component.tree.NodePath;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -29,11 +32,13 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityExport.Attributes;
-import is.codion.swing.common.model.component.list.SwingFilterListModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel.RowEditor;
 import is.codion.swing.common.model.component.tree.SwingFilterTreeModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,29 +50,53 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
- * <p>The export columns, the attributes to export in the order of the export, with a list model as their view, and
- * the attributes to choose them from, with a tree model as their view.
+ * <p>The export columns, the attributes to export in the order of the export, with their headers, a table model as
+ * their view, and the attributes to choose them from, with a tree model as their view.
  * <p>A column is identified by its path, the attribute definitions from the top level down to it, the same attribute
  * under two foreign keys being two columns. The foreign keys make the tree infinite, Customer, Invoice, Customer and
  * so on, so its nodes are loaded on demand, while the columns may be below nodes not yet loaded.
+ * <p>A column has the default header, the captions on its path, unless one is set, see
+ * {@link #header(NodePath, String)}.
  */
 final class EntityTableExportColumns {
+
+	/**
+	 * The table columns of the export columns.
+	 */
+	enum ExportColumn {
+		/**
+		 * The captions on the path of a column, separated
+		 */
+		ATTRIBUTE,
+		/**
+		 * The header of a column, editable
+		 */
+		HEADER
+	}
 
 	static final String ENTITY_TYPE_KEY = "entityType";
 
 	private static final String COLUMNS_KEY = "columns";
 	//the attributes on the path of a column, and in the first configuration format nested by foreign key, see flatten()
 	private static final String ATTRIBUTES_KEY = "attributes";
+	private static final String HEADER_KEY = "header";
+	private static final String PATH_SEPARATOR = " › ";
+	//as the default header of EntityExport
+	private static final String HEADER_SEPARATOR = " ";
 
 	private static final Comparator<AttributeDefinition<?>> CAPTION_COMPARATOR =
 					(definition, other) -> definition.caption().compareToIgnoreCase(other.caption());
@@ -75,7 +104,10 @@ final class EntityTableExportColumns {
 	private final EntityType entityType;
 	private final Entities entities;
 	private final Supplier<List<Attribute<?>>> defaults;
-	private final SwingFilterListModel<NodePath<AttributeDefinition<?>>> columns;
+	private final SwingFilterTableModel<NodePath<AttributeDefinition<?>>, ExportColumn> columns;
+	//the headers set, the others being the default ones
+	private final Map<NodePath<AttributeDefinition<?>>, String> headers = new HashMap<>();
+	private final Event<?> changed = Event.event();
 	private final SwingFilterTreeModel<AttributeDefinition<?>> attributes;
 	//the attribute definitions available for export by entity type, ordered by caption
 	private final Map<EntityType, List<AttributeDefinition<?>>> definitions = new HashMap<>();
@@ -97,8 +129,10 @@ final class EntityTableExportColumns {
 		this.entityType = entityType;
 		this.entities = entities;
 		this.defaults = defaults;
-		this.columns = SwingFilterListModel.builder()
+		this.columns = SwingFilterTableModel.builder()
+						.columns(new ExportColumns())
 						.items(this::defaultColumns)
+						.rowEditor(table -> new HeaderEditor())
 						.build();
 		//in-memory, no need for a background thread
 		this.columns.items().refresher().async().set(false);
@@ -117,8 +151,53 @@ final class EntityTableExportColumns {
 	/**
 	 * @return the columns, in the order of the export
 	 */
-	SwingFilterListModel<NodePath<AttributeDefinition<?>>> list() {
+	SwingFilterTableModel<NodePath<AttributeDefinition<?>>, ExportColumn> table() {
 		return columns;
+	}
+
+	/**
+	 * @return an observer notified when the columns or their headers change
+	 */
+	Observer<?> changed() {
+		return changed.observer();
+	}
+
+	/**
+	 * @param path the path of a column
+	 * @return the header of the given column, the one set or the default one, the captions on its path
+	 */
+	String header(NodePath<AttributeDefinition<?>> path) {
+		String header = headers.get(path);
+
+		return header == null ? captions(path, HEADER_SEPARATOR) : header;
+	}
+
+	/**
+	 * Sets the header of the given column, trimmed, a null or blank one, or the default one, resetting it to the
+	 * default.
+	 * @param path the path of a column
+	 * @param header the header
+	 * @throws IllegalArgumentException in case the given path is not a column
+	 */
+	void header(NodePath<AttributeDefinition<?>> path, @Nullable String header) {
+		if (!included(path)) {
+			throw new IllegalArgumentException("Not a column: " + path);
+		}
+		String headerSet = headerSet(path, header);
+		String previous = headerSet == null ? headers.remove(path) : headers.put(path, headerSet);
+		if (!Objects.equals(previous, headerSet)) {
+			int index = columns.items().included().indexOf(path);
+			columns.fireTableRowsUpdated(index, index);
+			changed.run();
+		}
+	}
+
+	/**
+	 * @param path the path of a column
+	 * @return true if the given column has the default header
+	 */
+	boolean defaultHeader(NodePath<AttributeDefinition<?>> path) {
+		return !headers.containsKey(path);
 	}
 
 	/**
@@ -288,19 +367,27 @@ final class EntityTableExportColumns {
 	}
 
 	/**
-	 * Applies the given configuration, the columns it names which exist, any other column fields ignored. Reads the
-	 * first, nested configuration format as well, as the columns it exported.
+	 * Applies the given configuration, the columns it names which exist, with their headers, any other column fields
+	 * ignored. Reads the first, nested configuration format as well, as the columns it exported.
 	 * @param json the configuration
-	 * @throws org.json.JSONException in case a column is not an object naming the attributes on its path
+	 * @throws org.json.JSONException in case a column is not an object naming the attributes on its path, or its
+	 * header is not a string
 	 */
 	void apply(JSONObject json) {
 		List<NodePath<AttributeDefinition<?>>> paths = new ArrayList<>();
+		Map<NodePath<AttributeDefinition<?>>, String> headersSet = new HashMap<>();
 		if (json.has(COLUMNS_KEY)) {
 			JSONArray array = json.getJSONArray(COLUMNS_KEY);
 			for (int i = 0; i < array.length(); i++) {
-				path(array.getJSONObject(i).getJSONArray(ATTRIBUTES_KEY)).ifPresent(path -> {
+				JSONObject column = array.getJSONObject(i);
+				String header = column.has(HEADER_KEY) ? column.getString(HEADER_KEY) : null;
+				path(column.getJSONArray(ATTRIBUTES_KEY)).ifPresent(path -> {
 					if (!paths.contains(path)) {
 						paths.add(path);
+						String headerSet = headerSet(path, header);
+						if (headerSet != null) {
+							headersSet.put(path, headerSet);
+						}
 					}
 				});
 			}
@@ -308,19 +395,34 @@ final class EntityTableExportColumns {
 		else {
 			flatten(nodePath(), json, paths);
 		}
+		headers.clear();
+		headers.putAll(headersSet);
 		columns.items().set(paths);
+		//in case only the headers changed
+		int count = columns.items().included().size();
+		if (count > 0) {
+			columns.fireTableRowsUpdated(0, count - 1);
+		}
+		changed.run();
 	}
 
 	/**
 	 * @return the configuration, the entity type and the columns, each column an object with the names of the
-	 * attributes on its path
+	 * attributes on its path, and its header, in case one is set
 	 */
 	JSONObject toJson() {
 		JSONArray array = new JSONArray();
-		columns.items().get().forEach(path -> array.put(new JSONObject()
-						.put(ATTRIBUTES_KEY, new JSONArray(path.items().stream()
-										.map(definition -> definition.attribute().name())
-										.collect(toList())))));
+		columns.items().get().forEach(path -> {
+			JSONObject column = new JSONObject()
+							.put(ATTRIBUTES_KEY, new JSONArray(path.items().stream()
+											.map(definition -> definition.attribute().name())
+											.collect(toList())));
+			String header = headers.get(path);
+			if (header != null) {
+				column.put(HEADER_KEY, header);
+			}
+			array.put(column);
+		});
 
 		return new JSONObject()
 						.put(ENTITY_TYPE_KEY, entityType.name())
@@ -328,11 +430,11 @@ final class EntityTableExportColumns {
 	}
 
 	/**
-	 * Adds the columns to the given export attributes, in order.
+	 * Adds the columns to the given export attributes, in order, with their headers.
 	 * @param attributes the attributes to add to
 	 */
 	void attributes(Attributes attributes) {
-		columns.items().get().forEach(path -> attributes.add(path.items().stream()
+		columns.items().get().forEach(path -> attributes.add(header(path), path.items().stream()
 						.map(AttributeDefinition::attribute)
 						.collect(toList())));
 	}
@@ -355,20 +457,22 @@ final class EntityTableExportColumns {
 	}
 
 	/**
-	 * Repaints the nodes of the columns added or removed, along with their ancestors, the counts of which change,
-	 * and refreshes their parents in case they are hidden, so they are shown while columns, and hidden again.
+	 * Drops the headers of the columns removed, repaints the nodes of the columns added or removed, along with their
+	 * ancestors, the counts of which change, and refreshes their parents in case they are hidden, so they are shown
+	 * while columns, and hidden again.
 	 */
 	private void columnsChanged() {
 		Set<NodePath<AttributeDefinition<?>>> current = new HashSet<>(columns.items().get());
-		Set<NodePath<AttributeDefinition<?>>> changed = new HashSet<>(current);
-		changed.addAll(previous);
+		headers.keySet().retainAll(current);
+		Set<NodePath<AttributeDefinition<?>>> addedOrRemoved = new HashSet<>(current);
+		addedOrRemoved.addAll(previous);
 		Set<NodePath<AttributeDefinition<?>>> retained = new HashSet<>(current);
 		retained.retainAll(previous);
-		changed.removeAll(retained);
+		addedOrRemoved.removeAll(retained);
 		previous = current;
 		Set<NodePath<AttributeDefinition<?>>> nodes = new LinkedHashSet<>();
 		Set<NodePath<AttributeDefinition<?>>> refresh = new LinkedHashSet<>();
-		for (NodePath<AttributeDefinition<?>> path : changed) {
+		for (NodePath<AttributeDefinition<?>> path : addedOrRemoved) {
 			if (!showHidden.is() && path.item().hidden()) {
 				refresh.add(path.parent());
 			}
@@ -382,6 +486,7 @@ final class EntityTableExportColumns {
 		refresh.stream()
 						.filter(parent -> parent.root() || attributes.nodes().loaded(parent))
 						.forEach(attributes.nodes()::refresh);
+		changed.run();
 	}
 
 	private void showHiddenChanged() {
@@ -523,5 +628,63 @@ final class EntityTableExportColumns {
 		}
 
 		return true;
+	}
+
+	/**
+	 * @return the given header trimmed, null in case it is null, blank or the default header of the given column
+	 */
+	private static @Nullable String headerSet(NodePath<AttributeDefinition<?>> path, @Nullable String header) {
+		String trimmed = header == null ? "" : header.trim();
+
+		return trimmed.isEmpty() || trimmed.equals(captions(path, HEADER_SEPARATOR)) ? null : trimmed;
+	}
+
+	private static String captions(NodePath<AttributeDefinition<?>> path, String separator) {
+		return path.items().stream()
+						.map(AttributeDefinition::caption)
+						.collect(joining(separator));
+	}
+
+	private final class ExportColumns implements TableColumns<NodePath<AttributeDefinition<?>>, ExportColumn> {
+
+		private final List<ExportColumn> identifiers = unmodifiableList(asList(ExportColumn.values()));
+
+		@Override
+		public List<ExportColumn> identifiers() {
+			return identifiers;
+		}
+
+		@Override
+		public Class<?> type(ExportColumn identifier) {
+			return String.class;
+		}
+
+		@Override
+		public Object value(NodePath<AttributeDefinition<?>> path, ExportColumn identifier) {
+			switch (identifier) {
+				case ATTRIBUTE:
+					return captions(path, PATH_SEPARATOR);
+				case HEADER:
+					return header(path);
+				default:
+					throw new IllegalArgumentException("Unknown column: " + identifier);
+			}
+		}
+	}
+
+	private final class HeaderEditor implements RowEditor<NodePath<AttributeDefinition<?>>, ExportColumn> {
+
+		@Override
+		public boolean editable(NodePath<AttributeDefinition<?>> path, ExportColumn identifier) {
+			return identifier == ExportColumn.HEADER;
+		}
+
+		@Override
+		public void set(@Nullable Object value, int rowIndex, NodePath<AttributeDefinition<?>> path, ExportColumn identifier) {
+			if (identifier != ExportColumn.HEADER) {
+				throw new IllegalStateException("Not editable: " + identifier);
+			}
+			header(path, (String) value);
+		}
 	}
 }

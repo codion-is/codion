@@ -26,8 +26,10 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.model.EntityExport;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.model.component.tree.SwingFilterTreeModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityTableExportColumns.ExportColumn;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.json.JSONException;
@@ -143,23 +145,23 @@ public final class EntityTableExportPanelTest {
 		columns.clear();
 
 		columns.toggle(asList(NAME, JOB));
-		assertEquals(asList(NAME, JOB), columns.list().items().get());
+		assertEquals(asList(NAME, JOB), columns.table().items().get());
 		// the added ones selected
-		assertEquals(asList(NAME, JOB), columns.list().selection().items().get());
+		assertEquals(asList(NAME, JOB), columns.table().selection().items().get());
 		assertTrue(columns.included(NAME));
 
 		// a top level attribute added last, whatever the selection
-		columns.list().selection().items().set(singletonList(NAME));
+		columns.table().selection().items().set(singletonList(NAME));
 		columns.toggle(singletonList(SALARY));
-		assertEquals(asList(NAME, JOB, SALARY), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, SALARY), columns.table().items().get());
 
 		// not all of them columns, the rest added
 		columns.toggle(asList(NAME, COMMISSION));
-		assertEquals(asList(NAME, JOB, SALARY, COMMISSION), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, SALARY, COMMISSION), columns.table().items().get());
 
 		// all of them columns, removed
 		columns.toggle(asList(NAME, COMMISSION));
-		assertEquals(asList(JOB, SALARY), columns.list().items().get());
+		assertEquals(asList(JOB, SALARY), columns.table().items().get());
 		assertFalse(columns.included(NAME));
 
 		columns.toggle(singletonList(MANAGER_NAME));
@@ -182,35 +184,35 @@ public final class EntityTableExportPanelTest {
 		// none from the same foreign key, added last
 		columns.toggle(singletonList(MANAGER_NAME));
 		columns.toggle(singletonList(SALARY));
-		assertEquals(asList(NAME, JOB, MANAGER_NAME, SALARY), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, MANAGER_NAME, SALARY), columns.table().items().get());
 
 		// after the last one from the same foreign key
 		columns.toggle(singletonList(managerJob));
-		assertEquals(asList(NAME, JOB, MANAGER_NAME, managerJob, SALARY), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, MANAGER_NAME, managerJob, SALARY), columns.table().items().get());
 
 		// wherever they have been moved, none from the foreign key above it, so the one above that
 		columns.insert(singletonList(MANAGER_NAME), 0);
 		columns.toggle(singletonList(managersManagerName));
-		assertEquals(asList(MANAGER_NAME, NAME, JOB, managerJob, managersManagerName, SALARY), columns.list().items().get());
+		assertEquals(asList(MANAGER_NAME, NAME, JOB, managerJob, managersManagerName, SALARY), columns.table().items().get());
 
 		// the foreign key itself a top level attribute, added last, as is one from another foreign key
 		columns.insert(singletonList(managersManagerName), 0);
 		columns.toggle(singletonList(MANAGER));
 		columns.toggle(singletonList(departmentName));
 		assertEquals(asList(managersManagerName, MANAGER_NAME, NAME, JOB, managerJob, SALARY, MANAGER, departmentName),
-						columns.list().items().get());
+						columns.table().items().get());
 
 		// after the foreign key itself, several in order
 		columns.toggle(asList(managerSalary, managerCommission));
 		assertEquals(asList(managersManagerName, MANAGER_NAME, NAME, JOB, managerJob, SALARY, MANAGER,
-						managerSalary, managerCommission, departmentName), columns.list().items().get());
-		assertEquals(asList(managerSalary, managerCommission), columns.list().selection().items().get());
+						managerSalary, managerCommission, departmentName), columns.table().items().get());
+		assertEquals(asList(managerSalary, managerCommission), columns.table().selection().items().get());
 
 		// before a column from a foreign key further below, following the ones from the same foreign key
 		columns.insert(singletonList(managersManagerName), 9);
 		columns.toggle(singletonList(managerHiredate));
 		assertEquals(asList(MANAGER_NAME, NAME, JOB, managerJob, SALARY, MANAGER, managerSalary, managerCommission,
-						managerHiredate, managersManagerName, departmentName), columns.list().items().get());
+						managerHiredate, managersManagerName, departmentName), columns.table().items().get());
 
 		// none from the same foreign key, so after the last one further below it
 		columns.clear();
@@ -218,7 +220,49 @@ public final class EntityTableExportPanelTest {
 		columns.toggle(singletonList(managersManagerName));
 		columns.toggle(singletonList(JOB));
 		columns.toggle(singletonList(managerJob));
-		assertEquals(asList(NAME, managersManagerName, managerJob, JOB), columns.list().items().get());
+		assertEquals(asList(NAME, managersManagerName, managerJob, JOB), columns.table().items().get());
+	}
+
+	@Test
+	void headers() {
+		EntityTableExportColumns columns = exportColumns();
+		columns.clear();
+		columns.toggle(asList(JOB, MANAGER_NAME));
+		// the default header, the captions on the path
+		assertTrue(columns.defaultHeader(MANAGER_NAME));
+		assertEquals("mgr_fk ename", columns.header(MANAGER_NAME));
+
+		// trimmed, and exported
+		columns.header(MANAGER_NAME, " Manager ");
+		assertFalse(columns.defaultHeader(MANAGER_NAME));
+		assertEquals("Manager", columns.header(MANAGER_NAME));
+		assertEquals("job\tManager", header(columns));
+
+		// blank or the default one, resetting it
+		columns.header(MANAGER_NAME, " ");
+		assertTrue(columns.defaultHeader(MANAGER_NAME));
+		columns.header(MANAGER_NAME, "Manager");
+		columns.header(MANAGER_NAME, "mgr_fk ename");
+		assertTrue(columns.defaultHeader(MANAGER_NAME));
+
+		// in the table, only the header editable
+		SwingFilterTableModel<NodePath<AttributeDefinition<?>>, ExportColumn> table = columns.table();
+		assertEquals("mgr_fk › ename", table.getValueAt(1, ExportColumn.ATTRIBUTE.ordinal()));
+		assertFalse(table.isCellEditable(1, ExportColumn.ATTRIBUTE.ordinal()));
+		assertTrue(table.isCellEditable(1, ExportColumn.HEADER.ordinal()));
+		table.setValueAt("Job title", 0, ExportColumn.HEADER.ordinal());
+		assertEquals("Job title", columns.header(JOB));
+		assertEquals("Job title", table.getValueAt(0, ExportColumn.HEADER.ordinal()));
+
+		// kept when moved, dropped when removed
+		columns.header(MANAGER_NAME, "Manager");
+		columns.move(singletonList(MANAGER_NAME), true);
+		assertEquals("Manager", columns.header(MANAGER_NAME));
+		columns.toggle(singletonList(MANAGER_NAME));
+		columns.toggle(singletonList(MANAGER_NAME));
+		assertTrue(columns.defaultHeader(MANAGER_NAME));
+
+		assertThrows(IllegalArgumentException.class, () -> columns.header(SALARY, "Salary"));
 	}
 
 	@Test
@@ -231,11 +275,11 @@ public final class EntityTableExportPanelTest {
 		columns.toggleChildren(asList(MANAGER, NAME));
 		columns.tree().expansion().expand(MANAGER);
 		// the attributes shown below it, the hidden ones left out, not foreign keys ignored
-		assertEquals(columns.tree().nodes().children(MANAGER), columns.list().items().get());
+		assertEquals(columns.tree().nodes().children(MANAGER), columns.table().items().get());
 		assertFalse(columns.included(path(Employee.MGR_FK, Employee.MGR)));
 
 		columns.toggleChildren(singletonList(MANAGER));
-		assertTrue(columns.list().items().get().isEmpty());
+		assertTrue(columns.table().items().get().isEmpty());
 	}
 
 	@Test
@@ -246,16 +290,16 @@ public final class EntityTableExportPanelTest {
 
 		// across foreign keys
 		columns.move(singletonList(MANAGER_NAME), true);
-		assertEquals(asList(NAME, MANAGER_NAME, JOB, SALARY), columns.list().items().get());
+		assertEquals(asList(NAME, MANAGER_NAME, JOB, SALARY), columns.table().items().get());
 		// already first
 		columns.move(asList(NAME, MANAGER_NAME), true);
-		assertEquals(asList(NAME, MANAGER_NAME, JOB, SALARY), columns.list().items().get());
+		assertEquals(asList(NAME, MANAGER_NAME, JOB, SALARY), columns.table().items().get());
 		// not adjacent
 		columns.move(asList(NAME, JOB), false);
-		assertEquals(asList(MANAGER_NAME, NAME, SALARY, JOB), columns.list().items().get());
+		assertEquals(asList(MANAGER_NAME, NAME, SALARY, JOB), columns.table().items().get());
 		// already last
 		columns.move(asList(SALARY, JOB), false);
-		assertEquals(asList(MANAGER_NAME, NAME, SALARY, JOB), columns.list().items().get());
+		assertEquals(asList(MANAGER_NAME, NAME, SALARY, JOB), columns.table().items().get());
 	}
 
 	@Test
@@ -266,20 +310,20 @@ public final class EntityTableExportPanelTest {
 
 		// dropped onto its own position
 		columns.insert(singletonList(JOB), 1);
-		assertEquals(asList(NAME, JOB, SALARY), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, SALARY), columns.table().items().get());
 		columns.insert(singletonList(JOB), 2);
-		assertEquals(asList(NAME, JOB, SALARY), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, SALARY), columns.table().items().get());
 
 		columns.insert(singletonList(SALARY), 0);
-		assertEquals(asList(SALARY, NAME, JOB), columns.list().items().get());
+		assertEquals(asList(SALARY, NAME, JOB), columns.table().items().get());
 		// after the last
 		columns.insert(singletonList(SALARY), 3);
-		assertEquals(asList(NAME, JOB, SALARY), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, SALARY), columns.table().items().get());
 
 		// dropped from the tree, a new column inserted and a column moved
 		columns.insert(asList(COMMISSION, SALARY), 1);
-		assertEquals(asList(NAME, COMMISSION, SALARY, JOB), columns.list().items().get());
-		assertEquals(asList(COMMISSION, SALARY), columns.list().selection().items().get());
+		assertEquals(asList(NAME, COMMISSION, SALARY, JOB), columns.table().items().get());
+		assertEquals(asList(COMMISSION, SALARY), columns.table().selection().items().get());
 	}
 
 	@Test
@@ -338,26 +382,38 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportColumns columns = exportColumns();
 		columns.clear();
 		columns.toggle(asList(JOB, NAME, MANAGER, MANAGER_NAME));
-		assertEquals("job\tename\tmgr_fk\tmgr_fk ename", header(columns));
+		columns.header(MANAGER_NAME, "Manager");
+		assertEquals("job\tename\tmgr_fk\tManager", header(columns));
 
+		// only the headers set
 		JSONObject json = columns.toJson();
 		assertTrue(new JSONObject("{\"entityType\":\"employees.employee\",\"columns\":[" +
 						"{\"attributes\":[\"job\"]},{\"attributes\":[\"ename\"]},{\"attributes\":[\"mgr_fk\"]}," +
-						"{\"attributes\":[\"mgr_fk\",\"ename\"]}]}").similar(json), json.toString());
+						"{\"attributes\":[\"mgr_fk\",\"ename\"],\"header\":\"Manager\"}]}").similar(json), json.toString());
 
 		EntityTableExportColumns applied = exportColumns();
 		applied.apply(json);
-		assertEquals(columns.list().items().get(), applied.list().items().get());
+		assertEquals(columns.table().items().get(), applied.table().items().get());
+		assertEquals("Manager", applied.header(MANAGER_NAME));
+		assertTrue(applied.defaultHeader(JOB));
+
+		// the headers replaced, one the same as the default one read as the default
+		applied.apply(new JSONObject("{\"columns\":[{\"attributes\":[\"job\"],\"header\":\"job\"}," +
+						"{\"attributes\":[\"mgr_fk\",\"ename\"]}]}"));
+		assertTrue(applied.defaultHeader(JOB));
+		assertTrue(applied.defaultHeader(MANAGER_NAME));
 
 		// the columns which no longer exist, or are named twice, skipped, any other fields ignored
 		applied.apply(new JSONObject("{\"columns\":[{\"attributes\":[\"job\"],\"caption\":\"Job\"},{\"attributes\":[\"none\"]}," +
 						"{\"attributes\":[\"job\",\"ename\"]},{\"attributes\":[\"mgr_fk\",\"none\"]},{\"attributes\":[\"ename\"]}," +
 						"{\"attributes\":[\"job\"]}]}"));
-		assertEquals(asList(JOB, NAME), applied.list().items().get());
+		assertEquals(asList(JOB, NAME), applied.table().items().get());
 
 		// a column not an object naming the attributes on its path
 		assertThrows(JSONException.class, () -> applied.apply(new JSONObject("{\"columns\":[[\"job\"]]}")));
 		assertThrows(JSONException.class, () -> applied.apply(new JSONObject("{\"columns\":[{\"caption\":\"Job\"}]}")));
+		// a header not a string
+		assertThrows(JSONException.class, () -> applied.apply(new JSONObject("{\"columns\":[{\"attributes\":[\"job\"],\"header\":1}]}")));
 	}
 
 	@Test
@@ -366,13 +422,13 @@ public final class EntityTableExportPanelTest {
 		// as written by the first format, a foreign key preceding the attributes below it
 		columns.apply(new JSONObject("{\"entityType\":\"employees.employee\",\"showHidden\":false," +
 						"\"attributes\":[\"job\",\"ename\",\"mgr_fk\",{\"mgr_fk\":{\"attributes\":[\"ename\"]}}]}"));
-		assertEquals(asList(JOB, NAME, MANAGER, MANAGER_NAME), columns.list().items().get());
+		assertEquals(asList(JOB, NAME, MANAGER, MANAGER_NAME), columns.table().items().get());
 		assertEquals("job\tename\tmgr_fk\tmgr_fk ename", header(columns));
 
 		// in the order of first mention, an attribute no longer there skipped
 		columns.apply(new JSONObject("{\"attributes\":[\"job\",{\"mgr_fk\":{\"attributes\":[\"ename\",\"none\"]}}," +
 						"\"none\",\"mgr_fk\",\"ename\"]}"));
-		assertEquals(asList(JOB, MANAGER, MANAGER_NAME, NAME), columns.list().items().get());
+		assertEquals(asList(JOB, MANAGER, MANAGER_NAME, NAME), columns.table().items().get());
 	}
 
 	@Test
@@ -399,6 +455,11 @@ public final class EntityTableExportPanelTest {
 			// moved back, as saved
 			columns.move(singletonList(NAME), false);
 			assertFalse(model.modified().is());
+			// a header set, and reset
+			columns.header(NAME, "Name");
+			assertTrue(model.modified().is());
+			columns.header(NAME, null);
+			assertFalse(model.modified().is());
 			// the table columns, the configuration still selected
 			columns.reset();
 			assertTrue(model.modified().is());
@@ -411,7 +472,7 @@ public final class EntityTableExportPanelTest {
 							.filter(configurationFile -> configurationFile != EntityTableExportModel.NULL_CONFIGURATION_FILE)
 							.findFirst()
 							.orElseThrow(AssertionError::new));
-			assertEquals(asList(JOB, NAME), columns.list().items().get());
+			assertEquals(asList(JOB, NAME), columns.table().items().get());
 			assertFalse(model.modified().is());
 
 			// removed from the list, the file left as is
@@ -452,7 +513,7 @@ public final class EntityTableExportPanelTest {
 							.orElseThrow(AssertionError::new));
 			assertTrue(tree.expansion().expanded(managersManager));
 			assertFalse(tree.expansion().expanded(department));
-			assertTrue(visibleNodes(tree).containsAll(columns.list().items().get()));
+			assertTrue(visibleNodes(tree).containsAll(columns.table().items().get()));
 		}
 		finally {
 			Files.deleteIfExists(file);
@@ -547,7 +608,7 @@ public final class EntityTableExportPanelTest {
 	}
 
 	private static List<Attribute<?>> topLevelAttributes(EntityTableExportColumns columns) {
-		return columns.list().items().get().stream()
+		return columns.table().items().get().stream()
 						.map(path -> path.item().attribute())
 						.collect(toList());
 	}

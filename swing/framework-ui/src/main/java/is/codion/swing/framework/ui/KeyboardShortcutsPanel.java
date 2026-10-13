@@ -176,6 +176,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.keys(message("toggle_include_below"), EntityTableExportPanel.ControlKeys.TOGGLE_BELOW)
 						.keys(message("move_columns"), EntityTableExportPanel.ControlKeys.MOVE_UP, EntityTableExportPanel.ControlKeys.MOVE_DOWN)
 						.keys(message("remove_columns"), EntityTableExportPanel.ControlKeys.REMOVE)
+						.keys(message("edit_header"), EntityTableExportPanel.ControlKeys.EDIT_HEADER)
 						.keys(message("find_attribute"), EntityTableExportPanel.ControlKeys.FOCUS_SEARCH_FIELD)
 						.keys(message("move_focus_to_attributes"), EntityTableExportPanel.ControlKeys.FOCUS_ATTRIBUTES)
 						.keys(message("move_focus_to_columns"), EntityTableExportPanel.ControlKeys.FOCUS_COLUMNS)

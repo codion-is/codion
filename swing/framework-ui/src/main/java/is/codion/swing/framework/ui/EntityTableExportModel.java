@@ -62,7 +62,6 @@ import java.util.function.Supplier;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.framework.ui.EntityTableExportColumns.ENTITY_TYPE_KEY;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
@@ -89,8 +88,8 @@ final class EntityTableExportModel {
 	private final Event<?> rowCounts = Event.event();
 	private final State modified = State.state();
 
-	//the columns of the selected configuration as last applied or saved, the default columns in case of none
-	private List<NodePath<AttributeDefinition<?>>> saved = emptyList();
+	//the configuration selected as last applied or saved, the default columns in case of none
+	private JSONObject saved = new JSONObject();
 
 	/**
 	 * @param tableModel the table model
@@ -112,7 +111,7 @@ final class EntityTableExportModel {
 		this.tableModel.selection().present().addConsumer(selected::set);
 		this.tableModel.selection().indexes().addListener(rowCounts::run);
 		this.tableModel.items().included().addListener(rowCounts::run);
-		this.columns.list().items().included().addListener(this::columnsChanged);
+		this.columns.changed().addListener(this::columnsChanged);
 		this.columns.reset();
 		saved();
 	}
@@ -185,8 +184,8 @@ final class EntityTableExportModel {
 	}
 
 	/**
-	 * @return true while the columns differ from the ones of the selected configuration, as last applied or saved,
-	 * or the default ones in case of none
+	 * @return true while the columns or their headers differ from the ones of the selected configuration, as last
+	 * applied or saved, or the default ones in case of none
 	 */
 	ObservableState modified() {
 		return modified.observable();
@@ -300,7 +299,7 @@ final class EntityTableExportModel {
 	}
 
 	private void configurationFileSelected(@Nullable ConfigurationFile configurationFile) {
-		List<NodePath<AttributeDefinition<?>>> previous = new ArrayList<>(columns.list().items().get());
+		List<NodePath<AttributeDefinition<?>>> previous = new ArrayList<>(columns.table().items().get());
 		if (configurationFile == null) {
 			columns.reset();
 		}
@@ -308,18 +307,18 @@ final class EntityTableExportModel {
 			columns.apply(configurationFile.json());
 		}
 		//the columns unchanged when a saved configuration is selected, leaving the tree as is
-		if (!previous.equals(columns.list().items().get())) {
+		if (!previous.equals(columns.table().items().get())) {
 			columns.expand();
 		}
 		saved();
 	}
 
 	private void columnsChanged() {
-		modified.set(!saved.equals(columns.list().items().included().get()));
+		modified.set(!saved.similar(columns.toJson()));
 	}
 
 	private void saved() {
-		saved = new ArrayList<>(columns.list().items().included().get());
+		saved = columns.toJson();
 		modified.set(false);
 	}
 

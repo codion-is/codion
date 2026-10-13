@@ -815,6 +815,7 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |===
 |key|default|is_IS
 
+|attribute|Attribute|Gildi
 |available|Available|Í boði
 |clear|Clear|Hreinsa
 |clear_description|Remove all columns|Fjarlægja alla dálka
@@ -825,18 +826,22 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |configurations|Configurations|Stillingar
 |configurations_description|The configurations used, right-click to remove them from the list|Notaðar stillingar, hægrismellið til að fjarlægja þær af listanum
 |data_exported|Data exported|Gögn afrituð
+|edit_header|Edit header|Breyta fyrirsögn
 |export|Export|Flytja út
 |exported_to_clipboard|Exported to clipboard|Afritað á klippiborð
 |exported_to_file|Exported to file|Afritað í skrá
 |exporting_data|Exporting data|Flyt út gögn
+|header|Header|Fyrirsögn
 |help|Help|Hjálp
 |help_text|Check the columns to export in the tree on the left, by clicking a check box, double-clicking an attribute
-or dragging attributes to the list on the right, which holds the columns in the order of the export.
-Right-click the tree or the list for more actions, showing the hidden columns for example.
+or dragging attributes to the table on the right, which holds the columns in the order of the export.
+A column header is edited with F2 or a double-click, an empty one resetting it to the default.
+Right-click the tree or the table for more actions, showing the hidden columns for example.
 
 Saved configurations are in the drop down below.|Hakið við dálkana sem á að flytja út í trénu til vinstri, með því að smella á hakið, tvísmella á dálk
-eða draga dálk yfir í listann hægra megin, sem sýnir dálkana í útflutningsröð.
-Hægrismellið á tréð eða listann fyrir fleiri aðgerðir, til dæmis til að birta falda dálka.
+eða draga dálk yfir í töfluna hægra megin, sem sýnir dálkana í útflutningsröð.
+Fyrirsögn dálks er breytt með F2 eða tvísmelli, tóm fyrirsögn verður sjálfgefin.
+Hægrismellið á tréð eða töfluna fyrir fleiri aðgerðir, til dæmis til að birta falda dálka.
 
 Vistaðar stillingar eru í flettilistanum fyrir neðan.
 |move_down|Move down|Færa niður
@@ -929,6 +934,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |delete_selected|Delete selected|Eyða völdum
 |display_calendar|Display calendar|Birta dagatal
 |display_input_dialog|Display multi-line input dialog|Birta innsláttarreit með fleiri línum
+|edit_header|Edit header|Breyta fyrirsögn
 |edit_panel|Edit panel|Innsláttarflötur
 |edit_selected_item|Edit selected item|Breyta valinni færslu
 |edit_value|Edit value|Breyta gildi
