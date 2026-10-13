@@ -10,6 +10,7 @@ Codion Change Log
 - EntityTablePanel, the export model is now only created when the export is included, the unused columns_default export messages removed, and the Icelandic export help text escaped and corrected.
 - EntityTablePanel, the export dialog reworked, the attributes checked in a tree with a search field, the columns listed beside it in the order of the export, moved and removed there, by default the visible table columns, configurations now saved as a list of columns, the nested ones still read.
 - EntityTablePanel, the export dialog shows the row counts, the entity in its title and its keyboard shortcuts in its help, offers to open an exported file or its folder, Save now overwrites the selected configuration, enabled while it is modified, Save as added, a modified configuration confirmed before being replaced, a configuration removable from the list, the panes resizable and focused with Alt-1 to Alt-3, and Escape no longer closes the dialog.
+- EntityTablePanel, the export dialog expands the attribute tree to show the columns of a selected configuration.
 
 ## 0.18.90
 ### is.codion.common.reactive

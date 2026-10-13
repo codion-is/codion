@@ -372,6 +372,41 @@ public final class EntityTableExportPanelTest {
 	}
 
 	@Test
+	void expandOnSelection() throws Exception {
+		EntityTableExportModel model = tablePanel().exportPanel().model();
+		EntityTableExportColumns columns = model.columns();
+		SwingFilterTreeModel<AttributeDefinition<?>> tree = columns.tree();
+		NodePath<AttributeDefinition<?>> department = path(Employee.DEPARTMENT_FK);
+		NodePath<AttributeDefinition<?>> managersManager = path(Employee.MGR_FK, Employee.MGR_FK);
+		Path file = Files.createTempFile("export", ".json");
+		try {
+			columns.clear();
+			columns.toggle(asList(JOB, MANAGER_NAME, path(Employee.MGR_FK, Employee.MGR_FK, Employee.NAME)));
+			tree.expansion().expand(department);
+			// saving leaves the tree as is
+			model.writeConfig(file.toFile());
+			assertTrue(tree.expansion().expanded(department));
+			assertFalse(tree.expansion().expanded(MANAGER));
+
+			// no configuration, the default columns, all at the top level
+			model.configurationFiles().selection().clear();
+			assertTrue(tree.expansion().get().isEmpty());
+
+			// the configuration, the tree showing all its columns
+			model.configurationFiles().selection().item().set(model.configurationFiles().items().get().stream()
+							.filter(configurationFile -> configurationFile != EntityTableExportModel.NULL_CONFIGURATION_FILE)
+							.findFirst()
+							.orElseThrow(AssertionError::new));
+			assertTrue(tree.expansion().expanded(managersManager));
+			assertFalse(tree.expansion().expanded(department));
+			assertTrue(visibleNodes(tree).containsAll(columns.list().items().get()));
+		}
+		finally {
+			Files.deleteIfExists(file);
+		}
+	}
+
+	@Test
 	void wrongEntityType() throws Exception {
 		EntityTableExportModel model = tablePanel().exportPanel().model();
 		Path file = Files.createTempFile("export", ".json");

@@ -300,11 +300,16 @@ final class EntityTableExportModel {
 	}
 
 	private void configurationFileSelected(@Nullable ConfigurationFile configurationFile) {
+		List<NodePath<AttributeDefinition<?>>> previous = new ArrayList<>(columns.list().items().get());
 		if (configurationFile == null) {
 			columns.reset();
 		}
 		else {
 			columns.apply(configurationFile.json());
+		}
+		//the columns unchanged when a saved configuration is selected, leaving the tree as is
+		if (!previous.equals(columns.list().items().get())) {
+			columns.expand();
 		}
 		saved();
 	}

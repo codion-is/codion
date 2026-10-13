@@ -274,6 +274,19 @@ final class EntityTableExportColumns {
 	}
 
 	/**
+	 * Expands the foreign keys above the columns, collapsing all others, the tree showing every column.
+	 */
+	void expand() {
+		Set<NodePath<AttributeDefinition<?>>> foreignKeys = new LinkedHashSet<>();
+		columns.items().get().forEach(column -> {
+			for (NodePath<AttributeDefinition<?>> parent = column.parent(); !parent.root(); parent = parent.parent()) {
+				foreignKeys.add(parent);
+			}
+		});
+		attributes.expansion().set(foreignKeys);
+	}
+
+	/**
 	 * Applies the given configuration, the columns it names which exist, any other column fields ignored. Reads the
 	 * first, nested configuration format as well, as the columns it exported.
 	 * @param json the configuration
