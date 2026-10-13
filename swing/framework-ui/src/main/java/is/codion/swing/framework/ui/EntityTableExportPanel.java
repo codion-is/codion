@@ -115,6 +115,7 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final String TSV = "tsv";
 	private static final String JSON = "json";
+	private static final String DATA_EXPORTED = "data_exported";
 	private static final FileNameExtensionFilter CONFIGURATION_FILE =
 					new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON);
 	private static final DataFlavor PATHS = new DataFlavor(TransferablePaths.class, "Attribute paths");
@@ -357,7 +358,7 @@ final class EntityTableExportPanel extends JPanel {
 						.control(cancelControl(task.cancel()))
 						.onWorking(exporting::set)
 						.onResult(Utilities::setClipboard)
-						.onSuccess(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_clipboard"))
+						.onSuccess(MESSAGES.getString(DATA_EXPORTED), MESSAGES.getString("exported_to_clipboard"))
 						.execute();
 	}
 
@@ -367,11 +368,11 @@ final class EntityTableExportPanel extends JPanel {
 	private void exportedToFile(Path path) {
 		String message = MESSAGES.getString("exported_to_file") + "\n" + path;
 		if (!Desktop.isDesktopSupported() || !Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-			JOptionPane.showMessageDialog(this, message, MESSAGES.getString("data_exported"), JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, message, MESSAGES.getString(DATA_EXPORTED), JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		String[] options = {MESSAGES.getString("open_file"), MESSAGES.getString("open_folder"), Messages.ok()};
-		int option = JOptionPane.showOptionDialog(this, message, MESSAGES.getString("data_exported"),
+		int option = JOptionPane.showOptionDialog(this, message, MESSAGES.getString(DATA_EXPORTED),
 						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[2]);
 		if (option == 0 || option == 1) {
 			File file = path.toFile();
@@ -583,8 +584,14 @@ final class EntityTableExportPanel extends JPanel {
 		model.addConfigurationFiles(Dialogs.select()
 						.files()
 						.owner(this)
+						.startDirectory(startDirectory())
 						.filter(CONFIGURATION_FILE)
 						.selectFiles());
+	}
+
+	private @Nullable String startDirectory() {
+		return model.configurationFiles().selection().item().optional()
+						.map(file -> file.file().getParent()).orElse(null);
 	}
 
 	private void saveConfiguration() {

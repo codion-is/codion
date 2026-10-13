@@ -15,6 +15,7 @@ Codion Change Log
 - EntityTablePanel, the export dialog expands the attribute tree to show the columns of a selected configuration.
 - EntityTablePanel, the export dialog adds a checked attribute after the last column from the same foreign key, otherwise last, no longer after the selected column.
 - EntityTablePanel, the export columns listed in a table, each with an editable header, the captions on its path by default, a header set saved with the configuration.
+- EntityTablePanel, export dialog open file selection start directory follows selected configuration file, last used directory in case no file is selected.
 
 ## 0.18.90
 ### is.codion.common.reactive

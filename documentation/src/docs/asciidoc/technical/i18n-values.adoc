@@ -824,7 +824,7 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |columns|Columns|Dálkar
 |configuration_file|Configuration file|Stilliskrá
 |configurations|Configurations|Stillingar
-|configurations_description|The configurations used, right-click to remove them from the list|Notaðar stillingar, hægrismellið til að fjarlægja þær af listanum
+|configurations_description|The configurations used, right-click to remove them from the list|Vistaðar stillingar, hægrismellið til að fjarlægja úr listanum
 |data_exported|Data exported|Gögn afrituð
 |edit_header|Edit header|Breyta fyrirsögn
 |export|Export|Flytja út
@@ -838,7 +838,7 @@ or dragging attributes to the table on the right, which holds the columns in the
 A column header is edited with F2 or a double-click, an empty one resetting it to the default.
 Right-click the tree or the table for more actions, showing the hidden columns for example.
 
-Saved configurations are in the drop down below.|Hakið við dálkana sem á að flytja út í trénu til vinstri, með því að smella á hakið, tvísmella á dálk
+Saved configurations are in the drop down below.|Hakið við dálkana sem á að flytja út í trénu vinstra megin, með því að smella á hakið, tvísmella á dálk
 eða draga dálk yfir í töfluna hægra megin, sem sýnir dálkana í útflutningsröð.
 Fyrirsögn dálks er breytt með F2 eða tvísmelli, tóm fyrirsögn verður sjálfgefin.
 Hægrismellið á tréð eða töfluna fyrir fleiri aðgerðir, til dæmis til að birta falda dálka.
