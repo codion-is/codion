@@ -163,9 +163,23 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.row(message("move_focus_to_table"), text(keyStroke(VK_ESCAPE)));
 	}
 
+	/**
+	 * @return the keyboard shortcuts of the table export
+	 */
+	static JPanel tableExportPanel() {
+		return tableExport().panel();
+	}
+
 	private static Section tableExport() {
 		return new Section(message("table_export"))
-						.row(message("toggle_include_attribute"), text(keyStroke(VK_SPACE)));
+						.keys(message("toggle_include_attribute"), EntityTableExportPanel.ControlKeys.TOGGLE)
+						.keys(message("toggle_include_below"), EntityTableExportPanel.ControlKeys.TOGGLE_BELOW)
+						.keys(message("move_columns"), EntityTableExportPanel.ControlKeys.MOVE_UP, EntityTableExportPanel.ControlKeys.MOVE_DOWN)
+						.keys(message("remove_columns"), EntityTableExportPanel.ControlKeys.REMOVE)
+						.keys(message("find_attribute"), EntityTableExportPanel.ControlKeys.FOCUS_SEARCH_FIELD)
+						.keys(message("move_focus_to_attributes"), EntityTableExportPanel.ControlKeys.FOCUS_ATTRIBUTES)
+						.keys(message("move_focus_to_columns"), EntityTableExportPanel.ControlKeys.FOCUS_COLUMNS)
+						.keys(message("move_focus_to_configurations"), EntityTableExportPanel.ControlKeys.FOCUS_CONFIGURATIONS);
 	}
 
 	private static Section dateTimeField() {

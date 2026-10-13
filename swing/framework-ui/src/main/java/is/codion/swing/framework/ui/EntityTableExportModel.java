@@ -20,14 +20,20 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.model.component.combobox.FilterComboBoxModel.ComboBoxItems;
+import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.model.EntityExport;
 import is.codion.framework.model.EntityExport.Attributes;
 import is.codion.framework.model.EntityTableModel;
@@ -42,6 +48,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -52,12 +59,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.framework.ui.EntityTableExportColumns.ENTITY_TYPE_KEY;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class EntityTableExportModel {
+
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityTableExportPanel.class, getBundle(EntityTableExportPanel.class.getName()));
 
 	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
 	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
@@ -72,6 +86,11 @@ final class EntityTableExportModel {
 	private final EntityTableExportColumns columns;
 	private final State selected;
 	private final State all;
+	private final Event<?> rowCounts = Event.event();
+	private final State modified = State.state();
+
+	//the columns of the selected configuration as last applied or saved, the default columns in case of none
+	private List<NodePath<AttributeDefinition<?>>> saved = emptyList();
 
 	/**
 	 * @param tableModel the table model
@@ -91,7 +110,21 @@ final class EntityTableExportModel {
 		this.all = State.state(!selected.is());
 		State.group(selected, all).fallback(all);
 		this.tableModel.selection().present().addConsumer(selected::set);
+		this.tableModel.selection().indexes().addListener(rowCounts::run);
+		this.tableModel.items().included().addListener(rowCounts::run);
+		this.columns.list().items().included().addListener(this::columnsChanged);
 		this.columns.reset();
+		saved();
+	}
+
+	/**
+	 * Resets the columns to the current default ones, in case no configuration is selected.
+	 */
+	void initialize() {
+		if (configurationFiles.selection().item().isNull()) {
+			columns.reset();
+			saved();
+		}
 	}
 
 	ExportTask<String> exportToString() {
@@ -130,6 +163,35 @@ final class EntityTableExportModel {
 		return all;
 	}
 
+	/**
+	 * @return the number of rows exported when all rows are exported, the ones the table includes
+	 */
+	int allCount() {
+		return tableModel.items().included().size();
+	}
+
+	/**
+	 * @return the number of selected rows
+	 */
+	int selectedCount() {
+		return tableModel.selection().count();
+	}
+
+	/**
+	 * @return notified when the row counts may have changed
+	 */
+	Observer<?> rowCounts() {
+		return rowCounts.observer();
+	}
+
+	/**
+	 * @return true while the columns differ from the ones of the selected configuration, as last applied or saved,
+	 * or the default ones in case of none
+	 */
+	ObservableState modified() {
+		return modified.observable();
+	}
+
 	String defaultExportFileName() {
 		return tableModel.entityDefinition().caption();
 	}
@@ -149,6 +211,13 @@ final class EntityTableExportModel {
 
 	void clearConfigurationFiles() {
 		configurationFiles.items().clear();
+	}
+
+	/**
+	 * Removes the selected configuration file from the list, the file itself left as is.
+	 */
+	void removeConfigurationFile() {
+		configurationFiles.selection().item().optional().ifPresent(configurationFiles.items()::remove);
 	}
 
 	void restore(JSONObject preferences) {
@@ -179,6 +248,7 @@ final class EntityTableExportModel {
 	void writeConfig(File file) {
 		try {
 			Files.write(file.toPath(), columns.toJson().toString(2).getBytes(UTF_8));
+			saved();
 			addAndSelect(new DefaultConfigurationFile(file));
 		}
 		catch (IOException e) {
@@ -236,6 +306,16 @@ final class EntityTableExportModel {
 		else {
 			columns.apply(configurationFile.json());
 		}
+		saved();
+	}
+
+	private void columnsChanged() {
+		modified.set(!saved.equals(columns.list().items().included().get()));
+	}
+
+	private void saved() {
+		saved = new ArrayList<>(columns.list().items().included().get());
+		modified.set(false);
 	}
 
 	private void validateEntityType(List<DefaultConfigurationFile> files) {
@@ -244,7 +324,10 @@ final class EntityTableExportModel {
 						.map(DefaultConfigurationFile::file)
 						.collect(toList());
 		if (!incorrectEntityType.isEmpty()) {
-			throw new IllegalArgumentException("Incorrect entity type:\n" + incorrectEntityType);
+			throw new IllegalArgumentException(MessageFormat.format(MESSAGES.getString("wrong_entity_type"),
+							entityDefinition().caption(), incorrectEntityType.stream()
+											.map(File::getAbsolutePath)
+											.collect(joining("\n"))));
 		}
 	}
 

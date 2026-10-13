@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
@@ -319,6 +320,93 @@ public final class EntityTableExportPanelTest {
 		columns.apply(new JSONObject("{\"attributes\":[\"job\",{\"mgr_fk\":{\"attributes\":[\"ename\",\"none\"]}}," +
 						"\"none\",\"mgr_fk\",\"ename\"]}"));
 		assertEquals(asList(JOB, MANAGER, MANAGER_NAME, NAME), columns.list().items().get());
+	}
+
+	@Test
+	void modified() throws Exception {
+		EntityTableExportModel model = tablePanel().exportPanel().model();
+		EntityTableExportColumns columns = model.columns();
+		// the default columns, no configuration selected
+		assertFalse(model.modified().is());
+		columns.toggle(singletonList(MANAGER_NAME));
+		assertTrue(model.modified().is());
+		columns.toggle(singletonList(MANAGER_NAME));
+		assertFalse(model.modified().is());
+
+		Path file = Files.createTempFile("export", ".json");
+		try {
+			columns.clear();
+			columns.toggle(asList(JOB, NAME));
+			model.writeConfig(file.toFile());
+			assertFalse(model.modified().is());
+			assertEquals(file.toFile(), model.configurationFiles().selection().item().getOrThrow().file());
+
+			columns.move(singletonList(NAME), true);
+			assertTrue(model.modified().is());
+			// moved back, as saved
+			columns.move(singletonList(NAME), false);
+			assertFalse(model.modified().is());
+			// the table columns, the configuration still selected
+			columns.reset();
+			assertTrue(model.modified().is());
+
+			// selecting no configuration, the default columns
+			model.configurationFiles().selection().clear();
+			assertFalse(model.modified().is());
+			// and the configuration again, as saved
+			model.configurationFiles().selection().item().set(model.configurationFiles().items().get().stream()
+							.filter(configurationFile -> configurationFile != EntityTableExportModel.NULL_CONFIGURATION_FILE)
+							.findFirst()
+							.orElseThrow(AssertionError::new));
+			assertEquals(asList(JOB, NAME), columns.list().items().get());
+			assertFalse(model.modified().is());
+
+			// removed from the list, the file left as is
+			model.removeConfigurationFile();
+			assertTrue(model.configurationFiles().selection().item().isNull());
+			assertTrue(Files.exists(file));
+		}
+		finally {
+			Files.deleteIfExists(file);
+		}
+	}
+
+	@Test
+	void wrongEntityType() throws Exception {
+		EntityTableExportModel model = tablePanel().exportPanel().model();
+		Path file = Files.createTempFile("export", ".json");
+		try {
+			Files.write(file, "{\"entityType\":\"employees.department\",\"columns\":[]}".getBytes(UTF_8));
+			IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+							() -> model.addConfigurationFiles(singletonList(file.toFile())));
+			assertTrue(exception.getMessage().contains(model.entityDefinition().caption()), exception.getMessage());
+			assertTrue(exception.getMessage().contains(file.toFile().getAbsolutePath()), exception.getMessage());
+		}
+		finally {
+			Files.deleteIfExists(file);
+		}
+	}
+
+	@Test
+	void rowCounts() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
+		tableModel.items().refresher().async().set(false);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
+		EntityTableExportModel model = tablePanel.exportModel();
+		AtomicInteger notified = new AtomicInteger();
+		model.rowCounts().addListener(notified::incrementAndGet);
+
+		tableModel.items().refresh();
+		assertTrue(notified.get() > 0);
+		assertEquals(tableModel.items().included().size(), model.allCount());
+		assertEquals(0, model.selectedCount());
+
+		notified.set(0);
+		tableModel.selection().indexes().set(asList(0, 1));
+		assertTrue(notified.get() > 0);
+		assertEquals(2, model.selectedCount());
+		// the selected rows exported, following the selection
+		assertTrue(model.selected().is());
 	}
 
 	@Test

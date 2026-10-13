@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.component.tree.NodePath;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.framework.domain.entity.Entities;
@@ -81,6 +82,7 @@ final class EntityTableExportColumns {
 					.listener(this::showHiddenChanged)
 					.build();
 	private final Value<String> search = Value.nonNull("");
+	private final State foreignKeySelected = State.state();
 
 	//the columns as they were when last changed, for finding the nodes to repaint
 	private Set<NodePath<AttributeDefinition<?>>> previous = emptySet();
@@ -104,6 +106,7 @@ final class EntityTableExportColumns {
 						.roots(() -> children(nodePath()))
 						.children(this::children)
 						.leaf(path -> !(path.item() instanceof ForeignKeyDefinition))
+						.onSelectedItem(this::updateForeignKeySelected)
 						.build();
 		this.attributes.nodes().loader().async().set(false);
 		this.attributes.nodes().refresh();
@@ -137,6 +140,13 @@ final class EntityTableExportColumns {
 	 */
 	Value<String> search() {
 		return search;
+	}
+
+	/**
+	 * @return an observable state enabled when a single foreign key is selected
+	 */
+	ObservableState foreignKeySelected() {
+		return foreignKeySelected.observable();
 	}
 
 	/**
@@ -311,6 +321,10 @@ final class EntityTableExportColumns {
 		columns.items().get().forEach(path -> attributes.add(path.items().stream()
 						.map(AttributeDefinition::attribute)
 						.collect(toList())));
+	}
+
+	private void updateForeignKeySelected(AttributeDefinition<?> attribute) {
+		foreignKeySelected.set(attribute instanceof ForeignKeyDefinition && attributes.selection().single().is());
 	}
 
 	private Collection<NodePath<AttributeDefinition<?>>> defaultColumns() {

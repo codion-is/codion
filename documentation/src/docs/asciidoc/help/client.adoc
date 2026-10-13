@@ -746,6 +746,13 @@ NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for all shortcuts 
 2+|Table export
 
 |kbd:[Space]|Toggle attribute inclusion
+|kbd:[Shift + Space]|Toggle the attributes below a foreign key
+|kbd:[Alt + &#x2191;/&#x2193;]|Move columns
+|kbd:[Delete]|Remove columns
+|kbd:[Ctrl + F]|Search attributes
+|kbd:[Alt + 1]|Move focus to attributes
+|kbd:[Alt + 2]|Move focus to columns
+|kbd:[Alt + 3]|Move focus to configurations
 |===
 
 [cols="1,3"]

@@ -19,17 +19,23 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.CancelException;
 import is.codion.common.model.component.tree.NodePath;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.tree.FilterTree;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -41,13 +47,17 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
@@ -60,14 +70,19 @@ import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -76,9 +91,11 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.RADIO_BUTTON;
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityTableExportModel.NULL_CONFIGURATION_FILE;
+import static is.codion.swing.framework.ui.EntityTableExportPanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.emptyList;
@@ -96,91 +113,187 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final String TSV = "tsv";
 	private static final String JSON = "json";
-	private static final String PATH_SEPARATOR = " \u203A ";
+	private static final String PATH_SEPARATOR = " › ";
 	private static final FileNameExtensionFilter CONFIGURATION_FILE =
 					new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON);
 	private static final DataFlavor PATHS = new DataFlavor(TransferablePaths.class, "Attribute paths");
 
+	/**
+	 * The controls, their key strokes listed among the keyboard shortcuts.
+	 */
+	static final class ControlKeys {
+
+		/**
+		 * Checks or unchecks the selected attributes.<br>
+		 * Default key stroke: SPACE
+		 */
+		static final ControlKey<CommandControl> TOGGLE = CommandControl.key("toggle", keyStroke(VK_SPACE));
+		/**
+		 * Checks or unchecks the attributes below the selected foreign keys.<br>
+		 * Default key stroke: SHIFT-SPACE
+		 */
+		static final ControlKey<CommandControl> TOGGLE_BELOW = CommandControl.key("toggleBelow", keyStroke(VK_SPACE, SHIFT_DOWN_MASK));
+		/**
+		 * Moves the selected columns up.<br>
+		 * Default key stroke: ALT-UP ARROW
+		 */
+		static final ControlKey<CommandControl> MOVE_UP = CommandControl.key("moveUp", keyStroke(VK_UP, ALT_DOWN_MASK));
+		/**
+		 * Moves the selected columns down.<br>
+		 * Default key stroke: ALT-DOWN ARROW
+		 */
+		static final ControlKey<CommandControl> MOVE_DOWN = CommandControl.key("moveDown", keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		/**
+		 * Removes the selected columns.<br>
+		 * Default key stroke: DELETE
+		 */
+		static final ControlKey<CommandControl> REMOVE = CommandControl.key("remove", keyStroke(VK_DELETE));
+		/**
+		 * Moves the focus to the search field.<br>
+		 * Default key stroke: CTRL-F
+		 */
+		static final ControlKey<CommandControl> FOCUS_SEARCH_FIELD = CommandControl.key("focusSearchField", keyStroke(VK_F, MENU_SHORTCUT_MASK));
+		/**
+		 * Moves the focus to the attributes.<br>
+		 * Default key stroke: ALT-1
+		 */
+		static final ControlKey<CommandControl> FOCUS_ATTRIBUTES = CommandControl.key("focusAttributes", keyStroke(VK_1, ALT_DOWN_MASK));
+		/**
+		 * Moves the focus to the columns.<br>
+		 * Default key stroke: ALT-2
+		 */
+		static final ControlKey<CommandControl> FOCUS_COLUMNS = CommandControl.key("focusColumns", keyStroke(VK_2, ALT_DOWN_MASK));
+		/**
+		 * Moves the focus to the configurations.<br>
+		 * Default key stroke: ALT-3
+		 */
+		static final ControlKey<CommandControl> FOCUS_CONFIGURATIONS = CommandControl.key("focusConfigurations", keyStroke(VK_3, ALT_DOWN_MASK));
+
+		private ControlKeys() {}
+	}
+
 	private final EntityTableExportModel model;
 	private final AtomicReference<Dimension> dialogSize;
 	private final AttributeRenderer attributeRenderer = new AttributeRenderer();
-	private final FilterTree<AttributeDefinition<?>> attributeTree;
-	private final FilterList<NodePath<AttributeDefinition<?>>> columnList;
+	private final Value<String> allRowsCaption = Value.nonNull("");
+	private final Value<String> selectedRowsCaption = Value.nonNull("");
 	private final State exporting = State.state();
-
-	private final Control saveConfiguration = Control.builder()
-					.command(this::saveConfiguration)
-					.caption(Messages.save())
-					.mnemonic(Messages.saveMnemonic())
-					.build();
-	private final Control openConfiguration = Control.builder()
-					.command(this::openConfigurationFiles)
-					.caption(Messages.open())
-					.mnemonic(Messages.openMnemonic())
-					.build();
+	private final Control toggle;
+	private final Control toggleBelow;
 	private final Control moveUp;
 	private final Control moveDown;
 	private final Control removeColumns;
 	private final Control tableColumns;
 	private final Control clearColumns;
+	private final Control openConfiguration;
+	private final Control saveConfiguration;
+	private final Control saveConfigurationAs;
 	private final ToggleControl showHidden;
 	private final ToggleControl allRows;
 	private final ToggleControl selectedRows;
+	private final FilterTree<AttributeDefinition<?>> attributeTree;
+	private final FilterList<NodePath<AttributeDefinition<?>>> columnList;
+	private final JComboBox<ConfigurationFile> configurationFilesComboBox;
+	private final JTextField searchField;
 
 	EntityTableExportPanel(EntityTableExportModel model, AtomicReference<Dimension> dialogSize) {
 		super(borderLayout());
 		this.model = model;
 		this.dialogSize = dialogSize;
+		ObservableState columnsSelected = model.columns().list().selection().present();
+		this.toggle = Control.builder()
+						.command(() -> model.columns().toggle(selectedAttributes()))
+						.caption(MESSAGES.getString("toggle"))
+						.keyStroke(TOGGLE.defaultKeystroke().get())
+						.build();
+		this.toggleBelow = Control.builder()
+						.command(() -> model.columns().toggleChildren(selectedAttributes()))
+						.caption(MESSAGES.getString("toggle_below"))
+						.enabled(model.columns().foreignKeySelected())
+						.keyStroke(TOGGLE_BELOW.defaultKeystroke().get())
+						.build();
 		this.moveUp = Control.builder()
 						.command(() -> model.columns().move(selectedColumns(), true))
-						.enabled(model.columns().list().selection().present())
+						.caption(MESSAGES.getString("move_up"))
+						.enabled(columnsSelected)
 						.icon(FrameworkIcons.instance().up())
 						.description(MESSAGES.getString("move_up"))
+						.keyStroke(MOVE_UP.defaultKeystroke().get())
 						.build();
 		this.moveDown = Control.builder()
 						.command(() -> model.columns().move(selectedColumns(), false))
-						.enabled(model.columns().list().selection().present())
+						.caption(MESSAGES.getString("move_down"))
+						.enabled(columnsSelected)
 						.icon(FrameworkIcons.instance().down())
 						.description(MESSAGES.getString("move_down"))
+						.keyStroke(MOVE_DOWN.defaultKeystroke().get())
 						.build();
 		this.removeColumns = Control.builder()
 						.command(() -> model.columns().remove(selectedColumns()))
-						.enabled(model.columns().list().selection().present())
+						.caption(MESSAGES.getString("remove"))
+						.enabled(columnsSelected)
 						.icon(FrameworkIcons.instance().delete())
 						.description(MESSAGES.getString("remove"))
+						.keyStroke(REMOVE.defaultKeystroke().get())
 						.build();
 		this.tableColumns = Control.builder()
 						.command(model.columns()::reset)
 						.caption(MESSAGES.getString("table_columns"))
-						.mnemonic(MESSAGES.getString("table_columns_mnemonic").charAt(0))
+						.icon(FrameworkIcons.instance().columns())
+						.description(MESSAGES.getString("table_columns_description"))
 						.build();
 		this.clearColumns = Control.builder()
 						.command(model.columns()::clear)
 						.caption(MESSAGES.getString("clear"))
-						.mnemonic(MESSAGES.getString("clear_mnemonic").charAt(0))
+						.icon(FrameworkIcons.instance().clear())
+						.description(MESSAGES.getString("clear_description"))
+						.build();
+		this.openConfiguration = Control.builder()
+						.command(this::openConfigurationFiles)
+						.caption(Messages.open())
+						.mnemonic(Messages.openMnemonic())
+						.description(MESSAGES.getString("open_description"))
+						.build();
+		this.saveConfiguration = Control.builder()
+						.command(this::saveConfiguration)
+						.enabled(State.and(model.configurationFiles().selection().present(), model.modified()))
+						.caption(Messages.save())
+						.mnemonic(Messages.saveMnemonic())
+						.description(MESSAGES.getString("save_description"))
+						.build();
+		this.saveConfigurationAs = Control.builder()
+						.command(this::saveConfigurationAs)
+						.caption(MESSAGES.getString("save_as"))
+						.mnemonic(MESSAGES.getString("save_as_mnemonic").charAt(0))
+						.description(MESSAGES.getString("save_as_description"))
 						.build();
 		this.showHidden = Control.builder()
 						.toggle(model.columns().showHidden())
 						.caption(MESSAGES.getString("show_hidden"))
 						.mnemonic(MESSAGES.getString("show_hidden_mnemonic").charAt(0))
+						.description(MESSAGES.getString("show_hidden_description"))
 						.build();
 		this.selectedRows = Control.builder()
 						.toggle(model.selected())
-						.caption(MESSAGES.getString("rows_selected"))
+						.caption(selectedRowsCaption)
 						.mnemonic(MESSAGES.getString("rows_selected_mnemonic").charAt(0))
 						.build();
 		this.allRows = Control.builder()
 						.toggle(model.all())
-						.caption(MESSAGES.getString("rows_all"))
+						.caption(allRowsCaption)
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
 		this.attributeTree = createAttributeTree();
 		this.columnList = createColumnList();
-		if (model.configurationFiles().selection().item().isNull()) {
-			//the table columns as they are when the export is first shown, with the column preferences applied
-			model.columns().reset();
-		}
+		this.searchField = createSearchField();
+		this.configurationFilesComboBox = createConfigurationFilesComboBox();
+		//the table columns as they are when the export is first shown, with the column preferences applied
+		model.initialize();
+		model.rowCounts().addListener(this::updateRowCounts);
+		model.configurationFiles().selection().changing().addListener(this::confirmDiscard);
+		updateRowCounts();
 		initializeUI();
+		configureKeyEvents();
 	}
 
 	void show(JComponent dialogOwner) {
@@ -192,7 +305,8 @@ final class EntityTableExportPanel extends JPanel {
 							.component(this)
 							.owner(dialogOwner)
 							.modal(false)
-							.title(MESSAGES.getString("export"))
+							.disposeOnEscape(false)
+							.title(MESSAGES.getString("export") + " - " + model.entityDefinition().caption())
 							.icon(FrameworkIcons.instance().export().small())
 							.size(dialogSize.get())
 							.onClosed(event -> dialogSize.set(event.getWindow().getSize()))
@@ -217,7 +331,7 @@ final class EntityTableExportPanel extends JPanel {
 						.title(MESSAGES.getString("exporting_data"))
 						.control(cancelControl(task.cancel()))
 						.onWorking(exporting::set)
-						.onSuccess(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_file"))
+						.onResult(this::exportedToFile)
 						.execute();
 	}
 
@@ -234,6 +348,31 @@ final class EntityTableExportPanel extends JPanel {
 						.execute();
 	}
 
+	/**
+	 * Reports the export, offering to open the file or its folder, where the desktop supports it.
+	 */
+	private void exportedToFile(Path path) {
+		String message = MESSAGES.getString("exported_to_file") + "\n" + path;
+		if (!Desktop.isDesktopSupported() || !Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+			JOptionPane.showMessageDialog(this, message, MESSAGES.getString("data_exported"), JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		String[] options = {MESSAGES.getString("open_file"), MESSAGES.getString("open_folder"), Messages.ok()};
+		int option = JOptionPane.showOptionDialog(this, message, MESSAGES.getString("data_exported"),
+						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[2]);
+		if (option == 0 || option == 1) {
+			File file = path.toFile();
+			try {
+				Desktop.getDesktop().open(option == 0 ? file : file.getAbsoluteFile().getParentFile());
+			}
+			catch (IOException e) {
+				Dialogs.exception()
+								.owner(this)
+								.show(e);
+			}
+		}
+	}
+
 	private static Control cancelControl(State cancel) {
 		return Control.builder()
 						.toggle(cancel)
@@ -248,15 +387,16 @@ final class EntityTableExportPanel extends JPanel {
 						.model(model.columns().tree())
 						.cellRenderer(attributeRenderer)
 						.mouseListener(new ToggleOnCheckBoxClick())
+						.doubleClick(new ToggleOnDoubleClick())
 						.dragEnabled(true)
 						.transferHandler(new AttributeTransferHandler())
-						.keyEvent(KeyEvents.builder()
-										.keyCode(VK_SPACE)
-										.action(command(() -> model.columns().toggle(selectedAttributes()))))
-						.keyEvent(KeyEvents.builder()
-										.modifiers(SHIFT_DOWN_MASK)
-										.keyCode(VK_SPACE)
-										.action(command(() -> model.columns().toggleChildren(selectedAttributes()))))
+						.popupControls(tree -> Controls.builder()
+										.control(toggle)
+										.control(toggleBelow)
+										.separator()
+										.control(showHidden)
+										.build())
+						.onBuild(this::configureAttributeTreeKeyEvents)
 						.build();
 	}
 
@@ -268,18 +408,110 @@ final class EntityTableExportPanel extends JPanel {
 						.dragEnabled(true)
 						.dropMode(DropMode.INSERT)
 						.transferHandler(new ColumnTransferHandler())
-						.keyEvent(KeyEvents.builder()
-										.keyCode(VK_DELETE)
-										.action(removeColumns))
-						.keyEvent(KeyEvents.builder()
-										.modifiers(ALT_DOWN_MASK)
-										.keyCode(VK_UP)
-										.action(moveUp))
-						.keyEvent(KeyEvents.builder()
-										.modifiers(ALT_DOWN_MASK)
-										.keyCode(VK_DOWN)
-										.action(moveDown))
+						.popupControls(list -> Controls.builder()
+										.control(moveUp)
+										.control(moveDown)
+										.control(removeColumns)
+										.separator()
+										.control(tableColumns)
+										.control(clearColumns)
+										.build())
+						.onBuild(this::configureColumnListKeyEvents)
 						.build();
+	}
+
+	private JTextField createSearchField() {
+		return stringField()
+						.link(model.columns().search())
+						.hint(Messages.search() + "...")
+						.toolTipText(withKeyStroke(MESSAGES.getString("search_description"), FOCUS_SEARCH_FIELD))
+						.selectAllOnFocusGained(true)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_ESCAPE)
+										.action(command(this::focusAttributes)))
+						.build();
+	}
+
+	private JComboBox<ConfigurationFile> createConfigurationFilesComboBox() {
+		return comboBox()
+						.model(SwingFilterComboBoxModel.model(model.configurationFiles()))
+						.toolTipText(MESSAGES.getString("configurations_description"))
+						.popupControls(comboBox -> Controls.builder()
+										.control(Control.builder()
+														.command(model::removeConfigurationFile)
+														.caption(MESSAGES.getString("remove_configuration"))
+														.enabled(model.configurationFiles().selection().present()))
+										.control(Control.builder()
+														.command(model::clearConfigurationFiles)
+														.caption(Messages.clear()))
+										.build())
+						.renderer(new ConfigurationFileRenderer())
+						.build();
+	}
+
+	private void configureKeyEvents() {
+		focus(FOCUS_SEARCH_FIELD, searchField);
+		focus(FOCUS_ATTRIBUTES, attributeTree);
+		focus(FOCUS_COLUMNS, columnList);
+		focus(FOCUS_CONFIGURATIONS, configurationFilesComboBox);
+	}
+
+	private void focus(ControlKey<CommandControl> controlKey, JComponent component) {
+		controlKey.defaultKeystroke().optional().ifPresent(keyStroke -> KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.action(command(component::requestFocusInWindow))
+						.enable(this));
+	}
+
+	private void configureAttributeTreeKeyEvents(FilterTree<AttributeDefinition<?>> attributes) {
+		TOGGLE.defaultKeystroke().optional().ifPresent(keyStroke -> KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(toggle)
+						.enable(attributes));
+		TOGGLE_BELOW.defaultKeystroke().optional().ifPresent(keyStroke -> KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(toggleBelow)
+						.enable(attributes));
+	}
+
+	private void configureColumnListKeyEvents(FilterList<NodePath<AttributeDefinition<?>>> columns) {
+		REMOVE.defaultKeystroke().optional().ifPresent(keyStroke -> KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(removeColumns)
+						.enable(columns));
+		MOVE_UP.defaultKeystroke().optional().ifPresent(keyStroke -> KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(moveUp)
+						.enable(columns));
+		MOVE_DOWN.defaultKeystroke().optional().ifPresent(keyStroke -> KeyEvents.builder()
+						.keyStroke(keyStroke)
+						.action(moveDown)
+						.enable(columns));
+	}
+
+	private void focusAttributes() {
+		if (attributeTree.isSelectionEmpty() && attributeTree.getRowCount() > 0) {
+			attributeTree.setSelectionRow(0);
+		}
+		attributeTree.requestFocusInWindow();
+	}
+
+	private void updateRowCounts() {
+		NumberFormat format = NumberFormat.getIntegerInstance();
+		allRowsCaption.set(MESSAGES.getString("rows_all") + " (" + format.format(model.allCount()) + ")");
+		selectedRowsCaption.set(MESSAGES.getString("rows_selected") + " (" + format.format(model.selectedCount()) + ")");
+	}
+
+	/**
+	 * Throws a {@link CancelException}, cancelling the configuration change, in case the columns have been modified
+	 * and the user does not confirm the change.
+	 */
+	private void confirmDiscard() {
+		if (model.modified().is() && isShowing() && JOptionPane.showConfirmDialog(this, FrameworkMessages.modifiedWarning(),
+						FrameworkMessages.modifiedWarningTitle(), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+			throw new CancelException();
+		}
 	}
 
 	private List<NodePath<AttributeDefinition<?>>> selectedAttributes() {
@@ -299,6 +531,10 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void saveConfiguration() {
+		model.writeConfig(model.configurationFiles().selection().item().getOrThrow().file());
+	}
+
+	private void saveConfigurationAs() {
 		ConfigurationFile configurationFile = model.configurationFiles().selection().item().get();
 		model.writeConfig(withExtension(Dialogs.select()
 						.files()
@@ -334,59 +570,61 @@ final class EntityTableExportPanel extends JPanel {
 	private void initializeUI() {
 		add(borderLayoutPanel()
 						.border(emptyBorder())
-						.center(gridLayoutPanel(1, 2)
-										.add(createAttributesPanel())
-										.add(createColumnsPanel()))
-						.south(borderLayoutPanel()
-										.border(createTitledBorder(MESSAGES.getString("configurations")))
-										.center(comboBox()
-														.model(SwingFilterComboBoxModel.model(model.configurationFiles()))
-														.popupControl(comboBox -> Control.builder()
-																		.command(model::clearConfigurationFiles)
-																		.caption(Messages.clear())
-																		.build())
-														.renderer(new ConfigurationFileRenderer()))
-										.east(buttonPanel()
-														.controls(Controls.builder()
-																		.control(openConfiguration)
-																		.control(saveConfiguration))
-														.transferFocusOnEnter(true)))
+						.center(splitPane()
+										.leftComponent(createAttributesPanel())
+										.rightComponent(createColumnsPanel())
+										.resizeWeight(0.5)
+										.continuousLayout(true))
+						.south(createConfigurationsPanel())
 						.build(), BorderLayout.CENTER);
 		add(createSouthPanel(), BorderLayout.SOUTH);
 	}
 
 	private JPanel createAttributesPanel() {
 		return borderLayoutPanel()
-						.border(createTitledBorder(MESSAGES.getString("available")))
-						.north(stringField()
-										.link(model.columns().search())
-										.hint(Messages.search() + "...")
-										.selectAllOnFocusGained(true))
+						.border(createTitledBorder(withKeyStroke(MESSAGES.getString("available"), FOCUS_ATTRIBUTES)))
 						.center(scrollPane()
 										.view(attributeTree))
-						.south(checkBox()
-										.toggle(showHidden))
+						.south(searchField)
 						.build();
 	}
 
 	private JPanel createColumnsPanel() {
 		return borderLayoutPanel()
-						.border(createTitledBorder(MESSAGES.getString("columns")))
+						.border(createTitledBorder(withKeyStroke(MESSAGES.getString("columns"), FOCUS_COLUMNS)))
 						.center(scrollPane()
 										.view(columnList))
 						.east(borderLayoutPanel()
-										.north(flexibleGridLayoutPanel(0, 1)
+										.north(gridLayoutPanel(0, 1)
 														.add(button()
-																		.control(moveUp))
+																		.control(moveUp)
+																		.includeText(false))
 														.add(button()
-																		.control(moveDown))
+																		.control(moveDown)
+																		.includeText(false))
 														.add(button()
-																		.control(removeColumns))))
-						.south(buttonPanel()
+																		.control(removeColumns)
+																		.includeText(false)))
+										.south(gridLayoutPanel(0, 1)
+														.add(button()
+																		.control(clearColumns)
+																		.includeText(false))
+														.add(button()
+																		.control(tableColumns)
+																		.includeText(false))))
+						.build();
+	}
+
+	private JPanel createConfigurationsPanel() {
+		return borderLayoutPanel()
+						.border(createTitledBorder(withKeyStroke(MESSAGES.getString("configurations"), FOCUS_CONFIGURATIONS)))
+						.center(configurationFilesComboBox)
+						.east(buttonPanel()
 										.controls(Controls.builder()
-														.control(tableColumns)
-														.control(clearColumns))
-										.fixedButtonSize(false))
+														.control(openConfiguration)
+														.control(saveConfiguration)
+														.control(saveConfigurationAs))
+										.transferFocusOnEnter(true))
 						.build();
 	}
 
@@ -427,8 +665,7 @@ final class EntityTableExportPanel extends JPanel {
 										.control(Control.builder()
 														.command(() -> Ancestor.window().of(this).dispose())
 														.caption(MESSAGES.getString("close"))
-														.mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
-														.keyStroke(keyStroke(VK_ESCAPE))))
+														.mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))))
 						.fixedButtonSize(false)
 						.build();
 	}
@@ -437,12 +674,25 @@ final class EntityTableExportPanel extends JPanel {
 		Dialogs.builder()
 						.owner(this)
 						.title(MESSAGES.getString("help"))
-						.component(textArea()
-										.value(MESSAGES.getString("help_text"))
-										.editable(false)
-										.focusable(false)
+						.component(borderLayoutPanel()
+										.north(textArea()
+														.value(MESSAGES.getString("help_text"))
+														.editable(false)
+														.focusable(false)
+														.opaque(false)
+														.border(emptyBorder()))
+										.center(KeyboardShortcutsPanel.tableExportPanel())
 										.border(emptyBorder()))
 						.show();
+	}
+
+	/**
+	 * @return the given text followed by the key stroke of the given control key, if any
+	 */
+	private static String withKeyStroke(String text, ControlKey<?> controlKey) {
+		return controlKey.defaultKeystroke().optional()
+						.map(keyStroke -> text + " (" + KeyboardShortcutsPanel.text(keyStroke) + ")")
+						.orElse(text);
 	}
 
 	/**
@@ -454,16 +704,38 @@ final class EntityTableExportPanel extends JPanel {
 						.collect(joining(PATH_SEPARATOR));
 	}
 
+	/**
+	 * @return true if the given mouse event is on the check box of a node
+	 */
+	private boolean onCheckBox(MouseEvent event) {
+		TreePath treePath = attributeTree.getPathForLocation(event.getX(), event.getY());
+		Rectangle bounds = treePath == null ? null : attributeTree.getPathBounds(treePath);
+
+		return bounds != null && event.getX() < bounds.x + attributeRenderer.checkBoxWidth();
+	}
+
 	private final class ToggleOnCheckBoxClick extends MouseAdapter {
 
 		@Override
 		public void mouseClicked(MouseEvent event) {
-			if (isLeftMouseButton(event)) {
+			if (isLeftMouseButton(event) && onCheckBox(event)) {
 				TreePath treePath = attributeTree.getPathForLocation(event.getX(), event.getY());
-				Rectangle bounds = treePath == null ? null : attributeTree.getPathBounds(treePath);
-				if (bounds != null && event.getX() < bounds.x + attributeRenderer.checkBoxWidth()) {
-					model.columns().toggle(singletonList((NodePath<AttributeDefinition<?>>) treePath.getLastPathComponent()));
-				}
+				model.columns().toggle(singletonList((NodePath<AttributeDefinition<?>>) treePath.getLastPathComponent()));
+			}
+		}
+	}
+
+	/**
+	 * Toggles an attribute double-clicked, other than on its check box, foreign keys expanding instead.
+	 */
+	private final class ToggleOnDoubleClick extends AbstractAction {
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			List<NodePath<AttributeDefinition<?>>> selected = selectedAttributes();
+			if (!onCheckBox((MouseEvent) event.getSource()) && selected.size() == 1 &&
+							!(selected.get(0).item() instanceof ForeignKeyDefinition)) {
+				model.columns().toggle(selected);
 			}
 		}
 	}
@@ -573,6 +845,9 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * Renders the file name and its folder.
+	 */
 	private static final class ConfigurationFileRenderer extends JPanel implements ListCellRenderer<ConfigurationFile> {
 
 		private final DefaultListCellRenderer filename = new DefaultListCellRenderer();
