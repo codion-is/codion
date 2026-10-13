@@ -15,7 +15,7 @@ Including *Track → Album → Artist → Name* exports the artist name as a col
 * The columns default to the visible table columns, in the table's order.
 * Foreign key nodes expand on demand, so cyclic references are a non-issue — expansion goes as deep as you take it.
 * The export covers the *selected* rows or *all* rows.
-* Output goes to the clipboard or a *.tsv* file, ready for a spreadsheet.
+* Output goes to the clipboard or a *.tsv* file, ready for a spreadsheet. Tabs and line breaks in values are replaced by spaces, and a value containing a double quote is quoted as in CSV, which Excel and R's `read.delim()` read as is, while `data.table::fread()` keeps the doubled quotes.
 
 == Configurations
 

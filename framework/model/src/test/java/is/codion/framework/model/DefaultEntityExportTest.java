@@ -185,6 +185,32 @@ public final class DefaultEntityExportTest {
 	}
 
 	@Test
+	void quotes() {
+		Entity department = ENTITIES.entity(Department.TYPE)
+						.with(Department.ID, -42)
+						.with(Department.LOCATION, "Robert \"Bumps\"\tBlackwell")
+						.build();
+		Entity employee = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.ID, -42)
+						.with(Employee.NAME, "\"40\"")
+						.with(Employee.DEPARTMENT_FK, department)
+						.build();
+
+		StringBuilder output = new StringBuilder();
+		EntityExport.builder(CONNECTION)
+						.entityType(Employee.TYPE)
+						.attributes(attributes -> attributes
+										.add("The \"name\"", Employee.NAME)
+										.add("Location", Employee.DEPARTMENT_FK, Department.LOCATION))
+						.entities(singletonList(employee).iterator())
+						.output(output::append)
+						.export();
+		// a header or value containing a quote quoted, its quotes doubled, tabs and line breaks replaced first
+		assertEquals("\"The \"\"name\"\"\"\tLocation\n" +
+						"\"\"\"40\"\"\"\t\"Robert \"\"Bumps\"\" Blackwell\"\n", output.toString());
+	}
+
+	@Test
 	void derived() {
 		StringBuilder output = new StringBuilder();
 		EntityExport.builder(CONNECTION)

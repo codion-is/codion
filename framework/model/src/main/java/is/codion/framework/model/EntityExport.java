@@ -34,8 +34,11 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Exports entity data to delimited text, optionally traversing foreign keys to include
+ * <p>Exports entity data to tab separated text, optionally traversing foreign keys to include
  * denormalized reference values.
+ * <p>A header line is followed by a line per entity. Tabs and line breaks in headers and values are replaced by spaces,
+ * and a header or value containing a double quote is quoted, its quotes doubled, as in CSV, so that Excel, for example,
+ * reads it as is.
  * @see #builder(EntityConnection)
  */
 public interface EntityExport {
@@ -138,7 +141,6 @@ public interface EntityExport {
 	 * being their captions followed by its own, separated by a space, {@code add(Invoice.CUSTOMER_FK, Customer.LASTNAME)}
 	 * for example, with the header "Customer Last name", unless a header is given. A foreign key added on its own exports
 	 * the referenced entity as a string.
-	 * <p>Tabs and line breaks in headers and values are replaced by spaces.
 	 */
 	interface Attributes {
 

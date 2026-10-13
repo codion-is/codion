@@ -59,6 +59,7 @@ final class DefaultEntityExport implements EntityExport {
 
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
+	private static final String QUOTE = "\"";
 
 	private final @Nullable Iterator<Entity> entityIterator;
 	private final @Nullable Iterator<Entity.Key> keyIterator;
@@ -88,7 +89,7 @@ final class DefaultEntityExport implements EntityExport {
 		}
 		Iterator<Entity> iterator = iterator();
 		output.accept(columns.stream()
-						.map(column -> replaceNewlinesAndTabs(column.header))
+						.map(column -> cell(column.header))
 						.collect(joining(TAB, "", "\n")));
 		while (iterator.hasNext()) {
 			if (cancel != null && cancel.is()) {
@@ -148,7 +149,7 @@ final class DefaultEntityExport implements EntityExport {
 	private String value(ExportColumn column, Map<Reference, @Nullable Entity> referenced) {
 		Entity entity = entity(column.reference, referenced);
 
-		return entity == null ? "" : replaceNewlinesAndTabs(entity.formatted(column.attribute));
+		return entity == null ? "" : cell(entity.formatted(column.attribute));
 	}
 
 	private @Nullable Entity entity(Reference reference, Map<Reference, @Nullable Entity> referenced) {
@@ -180,11 +181,17 @@ final class DefaultEntityExport implements EntityExport {
 		return referencedKey == null ? null : reference.select(referencedKey, connection);
 	}
 
-	private static String replaceNewlinesAndTabs(String string) {
-		return string.replace("\r\n", SPACE)
+	/**
+	 * @return the given header or value with tabs and line breaks replaced by spaces, quoted in case it contains
+	 * a quote, its quotes doubled
+	 */
+	private static String cell(String string) {
+		String cell = string.replace("\r\n", SPACE)
 						.replace("\n", SPACE)
 						.replace("\r", SPACE)
 						.replace(TAB, SPACE);
+
+		return cell.contains(QUOTE) ? QUOTE + cell.replace(QUOTE, QUOTE + QUOTE) + QUOTE : cell;
 	}
 
 	/**
