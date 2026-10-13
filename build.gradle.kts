@@ -61,6 +61,7 @@ configure(frameworkModules()) {
         coordinates("is.codion", project.name, project.version.toString())
         pom(codionPom("is.codion:" + project.name, "Codion Application Framework"))
     }
+    requireSigningForMavenCentral()
 
     if (hasSonarqubeProperties()) {
         sonar {
@@ -89,11 +90,12 @@ configure(bomModules()) {
         coordinates("is.codion", project.name, project.version.toString())
         pom(codionPom("is.codion:" + project.name, "Codion Application Framework BOM"))
     }
+    requireSigningForMavenCentral()
 }
 
 // Publishing to Maven Central must be confirmed by typing YES, so it can't happen by accident
 gradle.taskGraph.whenReady {
-    if (allTasks.any { it is PublishToMavenRepository && it.repository.name == "mavenCentral" }) {
+    if (publishingToMavenCentral(this)) {
         print("Publish Codion ${project.version} to Maven Central? Type YES to confirm: ")
         System.out.flush()
         if (System.`in`.bufferedReader().readLine()?.trim() != "YES") {
@@ -259,6 +261,17 @@ fun codionPom(pomName: String, pomDescription: String) = Action<MavenPom> {
         connection = "scm:git:git://github.com/codion-is/codion.git"
         developerConnection = "scm:git:git://github.com/codion-is/codion.git"
         url = "https://github.com/codion-is/codion"
+    }
+}
+
+fun publishingToMavenCentral(taskGraph: TaskExecutionGraph): Boolean =
+    taskGraph.allTasks.any { it is PublishToMavenRepository && it.repository.name == "mavenCentral" }
+
+// Signing is required only when publishing to Maven Central, so a local Maven repository can be published to without
+// a signatory, the publications still signed when one is configured. The plugin requires it for any non-SNAPSHOT version.
+fun Project.requireSigningForMavenCentral() {
+    configure<SigningExtension> {
+        setRequired(provider { publishingToMavenCentral(gradle.taskGraph) })
     }
 }
 
