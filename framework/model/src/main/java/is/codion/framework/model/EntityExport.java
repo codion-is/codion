@@ -136,8 +136,9 @@ public interface EntityExport {
 	 * <p>The attributes to export, each one a column, in the order they are added.
 	 * <p>An attribute of a referenced entity is added along with the foreign keys leading to it, its column header
 	 * being their captions followed by its own, separated by a space, {@code add(Invoice.CUSTOMER_FK, Customer.LASTNAME)}
-	 * for example, with the header "Customer Last name". A foreign key added on its own exports the referenced entity
-	 * as a string.
+	 * for example, with the header "Customer Last name", unless a header is given. A foreign key added on its own exports
+	 * the referenced entity as a string.
+	 * <p>Tabs and line breaks in headers and values are replaced by spaces.
 	 */
 	interface Attributes {
 
@@ -160,5 +161,27 @@ public interface EntityExport {
 		 * to the entity being exported
 		 */
 		Attributes add(List<Attribute<?>> path);
+
+		/**
+		 * Adds an attribute to export, with the given column header.
+		 * @param header the column header
+		 * @param path the attribute, preceded by the foreign keys leading to it in case it belongs to a referenced entity
+		 * @return this {@link Attributes} instance
+		 * @throws IllegalArgumentException in case the path is empty, an attribute other than the last one is not a
+		 * foreign key, or an attribute does not belong to the entity the preceding foreign key references, the first one
+		 * to the entity being exported
+		 */
+		Attributes add(String header, Attribute<?>... path);
+
+		/**
+		 * Adds an attribute to export, with the given column header.
+		 * @param header the column header
+		 * @param path the attribute, preceded by the foreign keys leading to it in case it belongs to a referenced entity
+		 * @return this {@link Attributes} instance
+		 * @throws IllegalArgumentException in case the path is empty, an attribute other than the last one is not a
+		 * foreign key, or an attribute does not belong to the entity the preceding foreign key references, the first one
+		 * to the entity being exported
+		 */
+		Attributes add(String header, List<Attribute<?>> path);
 	}
 }

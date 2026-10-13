@@ -6,6 +6,7 @@ Codion Change Log
 - TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
 ### is.codion.framework.model
 - EntityExport.ExportAttributes replaced by Attributes, each attribute added in the order of the export along with the foreign keys leading to it, any order possible, where the order was kept per foreign key, the attributes of a referenced entity following it, Builder.ExportAttributesStep renamed AttributesStep.
+- EntityExport.Attributes.add(String header, Attribute<?>... path) and add(String header, List<Attribute<?>> path) added, a column with the given header, tabs and line breaks in headers now replaced by spaces, as in values.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, the export model is now only created when the export is included, the unused columns_default export messages removed, and the Icelandic export help text escaped and corrected.
 - EntityTablePanel, the export dialog reworked, the attributes checked in a tree with a search field, the columns listed beside it in the order of the export, moved and removed there, by default the visible table columns, configurations now saved as a list of columns, the nested ones still read.

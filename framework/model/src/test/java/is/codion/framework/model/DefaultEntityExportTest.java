@@ -160,6 +160,31 @@ public final class DefaultEntityExportTest {
 	}
 
 	@Test
+	void header() {
+		Set<Entity.Key> jones = singleton(CONNECTION.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
+
+		StringBuilder output = new StringBuilder();
+		EntityExport.builder(CONNECTION)
+						.entityType(Employee.TYPE)
+						.attributes(employee -> employee
+										.add("Employee", Employee.NAME)
+										.add(Employee.JOB)
+										.add("Manager", Employee.MGR_FK, Employee.NAME)
+										.add("Where\tit's\r\nat", asList(Employee.DEPARTMENT_FK, Department.LOCATION)))
+						.keys(jones.iterator())
+						.output(output::append)
+						.export();
+		// tabs and line breaks replaced by spaces
+		assertEquals("Employee\tJob\tManager\tWhere it's at\n" +
+						"JONES\tMANAGER\tKING\tDALLAS\n", output.toString());
+
+		// the path validated as without a header
+		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
+						.entityType(Employee.TYPE)
+						.attributes(attributes -> attributes.add("Name", Employee.NAME, Employee.JOB)));
+	}
+
+	@Test
 	void derived() {
 		StringBuilder output = new StringBuilder();
 		EntityExport.builder(CONNECTION)

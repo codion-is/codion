@@ -88,7 +88,7 @@ final class DefaultEntityExport implements EntityExport {
 		}
 		Iterator<Entity> iterator = iterator();
 		output.accept(columns.stream()
-						.map(column -> column.header)
+						.map(column -> replaceNewlinesAndTabs(column.header))
 						.collect(joining(TAB, "", "\n")));
 		while (iterator.hasNext()) {
 			if (cancel != null && cancel.is()) {
@@ -120,18 +120,19 @@ final class DefaultEntityExport implements EntityExport {
 	 * Adds the references along the given path, requiring the attribute of the last one, the root for an attribute
 	 * of the entity being exported.
 	 */
-	private ExportColumn column(List<Attribute<?>> path) {
+	private ExportColumn column(Path path) {
 		Reference reference = root;
-		List<String> captions = new ArrayList<>(path.size());
-		for (Attribute<?> attribute : path.subList(0, path.size() - 1)) {
+		List<Attribute<?>> attributes = path.attributes;
+		List<String> captions = new ArrayList<>(attributes.size());
+		for (Attribute<?> attribute : attributes.subList(0, attributes.size() - 1)) {
 			captions.add(reference.definition.attributes().definition(attribute).caption());
 			reference = reference.reference((ForeignKey) attribute);
 		}
-		Attribute<?> attribute = path.get(path.size() - 1);
+		Attribute<?> attribute = attributes.get(attributes.size() - 1);
 		captions.add(reference.definition.attributes().definition(attribute).caption());
 		reference.attributes.add(attribute);
 
-		return new ExportColumn(reference, attribute, String.join(SPACE, captions));
+		return new ExportColumn(reference, attribute, path.header == null ? String.join(SPACE, captions) : path.header);
 	}
 
 	private String row(Entity entity) {
@@ -269,6 +270,20 @@ final class DefaultEntityExport implements EntityExport {
 		}
 	}
 
+	/**
+	 * An attribute path added to the export, with its header, if one was given.
+	 */
+	private static final class Path {
+
+		private final List<Attribute<?>> attributes;
+		private final @Nullable String header;
+
+		private Path(List<Attribute<?>> attributes, @Nullable String header) {
+			this.attributes = attributes;
+			this.header = header;
+		}
+	}
+
 	private static final class ExportColumn {
 
 		private final Reference reference;
@@ -348,9 +363,9 @@ final class DefaultEntityExport implements EntityExport {
 
 		private final EntityConnection connection;
 		private final EntityType entityType;
-		private final List<List<Attribute<?>>> paths;
+		private final List<Path> paths;
 
-		private DefaultEntitiesStep(EntityConnection connection, EntityType entityType, List<List<Attribute<?>>> paths) {
+		private DefaultEntitiesStep(EntityConnection connection, EntityType entityType, List<Path> paths) {
 			this.connection = connection;
 			this.entityType = entityType;
 			this.paths = paths;
@@ -390,7 +405,7 @@ final class DefaultEntityExport implements EntityExport {
 
 		private final EntityConnection connection;
 		private final EntityType entityType;
-		private final List<List<Attribute<?>>> paths;
+		private final List<Path> paths;
 		private final @Nullable Iterator<Entity> entities;
 		private final @Nullable Iterator<Entity.Key> keys;
 		private final Consumer<String> output;
@@ -429,7 +444,7 @@ final class DefaultEntityExport implements EntityExport {
 
 		private final Entities entities;
 		private final EntityType entityType;
-		private final List<List<Attribute<?>>> paths = new ArrayList<>();
+		private final List<Path> paths = new ArrayList<>();
 
 		private DefaultAttributes(Entities entities, EntityType entityType) {
 			this.entities = entities;
@@ -443,7 +458,19 @@ final class DefaultEntityExport implements EntityExport {
 
 		@Override
 		public Attributes add(List<Attribute<?>> path) {
-			paths.add(validate(new ArrayList<>(requireNonNull(path))));
+			paths.add(new Path(validate(new ArrayList<>(requireNonNull(path))), null));
+			return this;
+		}
+
+		@Override
+		public Attributes add(String header, Attribute<?>... path) {
+			return add(header, asList(requireNonNull(path)));
+		}
+
+		@Override
+		public Attributes add(String header, List<Attribute<?>> path) {
+			requireNonNull(header);
+			paths.add(new Path(validate(new ArrayList<>(requireNonNull(path))), header));
 			return this;
 		}
 
