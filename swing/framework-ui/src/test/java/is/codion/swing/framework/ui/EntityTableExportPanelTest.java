@@ -148,24 +148,77 @@ public final class EntityTableExportPanelTest {
 		assertEquals(asList(NAME, JOB), columns.list().selection().items().get());
 		assertTrue(columns.included(NAME));
 
-		// added after the last selected column
+		// a top level attribute added last, whatever the selection
 		columns.list().selection().items().set(singletonList(NAME));
 		columns.toggle(singletonList(SALARY));
-		assertEquals(asList(NAME, SALARY, JOB), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, SALARY), columns.list().items().get());
 
-		// not all of them columns, the rest added, last in case of no selection
-		columns.list().selection().clear();
+		// not all of them columns, the rest added
 		columns.toggle(asList(NAME, COMMISSION));
-		assertEquals(asList(NAME, SALARY, JOB, COMMISSION), columns.list().items().get());
+		assertEquals(asList(NAME, JOB, SALARY, COMMISSION), columns.list().items().get());
 
 		// all of them columns, removed
 		columns.toggle(asList(NAME, COMMISSION));
-		assertEquals(asList(SALARY, JOB), columns.list().items().get());
+		assertEquals(asList(JOB, SALARY), columns.list().items().get());
 		assertFalse(columns.included(NAME));
 
 		columns.toggle(singletonList(MANAGER_NAME));
 		assertEquals(1, columns.includedCount(MANAGER));
 		assertEquals(3, columns.includedCount(ROOT));
+	}
+
+	@Test
+	void toggleByForeignKey() {
+		EntityTableExportColumns columns = exportColumns();
+		NodePath<AttributeDefinition<?>> managerJob = path(Employee.MGR_FK, Employee.JOB);
+		NodePath<AttributeDefinition<?>> managerSalary = path(Employee.MGR_FK, Employee.SALARY);
+		NodePath<AttributeDefinition<?>> managerCommission = path(Employee.MGR_FK, Employee.COMMISSION);
+		NodePath<AttributeDefinition<?>> managerHiredate = path(Employee.MGR_FK, Employee.HIREDATE);
+		NodePath<AttributeDefinition<?>> managersManagerName = path(Employee.MGR_FK, Employee.MGR_FK, Employee.NAME);
+		NodePath<AttributeDefinition<?>> departmentName = path(Employee.DEPARTMENT_FK, TestDomain.Department.NAME);
+		columns.clear();
+		columns.toggle(asList(NAME, JOB));
+
+		// none from the same foreign key, added last
+		columns.toggle(singletonList(MANAGER_NAME));
+		columns.toggle(singletonList(SALARY));
+		assertEquals(asList(NAME, JOB, MANAGER_NAME, SALARY), columns.list().items().get());
+
+		// after the last one from the same foreign key
+		columns.toggle(singletonList(managerJob));
+		assertEquals(asList(NAME, JOB, MANAGER_NAME, managerJob, SALARY), columns.list().items().get());
+
+		// wherever they have been moved, none from the foreign key above it, so the one above that
+		columns.insert(singletonList(MANAGER_NAME), 0);
+		columns.toggle(singletonList(managersManagerName));
+		assertEquals(asList(MANAGER_NAME, NAME, JOB, managerJob, managersManagerName, SALARY), columns.list().items().get());
+
+		// the foreign key itself a top level attribute, added last, as is one from another foreign key
+		columns.insert(singletonList(managersManagerName), 0);
+		columns.toggle(singletonList(MANAGER));
+		columns.toggle(singletonList(departmentName));
+		assertEquals(asList(managersManagerName, MANAGER_NAME, NAME, JOB, managerJob, SALARY, MANAGER, departmentName),
+						columns.list().items().get());
+
+		// after the foreign key itself, several in order
+		columns.toggle(asList(managerSalary, managerCommission));
+		assertEquals(asList(managersManagerName, MANAGER_NAME, NAME, JOB, managerJob, SALARY, MANAGER,
+						managerSalary, managerCommission, departmentName), columns.list().items().get());
+		assertEquals(asList(managerSalary, managerCommission), columns.list().selection().items().get());
+
+		// before a column from a foreign key further below, following the ones from the same foreign key
+		columns.insert(singletonList(managersManagerName), 9);
+		columns.toggle(singletonList(managerHiredate));
+		assertEquals(asList(MANAGER_NAME, NAME, JOB, managerJob, SALARY, MANAGER, managerSalary, managerCommission,
+						managerHiredate, managersManagerName, departmentName), columns.list().items().get());
+
+		// none from the same foreign key, so after the last one further below it
+		columns.clear();
+		columns.toggle(singletonList(NAME));
+		columns.toggle(singletonList(managersManagerName));
+		columns.toggle(singletonList(JOB));
+		columns.toggle(singletonList(managerJob));
+		assertEquals(asList(NAME, managersManagerName, managerJob, JOB), columns.list().items().get());
 	}
 
 	@Test

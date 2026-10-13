@@ -47,6 +47,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
@@ -168,8 +169,10 @@ final class EntityTableExportColumns {
 	}
 
 	/**
-	 * Removes the given attributes in case they are all columns, otherwise adds the ones which are not, after the last
-	 * selected column or last in case of no selection, selecting them.
+	 * Removes the given attributes in case they are all columns, otherwise adds the ones which are not, in order,
+	 * selecting them. Each is added after the last column from the same foreign key, the foreign key itself included,
+	 * otherwise after the last one further below it, otherwise the same for the foreign key above that one and so on,
+	 * otherwise last.
 	 * @param paths the paths of the attributes
 	 */
 	void toggle(Collection<NodePath<AttributeDefinition<?>>> paths) {
@@ -183,11 +186,9 @@ final class EntityTableExportColumns {
 			List<NodePath<AttributeDefinition<?>>> added = paths.stream()
 							.filter(path -> !included(path))
 							.collect(toList());
-			int index = columns.selection().indexes().get().stream()
-							.max(Integer::compare)
-							.map(selected -> selected + 1)
-							.orElse(columns.items().size());
-			columns.items().included().add(index, added);
+			List<NodePath<AttributeDefinition<?>>> items = new ArrayList<>(columns.items().get());
+			added.forEach(path -> items.add(insertIndex(items, path), path));
+			columns.items().set(items);
 			columns.selection().items().set(added);
 		}
 	}
@@ -483,6 +484,37 @@ final class EntityTableExportColumns {
 				flatten(path, below.get(attributeName), paths);
 			}
 		}));
+	}
+
+	/**
+	 * @return the index after the last of the given columns from the foreign key above the given path, the foreign key
+	 * itself included, otherwise after the last one further below it, otherwise the same for the foreign key above that
+	 * one and so on, the number of columns in case there is none
+	 */
+	private static int insertIndex(List<NodePath<AttributeDefinition<?>>> columns, NodePath<AttributeDefinition<?>> path) {
+		for (NodePath<AttributeDefinition<?>> foreignKey = path.parent(); !foreignKey.root(); foreignKey = foreignKey.parent()) {
+			NodePath<AttributeDefinition<?>> parent = foreignKey;
+			int index = lastIndex(columns, column -> column.equals(parent) || column.parent().equals(parent));
+			if (index == -1) {
+				index = lastIndex(columns, parent::contains);
+			}
+			if (index != -1) {
+				return index + 1;
+			}
+		}
+
+		return columns.size();
+	}
+
+	private static int lastIndex(List<NodePath<AttributeDefinition<?>>> columns,
+															 Predicate<NodePath<AttributeDefinition<?>>> predicate) {
+		for (int index = columns.size() - 1; index >= 0; index--) {
+			if (predicate.test(columns.get(index))) {
+				return index;
+			}
+		}
+
+		return -1;
 	}
 
 	private static boolean selectedColumnOrAttribute(AttributeDefinition<?> definition) {
