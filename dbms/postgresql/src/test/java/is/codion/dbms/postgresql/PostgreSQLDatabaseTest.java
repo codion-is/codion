@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.postgresql;
 
+import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -26,15 +27,39 @@ import is.codion.common.db.exception.UniqueConstraintException;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.db.exception.Operation.*;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PostgreSQLDatabaseTest {
 
 	private static final String URL = "jdbc:postgresql://host:1234/sid";
+
+	@Test
+	void otherBoundAsOther() throws SQLException {
+		List<String> calls = new ArrayList<>();
+		PreparedStatement statement = (PreparedStatement) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {PreparedStatement.class}, (proxy, method, arguments) -> {
+							StringBuilder call = new StringBuilder(method.getName()).append("(").append(arguments[0]);
+							for (int i = 1; i < arguments.length; i++) {
+								call.append(", ").append(arguments[i]);
+							}
+							calls.add(call.append(")").toString());
+							return null;
+						});
+		SetValue<Object> setter = (SetValue<Object>) new PostgreSQLDatabase(URL, false).setter(Types.OTHER);
+		setter.set(statement, 1, null);
+		setter.set(statement, 2, "SRID=4326;POINT(-20 64)");
+		assertEquals(asList("setObject(1, null)", "setObject(2, SRID=4326;POINT(-20 64), " + Types.OTHER + ")"), calls);
+	}
 
 	@Test
 	void name() {

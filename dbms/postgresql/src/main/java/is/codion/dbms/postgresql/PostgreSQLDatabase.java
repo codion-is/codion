@@ -20,10 +20,15 @@ package is.codion.dbms.postgresql;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.ClientInfo;
+import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,6 +47,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	private static final String APPLICATION_NAME = "ApplicationName";
 	private static final String JDBC_URL_PREFIX = "jdbc:postgresql:";
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
+	private static final SetValue<Object> SET_OTHER = new SetOther();
 
 	// The messages are subject to the lc_messages server setting, only the english ones are parsed
 	private static final String STILL_REFERENCED = "is still referenced from";
@@ -112,6 +118,16 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 		return MAXIMUM_STATEMENT_PARAMETERS;
 	}
 
+	/**
+	 * Values of {@link Types#OTHER} are bound with that type, the driver binding a value of a class it does not
+	 * know as its string representation, for the database to convert, a PostGIS geometry for example, which the
+	 * default {@code setObject(index, value)} rejects with {@code Can't infer the SQL type}.
+	 */
+	@Override
+	public SetValue<?> setter(int sqlType) {
+		return sqlType == Types.OTHER ? SET_OTHER : super.setter(sqlType);
+	}
+
 	@Override
 	protected ErrorType errorType(SQLException exception) {
 		String sqlState = exception.getSQLState();
@@ -178,5 +194,19 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 		}
 
 		return ErrorType.REFERENTIAL_INTEGRITY;
+	}
+
+	private static final class SetOther implements SetValue<Object> {
+
+		@Override
+		public void set(PreparedStatement statement, int index, @Nullable Object value) throws SQLException {
+			if (value == null) {
+				// an untyped null, as by default
+				statement.setObject(index, null);
+			}
+			else {
+				statement.setObject(index, value, Types.OTHER);
+			}
+		}
 	}
 }

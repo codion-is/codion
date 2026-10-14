@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.91
 ### is.codion.common.model
 - TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
+### is.codion.dbms.postgresql
+- PostgreSQLDatabase binds Types.OTHER values with that type again, a value of a class the driver does not know, such as a PostGIS geometry, failing with Can't infer the SQL type since 0.18.88.
 ### is.codion.swing.common.ui
 - LookAndFeelComboBox bug fixed, now displays non-platform look and feels.
 ### is.codion.framework.model
