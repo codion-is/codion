@@ -317,7 +317,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 				}
 			}
 
-			return platform.is() && enabler.platform();
+			return platform.is() || !enabler.platform();
 		}
 	}
 

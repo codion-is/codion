@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.91
 ### is.codion.common.model
 - TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
+### is.codion.swing.common.ui
+- LookAndFeelComboBox bug fixed, now displays non-platform look and feels.
 ### is.codion.framework.model
 - EntityExport.ExportAttributes replaced by Attributes, each attribute added in the order of the export along with the foreign keys leading to it, any order possible, where the order was kept per foreign key, the attributes of a referenced entity following it, Builder.ExportAttributesStep renamed AttributesStep.
 - EntityExport.Attributes.add(String header, Attribute<?>... path) and add(String header, List<Attribute<?>> path) added, a column with the given header, tabs and line breaks in headers now replaced by spaces, as in values.
