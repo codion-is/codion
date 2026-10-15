@@ -29,6 +29,13 @@ import javax.swing.KeyStroke;
 public interface ControlKey<T extends Control> {
 
 	/**
+	 * A placeholder representing a separator in a {@link Controls.Layout}, among the defaults given to
+	 * {@link Controls#layout(java.util.List)} or added via {@link Controls.Layout#control(ControlKey)}.
+	 * Its {@link #defaultKeystroke()} throws {@link UnsupportedOperationException}.
+	 */
+	ControlKey<?> SEPARATOR = new DefaultControlKey.Separator();
+
+	/**
 	 * @return the control name
 	 */
 	String name();

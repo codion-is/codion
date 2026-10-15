@@ -8,6 +8,7 @@ Codion Change Log
 - PostgreSQLDatabase binds Types.OTHER values with that type again, a value of a class the driver does not know, such as a PostGIS geometry, failing with Can't infer the SQL type since 0.18.88.
 ### is.codion.swing.common.ui
 - LookAndFeelComboBox bug fixed, now displays non-platform look and feels.
+- ControlKey.SEPARATOR added, a separator in a Controls.Layout, replacing null, which Controls.layout() now rejects with a NullPointerException, Layout.control(ControlKey.SEPARATOR) adding a separator.
 ### is.codion.framework.model
 - EntityExport.ExportAttributes replaced by Attributes, each attribute added in the order of the export along with the foreign keys leading to it, any order possible, where the order was kept per foreign key, the attributes of a referenced entity following it, Builder.ExportAttributesStep renamed AttributesStep.
 - EntityExport.Attributes.add(String header, Attribute<?>... path) and add(String header, List<Attribute<?>> path) added, a column with the given header, tabs and line breaks in headers now replaced by spaces, as in values.

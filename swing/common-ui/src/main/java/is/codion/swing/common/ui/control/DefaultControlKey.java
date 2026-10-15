@@ -50,4 +50,22 @@ final class DefaultControlKey<T extends Control> implements ControlKey<T> {
 	public String toString() {
 		return name;
 	}
+
+	static final class Separator implements ControlKey<Control> {
+
+		@Override
+		public String name() {
+			return "separator";
+		}
+
+		@Override
+		public Value<KeyStroke> defaultKeystroke() {
+			throw new UnsupportedOperationException("A separator has no default keystroke");
+		}
+
+		@Override
+		public String toString() {
+			return name();
+		}
+	}
 }

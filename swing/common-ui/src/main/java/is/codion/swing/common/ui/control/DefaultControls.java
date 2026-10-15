@@ -147,7 +147,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 		private final List<ControlItem> items = new ArrayList<>();
 
 		DefaultLayout(List<ControlKey<?>> defaults) {
-			this.defaults = requireNonNull(defaults);
+			requireNonNull(defaults).forEach(controlKey -> requireNonNull(controlKey, "A separator is ControlKey.SEPARATOR, not null"));
+			this.defaults = defaults;
 			defaults();
 		}
 
@@ -167,7 +168,10 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Layout control(ControlKey<?> controlKey) {
-			add(requireNonNull(controlKey));
+			if (requireNonNull(controlKey) == ControlKey.SEPARATOR) {
+				return separator();
+			}
+			add(controlKey);
 			return this;
 		}
 
@@ -233,14 +237,9 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		private Layout doDefaults(@Nullable ControlKey<?> stopAt) {
-			for (ControlKey<?> control : defaults) {
-				if (control == null) {
-					separator();
-				}
-				else {
-					add(control);
-				}
-				if (stopAt != null && control == stopAt) {
+			for (ControlKey<?> controlKey : defaults) {
+				control(controlKey);
+				if (controlKey == stopAt) {
 					break;
 				}
 			}

@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.javadoc;
 
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -62,11 +63,11 @@ final class EntityTablePanelSnippets {
   void popupMenuLayout() {
     EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList( // @start region=popupMenuLayout
             EntityTablePanel.ControlKeys.REFRESH,
-            null, // <- separator
+            ControlKey.SEPARATOR,
             EntityTablePanel.ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
-            null,
+            ControlKey.SEPARATOR,
             EntityTablePanel.ControlKeys.CONDITION_CONTROLS,
-            null,
+            ControlKey.SEPARATOR,
             EntityTablePanel.ControlKeys.COPY_CONTROLS))); // @end
   }
 
@@ -74,7 +75,7 @@ final class EntityTablePanelSnippets {
     EntityTablePanel.Config.TOOLBAR_LAYOUT.set(Controls.layout(asList( // @start region=toolBarLayout
             EntityTablePanel.ControlKeys.TOGGLE_CONDITION_VIEW,
             EntityTablePanel.ControlKeys.TOGGLE_FILTER_VIEW,
-            null, // <- separator
+            ControlKey.SEPARATOR,
             EntityTablePanel.ControlKeys.ADDITIONAL_TOOLBAR_CONTROLS))); // @end
   }
 }

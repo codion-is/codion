@@ -21,10 +21,52 @@ package is.codion.swing.common.ui.control;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.Action;
+import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultControlsTest {
+
+	public static final class LayoutKeys {
+
+		public static final ControlKey<CommandControl> ONE = CommandControl.key("one");
+		public static final ControlKey<CommandControl> TWO = CommandControl.key("two");
+		public static final ControlKey<CommandControl> THREE = CommandControl.key("three");
+	}
+
+	@Test
+	void layout() {
+		ControlMap controlMap = ControlMap.controlMap(LayoutKeys.class);
+		CommandControl one = Control.command(() -> {});
+		CommandControl two = Control.command(() -> {});
+		CommandControl three = Control.command(() -> {});
+		controlMap.control(LayoutKeys.ONE).set(one);
+		controlMap.control(LayoutKeys.TWO).set(two);
+		controlMap.control(LayoutKeys.THREE).set(three);
+
+		// Separators among the defaults, consecutive ones folded into one
+		List<ControlKey<?>> defaults = asList(LayoutKeys.ONE, ControlKey.SEPARATOR, ControlKey.SEPARATOR,
+						LayoutKeys.TWO, ControlKey.SEPARATOR, LayoutKeys.THREE);
+		assertEquals(asList(one, Controls.SEPARATOR, two, Controls.SEPARATOR, three),
+						Controls.layout(defaults).create(controlMap).actions());
+		// Stopping at the first separator, inclusive
+		assertEquals(asList(one, Controls.SEPARATOR, three), Controls.layout(defaults)
+						.clear()
+						.defaults(ControlKey.SEPARATOR)
+						.control(LayoutKeys.THREE)
+						.create(controlMap).actions());
+		// A separator added by its key
+		assertEquals(asList(one, Controls.SEPARATOR, two), Controls.layout(emptyList())
+						.control(LayoutKeys.ONE)
+						.control(ControlKey.SEPARATOR)
+						.control(LayoutKeys.TWO)
+						.create(controlMap).actions());
+		// A null separator rejected
+		assertThrows(NullPointerException.class, () -> Controls.layout(asList(LayoutKeys.ONE, null)));
+		assertThrows(UnsupportedOperationException.class, ControlKey.SEPARATOR::defaultKeystroke);
+	}
 
 	@Test
 	void test() {

@@ -1730,29 +1730,29 @@ public class EntityTablePanel extends JPanel {
 		return Config.POPUP_MENU_LAYOUT.optional().orElse(Controls.layout(asList(
 						REFRESH,
 						CLEAR,
-						null,
+						ControlKey.SEPARATOR,
 						ADD,
 						EDIT,
 						DELETE,
-						null,
+						ControlKey.SEPARATOR,
 						this.configuration.popupMenuEditAttributeControl(),
-						null,
+						ControlKey.SEPARATOR,
 						VIEW_DEPENDENCIES,
-						null,
+						ControlKey.SEPARATOR,
 						ADDITIONAL_POPUP_MENU_CONTROLS,
-						null,
+						ControlKey.SEPARATOR,
 						PRINT_CONTROLS,
-						null,
+						ControlKey.SEPARATOR,
 						COLUMN_CONTROLS,
-						null,
+						ControlKey.SEPARATOR,
 						SINGLE_SELECTION,
-						null,
+						ControlKey.SEPARATOR,
 						CONDITION_CONTROLS,
-						null,
+						ControlKey.SEPARATOR,
 						FILTER_CONTROLS,
-						null,
+						ControlKey.SEPARATOR,
 						EXPORT,
-						null,
+						ControlKey.SEPARATOR,
 						COPY_CONTROLS
 		)));
 	}
@@ -1762,15 +1762,15 @@ public class EntityTablePanel extends JPanel {
 						TOGGLE_SUMMARIES,
 						TOGGLE_CONDITION_VIEW,
 						TOGGLE_FILTER_VIEW,
-						null,
+						ControlKey.SEPARATOR,
 						ADD,
 						EDIT,
 						DELETE,
-						null,
-						editPanel == null ? EDIT_ATTRIBUTE : null,
-						null,
+						ControlKey.SEPARATOR,
+						editPanel == null ? EDIT_ATTRIBUTE : ControlKey.SEPARATOR,
+						ControlKey.SEPARATOR,
 						PRINT,
-						null,
+						ControlKey.SEPARATOR,
 						ADDITIONAL_TOOLBAR_CONTROLS
 		)));
 	}
@@ -2103,11 +2103,11 @@ public class EntityTablePanel extends JPanel {
 		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "popupMenuLayout":
 		 * EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList( // @start region=popupMenuLayout
 		 *         EntityTablePanel.ControlKeys.REFRESH,
-		 *         null, // <- separator
+		 *         ControlKey.SEPARATOR,
 		 *         EntityTablePanel.ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
-		 *         null,
+		 *         ControlKey.SEPARATOR,
 		 *         EntityTablePanel.ControlKeys.CONDITION_CONTROLS,
-		 *         null,
+		 *         ControlKey.SEPARATOR,
 		 *         EntityTablePanel.ControlKeys.COPY_CONTROLS))); // @end}
 		 * <ul>
 		 * <li>Value type: {@link Controls.Layout}
@@ -2126,12 +2126,8 @@ public class EntityTablePanel extends JPanel {
 		 * EntityTablePanel.Config.TOOLBAR_LAYOUT.set(Controls.layout(asList( // @start region=toolBarLayout
 		 *         EntityTablePanel.ControlKeys.TOGGLE_CONDITION_VIEW,
 		 *         EntityTablePanel.ControlKeys.TOGGLE_FILTER_VIEW,
-		 *         null, // <- separator
+		 *         ControlKey.SEPARATOR,
 		 *         EntityTablePanel.ControlKeys.ADDITIONAL_TOOLBAR_CONTROLS))); // @end}
-		 * <ul>
-		 * <li>Value type: {@link Controls.Layout}
-		 * <li>Default value: null
-		 * </ul>
 		 * <ul>
 		 * <li>Value type: {@link Controls.Layout}
 		 * <li>Default value: null

@@ -79,8 +79,9 @@ public interface Controls extends Control {
 	}
 
 	/**
-	 * @param defaults the default controls layout
+	 * @param defaults the default controls layout, {@link ControlKey#SEPARATOR} representing a separator
 	 * @return a new {@link Layout} instance
+	 * @throws NullPointerException in case {@code defaults} contains null
 	 */
 	static Layout layout(List<ControlKey<?>> defaults) {
 		return new DefaultLayout(defaults);
@@ -127,7 +128,7 @@ public interface Controls extends Control {
 		Layout separator();
 
 		/**
-		 * Adds a standard control
+		 * Adds a standard control, or a separator in case of {@link ControlKey#SEPARATOR}
 		 * @param controlKey the key identifying the standard control to add
 		 * @return this layout instance
 		 */
@@ -175,7 +176,7 @@ public interface Controls extends Control {
 
 		/**
 		 * Adds all remaining default controls, up until and including {@code stopAt}
-		 * @param stopAt the standard control to stop at (inclusive)
+		 * @param stopAt the standard control to stop at (inclusive), {@link ControlKey#SEPARATOR} stopping at the first separator in the defaults
 		 * @return this layout instance
 		 */
 		Layout defaults(ControlKey<?> stopAt);

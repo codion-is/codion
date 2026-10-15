@@ -28,6 +28,7 @@ import is.codion.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
 import is.codion.framework.db.EntityConnection;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -86,11 +87,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 		EntityTablePanel.Config.CONDITION_VIEW.set(ConditionView.SIMPLE);
 		EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList(
 						ControlKeys.REFRESH,
-						null,
+						ControlKey.SEPARATOR,
 						ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
-						null,
+						ControlKey.SEPARATOR,
 						ControlKeys.CONDITION_CONTROLS,
-						null,
+						ControlKey.SEPARATOR,
 						ControlKeys.COPY_CONTROLS
 		)));
 		EntityApplication.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
