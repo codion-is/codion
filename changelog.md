@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - LookAndFeelComboBox bug fixed, now displays non-platform look and feels.
 - ControlKey.SEPARATOR added, a separator in a Controls.Layout, replacing null, which Controls.layout() now rejects with a NullPointerException, Layout.control(ControlKey.SEPARATOR) adding a separator.
+- ButtonPanelBuilder.separators(Separator) and SEPARATORS added, a separator now a line by default, or space, where it was an empty cell the size of a button, separators keeping their own size and the buttons of nested controls sized like the others, where nested controls set the size of every button, and invisible components skipped.
 ### is.codion.framework.model
 - EntityExport.ExportAttributes replaced by Attributes, each attribute added in the order of the export along with the foreign keys leading to it, any order possible, where the order was kept per foreign key, the attributes of a referenced entity following it, Builder.ExportAttributesStep renamed AttributesStep.
 - EntityExport.Attributes.add(String header, Attribute<?>... path) and add(String header, List<Attribute<?>> path) added, a column with the given header, tabs and line breaks in headers now replaced by spaces, as in values.

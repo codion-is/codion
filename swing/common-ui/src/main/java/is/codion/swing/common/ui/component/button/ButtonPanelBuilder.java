@@ -18,15 +18,30 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.common.utilities.property.PropertyValue;
+
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 
+import static is.codion.common.utilities.Configuration.enumValue;
+
 /**
- * Builds a JPanel with buttons.
+ * Builds a JPanel with buttons, in a row or a column.
+ * <p>The buttons are stretched across the panel, and share any extra space along it.
  */
 public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPanelBuilder> {
+
+	/**
+	 * Specifies how separators are presented in button panels by default.
+	 * <ul>
+	 * <li>Value type: {@link Separator}
+	 * <li>Default value: {@link Separator#LINE}
+	 * </ul>
+	 * @see #separators(Separator)
+	 */
+	PropertyValue<Separator> SEPARATORS = enumValue(ButtonPanelBuilder.class.getName() + ".separators", Separator.class, Separator.LINE);
 
 	/**
 	 * Default is {@link is.codion.swing.common.ui.layout.Layouts#GAP}.
@@ -36,12 +51,21 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	ButtonPanelBuilder buttonGap(int buttonGap);
 
 	/**
-	 * Specifies whether the button grid sizing should be fixed according
-	 * to the largest button or flexible. Default true.
-	 * @param fixedButtonSize true if the button grid sizing should be fixed
+	 * Specifies whether the buttons are all sized like the largest one, or each by its own preferred size.
+	 * Separators and nested controls keep their own size either way. Default true.
+	 * @param fixedButtonSize true if the buttons should all be sized like the largest one
 	 * @return this builder instance
 	 */
 	ButtonPanelBuilder fixedButtonSize(boolean fixedButtonSize);
+
+	/**
+	 * Specifies how separators are presented, the space on each side of them being
+	 * {@link is.codion.swing.common.ui.layout.Layouts#GAP}, in addition to the button gap.
+	 * Default {@link #SEPARATORS}.
+	 * @param separators the separator presentation
+	 * @return this builder instance
+	 */
+	ButtonPanelBuilder separators(Separator separators);
 
 	/**
 	 * Note that components added via {@link #add(javax.swing.JComponent)} are not added to the button group.
@@ -55,5 +79,21 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	 */
 	static ButtonPanelBuilder builder() {
 		return new DefaultButtonPanelBuilder();
+	}
+
+	/**
+	 * Specifies how separators are presented in a button panel.
+	 */
+	enum Separator {
+
+		/**
+		 * A line across the panel, with space on each side
+		 */
+		LINE,
+
+		/**
+		 * Empty space
+		 */
+		SPACE
 	}
 }

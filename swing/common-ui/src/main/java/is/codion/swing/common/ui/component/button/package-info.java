@@ -18,6 +18,10 @@
  */
 /**
  * <p>Button and toggle button builders.
+ * Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.swing.common.ui.component.button.ButtonPanelBuilder#SEPARATORS}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.button;

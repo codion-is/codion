@@ -1407,13 +1407,13 @@ public final class ComponentsTest {
 						.separator()
 						.buttonGroup(buttonGroup)
 						.build();
-		// in order, leading, trailing and duplicate separators removed, a separator being an empty label
+		// in order, leading, trailing and duplicate separators removed, a separator being a panel
 		assertEquals(6, panel.getComponentCount());
 		assertInstanceOf(JToggleButton.class, panel.getComponent(0));
-		assertInstanceOf(JLabel.class, panel.getComponent(1));
+		assertInstanceOf(JPanel.class, panel.getComponent(1));
 		assertSame(label, panel.getComponent(2));
 		assertSame(added, panel.getComponent(3));
-		assertInstanceOf(JLabel.class, panel.getComponent(4));
+		assertInstanceOf(JPanel.class, panel.getComponent(4));
 		assertInstanceOf(JToggleButton.class, panel.getComponent(5));
 		// the button group only contains the buttons based on controls
 		assertEquals(2, buttonGroup.getButtonCount());
