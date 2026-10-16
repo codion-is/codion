@@ -175,8 +175,8 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	private void validateNull(Entity entity, boolean nullable) throws AttributeValidationException {
 		if (!nullable && !entity.present(attribute())) {
 			if ((!entity.primaryKey().present() || !entity.originalPrimaryKey().present()) && !(attribute() instanceof ForeignKey)) {
-				//a new entity being inserted, allow null for columns with default values and generated primary key values
-				boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue();
+				//a new entity being inserted, allow null for columns with default values and generated values
+				boolean nonKeyColumnWithoutDefaultValue = isNonGeneratedNonKeyColumnWithoutDefaultValue();
 				boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn();
 				if (nonKeyColumnWithoutDefaultValue || primaryKeyColumnWithoutAutoGenerate) {
 					throw createNullValidationException(attribute(), caption());
@@ -211,10 +211,11 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 						&& !((ColumnDefinition<?>) this).generated());
 	}
 
-	private boolean isNonKeyColumnWithoutDefaultValue() {
+	private boolean isNonGeneratedNonKeyColumnWithoutDefaultValue() {
 		return this instanceof ColumnDefinition
 						&& !((ColumnDefinition<?>) this).primaryKey()
-						&& !((ColumnDefinition<?>) this).withDefault();
+						&& !((ColumnDefinition<?>) this).withDefault()
+						&& !((ColumnDefinition<?>) this).generated();
 	}
 
 	private void validateItem(@Nullable T value) throws AttributeValidationException {

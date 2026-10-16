@@ -119,7 +119,7 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 	 * (when the entity does not exist), null values are allowed for:
 	 * <ul>
 	 * <li>Columns with default values - the database will provide the default value
-	 * <li>Generated primary key columns - the database will generate the key value
+	 * <li>Generated columns, primary key or not - the {@link Column.Generator} will provide the value
 	 * </ul>
 	 * @param entity the entity containing the value to validate
 	 * @param nullable true if null values are allowed in this validation context,

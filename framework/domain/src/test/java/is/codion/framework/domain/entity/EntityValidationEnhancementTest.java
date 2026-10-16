@@ -23,6 +23,7 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
@@ -120,6 +121,16 @@ public final class EntityValidationEnhancementTest {
 
 		// Derived for cross-entity validation
 		Attribute<BigDecimal> LINE_TOTAL = TYPE.bigDecimalAttribute("line_total");
+	}
+
+	interface Ticket {
+		EntityType TYPE = DOMAIN_TYPE.entityType("ticket");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		// required, each, and given a value on insert by a generator, by the database, or by neither
+		Column<String> NUMBER = TYPE.stringColumn("number");
+		Column<String> CODE = TYPE.stringColumn("code");
+		Column<String> NAME = TYPE.stringColumn("name");
 	}
 
 	private static final class TestDomain extends DomainModel {
@@ -283,6 +294,24 @@ public final class EntityValidationEnhancementTest {
 																return null;
 															}))
 							.validator(new OrderItemValidator()).build());
+
+			add(Ticket.TYPE.as()
+							.attributes(
+											Ticket.ID.as()
+															.primaryKey()
+															.generator(Generator.identity()),
+											Ticket.NUMBER.as()
+															.column()
+															.nullable(false)
+															.generator(new Generator<String>() {}),
+											Ticket.CODE.as()
+															.column()
+															.nullable(false)
+															.withDefault(true),
+											Ticket.NAME.as()
+															.column()
+															.nullable(false))
+							.build());
 		}
 
 		private static class CustomerValidator implements EntityValidator {
@@ -1001,6 +1030,29 @@ public final class EntityValidationEnhancementTest {
 							() -> validator.validate(customer));
 			assertEquals(Customer.NAME, exception.attributes().iterator().next().attribute());
 			assertEquals(NullValueException.class, exception.attributes().iterator().next().getClass());
+		}
+
+		@Test
+		@DisplayName("a required column given a value on insert, by a generator or the database, may be null until then")
+		void requiredColumnGivenAValueOnInsert_nullValue_passesWhenInserting() {
+			EntityValidator validator = new EntityValidator() {};
+			Entity ticket = entities.entity(Ticket.TYPE)
+							.with(Ticket.NAME, "Ticket")
+							.build();
+			assertDoesNotThrow(() -> validator.validate(ticket));
+
+			ticket.set(Ticket.NAME, null);
+			EntityValidationException exception = assertThrows(EntityValidationException.class,
+							() -> validator.validate(ticket));
+			assertEquals(1, exception.attributes().size());
+			assertEquals(Ticket.NAME, exception.attributes().iterator().next().attribute());
+			assertEquals(NullValueException.class, exception.attributes().iterator().next().getClass());
+
+			// required as any other once the row exists
+			ticket.set(Ticket.ID, 1);
+			ticket.save();
+			assertThrows(NullValueException.class, () -> validator.validate(ticket, Ticket.NUMBER));
+			assertThrows(NullValueException.class, () -> validator.validate(ticket, Ticket.CODE));
 		}
 	}
 
