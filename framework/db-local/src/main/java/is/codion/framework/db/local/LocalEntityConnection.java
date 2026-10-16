@@ -247,6 +247,39 @@ public interface LocalEntityConnection extends EntityConnection {
 	}
 
 	/**
+	 * <p>Constructs a new {@link LocalEntityConnection} for the given domain, joined to the given connection:
+	 * sharing its database, JDBC connection and transaction. For a domain kept apart from the application's,
+	 * such as a module's own tables, written in the application's transaction.
+	 * <ul>
+	 * <li>A transaction started, committed or rolled back on either is the other's too. An operation outside
+	 *     a transaction commits, on either, as it does on the given connection.
+	 * <li>The operations of the two are serialized, as those of a single connection.
+	 * <li>A JDBC connection attached to the given connection, see {@link ConnectionHolder}, is the joined one's
+	 *     too, and is configured by its domain before it uses it, see {@link Domain#configure(Connection)}.
+	 *     A joined connection throws {@link UnsupportedOperationException} from the {@link ConnectionHolder} methods.
+	 * <li>Closing the joined connection leaves the given connection, and any open transaction, as they are.
+	 *     Closing the given connection closes the joined one as well.
+	 * </ul>
+	 * <p>The joined connection starts with the given connection's settings, its query timeout for example,
+	 * and shares its method tracer. It has its own query cache, see {@link #cacheQueries()}.
+	 * <p>A connection joined to a self-managing one, see {@link #builder()}, is joined to the JDBC connection
+	 * that one holds at the time. Should it re-establish its connection, the statements of the joined one fail
+	 * as on a closed connection, as does starting a transaction or using a savepoint through it, while a transaction
+	 * the self-managing one is in can still be committed or rolled back through it. A connection joined to a joined
+	 * one is joined to the same connection.
+	 * @param domain the domain model
+	 * @param connection the connection to join
+	 * @return a new {@link LocalEntityConnection}, joined to the given one
+	 * @throws IllegalArgumentException in case the given connection was created by neither
+	 * {@link #localEntityConnection(Database, Domain, User)}, {@link #localEntityConnection(Database, Domain, Connection)},
+	 * {@link #builder()} nor this method
+	 * @throws IllegalStateException in case the given connection is a self-managing one which has been closed
+	 */
+	static LocalEntityConnection localEntityConnection(Domain domain, LocalEntityConnection connection) {
+		return new DefaultLocalEntityConnection(domain, connection);
+	}
+
+	/**
 	 * Runs the database configuration for the given domain on the given database.
 	 * Prevents multiple runs for the same domain/database combination.
 	 * @param database the database to configure

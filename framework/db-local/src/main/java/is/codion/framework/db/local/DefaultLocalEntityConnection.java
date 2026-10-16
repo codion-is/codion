@@ -113,7 +113,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private final Domain domain;
 	private final User user;
 	private final Database database;
-	private final Lock lock = new Lock();
+	private final Session session;
+	//the connection a joined connection calls the transaction methods of, null for one not joined
+	private final @Nullable LocalEntityConnection parent;
 	private final SelectQueries selectQueries;
 	private final Map<EntityType, Boolean> generatedKeysCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> generatedColumnsCache = new HashMap<>();
@@ -123,17 +125,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private final Map<EntityType, List<ForeignKeyDefinition>> hardForeignKeyReferenceCache = new HashMap<>();
 	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableSelectedColumnsCache = new HashMap<>();
 
-	private MethodTracer tracer = MethodTracer.NO_OP;
-
 	private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
 	private boolean limitReferenceDepth = LIMIT_REFERENCE_DEPTH.getOrThrow();
 	private int iteratorBufferSize = ITERATOR_BUFFER_SIZE.getOrThrow();
 	private int queryTimeout = QUERY_TIMEOUT.getOrThrow();
 
 	private @Nullable DefaultQueryCache queryCache;
-	private @Nullable Connection connection;
 	private @Nullable UUID id;
-	private boolean transactionOpen = false;
+	//a joined connection's own: the attachment it configured the JDBC connection for, see verifyOpenConnection()
+	private long configured = -1;
+	private volatile boolean closed = false;
 
 	/**
 	 * Constructs a new LocalEntityConnection instance
@@ -157,13 +158,38 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		this(requireNonNull(domain), configureDatabase(requireNonNull(database), domain), requireNonNull(connection), user(connection));
 	}
 
+	/**
+	 * Constructs a new LocalEntityConnection instance, joined to the given connection
+	 * @param domain the domain model
+	 * @param connection the connection to join
+	 * @throws IllegalArgumentException in case the given connection was not created by this module
+	 */
+	DefaultLocalEntityConnection(Domain domain, LocalEntityConnection connection) {
+		this(requireNonNull(domain), requireNonNull(connection), joined(connection));
+	}
+
 	private DefaultLocalEntityConnection(Domain domain, Database database, Connection connection, User user) {
 		this.domain = domain;
 		this.database = database;
-		this.connection = disableAutoCommit(connection);
+		this.session = new Session(disableAutoCommit(connection));
+		this.parent = null;
 		this.user = user;
 		this.domain.configure(connection);
 		this.selectQueries = new SelectQueries(database);
+	}
+
+	private DefaultLocalEntityConnection(Domain domain, LocalEntityConnection connection, DefaultLocalEntityConnection joined) {
+		this.domain = domain;
+		this.database = configureDatabase(joined.database, domain);
+		this.session = joined.session;
+		//a self-managing connection keeps its own transaction state, so it is the one called, rather than its delegate
+		this.parent = joined.parent == null ? connection : joined.parent;
+		this.user = connection.user();
+		this.selectQueries = new SelectQueries(database);
+		this.optimisticLocking = connection.optimisticLocking();
+		this.limitReferenceDepth = connection.limitReferenceDepth();
+		this.iteratorBufferSize = connection.iteratorBufferSize();
+		this.queryTimeout = connection.queryTimeout();
 	}
 
 	@Override
@@ -183,7 +209,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	 */
 	@Override
 	public UUID id() {
-		synchronized (lock) {
+		synchronized (session) {
 			if (id == null) {
 				id = UUID.randomUUID();
 			}
@@ -203,29 +229,53 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	@Override
 	public boolean connected() {
-		synchronized (lock) {
-			return connectionValid();
+		synchronized (session) {
+			return !closed && connectionValid();
 		}
 	}
 
+	/**
+	 * A joined connection leaves the JDBC connection, and any open transaction, to its parent.
+	 */
 	@Override
 	public void close() {
-		synchronized (lock) {
-			closeConnection();
+		synchronized (session) {
+			if (parent == null) {
+				closeConnection();
+			}
+			else {
+				closed = true;
+			}
 		}
 	}
 
 	@Override
 	public void startTransaction() {
-		synchronized (lock) {
-			tracer.enter("startTransaction");
+		if (parent != null) {
+			joinedParent().startTransaction();
+			if (!joined()) {
+				//a self-managing parent validates its connection when starting a transaction, and re-establishes
+				//one which has gone bad, so the transaction is on a connection this one is not joined to
+				DatabaseException exception = new DatabaseException("Connection is closed");
+				try {
+					parent.rollbackTransaction();
+				}
+				catch (Exception e) {
+					exception.addSuppressed(e);
+				}
+				throw exception;
+			}
+			return;
+		}
+		synchronized (session) {
+			session.tracer.enter("startTransaction");
 			SQLException exception = null;
 			try {
-				if (transactionOpen) {
+				if (session.transactionOpen) {
 					throw new IllegalStateException("Transaction already open");
 				}
-				connection = verifyOpenConnection();
-				transactionOpen = true;
+				verifyOpenConnection();
+				session.transactionOpen = true;
 			}
 			catch (SQLException e) {
 				exception = e;
@@ -233,29 +283,36 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				throw new DatabaseException(e);
 			}
 			finally {
-				tracer.exit("startTransaction", exception);
+				session.tracer.exit("startTransaction", exception);
 			}
 		}
 	}
 
 	@Override
 	public boolean transactionOpen() {
-		synchronized (lock) {
-			return transactionOpen;
+		if (parent != null) {
+			return joined() && parent.transactionOpen();
+		}
+		synchronized (session) {
+			return session.transactionOpen;
 		}
 	}
 
 	@Override
 	public void rollbackTransaction() {
-		synchronized (lock) {
-			tracer.enter("rollbackTransaction");
+		if (parent != null) {
+			parent().rollbackTransaction();
+			return;
+		}
+		synchronized (session) {
+			session.tracer.enter("rollbackTransaction");
 			SQLException exception = null;
 			try {
-				if (!transactionOpen) {
+				if (!session.transactionOpen) {
 					throw new IllegalStateException("Transaction is not open");
 				}
 				verifyOpenConnection().rollback();
-				transactionOpen = false;
+				session.transactionOpen = false;
 			}
 			catch (SQLException e) {
 				exception = e;
@@ -263,22 +320,26 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				throw new DatabaseException(e);
 			}
 			finally {
-				tracer.exit("rollbackTransaction", exception);
+				session.tracer.exit("rollbackTransaction", exception);
 			}
 		}
 	}
 
 	@Override
 	public void commitTransaction() {
-		synchronized (lock) {
-			tracer.enter("commitTransaction");
+		if (parent != null) {
+			parent().commitTransaction();
+			return;
+		}
+		synchronized (session) {
+			session.tracer.enter("commitTransaction");
 			SQLException exception = null;
 			try {
-				if (!transactionOpen) {
+				if (!session.transactionOpen) {
 					throw new IllegalStateException("Transaction is not open");
 				}
 				verifyOpenConnection().commit();
-				transactionOpen = false;
+				session.transactionOpen = false;
 			}
 			catch (SQLException e) {
 				exception = e;
@@ -286,14 +347,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				throw new DatabaseException(e);
 			}
 			finally {
-				tracer.exit("commitTransaction", exception);
+				session.tracer.exit("commitTransaction", exception);
 			}
 		}
 	}
 
 	@Override
 	public QueryCache cacheQueries() {
-		synchronized (lock) {
+		synchronized (session) {
 			if (queryCache != null) {
 				throw new IllegalStateException("A query cache is already active on this connection");
 			}
@@ -368,7 +429,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		String updateQuery = createUpdateQuery(update, statementColumns, statementValues);
-		synchronized (lock) {
+		synchronized (session) {
 			try (PreparedStatement statement = prepareStatement(updateQuery)) {
 				int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
 				commitIfTransactionIsNotOpen();
@@ -391,7 +452,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<?> statementValues = condition.values();
 		List<ColumnDefinition<?>> statementColumns = definitions(condition.columns());
 		String deleteQuery = deleteQuery(entityDefinition.table(), condition.string(entityDefinition));
-		synchronized (lock) {
+		synchronized (session) {
 			try (PreparedStatement statement = prepareStatement(deleteQuery)) {
 				int deleteCount = executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
 				commitIfTransactionIsNotOpen();
@@ -424,7 +485,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<ColumnDefinition<?>> statementColumns = emptyList();
 		Condition condition = null;
 		String deleteQuery = null;
-		synchronized (lock) {
+		synchronized (session) {
 			try {
 				int deleteCount = 0;
 				for (Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
@@ -484,7 +545,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			return emptyList();
 		}
 
-		synchronized (lock) {
+		synchronized (session) {
 			try {
 				List<Entity> result = new ArrayList<>();
 				for (List<Key> entityTypeKeys : groupByType(keys).values()) {
@@ -513,7 +574,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	@Override
 	public List<Entity> select(Select select) {
 		requireNonNull(select, SELECT_MAY_NOT_BE_NULL);
-		synchronized (lock) {
+		synchronized (session) {
 			try {
 				List<Entity> result = query(select);
 				if (!select.forUpdate()) {
@@ -568,7 +629,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		String selectQuery = queryBuilder.build();
 		List<Object> statementValues = statementValues(combinedCondition, select.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(combinedCondition, select.having());
-		synchronized (lock) {
+		synchronized (session) {
 			try (PreparedStatement statement = prepareStatement(selectQuery);
 					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
 				List<T> result = packResult(columnDefinition, resultSet);
@@ -593,7 +654,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 						.build();
 		List<Object> statementValues = statementValues(count.where(), count.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(count.where(), count.having());
-		synchronized (lock) {
+		synchronized (session) {
 			try (PreparedStatement statement = prepareStatement(selectQuery);
 					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
 				if (!resultSet.next()) {
@@ -626,7 +687,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		}
 
 		Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
-		synchronized (lock) {
+		synchronized (session) {
 			try {
 				List<Entity> entityList = new ArrayList<>(entities);
 				for (ForeignKeyDefinition foreignKeyReference : hardForeignKeyReferences(entityTypes.iterator().next())) {
@@ -663,14 +724,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	public <C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType, @Nullable P parameter) {
 		requireNonNull(functionType, "functionType may not be null");
 		Exception exception = null;
-		tracer.enter(EXECUTE, functionType, parameter);
+		session.tracer.enter(EXECUTE, functionType, parameter);
 		try {
-			synchronized (lock) {
-				boolean transactionWasOpen = transactionOpen;
+			synchronized (session) {
+				boolean transactionWasOpen = session.transactionOpen;
 				try {
 					R result = domain.function(functionType).execute((C) this, parameter);
 					commitIfTransactionIsNotOpen();
-					if (!transactionWasOpen && transactionOpen) {
+					if (!transactionWasOpen && session.transactionOpen) {
 						throw new IllegalStateException("Function " + functionType.name() + " returned without closing the transaction it opened");
 					}
 
@@ -686,7 +747,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 		}
 		finally {
-			tracer.exit(EXECUTE, exception);
+			session.tracer.exit(EXECUTE, exception);
 		}
 	}
 
@@ -699,14 +760,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, @Nullable P parameter) {
 		requireNonNull(procedureType, "procedureType may not be null");
 		Exception exception = null;
-		tracer.enter(EXECUTE, procedureType, parameter);
+		session.tracer.enter(EXECUTE, procedureType, parameter);
 		try {
-			synchronized (lock) {
-				boolean transactionWasOpen = transactionOpen;
+			synchronized (session) {
+				boolean transactionWasOpen = session.transactionOpen;
 				try {
 					domain.procedure(procedureType).execute((C) this, parameter);
 					commitIfTransactionIsNotOpen();
-					if (!transactionWasOpen && transactionOpen) {
+					if (!transactionWasOpen && session.transactionOpen) {
 						throw new IllegalStateException("Procedure " + procedureType.name() + " returned without closing the transaction it opened");
 					}
 				}
@@ -720,7 +781,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 		}
 		finally {
-			tracer.exit(EXECUTE, exception);
+			session.tracer.exit(EXECUTE, exception);
 		}
 	}
 
@@ -728,8 +789,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	public <P, R> R report(ReportType<P, R> reportType, P parameter) {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
-		tracer.enter(REPORT, reportType, parameter);
-		synchronized (lock) {
+		session.tracer.enter(REPORT, reportType, parameter);
+		synchronized (session) {
 			try {
 				R result = domain.report(reportType).fill(verifyOpenConnection(), parameter);
 				commitIfTransactionIsNotOpen();
@@ -744,7 +805,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				throw Exceptions.runtime(e);
 			}
 			finally {
-				tracer.exit(REPORT, exception);
+				session.tracer.exit(REPORT, exception);
 			}
 		}
 	}
@@ -756,7 +817,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	@Override
 	public EntityResultIterator iterator(Select select) {
-		synchronized (lock) {
+		synchronized (session) {
 			try {
 				EntityResultIterator iterator = resultIterator(select);
 				if (noForeignKeysToPopulate(select)) {
@@ -773,7 +834,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	@Override
 	public Connection connection() {
-		synchronized (lock) {
+		synchronized (session) {
 			try {
 				return verifyOpenConnection();
 			}
@@ -790,49 +851,49 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	@Override
 	public boolean optimisticLocking() {
-		synchronized (lock) {
+		synchronized (session) {
 			return optimisticLocking;
 		}
 	}
 
 	@Override
 	public void optimisticLocking(boolean optimisticLocking) {
-		synchronized (lock) {
+		synchronized (session) {
 			this.optimisticLocking = optimisticLocking;
 		}
 	}
 
 	@Override
 	public int iteratorBufferSize() {
-		synchronized (lock) {
+		synchronized (session) {
 			return iteratorBufferSize;
 		}
 	}
 
 	@Override
 	public void iteratorBufferSize(int iteratorBufferSize) {
-		synchronized (lock) {
+		synchronized (session) {
 			this.iteratorBufferSize = iteratorBufferSize;
 		}
 	}
 
 	@Override
 	public boolean limitReferenceDepth() {
-		synchronized (lock) {
+		synchronized (session) {
 			return limitReferenceDepth;
 		}
 	}
 
 	@Override
 	public void limitReferenceDepth(boolean limitReferenceDepth) {
-		synchronized (lock) {
+		synchronized (session) {
 			this.limitReferenceDepth = limitReferenceDepth;
 		}
 	}
 
 	@Override
 	public int queryTimeout() {
-		synchronized (lock) {
+		synchronized (session) {
 			return queryTimeout;
 		}
 	}
@@ -842,35 +903,41 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		if (queryTimeout < 0) {
 			throw new IllegalArgumentException("queryTimeout must be >= 0");
 		}
-		synchronized (lock) {
+		synchronized (session) {
 			this.queryTimeout = queryTimeout;
 		}
 	}
 
+	/**
+	 * The tracer is shared by a connection and those joined to it.
+	 */
 	@Override
 	public void tracer(MethodTracer tracer) {
 		requireNonNull(tracer);
-		synchronized (lock) {
-			this.tracer = tracer;
+		synchronized (session) {
+			session.tracer = tracer;
 		}
 	}
 
 	@Override
 	public void attach(Connection connection) {
 		requireNonNull(connection);
-		synchronized (lock) {
+		throwIfJoined();
+		synchronized (session) {
 			//a connection this domain has not configured is not one it can be used with, and with a pool
 			//attaching is where a connection first arrives, the constructor having seen only the first one
 			domain.configure(connection);
-			this.connection = connection;
+			session.connection = connection;
+			session.attached++;
 		}
 	}
 
 	@Override
 	public @Nullable Connection detach() {
-		synchronized (lock) {
-			Connection connection = this.connection;
-			this.connection = null;
+		throwIfJoined();
+		synchronized (session) {
+			Connection connection = session.connection;
+			session.connection = null;
 
 			return connection;
 		}
@@ -884,7 +951,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		Map<EntityType, Set<Column<?>>> lazyColumns = new HashMap<>();
 		String insertQuery = null;
-		synchronized (lock) {
+		synchronized (session) {
 			try {
 				for (Entity entity : entities) {
 					EntityDefinition entityDefinition = definition(entity.type());
@@ -939,7 +1006,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	private <T> void generateBeforeInsert(Entity entity, ColumnDefinition<T> column) throws SQLException {
-		column.generator().beforeInsert(entity, column.attribute(), database, connection);
+		column.generator().beforeInsert(entity, column.attribute(), database, verifyOpenConnection());
 	}
 
 	private <T> void generateAfterInsert(Entity entity, ColumnDefinition<T> column, PreparedStatement statement) throws SQLException {
@@ -958,7 +1025,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		String updateQuery = null;
-		synchronized (lock) {
+		synchronized (session) {
 			try {
 				if (optimisticLocking) {
 					performOptimisticLocking(entitiesByEntityType);
@@ -1104,7 +1171,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	 * @throws SQLException in case of a database exception
 	 */
 	void populateForeignKeysLocked(List<Entity> entities, Select select) throws SQLException {
-		synchronized (lock) {
+		synchronized (session) {
 			populateForeignKeys(entities, select, 0);
 		}
 	}
@@ -1128,7 +1195,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			int referenceDepthLimit = referenceDepthLimit(foreignKeyDefinition, select);
 			if (withinReferenceDepthLimit(referenceDepth, referenceDepthLimit)
 							&& containsReferencedColumns(entities.get(0), foreignKey.references())) {
-				tracer.enter("populateForeignKeys", foreignKeyDefinition);
+				session.tracer.enter("populateForeignKeys", foreignKeyDefinition);
 				Exception exception = null;
 				try {
 					Collection<Key> referencedKeys = Entity.keys(foreignKey, entities);
@@ -1148,7 +1215,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 					throw e;
 				}
 				finally {
-					tracer.exit("populateForeignKeys", exception);
+					session.tracer.exit("populateForeignKeys", exception);
 				}
 			}
 		}
@@ -1286,7 +1353,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 														Operation operation) throws SQLException {
 		SQLException exception = null;
 		int affectedRows = 0;
-		tracer.enter(EXECUTE_UPDATE, statementValues);
+		session.tracer.enter(EXECUTE_UPDATE, statementValues);
 		try {
 			affectedRows = setParameterValues(statement, statementColumns, statementValues, database).executeUpdate();
 
@@ -1297,7 +1364,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			throw e;
 		}
 		finally {
-			tracer.exit(EXECUTE_UPDATE, exception, "affected rows: " + affectedRows);
+			session.tracer.exit(EXECUTE_UPDATE, exception, "affected rows: " + affectedRows);
 			countQuery(operation);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
@@ -1308,7 +1375,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private ResultSet executeQuery(PreparedStatement statement, String query,
 																 List<ColumnDefinition<?>> statementColumns, List<?> statementValues) throws SQLException {
 		SQLException exception = null;
-		tracer.enter(EXECUTE_QUERY, statementValues);
+		session.tracer.enter(EXECUTE_QUERY, statementValues);
 		try {
 			return setParameterValues(statement, statementColumns, statementValues, database).executeQuery();
 		}
@@ -1317,7 +1384,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			throw e;
 		}
 		finally {
-			tracer.exit(EXECUTE_QUERY, exception);
+			session.tracer.exit(EXECUTE_QUERY, exception);
 			countQuery(SELECT);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
@@ -1368,7 +1435,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	private PreparedStatement prepareStatement(String query, boolean generatedKeys, int queryTimeout) throws SQLException {
-		tracer.enter("prepareStatement", query);
+		session.tracer.enter("prepareStatement", query);
 		SQLException exception = null;
 		try {
 			PreparedStatement statement = generatedKeys ?
@@ -1383,7 +1450,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			throw e;
 		}
 		finally {
-			tracer.exit("prepareStatement", exception);
+			session.tracer.exit("prepareStatement", exception);
 		}
 	}
 
@@ -1406,7 +1473,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private List<Entity> packResult(EntityResultIterator iterator) {
 		Exception packingException = null;
 		List<Entity> result = new ArrayList<>();
-		tracer.enter(PACK_RESULT);
+		session.tracer.enter(PACK_RESULT);
 		try {
 			while (iterator.hasNext()) {
 				result.add(iterator.next());
@@ -1419,14 +1486,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			throw e;
 		}
 		finally {
-			tracer.exit(PACK_RESULT, packingException, "row count: " + result.size());
+			session.tracer.exit(PACK_RESULT, packingException, "row count: " + result.size());
 		}
 	}
 
 	private <T> List<T> packResult(ColumnDefinition<T> columnDefinition, ResultSet resultSet) throws SQLException {
 		SQLException packingException = null;
 		List<@Nullable T> result = new ArrayList<>();
-		tracer.enter(PACK_RESULT);
+		session.tracer.enter(PACK_RESULT);
 		try {
 			while (resultSet.next()) {
 				result.add(columnDefinition.get(resultSet, 1, database));
@@ -1439,7 +1506,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			throw e;
 		}
 		finally {
-			tracer.exit(PACK_RESULT, packingException, "row count: " + result.size());
+			session.tracer.exit(PACK_RESULT, packingException, "row count: " + result.size());
 		}
 	}
 
@@ -1482,45 +1549,45 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	private void rollbackQuietly() {
-		tracer.enter("rollback");
+		session.tracer.enter("rollback");
 		SQLException exception = null;
 		try {
-			connection.rollback();
+			session.connection.rollback();
 		}
 		catch (SQLException e) {
 			exception = e;
 			LOG.warn("Exception while performing a quiet rollback", e);
 		}
 		finally {
-			tracer.exit("rollback", exception);
+			session.tracer.exit("rollback", exception);
 		}
 	}
 
 	private void commitIfTransactionIsNotOpen() throws SQLException {
-		if (!transactionOpen()) {
-			tracer.enter("commit");
+		if (!session.transactionOpen) {
+			session.tracer.enter("commit");
 			SQLException exception = null;
 			try {
-				connection.commit();
+				session.connection.commit();
 			}
 			catch (SQLException e) {
 				exception = e;
 				throw e;
 			}
 			finally {
-				tracer.exit("commit", exception);
+				session.tracer.exit("commit", exception);
 			}
 		}
 	}
 
 	private void rollbackQuietlyIfTransactionIsNotOpen() {
-		if (connection != null && !transactionOpen()) {
+		if (session.connection != null && !session.transactionOpen) {
 			rollbackQuietly();
 		}
 	}
 
 	private void rollbackOnFailure(boolean transactionWasOpen) {
-		if (!transactionWasOpen && transactionOpen) {
+		if (!transactionWasOpen && session.transactionOpen) {
 			//the operation opened a transaction and abandoned it, roll it back
 			//instead of leaving the connection stuck inside it for the next caller
 			rollbackTransaction();
@@ -1561,18 +1628,28 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	private Connection verifyOpenConnection() throws SQLException {
-		if (connection == null || connection.isClosed()) {
+		Connection connection = session.connection;
+		if (closed || connection == null || connection.isClosed()) {
 			throw new SQLException("Connection is closed");
+		}
+		if (parent != null && configured != session.attached) {
+			//the parent configures the connections attached to it for its own domain only, and on each attachment,
+			//as Domain.configure(Connection) promises, so a joined domain configures on each attachment as well
+			domain.configure(connection);
+			configured = session.attached;
 		}
 
 		return connection;
 	}
 
 	private boolean connectionValid() {
+		Connection connection = session.connection;
+
 		return connection != null && database.connectionValid(connection);
 	}
 
 	private void closeConnection() {
+		Connection connection = session.connection;
 		try {
 			if (connection != null && !connection.isClosed()) {
 				connection.rollback();
@@ -1584,11 +1661,75 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		try {
 			if (connection != null) {
 				connection.close();
-				connection = null;
+				session.connection = null;
 			}
 		}
 		catch (Exception ignored) {/*ignored*/}
-		transactionOpen = false;
+		session.transactionOpen = false;
+	}
+
+	/**
+	 * @return the parent, for a transaction or savepoint method of a joined connection
+	 * @throws DatabaseException in case this joined connection is not {@link #joined()}
+	 */
+	/**
+	 * The parent, for ending a transaction through a joined connection, which it may do even after the parent has
+	 * moved to another connection, see {@link #joined()}, since a caller recovering from the failure that follows
+	 * needs to roll back, {@link EntityConnection#transaction(EntityConnection, Transactional)} for example.
+	 * @return the parent
+	 * @throws DatabaseException in case this joined connection is closed
+	 */
+	private LocalEntityConnection parent() {
+		if (closed) {
+			throw new DatabaseException("Connection is closed");
+		}
+
+		return requireNonNull(parent);
+	}
+
+	/**
+	 * The parent, for starting a transaction or setting, rolling back to or releasing a savepoint through a joined
+	 * connection, which it can not take part in once the parent has moved to another connection.
+	 * @return the parent
+	 * @throws DatabaseException in case this joined connection is not {@link #joined()}
+	 */
+	private LocalEntityConnection joinedParent() {
+		if (!joined()) {
+			throw new DatabaseException("Connection is closed");
+		}
+
+		return requireNonNull(parent);
+	}
+
+	/**
+	 * @return false in case this joined connection is closed, or its JDBC connection is gone, closed by the parent or
+	 * detached from it, in which case the parent may be on another connection, which this one is not joined to
+	 */
+	private boolean joined() {
+		synchronized (session) {
+			return !closed && session.connection != null;
+		}
+	}
+
+	private void throwIfJoined() {
+		if (parent != null) {
+			throw new UnsupportedOperationException("The JDBC connection of a joined connection is the one it joined's");
+		}
+	}
+
+	/**
+	 * @param connection the connection to join
+	 * @return the connection whose session to share, the delegate of a self-managing one
+	 */
+	private static DefaultLocalEntityConnection joined(LocalEntityConnection connection) {
+		if (connection instanceof DefaultLocalEntityConnection) {
+			return (DefaultLocalEntityConnection) connection;
+		}
+		if (connection instanceof ManagedLocalEntityConnection) {
+			return ((ManagedLocalEntityConnection) connection).local();
+		}
+
+		throw new IllegalArgumentException("Only a connection created via LocalEntityConnection can be joined: " + connection.getClass());
 	}
 
 	/**
@@ -1957,11 +2098,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	/**
-	 * A private monitor guarding this connection's statements, so that a connection shared
-	 * between threads (such as a Swing worker and the EDT) does not interleave statements.
-	 * Note that this is per-connection, connections do not synchronize against each other.
+	 * The JDBC connection with its transaction state and method tracer, shared by a connection and those
+	 * joined to it, and the monitor guarding its statements, so that a connection shared between threads
+	 * (such as a Swing worker and the EDT) does not interleave statements. Note that connections synchronize
+	 * against each other only when joined.
 	 */
-	private static final class Lock {}
+	private static final class Session {
+
+		private @Nullable Connection connection;
+		private boolean transactionOpen = false;
+		private MethodTracer tracer = MethodTracer.NO_OP;
+		//the number of times a connection has been attached, for the connections joined to this one to configure each
+		private long attached = 0;
+
+		private Session(Connection connection) {
+			this.connection = connection;
+		}
+	}
 
 	private final class DefaultQueryCache implements QueryCache {
 
@@ -1969,7 +2122,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 		@Override
 		public void close() {
-			synchronized (lock) {
+			synchronized (session) {
 				cached.clear();
 				if (queryCache == this) {
 					queryCache = null;

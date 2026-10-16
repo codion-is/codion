@@ -161,8 +161,11 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 		connection.close();
 	}
 
-	private LocalEntityConnection local() {
-		return (LocalEntityConnection) delegate();
+	/**
+	 * @return the underlying connection, established if need be, the transaction's during a transaction
+	 */
+	DefaultLocalEntityConnection local() {
+		return (DefaultLocalEntityConnection) delegate();
 	}
 
 	private void tracingChanged(boolean trace) {

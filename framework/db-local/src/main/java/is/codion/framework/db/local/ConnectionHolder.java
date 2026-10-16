@@ -28,13 +28,15 @@ import java.sql.Connection;
  * <p>The server facing side of a {@link LocalEntityConnection}: one whose underlying JDBC connection is
  * attached and detached by its owner, the way the server runs a client's connection on one borrowed from
  * a connection pool for the duration of an invocation, or replaces one which has gone bad, in place.
- * <p>Connections created via {@link LocalEntityConnection#localEntityConnection} implement this,
- * reached by casting:
+ * <p>Connections created via {@link LocalEntityConnection#localEntityConnection(is.codion.common.db.database.Database,
+ * is.codion.framework.domain.Domain, Connection)} and its user based sibling implement this, reached by casting:
  * {@snippet class = "is.codion.demos.chinook.javadoc.ConnectionHolderSnippets" region = "attach":
  * // @start region=attach
  * ((ConnectionHolder) entityConnection).attach(connectionPool.connection(user)); // @end}
  * A self-managing connection, see {@link LocalEntityConnection#builder()}, does not implement this,
- * its underlying connection being its own to manage.
+ * its underlying connection being its own to manage. A joined connection, see
+ * {@link LocalEntityConnection#localEntityConnection(is.codion.framework.domain.Domain, LocalEntityConnection)},
+ * throws {@link UnsupportedOperationException} from both methods, its JDBC connection being the one it joined's.
  */
 public interface ConnectionHolder {
 
