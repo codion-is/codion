@@ -85,7 +85,8 @@ public abstract class AbstractDatabase implements Database {
 	private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.getOrThrow();
 	private final @Nullable Integer transactionIsolation = TRANSACTION_ISOLATION.get();
 	private final DefaultQueryCounter queryCounter = new DefaultQueryCounter();
-	private final Map<Integer, GetValue<?>> getters = ColumnValues.getters(LEGACY_JDBC.getOrThrow());
+	private final boolean legacyJdbc = LEGACY_JDBC.getOrThrow();
+	private final Map<Integer, GetValue<?>> getters = ColumnValues.getters(legacyJdbc);
 	private final Map<Integer, SetValue<?>> setters = ColumnValues.setters();
 	private final String url;
 
@@ -222,6 +223,11 @@ public abstract class AbstractDatabase implements Database {
 		}
 
 		return getter;
+	}
+
+	@Override
+	public <T> GetValue<T> getter(Class<T> type) {
+		return ColumnValues.getter(requireNonNull(type), legacyJdbc);
 	}
 
 	@Override

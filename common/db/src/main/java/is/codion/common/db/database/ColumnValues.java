@@ -38,7 +38,8 @@ import java.util.Map;
 import static is.codion.common.utilities.Text.nullOrEmpty;
 
 /**
- * Provides the default {@link GetValue}/{@link SetValue} instances, keyed by {@link Types SQL type}.
+ * Provides the default {@link GetValue}/{@link SetValue} instances, keyed by {@link Types SQL type}, and the
+ * {@link GetValue} reading a value of a given class as an object.
  */
 final class ColumnValues {
 
@@ -62,6 +63,10 @@ final class ColumnValues {
 		getters.put(Types.BLOB, new GetByteArray());
 
 		return getters;
+	}
+
+	static <T> GetValue<T> getter(Class<T> type, boolean legacy) {
+		return legacy ? new GetObjectLegacy<>(type) : new GetObject<>(type);
 	}
 
 	// Typed setters rather than setObject(index, value, type), which leaves converting the value to the
@@ -388,13 +393,28 @@ final class ColumnValues {
 		}
 	}
 
+	private static final class GetObject<T> implements GetValue<T> {
+
+		private final Class<T> type;
+
+		private GetObject(Class<T> type) {
+			this.type = type;
+		}
+
+		@Override
+		public @Nullable T get(ResultSet resultSet, int index) throws SQLException {
+			return resultSet.getObject(index, type);
+		}
+	}
+
 	// Pre-JDBC-4.2 temporal getters (Database.LEGACY_JDBC) for a platform whose java.sql predates 4.2 — notably
 	// Android, whose ResultSet lacks getObject(int, Class) AND whose java.sql.Timestamp/Date/Time lack the java.time
 	// bridges (toLocalDateTime() etc.). We rebuild the java.time value from the deprecated java.util.Date field
 	// accessors (getYear()/getMonth()/getDate()/getHours()/... plus Timestamp.getNanos()), which ARE present on
 	// Android — this is exactly what the missing toLocalDate()/toLocalDateTime()/toLocalTime() bridges do internally.
 	// The Offset types have no such field accessors, so they fall back to getObject(int) + cast (best-effort; a modern
-	// driver returns the java.time type directly).
+	// driver returns the java.time type directly), as does a value read as an object, a UUID for example, which H2
+	// returns as the java.util.UUID itself.
 
 	private static final class GetLocalDateLegacy implements GetValue<LocalDate> {
 
@@ -440,6 +460,20 @@ final class ColumnValues {
 		@Override
 		public @Nullable OffsetTime get(ResultSet resultSet, int index) throws SQLException {
 			return (OffsetTime) resultSet.getObject(index);
+		}
+	}
+
+	private static final class GetObjectLegacy<T> implements GetValue<T> {
+
+		private final Class<T> type;
+
+		private GetObjectLegacy(Class<T> type) {
+			this.type = type;
+		}
+
+		@Override
+		public @Nullable T get(ResultSet resultSet, int index) throws SQLException {
+			return type.cast(resultSet.getObject(index));
 		}
 	}
 }

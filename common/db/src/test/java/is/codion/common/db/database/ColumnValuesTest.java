@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ import java.util.UUID;
 
 import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class ColumnValuesTest {
 
@@ -67,6 +69,30 @@ public final class ColumnValuesTest {
 		assertEquals("setBytes(1, null)", set(Types.BLOB, null));
 		// an untyped null, a null of type OTHER being rejected by Oracle and Derby
 		assertEquals("setObject(1, null)", set(Types.OTHER, null));
+	}
+
+	@Test
+	void objectGetters() throws SQLException {
+		UUID uuid = UUID.randomUUID();
+		// the driver converting the value to the class
+		assertEquals("getObject(1, class java.util.UUID)", get(ColumnValues.getter(UUID.class, false), uuid));
+		// without getObject(int, Class), which Android's ResultSet does not declare, the value cast to the class
+		assertEquals("getObject(1)", get(ColumnValues.getter(UUID.class, true), uuid));
+		assertThrows(ClassCastException.class, () -> get(ColumnValues.getter(UUID.class, true), uuid.toString()));
+	}
+
+	private String get(GetValue<?> getter, Object value) throws SQLException {
+		List<String> calls = new ArrayList<>();
+		ResultSet resultSet = (ResultSet) Proxy.newProxyInstance(getClass().getClassLoader(),
+						new Class<?>[] {ResultSet.class}, (proxy, method, arguments) -> {
+							calls.add(method.getName() + "(" + Arrays.stream(arguments)
+											.map(String::valueOf)
+											.collect(joining(", ")) + ")");
+							return value;
+						});
+		assertEquals(value, getter.get(resultSet, 1));
+
+		return String.join(" ", calls);
 	}
 
 	private String set(int sqlType, @Nullable Object value) throws SQLException {

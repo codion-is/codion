@@ -121,10 +121,11 @@ public interface Database extends ConnectionFactory {
 	PropertyValue<Integer> TRANSACTION_ISOLATION = integerValue("codion.db.transactionIsolation");
 
 	/**
-	 * Specifies whether temporal columns are read using the pre-JDBC-4.2 {@code java.sql} accessors
-	 * ({@link java.sql.ResultSet#getTimestamp(int)} etc.) instead of {@link java.sql.ResultSet#getObject(int, Class)}, for
-	 * platforms whose {@code java.sql.ResultSet} predates JDBC 4.2 — notably Android, whose {@code ResultSet} does not
-	 * declare {@code getObject(int, Class)}. Leaves every other column type unchanged.
+	 * Specifies whether values are read without {@link java.sql.ResultSet#getObject(int, Class)}, for platforms whose
+	 * {@code java.sql.ResultSet} predates JDBC 4.2 — notably Android, whose {@code ResultSet} does not declare it.
+	 * Temporal columns are then read using the pre-JDBC-4.2 {@code java.sql} accessors
+	 * ({@link java.sql.ResultSet#getTimestamp(int)} etc.), and values read as objects, see {@link #getter(Class)}, using
+	 * {@link java.sql.ResultSet#getObject(int)}. Leaves every other column type unchanged.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
@@ -169,6 +170,18 @@ public interface Database extends ConnectionFactory {
 	 * @see #LEGACY_JDBC
 	 */
 	GetValue<?> getter(int sqlType);
+
+	/**
+	 * Returns the {@link GetValue} for reading a value of the given class as an object from a {@link java.sql.ResultSet},
+	 * via {@link java.sql.ResultSet#getObject(int, Class)}, the driver converting the value to the class, or with
+	 * {@link #LEGACY_JDBC} via {@link java.sql.ResultSet#getObject(int)}, the value as the driver maps it, cast to the
+	 * class.
+	 * @param type the value class
+	 * @param <T> the value type
+	 * @return the {@link GetValue} for the given class
+	 * @see #LEGACY_JDBC
+	 */
+	<T> GetValue<T> getter(Class<T> type);
 
 	/**
 	 * Returns the {@link SetValue} for setting a value of the given {@link java.sql.Types SQL type} on a {@link java.sql.PreparedStatement}.
