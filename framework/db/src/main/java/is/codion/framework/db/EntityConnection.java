@@ -981,6 +981,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
+	 * Should the rollback fail, its exception is added to the one rethrown as a suppressed exception.
 	 * <p>
 	 * If a transaction is already open on the connection, the code is executed within the existing transaction
 	 * without starting a new one. The outermost caller controls the transaction boundary (commit/rollback).
@@ -1009,6 +1010,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the given {@link TransactionalResult} instance within a transaction on the given connection, committing on success and rolling back on exception.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
+	 * Should the rollback fail, its exception is added to the one rethrown as a suppressed exception.
 	 * <p>
 	 * If a transaction is already open on the connection, the code is executed within the existing transaction
 	 * without starting a new one. The outermost caller controls the transaction boundary (commit/rollback).
@@ -1044,13 +1046,8 @@ public interface EntityConnection extends AutoCloseable {
 
 			return result;
 		}
-		catch (Error | RuntimeException e) {
-			connection.rollbackTransaction();
-			throw e;
-		}
 		catch (Throwable e) {
-			connection.rollbackTransaction();
-			throw new RuntimeException(e);
+			throw Rollback.after(e, connection::rollbackTransaction);
 		}
 	}
 
@@ -1116,20 +1113,7 @@ public interface EntityConnection extends AutoCloseable {
 			return result;
 		}
 		catch (Throwable e) {
-			try {
-				connection.rollback(savepoint);
-			}
-			catch (Exception rollbackException) {
-				e.addSuppressed(rollbackException);
-			}
-			if (e instanceof Error) {
-				throw (Error) e;
-			}
-			if (e instanceof RuntimeException) {
-				throw (RuntimeException) e;
-			}
-
-			throw new RuntimeException(e);
+			throw Rollback.after(e, () -> connection.rollback(savepoint));
 		}
 	}
 

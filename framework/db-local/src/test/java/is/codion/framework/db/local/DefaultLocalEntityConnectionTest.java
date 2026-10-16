@@ -51,6 +51,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -1977,6 +1978,36 @@ public class DefaultLocalEntityConnectionTest {
 			catch (Throwable e) {
 				assertFalse(connection.transactionOpen());
 			}
+		}
+	}
+
+	@Test
+	void transactionRollbackFails() {
+		try (LocalEntityConnection connection = createConnection()) {
+			// the transactional ends the transaction itself, so rolling it back fails
+			IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+							transaction(connection, () -> {
+								connection.rollbackTransaction();
+								throw new IllegalArgumentException("Testing");
+							}));
+			assertEquals("Testing", exception.getMessage());
+			assertEquals(1, exception.getSuppressed().length);
+			assertInstanceOf(IllegalStateException.class, exception.getSuppressed()[0]);
+
+			RuntimeException wrapped = assertThrows(RuntimeException.class, () ->
+							transaction(connection, () -> {
+								connection.rollbackTransaction();
+								throw new IOException("Testing");
+							}));
+			assertInstanceOf(IOException.class, wrapped.getCause());
+			assertEquals(1, wrapped.getCause().getSuppressed().length);
+
+			Error error = assertThrows(Error.class, () ->
+							transaction(connection, () -> {
+								connection.rollbackTransaction();
+								throw new Error("Testing");
+							}));
+			assertEquals(1, error.getSuppressed().length);
 		}
 	}
 
