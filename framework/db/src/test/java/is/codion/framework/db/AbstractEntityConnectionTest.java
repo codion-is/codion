@@ -22,6 +22,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.AbstractEntityConnection.AbstractBuilder;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
@@ -35,12 +36,16 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -233,6 +238,30 @@ public final class AbstractEntityConnectionTest {
 			connection.commitTransaction();
 			assertFalse(connection.transactionOpen());
 			assertEquals(1, connection.connections());
+		}
+
+		@Test
+		@DisplayName("savepoints need a transaction, and go to its connection, unvalidated")
+		void savepoint_transactionConnection() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			Savepoint other = Savepoint.savepoint(UUID.randomUUID());
+			assertThrows(IllegalStateException.class, connection::savepoint);
+			assertThrows(IllegalStateException.class, () -> connection.rollback(other));
+			assertThrows(IllegalStateException.class, () -> connection.release(other));
+			assertTrue(connection.savepointCalls.isEmpty());
+
+			connection.startTransaction();
+			int checks = connection.checks();
+			Savepoint savepoint = connection.savepoint();
+			connection.rollback(savepoint);
+			connection.release(savepoint);
+			assertEquals(checks, connection.checks(), "savepoints within a transaction must not validate the connection");
+			assertEquals(asList("savepoint", "rollback", "release"), connection.savepointCalls);
+			connection.rollbackTransaction();
 		}
 
 		@Test
@@ -687,6 +716,7 @@ public final class AbstractEntityConnectionTest {
 
 		private final AtomicInteger connections = new AtomicInteger();
 		private final AtomicInteger checks = new AtomicInteger();
+		private final List<String> savepointCalls = new CopyOnWriteArrayList<>();
 
 		private volatile State alive = State.state(true);
 		private volatile boolean failCommit = false;
@@ -760,6 +790,21 @@ public final class AbstractEntityConnectionTest {
 							.method("rollbackTransaction", parameters -> {
 								verifyConnected(connected);
 								transactionOpen.set(false);
+
+								return null;
+							})
+							.method("savepoint", parameters -> {
+								savepointCalls.add("savepoint");
+
+								return Savepoint.savepoint(UUID.randomUUID());
+							})
+							.method("rollback", Savepoint.class, parameters -> {
+								savepointCalls.add("rollback");
+
+								return null;
+							})
+							.method("release", Savepoint.class, parameters -> {
+								savepointCalls.add("release");
 
 								return null;
 							})

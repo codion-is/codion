@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.91
 ### is.codion.common.db
 - Database.getter(Class) added, a column of a class without an SQL type of its own, such as UUID, or of a java.sql temporal class, now read via ResultSet.getObject(int) with LEGACY_JDBC, where it failed on Android, whose ResultSet lacks getObject(int, Class).
+- Database.releasesSavepoints() added, false for Oracle and SQL Server, which do not release savepoints.
 ### is.codion.common.model
 - TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
 ### is.codion.dbms.postgresql
@@ -12,6 +13,8 @@ Codion Change Log
 - LookAndFeelComboBox bug fixed, now displays non-platform look and feels.
 - ControlKey.SEPARATOR added, a separator in a Controls.Layout, replacing null, which Controls.layout() now rejects with a NullPointerException, Layout.control(ControlKey.SEPARATOR) adding a separator.
 - ButtonPanelBuilder.separators(Separator) and SEPARATORS added, a separator now a line by default, or space, where it was an empty cell the size of a button, separators keeping their own size and the buttons of nested controls sized like the others, where nested controls set the size of every button, and invisible components skipped.
+### is.codion.framework.db
+- EntityConnection.savepoint(), rollback(Savepoint), release(Savepoint), Savepoint and savepoint(EntityConnection, Transactional) added, savepoints in the open transaction, on local, RMI and HTTP connections alike, each ended along with those set after it by a rollback or release, and all of them with the transaction, the same on every database.
 ### is.codion.framework.db.local
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) added, a connection for another domain joined to the given one, sharing its JDBC connection and transaction.
 ### is.codion.framework.domain

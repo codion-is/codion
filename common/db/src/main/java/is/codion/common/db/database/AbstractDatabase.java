@@ -251,6 +251,11 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
+	public boolean releasesSavepoints() {
+		return true;
+	}
+
+	@Override
 	public int maximumParameters() {
 		return Integer.MAX_VALUE;
 	}

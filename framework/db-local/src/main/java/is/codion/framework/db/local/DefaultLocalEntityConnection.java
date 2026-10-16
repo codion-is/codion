@@ -64,6 +64,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -312,7 +313,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 					throw new IllegalStateException("Transaction is not open");
 				}
 				verifyOpenConnection().rollback();
-				session.transactionOpen = false;
+				session.transactionEnded();
 			}
 			catch (SQLException e) {
 				exception = e;
@@ -339,7 +340,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 					throw new IllegalStateException("Transaction is not open");
 				}
 				verifyOpenConnection().commit();
-				session.transactionOpen = false;
+				session.transactionEnded();
 			}
 			catch (SQLException e) {
 				exception = e;
@@ -348,6 +349,89 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 			finally {
 				session.tracer.exit("commitTransaction", exception);
+			}
+		}
+	}
+
+	@Override
+	public Savepoint savepoint() {
+		if (parent != null) {
+			return joinedParent().savepoint();
+		}
+		synchronized (session) {
+			session.tracer.enter("savepoint");
+			SQLException exception = null;
+			try {
+				if (!session.transactionOpen) {
+					throw new IllegalStateException("Transaction is not open");
+				}
+				Savepoint savepoint = Savepoint.savepoint(UUID.randomUUID());
+				session.savepoints.put(savepoint, verifyOpenConnection().setSavepoint());
+
+				return savepoint;
+			}
+			catch (SQLException e) {
+				exception = e;
+				LOG.error("Exception when setting a savepoint", e);
+				throw new DatabaseException(e);
+			}
+			finally {
+				session.tracer.exit("savepoint", exception);
+			}
+		}
+	}
+
+	@Override
+	public void rollback(Savepoint savepoint) {
+		requireNonNull(savepoint);
+		if (parent != null) {
+			joinedParent().rollback(savepoint);
+			return;
+		}
+		synchronized (session) {
+			session.tracer.enter("rollbackSavepoint", savepoint);
+			SQLException exception = null;
+			try {
+				java.sql.Savepoint jdbcSavepoint = session.savepoint(savepoint);
+				verifyOpenConnection().rollback(jdbcSavepoint);
+				session.end(savepoint);
+			}
+			catch (SQLException e) {
+				exception = e;
+				LOG.error("Exception during savepoint rollback", e);
+				throw new DatabaseException(e);
+			}
+			finally {
+				session.tracer.exit("rollbackSavepoint", exception);
+			}
+		}
+	}
+
+	@Override
+	public void release(Savepoint savepoint) {
+		requireNonNull(savepoint);
+		if (parent != null) {
+			joinedParent().release(savepoint);
+			return;
+		}
+		synchronized (session) {
+			session.tracer.enter("releaseSavepoint", savepoint);
+			SQLException exception = null;
+			try {
+				java.sql.Savepoint jdbcSavepoint = session.savepoint(savepoint);
+				//one which does not, keeps it until the transaction ends
+				if (database.releasesSavepoints()) {
+					verifyOpenConnection().releaseSavepoint(jdbcSavepoint);
+				}
+				session.end(savepoint);
+			}
+			catch (SQLException e) {
+				exception = e;
+				LOG.error("Exception during savepoint release", e);
+				throw new DatabaseException(e);
+			}
+			finally {
+				session.tracer.exit("releaseSavepoint", exception);
 			}
 		}
 	}
@@ -1665,7 +1749,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 		}
 		catch (Exception ignored) {/*ignored*/}
-		session.transactionOpen = false;
+		session.transactionEnded();
 	}
 
 	/**
@@ -2105,6 +2189,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	 */
 	private static final class Session {
 
+		//in the order set, tracked here rather than left to the database, since databases disagree on which
+		//savepoints remain after a rollback or release, and some accept one whose transaction has ended
+		private final Map<Savepoint, java.sql.Savepoint> savepoints = new LinkedHashMap<>();
+
 		private @Nullable Connection connection;
 		private boolean transactionOpen = false;
 		private MethodTracer tracer = MethodTracer.NO_OP;
@@ -2113,6 +2201,39 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 		private Session(Connection connection) {
 			this.connection = connection;
+		}
+
+		private java.sql.Savepoint savepoint(Savepoint savepoint) {
+			if (!transactionOpen) {
+				throw new IllegalStateException("Transaction is not open");
+			}
+			java.sql.Savepoint jdbcSavepoint = savepoints.get(savepoint);
+			if (jdbcSavepoint == null) {
+				throw new IllegalStateException("The savepoint has ended, or is not this connection's: " + savepoint);
+			}
+
+			return jdbcSavepoint;
+		}
+
+		/**
+		 * Ends the given savepoint, along with the ones set after it
+		 */
+		private void end(Savepoint savepoint) {
+			boolean ending = false;
+			Iterator<Savepoint> iterator = savepoints.keySet().iterator();
+			while (iterator.hasNext()) {
+				if (iterator.next().equals(savepoint)) {
+					ending = true;
+				}
+				if (ending) {
+					iterator.remove();
+				}
+			}
+		}
+
+		private void transactionEnded() {
+			transactionOpen = false;
+			savepoints.clear();
 		}
 	}
 

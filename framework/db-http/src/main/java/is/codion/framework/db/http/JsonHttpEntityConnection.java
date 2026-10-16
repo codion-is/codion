@@ -93,6 +93,43 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		}
 	}
 
+	@Override
+	public Savepoint savepoint() {
+		synchronized (transport) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("savepoint")), objectMapper, Savepoint.class);
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
+	@Override
+	public void rollback(Savepoint savepoint) {
+		requireNonNull(savepoint);
+		synchronized (transport) {
+			try {
+				throwIfError(execute(createJsonRequest("rollbackSavepoint", objectMapper.writeValueAsString(savepoint))));
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
+	@Override
+	public void release(Savepoint savepoint) {
+		requireNonNull(savepoint);
+		synchronized (transport) {
+			try {
+				throwIfError(execute(createJsonRequest("releaseSavepoint", objectMapper.writeValueAsString(savepoint))));
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
 
 	@Override
 	public Collection<Entity.Key> insert(Collection<Entity> entities) {

@@ -244,6 +244,13 @@ public interface Database extends ConnectionFactory {
 	boolean subqueryRequiresAlias();
 
 	/**
+	 * Returns true if this database releases savepoints, {@link Connection#releaseSavepoint(java.sql.Savepoint)}.
+	 * A database which does not keeps a savepoint until its transaction ends.
+	 * @return true if this database releases savepoints
+	 */
+	boolean releasesSavepoints();
+
+	/**
 	 * Returns the maximum number of prepared statement parameters supported by this database,
 	 * {@link Integer#MAX_VALUE} indicating no limit.
 	 * @return the maximum number of prepared statement parameters, supported by this database.

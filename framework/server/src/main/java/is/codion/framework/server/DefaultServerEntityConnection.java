@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.server.RemoteSession;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.rmi.ServerEntityConnection;
@@ -153,6 +154,27 @@ final class DefaultServerEntityConnection extends AbstractServerEntityConnection
 	public boolean transactionOpen() {
 		synchronized (connectionProxy) {
 			return connectionProxy.transactionOpen();
+		}
+	}
+
+	@Override
+	public Savepoint savepoint() {
+		synchronized (connectionProxy) {
+			return connectionProxy.savepoint();
+		}
+	}
+
+	@Override
+	public void rollback(Savepoint savepoint) {
+		synchronized (connectionProxy) {
+			connectionProxy.rollback(savepoint);
+		}
+	}
+
+	@Override
+	public void release(Savepoint savepoint) {
+		synchronized (connectionProxy) {
+			connectionProxy.release(savepoint);
 		}
 	}
 

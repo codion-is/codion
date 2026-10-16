@@ -222,6 +222,24 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		}
 	}
 
+	/**
+	 * Set on the connection of the open transaction, a savepoint dying with it should that connection be discarded.
+	 */
+	@Override
+	public final Savepoint savepoint() {
+		return transactionConnection().savepoint();
+	}
+
+	@Override
+	public final void rollback(Savepoint savepoint) {
+		transactionConnection().rollback(savepoint);
+	}
+
+	@Override
+	public final void release(Savepoint savepoint) {
+		transactionConnection().release(savepoint);
+	}
+
 	@Override
 	public final QueryCache cacheQueries() {
 		return delegate().cacheQueries();

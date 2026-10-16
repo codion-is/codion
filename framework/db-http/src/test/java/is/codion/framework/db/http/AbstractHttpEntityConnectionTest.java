@@ -27,6 +27,7 @@ import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.exception.EntityModifiedException;
@@ -375,6 +376,28 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
+	void savepoints() {
+		assertThrows(IllegalStateException.class, connection::savepoint);
+		connection.startTransaction();
+		try {
+			insertDepartment(81);
+			Savepoint savepoint = connection.savepoint();
+			insertDepartment(82);
+			connection.rollback(savepoint);
+			assertEquals(1, connection.count(EntityConnection.Count.where(Department.ID.between(81L, 89L))));
+			assertThrows(IllegalStateException.class, () -> connection.rollback(savepoint));
+			Savepoint released = connection.savepoint();
+			insertDepartment(83);
+			connection.release(released);
+			assertThrows(IllegalStateException.class, () -> connection.release(released));
+			assertEquals(2, connection.count(EntityConnection.Count.where(Department.ID.between(81L, 89L))));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void transactional() {
 		transaction(connection, () -> {
 			connection.select(Condition.all(Department.TYPE));
@@ -566,6 +589,13 @@ abstract class AbstractHttpEntityConnectionTest {
 						.auxiliaryServerFactory(singletonList(EntityServiceFactory.class.getName()))
 						.objectInputFilterFactoryRequired(false)
 						.build();
+	}
+
+	private void insertDepartment(long deptno) {
+		connection.insert(connection.entities().entity(Department.TYPE)
+						.with(Department.ID, deptno)
+						.with(Department.NAME, "SAVEPOINT" + deptno)
+						.build());
 	}
 
 	private static void deconfigure() {

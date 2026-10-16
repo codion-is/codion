@@ -89,13 +89,16 @@ import static java.util.stream.StreamSupport.stream;
  *   connection.insert(album);
  *   connection.update(tracks);
  * }); // @end}
+ * <p>Within a transaction, a savepoint allows undoing part of the work without ending the transaction,
+ * see {@link #savepoint()} and {@link #savepoint(EntityConnection, Transactional)}.
  *
  * <p>Thread Safety</p>
  * Instances are safe to use from multiple threads, and typically are, since a client shares a single
  * connection between its models. Each connection guards its statements with a private monitor, so
  * operations from different threads never interleave. Note that this <i>serializes</i> rather than
  * parallelizes: concurrent callers queue up, and a slow operation delays every other caller on the same
- * connection. Connections do not synchronize against each other.
+ * connection. Connections do not synchronize against each other, apart from a local connection joined to another,
+ * which shares its JDBC connection.
  * <p>Two pieces of state belong to the connection rather than to the calling thread, and are therefore
  * shared by every thread using it:
  * <ul>
@@ -419,6 +422,41 @@ public interface EntityConnection extends AutoCloseable {
 	 * @see #transaction(EntityConnection, TransactionalResult)
 	 */
 	void commitTransaction();
+
+	/**
+	 * <p>Sets a savepoint in the open transaction, for undoing the work done after it without ending
+	 * the transaction, see {@link #rollback(Savepoint)} and {@link #release(Savepoint)}.
+	 * <p>Savepoints nest, and end with the transaction, committed or rolled back. Note that on a remote
+	 * connection each savepoint call is a round trip, so a loop of savepoints belongs in a function.
+	 * @return the savepoint
+	 * @throws IllegalStateException in case a transaction is not open
+	 * @throws DatabaseException in case setting the savepoint failed
+	 * @see #savepoint(EntityConnection, Transactional)
+	 * @see #savepoint(EntityConnection, TransactionalResult)
+	 */
+	Savepoint savepoint();
+
+	/**
+	 * Undoes the work done after the given savepoint, leaving the transaction open. The savepoint ends,
+	 * along with every savepoint set after it.
+	 * @param savepoint the savepoint to roll back to
+	 * @throws IllegalStateException in case a transaction is not open, or the savepoint has ended
+	 * or belongs to another connection
+	 * @throws DatabaseException in case the rollback failed
+	 */
+	void rollback(Savepoint savepoint);
+
+	/**
+	 * <p>Ends the given savepoint, keeping the work done after it, along with every savepoint set after it.
+	 * <p>Note that some databases, such as Oracle and SQL Server, do not release savepoints, in which case
+	 * they remain in the database until the transaction ends, see
+	 * {@link is.codion.common.db.database.Database#releasesSavepoints()}.
+	 * @param savepoint the savepoint to release
+	 * @throws IllegalStateException in case a transaction is not open, or the savepoint has ended
+	 * or belongs to another connection
+	 * @throws DatabaseException in case the release failed
+	 */
+	void release(Savepoint savepoint);
 
 	/**
 	 * Enables query result caching on this connection until the returned {@link QueryCache} is closed.
@@ -1017,6 +1055,85 @@ public interface EntityConnection extends AutoCloseable {
 	}
 
 	/**
+	 * Executes the given {@link Transactional} instance in a savepoint, in the transaction open on the given connection,
+	 * releasing the savepoint on success and rolling back to it on exception, a failing release included, the transaction
+	 * remaining open either way.
+	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions
+	 * are rethrown wrapped in a {@link RuntimeException}. Should the rollback fail, its exception is added to the one rethrown
+	 * as a suppressed exception.
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "savepoint":
+	 * EntityConnection.transaction(connection, () -> { // @start region=savepoint
+	 *   for (Entity playlistTrack : playlistTracks) {
+	 *     try {
+	 *       // Rolled back on failure, the transaction carrying on
+	 *       EntityConnection.savepoint(connection, () -> connection.insert(playlistTrack));
+	 *     }
+	 *     catch (DatabaseException e) {
+	 *       // Already on the playlist, skipped
+	 *     }
+	 *   }
+	 * }); // @end}
+	 * @param connection the connection to use
+	 * @param transactional the transactional to run
+	 * @throws IllegalStateException in case a transaction is not open
+	 * @throws DatabaseException in case of a database exception
+	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
+	 * @see #savepoint()
+	 */
+	static void savepoint(EntityConnection connection, Transactional transactional) {
+		requireNonNull(connection);
+		requireNonNull(transactional);
+		savepoint(connection, () -> {
+			transactional.execute();
+			return null;
+		});
+	}
+
+	/**
+	 * Executes the given {@link TransactionalResult} instance in a savepoint, in the transaction open on the given connection,
+	 * releasing the savepoint on success and rolling back to it on exception, a failing release included, the transaction
+	 * remaining open either way.
+	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions
+	 * are rethrown wrapped in a {@link RuntimeException}. Should the rollback fail, its exception is added to the one rethrown
+	 * as a suppressed exception.
+	 * @param <T> the result type
+	 * @param connection the connection to use
+	 * @param transactional the transactional to run
+	 * @return the result
+	 * @throws IllegalStateException in case a transaction is not open
+	 * @throws DatabaseException in case of a database exception
+	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
+	 * @see #savepoint()
+	 */
+	static <T> @Nullable T savepoint(EntityConnection connection, TransactionalResult<T> transactional) {
+		requireNonNull(connection);
+		requireNonNull(transactional);
+		Savepoint savepoint = connection.savepoint();
+		try {
+			T result = transactional.execute();
+			connection.release(savepoint);
+
+			return result;
+		}
+		catch (Throwable e) {
+			try {
+				connection.rollback(savepoint);
+			}
+			catch (Exception rollbackException) {
+				e.addSuppressed(rollbackException);
+			}
+			if (e instanceof Error) {
+				throw (Error) e;
+			}
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
+			}
+
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * Creates a new {@link BatchCopy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
 	 * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
 	 * Call {@link BatchCopy.Builder#execute()} to perform the copy operation.
@@ -1049,6 +1166,29 @@ public interface EntityConnection extends AutoCloseable {
 
 		@Override
 		void close();
+	}
+
+	/**
+	 * <p>A savepoint in the transaction it was set in, valid until rolled back to or released, or until the
+	 * transaction ends, see {@link EntityConnection#savepoint()}.
+	 * <p>A token, identifying the savepoint by its {@link #id()}: one set via a remote connection is set by the
+	 * server, the token passed between the two, which is what {@link #savepoint(UUID)} is for.
+	 */
+	interface Savepoint {
+
+		/**
+		 * @return the id identifying this savepoint
+		 */
+		UUID id();
+
+		/**
+		 * Note that a savepoint identifies one set by a connection, which refuses any other.
+		 * @param id the id
+		 * @return a {@link Savepoint} with the given id
+		 */
+		static Savepoint savepoint(UUID id) {
+			return new DefaultSavepoint(id);
+		}
 	}
 
 	/**

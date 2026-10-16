@@ -19,6 +19,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.json.domain.EntityObjectMapper;
@@ -31,7 +32,7 @@ import java.io.Serial;
 import static java.util.Objects.requireNonNull;
 
 /**
- * ObjectMapper implementation for {@link Select} and {@link Update}.
+ * ObjectMapper implementation for {@link Select}, {@link Update}, {@link Count} and {@link Savepoint}.
  * For instances use the {@link #databaseObjectMapper(EntityObjectMapper)} factory method.
  */
 public final class DatabaseObjectMapper extends ObjectMapper {
@@ -51,6 +52,8 @@ public final class DatabaseObjectMapper extends ObjectMapper {
 		module.addDeserializer(Update.class, new UpdateDeserializer(entityObjectMapper));
 		module.addSerializer(Count.class, new CountSerializer(entityObjectMapper));
 		module.addDeserializer(Count.class, new CountDeserializer(entityObjectMapper));
+		module.addSerializer(Savepoint.class, new SavepointSerializer());
+		module.addDeserializer(Savepoint.class, new SavepointDeserializer());
 		registerModule(module);
 	}
 

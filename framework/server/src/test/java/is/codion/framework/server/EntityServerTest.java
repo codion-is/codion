@@ -33,6 +33,8 @@ import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.ServerEntityConnection;
@@ -42,6 +44,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.server.ConfigureDb.Configured;
+import is.codion.framework.server.TestDomain.Department;
 import is.codion.framework.server.TestDomain.Employee;
 
 import org.junit.jupiter.api.AfterAll;
@@ -398,8 +401,43 @@ public class EntityServerTest {
 	}
 
 	@Test
+	void savepoints() {
+		//UNIT_TEST_USER is a pooled user, so the transaction keeps its pooled connection between invocations
+		EntityConnection connection = RemoteEntityConnection.builder()
+						.hostname("localhost")
+						.port(CONFIGURATION.port())
+						.registryPort(CONFIGURATION.registryPort())
+						.domain(TestDomain.DOMAIN)
+						.clientType("TestClient")
+						.user(UNIT_TEST_USER)
+						.build();
+		try {
+			connection.startTransaction();
+			insertDepartment(connection, 81);
+			Savepoint savepoint = connection.savepoint();
+			insertDepartment(connection, 82);
+			connection.rollback(savepoint);
+			assertEquals(1, connection.count(Count.where(Department.ID.between(81, 89))));
+			assertThrows(IllegalStateException.class, () -> connection.rollback(savepoint));
+			connection.release(connection.savepoint());
+			connection.rollbackTransaction();
+			assertThrows(IllegalStateException.class, connection::savepoint);
+		}
+		finally {
+			connection.close();
+		}
+	}
+
+	@Test
 	void methodTracesNotConnected() {
 		assertThrows(IllegalArgumentException.class, () -> admin.methodTraces(UUID.randomUUID()));
+	}
+
+	private static void insertDepartment(EntityConnection connection, int deptno) {
+		connection.insert(connection.entities().entity(Department.TYPE)
+						.with(Department.ID, deptno)
+						.with(Department.NAME, "SAVEPOINT" + deptno)
+						.build());
 	}
 
 	private static EntityServerConfiguration configure() {

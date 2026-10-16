@@ -77,6 +77,11 @@ public class SQLServerDatabaseTest {
 	}
 
 	@Test
+	void releasesSavepoints() {
+		assertFalse(new SQLServerDatabase(URL).releasesSavepoints());
+	}
+
+	@Test
 	void limitOffsetClause() {
 		SQLServerDatabase database = new SQLServerDatabase(URL);
 		assertEquals("", database.limitOffsetClause(null, null, false));

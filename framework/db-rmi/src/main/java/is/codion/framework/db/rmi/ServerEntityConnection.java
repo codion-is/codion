@@ -23,6 +23,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.EntityResultIterator;
@@ -160,6 +161,38 @@ public interface ServerEntityConnection extends Remote, AutoCloseable {
 	 * @see EntityConnection#commitTransaction()
 	 */
 	void commitTransaction() throws RemoteException;
+
+	/**
+	 * Sets a savepoint in the open transaction.
+	 * @return the savepoint
+	 * @throws IllegalStateException in case a transaction is not open
+	 * @throws DatabaseException in case setting the savepoint failed
+	 * @throws RemoteException in case of a remote exception
+	 * @see EntityConnection#savepoint()
+	 */
+	Savepoint savepoint() throws RemoteException;
+
+	/**
+	 * Undoes the work done after the given savepoint, leaving the transaction open.
+	 * @param savepoint the savepoint to roll back to
+	 * @throws IllegalStateException in case a transaction is not open, or the savepoint has ended
+	 * or belongs to another connection
+	 * @throws DatabaseException in case the rollback failed
+	 * @throws RemoteException in case of a remote exception
+	 * @see EntityConnection#rollback(Savepoint)
+	 */
+	void rollback(Savepoint savepoint) throws RemoteException;
+
+	/**
+	 * Ends the given savepoint, keeping the work done after it.
+	 * @param savepoint the savepoint to release
+	 * @throws IllegalStateException in case a transaction is not open, or the savepoint has ended
+	 * or belongs to another connection
+	 * @throws DatabaseException in case the release failed
+	 * @throws RemoteException in case of a remote exception
+	 * @see EntityConnection#release(Savepoint)
+	 */
+	void release(Savepoint savepoint) throws RemoteException;
 
 	/**
 	 * Executes the function with the given type with no parameter.

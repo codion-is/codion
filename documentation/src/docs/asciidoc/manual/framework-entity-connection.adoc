@@ -379,6 +379,22 @@ For a more fine-grained transaction control and the ability to rollback, transac
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
 ----
 
+=== Savepoints
+
+Within a transaction, a savepoint allows undoing part of the work without ending the transaction.
+{url-entity-connection}#savepoint(is.codion.framework.db.EntityConnection,is.codion.framework.db.EntityConnection.Transactional)[EntityConnection.savepoint(EntityConnection, Transactional)] runs the given work in a savepoint, releasing it on success and rolling back to it on failure, rethrowing the exception, the transaction remaining open either way.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=savepoint]
+----
+
+For finer control, {url-entity-connection}#savepoint()[savepoint()] sets a savepoint in the open transaction, {url-entity-connection}#rollback(is.codion.framework.db.EntityConnection.Savepoint)[rollback(Savepoint)] undoes the work done after it and {url-entity-connection}#release(is.codion.framework.db.EntityConnection.Savepoint)[release(Savepoint)] keeps it.
+Either ends the savepoint, along with any set after it, and savepoints end with their transaction.
+The connection keeps track of its savepoints, so these rules hold on every database, which on their own disagree on several of them.
+
+NOTE: On PostgreSQL a failed statement aborts the whole transaction, every statement after it failing until the transaction ends, or until a rollback to a savepoint set before the failure, which makes a savepoint the only way to carry on after a failure within a transaction.
+
 == Query cache
 
 {url-entity-connection}#cacheQueries()[cacheQueries()] enables query result caching on the connection until the returned QueryCache is closed.

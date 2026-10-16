@@ -111,6 +111,11 @@ public class OracleDatabaseTest {
 	}
 
 	@Test
+	void releasesSavepoints() {
+		assertFalse(new OracleDatabase(URL).releasesSavepoints());
+	}
+
+	@Test
 	void exceptions() {
 		// codes, states and messages as reported by Oracle 21.3, ojdbc17 23.26
 		OracleDatabase database = new OracleDatabase(URL);

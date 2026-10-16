@@ -19,6 +19,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Entities;
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 
 import java.util.OptionalInt;
+import java.util.UUID;
 
 import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_FIRST;
 import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_LAST;
@@ -140,5 +142,13 @@ public final class DatabaseObjectMapperTest {
 
 		assertEquals(count.where(), readCount.where());
 		assertEquals(count.having(), readCount.having());
+	}
+
+	@Test
+	void savepoint() throws JsonProcessingException {
+		Savepoint savepoint = Savepoint.savepoint(UUID.randomUUID());
+		String jsonString = mapper.writeValueAsString(savepoint);
+		assertEquals("{\"id\":\"" + savepoint.id() + "\"}", jsonString);
+		assertEquals(savepoint, mapper.readValue(jsonString, Savepoint.class));
 	}
 }

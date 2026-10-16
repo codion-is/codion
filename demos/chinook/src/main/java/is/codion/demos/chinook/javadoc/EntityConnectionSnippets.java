@@ -205,6 +205,20 @@ final class EntityConnectionSnippets {
             connection.execute(Playlist.RANDOM_PLAYLIST, parameters)); // @end
   }
 
+  void savepoint(EntityConnection connection, Collection<Entity> playlistTracks) {
+    EntityConnection.transaction(connection, () -> { // @start region=savepoint
+      for (Entity playlistTrack : playlistTracks) {
+        try {
+          // Rolled back on failure, the transaction carrying on
+          EntityConnection.savepoint(connection, () -> connection.insert(playlistTrack));
+        }
+        catch (DatabaseException e) {
+          // Already on the playlist, skipped
+        }
+      }
+    }); // @end
+  }
+
   void selectInterface(EntityConnection connection, Entity metal, Entity album, Long invoiceId) {
     // Simple select with condition // @start region=selectInterface
     List<Entity> metalTracks = connection.select(

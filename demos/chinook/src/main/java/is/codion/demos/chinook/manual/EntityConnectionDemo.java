@@ -20,6 +20,7 @@ package is.codion.demos.chinook.manual;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
@@ -517,6 +518,32 @@ public final class EntityConnectionDemo {
 		// end::transaction[]
 	}
 
+	static void savepoint(EntityConnection connection) {
+		// tag::savepoint[]
+		Entities entities = connection.entities();
+
+		Entity playlist = connection.selectSingle(Playlist.NAME.equalTo("Classical"));
+		List<Entity> tracks = connection.select(Track.NAME.like("Bad%"));
+
+		EntityConnection.transaction(connection, () -> {
+			for (Entity track : tracks) {
+				Entity playlistTrack = entities.entity(PlaylistTrack.TYPE)
+								.with(PlaylistTrack.PLAYLIST_FK, playlist)
+								.with(PlaylistTrack.TRACK_FK, track)
+								.build();
+				try {
+					// The insert runs in a savepoint, rolled back to should it fail,
+					// so that the failure undoes only this insert, the transaction carrying on
+					EntityConnection.savepoint(connection, () -> connection.insert(playlistTrack));
+				}
+				catch (UniqueConstraintException e) {
+					// The track is already on the playlist, skip it
+				}
+			}
+		});
+		// end::savepoint[]
+	}
+
 	static void queryCache(EntityConnection connection) {
 		// tag::queryCache[]
 
@@ -563,6 +590,7 @@ public final class EntityConnectionDemo {
 		function(connection);
 		report(connection);
 		transaction(connection);
+		savepoint(connection);
 		queryCache(connection);
 	}
 }

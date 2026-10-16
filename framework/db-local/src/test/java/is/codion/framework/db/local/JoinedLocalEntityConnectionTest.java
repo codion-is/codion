@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
@@ -297,6 +298,56 @@ public final class JoinedLocalEntityConnectionTest {
 		finally {
 			parent.close();
 			EntityConnection.VALIDITY_CHECK_INTERVAL.set(validityCheckInterval);
+		}
+	}
+
+	@Test
+	void savepoints() throws Exception {
+		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER);
+				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+			parent.startTransaction();
+			insertDepartment(parent, 71);
+			Savepoint savepoint = joined.savepoint();
+			insertMaster(joined, "joined");
+			insertDepartment(parent, 72);
+			parent.rollback(savepoint);
+			assertEquals(1, parent.count(Count.where(Department.DEPTNO.between(71, 79))));
+			assertEquals(0, joined.count(Count.where(Master.DATA.like("joined%"))));
+			joined.release(parent.savepoint());
+			parent.commitTransaction();
+			assertThrows(IllegalStateException.class, () -> joined.rollback(savepoint));
+			assertEquals(1, departments());
+		}
+		LocalEntityConnection parent = LocalEntityConnection.builder()
+						.database(DATABASE)
+						.domain(PARENT)
+						.user(UNIT_TEST_USER)
+						.build();
+		try (LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+			parent.startTransaction();
+			Savepoint savepoint = joined.savepoint();
+			insertMaster(joined, "joined");
+			parent.rollback(savepoint);
+			parent.commitTransaction();
+			assertEquals(0, masters());
+			// the parent on another connection, which the joined one is not joined to
+			long validityCheckInterval = EntityConnection.VALIDITY_CHECK_INTERVAL.getOrThrow();
+			EntityConnection.VALIDITY_CHECK_INTERVAL.set(0L);
+			try {
+				parent.connection().close();
+				parent.startTransaction();
+				assertThrows(DatabaseException.class, joined::savepoint);
+				Savepoint parentSavepoint = parent.savepoint();
+				assertThrows(DatabaseException.class, () -> joined.rollback(parentSavepoint));
+				assertThrows(DatabaseException.class, () -> joined.release(parentSavepoint));
+				parent.rollbackTransaction();
+			}
+			finally {
+				EntityConnection.VALIDITY_CHECK_INTERVAL.set(validityCheckInterval);
+			}
+		}
+		finally {
+			parent.close();
 		}
 	}
 

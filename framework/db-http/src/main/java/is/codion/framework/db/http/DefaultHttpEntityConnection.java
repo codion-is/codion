@@ -71,6 +71,44 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
+	public Savepoint savepoint() {
+		synchronized (transport) {
+			try {
+				return handleResponse(execute(createRequest("savepoint")));
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
+	@Override
+	public void rollback(Savepoint savepoint) {
+		requireNonNull(savepoint);
+		synchronized (transport) {
+			try {
+				throwIfError(execute(createRequest("rollbackSavepoint", serialize(savepoint))));
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
+	@Override
+	public void release(Savepoint savepoint) {
+		requireNonNull(savepoint);
+		synchronized (transport) {
+			try {
+				throwIfError(execute(createRequest("releaseSavepoint", serialize(savepoint))));
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
+	@Override
 	public Collection<Entity.Key> insert(Collection<Entity> entities) {
 		requireNonNull(entities);
 		synchronized (transport) {

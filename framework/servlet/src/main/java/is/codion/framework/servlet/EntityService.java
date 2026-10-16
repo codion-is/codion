@@ -34,6 +34,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.exception.DeleteEntityException;
@@ -229,6 +230,9 @@ public final class EntityService implements AuxiliaryServer {
 	private final CommitTransactionHandler commitTransactionHandler = new CommitTransactionHandler();
 	private final RollbackTransactionHandler rollbackTransactionHandler = new RollbackTransactionHandler();
 	private final IsTransactionOpenHandler isTransactionOpenHandler = new IsTransactionOpenHandler();
+	private final SavepointHandler savepointHandler = new SavepointHandler();
+	private final RollbackSavepointHandler rollbackSavepointHandler = new RollbackSavepointHandler();
+	private final ReleaseSavepointHandler releaseSavepointHandler = new ReleaseSavepointHandler();
 	private final SelectHandler selectHandler = new SelectHandler();
 	private final SelectByKeyHandler selectByKeyHandler = new SelectByKeyHandler();
 	private final InsertHandler insertHandler = new InsertHandler();
@@ -378,6 +382,86 @@ public final class EntityService implements AuxiliaryServer {
 			try {
 				ServerEntityConnection connection = authenticate(context);
 				connection.commitTransaction();
+				context.status(HttpStatus.OK_200);
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+	}
+
+	private final class SavepointHandler {
+
+		private void serial(Context context) {
+			try {
+				ServerEntityConnection connection = authenticate(context);
+				context.status(HttpStatus.OK_200)
+								.contentType(ContentType.APPLICATION_OCTET_STREAM)
+								.result(serialize(connection.savepoint()));
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+
+		private void json(Context context) {
+			try {
+				ServerEntityConnection connection = authenticate(context);
+				ObjectMapper objectMapper = objectMapper(connection.entities());
+				context.status(HttpStatus.OK_200)
+								.contentType(ContentType.APPLICATION_JSON)
+								.result(objectMapper.writeValueAsString(connection.savepoint()));
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+	}
+
+	private final class RollbackSavepointHandler {
+
+		private void serial(Context context) {
+			try {
+				ServerEntityConnection connection = authenticate(context);
+				connection.rollback((Savepoint) deserialize(context.req()));
+				context.status(HttpStatus.OK_200);
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+
+		private void json(Context context) {
+			try {
+				ServerEntityConnection connection = authenticate(context);
+				ObjectMapper objectMapper = objectMapper(connection.entities());
+				connection.rollback(objectMapper.readValue(context.req().getInputStream(), Savepoint.class));
+				context.status(HttpStatus.OK_200);
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+	}
+
+	private final class ReleaseSavepointHandler {
+
+		private void serial(Context context) {
+			try {
+				ServerEntityConnection connection = authenticate(context);
+				connection.release((Savepoint) deserialize(context.req()));
+				context.status(HttpStatus.OK_200);
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+
+		private void json(Context context) {
+			try {
+				ServerEntityConnection connection = authenticate(context);
+				ObjectMapper objectMapper = objectMapper(connection.entities());
+				connection.release(objectMapper.readValue(context.req().getInputStream(), Savepoint.class));
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {
@@ -936,6 +1020,9 @@ public final class EntityService implements AuxiliaryServer {
 			config.routes.post(URL_SERIAL + "startTransaction", startTransactionHandler::handle);
 			config.routes.post(URL_SERIAL + "rollbackTransaction", rollbackTransactionHandler::handle);
 			config.routes.post(URL_SERIAL + "commitTransaction", commitTransactionHandler::handle);
+			config.routes.post(URL_SERIAL + "savepoint", savepointHandler::serial);
+			config.routes.post(URL_SERIAL + "rollbackSavepoint", rollbackSavepointHandler::serial);
+			config.routes.post(URL_SERIAL + "releaseSavepoint", releaseSavepointHandler::serial);
 			config.routes.post(URL_SERIAL + "procedure", procedureHandler::serial);
 			config.routes.post(URL_SERIAL + "function", functionHandler::serial);
 			config.routes.post(URL_SERIAL + "report", reportHandler::serial);
@@ -963,6 +1050,9 @@ public final class EntityService implements AuxiliaryServer {
 			config.routes.post(URL_JSON + "startTransaction", startTransactionHandler::handle);
 			config.routes.post(URL_JSON + "rollbackTransaction", rollbackTransactionHandler::handle);
 			config.routes.post(URL_JSON + "commitTransaction", commitTransactionHandler::handle);
+			config.routes.post(URL_JSON + "savepoint", savepointHandler::json);
+			config.routes.post(URL_JSON + "rollbackSavepoint", rollbackSavepointHandler::json);
+			config.routes.post(URL_JSON + "releaseSavepoint", releaseSavepointHandler::json);
 			config.routes.post(URL_JSON + "procedure", procedureHandler::json);
 			config.routes.post(URL_JSON + "function", functionHandler::json);
 			config.routes.post(URL_JSON + "report", reportHandler::json);

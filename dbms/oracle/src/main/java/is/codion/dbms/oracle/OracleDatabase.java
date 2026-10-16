@@ -130,6 +130,15 @@ final class OracleDatabase extends AbstractDatabase {
 	}
 
 	/**
+	 * Oracle has no release savepoint statement, ojdbc throwing {@code ORA-17023: Unsupported feature: releaseSavepoint}.
+	 * @return false
+	 */
+	@Override
+	public boolean releasesSavepoints() {
+		return false;
+	}
+
+	/**
 	 * Boolean nulls are bound as {@link Types#BIT}, since drivers before 23 do not support {@link Types#BOOLEAN},
 	 * ojdbc11 21.9 failing with {@code Invalid column type: 16}.
 	 */
