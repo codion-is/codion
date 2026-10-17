@@ -17,6 +17,7 @@ Codion Change Log
 - EntityConnection.savepoint(), rollback(Savepoint), release(Savepoint), Savepoint and savepoint(EntityConnection, Transactional) added, savepoints in the open transaction, on local, RMI and HTTP connections alike, each ended along with those set after it by a rollback or release, and all of them with the transaction, the same on every database.
 - EntityConnection.transaction(), a rollback failing after the transactional threw no longer replaces the exception thrown, which is rethrown with the rollback exception added as suppressed.
 - AbstractEntityConnection, a connection which has gone bad is now closed after it has been replaced, without holding the lock, as when closed or discarded, where a function on it reaching for the lock could deadlock with the thread replacing it.
+- EntityConnection.BatchInsert, BatchCopy, batchInsert(), batchCopy() and MAXIMUM_BATCH_SIZE removed.
 ### is.codion.framework.db.local
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) added, a connection for another domain joined to the given one, sharing its JDBC connection and transaction.
 ### is.codion.framework.db.rmi

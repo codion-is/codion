@@ -25,7 +25,6 @@ import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.utilities.user.User;
-import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.QueryCache;
@@ -62,7 +61,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -73,7 +71,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.db.EntityConnection.transaction;
@@ -159,58 +156,6 @@ public class DefaultLocalEntityConnectionTest {
 		assertTrue(trace.contains("Connection is closed"), trace);
 
 		connection.close();
-	}
-
-	@Test
-	void batchCopy() {
-		try (EntityConnection sourceConnection = new DefaultLocalEntityConnection(Database.instance(), DOMAIN, UNIT_TEST_USER);
-				 EntityConnection destinationConnection = createDestinationConnection()) {
-			EntityConnection.batchCopy(sourceConnection, destinationConnection)
-							.entityTypes(Department.TYPE)
-							.batchSize(2)
-							.execute();
-
-			assertEquals(sourceConnection.count(Count.all(Department.TYPE)),
-							destinationConnection.count(Count.all(Department.TYPE)));
-
-			assertThrows(IllegalArgumentException.class, () -> EntityConnection.batchCopy(sourceConnection, destinationConnection)
-							.entityTypes(Employee.TYPE)
-							.batchSize(-10));
-
-			EntityConnection.batchCopy(sourceConnection, destinationConnection)
-							.conditions(Employee.SALARY.greaterThan(1000d))
-							.batchSize(2)
-							.includePrimaryKeys(false)
-							.execute();
-			assertEquals(13, destinationConnection.count(Count.all(Employee.TYPE)));
-
-			destinationConnection.delete(all(Employee.TYPE));
-			destinationConnection.delete(all(Department.TYPE));
-		}
-	}
-
-	@Test
-	void batchInsert() {
-		try (EntityConnection sourceConnection = new DefaultLocalEntityConnection(Database.instance(), DOMAIN, UNIT_TEST_USER);
-				 EntityConnection destinationConnection = createDestinationConnection()) {
-			List<Entity> departments = sourceConnection.select(all(Department.TYPE));
-			assertThrows(IllegalArgumentException.class, () -> EntityConnection.batchInsert(destinationConnection, departments.iterator())
-							.batchSize(-10));
-
-			Consumer<Integer> progressReporter = currentProgress -> {};
-			EntityConnection.batchInsert(destinationConnection, departments.iterator())
-							.batchSize(2)
-							.progressReporter(progressReporter)
-							.onInsert(keys -> {})
-							.execute();
-			assertEquals(sourceConnection.count(Count.all(Department.TYPE)),
-							destinationConnection.count(Count.all(Department.TYPE)));
-
-			EntityConnection.batchInsert(destinationConnection, Collections.emptyIterator())
-							.batchSize(10)
-							.execute();
-			destinationConnection.delete(all(Department.TYPE));
-		}
 	}
 
 	@Test
@@ -2846,21 +2791,5 @@ public class DefaultLocalEntityConnectionTest {
 		}
 
 		return new DefaultLocalEntityConnection(database, DOMAIN, UNIT_TEST_USER);
-	}
-
-	private static EntityConnection createDestinationConnection() {
-		try {
-			Database destinationDatabase = H2DatabaseFactory.create("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
-			LocalEntityConnection destinationConnection = localEntityConnection(destinationDatabase, DOMAIN, User.user("sa"));
-			destinationConnection.connection().createStatement()
-							.execute("alter table employees.employee drop constraint emp_mgr_fk if exists");
-			destinationConnection.delete(all(Employee.TYPE));
-			destinationConnection.delete(all(Department.TYPE));
-
-			return destinationConnection;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 }

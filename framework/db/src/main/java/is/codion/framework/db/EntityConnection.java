@@ -50,7 +50,6 @@ import is.codion.framework.domain.report.ReportType;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,10 +57,10 @@ import java.util.OptionalInt;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static is.codion.common.utilities.Configuration.*;
+import static is.codion.common.utilities.Configuration.longValue;
+import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 
@@ -152,18 +151,6 @@ import static java.util.stream.StreamSupport.stream;
  * @see Count
  */
 public interface EntityConnection extends AutoCloseable {
-
-	/**
-	 * Specifies the maximum batch operation size for insert and copy operations.
-	 * This prevents memory exhaustion from excessively large batch operations.
-	 * <ul>
-	 * <li>Value type: Integer
-	 * <li>Default value: 10,000
-	 * <li>Property name: codion.db.maximumBatchSize
-	 * <li>Valid range: 1-1,000,000 (typically 1,000-50,000 for most applications)
-	 * </ul>
-	 */
-	PropertyValue<Integer> MAXIMUM_BATCH_SIZE = integerValue("codion.db.maximumBatchSize", 10_000);
 
 	/**
 	 * Indicates a local database connection
@@ -1118,30 +1105,6 @@ public interface EntityConnection extends AutoCloseable {
 	}
 
 	/**
-	 * Creates a new {@link BatchCopy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
-	 * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
-	 * Call {@link BatchCopy.Builder#execute()} to perform the copy operation.
-	 * @param source the source connection
-	 * @param destination the destination connection
-	 * @return a new {@link BatchCopy.Builder} instance
-	 */
-	static BatchCopy.Builder batchCopy(EntityConnection source, EntityConnection destination) {
-		return new DefaultBatchCopy.DefaultBuilder(source, destination);
-	}
-
-	/**
-	 * Creates a new {@link BatchInsert.Builder} instance based on the given iterator, with a default batch size of 100.
-	 * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
-	 * Call {@link BatchInsert.Builder#execute()} to perform the insert operation.
-	 * @param connection the entity connection to use when inserting
-	 * @param entities the entities to insert
-	 * @return a new {@link BatchInsert.Builder} instance
-	 */
-	static BatchInsert.Builder batchInsert(EntityConnection connection, Iterator<Entity> entities) {
-		return new DefaultBatchInsert.DefaultBuilder(connection, entities);
-	}
-
-	/**
 	 * A scoped query cache. Closing clears the cache and disables caching.
 	 * Closing an already closed instance has no effect.
 	 * @see EntityConnection#cacheQueries()
@@ -1201,112 +1164,6 @@ public interface EntityConnection extends AutoCloseable {
 		 * @throws Exception in case of an exception
 		 */
 		@Nullable T execute() throws Exception;
-	}
-
-	/**
-	 * Copies a set of entities between a source and destination connection, performing a commit after each {@code batchSize} number of inserts,
-	 * unless the destination connection has an open transaction.
-	 * @see #execute()
-	 */
-	interface BatchCopy {
-
-		/**
-		 * Executes this copy operation
-		 * @throws DatabaseException in case of an exception
-		 */
-		void execute();
-
-		/**
-		 * A builder for a {@link BatchCopy} operation.
-		 */
-		interface Builder {
-
-			/**
-			 * @param entityTypes the entity types to copy
-			 * @return this builder instance
-			 */
-			Builder entityTypes(EntityType... entityTypes);
-
-			/**
-			 * @param conditions the conditions to use when determining which entities of the given type to copy
-			 * @return this builder instance
-			 */
-			Builder conditions(Condition... conditions);
-
-			/**
-			 * @param batchSize the commit batch size
-			 * @return this builder instance
-			 * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
-			 */
-			Builder batchSize(int batchSize);
-
-			/**
-			 * @param includePrimaryKeys true if the primary key values should be included when copying
-			 * @return this builder instance
-			 */
-			Builder includePrimaryKeys(boolean includePrimaryKeys);
-
-			/**
-			 * Builds and executes this copy operation
-			 * @throws DatabaseException in case of an exception
-			 */
-			void execute();
-
-			/**
-			 * @return a new {@link BatchCopy} instance
-			 */
-			BatchCopy build();
-		}
-	}
-
-	/**
-	 * Inserts entities in batches, performing a commit after each {@code batchSize} number of inserts,
-	 * unless the destination connection has an open transaction.
-	 * @see #execute()
-	 */
-	interface BatchInsert {
-
-		/**
-		 * Executes this batch insert
-		 * @throws DatabaseException in case of an exception
-		 */
-		void execute();
-
-		/**
-		 * A builder for {@link BatchInsert} operation.
-		 */
-		interface Builder {
-
-			/**
-			 * @param batchSize the commit batch size
-			 * @return this builder instance
-			 * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
-			 */
-			Builder batchSize(int batchSize);
-
-			/**
-			 * @param progressReporter if specified this will be used to report batch progress
-			 * @return this builder instance
-			 */
-			Builder progressReporter(Consumer<Integer> progressReporter);
-
-			/**
-			 * @param onInsert notified each time a batch is inserted, providing the inserted keys
-			 * @return this builder instance
-			 */
-			Builder onInsert(Consumer<Collection<Entity.Key>> onInsert);
-
-			/**
-			 * Builds and executes this insert operation
-			 * @throws DatabaseException in case of an exception
-			 */
-			void execute();
-
-			/**
-			 * @return a new {@link BatchInsert} instance
-			 */
-			BatchInsert build();
-		}
 	}
 
 	/**
