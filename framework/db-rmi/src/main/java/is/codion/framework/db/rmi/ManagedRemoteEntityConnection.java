@@ -73,6 +73,11 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 	private volatile @Nullable String serverName;
 	private boolean truststoreResolved = false;
 
+	private final Lock lock = new Lock() {};
+
+	//the connection holding this client's session on the server, guarded by the lock
+	private @Nullable EntityConnection current;
+
 	private final String hostname;
 	private final int port;
 	private final int registryPort;
@@ -103,30 +108,64 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 			Clients.resolveTrustStore();
 			truststoreResolved = true;
 		}
-		try {
-			LOG.debug("Initializing connection for {}", user());
-			return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
-							new Class[] {EntityConnection.class}, new ServerEntityConnectionHandler(
-											server().connect(ConnectionRequest.builder()
-															.user(user())
-															.clientType(clientType())
-															.connectionId(id())
-															.version(clientVersion().orElse(null))
-															.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
-															.build())));
-		}
-		catch (Exception e) {
-			throw Exceptions.runtime(e);
+		synchronized (lock) {
+			if (current != null) {
+				//the server hands the session it holds for an id back to a client connecting with it, so the session
+				//of the connection being replaced is ended first, along with any transaction left open in it
+				current = null;
+				disconnectSilently();
+			}
+			try {
+				LOG.debug("Initializing connection for {}", user());
+				EntityConnection connection = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
+								new Class[] {EntityConnection.class}, new ServerEntityConnectionHandler(
+												server().connect(ConnectionRequest.builder()
+																.user(user())
+																.clientType(clientType())
+																.connectionId(id())
+																.version(clientVersion().orElse(null))
+																.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
+																.build())));
+				current = connection;
+
+				return connection;
+			}
+			catch (Exception e) {
+				throw Exceptions.runtime(e);
+			}
 		}
 	}
 
+	/**
+	 * Disconnects from the server, ending this client's session there, should the given connection hold the session,
+	 * the server knowing a client by its id alone. A connection which has been replaced does not, its session having
+	 * been ended when its replacement connected, and disconnecting would end the session of its replacement.
+	 * @param connection the connection to close
+	 */
 	@Override
 	protected void close(EntityConnection connection) {
-		try {
-			server.disconnect(id());
+		synchronized (lock) {
+			if (connection == current) {
+				current = null;
+				try {
+					server.disconnect(id());
+				}
+				catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
+			}
 		}
-		catch (RemoteException e) {
-			throw new RuntimeException(e);
+	}
+
+	private void disconnectSilently() {
+		Server<ServerEntityConnection, ServerAdmin> server = this.server;
+		if (server != null) {
+			try {
+				server.disconnect(id());
+			}
+			catch (Exception e) {
+				LOG.debug("Unable to disconnect the session of a replaced connection: {}", id(), e);
+			}
 		}
 	}
 
@@ -431,4 +470,6 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 			return databaseException;
 		}
 	}
+
+	private interface Lock {}
 }

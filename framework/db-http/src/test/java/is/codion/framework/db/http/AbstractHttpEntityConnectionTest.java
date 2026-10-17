@@ -376,6 +376,23 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
+	void replacedConnection() {
+		ManagedHttpEntityConnection managed = (ManagedHttpEntityConnection) builder.build();
+		EntityConnection replaced = managed.connect();
+		replaced.startTransaction();
+		//the server hands back the session it holds for an id, so a replacement ends the session of the one it
+		//replaces first, its transaction along with it
+		EntityConnection replacement = managed.connect();
+		assertFalse(replacement.transactionOpen());
+		replacement.startTransaction();
+		//and closing the replaced connection afterwards, as a replacement does, does not end the replacement's session
+		managed.close(replaced);
+		assertTrue(replacement.transactionOpen());
+		managed.close(replacement);
+		managed.close();
+	}
+
+	@Test
 	void savepoints() {
 		assertThrows(IllegalStateException.class, connection::savepoint);
 		connection.startTransaction();

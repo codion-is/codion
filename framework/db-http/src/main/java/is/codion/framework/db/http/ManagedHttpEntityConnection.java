@@ -22,6 +22,7 @@ import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.AbstractEntityConnection;
 import is.codion.framework.db.EntityConnection;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +48,11 @@ final class ManagedHttpEntityConnection extends AbstractEntityConnection
 	private final int socketTimeout;
 	private final int connectTimeout;
 
+	private final Lock lock = new Lock() {};
+
+	//the connection holding this client's session on the server, guarded by the lock
+	private @Nullable EntityConnection current;
+
 	ManagedHttpEntityConnection(DefaultHttpEntityConnectionBuilder builder) {
 		super(builder);
 		this.hostname = requireNonNull(builder.hostname, "hostname must be specified");
@@ -65,27 +71,66 @@ final class ManagedHttpEntityConnection extends AbstractEntityConnection
 
 	@Override
 	protected EntityConnection connect() {
-		try {
-			LOG.debug("Initializing connection for {}", user());
-			AbstractHttpEntityConnection.DefaultBuilder builder =
-							new AbstractHttpEntityConnection.DefaultBuilder()
-											.domain(domainType());
-			domain().ifPresent(builder::domain);
-			return builder.hostname(hostname)
-							.port(port)
-							.securePort(securePort)
-							.user(user())
-							.clientType(clientType())
-							.connectionId(id())
-							.clientVersion(clientVersion().orElse(null))
-							.json(json)
-							.https(https)
-							.socketTimeout(socketTimeout)
-							.connectTimeout(connectTimeout)
-							.build();
-		}
-		catch (Exception e) {
-			throw Exceptions.runtime(e);
+		synchronized (lock) {
+			EntityConnection previous = current;
+			if (previous != null) {
+				//the server hands the session it holds for an id back to a client connecting with it, so the session
+				//of the connection being replaced is ended first, along with any transaction left open in it
+				current = null;
+				closeSilently(previous);
+			}
+			try {
+				LOG.debug("Initializing connection for {}", user());
+				AbstractHttpEntityConnection.DefaultBuilder builder =
+								new AbstractHttpEntityConnection.DefaultBuilder()
+												.domain(domainType());
+				domain().ifPresent(builder::domain);
+				EntityConnection connection = builder.hostname(hostname)
+								.port(port)
+								.securePort(securePort)
+								.user(user())
+								.clientType(clientType())
+								.connectionId(id())
+								.clientVersion(clientVersion().orElse(null))
+								.json(json)
+								.https(https)
+								.socketTimeout(socketTimeout)
+								.connectTimeout(connectTimeout)
+								.build();
+				current = connection;
+
+				return connection;
+			}
+			catch (Exception e) {
+				throw Exceptions.runtime(e);
+			}
 		}
 	}
+
+	/**
+	 * Closes the given connection, ending this client's session on the server, should it hold the session, the
+	 * server knowing a client by its id alone. A connection which has been replaced does not, its session having
+	 * been ended when its replacement connected, and closing it would end the session of its replacement.
+	 * @param connection the connection to close
+	 */
+	@Override
+	protected void close(EntityConnection connection) {
+		synchronized (lock) {
+			if (connection == current) {
+				current = null;
+				connection.close();
+			}
+		}
+	}
+
+	private static void closeSilently(EntityConnection connection) {
+		try {
+			connection.close();
+		}
+		catch (Exception e) {
+			LOG.debug("Unable to close a replaced connection", e);
+		}
+	}
+
+	private interface Lock {}
 }

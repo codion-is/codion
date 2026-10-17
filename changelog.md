@@ -19,6 +19,10 @@ Codion Change Log
 - AbstractEntityConnection, a connection which has gone bad is now closed after it has been replaced, without holding the lock, as when closed or discarded, where a function on it reaching for the lock could deadlock with the thread replacing it.
 ### is.codion.framework.db.local
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) added, a connection for another domain joined to the given one, sharing its JDBC connection and transaction.
+### is.codion.framework.db.rmi
+- RemoteEntityConnection, a connection replacing one which has gone bad, or one discarded, now ends its session on the server before connecting, rather than being handed it back along with any transaction left open in it, and the replaced connection closed afterwards no longer ends the session of its replacement.
+### is.codion.framework.db.http
+- HttpEntityConnection, a connection replacing one which has gone bad, or one discarded, now ends its session on the server before connecting, rather than being handed it back along with any transaction left open in it, and the replaced connection closed afterwards no longer ends the session of its replacement.
 ### is.codion.framework.domain
 - A required column with a generator now accepts null when its entity is validated for insert, as one with a database default does, where only a generated primary key did, a form failing to insert a row with a generated non-key column.
 ### is.codion.framework.model

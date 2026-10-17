@@ -479,7 +479,8 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		finally {
 			if (invalid != null) {
 				//closed without holding the lock, as by close() and discard(): closing takes the connection's own
-				//monitor, which a thread inside a function on it holds, while that function may be reaching for the lock
+				//monitor, which a thread inside a function on it holds, while that function may be reaching for the lock.
+				//So after the replacement has connected, which a transport closing by id guards against, see close()
 				closeSilently(invalid);
 			}
 		}
@@ -494,6 +495,10 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	 * <p>Closes the given connection, called when this connection is closed and, best effort, when
 	 * a bad connection is being replaced or discarded. Transports override this to release any
 	 * related resources, deregistering with a server for example.
+	 * <p>Called without holding the lock, so a connection being replaced or discarded may be closed after another
+	 * has been established in its place. A transport whose close reaches beyond the given connection, a server
+	 * session identified by {@link #id()} for example, must not let the close of a replaced connection reach its
+	 * replacement.
 	 * @param connection the connection to close
 	 */
 	protected void close(EntityConnection connection) {
