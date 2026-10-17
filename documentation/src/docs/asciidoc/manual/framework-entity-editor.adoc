@@ -67,12 +67,47 @@ NOTE: These methods perform the operation on the calling thread. UI code, such a
 
 == Custom persistence
 
-{url-javadoc}{framework-model}/is/codion/framework/model/EntityPersistence.html[EntityPersistence], set via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#persistence()[persistence()], replaces how the editor performs its insert, update and delete — without changing anything else about it.
+{url-javadoc}{framework-model}/is/codion/framework/model/EntityPersistence.html[EntityPersistence] replaces how an editor performs its insert, update and delete — without changing anything else about it.
 Here invoice line operations run in a transaction which also updates the totals of the affected invoices, via a database procedure:
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLineEditModel.java[tags=persistence]
+include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLinePersistence.java[tags=persistence]
+----
+
+The persistence of an entity type belongs to every editor of that type, including the ones the framework creates on its own, such as those of a dependencies panel, where invoice lines can be deleted as well.
+An {url-javadoc}{framework-model}/is/codion/framework/model/EntityPersistence.Factory.html[EntityPersistence.Factory] registered for the domain provides it, each editor asking for the persistence of its entity type when created:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/ChinookPersistenceFactory.java[tags=persistenceFactory]
+----
+
+The factory is registered as a service in _module-info.java_:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/module-info.java[tags=entityPersistence]
+----
+
+or in a file at
+
+----
+src/main/resources/META-INF/services/is.codion.framework.model.EntityPersistence$Factory
+----
+
+containing the fully qualified class name:
+
+----
+is.codion.demos.chinook.model.ChinookPersistenceFactory
+----
+
+A persistence set on an editor via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#persistence()[persistence()] replaces the factory's for that editor alone, null restoring it.
+Here the playlist edit model deletes the tracks of a playlist along with it:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/PlaylistEditModel.java[tags=persistence]
 ----
 
 == Detail editors

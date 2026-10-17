@@ -26,6 +26,7 @@
  * <li>{@link is.codion.framework.model.EntityQueryModel}
  * <li>{@link is.codion.framework.model.EntityApplicationModel}
  * </ul>
+ * @uses is.codion.framework.model.EntityPersistence.Factory
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.framework.model {
@@ -35,4 +36,6 @@ module is.codion.framework.model {
 	requires transitive is.codion.framework.db;
 
 	exports is.codion.framework.model;
+
+	uses is.codion.framework.model.EntityPersistence.Factory;
 }

@@ -20,15 +20,21 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Responsible for persisting entities to the database.
+ * <p>Responsible for persisting entities to the database.
+ * <p>Set on an editor via {@link EntityEditor#persistence()}, or provided for an entity type by a {@link Factory}
+ * registered for its domain, reaching every editor of that type, those the framework creates itself included, such
+ * as the ones of a dependencies view.
  */
 public interface EntityPersistence {
 
@@ -94,5 +100,26 @@ public interface EntityPersistence {
 	 */
 	default void delete(Collection<Entity> entities, EntityConnection connection) {
 		requireNonNull(connection).delete(Entity.primaryKeys(entities));
+	}
+
+	/**
+	 * <p>Provides the {@link EntityPersistence} of entity types in a domain, the default of every editor of those types,
+	 * whoever creates it. One set on an editor via {@link EntityEditor#persistence()} overrides it for that editor.
+	 * <p>Found via {@link java.util.ServiceLoader}, the first one compatible with the domain, resolved once per domain.
+	 */
+	interface Factory {
+
+		/**
+		 * Called for each editor created for an entity type of a compatible domain.
+		 * @param entityType the entity type
+		 * @return the persistence of the given entity type, an empty Optional for the default
+		 */
+		Optional<EntityPersistence> persistence(EntityType entityType);
+
+		/**
+		 * @param domainType the domain type
+		 * @return true if this factory provides the persistence of entity types in the given domain
+		 */
+		boolean compatibleWith(DomainType domainType);
 	}
 }

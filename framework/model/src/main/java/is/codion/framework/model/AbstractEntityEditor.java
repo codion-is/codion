@@ -33,9 +33,11 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.dispatch.Dispatcher;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -72,7 +74,10 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -88,6 +93,7 @@ import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * An abstract {@link EntityEditor} implementation.
@@ -176,7 +182,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		this.settings = new DefaultSettings(entityDefinition);
 		this.componentModels = requireNonNull(componentModels);
 		this.comboBoxModels = requireNonNull(comboBoxModels).apply(this);
-		this.persistence = new DefaultEditorPersistence();
+		this.persistence = new DefaultEditorPersistence(entityType);
 		this.entity = new DefaultEditorEntity();
 		this.validator = Value.builder()
 						.nonNull(entityDefinition.validator())
@@ -2177,11 +2183,21 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
-	private static class DefaultEditorPersistence implements EditorPersistence {
+	private static final class DefaultEditorPersistence implements EditorPersistence {
 
 		private static final EntityPersistence DEFAULT = new EntityPersistence() {};
+		private static final Map<DomainType, Optional<EntityPersistence.Factory>> FACTORIES = new ConcurrentHashMap<>();
 
-		private EntityPersistence instance = DEFAULT;
+		private final EntityPersistence defaultPersistence;
+
+		private EntityPersistence instance;
+
+		private DefaultEditorPersistence(EntityType entityType) {
+			this.defaultPersistence = factory(entityType.domainType())
+							.flatMap(factory -> factory.persistence(entityType))
+							.orElse(DEFAULT);
+			this.instance = defaultPersistence;
+		}
 
 		@Override
 		public EntityPersistence get() {
@@ -2190,7 +2206,33 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void set(@Nullable EntityPersistence persistence) {
-			this.instance = persistence == null ? DEFAULT : persistence;
+			this.instance = persistence == null ? defaultPersistence : persistence;
+		}
+
+		private static Optional<EntityPersistence.Factory> factory(DomainType domainType) {
+			Optional<EntityPersistence.Factory> factory = FACTORIES.get(domainType);
+			if (factory == null) {
+				// Not computeIfAbsent, a factory being free to create editors when instantiated
+				factory = resolve(domainType);
+				FACTORIES.putIfAbsent(domainType, factory);
+			}
+
+			return factory;
+		}
+
+		private static Optional<EntityPersistence.Factory> resolve(DomainType domainType) {
+			try {
+				Optional<EntityPersistence.Factory> factory = stream(ServiceLoader.load(EntityPersistence.Factory.class).spliterator(), false)
+								.filter(candidate -> candidate.compatibleWith(domainType))
+								.findFirst();
+				// Most domains have none, so not a warning, but a factory not found is otherwise silent
+				LOG.debug("EntityPersistence.Factory for domain {}: {}", domainType, factory.map(Object::getClass).orElse(null));
+
+				return factory;
+			}
+			catch (ServiceConfigurationError e) {
+				throw Exceptions.runtime(e, ServiceConfigurationError.class);
+			}
 		}
 	}
 

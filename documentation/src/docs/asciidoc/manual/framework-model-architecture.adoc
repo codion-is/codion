@@ -44,6 +44,6 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.
 
 Logic belongs in the models — reacting to edits, persistence events and selection there means it works the same regardless of which UI (or test) drives it.
 
-The chinook demo's models are the reference examples: value dependencies and custom persistence in *InvoiceLineEditModel*, value propagation in *InvoiceEditModel*, selection-scoped operations in *TrackTableModel* — each documented in the chapters that follow.
+The chinook demo's models are the reference examples: value dependencies in *InvoiceLineEditModel*, custom persistence in *InvoiceLinePersistence* and *ChinookPersistenceFactory*, value propagation in *InvoiceEditModel*, selection-scoped operations in *TrackTableModel* — each documented in the chapters that follow.
 
 NOTE: Since models are UI-free, they are constructed and exercised directly in unit tests — create the model with a test connection, edit, insert, assert.

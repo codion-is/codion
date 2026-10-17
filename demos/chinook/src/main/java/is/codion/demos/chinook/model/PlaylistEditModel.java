@@ -30,6 +30,7 @@ import java.util.Collection;
 import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 
+// tag::persistence[]
 public final class PlaylistEditModel extends SwingEntityEditModel {
 
 	public PlaylistEditModel(EntityConnection connection) {
@@ -50,3 +51,4 @@ public final class PlaylistEditModel extends SwingEntityEditModel {
 		}
 	}
 }
+// end::persistence[]

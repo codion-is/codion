@@ -123,7 +123,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/model/TrackTableModel.java
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLineEditModel.java[tags=updateTotals]
+include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLinePersistence.java[tags=updateTotals]
 ----
 
 === Transactional Execution

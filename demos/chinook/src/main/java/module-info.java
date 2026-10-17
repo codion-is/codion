@@ -54,4 +54,8 @@ module is.codion.framework.demos.chinook {
 	provides is.codion.framework.json.domain.EntityObjectMapperFactory
 					with is.codion.demos.chinook.domain.ChinookObjectMapperFactory;
 	// end::entityObjectMapper[]
+	// tag::entityPersistence[]
+	provides is.codion.framework.model.EntityPersistence.Factory
+					with is.codion.demos.chinook.model.ChinookPersistenceFactory;
+	// end::entityPersistence[]
 }

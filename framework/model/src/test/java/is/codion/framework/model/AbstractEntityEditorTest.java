@@ -36,6 +36,7 @@ import is.codion.framework.model.AbstractEntityEditor.DetailForeignKeyValidator;
 import is.codion.framework.model.DetailDomain.Department;
 import is.codion.framework.model.DetailDomain.DepartmentExtra;
 import is.codion.framework.model.DetailDomain.Employee;
+import is.codion.framework.model.DetailPersistenceFactory.DepartmentPersistence;
 import is.codion.framework.model.EntityEditor.EditorValue;
 
 import org.junit.jupiter.api.Test;
@@ -1865,6 +1866,23 @@ public final class AbstractEntityEditorTest {
 		finally {
 			CONNECTION.rollbackTransaction();
 		}
+	}
+
+	@Test
+	void persistenceFactory() {
+		// DetailPersistenceFactory, registered for DetailDomain, provides the persistence of departments, asked per editor
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		assertInstanceOf(DepartmentPersistence.class, departmentEditor.persistence().get());
+		assertNotSame(departmentEditor.persistence().get(), new TestEntityEditor(Department.TYPE, CONNECTION).persistence().get());
+		// and the default for employees
+		assertFalse(new TestEntityEditor(Employee.TYPE, CONNECTION).persistence().get() instanceof DepartmentPersistence);
+
+		EntityPersistence persistence = new EntityPersistence() {};
+		departmentEditor.persistence().set(persistence);
+		assertSame(persistence, departmentEditor.persistence().get());
+		// null restores the factory's
+		departmentEditor.persistence().set(null);
+		assertInstanceOf(DepartmentPersistence.class, departmentEditor.persistence().get());
 	}
 
 	private static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {

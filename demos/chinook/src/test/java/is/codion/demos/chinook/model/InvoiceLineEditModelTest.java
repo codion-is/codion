@@ -30,11 +30,13 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityEditor;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -80,6 +82,32 @@ public final class InvoiceLineEditModelTest {
 			assertEquals(orion.get(Track.UNITPRICE).add(theCallOfKtulu.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
 
 			editor.delete();
+
+			invoice = connection.selectSingle(key(invoice.primaryKey()));
+			assertEquals(orion.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
+		}
+	}
+
+	@Test
+	void updateTotalsFromAnyEditor() throws EntityValidationException {
+		try (EntityConnection connection = createConnection()) {
+			Entity invoice = createInvoice(connection);
+			Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
+			Entity orion = connection.selectSingle(Track.NAME.equalToIgnoreCase("orion"));
+
+			SwingEntityEditor editor = new InvoiceLineEditModel(connection).editor();
+			editor.entity().defaults();
+			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
+			editor.value(InvoiceLine.TRACK_FK).set(battery);
+			Entity invoiceLineBattery = editor.insert();
+			editor.entity().defaults();
+			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
+			editor.value(InvoiceLine.TRACK_FK).set(orion);
+			editor.insert();
+
+			// Deleted the way the dependencies panel deletes, through a table model of its own
+			SwingEntityTableModel tableModel = SwingEntityTableModel.of(List.of(invoiceLineBattery), connection);
+			tableModel.editor().tasks().delete(List.of(invoiceLineBattery)).perform().handle();
 
 			invoice = connection.selectSingle(key(invoice.primaryKey()));
 			assertEquals(orion.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));

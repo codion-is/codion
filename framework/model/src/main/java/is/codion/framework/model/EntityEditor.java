@@ -347,7 +347,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	}
 
 	/**
-	 * Manages the {@link EntityPersistence} used by this editor
+	 * Manages the {@link EntityPersistence} used by this editor, by default the one provided for the entity type by the
+	 * {@link EntityPersistence.Factory} registered for its domain, if any.
 	 */
 	interface EditorPersistence {
 
@@ -357,7 +358,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		EntityPersistence get();
 
 		/**
-		 * @param persistence the {@link EntityPersistence} to use, default is used if {@code persistence} is null
+		 * @param persistence the {@link EntityPersistence} to use, null for the default
 		 */
 		void set(@Nullable EntityPersistence persistence);
 	}
