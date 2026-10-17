@@ -55,7 +55,7 @@ public class PostgreSQLDatabaseTest {
 							calls.add(call.append(")").toString());
 							return null;
 						});
-		SetValue<Object> setter = (SetValue<Object>) new PostgreSQLDatabase(URL, false).setter(Types.OTHER);
+		SetValue<Object> setter = (SetValue<Object>) new PostgreSQLDatabase(URL).setter(Types.OTHER);
 		setter.set(statement, 1, null);
 		setter.set(statement, 2, "SRID=4326;POINT(-20 64)");
 		assertEquals(asList("setObject(1, null)", "setObject(2, SRID=4326;POINT(-20 64), " + Types.OTHER + ")"), calls);
@@ -63,48 +63,48 @@ public class PostgreSQLDatabaseTest {
 
 	@Test
 	void name() {
-		PostgreSQLDatabase database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid", true);
+		PostgreSQLDatabase database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid");
 		assertEquals("sid", database.name());
-		database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid;options", true);
+		database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid;options");
 		assertEquals("sid", database.name());
-		database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid?parameters", true);
+		database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid?parameters");
 		assertEquals("sid", database.name());
-		database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid?parameters;options", true);
+		database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid?parameters;options");
 		assertEquals("sid", database.name());
-		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql:sid", true).name());
-		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql:sid?parameters", true).name());
-		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql://host1:1234,host2:1234/sid", true).name());
-		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql://[::1]:1234/sid", true).name());
-		assertEquals("host.db:1234", new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/", true).name());
-		assertEquals("host.db", new PostgreSQLDatabase("jdbc:postgresql://host.db", true).name());
+		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql:sid").name());
+		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql:sid?parameters").name());
+		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql://host1:1234,host2:1234/sid").name());
+		assertEquals("sid", new PostgreSQLDatabase("jdbc:postgresql://[::1]:1234/sid").name());
+		assertEquals("host.db:1234", new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/").name());
+		assertEquals("host.db", new PostgreSQLDatabase("jdbc:postgresql://host.db").name());
 	}
 
 	@Test
 	void sequenceQueryNullSequence() {
-		assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(URL, true).sequenceQuery(null));
+		assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(URL).sequenceQuery(null));
 	}
 
 	@Test
 	void autoIncrementQuery() {
-		PostgreSQLDatabase db = new PostgreSQLDatabase(URL, true);
+		PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
 		assertEquals("SELECT CURRVAL('seq')", db.autoIncrementQuery("seq"));
 	}
 
 	@Test
 	void sequenceQuery() {
-		PostgreSQLDatabase db = new PostgreSQLDatabase(URL, true);
+		PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
 		assertEquals("SELECT NEXTVAL('seq')", db.sequenceQuery("seq"));
 	}
 
 	@Test
 	void constructorNullHost() {
-		assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(null, true));
+		assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(null));
 	}
 
 	@Test
 	void exceptions() {
 		// states and messages as reported by PostgreSQL 18.4, pgjdbc 42.7.11
-		PostgreSQLDatabase database = new PostgreSQLDatabase(URL, true);
+		PostgreSQLDatabase database = new PostgreSQLDatabase(URL);
 		SQLException unique = new SQLException("ERROR: duplicate key value violates unique constraint \"parent_uk\"\n"
 						+ "  Detail: Key (code, name)=(A, b) already exists.", "23505");
 		assertInstanceOf(UniqueConstraintException.class, database.exception(unique, INSERT));

@@ -18,6 +18,7 @@
  */
 package is.codion.framework.db;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -53,7 +54,7 @@ final class DefaultSelect implements Select, Serializable {
 	private final Collection<Attribute<?>> exclude;
 	private final @Nullable OrderBy orderBy;
 	private final @Nullable Integer referenceDepth;
-	private final boolean forUpdate;
+	private final @Nullable Lock forUpdate;
 	private final @Nullable Integer limit;
 	private final @Nullable Integer offset;
 	private final @Nullable Integer timeout;
@@ -101,8 +102,8 @@ final class DefaultSelect implements Select, Serializable {
 	}
 
 	@Override
-	public boolean forUpdate() {
-		return forUpdate;
+	public Optional<Lock> forUpdate() {
+		return Optional.ofNullable(forUpdate);
 	}
 
 	@Override
@@ -201,7 +202,7 @@ final class DefaultSelect implements Select, Serializable {
 		private Condition having;
 		private @Nullable OrderBy orderBy;
 		private @Nullable Integer referenceDepth;
-		private boolean forUpdate;
+		private @Nullable Lock forUpdate;
 		private @Nullable Integer limit;
 		private @Nullable Integer offset;
 		private @Nullable Integer timeout;
@@ -230,8 +231,8 @@ final class DefaultSelect implements Select, Serializable {
 		}
 
 		@Override
-		public Builder forUpdate() {
-			this.forUpdate = true;
+		public Builder forUpdate(Lock lock) {
+			this.forUpdate = requireNonNull(lock);
 			this.referenceDepth = 0;
 			return this;
 		}

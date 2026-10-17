@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.domain;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
@@ -617,7 +618,7 @@ public final class ChinookImpl extends DomainModel {
 			Collection<Entity> invoices =
 							connection.select(where(Invoice.ID.in(invoiceIds))
 											.attributes(Invoice.TOTAL, Invoice.CALCULATED_TOTAL)
-											.forUpdate());
+											.forUpdate(Lock.WAIT));
 
 			connection.update(invoices.stream()
 							.map(UpdateTotals::updateTotal)
@@ -696,7 +697,7 @@ public final class ChinookImpl extends DomainModel {
 		                                  RaisePriceParameters parameters) {
 			List<Entity> tracks = connection.select(where(Track.ID.in(parameters.trackIds()))
 											.attributes(Track.UNITPRICE)
-											.forUpdate()).stream()
+											.forUpdate(Lock.WAIT)).stream()
 							.map(track -> raisePrice(track, parameters.priceIncrease()))
 							.toList();
 

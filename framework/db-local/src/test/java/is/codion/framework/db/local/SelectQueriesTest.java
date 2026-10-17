@@ -19,6 +19,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Lock;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.local.TestDomain.Employee;
@@ -74,8 +75,10 @@ public final class SelectQueriesTest {
 		builder.columns("empno");
 		assertEquals("SELECT empno\nFROM employees.employee e\nORDER BY ename", builder.build());
 
-		builder.forUpdate(true);
+		builder.forUpdate(Lock.NOWAIT);
 		assertEquals("SELECT empno\nFROM employees.employee\nORDER BY ename\nFOR UPDATE NOWAIT", builder.build());
+		builder.forUpdate(Lock.WAIT);
+		assertEquals("SELECT empno\nFROM employees.employee\nORDER BY ename\nFOR UPDATE", builder.build());
 
 		builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
 						.entitySelectQuery();
@@ -261,7 +264,7 @@ public final class SelectQueriesTest {
 						});
 		SelectQueries hintingQueries = new SelectQueries(hinting);
 		String query = hintingQueries.builder(employeeDefinition)
-						.select(Select.all(Employee.TYPE).forUpdate().build())
+						.select(Select.all(Employee.TYPE).forUpdate(Lock.NOWAIT).build())
 						.build();
 		assertTrue(query.endsWith("FROM employees.employee WITH (UPDLOCK)"));
 		assertFalse(query.contains("FOR UPDATE"));
@@ -272,7 +275,7 @@ public final class SelectQueriesTest {
 		assertFalse(query.contains("UPDLOCK"));
 		// a custom from clause, no single table to apply the hint to
 		query = hintingQueries.builder(employeeDefinition)
-						.select(Select.all(Employee.TYPE).forUpdate().build())
+						.select(Select.all(Employee.TYPE).forUpdate(Lock.NOWAIT).build())
 						.from("employees.employee e join employees.department d on e.deptno = d.deptno")
 						.build();
 		assertFalse(query.contains("UPDLOCK"));
@@ -281,7 +284,7 @@ public final class SelectQueriesTest {
 	@Test
 	void testForUpdate() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
-		Select select = Select.all(Employee.TYPE).forUpdate().build();
+		Select select = Select.all(Employee.TYPE).forUpdate(Lock.NOWAIT).build();
 		builder.select(select);
 
 		String query = builder.build();
@@ -453,7 +456,7 @@ public final class SelectQueriesTest {
 		SelectQueries.Builder builder = dbQueries.builder(employeeDefinition);
 		Select select = Select.all(Employee.TYPE)
 						.limit(10)
-						.forUpdate()
+						.forUpdate(Lock.NOWAIT)
 						.build();
 		builder.select(select);
 

@@ -18,6 +18,7 @@
  */
 package is.codion.framework.db;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
@@ -1184,10 +1185,10 @@ public interface EntityConnection extends AutoCloseable {
 	 *                 .referenceDepth(Track.GENRE_FK, 0) // Don't fetch the genre
 	 *                 .referenceDepth(Track.MEDIATYPE_FK, 1)); // Fetch the media type
 	 *
-	 * // Select for update (row locking)
+	 * // Select for update, failing at once if another transaction holds the row
 	 * Entity invoice = connection.selectSingle(
 	 *         Select.where(Invoice.ID.equalTo(invoiceId))
-	 *                 .forUpdate()); // @end}
+	 *                 .forUpdate(Lock.NOWAIT)); // @end}
 	 */
 	interface Select {
 
@@ -1217,9 +1218,11 @@ public interface EntityConnection extends AutoCloseable {
 		OptionalInt offset();
 
 		/**
-		 * @return true if this select should lock the result FOR UPDATE
+		 * @return how a row locked by another transaction is treated if this select locks the result FOR UPDATE,
+		 * an empty Optional if it does not
+		 * @see Builder#forUpdate(Lock)
 		 */
-		boolean forUpdate();
+		Optional<Lock> forUpdate();
 
 		/**
 		 * @return the query timeout in seconds, an empty {@link OptionalInt} if none has been
@@ -1340,9 +1343,11 @@ public interface EntityConnection extends AutoCloseable {
 			 * query on the same connection or performing an update.
 			 * Note that marking this Select instance as for update, sets the {@link #referenceDepth(int)} to zero, which can
 			 * then be modified by setting it after setting forUpdate.
+			 * @param lock how a row locked by another transaction is treated, {@link Lock#WAIT} waiting for it,
+			 * {@link Lock#NOWAIT} failing at once, where the database supports it
 			 * @return this builder instance
 			 */
-			Builder forUpdate();
+			Builder forUpdate(Lock lock);
 
 			/**
 			 * Limit the levels of foreign keys to fetch, for every foreign key encountered while fetching the

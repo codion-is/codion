@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.mariadb;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -77,8 +78,8 @@ public class MariaDBDatabaseTest {
 
 	@Test
 	void selectForUpdateClause() {
-		assertEquals("FOR UPDATE NOWAIT", new MariaDBDatabase(URL, true).selectForUpdateClause());
-		assertEquals("FOR UPDATE", new MariaDBDatabase(URL, false).selectForUpdateClause());
+		assertEquals("FOR UPDATE NOWAIT", new MariaDBDatabase(URL).selectForUpdateClause(Lock.NOWAIT));
+		assertEquals("FOR UPDATE", new MariaDBDatabase(URL).selectForUpdateClause(Lock.WAIT));
 	}
 
 	@Test

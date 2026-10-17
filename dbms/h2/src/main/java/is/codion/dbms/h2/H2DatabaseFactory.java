@@ -50,8 +50,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public Database create(String url) {
-		return new H2Database(url, Text.parseCSV(Database.INIT_SCRIPTS.get()),
-						Database.SELECT_FOR_UPDATE_NOWAIT.getOrThrow());
+		return new H2Database(url, Text.parseCSV(Database.INIT_SCRIPTS.get()));
 	}
 
 	/**
@@ -61,8 +60,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 	 * @return an H2 Database instance
 	 */
 	public static Database create(String url, String... initScripts) {
-		return new H2Database(url, initScripts == null ? emptyList() : asList(initScripts),
-						Database.SELECT_FOR_UPDATE_NOWAIT.getOrThrow());
+		return new H2Database(url, initScripts == null ? emptyList() : asList(initScripts));
 	}
 
 	/**

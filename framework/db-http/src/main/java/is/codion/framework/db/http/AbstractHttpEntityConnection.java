@@ -239,7 +239,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	 */
 	protected final @Nullable List<Entity> cachedResult(Select select) {
 		HttpQueryCache cache = queryCache;
-		if (cache != null && !select.forUpdate()) {
+		if (cache != null && !select.forUpdate().isPresent()) {
 			return cache.cached.get(select);
 		}
 
@@ -254,7 +254,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	 */
 	protected final List<Entity> cacheResult(Select select, List<Entity> result) {
 		HttpQueryCache cache = queryCache;
-		if (cache != null && !select.forUpdate()) {
+		if (cache != null && !select.forUpdate().isPresent()) {
 			//the cached result is shared by every hit, immutable entities in an unmodifiable
 			//list keep a single caller from modifying what the next one receives
 			List<Entity> cached = immutable(result);

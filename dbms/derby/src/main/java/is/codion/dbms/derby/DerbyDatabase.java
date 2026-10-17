@@ -86,7 +86,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String selectForUpdateClause() {
+	public String selectForUpdateClause(Lock lock) {
 		return FOR_UPDATE;
 	}
 

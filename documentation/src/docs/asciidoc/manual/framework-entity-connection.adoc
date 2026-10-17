@@ -224,7 +224,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 ==== Optimistic locking
 
 The framework performs optimistic locking during updates using the methods above.
-This is done by selecting the entities being updated *FOR UPDATE* (when supported by the underlying database) and comparing all original values to the current row values, throwing an exception if one or more values differ or the row is missing. Optimistic locking is field-based: any difference between original and current values causes an update to fail.
+This is done by selecting the entities being updated *FOR UPDATE NOWAIT* (as far as supported by the underlying database), an update of a row locked by another transaction failing at once rather than waiting, and comparing all original values to the current row values, throwing an exception if one or more values differ or the row is missing. Optimistic locking is field-based: any difference between original and current values causes an update to fail.
 
 [source,java]
 ----

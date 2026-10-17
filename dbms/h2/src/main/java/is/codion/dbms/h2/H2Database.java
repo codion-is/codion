@@ -78,7 +78,6 @@ final class H2Database extends AbstractDatabase {
 		ERROR_TYPES.put(90096, ErrorType.MISSING_PRIVILEGES);// not enough rights for object
 	}
 
-	private final boolean nowait;
 	private final boolean server;
 
 	H2Database(String url) {
@@ -86,12 +85,7 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	H2Database(String url, List<String> scriptPaths) {
-		this(url, scriptPaths, true);
-	}
-
-	H2Database(String url, List<String> scriptPaths, boolean nowait) {
 		super(url);
-		this.nowait = nowait;
 		this.server = startsWith(url, JDBC_URL_PREFIX_TCP) || startsWith(url, JDBC_URL_PREFIX_SSL);
 		if (!server && !startsWith(url, JDBC_URL_PREFIX_ZIP)) {
 			// a database on a server is not ours to initialize and one in a zip file is read only
@@ -109,12 +103,8 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	@Override
-	public String selectForUpdateClause() {
-		if (nowait) {
-			return FOR_UPDATE_NOWAIT;
-		}
-
-		return FOR_UPDATE;
+	public String selectForUpdateClause(Lock lock) {
+		return lock == Lock.NOWAIT ? FOR_UPDATE_NOWAIT : FOR_UPDATE;
 	}
 
 	@Override

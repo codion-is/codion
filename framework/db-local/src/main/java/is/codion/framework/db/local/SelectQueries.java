@@ -19,6 +19,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Lock;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -102,7 +103,7 @@ final class SelectQueries {
 		private String columns;
 		private String from;
 		private String orderBy;
-		private boolean forUpdate;
+		private Lock forUpdate;
 		private String groupBy;
 		private String having;
 		private Integer limit;
@@ -148,7 +149,7 @@ final class SelectQueries {
 
 			// Apply remaining clauses from Select, which take precedence over EntitySelectQuery
 			select.orderBy().ifPresent(this::setOrderBy);
-			forUpdate(select.forUpdate());
+			select.forUpdate().ifPresent(this::forUpdate);
 			select.limit().ifPresent(this::limit);
 			select.offset().ifPresent(this::offset);
 
@@ -202,8 +203,8 @@ final class SelectQueries {
 			return this;
 		}
 
-		Builder forUpdate(boolean forUpdate) {
-			this.forUpdate = forUpdate;
+		Builder forUpdate(Lock lock) {
+			this.forUpdate = lock;
 			return this;
 		}
 
@@ -257,8 +258,8 @@ final class SelectQueries {
 			if (!limitOffsetClause.isEmpty()) {
 				builder.append(NEWLINE).append(limitOffsetClause);
 			}
-			if (forUpdate) {
-				String forUpdateClause = database.selectForUpdateClause();
+			if (forUpdate != null) {
+				String forUpdateClause = database.selectForUpdateClause(forUpdate);
 				if (!nullOrEmpty(forUpdateClause)) {
 					builder.append(NEWLINE).append(forUpdateClause);
 				}
@@ -324,14 +325,14 @@ final class SelectQueries {
 				// For a FOR UPDATE select we select from the base table, otherwise from the (possibly view based) select table.
 				// Note that this means an entity combining optimistic locking with a select table must keep its column
 				// expressions valid against the base table as well, since the FROM switches but the column clause does not.
-				return forUpdate ? forUpdateTable() : definition.selectTable();
+				return forUpdate != null ? forUpdateTable() : definition.selectTable();
 			}
 
 			return from;
 		}
 
 		private String forUpdateTable() {
-			String tableHint = database.selectForUpdateTableHint();
+			String tableHint = database.selectForUpdateTableHint(forUpdate);
 
 			return tableHint.isEmpty() ? definition.table() : definition.table() + " " + tableHint;
 		}

@@ -75,8 +75,8 @@ final class SelectSerializer extends StdSerializer<Select> {
 		if (offset != -1) {
 			generator.writeNumberField("offset", offset);
 		}
-		if (select.forUpdate()) {
-			generator.writeBooleanField("forUpdate", select.forUpdate());
+		if (select.forUpdate().isPresent()) {
+			generator.writeStringField("forUpdate", select.forUpdate().get().name());
 		}
 		int timeout = select.timeout().orElse(-1);
 		if (timeout != -1) {

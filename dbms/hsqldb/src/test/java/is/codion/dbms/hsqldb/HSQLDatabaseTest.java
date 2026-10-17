@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.hsqldb;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -75,7 +76,8 @@ public class HSQLDatabaseTest {
 	@Test
 	void selectForUpdateClause() {
 		// NOWAIT is not supported
-		assertEquals("FOR UPDATE", new HSQLDatabase(URL).selectForUpdateClause());
+		assertEquals("FOR UPDATE", new HSQLDatabase(URL).selectForUpdateClause(Lock.NOWAIT));
+		assertEquals("FOR UPDATE", new HSQLDatabase(URL).selectForUpdateClause(Lock.WAIT));
 	}
 
 	@Test

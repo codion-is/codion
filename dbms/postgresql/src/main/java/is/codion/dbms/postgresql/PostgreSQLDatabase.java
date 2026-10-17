@@ -57,11 +57,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	private static final String DETAIL_KEY = "Detail: Key ";
 	private static final String ALREADY_EXISTS = " already exists.";
 
-	private final boolean nowait;
-
-	PostgreSQLDatabase(String url, boolean nowait) {
+	PostgreSQLDatabase(String url) {
 		super(url);
-		this.nowait = nowait;
 	}
 
 	@Override
@@ -71,12 +68,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String selectForUpdateClause() {
-		if (nowait) {
-			return FOR_UPDATE_NOWAIT;
-		}
-
-		return FOR_UPDATE;
+	public String selectForUpdateClause(Lock lock) {
+		return lock == Lock.NOWAIT ? FOR_UPDATE_NOWAIT : FOR_UPDATE;
 	}
 
 	@Override

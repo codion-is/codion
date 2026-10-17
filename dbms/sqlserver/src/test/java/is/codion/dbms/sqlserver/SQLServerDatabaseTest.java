@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.sqlserver;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -97,9 +98,9 @@ public class SQLServerDatabaseTest {
 	@Test
 	void selectForUpdate() {
 		// rows are locked via a table hint, not a clause
-		assertEquals("", new SQLServerDatabase(URL).selectForUpdateClause());
-		assertEquals("WITH (UPDLOCK, ROWLOCK, NOWAIT)", new SQLServerDatabase(URL, true).selectForUpdateTableHint());
-		assertEquals("WITH (UPDLOCK, ROWLOCK)", new SQLServerDatabase(URL, false).selectForUpdateTableHint());
+		assertEquals("", new SQLServerDatabase(URL).selectForUpdateClause(Lock.NOWAIT));
+		assertEquals("WITH (UPDLOCK, ROWLOCK, NOWAIT)", new SQLServerDatabase(URL).selectForUpdateTableHint(Lock.NOWAIT));
+		assertEquals("WITH (UPDLOCK, ROWLOCK)", new SQLServerDatabase(URL).selectForUpdateTableHint(Lock.WAIT));
 	}
 
 	@Test

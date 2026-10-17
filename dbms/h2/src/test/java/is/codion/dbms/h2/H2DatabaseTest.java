@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.h2;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -236,7 +237,7 @@ public class H2DatabaseTest {
 			// a locked row, which the driver reports as a timeout when NOWAIT is used
 			connection.setAutoCommit(false);
 			connection2.setAutoCommit(false);
-			String selectForUpdate = "select id from parent where id = 1 " + database.selectForUpdateClause();
+			String selectForUpdate = "select id from parent where id = 1 " + database.selectForUpdateClause(Lock.NOWAIT);
 			execute(connection, selectForUpdate);
 			SQLException locked = failure(connection2, selectForUpdate);
 			assertSame(DatabaseException.class, database.exception(locked, SELECT).getClass());

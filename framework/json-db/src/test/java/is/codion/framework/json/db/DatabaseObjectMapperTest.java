@@ -18,6 +18,7 @@
  */
 package is.codion.framework.json.db;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Savepoint;
 import is.codion.framework.db.EntityConnection.Select;
@@ -39,7 +40,8 @@ import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_FIRST;
 import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_LAST;
 import static is.codion.framework.json.db.DatabaseObjectMapper.databaseObjectMapper;
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class DatabaseObjectMapperTest {
 
@@ -57,7 +59,7 @@ public final class DatabaseObjectMapperTest {
 										.build())
 						.limit(2)
 						.offset(1)
-						.forUpdate()
+						.forUpdate(Lock.WAIT)
 						.timeout(42)
 						.referenceDepth(2)
 						.referenceDepth(Employee.DEPARTMENT_FK, 0)
@@ -81,7 +83,7 @@ public final class DatabaseObjectMapperTest {
 		assertEquals(select.attributes(), readCondition.attributes());
 		assertEquals(select.include(), readCondition.include());
 		assertEquals(select.exclude(), readCondition.exclude());
-		assertTrue(readCondition.forUpdate());
+		assertEquals(Lock.WAIT, readCondition.forUpdate().orElse(null));
 		assertEquals(42, readCondition.timeout().orElseThrow());
 		assertEquals(select, readCondition);
 

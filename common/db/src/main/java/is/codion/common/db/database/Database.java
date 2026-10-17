@@ -90,16 +90,6 @@ public interface Database extends ConnectionFactory {
 	PropertyValue<Boolean> COUNT_QUERIES = booleanValue("codion.db.countQueries", false);
 
 	/**
-	 * Specifies whether 'select for update' should be NOWAIT, if supported by the database.<br>
-	 * A database implementation may disregard this.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 */
-	PropertyValue<Boolean> SELECT_FOR_UPDATE_NOWAIT = booleanValue("codion.db.selectForUpdateNowait", true);
-
-	/**
 	 * Specifies the default login timeout (in seconds).
 	 * <p>Applied JVM-wide via {@link java.sql.DriverManager#setLoginTimeout(int)} when the {@link Database}
 	 * implementation is loaded, affecting all JDBC usage in the process, not only Codion's.
@@ -212,19 +202,21 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * Returns a select for update clause, an empty string if not supported.
+	 * @param lock how a row locked by another transaction is treated
 	 * @return a select for update clause
-	 * @see #selectForUpdateTableHint()
+	 * @see #selectForUpdateTableHint(Lock)
 	 */
-	String selectForUpdateClause();
+	String selectForUpdateClause(Lock lock);
 
 	/**
 	 * Returns a table hint for locking the selected rows, appended to the table name in the from clause of a select for update query,
 	 * for databases which lock rows via a table hint instead of a select for update clause, an empty string if not applicable.
 	 * Note that the hint is not applied when selecting from a custom from clause, there being no single table to apply it to.
+	 * @param lock how a row locked by another transaction is treated
 	 * @return a select for update table hint
-	 * @see #selectForUpdateClause()
+	 * @see #selectForUpdateClause(Lock)
 	 */
-	String selectForUpdateTableHint();
+	String selectForUpdateTableHint(Lock lock);
 
 	/**
 	 * Returns a limit/offset clause variation for this database, based on the given limit and offset values.
@@ -371,6 +363,23 @@ public interface Database extends ConnectionFactory {
 	 */
 	static Database instance() {
 		return AbstractDatabase.instance();
+	}
+
+	/**
+	 * How a select for update treats a row locked by another transaction.
+	 */
+	enum Lock {
+
+		/**
+		 * Waits until the lock is released, or until the wait is ended by the database's own lock timeout, where it has one,
+		 * or by the query timeout, where the database honours it during a lock wait.
+		 */
+		WAIT,
+
+		/**
+		 * Fails at once, where the database supports it, waiting otherwise.
+		 */
+		NOWAIT
 	}
 
 	/**

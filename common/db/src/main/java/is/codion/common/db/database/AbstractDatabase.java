@@ -241,7 +241,7 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
-	public String selectForUpdateTableHint() {
+	public String selectForUpdateTableHint(Lock lock) {
 		return "";
 	}
 

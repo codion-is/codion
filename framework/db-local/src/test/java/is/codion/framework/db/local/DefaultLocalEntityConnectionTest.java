@@ -20,7 +20,9 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.database.ConnectionProvider;
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
@@ -69,6 +71,8 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -86,6 +90,8 @@ import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultLocalEntityConnectionTest {
@@ -988,7 +994,7 @@ public class DefaultLocalEntityConnectionTest {
 		LocalEntityConnection connection2 = createConnection();
 		String originalLocation;
 		try {
-			Select select = Select.where(Department.DNAME.equalTo("SALES")).forUpdate().build();
+			Select select = Select.where(Department.DNAME.equalTo("SALES")).forUpdate(Lock.NOWAIT).build();
 
 			Entity sales = connection.selectSingle(select);
 			originalLocation = sales.get(Department.LOC);
@@ -1012,6 +1018,43 @@ public class DefaultLocalEntityConnectionTest {
 			catch (DatabaseException ignored) {
 				fail("Should be able to update row after other connection released the select for update lock");
 			}
+		}
+		finally {
+			connection.close();
+			connection2.close();
+		}
+	}
+
+	@Test
+	void selectForUpdateLockWait() throws Exception {
+		LocalEntityConnection connection = createConnection();
+		LocalEntityConnection connection2 = createConnection();
+		try {
+			// H2's own lock timeout ends a wait, which another test may have shortened for every connection
+			try (Statement statement = connection2.connection().createStatement()) {
+				statement.execute("SET LOCK_TIMEOUT 10000");
+			}
+			Select nowait = Select.where(Department.DNAME.equalTo("SALES")).forUpdate(Lock.NOWAIT).build();
+			connection.startTransaction();
+			Entity sales = connection.selectSingle(nowait);
+			// NOWAIT fails at once on the row the other connection holds
+			DatabaseException exception = assertThrows(DatabaseException.class, () -> connection2.select(nowait));
+			assertEquals(ErrorType.ROW_LOCKED, exception.errorType().orElse(null));
+			connection2.connection().rollback();
+			// as does an update, its optimistic locking select being NOWAIT, rather than waiting out the lock timeout
+			sales.set(Department.LOC, "Syracuse");
+			long start = System.currentTimeMillis();
+			exception = assertThrows(DatabaseException.class, () -> connection2.update(sales));
+			assertEquals(ErrorType.ROW_LOCKED, exception.errorType().orElse(null));
+			assertTrue(System.currentTimeMillis() - start < 5000);
+			connection2.connection().rollback();
+			// WAIT waits for the other connection to release it
+			CompletableFuture<List<Entity>> waiting = CompletableFuture.supplyAsync(() ->
+							connection2.select(Select.where(Department.DNAME.equalTo("SALES")).forUpdate(Lock.WAIT).build()));
+			assertThrows(TimeoutException.class, () -> waiting.get(200, MILLISECONDS));
+			connection.rollbackTransaction();
+			assertEquals(1, waiting.get(10, SECONDS).size());
+			connection2.connection().rollback();
 		}
 		finally {
 			connection.close();
@@ -1543,13 +1586,13 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void selectQuery() {
 		connection.select(all(Query.TYPE));
-		connection.select(Select.all(Query.TYPE).forUpdate().build());
+		connection.select(Select.all(Query.TYPE).forUpdate(Lock.NOWAIT).build());
 		connection.select(all(QueryColumnsWhereClause.TYPE));
-		connection.select(Select.all(QueryColumnsWhereClause.TYPE).forUpdate().build());
+		connection.select(Select.all(QueryColumnsWhereClause.TYPE).forUpdate(Lock.NOWAIT).build());
 		connection.select(all(QueryFromClause.TYPE));
-		connection.select(Select.all(QueryFromClause.TYPE).forUpdate().build());
+		connection.select(Select.all(QueryFromClause.TYPE).forUpdate(Lock.NOWAIT).build());
 		connection.select(all(QueryFromWhereClause.TYPE));
-		connection.select(Select.all(QueryFromWhereClause.TYPE).forUpdate().build());
+		connection.select(Select.all(QueryFromWhereClause.TYPE).forUpdate(Lock.NOWAIT).build());
 	}
 
 	@Test
@@ -1775,11 +1818,11 @@ public class DefaultLocalEntityConnectionTest {
 
 			result = connection.select(Select.where(Department.DEPTNO
 											.greaterThanOrEqualTo(20))
-							.forUpdate()
+							.forUpdate(Lock.NOWAIT)
 							.build());
 			result2 = connection.select(Select.where(Department.DEPTNO
 											.greaterThanOrEqualTo(20))
-							.forUpdate()
+							.forUpdate(Lock.NOWAIT)
 							.build());
 			assertNotSame(result, result2);//forUpdate selects bypass the cache
 
@@ -1802,7 +1845,7 @@ public class DefaultLocalEntityConnectionTest {
 
 			//forUpdate selects bypass the cache and return mutable entities
 			Entity forUpdate = connection.select(Select.where(Department.DEPTNO.equalTo(20))
-							.forUpdate()
+							.forUpdate(Lock.NOWAIT)
 							.build()).get(0);
 			assertTrue(forUpdate.mutable());
 

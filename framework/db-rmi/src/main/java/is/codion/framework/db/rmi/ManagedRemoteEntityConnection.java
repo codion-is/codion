@@ -365,7 +365,7 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 				select = where(key((Entity.Key) args[0])).build();
 			}
 
-			return select == null || select.forUpdate() ? null : select;
+			return select == null || select.forUpdate().isPresent() ? null : select;
 		}
 
 		/**

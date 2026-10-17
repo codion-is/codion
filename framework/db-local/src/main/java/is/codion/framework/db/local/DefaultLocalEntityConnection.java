@@ -19,6 +19,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.Operation;
 import is.codion.common.utilities.exceptions.Exceptions;
@@ -661,7 +662,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		synchronized (session) {
 			try {
 				List<Entity> result = query(select);
-				if (!select.forUpdate()) {
+				if (!select.forUpdate().isPresent()) {
 					commitIfTransactionIsNotOpen();
 				}
 
@@ -1192,7 +1193,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		Select selectForUpdate = where(keys(originalKeys))
 						.attributes(primaryKeyAndWritableSelectedColumns(entityType))
 						.include(lazyColumns(entities, entities().definition(entityType)))
-						.forUpdate()
+						.forUpdate(Lock.NOWAIT)// a row locked elsewhere may well be held by a person, the update failing at once rather than waiting
 						.build();
 		Map<Key, Entity> currentEntitiesByKey = primaryKeyMap(query(selectForUpdate));
 		for (Entity entity : entities) {
@@ -1929,7 +1930,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	private @Nullable List<Entity> cachedResult(Select select) {
 		DefaultQueryCache cache = queryCache;
-		if (cache != null && !select.forUpdate()) {
+		if (cache != null && !select.forUpdate().isPresent()) {
 			return cache.cached.get(select);
 		}
 
@@ -1938,7 +1939,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	private List<Entity> cacheResult(Select select, List<Entity> result) {
 		DefaultQueryCache cache = queryCache;
-		if (cache != null && !select.forUpdate()) {
+		if (cache != null && !select.forUpdate().isPresent()) {
 			LOG.debug("Caching result for select {}, size {}", select, result.size());
 			//the cached result is shared by every hit, immutable entities in an unmodifiable
 			//list keep a single caller from modifying what the next one receives

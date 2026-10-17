@@ -77,15 +77,8 @@ final class SQLServerDatabase extends AbstractDatabase {
 	 */
 	private static final int MAXIMUM_STATEMENT_PARAMETERS = 2098;
 
-	private final boolean nowait;
-
 	SQLServerDatabase(String url) {
-		this(url, true);
-	}
-
-	SQLServerDatabase(String url, boolean nowait) {
 		super(url);
-		this.nowait = nowait;
 	}
 
 	@Override
@@ -138,10 +131,10 @@ final class SQLServerDatabase extends AbstractDatabase {
 	}
 
 	/**
-	 * @return an empty string, the rows being locked via {@link #selectForUpdateTableHint()}
+	 * @return an empty string, the rows being locked via {@link #selectForUpdateTableHint(Lock)}
 	 */
 	@Override
-	public String selectForUpdateClause() {
+	public String selectForUpdateClause(Lock lock) {
 		return "";
 	}
 
@@ -149,8 +142,8 @@ final class SQLServerDatabase extends AbstractDatabase {
 	 * An update lock does not block readers, only others requesting an update lock, which with NOWAIT fail with a lock request timeout.
 	 */
 	@Override
-	public String selectForUpdateTableHint() {
-		return nowait ? UPDATE_LOCK_NOWAIT : UPDATE_LOCK;
+	public String selectForUpdateTableHint(Lock lock) {
+		return lock == Lock.NOWAIT ? UPDATE_LOCK_NOWAIT : UPDATE_LOCK;
 	}
 
 	@Override

@@ -18,6 +18,7 @@
  */
 package is.codion.framework.json.db;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -78,8 +79,8 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 			selectBuilder.offset(offset.asInt());
 		}
 		JsonNode forUpdate = jsonNode.get("forUpdate");
-		if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
-			selectBuilder.forUpdate();
+		if (forUpdate != null && !forUpdate.isNull()) {
+			selectBuilder.forUpdate(Lock.valueOf(forUpdate.asText()));
 		}
 		JsonNode referenceDepth = jsonNode.get("referenceDepth");
 		if (referenceDepth != null && !referenceDepth.isNull()) {

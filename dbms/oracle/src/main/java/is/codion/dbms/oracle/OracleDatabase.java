@@ -67,15 +67,8 @@ final class OracleDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(942, ErrorType.TABLE_NOT_FOUND);
 	}
 
-	private final boolean nowait;
-
 	OracleDatabase(String url) {
-		this(url, true);
-	}
-
-	OracleDatabase(String url, boolean nowait) {
 		super(url);
-		this.nowait = nowait;
 	}
 
 	@Override
@@ -111,12 +104,8 @@ final class OracleDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String selectForUpdateClause() {
-		if (nowait) {
-			return FOR_UPDATE_NOWAIT;
-		}
-
-		return FOR_UPDATE;
+	public String selectForUpdateClause(Lock lock) {
+		return lock == Lock.NOWAIT ? FOR_UPDATE_NOWAIT : FOR_UPDATE;
 	}
 
 	@Override

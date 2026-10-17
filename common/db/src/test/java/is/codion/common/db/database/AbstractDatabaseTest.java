@@ -18,6 +18,7 @@
  */
 package is.codion.common.db.database;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ErrorType;
@@ -80,8 +81,9 @@ public final class AbstractDatabaseTest {
 		@Test
 		@DisplayName("Select for update clause returns expected value")
 		void selectForUpdateClause_shouldReturnExpectedValue() {
-			assertEquals(AbstractDatabase.FOR_UPDATE_NOWAIT, database.selectForUpdateClause());
-			assertEquals("", database.selectForUpdateTableHint());
+			assertEquals(AbstractDatabase.FOR_UPDATE_NOWAIT, database.selectForUpdateClause(Lock.NOWAIT));
+			assertEquals(AbstractDatabase.FOR_UPDATE, database.selectForUpdateClause(Lock.WAIT));
+			assertEquals("", database.selectForUpdateTableHint(Lock.NOWAIT));
 		}
 
 		@Test
@@ -398,8 +400,8 @@ public final class AbstractDatabaseTest {
 		}
 
 		@Override
-		public String selectForUpdateClause() {
-			return FOR_UPDATE_NOWAIT;
+		public String selectForUpdateClause(Lock lock) {
+			return lock == Lock.NOWAIT ? FOR_UPDATE_NOWAIT : FOR_UPDATE;
 		}
 
 		@Override

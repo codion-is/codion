@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.db
 - Database.getter(Class) added, a column of a class without an SQL type of its own, such as UUID, or of a java.sql temporal class, now read via ResultSet.getObject(int) with LEGACY_JDBC, where it failed on Android, whose ResultSet lacks getObject(int, Class).
 - Database.releasesSavepoints() added, false for Oracle and SQL Server, which do not release savepoints.
+- Database.SELECT_FOR_UPDATE_NOWAIT removed, Database.Lock added, selectForUpdateClause() and selectForUpdateTableHint() take the Lock, NOWAIT chosen per select rather than for every select in the JVM.
 ### is.codion.common.model
 - TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
 ### is.codion.dbms.postgresql
@@ -20,6 +21,7 @@ Codion Change Log
 - EntityConnection.transaction(), a rollback failing after the transactional threw no longer replaces the exception thrown, which is rethrown with the rollback exception added as suppressed.
 - AbstractEntityConnection, a connection which has gone bad is now closed after it has been replaced, without holding the lock, as when closed or discarded, where a function on it reaching for the lock could deadlock with the thread replacing it.
 - EntityConnection.BatchInsert, BatchCopy, batchInsert(), batchCopy() and MAXIMUM_BATCH_SIZE removed.
+- EntityConnection.Select.Builder.forUpdate() replaced by forUpdate(Lock), Select.forUpdate() returns an Optional Lock, written by name in JSON, the select for update of optimistic locking NOWAIT, as by default before.
 ### is.codion.framework.db.local
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) added, a connection for another domain joined to the given one, sharing its JDBC connection and transaction.
 ### is.codion.framework.db.rmi

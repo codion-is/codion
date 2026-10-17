@@ -18,6 +18,7 @@
  */
 package is.codion.demos.chinook.javadoc;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
@@ -233,9 +234,9 @@ final class EntityConnectionSnippets {
                     .referenceDepth(Track.GENRE_FK, 0) // Don't fetch the genre
                     .referenceDepth(Track.MEDIATYPE_FK, 1)); // Fetch the media type
 
-    // Select for update (row locking)
+    // Select for update, failing at once if another transaction holds the row
     Entity invoice = connection.selectSingle(
             Select.where(Invoice.ID.equalTo(invoiceId))
-                    .forUpdate()); // @end
+                    .forUpdate(Lock.NOWAIT)); // @end
   }
 }

@@ -19,6 +19,7 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.Operation;
@@ -567,7 +568,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
 			//forUpdate selects bypass the cache and return mutable entities
 			Select forUpdate = Select.where(Department.ID.greaterThanOrEqualTo(20L))
-							.forUpdate()
+							.forUpdate(Lock.NOWAIT)
 							.build();
 			assertNotSame(connection.select(forUpdate), connection.select(forUpdate));
 			assertTrue(connection.select(forUpdate).get(0).mutable());

@@ -18,6 +18,7 @@
  */
 package is.codion.framework.db.rmi;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.Server;
@@ -449,7 +450,7 @@ public class RemoteEntityConnectionTest {
 
 			//forUpdate selects bypass the cache and return mutable entities
 			Select forUpdate = Select.where(Department.ID.greaterThanOrEqualTo(20L))
-							.forUpdate()
+							.forUpdate(Lock.NOWAIT)
 							.build();
 			assertNotSame(connection.select(forUpdate), connection.select(forUpdate));
 			assertTrue(connection.select(forUpdate).get(0).mutable());
@@ -487,7 +488,7 @@ public class RemoteEntityConnectionTest {
 
 			//forUpdate selects bypass the cache and return mutable entities
 			Select forUpdate = Select.where(Department.ID.equalTo(10L))
-							.forUpdate()
+							.forUpdate(Lock.NOWAIT)
 							.build();
 			assertTrue(connection.selectSingle(forUpdate).mutable());
 			assertNotSame(connection.selectSingle(forUpdate), connection.selectSingle(forUpdate));

@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.sqlite;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -66,7 +67,7 @@ public class SQLiteDatabaseTest {
 	@Test
 	void selectForUpdateClause() {
 		// not supported, the database being locked as a whole when written to
-		assertEquals("", new SQLiteDatabase("jdbc:sqlite:/path/to/file.db").selectForUpdateClause());
+		assertEquals("", new SQLiteDatabase("jdbc:sqlite:/path/to/file.db").selectForUpdateClause(Lock.NOWAIT));
 	}
 
 	@Test

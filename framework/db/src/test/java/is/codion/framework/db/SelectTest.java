@@ -18,6 +18,7 @@
  */
 package is.codion.framework.db;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.TestDomain.Department;
 import is.codion.framework.db.TestDomain.Employee;
@@ -53,7 +54,7 @@ public final class SelectTest {
 			assertEquals(Condition.all(Department.TYPE), select.having());
 			assertFalse(select.limit().isPresent());
 			assertFalse(select.offset().isPresent());
-			assertFalse(select.forUpdate());
+			assertFalse(select.forUpdate().isPresent());
 			assertFalse(select.orderBy().isPresent());
 		}
 
@@ -210,10 +211,10 @@ public final class SelectTest {
 		@DisplayName("forUpdate configuration sets reference depth to zero")
 		void select_forUpdate_setsReferenceDepthToZero() {
 			Select select = Select.all(Employee.TYPE)
-							.forUpdate()
+							.forUpdate(Lock.WAIT)
 							.build();
 
-			assertTrue(select.forUpdate());
+			assertEquals(Lock.WAIT, select.forUpdate().orElse(null));
 			assertTrue(select.referenceDepth().isPresent());
 			assertEquals(0, select.referenceDepth().orElse(-1));
 		}
@@ -361,7 +362,7 @@ public final class SelectTest {
 							.orderBy(OrderBy.ascending(Employee.NAME))
 							.limit(10)
 							.offset(5)
-							.forUpdate()
+							.forUpdate(Lock.NOWAIT)
 							.attributes(Employee.ID, Employee.NAME)
 							.timeout(30)
 							.build();
@@ -371,7 +372,7 @@ public final class SelectTest {
 			assertTrue(toString.contains("orderBy="));
 			assertTrue(toString.contains("limit=10"));
 			assertTrue(toString.contains("offset=5"));
-			assertTrue(toString.contains("forUpdate=true"));
+			assertTrue(toString.contains("forUpdate=NOWAIT"));
 			assertTrue(toString.contains("attributes="));
 			assertTrue(toString.contains("timeout=30"));
 		}

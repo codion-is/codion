@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.derby;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
@@ -72,7 +73,8 @@ public class DerbyDatabaseTest {
 	@Test
 	void supportsNoWait() {
 		DerbyDatabase db = new DerbyDatabase(URL);
-		assertEquals("FOR UPDATE", db.selectForUpdateClause());
+		assertEquals("FOR UPDATE", db.selectForUpdateClause(Lock.NOWAIT));
+		assertEquals("FOR UPDATE", db.selectForUpdateClause(Lock.WAIT));
 	}
 
 	@Test

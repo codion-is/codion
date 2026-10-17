@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.mysql;
 
+import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
@@ -78,8 +79,8 @@ public class MySQLDatabaseTest {
 
 	@Test
 	void selectForUpdateClause() {
-		assertEquals("FOR UPDATE NOWAIT", new MySQLDatabase(URL, true).selectForUpdateClause());
-		assertEquals("FOR UPDATE", new MySQLDatabase(URL, false).selectForUpdateClause());
+		assertEquals("FOR UPDATE NOWAIT", new MySQLDatabase(URL).selectForUpdateClause(Lock.NOWAIT));
+		assertEquals("FOR UPDATE", new MySQLDatabase(URL).selectForUpdateClause(Lock.WAIT));
 	}
 
 	@Test
