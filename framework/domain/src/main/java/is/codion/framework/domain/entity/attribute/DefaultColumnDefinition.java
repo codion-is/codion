@@ -60,7 +60,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	// these are therefore read and written as objects
 	private static final Set<Class<?>> JAVA_SQL_TEMPORAL = new HashSet<>(asList(java.sql.Date.class, Time.class, Timestamp.class));
 
-	private final int type;
+	private final int sqlType;
 	private final int keyIndex;
 	private final boolean withDefault;
 	private final boolean insertable;
@@ -82,7 +82,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	private DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
 		super(builder);
-		this.type = builder.type;
+		this.sqlType = builder.sqlType;
 		this.keyIndex = builder.keyIndex;
 		this.withDefault = builder.withDefault;
 		this.insertable = builder.insertable;
@@ -117,8 +117,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	}
 
 	@Override
-	public int type() {
-		return type;
+	public int sqlType() {
+		return sqlType;
 	}
 
 	@Override
@@ -193,7 +193,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	@Override
 	public @Nullable T get(ResultSet resultSet, int index, Database database) throws SQLException {
 		if (getValue == null) {
-			getValue = (GetValue<Object>) (objectType == null ? database.getter(type) : database.getter(objectType));
+			getValue = (GetValue<Object>) (objectType == null ? database.getter(sqlType) : database.getter(objectType));
 		}
 		Object value = getValue.get(resultSet, index);
 		if (value != null || converter.handlesNull()) {
@@ -211,7 +211,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	@Override
 	public void set(PreparedStatement statement, int index, @Nullable T value, Database database) throws SQLException {
 		if (setValue == null) {
-			setValue = (SetValue<Object>) database.setter(type);
+			setValue = (SetValue<Object>) database.setter(sqlType);
 		}
 		setValue.set(statement, index, columnValue(value, statement));
 	}
@@ -265,7 +265,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 		private final int keyIndex;
 
-		private int type;
+		private int sqlType;
 		private boolean withDefault;
 		private boolean insertable;
 		private boolean updatable;
@@ -288,7 +288,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		DefaultColumnDefinitionBuilder(Column<T> column, int keyIndex) {
 			super(column, keyIndex < 0);
 			this.keyIndex = keyIndex;
-			this.type = sqlType(column.type().get());
+			this.sqlType = sqlType(column.type().get());
 			this.withDefault = false;
 			this.insertable = true;
 			this.updatable = keyIndex < 0;
@@ -315,7 +315,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 		@Override
 		public final <C> B converter(Class<C> columnType, Converter<T, C> converter) {
-			this.type = sqlType(columnType);
+			this.sqlType = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.objectType = objectType(columnType);
 			this.getValue = null;
@@ -326,7 +326,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		@Override
 		public final <C> B converter(Class<C> columnType, Converter<T, C> converter,
 																 GetValue<C> getValue) {
-			this.type = sqlType(columnType);
+			this.sqlType = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.objectType = null;
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);
@@ -337,7 +337,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		@Override
 		public final <C> B converter(Class<C> columnType, Converter<T, C> converter,
 																 SetValue<C> setValue) {
-			this.type = sqlType(columnType);
+			this.sqlType = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.objectType = objectType(columnType);
 			this.getValue = null;
@@ -348,7 +348,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		@Override
 		public final <C> B converter(Class<C> columnType, Converter<T, C> converter,
 																 GetValue<C> getValue, SetValue<C> setValue) {
-			this.type = sqlType(columnType);
+			this.sqlType = sqlType(columnType);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.objectType = null;
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);
@@ -495,16 +495,16 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	private static final class SetObject implements SetValue<Object> {
 
-		private final int type;
+		private final int sqlType;
 
-		private SetObject(int type) {
-			this.type = type;
+		private SetObject(int sqlType) {
+			this.sqlType = sqlType;
 		}
 
 		@Override
 		public void set(PreparedStatement statement, int index, @Nullable Object value) throws SQLException {
 			if (value == null) {
-				statement.setNull(index, type);
+				statement.setNull(index, sqlType);
 			}
 			else {
 				statement.setObject(index, value);

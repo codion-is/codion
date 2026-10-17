@@ -2131,7 +2131,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				columnValue = value;
 				stringValue = String.valueOf(value);
 			}
-			stringValues.add(columnValue == null ? "null" : addSingleQuotes(columnDefinition.type(), stringValue));
+			stringValues.add(columnValue == null ? "null" : addSingleQuotes(columnDefinition.sqlType(), stringValue));
 		}
 
 		return String.join(", ", stringValues);

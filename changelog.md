@@ -13,6 +13,8 @@ Codion Change Log
 - LookAndFeelComboBox bug fixed, now displays non-platform look and feels.
 - ControlKey.SEPARATOR added, a separator in a Controls.Layout, replacing null, which Controls.layout() now rejects with a NullPointerException, Layout.control(ControlKey.SEPARATOR) adding a separator.
 - ButtonPanelBuilder.separators(Separator) and SEPARATORS added, a separator now a line by default, or space, where it was an empty cell the size of a button, separators keeping their own size and the buttons of nested controls sized like the others, where nested controls set the size of every button, and invisible components skipped.
+### is.codion.framework.domain
+- ColumnDefinition.type() renamed sqlType().
 ### is.codion.framework.db
 - EntityConnection.savepoint(), rollback(Savepoint), release(Savepoint), Savepoint and savepoint(EntityConnection, Transactional) added, savepoints in the open transaction, on local, RMI and HTTP connections alike, each ended along with those set after it by a rollback or release, and all of them with the transaction, the same on every database.
 - EntityConnection.transaction(), a rollback failing after the transactional threw no longer replaces the exception thrown, which is rethrown with the rollback exception added as suppressed.

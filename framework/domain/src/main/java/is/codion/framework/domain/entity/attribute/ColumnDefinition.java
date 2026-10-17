@@ -113,7 +113,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 	/**
 	 * @return the sql data type of the underlying column ({@link java.sql.Types}).
 	 */
-	int type();
+	int sqlType();
 
 	/**
 	 * @return true if the value of this column is generated.
