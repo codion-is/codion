@@ -458,20 +458,30 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		if (connection != null && validated(connection)) {
 			return connection;
 		}
-		synchronized (lock) {
-			//so a close while we were validating can not be followed by a re-establishment
-			verifyOpen();
-			if (this.connection != null && this.connection != connection) {
-				return this.connection; //re-established by another thread while we were validating
-			}
-			if (this.connection != null) {
-				LOG.info("Previous connection invalid, reconnecting");
-				closeSilently(this.connection);
-				this.connection = null;
-			}
-			doConnect();
+		EntityConnection invalid = null;
+		try {
+			synchronized (lock) {
+				//so a close while we were validating can not be followed by a re-establishment
+				verifyOpen();
+				if (this.connection != null && this.connection != connection) {
+					return this.connection; //re-established by another thread while we were validating
+				}
+				if (this.connection != null) {
+					LOG.info("Previous connection invalid, reconnecting");
+					invalid = this.connection;
+					this.connection = null;
+				}
+				doConnect();
 
-			return this.connection;
+				return this.connection;
+			}
+		}
+		finally {
+			if (invalid != null) {
+				//closed without holding the lock, as by close() and discard(): closing takes the connection's own
+				//monitor, which a thread inside a function on it holds, while that function may be reaching for the lock
+				closeSilently(invalid);
+			}
 		}
 	}
 
