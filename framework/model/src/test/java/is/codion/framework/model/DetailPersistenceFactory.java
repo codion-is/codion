@@ -22,16 +22,14 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DetailDomain.Department;
 
-import java.util.Optional;
-
 /**
  * Provides the department persistence of {@link DetailDomain}, registered in the test resources.
  */
 public final class DetailPersistenceFactory implements EntityPersistence.Factory {
 
 	@Override
-	public Optional<EntityPersistence> persistence(EntityType entityType) {
-		return entityType.equals(Department.TYPE) ? Optional.of(new DepartmentPersistence()) : Optional.empty();
+	public EntityPersistence persistence(EntityType entityType) {
+		return entityType.equals(Department.TYPE) ? new DepartmentPersistence() : DEFAULT;
 	}
 
 	@Override

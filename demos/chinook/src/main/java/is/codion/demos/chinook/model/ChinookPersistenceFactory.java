@@ -24,20 +24,18 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityPersistence;
 
-import java.util.Optional;
-
 // tag::persistenceFactory[]
 public final class ChinookPersistenceFactory implements EntityPersistence.Factory {
 
 	@Override
-	public Optional<EntityPersistence> persistence(EntityType entityType) {
+	public EntityPersistence persistence(EntityType entityType) {
 		// Every editor of invoice lines updates the invoice totals,
 		// including the ones the framework creates on its own
 		if (entityType.equals(InvoiceLine.TYPE)) {
-			return Optional.of(new InvoiceLinePersistence());
+			return new InvoiceLinePersistence();
 		}
 
-		return Optional.empty();
+		return DEFAULT;
 	}
 
 	@Override

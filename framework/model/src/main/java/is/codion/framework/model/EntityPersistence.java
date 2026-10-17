@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
@@ -110,11 +109,16 @@ public interface EntityPersistence {
 	interface Factory {
 
 		/**
-		 * Called for each editor created for an entity type of a compatible domain.
-		 * @param entityType the entity type
-		 * @return the persistence of the given entity type, an empty Optional for the default
+		 * The default persistence, stateless, using the default implementation of each method.
 		 */
-		Optional<EntityPersistence> persistence(EntityType entityType);
+		EntityPersistence DEFAULT = new EntityPersistence() {};
+
+		/**
+		 * Called for each editor created for an entity type, of a supported domain.
+		 * @param entityType the entity type
+		 * @return the persistence of the given entity type, {@link #DEFAULT} for the default
+		 */
+		EntityPersistence persistence(EntityType entityType);
 
 		/**
 		 * @param domainType the domain type

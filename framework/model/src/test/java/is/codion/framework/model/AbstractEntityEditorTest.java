@@ -1875,7 +1875,7 @@ public final class AbstractEntityEditorTest {
 		assertInstanceOf(DepartmentPersistence.class, departmentEditor.persistence().get());
 		assertNotSame(departmentEditor.persistence().get(), new TestEntityEditor(Department.TYPE, CONNECTION).persistence().get());
 		// and the default for employees
-		assertFalse(new TestEntityEditor(Employee.TYPE, CONNECTION).persistence().get() instanceof DepartmentPersistence);
+		assertSame(EntityPersistence.Factory.DEFAULT, new TestEntityEditor(Employee.TYPE, CONNECTION).persistence().get());
 
 		EntityPersistence persistence = new EntityPersistence() {};
 		departmentEditor.persistence().set(persistence);

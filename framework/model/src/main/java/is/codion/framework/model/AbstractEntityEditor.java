@@ -2185,17 +2185,27 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	private static final class DefaultEditorPersistence implements EditorPersistence {
 
-		private static final EntityPersistence DEFAULT = new EntityPersistence() {};
-		private static final Map<DomainType, Optional<EntityPersistence.Factory>> FACTORIES = new ConcurrentHashMap<>();
+		private static final Map<DomainType, EntityPersistence.Factory> FACTORIES = new ConcurrentHashMap<>();
+		// Stands in for a domain without a factory, the map taking no nulls
+		private static final EntityPersistence.Factory NO_FACTORY = new EntityPersistence.Factory() {
+
+			@Override
+			public EntityPersistence persistence(EntityType entityType) {
+				return DEFAULT;
+			}
+
+			@Override
+			public boolean supports(DomainType domainType) {
+				return true;
+			}
+		};
 
 		private final EntityPersistence defaultPersistence;
 
 		private EntityPersistence instance;
 
 		private DefaultEditorPersistence(EntityType entityType) {
-			this.defaultPersistence = factory(entityType.domainType())
-							.flatMap(factory -> factory.persistence(entityType))
-							.orElse(DEFAULT);
+			this.defaultPersistence = requireNonNull(factory(entityType.domainType()).persistence(entityType));
 			this.instance = defaultPersistence;
 		}
 
@@ -2209,18 +2219,22 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			this.instance = persistence == null ? defaultPersistence : persistence;
 		}
 
-		private static Optional<EntityPersistence.Factory> factory(DomainType domainType) {
-			Optional<EntityPersistence.Factory> factory = FACTORIES.get(domainType);
+		private static EntityPersistence.Factory factory(DomainType domainType) {
+			EntityPersistence.Factory factory = FACTORIES.get(domainType);
 			if (factory == null) {
 				// Not computeIfAbsent, a factory being free to create editors when instantiated
 				factory = resolve(domainType);
-				FACTORIES.putIfAbsent(domainType, factory);
+				// Another thread may have resolved it meanwhile, its factory then shared
+				EntityPersistence.Factory existing = FACTORIES.putIfAbsent(domainType, factory);
+				if (existing != null) {
+					factory = existing;
+				}
 			}
 
 			return factory;
 		}
 
-		private static Optional<EntityPersistence.Factory> resolve(DomainType domainType) {
+		private static EntityPersistence.Factory resolve(DomainType domainType) {
 			try {
 				Optional<EntityPersistence.Factory> factory = stream(ServiceLoader.load(EntityPersistence.Factory.class).spliterator(), false)
 								.filter(candidate -> candidate.supports(domainType))
@@ -2228,7 +2242,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				// Most domains have none, so not a warning, but a factory not found is otherwise silent
 				LOG.debug("EntityPersistence.Factory for domain {}: {}", domainType, factory.map(Object::getClass).orElse(null));
 
-				return factory;
+				return factory.orElse(NO_FACTORY);
 			}
 			catch (ServiceConfigurationError e) {
 				throw Exceptions.runtime(e, ServiceConfigurationError.class);

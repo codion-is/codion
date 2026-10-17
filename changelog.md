@@ -36,6 +36,7 @@ Codion Change Log
 - EntityExport, a header or value containing a double quote now quoted, its quotes doubled, as in CSV, read as is by Excel.
 - EntityPersistence.Factory added, found via ServiceLoader, providing the persistence of entity types in a domain, the default of every editor of those types, those the framework creates itself included, EditorPersistence.set(null) restoring it.
 - EntityPersistence.Factory.compatibleWith() renamed supports().
+- EntityPersistence.Factory.persistence() now returns the persistence rather than an Optional, Factory.DEFAULT added for the default.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, the export model is now only created when the export is included, the unused columns_default export messages removed, and the Icelandic export help text escaped and corrected.
 - EntityTablePanel, the export dialog reworked, the attributes checked in a tree with a search field, the columns listed beside it in the order of the export, moved and removed there, by default the visible table columns, configurations now saved as a list of columns, the nested ones still read.
