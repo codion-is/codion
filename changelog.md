@@ -25,11 +25,14 @@ Codion Change Log
 - HttpEntityConnection, a connection replacing one which has gone bad, or one discarded, now ends its session on the server before connecting, rather than being handed it back along with any transaction left open in it, and the replaced connection closed afterwards no longer ends the session of its replacement.
 ### is.codion.framework.domain
 - A required column with a generator now accepts null when its entity is validated for insert, as one with a database default does, where only a generated primary key did, a form failing to insert a row with a generated non-key column.
+### is.codion.framework.json.domain
+- EntityObjectMapperFactory moved to EntityObjectMapper.Factory, AbstractEntityObjectMapperFactory to EntityObjectMapper.AbstractFactory, compatibleWith() renamed supports().
 ### is.codion.framework.model
 - EntityExport.ExportAttributes replaced by Attributes, each attribute added in the order of the export along with the foreign keys leading to it, any order possible, where the order was kept per foreign key, the attributes of a referenced entity following it, Builder.ExportAttributesStep renamed AttributesStep.
 - EntityExport.Attributes.add(String header, Attribute<?>... path) and add(String header, List<Attribute<?>> path) added, a column with the given header, tabs and line breaks in headers now replaced by spaces, as in values.
 - EntityExport, a header or value containing a double quote now quoted, its quotes doubled, as in CSV, read as is by Excel.
 - EntityPersistence.Factory added, found via ServiceLoader, providing the persistence of entity types in a domain, the default of every editor of those types, those the framework creates itself included, EditorPersistence.set(null) restoring it.
+- EntityPersistence.Factory.compatibleWith() renamed supports().
 ### is.codion.swing.framework.ui
 - EntityTablePanel, the export model is now only created when the export is included, the unused columns_default export messages removed, and the Icelandic export help text escaped and corrected.
 - EntityTablePanel, the export dialog reworked, the attributes checked in a tree with a search field, the columns listed beside it in the order of the export, moved and removed there, by default the visible table columns, configurations now saved as a list of columns, the nested ones still read.

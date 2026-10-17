@@ -146,9 +146,9 @@ Jackson's `ObjectMapper` requires target types to deserialize JSON. While `Funct
 A function called over a JSON connection therefore requires a registered return type, and fails with a message naming the function and the registration if it has none. Register a generic type via a `TypeReference`, `new TypeReference<List<Track>>() {}`, whose type arguments, unlike those of a `Class`, survive to the deserialization site.
 
 [#_entityobjectmapperfactory]
-=== EntityObjectMapperFactory
+=== EntityObjectMapper.Factory
 
-Create an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory] implementation and define your procedure and function types:
+Create an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.Factory.html[EntityObjectMapper.Factory] implementation and define your procedure and function types:
 
 [source,java,indent=0]
 ----
@@ -167,7 +167,7 @@ include::{dir-chinook-source}/module-info.java[tags=entityObjectMapper]
 or by creating a file at
 
 ----
-src/main/resources/META-INF/services/is.codion.framework.json.domain.EntityObjectMapperFactory
+src/main/resources/META-INF/services/is.codion.framework.json.domain.EntityObjectMapper$Factory
 ----
 
 Containing the fully qualified class name:

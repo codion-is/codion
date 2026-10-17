@@ -27,13 +27,12 @@ import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.json.domain.AbstractEntityObjectMapperFactory;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 // tag::procedureFunction[]
-public final class ChinookObjectMapperFactory extends AbstractEntityObjectMapperFactory {
+public final class ChinookObjectMapperFactory extends EntityObjectMapper.AbstractFactory {
 
 	public ChinookObjectMapperFactory() {
 		super(Chinook.DOMAIN);

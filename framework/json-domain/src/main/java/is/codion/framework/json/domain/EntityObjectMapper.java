@@ -18,6 +18,8 @@
  */
 package is.codion.framework.json.domain;
 
+import is.codion.common.utilities.exceptions.Exceptions;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -42,6 +44,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,8 +53,12 @@ import java.io.Serial;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Entity object mapper for mapping {@link Entity} and {@link Entity.Key} to and from JSON.
@@ -361,6 +369,83 @@ public final class EntityObjectMapper extends ObjectMapper {
 				throw new IllegalStateException(identifier + " already registered");
 			}
 			this.type = javaType;
+		}
+	}
+
+	/**
+	 * Provides {@link EntityObjectMapper} instances for a given domain.
+	 * {@link AbstractFactory} is provided for extension.
+	 */
+	@FunctionalInterface
+	public interface Factory {
+
+		/**
+		 * Creates a new {@link EntityObjectMapper} instance.
+		 * @param entities the domain entities
+		 * @return a new {@link EntityObjectMapper} instance.
+		 */
+		default EntityObjectMapper entityObjectMapper(Entities entities) {
+			return EntityObjectMapper.entityObjectMapper(entities);
+		}
+
+		/**
+		 * Returns true if this mapper factory supports the given domain type.
+		 * @param domainType the domain type
+		 * @return true if this mapper factory supports the given domain type
+		 */
+		boolean supports(DomainType domainType);
+
+		/**
+		 * Returns the first available {@link Factory} instance supporting the given domain type,
+		 * if no such mapper factory is available a default one, supporting all domain models, is returned.
+		 * @param domainType the domain type for which to find a mapper factory
+		 * @return a {@link Factory} instance supporting the given domain type.
+		 */
+		static Factory instance(DomainType domainType) {
+			return AbstractFactory.resolve(requireNonNull(domainType));
+		}
+	}
+
+	/**
+	 * An abstract {@link Factory} implementation, extend to add custom serializers/deserializers.
+	 * <p>
+	 * Subclasses should be exposed as a service.
+	 */
+	public abstract static class AbstractFactory implements Factory {
+
+		private static final Logger LOG = LoggerFactory.getLogger(AbstractFactory.class);
+
+		private final DomainType domainType;
+
+		/**
+		 * Instantiates a new instance supporting the given domain type.
+		 * @param domainType the domain type
+		 */
+		protected AbstractFactory(DomainType domainType) {
+			this.domainType = requireNonNull(domainType);
+		}
+
+		@Override
+		public final boolean supports(DomainType domainType) {
+			return this.domainType.equals(requireNonNull(domainType));
+		}
+
+		static Factory resolve(DomainType domainType) {
+			try {
+				Optional<Factory> mapperFactory = stream(ServiceLoader.load(Factory.class).spliterator(), false)
+								.filter(factory -> factory.supports(domainType))
+								.findFirst();
+				if (mapperFactory.isPresent()) {
+					return mapperFactory.get();
+				}
+				LOG.warn("No EntityObjectMapper.Factory registered for domain: {}, using the default one", domainType);
+
+				//supports all domain models
+				return mapperDomainType -> true;
+			}
+			catch (ServiceConfigurationError e) {
+				throw Exceptions.runtime(e, ServiceConfigurationError.class);
+			}
 		}
 	}
 }

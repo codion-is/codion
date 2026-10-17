@@ -2223,7 +2223,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private static Optional<EntityPersistence.Factory> resolve(DomainType domainType) {
 			try {
 				Optional<EntityPersistence.Factory> factory = stream(ServiceLoader.load(EntityPersistence.Factory.class).spliterator(), false)
-								.filter(candidate -> candidate.compatibleWith(domainType))
+								.filter(candidate -> candidate.supports(domainType))
 								.findFirst();
 				// Most domains have none, so not a warning, but a factory not found is otherwise silent
 				LOG.debug("EntityPersistence.Factory for domain {}: {}", domainType, factory.map(Object::getClass).orElse(null));

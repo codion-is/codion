@@ -21,20 +21,19 @@ package is.codion.framework.servlet;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.json.domain.EntityObjectMapper;
-import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-public final class TestObjectMapperFactory implements EntityObjectMapperFactory {
+public final class TestObjectMapperFactory implements EntityObjectMapper.Factory {
 
 	@Override
-	public boolean compatibleWith(DomainType domainType) {
+	public boolean supports(DomainType domainType) {
 		return TestDomain.DOMAIN.equals(domainType);
 	}
 
 	@Override
 	public EntityObjectMapper entityObjectMapper(Entities entities) {
-		EntityObjectMapper entityObjectMapper = EntityObjectMapperFactory.super.entityObjectMapper(entities);
+		EntityObjectMapper entityObjectMapper = EntityObjectMapper.Factory.super.entityObjectMapper(entities);
 		entityObjectMapper.parameter(TestDomain.FUNCTION).set(new TypeReference<>() {});
 		entityObjectMapper.parameter(TestDomain.PROCEDURE).set(new TypeReference<>() {});
 		entityObjectMapper.parameter(TestDomain.REPORT).set(String.class);

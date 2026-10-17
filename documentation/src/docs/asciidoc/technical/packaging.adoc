@@ -35,7 +35,7 @@ jlink includes only modules reachable from the main module's *requires* graph â€
 Such modules must be added explicitly, or they are silently absent from the image:
 
 * A *domain model* module on a server or local client (discovered via *ServiceLoader*).
-* An *EntityObjectMapperFactory* module for JSON connections (see <<../manual/manual.adoc#_http_json_client, HTTP & JSON clients>>).
+* An *EntityObjectMapper.Factory* module for JSON connections (see <<../manual/manual.adoc#_http_json_client, HTTP & JSON clients>>).
 * JDBC drivers and Look&Feel plugins, when service-loaded.
 
 The jlink plugin's *addExtraDependencies* and the *--add-modules* option cover these.

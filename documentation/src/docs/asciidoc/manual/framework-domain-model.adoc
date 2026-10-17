@@ -721,14 +721,14 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=con
 include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=converter]
 ----
 
-When using the HTTP connection in an application using a custom data type, you must implement a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory], providing a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper] instance containing a serializer/deserializer for the custom types.
+When using the HTTP connection in an application using a custom data type, you must implement a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.Factory.html[EntityObjectMapper.Factory], providing a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper] instance containing a serializer/deserializer for the custom types.
 
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/demos/world/domain/WorldObjectMapperFactory.java[tags=customSerializer]
 ----
 
-This *EntityObjectMapperFactory* must be exposed to the ServiceLoader.
+This *EntityObjectMapper.Factory* must be exposed to the ServiceLoader.
 
 _src/main/java/module-info.java_
 

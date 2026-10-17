@@ -41,7 +41,7 @@ module is.codion.demos.world {
 	provides is.codion.framework.domain.Domain
 					with is.codion.demos.world.domain.WorldImpl;
 	// tag::customSerializer[]
-	provides is.codion.framework.json.domain.EntityObjectMapperFactory
+	provides is.codion.framework.json.domain.EntityObjectMapper.Factory
 					with is.codion.demos.world.domain.WorldObjectMapperFactory;
 	// end::customSerializer[]
 }

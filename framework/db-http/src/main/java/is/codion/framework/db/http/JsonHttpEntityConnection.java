@@ -44,7 +44,7 @@ import is.codion.framework.domain.report.ReportType;
 import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.db.ErrorEnvelope;
 import is.codion.framework.json.db.ErrorKind;
-import is.codion.framework.json.domain.EntityObjectMapperFactory;
+import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
@@ -77,7 +77,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	JsonHttpEntityConnection(DefaultBuilder builder) {
 		super(builder, "/entities/json/");
-		this.objectMapper = databaseObjectMapper(EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities));
+		this.objectMapper = databaseObjectMapper(EntityObjectMapper.Factory.instance(entities().domainType()).entityObjectMapper(entities));
 	}
 
 	@Override

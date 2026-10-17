@@ -41,7 +41,7 @@ public final class ChinookPersistenceFactory implements EntityPersistence.Factor
 	}
 
 	@Override
-	public boolean compatibleWith(DomainType domainType) {
+	public boolean supports(DomainType domainType) {
 		return domainType.equals(Chinook.DOMAIN);
 	}
 }

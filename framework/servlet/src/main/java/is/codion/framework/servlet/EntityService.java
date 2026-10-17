@@ -58,7 +58,7 @@ import is.codion.framework.domain.report.ReportType;
 import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.db.ErrorEnvelope;
 import is.codion.framework.json.db.ErrorKind;
-import is.codion.framework.json.domain.EntityObjectMapperFactory;
+import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
@@ -1085,7 +1085,7 @@ public final class EntityService implements AuxiliaryServer {
 
 	private ObjectMapper objectMapper(Entities entities) {
 		return domainObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
-						DatabaseObjectMapper.databaseObjectMapper(EntityObjectMapperFactory.instance(domainType)
+						DatabaseObjectMapper.databaseObjectMapper(EntityObjectMapper.Factory.instance(domainType)
 										.entityObjectMapper(entities)));
 	}
 

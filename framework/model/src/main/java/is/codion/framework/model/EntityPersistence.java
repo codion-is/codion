@@ -105,7 +105,7 @@ public interface EntityPersistence {
 	/**
 	 * <p>Provides the {@link EntityPersistence} of entity types in a domain, the default of every editor of those types,
 	 * whoever creates it. One set on an editor via {@link EntityEditor#persistence()} overrides it for that editor.
-	 * <p>Found via {@link java.util.ServiceLoader}, the first one compatible with the domain, resolved once per domain.
+	 * <p>Found via {@link java.util.ServiceLoader}, the first one supporting the domain, resolved once per domain.
 	 */
 	interface Factory {
 
@@ -120,6 +120,6 @@ public interface EntityPersistence {
 		 * @param domainType the domain type
 		 * @return true if this factory provides the persistence of entity types in the given domain
 		 */
-		boolean compatibleWith(DomainType domainType);
+		boolean supports(DomainType domainType);
 	}
 }

@@ -20,9 +20,9 @@
  * JSON serialization for domain related classes.
  * <ul>
  * <li>{@link is.codion.framework.json.domain.EntityObjectMapper}
- * <li>{@link is.codion.framework.json.domain.EntityObjectMapperFactory}
+ * <li>{@link is.codion.framework.json.domain.EntityObjectMapper.Factory}
  * </ul>
- * @uses is.codion.framework.json.domain.EntityObjectMapperFactory
+ * @uses is.codion.framework.json.domain.EntityObjectMapper.Factory
  */
 module is.codion.framework.json.domain {
 	requires org.slf4j;
@@ -32,5 +32,5 @@ module is.codion.framework.json.domain {
 
 	exports is.codion.framework.json.domain;
 
-	uses is.codion.framework.json.domain.EntityObjectMapperFactory;
+	uses is.codion.framework.json.domain.EntityObjectMapper.Factory;
 }

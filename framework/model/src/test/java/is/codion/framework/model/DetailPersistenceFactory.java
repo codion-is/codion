@@ -35,7 +35,7 @@ public final class DetailPersistenceFactory implements EntityPersistence.Factory
 	}
 
 	@Override
-	public boolean compatibleWith(DomainType domainType) {
+	public boolean supports(DomainType domainType) {
 		return domainType.equals(DetailDomain.DOMAIN);
 	}
 

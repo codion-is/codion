@@ -21,21 +21,20 @@ package is.codion.plugin.jasperreports;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.json.domain.EntityObjectMapper;
-import is.codion.framework.json.domain.EntityObjectMapperFactory;
 import is.codion.plugin.jasperreports.TestDomain.Employee;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-public final class TestObjectMapperFactory implements EntityObjectMapperFactory {
+public final class TestObjectMapperFactory implements EntityObjectMapper.Factory {
 
 	@Override
-	public boolean compatibleWith(DomainType domainType) {
+	public boolean supports(DomainType domainType) {
 		return TestDomain.DOMAIN.equals(domainType);
 	}
 
 	@Override
 	public EntityObjectMapper entityObjectMapper(Entities entities) {
-		EntityObjectMapper entityObjectMapper = EntityObjectMapperFactory.super.entityObjectMapper(entities);
+		EntityObjectMapper entityObjectMapper = EntityObjectMapper.Factory.super.entityObjectMapper(entities);
 		//the reports return bytes, which JSON base64 encodes, so a JSON connection carries them
 		entityObjectMapper.parameter(Employee.PDF_REPORT).set(new TypeReference<>() {});
 		entityObjectMapper.returnType(Employee.PDF_REPORT).set(byte[].class);

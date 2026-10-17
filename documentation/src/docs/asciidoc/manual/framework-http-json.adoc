@@ -33,7 +33,7 @@ The entity definitions served by the *entities route* deliberately omit these: t
 == Registering operation types
 
 Entities, keys and conditions serialize out of the box.
-The parameter and return values of database <<manual.adoc#_procedures_functions, procedures, functions>> and reports are domain-specific types, so the domain registers how they travel, in an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory]:
+The parameter and return values of database <<manual.adoc#_procedures_functions, procedures, functions>> and reports are domain-specific types, so the domain registers how they travel, in an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.Factory.html[EntityObjectMapper.Factory]:
 
 [source,java,indent=0]
 ----
