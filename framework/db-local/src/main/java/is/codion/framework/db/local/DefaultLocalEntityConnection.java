@@ -110,6 +110,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private static final String PACK_RESULT = "packResult";
 	private static final String EXECUTE = "execute";
 	private static final String REPORT = "report";
+	private static final String CONNECTION_IS_CLOSED = "Connection is closed";
+	private static final String TRANSACTION_IS_NOT_OPEN = "Transaction is not open";
 	private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
 	private final Domain domain;
@@ -258,7 +260,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			if (!joined()) {
 				//a self-managing parent validates its connection when starting a transaction, and re-establishes
 				//one which has gone bad, so the transaction is on a connection this one is not joined to
-				DatabaseException exception = new DatabaseException("Connection is closed");
+				DatabaseException exception = new DatabaseException(CONNECTION_IS_CLOSED);
 				try {
 					parent.rollbackTransaction();
 				}
@@ -311,7 +313,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			SQLException exception = null;
 			try {
 				if (!session.transactionOpen) {
-					throw new IllegalStateException("Transaction is not open");
+					throw new IllegalStateException(TRANSACTION_IS_NOT_OPEN);
 				}
 				verifyOpenConnection().rollback();
 				session.transactionEnded();
@@ -338,7 +340,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			SQLException exception = null;
 			try {
 				if (!session.transactionOpen) {
-					throw new IllegalStateException("Transaction is not open");
+					throw new IllegalStateException(TRANSACTION_IS_NOT_OPEN);
 				}
 				verifyOpenConnection().commit();
 				session.transactionEnded();
@@ -364,7 +366,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			SQLException exception = null;
 			try {
 				if (!session.transactionOpen) {
-					throw new IllegalStateException("Transaction is not open");
+					throw new IllegalStateException(TRANSACTION_IS_NOT_OPEN);
 				}
 				Savepoint savepoint = Savepoint.savepoint(UUID.randomUUID());
 				session.savepoints.put(savepoint, verifyOpenConnection().setSavepoint());
@@ -1715,7 +1717,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private Connection verifyOpenConnection() throws SQLException {
 		Connection connection = session.connection;
 		if (closed || connection == null || connection.isClosed()) {
-			throw new SQLException("Connection is closed");
+			throw new SQLException(CONNECTION_IS_CLOSED);
 		}
 		if (parent != null && configured != session.attached) {
 			//the parent configures the connections attached to it for its own domain only, and on each attachment,
@@ -1766,7 +1768,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	 */
 	private LocalEntityConnection parent() {
 		if (closed) {
-			throw new DatabaseException("Connection is closed");
+			throw new DatabaseException(CONNECTION_IS_CLOSED);
 		}
 
 		return requireNonNull(parent);
@@ -1780,7 +1782,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	 */
 	private LocalEntityConnection joinedParent() {
 		if (!joined()) {
-			throw new DatabaseException("Connection is closed");
+			throw new DatabaseException(CONNECTION_IS_CLOSED);
 		}
 
 		return requireNonNull(parent);
@@ -1842,7 +1844,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private static void validate(Connection connection) {
 		try {
 			if (connection.isClosed()) {
-				throw new DatabaseException("Connection is closed");
+				throw new DatabaseException(CONNECTION_IS_CLOSED);
 			}
 		}
 		catch (SQLException exception) {
@@ -2206,7 +2208,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 		private java.sql.Savepoint savepoint(Savepoint savepoint) {
 			if (!transactionOpen) {
-				throw new IllegalStateException("Transaction is not open");
+				throw new IllegalStateException(TRANSACTION_IS_NOT_OPEN);
 			}
 			java.sql.Savepoint jdbcSavepoint = savepoints.get(savepoint);
 			if (jdbcSavepoint == null) {
