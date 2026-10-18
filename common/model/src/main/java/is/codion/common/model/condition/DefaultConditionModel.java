@@ -816,7 +816,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		public boolean isNotNull() {
 			return mutate(() -> {
 				operands.equal.set(null);
-				operator.set(Operator.NOT_IN);
+				operator.set(Operator.NOT_EQUAL);
 				enabled.set(true);
 			});
 		}

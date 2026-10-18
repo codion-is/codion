@@ -244,6 +244,9 @@ public class DefaultEntityConditionsTest {
 		commission.set().notIn(emptyList());
 		commission.enabled().set(true);
 		assertEquals(Employee.COMMISSION.isNotNull(), conditions.where());
+		commission.set().isNotNull();
+		assertEquals(Employee.COMMISSION.isNotNull(), conditions.where());
+		assertQueryAndFilterAgree(10, conditions, commission, employees, Employee.COMMISSION);
 		// the positive operators are unaffected
 		commission.set().in(0d, 300d);
 		assertEquals(Employee.COMMISSION.in(0d, 300d), conditions.where());

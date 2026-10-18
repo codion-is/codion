@@ -776,6 +776,22 @@ public class DefaultConditionModelTest {
 
 				assertTrue(changed);
 				assertTrue(condition.enabled().is());
+				assertEquals(Operator.NOT_EQUAL, condition.operator().get());
+				assertNull(condition.operands().equal().get());
+				assertTrue(condition.accepts(TEST_VALUE_1));
+				assertFalse(condition.accepts(null));
+			}
+
+			@Test
+			@DisplayName("isNotNull operation after in")
+			void set_isNotNullAfterIn_rejectsNullOnly() {
+				// The in operands left as they were, not part of the condition
+				condition.set().in(TEST_VALUE_1, TEST_VALUE_2);
+				condition.set().isNotNull();
+
+				assertTrue(condition.accepts(TEST_VALUE_1));
+				assertTrue(condition.accepts(TEST_VALUE_2));
+				assertFalse(condition.accepts(null));
 			}
 		}
 
