@@ -22,7 +22,6 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -59,7 +58,7 @@ import static java.util.ResourceBundle.getBundle;
 public final class LogViewer extends JPanel {
 
 	private static final MessageBundle MESSAGES =
-					messageBundle(CalendarPanel.class, getBundle(LogViewer.class.getName()));
+					messageBundle(LogViewer.class, getBundle(LogViewer.class.getName()));
 
 	private final JTextArea logArea;
 	private final Supplier<String> filename;

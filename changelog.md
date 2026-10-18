@@ -16,6 +16,7 @@ Codion Change Log
 - ControlKey.SEPARATOR added, a separator in a Controls.Layout, replacing null, which Controls.layout() now rejects with a NullPointerException, Layout.control(ControlKey.SEPARATOR) adding a separator.
 - ButtonPanelBuilder.separators(Separator) and SEPARATORS added, a separator now a line by default, or space, where it was an empty cell the size of a button, separators keeping their own size and the buttons of nested controls sized like the others, where nested controls set the size of every button, and invisible components skipped.
 - ProgressWorkerDialogBuilder, the result's nullness now that of the task, as in ProgressWorker.
+- LogViewer bug fixed, message bundle owner corrected.
 ### is.codion.framework.domain
 - ColumnDefinition.type() renamed sqlType().
 - FunctionType, DatabaseFunction, ProcedureType, DatabaseProcedure, ReportType and Report, the parameter and function result types now carry their nullness, P and R extends @Nullable Object, DatabaseFunction.execute(), DatabaseProcedure.execute() and Report.fill() taking and returning them as declared rather than always nullable.
