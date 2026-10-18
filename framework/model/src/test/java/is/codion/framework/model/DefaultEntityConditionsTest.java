@@ -241,9 +241,15 @@ public class DefaultEntityConditionsTest {
 		commission.enabled().set(true);
 		assertEquals(Employee.COMMISSION.isNotNull(), conditions.where());
 		assertQueryAndFilterAgree(10, conditions, commission, employees, Employee.COMMISSION);
+		// without operands, as without an operand, null
 		commission.set().notIn(emptyList());
 		commission.enabled().set(true);
 		assertEquals(Employee.COMMISSION.isNotNull(), conditions.where());
+		assertQueryAndFilterAgree(10, conditions, commission, employees, Employee.COMMISSION);
+		commission.set().in(emptyList());
+		commission.enabled().set(true);
+		assertEquals(Employee.COMMISSION.isNull(), conditions.where());
+		assertQueryAndFilterAgree(6, conditions, commission, employees, Employee.COMMISSION);
 		commission.set().isNotNull();
 		assertEquals(Employee.COMMISSION.isNotNull(), conditions.where());
 		assertQueryAndFilterAgree(10, conditions, commission, employees, Employee.COMMISSION);
@@ -260,6 +266,14 @@ public class DefaultEntityConditionsTest {
 		manager.set().notIn(king, blake);
 		assertEquals(Condition.or(Employee.MGR_FK.notIn(king, blake), Employee.MGR_FK.isNull()), conditions.where());
 		assertQueryAndFilterAgree(8, conditions, manager, employees, Employee.MGR_FK);
+		manager.set().in(emptyList());
+		manager.enabled().set(true);
+		assertEquals(Employee.MGR_FK.isNull(), conditions.where());
+		assertQueryAndFilterAgree(1, conditions, manager, employees, Employee.MGR_FK);
+		manager.set().notIn(emptyList());
+		manager.enabled().set(true);
+		assertEquals(Employee.MGR_FK.isNotNull(), conditions.where());
+		assertQueryAndFilterAgree(15, conditions, manager, employees, Employee.MGR_FK);
 		manager.clear();
 
 		// not nullable, nothing to include

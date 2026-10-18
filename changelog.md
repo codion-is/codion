@@ -12,6 +12,7 @@ Codion Change Log
 - ConditionModel.changed() now notified once per change, when a set(), clear() or a value changed on its own has finished, its auto enabling included, and only when the condition differs, where the operands, the operator and enabled each notified, a listener seeing the condition half set.
 - ConditionModel.SetCondition methods now return true when only the enabled state changed, as when isNull() enables a condition.
 - ConditionModel.SetCondition.isNotNull() bug fixed, the operator now NOT_EQUAL, where NOT_IN excluded any in operands rather than null, and as a filter accepted null.
+- ConditionModel.accepts(), empty in operands now mean null, as a null equal operand does and as the query condition did, IN accepting null alone and NOT_IN any value but null, where IN accepted nothing and NOT_IN everything.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase binds Types.OTHER values with that type again, a value of a class the driver does not know, such as a PostGIS geometry, failing with Can't infer the SQL type since 0.18.88.
 ### is.codion.swing.common.ui

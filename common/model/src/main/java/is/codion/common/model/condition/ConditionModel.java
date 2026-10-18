@@ -190,7 +190,10 @@ public interface ConditionModel<T> {
 	SetCondition<T> set();
 
 	/**
-	 * Returns true if the given value is accepted by this models condition.
+	 * <p>Returns true if the given value is accepted by this models condition.
+	 * <p>A missing operand, a null {@link Operands#equal()} or an empty {@link Operands#in()}, means null:
+	 * {@link Operator#EQUAL} and {@link Operator#IN} accept null alone, {@link Operator#NOT_EQUAL} and
+	 * {@link Operator#NOT_IN} any value but null.
 	 * @param value the value
 	 * @return true if the given value is accepted by this models condition
 	 */

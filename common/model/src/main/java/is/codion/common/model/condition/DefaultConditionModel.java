@@ -457,6 +457,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	private boolean isIn(@Nullable Comparable<T> comparable) {
+		// No operands, as no equal operand, means null
+		if (operands.in.isEmpty()) {
+			return comparable == null;
+		}
+
 		return operands.in.get().stream()
 						.map(operand -> caseSensitive.is() ? operand : stringOrCharacterToLowerCase(operand))
 						.collect(toSet())
@@ -464,6 +469,10 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	private boolean isNotIn(@Nullable Comparable<T> comparable) {
+		if (operands.in.isEmpty()) {
+			return comparable != null;
+		}
+
 		return !isIn(comparable);
 	}
 

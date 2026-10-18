@@ -1373,6 +1373,22 @@ public class DefaultConditionModelTest {
 	}
 
 	@Test
+	void emptyInMeansNull() {
+		// As a null equal operand does, and as the query condition does, IS NULL and IS NOT NULL
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.type(Integer.class)
+						.build();
+		condition.set().in(emptyList());
+		condition.enabled().set(true);
+		assertTrue(condition.accepts(null));
+		assertFalse(condition.accepts(1));
+		condition.set().notIn(emptyList());
+		condition.enabled().set(true);
+		assertFalse(condition.accepts(null));
+		assertTrue(condition.accepts(1));
+	}
+
+	@Test
 	void inCaseInsensitive() {
 		ConditionModel<String> conditionModel = ConditionModel.builder()
 						.type(String.class)
