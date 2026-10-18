@@ -850,7 +850,7 @@ Vistaðar stillingar eru í flettilistanum fyrir neðan.
 |open_file|Open file|Opna skrá
 |open_folder|Open folder|Opna möppu
 |remove|Remove|Fjarlægja
-|remove_configuration|Remove from list|Fjarlægja af lista
+|remove_configuration|Remove from list|Fjarlægja úr lista
 |rows_all|All rows|Allar færslur
 |rows_all_mnemonic|A|A
 |rows_selected|Selected rows|Valdar færslur

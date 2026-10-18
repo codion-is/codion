@@ -110,7 +110,7 @@ These are established across the codebase. New code follows them, and code that 
 - **Internationalization:** resource bundles are named after the class using them, `EntityTablePanel_is_IS.properties`, loaded via `MessageBundle` so they can be overridden. Shared messages live in the i18n modules.
 - **Serializable classes** declare `@Serial private static final long serialVersionUID = 1;`. Versioning starts after 1.0.
 - **No `@SuppressWarnings`.** Unchecked compiler notes are tolerated.
-- **Changelog:** every API or behaviour change gets one terse line in `changelog.md`, under its package heading in the topmost, unreleased version. Documentation-only changes get none.
+- **Changelog:** every API or behaviour change gets one terse line in `changelog.md`, under its package heading in the topmost, unreleased version. Documentation-only changes get none. A bug fix says so, `LogViewer bug fixed, ...`, the phrase counted for statistics.
 - **Javadoc** states behaviour precisely, using `{@snippet}` for code. Keep the rationale short.
 - **Check existing patterns in similar modules** before implementing something new.
 
