@@ -103,7 +103,7 @@ tasks.register<JavaExec>("runClientRMI") {
     maxHeapSize = "128m"
     systemProperties = mapOf(
         "codion.client.connectionType" to "remote",
-        "codion.server.hostname" to project.findProperty("serverHostname"),
+        "codion.client.hostname" to project.findProperty("serverHostname"),
         "codion.client.trustStore" to "../../framework/server/src/main/config/truststore.jks",
         "sun.awt.disablegrab" to "true"
     )
@@ -129,7 +129,7 @@ tasks.register<JavaExec>("runLoadTestRMI") {
     maxHeapSize = "512m"
     systemProperties = mapOf(
         "codion.client.connectionType" to "remote",
-        "codion.server.hostname" to project.findProperty("serverHostname"),
+        "codion.client.hostname" to project.findProperty("serverHostname"),
         "codion.client.trustStore" to "../../framework/server/src/main/config/truststore.jks"
     )
 }
