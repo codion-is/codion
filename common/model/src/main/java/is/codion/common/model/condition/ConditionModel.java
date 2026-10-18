@@ -197,6 +197,11 @@ public interface ConditionModel<T> {
 	boolean accepts(@Nullable Comparable<T> value);
 
 	/**
+	 * <p>Notified once per change to the condition: a {@link #set()} or {@link #clear()}, or an operand, the operator,
+	 * {@link #enabled()}, {@link #caseSensitive()} or the wildcard changed on its own, along with the enabling or disabling
+	 * it causes when the condition {@link #autoEnable() auto enables}.
+	 * <p>Notified when the change has finished, so a listener sees the condition as set, never half set, and only when
+	 * the condition differs from when it was last notified, an operand set to an equal value being no change.
 	 * @return an observer notified each time the condition changes
 	 */
 	Observer<?> changed();
@@ -279,7 +284,9 @@ public interface ConditionModel<T> {
 	}
 
 	/**
-	 * Provides a way to set the condition.
+	 * Provides a way to set the condition, each method a single change to it: {@link ConditionModel#changed()} is notified
+	 * once, when the method has set the operand, the operator and the enabled state, if the condition changed, its
+	 * enabled state included, which is what the method returns.
 	 * @param <T> the value type
 	 */
 	interface SetCondition<T> {

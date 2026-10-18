@@ -447,31 +447,32 @@ public final class DefaultSwingFilterTableModelTest {
 		tableModel.items().included().addListener(listener);
 		tableModel.items().refresh();
 		assertEquals(1, events.get());
+		//one event, the filter's operand and the enabling it causes a single change, filtering once
 		tableModel.filters().get(0).operands().equal().set("a");
 		tableModel.items().remove(B);
-		assertEquals(3, events.get());
+		assertEquals(2, events.get());
 		assertFalse(tableModel.items().included().contains(B));
 		assertTrue(tableModel.items().contains(A));
 		tableModel.items().remove(A);
-		assertEquals(4, events.get());
+		assertEquals(3, events.get());
 		assertFalse(tableModel.items().contains(A));
 		tableModel.items().remove(asList(D, E));
-		assertEquals(4, events.get());//no change event when removing excluded items
+		assertEquals(3, events.get());//no change event when removing excluded items
 		assertFalse(tableModel.items().included().contains(D));
 		assertFalse(tableModel.items().included().contains(E));
 		assertFalse(tableModel.items().excluded().contains(D));
 		assertFalse(tableModel.items().excluded().contains(E));
 		tableModel.filters().get(0).operands().equal().set(null);
 		tableModel.items().refresh();//one event, the refresh groups its notifications
-		assertEquals(7, events.get());
+		assertEquals(5, events.get());
 		tableModel.items().included().remove(0, 2);
-		assertEquals(8, events.get());//just a single event when removing multiple items
+		assertEquals(6, events.get());//just a single event when removing multiple items
 		tableModel.items().included().remove(0);
-		assertEquals(9, events.get());
+		assertEquals(7, events.get());
 		tableModel.items().refresh();
-		assertEquals(10, events.get());
+		assertEquals(8, events.get());
 		tableModel.items().remove(asList(B, D, E, G));//does not contain G
-		assertEquals(11, events.get());//just a single event when removing multiple items
+		assertEquals(9, events.get());//just a single event when removing multiple items
 		tableModel.items().included().removeListener(listener);
 	}
 

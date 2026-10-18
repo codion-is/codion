@@ -9,6 +9,8 @@ Codion Change Log
 ### is.codion.common.model
 - TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
 - ProgressWorker, the result's nullness now that of the task, ResultTask, ProgressResultTask, their handlers and the Builder T extends @Nullable Object, get() returning T rather than always nullable, a task able to declare a nullable result.
+- ConditionModel.changed() now notified once per change, when a set(), clear() or a value changed on its own has finished, its auto enabling included, and only when the condition differs, where the operands, the operator and enabled each notified, a listener seeing the condition half set.
+- ConditionModel.SetCondition methods now return true when only the enabled state changed, as when isNull() enables a condition.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase binds Types.OTHER values with that type again, a value of a class the driver does not know, such as a PostGIS geometry, failing with Can't infer the SQL type since 0.18.88.
 ### is.codion.swing.common.ui

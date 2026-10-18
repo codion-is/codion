@@ -33,6 +33,7 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -50,7 +51,6 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private static final String REGEX_WILDCARD = ".*";
 
-	private final Runnable autoEnableListener = new AutoEnableListener();
 	private final Event<?> conditionChanged = Event.event();
 	private final State locked = State.builder()
 					.consumer(this::locked)
@@ -65,7 +65,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private final State autoEnable;
 	private final State enabled = State.builder()
-					.listener(conditionChanged)
+					.listener(this::valueChanged)
 					.build();
 
 	private final Class<T> valueType;
@@ -74,37 +74,38 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	private final List<Operator> operators;
 	private final @Nullable String caption;
 
+	// The mutations in progress, a set(), clear() or a value changed on its own, nested when a value's listener mutates
+	private int mutations = 0;
+	// The condition as it was when changed() was last notified
+	private Snapshot notified;
+
 	private DefaultConditionModel(DefaultBuilder<T> builder) {
 		this.operators = unmodifiableList(builder.operators);
 		this.operator = Value.builder()
 						.nonNull(builder.operator)
 						.validator(this::validateOperator)
-						.listener(autoEnableListener)
-						.listener(conditionChanged)
+						.listener(this::operatorOrOperandChanged)
 						.build();
 		this.operands = new DefaultOperands<>(builder.operands);
-		this.operands.equal.addListener(autoEnableListener);
-		this.operands.equal.addListener(conditionChanged);
-		this.operands.wildcard.addListener(conditionChanged);
+		this.operands.equal.addListener(this::operatorOrOperandChanged);
+		this.operands.wildcard.addListener(this::valueChanged);
 		this.operands.in.addValidator(inOperandsValidator);
-		this.operands.in.addListener(autoEnableListener);
-		this.operands.in.addListener(conditionChanged);
-		this.operands.upper.addListener(autoEnableListener);
-		this.operands.upper.addListener(conditionChanged);
-		this.operands.lower.addListener(autoEnableListener);
-		this.operands.lower.addListener(conditionChanged);
+		this.operands.in.addListener(this::operatorOrOperandChanged);
+		this.operands.upper.addListener(this::operatorOrOperandChanged);
+		this.operands.lower.addListener(this::operatorOrOperandChanged);
 		this.valueType = builder.valueType;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
 		this.caption = builder.caption;
 		this.caseSensitive = State.builder()
 						.value(builder.caseSensitive)
-						.listener(conditionChanged)
+						.listener(this::valueChanged)
 						.build();
 		this.autoEnable = State.builder()
 						.value(builder.autoEnable)
-						.listener(autoEnableListener)
+						.listener(() -> mutate(this::enableByOperands))
 						.build();
+		this.notified = new Snapshot(this);
 	}
 
 	@Override
@@ -169,9 +170,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	@Override
 	public void clear() {
-		operands.clear();
-		operator.clear();
-		enabled.set(false);
+		mutate(() -> {
+			operands.clear();
+			operator.clear();
+			enabled.set(false);
+		});
 	}
 
 	@Override
@@ -474,6 +477,85 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		caseSensitive.value().locked().set(locked);
 	}
 
+	/**
+	 * Performs a mutation of this condition, {@link #changed()} notified once, when the outermost mutation ends, if the
+	 * condition differs from when it was last notified. Within a mutation, a value changing only marks the condition as
+	 * possibly changed, so a listener never sees it half set.
+	 * @param mutation the mutation
+	 * @return true if this mutation changed the condition
+	 */
+	private boolean mutate(Runnable mutation) {
+		Snapshot before = new Snapshot(this);
+		mutations++;
+		try {
+			mutation.run();
+
+			return !before.equals(new Snapshot(this));
+		}
+		finally {
+			if (--mutations == 0) {
+				notifyIfChanged();
+			}
+		}
+	}
+
+	private void notifyIfChanged() {
+		Snapshot current = new Snapshot(this);
+		if (!current.equals(notified)) {
+			notified = current;
+			conditionChanged.run();
+		}
+	}
+
+	// A value, the wildcard, case sensitivity or enabled, changed: within a mutation, the mutation notifies, otherwise
+	// the change is a mutation of its own.
+	private void valueChanged() {
+		if (mutations == 0) {
+			mutate(() -> {});
+		}
+	}
+
+	// The operator or an operand changed: within a mutation, set() or clear(), which enable the condition themselves,
+	// the mutation notifies, otherwise the change is a mutation of its own, enabling the condition if it auto enables,
+	// so the enabling is part of the change rather than a change of its own, notified first.
+	private void operatorOrOperandChanged() {
+		if (mutations == 0) {
+			mutate(this::enableByOperands);
+		}
+	}
+
+	// Enables the condition if it auto enables and its operator has the operands it needs, and disables it if not
+	private void enableByOperands() {
+		if (autoEnable.is()) {
+			switch (operator.getOrThrow()) {
+				case EQUAL:
+				case NOT_EQUAL:
+					enabled.set(!operands.equal.isNull());
+					break;
+				case LESS_THAN:
+				case LESS_THAN_OR_EQUAL:
+					enabled.set(!operands.upper.isNull());
+					break;
+				case GREATER_THAN:
+				case GREATER_THAN_OR_EQUAL:
+					enabled.set(!operands.lower.isNull());
+					break;
+				case BETWEEN:
+				case BETWEEN_EXCLUSIVE:
+				case NOT_BETWEEN:
+				case NOT_BETWEEN_EXCLUSIVE:
+					enabled.set(!operands.lower.isNull() && !operands.upper.isNull());
+					break;
+				case IN:
+				case NOT_IN:
+					enabled.set(!operands.in.isEmpty());
+					break;
+				default:
+					throw new IllegalStateException("Unknown operator: " + operator.get());
+			}
+		}
+	}
+
 	private void validateOperator(@Nullable Operator operator) {
 		if (operators != null && !operators.contains(requireNonNull(operator))) {
 			throw new IllegalArgumentException("Operator " + operator + " not available");
@@ -500,38 +582,52 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return value;
 	}
 
-	private final class AutoEnableListener implements Runnable {
+	/**
+	 * What the condition is, each part of it compared by equals(), so a value set to an equal one, which an operand
+	 * notifies, is no change to the condition.
+	 */
+	private static final class Snapshot {
+
+		private final Operator operator;
+		private final boolean enabled;
+		private final boolean caseSensitive;
+		private final Wildcard wildcard;
+		private final @Nullable Object equal;
+		private final Set<?> in;
+		private final @Nullable Object upper;
+		private final @Nullable Object lower;
+
+		private Snapshot(DefaultConditionModel<?> condition) {
+			this.operator = condition.operator.getOrThrow();
+			this.enabled = condition.enabled.is();
+			this.caseSensitive = condition.caseSensitive.is();
+			this.wildcard = condition.operands.wildcard.getOrThrow();
+			this.equal = condition.operands.equal.get();
+			this.in = new HashSet<>(condition.operands.in.get());
+			this.upper = condition.operands.upper.get();
+			this.lower = condition.operands.lower.get();
+		}
 
 		@Override
-		public void run() {
-			if (autoEnable.is()) {
-				switch (operator.getOrThrow()) {
-					case EQUAL:
-					case NOT_EQUAL:
-						enabled.set(!operands.equal.isNull());
-						break;
-					case LESS_THAN:
-					case LESS_THAN_OR_EQUAL:
-						enabled.set(!operands.upper.isNull());
-						break;
-					case GREATER_THAN:
-					case GREATER_THAN_OR_EQUAL:
-						enabled.set(!operands.lower.isNull());
-						break;
-					case BETWEEN:
-					case BETWEEN_EXCLUSIVE:
-					case NOT_BETWEEN:
-					case NOT_BETWEEN_EXCLUSIVE:
-						enabled.set(!operands.lower.isNull() && !operands.upper.isNull());
-						break;
-					case IN:
-					case NOT_IN:
-						enabled.set(!operands.in.isEmpty());
-						break;
-					default:
-						throw new IllegalStateException("Unknown operator: " + operator.get());
-				}
+		public boolean equals(Object object) {
+			if (!(object instanceof Snapshot)) {
+				return false;
 			}
+			Snapshot snapshot = (Snapshot) object;
+
+			return operator == snapshot.operator
+							&& enabled == snapshot.enabled
+							&& caseSensitive == snapshot.caseSensitive
+							&& wildcard == snapshot.wildcard
+							&& Objects.equals(equal, snapshot.equal)
+							&& in.equals(snapshot.in)
+							&& Objects.equals(upper, snapshot.upper)
+							&& Objects.equals(lower, snapshot.lower);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(operator, enabled, caseSensitive, wildcard, equal, in, upper, lower);
 		}
 	}
 
@@ -709,74 +805,74 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean isNull() {
-			boolean changed = set(null, operands.equal);
-			changed = set(Operator.EQUAL, operator) || changed;
-			enabled.set(true);
-
-			return changed;
+			return mutate(() -> {
+				operands.equal.set(null);
+				operator.set(Operator.EQUAL);
+				enabled.set(true);
+			});
 		}
 
 		@Override
 		public boolean isNotNull() {
-			boolean changed = set(null, operands.equal);
-			changed = set(Operator.NOT_IN, operator) || changed;
-			enabled.set(true);
-
-			return changed;
+			return mutate(() -> {
+				operands.equal.set(null);
+				operator.set(Operator.NOT_IN);
+				enabled.set(true);
+			});
 		}
 
 		@Override
 		public boolean equalTo(@Nullable T value) {
-			boolean changed = set(value, operands.equal);
-			changed = set(Operator.EQUAL, operator) || changed;
-			enabled.set(value != null);
-
-			return changed;
+			return mutate(() -> {
+				operands.equal.set(value);
+				operator.set(Operator.EQUAL);
+				enabled.set(value != null);
+			});
 		}
 
 		@Override
 		public boolean notEqualTo(@Nullable T value) {
-			boolean changed = set(value, operands.equal);
-			changed = set(Operator.NOT_EQUAL, operator) || changed;
-			enabled.set(value != null);
-
-			return changed;
+			return mutate(() -> {
+				operands.equal.set(value);
+				operator.set(Operator.NOT_EQUAL);
+				enabled.set(value != null);
+			});
 		}
 
 		@Override
 		public boolean greaterThan(@Nullable T value) {
-			boolean changed = set(value, operands.lower);
-			changed = set(Operator.GREATER_THAN, operator) || changed;
-			enabled.set(value != null);
-
-			return changed;
+			return mutate(() -> {
+				operands.lower.set(value);
+				operator.set(Operator.GREATER_THAN);
+				enabled.set(value != null);
+			});
 		}
 
 		@Override
 		public boolean greaterThanOrEqualTo(@Nullable T value) {
-			boolean changed = set(value, operands.lower);
-			changed = set(Operator.GREATER_THAN_OR_EQUAL, operator) || changed;
-			enabled.set(value != null);
-
-			return changed;
+			return mutate(() -> {
+				operands.lower.set(value);
+				operator.set(Operator.GREATER_THAN_OR_EQUAL);
+				enabled.set(value != null);
+			});
 		}
 
 		@Override
 		public boolean lessThan(@Nullable T value) {
-			boolean changed = set(value, operands.upper);
-			changed = set(Operator.LESS_THAN, operator) || changed;
-			enabled.set(value != null);
-
-			return changed;
+			return mutate(() -> {
+				operands.upper.set(value);
+				operator.set(Operator.LESS_THAN);
+				enabled.set(value != null);
+			});
 		}
 
 		@Override
 		public boolean lessThanOrEqualTo(@Nullable T value) {
-			boolean changed = set(value, operands.upper);
-			changed = set(Operator.LESS_THAN_OR_EQUAL, operator) || changed;
-			enabled.set(value != null);
-
-			return changed;
+			return mutate(() -> {
+				operands.upper.set(value);
+				operator.set(Operator.LESS_THAN_OR_EQUAL);
+				enabled.set(value != null);
+			});
 		}
 
 		@Override
@@ -786,11 +882,12 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean in(Collection<T> values) {
-			boolean changed = set(values, operands.in);
-			changed = set(Operator.IN, operator) || changed;
-			enabled.set(!values.isEmpty());
-
-			return changed;
+			requireNonNull(values);
+			return mutate(() -> {
+				operands.in.set(values);
+				operator.set(Operator.IN);
+				enabled.set(!values.isEmpty());
+			});
 		}
 
 		@Override
@@ -800,51 +897,32 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean notIn(Collection<T> values) {
-			boolean changed = set(values, operands.in);
-			changed = set(Operator.NOT_IN, operator) || changed;
-			enabled.set(!values.isEmpty());
-
-			return changed;
+			requireNonNull(values);
+			return mutate(() -> {
+				operands.in.set(values);
+				operator.set(Operator.NOT_IN);
+				enabled.set(!values.isEmpty());
+			});
 		}
 
 		@Override
 		public boolean betweenExclusive(@Nullable T lower, @Nullable T upper) {
-			boolean changed = set(lower, operands.lower);
-			changed = set(upper, operands.upper) || changed;
-			changed = set(Operator.BETWEEN_EXCLUSIVE, operator) || changed;
-			enabled.set(lower != null && upper != null);
-
-			return changed;
+			return between(lower, upper, Operator.BETWEEN_EXCLUSIVE);
 		}
 
 		@Override
 		public boolean notBetweenExclusive(@Nullable T lower, @Nullable T upper) {
-			boolean changed = set(lower, operands.lower);
-			changed = set(upper, operands.upper) || changed;
-			changed = set(Operator.NOT_BETWEEN_EXCLUSIVE, operator) || changed;
-			enabled.set(lower != null && upper != null);
-
-			return changed;
+			return between(lower, upper, Operator.NOT_BETWEEN_EXCLUSIVE);
 		}
 
 		@Override
 		public boolean between(@Nullable T lower, @Nullable T upper) {
-			boolean changed = set(lower, operands.lower);
-			changed = set(upper, operands.upper) || changed;
-			changed = set(Operator.BETWEEN, operator) || changed;
-			enabled.set(lower != null && upper != null);
-
-			return changed;
+			return between(lower, upper, Operator.BETWEEN);
 		}
 
 		@Override
 		public boolean notBetween(@Nullable T lower, @Nullable T upper) {
-			boolean changed = set(lower, operands.lower);
-			changed = set(upper, operands.upper) || changed;
-			changed = set(Operator.NOT_BETWEEN, operator) || changed;
-			enabled.set(lower != null && upper != null);
-
-			return changed;
+			return between(lower, upper, Operator.NOT_BETWEEN);
 		}
 
 		@Override
@@ -857,25 +935,13 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			throw new UnsupportedOperationException("hashCode() is not supported on SetCondition");
 		}
 
-		private static boolean set(Operator operator, Value<Operator> value) {
-			boolean changed = value.isNot(operator);
-			value.set(operator);
-
-			return changed;
-		}
-
-		private static <T> boolean set(Collection<T> value, ValueSet<T> operand) {
-			boolean changed = operand.isNot(new HashSet<>(requireNonNull(value)));
-			operand.set(value);
-
-			return changed;
-		}
-
-		private static <T> boolean set(@Nullable T value, Value<T> operand) {
-			boolean changed = operand.isNot(value);
-			operand.set(value);
-
-			return changed;
+		private boolean between(@Nullable T lower, @Nullable T upper, Operator betweenOperator) {
+			return mutate(() -> {
+				operands.lower.set(lower);
+				operands.upper.set(upper);
+				operator.set(betweenOperator);
+				enabled.set(lower != null && upper != null);
+			});
 		}
 	}
 }

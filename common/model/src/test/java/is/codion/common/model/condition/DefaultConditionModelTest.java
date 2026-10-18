@@ -33,9 +33,11 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -759,10 +761,12 @@ public class DefaultConditionModelTest {
 			@Test
 			@DisplayName("isNull operation")
 			void set_isNull_enablesCondition() {
+				// The operand and the operator as they were, enabling it the change
 				boolean changed = condition.set().isNull();
 
-				assertFalse(changed);
+				assertTrue(changed);
 				assertTrue(condition.enabled().is());
+				assertFalse(condition.set().isNull());
 			}
 
 			@Test
@@ -1241,6 +1245,115 @@ public class DefaultConditionModelTest {
 		conditionModel.caseSensitive().set(false);
 		conditionModel.set().equalTo("B%");
 		assertTrue(conditionModel.accepts("Brazil"));
+	}
+
+	@Test
+	void setNotifiesOnce() {
+		ConditionModel<String> condition = ConditionModel.builder()
+						.type(String.class)
+						.build();
+		List<String> notified = new ArrayList<>();
+		condition.changed().addListener(() -> notified.add(condition.operator().getOrThrow() + " "
+						+ condition.operands().equal().get() + " " + condition.operands().lower().get() + " "
+						+ condition.operands().upper().get() + " " + condition.enabled().is()));
+
+		assertTrue(condition.set().equalTo("a"));
+		assertEquals(singletonList("EQUAL a null null true"), notified);
+		// Nothing changed, nothing notified
+		assertFalse(condition.set().equalTo("a"));
+		assertEquals(1, notified.size());
+		assertTrue(condition.set().between("b", "c"));
+		assertEquals(asList("EQUAL a null null true", "BETWEEN a b c true"), notified);
+		assertTrue(condition.set().equalTo(null));
+		assertEquals("EQUAL null b c false", notified.get(2));
+		assertEquals(3, notified.size());
+	}
+
+	@Test
+	void operandNotifiesOnceAutoEnabled() {
+		ConditionModel<String> condition = ConditionModel.builder()
+						.type(String.class)
+						.build();
+		List<Boolean> enabledWhenNotified = new ArrayList<>();
+		condition.changed().addListener(() -> enabledWhenNotified.add(condition.enabled().is()));
+
+		// The operand and the enabling it causes one change, notified enabled
+		condition.operands().equal().set("a");
+		assertEquals(singletonList(true), enabledWhenNotified);
+		condition.operands().equal().set(null);
+		assertEquals(asList(true, false), enabledWhenNotified);
+		// An equal operand, which the operand notifies, is no change to the condition
+		condition.operands().equal().set(null);
+		assertEquals(2, enabledWhenNotified.size());
+	}
+
+	@Test
+	void clearNotifiesOnce() {
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.type(Integer.class)
+						.build();
+		condition.set().between(1, 2);
+		condition.operands().equal().set(3);
+		condition.operands().in().set(asList(4, 5));
+		AtomicInteger notifications = new AtomicInteger();
+		condition.changed().addListener(notifications::incrementAndGet);
+
+		condition.clear();
+		assertEquals(1, notifications.get());
+		assertFalse(condition.enabled().is());
+		condition.clear();
+		assertEquals(1, notifications.get());
+	}
+
+	@Test
+	void enabledSetOnceWithinSet() {
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.type(Integer.class)
+						.build();
+		condition.set().equalTo(1);
+		List<Boolean> enabled = new ArrayList<>();
+		condition.enabled().addConsumer(enabled::add);
+
+		// The operand set to null first, which used to disable it on the way, the operator still EQUAL
+		condition.set().isNull();
+		assertTrue(enabled.isEmpty());
+		assertTrue(condition.enabled().is());
+	}
+
+	@Test
+	void listenerSettingTheCondition() {
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.type(Integer.class)
+						.build();
+		AtomicInteger notifications = new AtomicInteger();
+		condition.changed().addListener(() -> {
+			notifications.incrementAndGet();
+			Integer value = condition.operands().equal().get();
+			// A listener correcting the condition, as one bound to it may
+			if (value != null && value > 10) {
+				condition.set().equalTo(10);
+			}
+		});
+
+		condition.set().equalTo(20);
+		assertEquals(10, condition.operands().equal().get());
+		assertEquals(2, notifications.get());
+	}
+
+	@Test
+	void autoEnableNotifiesOnce() {
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.type(Integer.class)
+						.autoEnable(false)
+						.build();
+		condition.operands().equal().set(1);
+		assertFalse(condition.enabled().is());
+		AtomicInteger notifications = new AtomicInteger();
+		condition.changed().addListener(notifications::incrementAndGet);
+
+		condition.autoEnable().set(true);
+		assertTrue(condition.enabled().is());
+		assertEquals(1, notifications.get());
 	}
 
 	@Test
