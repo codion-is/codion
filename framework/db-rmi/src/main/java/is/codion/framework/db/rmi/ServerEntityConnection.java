@@ -204,7 +204,7 @@ public interface ServerEntityConnection extends Remote, AutoCloseable {
 	 * @throws RemoteException in case of a remote exception
 	 * @see EntityConnection#execute(FunctionType)
 	 */
-	<C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType) throws RemoteException;
+	<C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, @Nullable P, R> functionType) throws RemoteException;
 
 	/**
 	 * Executes the function with the given type.
@@ -217,7 +217,7 @@ public interface ServerEntityConnection extends Remote, AutoCloseable {
 	 * @throws RemoteException in case of a remote exception
 	 * @see EntityConnection#execute(FunctionType, Object)
 	 */
-	<C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType, @Nullable P parameter) throws RemoteException;
+	<C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, P, R> functionType, P parameter) throws RemoteException;
 
 	/**
 	 * Executes the procedure with the given type with no parameter.
@@ -227,7 +227,7 @@ public interface ServerEntityConnection extends Remote, AutoCloseable {
 	 * @throws RemoteException in case of a remote exception
 	 * @see EntityConnection#execute(ProcedureType)
 	 */
-	<C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType) throws RemoteException;
+	<C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, @Nullable P> procedureType) throws RemoteException;
 
 	/**
 	 * Executes the procedure with the given type.
@@ -238,7 +238,7 @@ public interface ServerEntityConnection extends Remote, AutoCloseable {
 	 * @throws RemoteException in case of a remote exception
 	 * @see EntityConnection#execute(ProcedureType, Object)
 	 */
-	<C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, @Nullable P parameter) throws RemoteException;
+	<C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, P> procedureType, P parameter) throws RemoteException;
 
 	/**
 	 * Inserts the given entity, returning the primary key.
@@ -520,7 +520,7 @@ public interface ServerEntityConnection extends Remote, AutoCloseable {
 	 * @throws RemoteException in case of a remote exception
 	 * @see EntityConnection#report(ReportType, Object)
 	 */
-	<P, R> R report(ReportType<P, R> reportType, @Nullable P parameter) throws RemoteException;
+	<P extends @Nullable Object, R> R report(ReportType<P, R> reportType, P parameter) throws RemoteException;
 
 	/**
 	 * Returns a result set iterator based on the given query condition.

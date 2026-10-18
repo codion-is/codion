@@ -23,15 +23,16 @@ import org.jspecify.annotations.Nullable;
 /**
  * A database procedure
  * @param <C> the connection type required by this procedure
- * @param <P> the procedure parameter type
+ * @param <P> the procedure parameter type, nullable where the procedure may be executed without one
+ * @see ProcedureType
  */
 @FunctionalInterface
-public interface DatabaseProcedure<C, P> {
+public interface DatabaseProcedure<C, P extends @Nullable Object> {
 
 	/**
 	 * Executes this procedure using the given connection
 	 * @param connection the connection to use
-	 * @param parameter the procedure parameter, if any
+	 * @param parameter the procedure parameter
 	 */
-	void execute(C connection, @Nullable P parameter);
+	void execute(C connection, P parameter);
 }

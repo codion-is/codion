@@ -29,6 +29,8 @@ import is.codion.framework.domain.operation.ProcedureType;
 import is.codion.framework.domain.report.Report;
 import is.codion.framework.domain.report.ReportType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +78,7 @@ public interface Domain {
 	 * @return the report
 	 * @throws IllegalArgumentException in case the report is not found
 	 */
-	<P, R> Report<?, P, R> report(ReportType<P, R> reportType);
+	<P extends @Nullable Object, R> Report<?, P, R> report(ReportType<P, R> reportType);
 
 	/**
 	 * Retrieves the procedure of the given type.
@@ -86,7 +88,7 @@ public interface Domain {
 	 * @return the procedure
 	 * @throws IllegalArgumentException in case the procedure is not found
 	 */
-	<C, P> DatabaseProcedure<C, P> procedure(ProcedureType<C, P> procedureType);
+	<C, P extends @Nullable Object> DatabaseProcedure<C, P> procedure(ProcedureType<C, P> procedureType);
 
 	/**
 	 * Retrieves the function of the given type.
@@ -97,7 +99,7 @@ public interface Domain {
 	 * @return the function
 	 * @throws IllegalArgumentException in case the function is not found
 	 */
-	<C, P, R> DatabaseFunction<C, P, R> function(FunctionType<C, P, R> functionType);
+	<C, P extends @Nullable Object, R extends @Nullable Object> DatabaseFunction<C, P, R> function(FunctionType<C, P, R> functionType);
 
 	/**
 	 * <p>Configures a database connection for applications using this domain model, for example registering

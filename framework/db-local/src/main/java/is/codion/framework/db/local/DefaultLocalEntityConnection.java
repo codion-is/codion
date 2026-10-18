@@ -801,12 +801,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	@Override
-	public <C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType) {
+	public <C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, @Nullable P, R> functionType) {
 		return execute(functionType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType, @Nullable P parameter) {
+	public <C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, P, R> functionType, P parameter) {
 		requireNonNull(functionType, "functionType may not be null");
 		Exception exception = null;
 		session.tracer.enter(EXECUTE, functionType, parameter);
@@ -837,12 +837,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	@Override
-	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType) {
+	public <C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, @Nullable P> procedureType) {
 		execute(procedureType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, @Nullable P parameter) {
+	public <C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, P> procedureType, P parameter) {
 		requireNonNull(procedureType, "procedureType may not be null");
 		Exception exception = null;
 		session.tracer.enter(EXECUTE, procedureType, parameter);
@@ -871,7 +871,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	@Override
-	public <P, R> R report(ReportType<P, R> reportType, P parameter) {
+	public <P extends @Nullable Object, R> R report(ReportType<P, R> reportType, P parameter) {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
 		session.tracer.enter(REPORT, reportType, parameter);

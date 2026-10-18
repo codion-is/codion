@@ -18,12 +18,14 @@
  */
 package is.codion.framework.domain.operation;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFunctionType<C, P, R> implements FunctionType<C, P, R>, Serializable {
+final class DefaultFunctionType<C, P extends @Nullable Object, R extends @Nullable Object> implements FunctionType<C, P, R>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;

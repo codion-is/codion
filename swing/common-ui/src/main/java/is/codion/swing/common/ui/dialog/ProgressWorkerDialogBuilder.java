@@ -58,7 +58,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * @see ProgressResultTask#execute(ProgressWorker.ProgressReporter) to indicate work progress
  * @see #delay(int, int)
  */
-public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>> {
+public interface ProgressWorkerDialogBuilder<T extends @Nullable Object, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>> {
 
 	/**
 	 * Specifies the delay in milliseconds before showing a progress dialog.
@@ -106,7 +106,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 		 * @param <T> the worker result type
 		 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 		 */
-		<T> ProgressWorkerDialogBuilder<T, ?> task(ResultTask<T> task);
+		<T extends @Nullable Object> ProgressWorkerDialogBuilder<T, ?> task(ResultTask<T> task);
 
 		/**
 		 * Note, also sets the progress bar type to 'determinate'.
@@ -125,7 +125,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 		 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
 		 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
 		 */
-		<T, V> ProgressWorkerDialogBuilder<T, V> task(ProgressResultTask<T, V> task);
+		<T extends @Nullable Object, V> ProgressWorkerDialogBuilder<T, V> task(ProgressResultTask<T, V> task);
 	}
 
 	/**

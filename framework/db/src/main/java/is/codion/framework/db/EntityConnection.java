@@ -473,46 +473,52 @@ public interface EntityConnection extends AutoCloseable {
 	QueryCache cacheQueries();
 
 	/**
-	 * Executes the function with the given type with no parameter
+	 * Executes the function with the given type with no parameter, null as its parameter, so only a function whose
+	 * parameter type is nullable, {@code FunctionType<EntityConnection, @Nullable Void, Integer>} for example.
 	 * @param functionType the function type
 	 * @param <C> the connection type
 	 * @param <P> the parameter type
-	 * @param <R> the return value type
+	 * @param <R> the return value type, nullable only where the function's is
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
+	 * @see FunctionType
 	 */
-	<C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType);
+	<C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, @Nullable P, R> functionType);
 
 	/**
 	 * Executes the function with the given type
 	 * @param functionType the function type
 	 * @param parameter the function parameter
 	 * @param <C> the connection type
-	 * @param <P> the parameter type
-	 * @param <R> the return value type
+	 * @param <P> the parameter type, nullable only where the function's is
+	 * @param <R> the return value type, nullable only where the function's is
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
+	 * @see FunctionType
 	 */
-	<C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType, @Nullable P parameter);
+	<C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, P, R> functionType, P parameter);
 
 	/**
-	 * Executes the procedure with the given type with no parameter
+	 * Executes the procedure with the given type with no parameter, null as its parameter, so only a procedure whose
+	 * parameter type is nullable, {@code ProcedureType<EntityConnection, @Nullable Void>} for example.
 	 * @param procedureType the procedure type
 	 * @param <C> the connection type
 	 * @param <P> the procedure parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
+	 * @see ProcedureType
 	 */
-	<C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType);
+	<C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, @Nullable P> procedureType);
 
 	/**
 	 * Executes the procedure with the given type
 	 * @param procedureType the procedure type
 	 * @param parameter the procedure parameter
 	 * @param <C> the connection type
-	 * @param <P> the parameter type
+	 * @param <P> the parameter type, nullable only where the procedure's is
 	 * @throws DatabaseException in case anything goes wrong during the execution
+	 * @see ProcedureType
 	 */
-	<C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, @Nullable P parameter);
+	<C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, P> procedureType, P parameter);
 
 	/**
 	 * Inserts the given entity, returning the primary key.
@@ -888,15 +894,15 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
 	 * @param reportType the report to fill
-	 * @param parameter the report parameter, if any
-	 * @param <P> the report parameters type
+	 * @param parameter the report parameter
+	 * @param <P> the report parameters type, nullable only where the report's is
 	 * @param <R> the report result type
 	 * @return the filled result object
 	 * @throws DatabaseException in case of a database exception
 	 * @throws is.codion.framework.domain.report.ReportException in case of a report exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
-	<P, R> R report(ReportType<P, R> reportType, @Nullable P parameter);
+	<P extends @Nullable Object, R> R report(ReportType<P, R> reportType, P parameter);
 
 	/**
 	 * Returns a result set iterator based on the given query condition.
@@ -1006,14 +1012,14 @@ public interface EntityConnection extends AutoCloseable {
 	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityConnectionSnippets" region = "transactionResult":
 	 * Entity randomPlaylist = EntityConnection.transaction(connection, () -> // @start region=transactionResult
 	 *         connection.execute(Playlist.RANDOM_PLAYLIST, parameters)); // @end}
-	 * @param <T> the result type
+	 * @param <T> the result type, nullable only where the transactional's is
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
-	 * @return the result
+	 * @return the result of the transactional
 	 * @throws DatabaseException in case of a database exception
 	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
 	 */
-	static <T> @Nullable T transaction(EntityConnection connection, TransactionalResult<T> transactional) {
+	static <T extends @Nullable Object> T transaction(EntityConnection connection, TransactionalResult<T> transactional) {
 		requireNonNull(connection);
 		requireNonNull(transactional);
 		if (connection.transactionOpen()) {
@@ -1081,16 +1087,16 @@ public interface EntityConnection extends AutoCloseable {
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions
 	 * are rethrown wrapped in a {@link RuntimeException}. Should the rollback fail, its exception is added to the one rethrown
 	 * as a suppressed exception.
-	 * @param <T> the result type
+	 * @param <T> the result type, nullable only where the transactional's is
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
-	 * @return the result
+	 * @return the result of the transactional
 	 * @throws IllegalStateException in case a transaction is not open
 	 * @throws DatabaseException in case of a database exception
 	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
 	 * @see #savepoint()
 	 */
-	static <T> @Nullable T savepoint(EntityConnection connection, TransactionalResult<T> transactional) {
+	static <T extends @Nullable Object> T savepoint(EntityConnection connection, TransactionalResult<T> transactional) {
 		requireNonNull(connection);
 		requireNonNull(transactional);
 		Savepoint savepoint = connection.savepoint();
@@ -1154,17 +1160,21 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * Specifies an action to be executed within a transaction producing a result.
-	 * @param <T> the result type
+	 * <p>
+	 * The result's nullness is the type argument's, carried through to the caller of
+	 * {@link #transaction(EntityConnection, TransactionalResult)} and {@link #savepoint(EntityConnection, TransactionalResult)}:
+	 * a lambda returning a non-null value yields a non-null result, one which may return null a nullable one.
+	 * @param <T> the result type, nullable where the transactional may return null
 	 */
 	@FunctionalInterface
-	interface TransactionalResult<T> {
+	interface TransactionalResult<T extends @Nullable Object> {
 
 		/**
 		 * Executes this transactional.
 		 * @return the result
 		 * @throws Exception in case of an exception
 		 */
-		@Nullable T execute() throws Exception;
+		T execute() throws Exception;
 	}
 
 	/**

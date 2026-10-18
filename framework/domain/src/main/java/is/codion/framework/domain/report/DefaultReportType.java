@@ -18,12 +18,14 @@
  */
 package is.codion.framework.domain.report;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultReportType<P, R> implements ReportType<P, R>, Serializable {
+final class DefaultReportType<P extends @Nullable Object, R> implements ReportType<P, R>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;

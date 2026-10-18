@@ -18,6 +18,8 @@
  */
 package is.codion.framework.domain.report;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Identifies a report.
  * A factory for {@link ReportType} instances.
@@ -25,10 +27,12 @@ package is.codion.framework.domain.report;
  * engine backing it. The type of the loaded report object, {@link Report}'s {@code T}, is an
  * implementation detail of the {@link Report} the report type is registered with, so a client
  * naming a report type never depends on the engine.
- * @param <P> the report parameters type
+ * <p>The parameters type carries its nullness through to the {@link Report}: a report declared with non-null parameters
+ * receives them, {@code @Nullable} marking them where null is allowed.
+ * @param <P> the report parameters type, nullable where the report may be filled without parameters
  * @param <R> the report result type
  */
-public interface ReportType<P, R> {
+public interface ReportType<P extends @Nullable Object, R> {
 
 	/**
 	 * @return the report name
@@ -42,7 +46,7 @@ public interface ReportType<P, R> {
 	 * @param <R> the report result type
 	 * @return a report type
 	 */
-	static <P, R> ReportType<P, R> reportType(String name) {
+	static <P extends @Nullable Object, R> ReportType<P, R> reportType(String name) {
 		return new DefaultReportType<>(name);
 	}
 }

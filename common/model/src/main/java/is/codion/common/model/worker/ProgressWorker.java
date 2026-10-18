@@ -84,12 +84,12 @@ import static java.util.Objects.requireNonNull;
  *         .onCancelled(this::displayCancelledMessage)
  *         .onException(this::displayException)
  *         .execute(); // @end}
- * @param <T> the type of result this {@link ProgressWorker} produces.
+ * @param <T> the type of result this {@link ProgressWorker} produces, nullable only where the task's result is
  * @param <V> the type of intermediate result produced by this {@link ProgressWorker}
  * @see #builder()
  * @see Handler
  */
-public final class ProgressWorker<T, V> {
+public final class ProgressWorker<T extends @Nullable Object, V> {
 
 	/**
 	 * The default progress maximum, 100.
@@ -199,7 +199,7 @@ public final class ProgressWorker<T, V> {
 	 * @throws IllegalStateException if called where the dispatch context is bound before the task is done,
 	 * which would block the dispatch thread, or deadlock waiting for any {@code onStarted} handlers to run
 	 */
-	public @Nullable T get() throws InterruptedException, ExecutionException {
+	public T get() throws InterruptedException, ExecutionException {
 		if (!future.isDone() && dispatcher.bound()) {
 			throw new IllegalStateException("ProgressWorker.get() must not be called where the dispatch context is bound before the task is done");
 		}
@@ -207,7 +207,7 @@ public final class ProgressWorker<T, V> {
 		return future.get();
 	}
 
-	private @Nullable T doInBackground() throws Exception {
+	private T doInBackground() throws Exception {
 		runOnStarted();
 		if (task instanceof Task) {
 			((Task) task).execute();
@@ -328,7 +328,7 @@ public final class ProgressWorker<T, V> {
 		 * @param <T> the worker result type
 		 * @return a new {@link Builder} instance
 		 */
-		<T> Builder<T, ?> task(ResultTask<T> task);
+		<T extends @Nullable Object> Builder<T, ?> task(ResultTask<T> task);
 
 		/**
 		 * @param task the task to run, if it implements {@link ProgressTaskHandler} its handler methods are wired automatically
@@ -343,7 +343,7 @@ public final class ProgressWorker<T, V> {
 		 * @param <V> the intermediate result type
 		 * @return a new {@link Builder} instance
 		 */
-		<T, V> Builder<T, V> task(ProgressResultTask<T, V> task);
+		<T extends @Nullable Object, V> Builder<T, V> task(ProgressResultTask<T, V> task);
 	}
 
 	/**
@@ -361,10 +361,10 @@ public final class ProgressWorker<T, V> {
 
 	/**
 	 * A background task producing a result.
-	 * @param <T> the task result type
+	 * @param <T> the task result type, nullable where the task may return null
 	 */
 	@FunctionalInterface
-	public interface ResultTask<T> extends WorkerTask {
+	public interface ResultTask<T extends @Nullable Object> extends WorkerTask {
 
 		/**
 		 * Executes the task.
@@ -399,11 +399,11 @@ public final class ProgressWorker<T, V> {
 
 	/**
 	 * A progress aware background task producing a result.
-	 * @param <T> the task result type
+	 * @param <T> the task result type, nullable where the task may return null
 	 * @param <V> the intermediate result type
 	 */
 	@FunctionalInterface
-	public interface ProgressResultTask<T, V> extends WorkerTask {
+	public interface ProgressResultTask<T extends @Nullable Object, V> extends WorkerTask {
 
 		/**
 		 * Executes the task.
@@ -498,7 +498,7 @@ public final class ProgressWorker<T, V> {
 	 * @see BuilderFactory#task(ResultTask)
 	 */
 	@FunctionalInterface
-	public interface ResultTaskHandler<T> extends ResultTask<T>, Handler {
+	public interface ResultTaskHandler<T extends @Nullable Object> extends ResultTask<T>, Handler {
 
 		/**
 		 * Called using the {@link Dispatcher} after a successful execution,
@@ -546,7 +546,7 @@ public final class ProgressWorker<T, V> {
 	 * @see BuilderFactory#task(ProgressResultTask)
 	 */
 	@FunctionalInterface
-	public interface ProgressResultTaskHandler<T, V> extends ProgressResultTask<T, V>, ProgressHandler<V> {
+	public interface ProgressResultTaskHandler<T extends @Nullable Object, V> extends ProgressResultTask<T, V>, ProgressHandler<V> {
 
 		/**
 		 * Called using the {@link Dispatcher} after a successful execution,
@@ -582,7 +582,7 @@ public final class ProgressWorker<T, V> {
 	 * @param <T> the worker result type
 	 * @param <V> the intermediate result type
 	 */
-	public sealed interface Builder<T, V> {
+	public sealed interface Builder<T extends @Nullable Object, V> {
 
 		/**
 		 * Adds a handler called using the {@link Dispatcher} before background processing is started.
@@ -728,7 +728,7 @@ public final class ProgressWorker<T, V> {
 		}
 
 		@Override
-		public <T> Builder<T, ?> task(ResultTask<T> task) {
+		public <T extends @Nullable Object> Builder<T, ?> task(ResultTask<T> task) {
 			DefaultBuilder<T, ?> builder = new DefaultBuilder<>(task);
 			if (task instanceof ResultTaskHandler) {
 				ResultTaskHandler<T> handler = (ResultTaskHandler<T>) task;
@@ -763,7 +763,7 @@ public final class ProgressWorker<T, V> {
 		}
 
 		@Override
-		public <T, V> Builder<T, V> task(ProgressResultTask<T, V> task) {
+		public <T extends @Nullable Object, V> Builder<T, V> task(ProgressResultTask<T, V> task) {
 			DefaultBuilder<T, V> builder = new DefaultBuilder<>(task);
 			if (task instanceof ProgressResultTaskHandler) {
 				ProgressResultTaskHandler<T, V> handler = (ProgressResultTaskHandler<T, V>) task;
@@ -797,7 +797,7 @@ public final class ProgressWorker<T, V> {
 		}
 	}
 
-	private static final class DefaultBuilder<T, V> implements Builder<T, V> {
+	private static final class DefaultBuilder<T extends @Nullable Object, V> implements Builder<T, V> {
 
 		private final WorkerTask task;
 

@@ -18,12 +18,17 @@
  */
 package is.codion.framework.domain.operation;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Identifies a database procedure.
  * @param <C> the connection type
- * @param <P> the procedure parameter type
+ * <p>
+ * The parameter type carries its nullness through to the {@link DatabaseProcedure}: a procedure declared with a non-null
+ * parameter receives one, {@code @Nullable} marking it where null is allowed.
+ * @param <P> the procedure parameter type, nullable where the procedure may be executed without one
  */
-public interface ProcedureType<C, P> {
+public interface ProcedureType<C, P extends @Nullable Object> {
 
 	/**
 	 * @return the procedure name
@@ -37,7 +42,7 @@ public interface ProcedureType<C, P> {
 	 * @param <P> the procedure parameter type
 	 * @return a new {@link ProcedureType}
 	 */
-	static <C, P> ProcedureType<C, P> procedureType(String name) {
+	static <C, P extends @Nullable Object> ProcedureType<C, P> procedureType(String name) {
 		return new DefaultProcedureType<>(name);
 	}
 }

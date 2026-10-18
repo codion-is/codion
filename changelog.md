@@ -8,20 +8,25 @@ Codion Change Log
 - Database.SELECT_FOR_UPDATE_NOWAIT removed, Database.Lock added, selectForUpdateClause() and selectForUpdateTableHint() take the Lock, NOWAIT chosen per select rather than for every select in the JVM.
 ### is.codion.common.model
 - TreeSelection.set(NodePath) replaced by pending().set(), TreeSelection.Pending added, the pending selection, kept apart from path() and paths(), which take effect right away.
+- ProgressWorker, the result's nullness now that of the task, ResultTask, ProgressResultTask, their handlers and the Builder T extends @Nullable Object, get() returning T rather than always nullable, a task able to declare a nullable result.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase binds Types.OTHER values with that type again, a value of a class the driver does not know, such as a PostGIS geometry, failing with Can't infer the SQL type since 0.18.88.
 ### is.codion.swing.common.ui
 - LookAndFeelComboBox bug fixed, now displays non-platform look and feels.
 - ControlKey.SEPARATOR added, a separator in a Controls.Layout, replacing null, which Controls.layout() now rejects with a NullPointerException, Layout.control(ControlKey.SEPARATOR) adding a separator.
 - ButtonPanelBuilder.separators(Separator) and SEPARATORS added, a separator now a line by default, or space, where it was an empty cell the size of a button, separators keeping their own size and the buttons of nested controls sized like the others, where nested controls set the size of every button, and invisible components skipped.
+- ProgressWorkerDialogBuilder, the result's nullness now that of the task, as in ProgressWorker.
 ### is.codion.framework.domain
 - ColumnDefinition.type() renamed sqlType().
+- FunctionType, DatabaseFunction, ProcedureType, DatabaseProcedure, ReportType and Report, the parameter and function result types now carry their nullness, P and R extends @Nullable Object, DatabaseFunction.execute(), DatabaseProcedure.execute() and Report.fill() taking and returning them as declared rather than always nullable.
 ### is.codion.framework.db
 - EntityConnection.savepoint(), rollback(Savepoint), release(Savepoint), Savepoint and savepoint(EntityConnection, Transactional) added, savepoints in the open transaction, on local, RMI and HTTP connections alike, each ended along with those set after it by a rollback or release, and all of them with the transaction, the same on every database.
 - EntityConnection.transaction(), a rollback failing after the transactional threw no longer replaces the exception thrown, which is rethrown with the rollback exception added as suppressed.
 - AbstractEntityConnection, a connection which has gone bad is now closed after it has been replaced, without holding the lock, as when closed or discarded, where a function on it reaching for the lock could deadlock with the thread replacing it.
 - EntityConnection.BatchInsert, BatchCopy, batchInsert(), batchCopy() and MAXIMUM_BATCH_SIZE removed.
 - EntityConnection.Select.Builder.forUpdate() replaced by forUpdate(Lock), Select.forUpdate() returns an Optional Lock, written by name in JSON, the select for update of optimistic locking NOWAIT, as by default before.
+- EntityConnection.transaction() and savepoint() with a TransactionalResult, the result's nullness now that of the transactional, non-null for a lambda returning non-null, rather than always nullable, TransactionalResult<T extends @Nullable Object>.
+- EntityConnection.execute() and report(), the parameter and result nullness now that of the function, procedure or report type, execute() without a parameter only for one whose parameter type is nullable, @Nullable Void for example.
 ### is.codion.framework.db.local
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) added, a connection for another domain joined to the given one, sharing its JDBC connection and transaction.
 ### is.codion.framework.db.rmi
@@ -32,6 +37,7 @@ Codion Change Log
 - A required column with a generator now accepts null when its entity is validated for insert, as one with a database default does, where only a generated primary key did, a form failing to insert a row with a generated non-key column.
 ### is.codion.framework.json.domain
 - EntityObjectMapperFactory moved to EntityObjectMapper.Factory, AbstractEntityObjectMapperFactory to EntityObjectMapper.AbstractFactory, compatibleWith() renamed supports().
+- EntityObjectMapper.parameter() and returnType() return the JsonType of the non-null value, @NonNull P, for an operation with a nullable parameter or result type.
 ### is.codion.framework.model
 - EntityExport.ExportAttributes replaced by Attributes, each attribute added in the order of the export along with the foreign keys leading to it, any order possible, where the order was kept per foreign key, the attributes of a referenced entity following it, Builder.ExportAttributesStep renamed AttributesStep.
 - EntityExport.Attributes.add(String header, Attribute<?>... path) and add(String header, List<Attribute<?>> path) added, a column with the given header, tabs and line breaks in headers now replaced by spaces, as in values.

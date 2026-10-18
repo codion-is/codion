@@ -38,6 +38,8 @@ import is.codion.framework.domain.operation.FunctionType;
 import is.codion.framework.domain.operation.ProcedureType;
 import is.codion.framework.domain.report.ReportType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -99,31 +101,31 @@ final class DefaultServerEntityConnection extends AbstractServerEntityConnection
 	}
 
 	@Override
-	public <P, R> R report(ReportType<P, R> reportType, P parameter) {
+	public <P extends @Nullable Object, R> R report(ReportType<P, R> reportType, P parameter) {
 		synchronized (connectionProxy) {
 			return connectionProxy.report(reportType, parameter);
 		}
 	}
 
 	@Override
-	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType) {
+	public <C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, @Nullable P> procedureType) {
 		execute(procedureType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, P parameter) {
+	public <C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, P> procedureType, P parameter) {
 		synchronized (connectionProxy) {
 			connectionProxy.execute(procedureType, parameter);
 		}
 	}
 
 	@Override
-	public <C extends EntityConnection, P, R> R execute(FunctionType<C, P, R> functionType) {
+	public <C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, @Nullable P, R> functionType) {
 		return execute(functionType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, P, R> R execute(FunctionType<C, P, R> functionType, P parameter) {
+	public <C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, P, R> functionType, P parameter) {
 		synchronized (connectionProxy) {
 			return connectionProxy.execute(functionType, parameter);
 		}

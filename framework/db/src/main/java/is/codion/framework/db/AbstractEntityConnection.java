@@ -246,22 +246,22 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	}
 
 	@Override
-	public final <C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType) {
+	public final <C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, @Nullable P, R> functionType) {
 		return delegate().execute(functionType);
 	}
 
 	@Override
-	public final <C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType, @Nullable P parameter) {
+	public final <C extends EntityConnection, P extends @Nullable Object, R extends @Nullable Object> R execute(FunctionType<C, P, R> functionType, P parameter) {
 		return delegate().execute(functionType, parameter);
 	}
 
 	@Override
-	public final <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType) {
+	public final <C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, @Nullable P> procedureType) {
 		delegate().execute(procedureType);
 	}
 
 	@Override
-	public final <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, @Nullable P parameter) {
+	public final <C extends EntityConnection, P extends @Nullable Object> void execute(ProcedureType<C, P> procedureType, P parameter) {
 		delegate().execute(procedureType, parameter);
 	}
 
@@ -381,7 +381,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	}
 
 	@Override
-	public final <P, R> R report(ReportType<P, R> reportType, @Nullable P parameter) {
+	public final <P extends @Nullable Object, R> R report(ReportType<P, R> reportType, P parameter) {
 		return delegate().report(reportType, parameter);
 	}
 

@@ -31,10 +31,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * A wrapper for a report
  * @param <T> the report type
- * @param <P> the report parameters type
+ * @param <P> the report parameters type, nullable where the report may be filled without parameters
  * @param <R> the report result type
  */
-public interface Report<T, P, R> {
+public interface Report<T, P extends @Nullable Object, R> {
 
 	/**
 	 * The report path used for file based report generation.
@@ -57,11 +57,11 @@ public interface Report<T, P, R> {
 	/**
 	 * Loads and fills the report using the given database connection
 	 * @param connection the connection to use for the report generation
-	 * @param parameters the report parameters, if any
+	 * @param parameters the report parameters
 	 * @return a filled report ready for display
 	 * @throws ReportException in case of an exception
 	 */
-	R fill(Connection connection, @Nullable P parameters);
+	R fill(Connection connection, P parameters);
 
 	/**
 	 * Loads the report this report wrapper is based on.

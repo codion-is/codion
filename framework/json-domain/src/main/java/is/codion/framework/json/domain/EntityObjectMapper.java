@@ -43,6 +43,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -222,11 +223,11 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * Returns the {@link JsonType} of the given procedure's parameter, for registering the type
 	 * the parameter is deserialized as, when the procedure is called over a JSON connection.
 	 * @param procedureType the procedure type
-	 * @param <P> the procedure parameter type
+	 * @param <P> the procedure parameter type, its {@link JsonType} that of the non-null value
 	 * @return the parameter {@link JsonType} for the given procedure
 	 */
-	public <P> JsonType<P> parameter(ProcedureType<?, P> procedureType) {
-		return (JsonType<P>) procedureParameters.computeIfAbsent(requireNonNull(procedureType),
+	public <P extends @Nullable Object> JsonType<@NonNull P> parameter(ProcedureType<?, P> procedureType) {
+		return (JsonType<@NonNull P>) procedureParameters.computeIfAbsent(requireNonNull(procedureType),
 						k -> new DefaultJsonType<>("json parameter type for procedure: " + procedureType.name(),
 										"EntityObjectMapper.parameter(procedureType).set(..)"));
 	}
@@ -235,12 +236,12 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * Returns the {@link JsonType} of the given function's parameter, for registering the type
 	 * the parameter is deserialized as, when the function is called over a JSON connection.
 	 * @param functionType the function type
-	 * @param <P> the function parameter type
+	 * @param <P> the function parameter type, its {@link JsonType} that of the non-null value
 	 * @return the parameter {@link JsonType} for the given function
 	 * @see #returnType(FunctionType)
 	 */
-	public <P> JsonType<P> parameter(FunctionType<?, P, ?> functionType) {
-		return (JsonType<P>) functionParameters.computeIfAbsent(requireNonNull(functionType),
+	public <P extends @Nullable Object> JsonType<@NonNull P> parameter(FunctionType<?, P, ?> functionType) {
+		return (JsonType<@NonNull P>) functionParameters.computeIfAbsent(requireNonNull(functionType),
 						k -> new DefaultJsonType<>("json parameter type for function: " + functionType.name(),
 										"EntityObjectMapper.parameter(functionType).set(..)"));
 	}
@@ -249,11 +250,11 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * Returns the {@link JsonType} of the given report's parameter, for registering the type
 	 * the parameter is deserialized as, when the report is filled over a JSON connection.
 	 * @param reportType the report type
-	 * @param <P> the report parameter type
+	 * @param <P> the report parameter type, its {@link JsonType} that of the non-null value
 	 * @return the parameter {@link JsonType} for the given report
 	 */
-	public <P> JsonType<P> parameter(ReportType<P, ?> reportType) {
-		return (JsonType<P>) reportParameters.computeIfAbsent(requireNonNull(reportType),
+	public <P extends @Nullable Object> JsonType<@NonNull P> parameter(ReportType<P, ?> reportType) {
+		return (JsonType<@NonNull P>) reportParameters.computeIfAbsent(requireNonNull(reportType),
 						k -> new DefaultJsonType<>("json parameter type for report: " + reportType.name(),
 										"EntityObjectMapper.parameter(reportType).set(..)"));
 	}
@@ -283,12 +284,12 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * of {@link FunctionType} is erased at runtime, leaving nothing to deserialize the response as, and
 	 * a type name on the wire would be a type name the client resolves, which is what JSON avoids.
 	 * @param functionType the function type
-	 * @param <R> the function return type
+	 * @param <R> the function return type, its {@link JsonType} that of the non-null value
 	 * @return the return {@link JsonType} for the given function
 	 * @see #parameter(FunctionType)
 	 */
-	public <R> JsonType<R> returnType(FunctionType<?, ?, R> functionType) {
-		return (JsonType<R>) functionReturnTypes.computeIfAbsent(requireNonNull(functionType),
+	public <R extends @Nullable Object> JsonType<@NonNull R> returnType(FunctionType<?, ?, R> functionType) {
+		return (JsonType<@NonNull R>) functionReturnTypes.computeIfAbsent(requireNonNull(functionType),
 						k -> new DefaultJsonType<>("json return type for function: " + functionType.name(),
 										"EntityObjectMapper.returnType(functionType).set(..)"));
 	}

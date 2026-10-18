@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
+final class DefaultProgressWorkerDialogBuilder<T extends @Nullable Object, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
 				implements ProgressWorkerDialogBuilder<T, V> {
 
 	static final ProgressWorkerDialogBuilder.BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
@@ -274,7 +274,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		}
 
 		@Override
-		public <T> ProgressWorkerDialogBuilder<T, ?> task(ResultTask<T> task) {
+		public <T extends @Nullable Object> ProgressWorkerDialogBuilder<T, ?> task(ResultTask<T> task) {
 			return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
 		}
 
@@ -284,7 +284,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		}
 
 		@Override
-		public <T, V> ProgressWorkerDialogBuilder<T, V> task(ProgressResultTask<T, V> task) {
+		public <T extends @Nullable Object, V> ProgressWorkerDialogBuilder<T, V> task(ProgressResultTask<T, V> task) {
 			return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task)).indeterminate(false);
 		}
 	}

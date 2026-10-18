@@ -23,17 +23,18 @@ import org.jspecify.annotations.Nullable;
 /**
  * A database function
  * @param <C> the connection type required by this function
- * @param <P> the parameter type
- * @param <R> the return type
+ * @param <P> the parameter type, nullable where the function may be executed without one
+ * @param <R> the return type, nullable where the function may return null
+ * @see FunctionType
  */
 @FunctionalInterface
-public interface DatabaseFunction<C, P, R> {
+public interface DatabaseFunction<C, P extends @Nullable Object, R extends @Nullable Object> {
 
 	/**
 	 * Executes this function using the given connection
 	 * @param connection the connection to use
-	 * @param parameter the function parameter, if any
+	 * @param parameter the function parameter
 	 * @return the function return value
 	 */
-	@Nullable R execute(C connection, @Nullable P parameter);
+	R execute(C connection, P parameter);
 }

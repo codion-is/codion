@@ -18,12 +18,14 @@
  */
 package is.codion.framework.domain.operation;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultProcedureType<C, P> implements ProcedureType<C, P>, Serializable {
+final class DefaultProcedureType<C, P extends @Nullable Object> implements ProcedureType<C, P>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;

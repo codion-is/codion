@@ -477,7 +477,7 @@ public final class EntityService implements AuxiliaryServer {
 				ServerEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
 				Object parameter = parameters.size() > 1 ? parameters.get(1) : null;
-				connection.execute((ProcedureType<EntityConnection, Object>) parameters.get(0), parameter);
+				connection.execute((ProcedureType<EntityConnection, @Nullable Object>) parameters.get(0), parameter);
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {
@@ -491,7 +491,7 @@ public final class EntityService implements AuxiliaryServer {
 				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
 
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
-				ProcedureType<EntityConnection, Object> procedureType = procedureType(requestNode.get("procedureType").asText());
+				ProcedureType<EntityConnection, @Nullable Object> procedureType = procedureType(requestNode.get("procedureType").asText());
 				Object parameter = null;
 				JsonNode parameterNode = requestNode.get(PARAMETER);
 				if (parameterNode != null) {
@@ -515,8 +515,8 @@ public final class EntityService implements AuxiliaryServer {
 			try {
 				ServerEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
-				FunctionType<EntityConnection, Object, Object> functionType =
-								(FunctionType<EntityConnection, Object, Object>) parameters.get(0);
+				FunctionType<EntityConnection, @Nullable Object, @Nullable Object> functionType =
+								(FunctionType<EntityConnection, @Nullable Object, @Nullable Object>) parameters.get(0);
 				Object parameter = parameters.size() > 1 ? parameters.get(1) : null;
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
@@ -533,7 +533,7 @@ public final class EntityService implements AuxiliaryServer {
 				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
 
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
-				FunctionType<EntityConnection, Object, Object> functionType = functionType(requestNode.get("functionType").asText());
+				FunctionType<EntityConnection, @Nullable Object, @Nullable Object> functionType = functionType(requestNode.get("functionType").asText());
 				Object parameter = null;
 				JsonNode parameterNode = requestNode.get(PARAMETER);
 				if (parameterNode != null) {
@@ -560,7 +560,7 @@ public final class EntityService implements AuxiliaryServer {
 			try {
 				ServerEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
-				ReportType<Object, ?> reportType = (ReportType<Object, ?>) parameters.get(0);
+				ReportType<@Nullable Object, ?> reportType = (ReportType<@Nullable Object, ?>) parameters.get(0);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(connection.report(reportType, parameters.get(1))));
@@ -576,7 +576,7 @@ public final class EntityService implements AuxiliaryServer {
 				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
 
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
-				ReportType<Object, Object> reportType = reportType(requestNode.get("reportType").asText());
+				ReportType<@Nullable Object, Object> reportType = reportType(requestNode.get("reportType").asText());
 				Object parameter = null;
 				JsonNode parameterNode = requestNode.get(PARAMETER);
 				if (parameterNode != null) {

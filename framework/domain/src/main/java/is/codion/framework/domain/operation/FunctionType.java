@@ -18,13 +18,19 @@
  */
 package is.codion.framework.domain.operation;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Identifies a database function.
  * @param <C> the connection type
- * @param <P> the function parameter type
- * @param <R> the function result type
+ * <p>
+ * The parameter and result types carry their nullness through, to the {@link DatabaseFunction} and the caller
+ * executing it: a function declared with a non-null parameter receives one, and one declared with a non-null result
+ * returns one, {@code @Nullable} marking either where null is allowed.
+ * @param <P> the function parameter type, nullable where the function may be executed without one
+ * @param <R> the function result type, nullable where the function may return null
  */
-public interface FunctionType<C, P, R> {
+public interface FunctionType<C, P extends @Nullable Object, R extends @Nullable Object> {
 
 	/**
 	 * @return the function name
@@ -39,7 +45,7 @@ public interface FunctionType<C, P, R> {
 	 * @param <R> the function result type
 	 * @return a new {@link FunctionType}
 	 */
-	static <C, P, R> FunctionType<C, P, R> functionType(String name) {
+	static <C, P extends @Nullable Object, R extends @Nullable Object> FunctionType<C, P, R> functionType(String name) {
 		return new DefaultFunctionType<>(name);
 	}
 }

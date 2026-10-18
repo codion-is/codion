@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  * @param <P> the report parameters type
  * @param <R> the report result type
  */
-public abstract class AbstractReport<T, P, R> implements Report<T, P, R> {
+public abstract class AbstractReport<T, P extends @Nullable Object, R> implements Report<T, P, R> {
 
 	/**
 	 * The path of this report, relative to any defined #{@link Report#REPORT_PATH}.
