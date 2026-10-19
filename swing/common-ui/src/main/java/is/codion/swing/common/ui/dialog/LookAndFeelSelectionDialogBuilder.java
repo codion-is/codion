@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import org.jspecify.annotations.Nullable;
@@ -70,15 +70,15 @@ public interface LookAndFeelSelectionDialogBuilder {
 	void selectLookAndFeel(Consumer<LookAndFeelEnabler> selectedLookAndFeel);
 
 	/**
-	 * Creates a {@link Control} for selecting the Look and Feel.
+	 * Creates a {@link CommandControl} for selecting the Look and Feel.
 	 * @return a Control for displaying a dialog for selecting a look and feel
 	 */
-	Control createControl();
+	CommandControl createControl();
 
 	/**
-	 * Creates a {@link Control} for selecting the Look and Feel.
+	 * Creates a {@link CommandControl} for selecting the Look and Feel.
 	 * @param selectedLookAndFeel called when the OK button is pressed
 	 * @return a Control for displaying a dialog for selecting a look and feel
 	 */
-	Control createControl(Consumer<LookAndFeelEnabler> selectedLookAndFeel);
+	CommandControl createControl(Consumer<LookAndFeelEnabler> selectedLookAndFeel);
 }

@@ -8,7 +8,7 @@
 The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel] class serves as the main application UI.
 When extending this class you must provide a constructor with a single application model parameter, as seen below.
 
-The constructor takes the application's root entity panels, and optionally a set of *lookup panel* builders: panels for supporting entities — lookup and reference data — which appear in the application's *View* menu and open on demand, in their own windows, rather than occupying a tab.
+The constructor takes the application's root entity panels, and optionally a set of *lookup panel* builders: panels for supporting entities — lookup and reference data — which appear in the application's *Lookup* menu and open on demand, in their own windows, rather than occupying a tab.
 
 [source,java,indent=0]
 ----
@@ -30,6 +30,17 @@ include::{dir-chinook-source}/is/codion/demos/chinook/ui/ChinookAppPanel.java[ta
 
 The root entity panels are laid out by an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.ApplicationLayout.html[ApplicationLayout] — by default a {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/TabbedApplicationLayout.html[TabbedApplicationLayout], one tab per root panel, initialized lazily as they are first displayed.
 Supply a custom layout via the *EntityApplicationPanel* constructor to arrange the root panels differently.
+
+== Main menu
+
+The main menu, *File*, *View*, *Tools*, *Lookup* and *Help*, is configured via *configureMainMenu()*, in the constructor.
+Each menu and the controls in them are identified by the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.ControlKeys.html[EntityApplicationPanel.ControlKeys], so a control is added to a menu, after or before another, or a menu after another, without restating the defaults.
+A menu left empty, such as the *Tools* menu by default, is left out.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/ChinookAppPanel.java[tags=configureMainMenu]
+----
 
 == SQL Tracing
 

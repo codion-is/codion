@@ -36,7 +36,6 @@ import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.EntityTablePanel.ControlKeys;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 import is.codion.swing.framework.ui.WindowDetailLayout;
 
@@ -86,13 +85,13 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityTablePanel.Config.CONDITION_VIEW.set(ConditionView.SIMPLE);
 		EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList(
-						ControlKeys.REFRESH,
+						EntityTablePanel.ControlKeys.REFRESH,
 						ControlKey.SEPARATOR,
-						ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
+						EntityTablePanel.ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
 						ControlKey.SEPARATOR,
-						ControlKeys.CONDITION_CONTROLS,
+						EntityTablePanel.ControlKeys.CONDITION_CONTROLS,
 						ControlKey.SEPARATOR,
-						ControlKeys.COPY_CONTROLS
+						EntityTablePanel.ControlKeys.COPY_CONTROLS
 		)));
 		EntityApplication.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
 						.domain(SchemaBrowser.DOMAIN)

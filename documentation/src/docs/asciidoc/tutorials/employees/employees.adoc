@@ -207,11 +207,11 @@ include::{dir-source}/is/codion/demos/employees/model/EmployeesAppModel.java[tag
 
 We create a main application panel by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel].
 A constructor with a single *EmployeesAppModel* argument is required.
-Overriding *createEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
+We create two *EntityPanels* using the *SwingEntityModels* from the application model and pass the department panel to the constructor, as the root panel.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=createEntityPanels]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=createEntityPanels;!configureMainMenu]
 ----
 
 Next we add a method for importing a JSON text file, which we'll call via an action initialized in the next section.
@@ -221,11 +221,11 @@ Next we add a method for importing a JSON text file, which we'll call via an act
 include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=importJSON]
 ----
 
-We override *createToolsMenuControls()* to add our import action to the Tools menu.
+In the constructor we configure the main menu, adding our import action to the Tools menu.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=createToolsMenuControls]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=configureMainMenu]
 ----
 
 We create a *main()* method for configuring and running the application.

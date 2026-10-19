@@ -32,7 +32,6 @@ import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -49,7 +48,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Optional;
 
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
 import static java.util.Collections.emptyList;
@@ -64,6 +62,22 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	public EmployeesAppPanel(EmployeesAppModel applicationModel) {
 		super(applicationModel, createPanels(applicationModel), emptyList());
+		// tag::configureMainMenu[]
+		configureMainMenu(layout -> layout
+						.controls(ControlKeys.TOOLS_MENU, tools -> tools
+										.control(Control.builder()
+														.command(this::importJSON)
+														.caption("Import JSON"))
+										.control(Control.builder()
+														.command(() -> Automation.builder()
+																		.narrator(Ancestor.window().of(this).optional()
+																						.orElseThrow(IllegalStateException::new))
+																		.run(new DemoScript()))
+														.caption("Run demo"))
+										.control(Control.builder()
+														.toggle(mcpController)
+														.caption("MCP Server"))));
+		// end::configureMainMenu[]
 	}
 
 	private static List<EntityPanel> createPanels(EmployeesAppModel applicationModel) {
@@ -113,27 +127,6 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 						.show();
 	}
 	// end::importJSON[]
-
-	// tag::createToolsMenuControls[]
-	@Override
-	protected Optional<Controls> createToolsMenuControls() {
-		return super.createToolsMenuControls()
-						.map(controls -> controls.copy()
-										.control(Control.builder()
-														.command(this::importJSON)
-														.caption("Import JSON"))
-										.control(Control.builder()
-														.command(() -> Automation.builder()
-																		.narrator(Ancestor.window().of(this).optional()
-																						.orElseThrow(IllegalStateException::new))
-																		.run(new DemoScript()))
-														.caption("Run demo"))
-										.control(Control.builder()
-														.toggle(mcpController)
-														.caption("MCP Server"))
-										.build());
-	}
-	// end::createToolsMenuControls[]
 
 	// tag::main[]
 	public static void main(String[] args) {

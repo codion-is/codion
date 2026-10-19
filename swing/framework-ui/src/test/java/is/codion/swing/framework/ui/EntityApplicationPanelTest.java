@@ -23,6 +23,10 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.model.EntityApplicationModel;
+import is.codion.swing.common.ui.control.CommandControl;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlKey;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -30,11 +34,21 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
+import static is.codion.swing.framework.ui.EntityApplicationPanel.ControlKeys.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -123,6 +137,16 @@ public class EntityApplicationPanelTest {
 		}
 	}
 
+	// Its lookup panel in the Lookup menu
+	private static final class LookupApplicationPanel extends EntityApplicationPanel<TestApplicationModel> {
+
+		public LookupApplicationPanel(TestApplicationModel applicationModel) {
+			super(applicationModel, TestApplicationPanel.createPanels(applicationModel), singletonList(EntityPanel.builder()
+							.entityType(Employee.TYPE)
+							.panel(connection -> new EntityPanel(new SwingEntityModel(Employee.TYPE, connection)))));
+		}
+	}
+
 	private static final class TestApplicationPanel extends EntityApplicationPanel<TestApplicationModel> {
 
 		public TestApplicationPanel(TestApplicationModel applicationModel) {
@@ -132,6 +156,84 @@ public class EntityApplicationPanelTest {
 		private static List<EntityPanel> createPanels(TestApplicationModel applicationModel) {
 			return singletonList(new EntityPanel(applicationModel.models().get(Employee.TYPE)));
 		}
+	}
+
+	@Test
+	void mainMenu() {
+		// the defaults, the empty Tools menu left out, as is the Lookup menu without lookup panels
+		TestApplicationPanel panel = initialized(() -> new TestApplicationPanel(new TestApplicationModel(CONNECTION)), configured -> {});
+		JMenuBar menuBar = panel.createMenuBar().orElseThrow(IllegalStateException::new);
+		assertEquals(asList(caption(panel, FILE_MENU), caption(panel, VIEW_MENU), caption(panel, HELP_MENU)), menus(menuBar));
+		assertEquals(singletonList(caption(panel, EXIT)), items(menuBar.getMenu(0)));
+		assertEquals(asList(caption(panel, SELECT_LOOK_AND_FEEL), caption(panel, SELECT_SCALING), "|",
+						caption(panel, ALWAYS_ON_TOP)), items(menuBar.getMenu(1)));
+		List<String> help = new ArrayList<>(asList(caption(panel, HELP), caption(panel, KEYBOARD_SHORTCUTS), "|"));
+		Controls log = panel.control(LOG_CONTROLS).getOrThrow();
+		if (log.size() > 0) {
+			help.addAll(asList(log.caption().orElse(null), "|"));
+		}
+		help.add(caption(panel, ABOUT));
+		assertEquals(help, items(menuBar.getMenu(2)));
+	}
+
+	@Test
+	void configureMainMenu() {
+		// added to a menu, after a control, and a menu after another, the defaults left as they are
+		CommandControl custom = Control.builder()
+						.command(() -> {})
+						.caption("custom")
+						.build();
+		CommandControl language = Control.builder()
+						.command(() -> {})
+						.caption("language")
+						.build();
+		Controls reports = Controls.builder()
+						.caption("reports")
+						.control(custom)
+						.build();
+		TestApplicationPanel panel = initialized(() -> new TestApplicationPanel(new TestApplicationModel(CONNECTION)),
+						configured -> configured.configureMainMenu(layout -> layout
+										.controls(TOOLS_MENU, tools -> tools
+														.control(custom))
+										.controls(VIEW_MENU, view -> view
+														.after(SELECT_SCALING)
+														.control(language))
+										.after(TOOLS_MENU)
+										.control(reports)));
+		JMenuBar menuBar = panel.createMenuBar().orElseThrow(IllegalStateException::new);
+		assertEquals(asList(caption(panel, FILE_MENU), caption(panel, VIEW_MENU), caption(panel, TOOLS_MENU), "reports",
+						caption(panel, HELP_MENU)), menus(menuBar));
+		assertEquals(asList(caption(panel, SELECT_LOOK_AND_FEEL), caption(panel, SELECT_SCALING), "language", "|",
+						caption(panel, ALWAYS_ON_TOP)), items(menuBar.getMenu(1)));
+		assertEquals(singletonList("custom"), items(menuBar.getMenu(2)));
+		// before the panel is initialized only
+		assertThrows(IllegalStateException.class, () -> panel.configureMainMenu(layout -> {}));
+	}
+
+	@Test
+	void menuControls() {
+		// a control and a menu replaced, and the Lookup menu of the lookup panels
+		CommandControl exit = Control.builder()
+						.command(() -> {})
+						.caption("exit")
+						.build();
+		Controls help = Controls.builder()
+						.caption("help")
+						.control(Control.builder()
+										.command(() -> {})
+										.caption("about"))
+						.build();
+		LookupApplicationPanel panel = initialized(() -> new LookupApplicationPanel(new TestApplicationModel(CONNECTION)),
+						configured -> {
+							configured.control(EXIT).set(exit);
+							configured.control(HELP_MENU).set(help);
+						});
+		JMenuBar menuBar = panel.createMenuBar().orElseThrow(IllegalStateException::new);
+		assertEquals(asList(caption(panel, FILE_MENU), caption(panel, VIEW_MENU), caption(panel, LOOKUP_MENU),
+						caption(panel, HELP_MENU)), menus(menuBar));
+		assertEquals(singletonList("exit"), items(menuBar.getMenu(0)));
+		assertEquals(singletonList(CONNECTION.entities().definition(Employee.TYPE).caption()), items(menuBar.getMenu(2)));
+		assertEquals(singletonList("about"), items(menuBar.getMenu(3)));
 	}
 
 	@Test
@@ -152,5 +254,49 @@ public class EntityApplicationPanelTest {
 		finally {
 			EntityApplicationModel.USER_PREFERENCES.set(userPreferences);
 		}
+	}
+
+	// Created and initialized without the user preferences, which a panel reads when created, configured in between
+	private static <T extends EntityApplicationPanel<?>> T initialized(Supplier<T> panel, Consumer<T> configuration) {
+		boolean userPreferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow();
+		EntityApplicationModel.USER_PREFERENCES.set(false);
+		try {
+			T applicationPanel = panel.get();
+			configuration.accept(applicationPanel);
+			applicationPanel.initialize();
+
+			return applicationPanel;
+		}
+		finally {
+			EntityApplicationModel.USER_PREFERENCES.set(userPreferences);
+		}
+	}
+
+	private static String caption(EntityApplicationPanel<?> panel, ControlKey<?> controlKey) {
+		return panel.control(controlKey).getOrThrow().caption().orElse(null);
+	}
+
+	private static List<String> menus(JMenuBar menuBar) {
+		List<String> menus = new ArrayList<>();
+		for (int i = 0; i < menuBar.getMenuCount(); i++) {
+			menus.add(menuBar.getMenu(i).getText());
+		}
+
+		return menus;
+	}
+
+	// The menu's items, by their text, a separator as |
+	private static List<String> items(JMenu menu) {
+		List<String> items = new ArrayList<>();
+		for (Component component : menu.getMenuComponents()) {
+			if (component instanceof JMenuItem) {
+				items.add(((JMenuItem) component).getText());
+			}
+			else if (component instanceof JSeparator) {
+				items.add("|");
+			}
+		}
+
+		return items;
 	}
 }

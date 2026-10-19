@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.panel.GridLayoutPanelBuilder;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
@@ -73,12 +74,12 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	}
 
 	@Override
-	public Control createControl() {
+	public CommandControl createControl() {
 		return createControl(enabler -> {});
 	}
 
 	@Override
-	public Control createControl(Consumer<LookAndFeelEnabler> selectedLookAndFeel) {
+	public CommandControl createControl(Consumer<LookAndFeelEnabler> selectedLookAndFeel) {
 		requireNonNull(selectedLookAndFeel);
 		String caption = MESSAGES.getString("look_and_feel");
 

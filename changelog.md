@@ -10,10 +10,13 @@ Codion Change Log
 - Controls.Layout bug fixed, controls configured via controls(ControlsKey, Consumer) are now left out where the control map has none, as when added by key, where creating the layout threw a NoSuchElementException.
 - Controls.Layout.copy() bug fixed, now copies the layout as configured, nested layouts included, where it returned a layout of its defaults alone.
 - Controls.Layout.after(ControlKey) and before(ControlKey) added, moving the insertion point controls and separators are added at, at the end by default, the defaults always added at the end.
+- LookAndFeelSelectionDialogBuilder.createControl() now returns CommandControl.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
 - EntityTablePanel bug fixed, the column controls configured via configurePopupMenu() now hold one column selection and one auto-resize-mode selection, as by default, where they held both column selections.
 - EntityTablePanel, of SELECT_COLUMNS and TOGGLE_COLUMN_CONTROLS, and of SELECT_AUTO_RESIZE_MODE and TOGGLE_AUTO_RESIZE_MODE_CONTROLS, only the one of the configured selection mode is now available, the column and copy controls created from their keys' default layouts, COLUMN_CONTROLS' now including TOGGLE_AUTO_RESIZE_MODE_CONTROLS.
+- EntityApplicationPanel.ControlKeys, control(ControlKey) and configureMainMenu(Consumer) added, the main menu and its menus laid out by key, as the table panel's popup menu is.
+- EntityApplicationPanel, the menu factories, createMainMenuControls() and the like, and the control factories, createExitControl() and the like, removed, replaced by configureMainMenu() and control(ControlKey).
 
 ## 0.18.91
 ### is.codion.common.db

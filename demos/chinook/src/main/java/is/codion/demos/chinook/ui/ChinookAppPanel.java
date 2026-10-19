@@ -45,7 +45,6 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableHeaderRenderer;
 import is.codion.swing.common.ui.component.tree.FilterTree;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplication;
@@ -68,7 +67,6 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.demos.chinook.domain.api.Chinook.*;
@@ -99,6 +97,23 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
 		super(applicationModel, createPanels(applicationModel), createLookupPanels());
+		// tag::configureMainMenu[]
+		configureMainMenu(layout -> layout
+						.controls(ControlKeys.TOOLS_MENU, tools -> tools
+										.control(Control.builder()
+														.command(this::displayAnalytics)
+														.caption(bundle.getString("analytics"))
+														.icon(FrameworkIcons.instance().get("graph-pie")))
+										.separator()
+										.control(Control.builder()
+														.toggle(mcpController)
+														.caption("MCP Server")))
+						.controls(ControlKeys.VIEW_MENU, view -> view
+										.after(ControlKeys.SELECT_SCALING)
+										.control(Control.builder()
+														.command(this::selectLanguage)
+														.caption(bundle.getString("language")))));
+		// end::configureMainMenu[]
 	}
 
 	@Override
@@ -182,33 +197,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		return new EntityPanel(preferencesModel,
 						new PreferencesEditPanel(preferencesModel.editModel()),
 						new PreferencesTablePanel(preferencesModel.tableModel()));
-	}
-
-	@Override
-	protected Optional<Controls> createToolsMenuControls() {
-		return super.createToolsMenuControls()
-						.map(controls -> controls.copy()
-										.control(Control.builder()
-														.command(this::displayAnalytics)
-														.caption(bundle.getString("analytics"))
-														.icon(FrameworkIcons.instance().get("graph-pie"))
-														.build())
-										.separator()
-										.control(Control.builder()
-														.toggle(mcpController)
-														.caption("MCP Server"))
-										.build());
-	}
-
-	@Override
-	protected Optional<Controls> createViewMenuControls() {
-		return super.createViewMenuControls()
-						.map(controls -> controls.copy()
-										.controlAt(2, Control.builder()
-														.command(this::selectLanguage)
-														.caption(bundle.getString("language"))
-														.build())
-										.build());
 	}
 
 	private void displayAnalytics() {

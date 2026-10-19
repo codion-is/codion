@@ -23,6 +23,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.logging.LoggerProxy;
 import is.codion.common.utilities.property.PropertyStore;
@@ -43,8 +44,12 @@ import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.logging.LogViewer;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlKey;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -95,7 +100,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
@@ -106,9 +113,11 @@ import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.logging.LogLevelPanel.logLevelPanel;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
 import static java.awt.Frame.MAXIMIZED_BOTH;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Arrays.asList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
@@ -190,6 +199,82 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = booleanValue(EntityApplicationPanel.class.getName() + ".cacheEntityPanels", false);
 
+	/**
+	 * The controls of the main menu, the menus included, available via {@link #control(ControlKey)} and laid out via
+	 * {@link #configureMainMenu(Consumer)}.
+	 * <p>The menus with a default layout, {@link #FILE_MENU}, {@link #VIEW_MENU}, {@link #TOOLS_MENU} and {@link #HELP_MENU},
+	 * can be configured via {@link Controls.Layout#controls(ControlsKey, Consumer)}, the others, created from what the
+	 * application has, {@link #LOOKUP_MENU} and {@link #LOG_CONTROLS}, only placed or left out.
+	 */
+	public static final class ControlKeys {
+
+		/**
+		 * Exits the application.
+		 */
+		public static final ControlKey<CommandControl> EXIT = CommandControl.key("exit");
+		/**
+		 * Displays a dialog for selecting the look and feel.
+		 * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelEnabler)
+		 * @see LookAndFeelProvider#findLookAndFeel(String)
+		 * @see LookAndFeelComboBox#ENABLE_ON_SELECTION
+		 */
+		public static final ControlKey<CommandControl> SELECT_LOOK_AND_FEEL = CommandControl.key("selectLookAndFeel");
+		/**
+		 * Displays a dialog for selecting the scaling.
+		 */
+		public static final ControlKey<CommandControl> SELECT_SCALING = CommandControl.key("selectScaling");
+		/**
+		 * Toggles whether the application window is always on top.
+		 */
+		public static final ControlKey<ToggleControl> ALWAYS_ON_TOP = ToggleControl.key("alwaysOnTop");
+		/**
+		 * Displays the help.
+		 * @see #HELP_URL
+		 */
+		public static final ControlKey<CommandControl> HELP = CommandControl.key("help");
+		/**
+		 * Displays the keyboard shortcuts.
+		 */
+		public static final ControlKey<CommandControl> KEYBOARD_SHORTCUTS = CommandControl.key("keyboardShortcuts");
+		/**
+		 * The log controls: the log level, opening the log file or folder, and the SQL tracing, those available.
+		 * @see #SQL_TRACING
+		 */
+		public static final ControlKey<Controls> LOG_CONTROLS = Controls.key("logControls");
+		/**
+		 * Displays information about the application.
+		 */
+		public static final ControlKey<CommandControl> ABOUT = CommandControl.key("about");
+		/**
+		 * The File menu.
+		 * <p>Default layout: {@link #EXIT}
+		 */
+		public static final ControlsKey FILE_MENU = Controls.key("fileMenu", Controls.layout(singletonList(EXIT)));
+		/**
+		 * The View menu.
+		 * <p>Default layout: {@link #SELECT_LOOK_AND_FEEL}, {@link #SELECT_SCALING}, separator, {@link #ALWAYS_ON_TOP}
+		 */
+		public static final ControlsKey VIEW_MENU = Controls.key("viewMenu",
+						Controls.layout(asList(SELECT_LOOK_AND_FEEL, SELECT_SCALING, ControlKey.SEPARATOR, ALWAYS_ON_TOP)));
+		/**
+		 * The Tools menu, empty by default, and so left out.
+		 */
+		public static final ControlsKey TOOLS_MENU = Controls.key("toolsMenu", Controls.layout(emptyList()));
+		/**
+		 * The Lookup menu, a control for each lookup panel, not available without lookup panels.
+		 */
+		public static final ControlKey<Controls> LOOKUP_MENU = Controls.key("lookupMenu");
+		/**
+		 * The Help menu.
+		 * <p>Default layout: {@link #HELP}, {@link #KEYBOARD_SHORTCUTS}, separator, {@link #LOG_CONTROLS}, separator,
+		 * {@link #ABOUT}
+		 */
+		public static final ControlsKey HELP_MENU = Controls.key("helpMenu",
+						Controls.layout(asList(HELP, KEYBOARD_SHORTCUTS, ControlKey.SEPARATOR, LOG_CONTROLS, ControlKey.SEPARATOR, ABOUT)));
+
+		private ControlKeys() {}
+	}
+
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
 	private static final String HELP = "help";
@@ -233,6 +318,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final Set<EntityPanel> displayedEntityPanels = new LinkedHashSet<>();
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
+	private final ControlMap controlMap = controlMap(ControlKeys.class);
+	private final Controls.Layout mainMenuLayout = Controls.layout(asList(ControlKeys.FILE_MENU, ControlKeys.VIEW_MENU,
+					ControlKeys.TOOLS_MENU, ControlKeys.LOOKUP_MENU, ControlKeys.HELP_MENU));
 
 	// The preferences root, provided by EntityApplication or resolved lazily from the domain for a stand-alone panel
 	private @Nullable Preferences preferences;
@@ -272,6 +360,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		this.applicationLayout = requireNonNull(applicationLayout).apply(this);
 		entityPanels.forEach(this::configureEntityPanel);
 		setupTracing();
+		createControls();
 		//initialize button captions, not in a static initializer since applications may set the locale in main()
 		UIManagerDefaults.initialize();
 	}
@@ -430,6 +519,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			initializing = true;
 			LOG.debug("{} - initializing", this);
 			try {
+				setupMenus();
 				restorePreferences();
 				setLayout(new BorderLayout());
 				add(applicationLayout.layout(), BorderLayout.CENTER);
@@ -484,202 +574,46 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * @return the controls on which to base the main menu or an empty Optional if the menu should be excluded
-	 * @see #createFileMenuControls()
-	 * @see #createViewMenuControls()
-	 * @see #createToolsMenuControls()
-	 * @see #createLookupMenuControls()
-	 * @see #createHelpMenuControls()
+	 * Returns a {@link Value} containing the control associated with {@code controlKey},
+	 * an empty {@link Value} if no such control is available.
+	 * @param <T> the control type
+	 * @param controlKey the control key
+	 * @return the {@link Value} containing the control associated with {@code controlKey}
+	 * @see ControlKeys
 	 */
-	protected Optional<Controls> createMainMenuControls() {
-		ControlsBuilder menuControls = Controls.builder();
-		createFileMenuControls().ifPresent(menuControls::control);
-		createViewMenuControls().ifPresent(menuControls::control);
-		createToolsMenuControls().ifPresent(menuControls::control);
-		createLookupMenuControls().ifPresent(menuControls::control);
-		createHelpMenuControls().ifPresent(menuControls::control);
-
-		Controls controls = menuControls.build();
-
-		return controls.size() == 0 ? Optional.empty() : Optional.of(controls);
+	public final <T extends Control> Value<T> control(ControlKey<T> controlKey) {
+		return controlMap.control(requireNonNull(controlKey));
 	}
 
 	/**
-	 * @return the Controls specifying the items in the 'File' menu or an empty Optional to skip the menu
+	 * Configures the main menu layout, before this panel is initialized.<br>
+	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
+	 * which must be cleared in order to start with an empty configuration.
+	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityApplicationPanelSnippets" region = "configureMainMenu":
+	 * configureMainMenu(layout -> layout // @start region=configureMainMenu
+	 *         .controls(ControlKeys.TOOLS_MENU, tools -> tools
+	 *                 .control(createImportControl()))
+	 *         .controls(ControlKeys.VIEW_MENU, view -> view
+	 *                 .after(ControlKeys.SELECT_SCALING)
+	 *                 .control(createSelectLanguageControl()))
+	 *         .after(ControlKeys.TOOLS_MENU)
+	 *         .control(createReportsMenu())); // @end}
+	 * Defaults:
+	 * <ul>
+	 *   <li>{@link ControlKeys#FILE_MENU ControlKeys#FILE_MENU}
+	 *   <li>{@link ControlKeys#VIEW_MENU ControlKeys#VIEW_MENU}
+	 *   <li>{@link ControlKeys#TOOLS_MENU ControlKeys#TOOLS_MENU}
+	 *   <li>{@link ControlKeys#LOOKUP_MENU ControlKeys#LOOKUP_MENU} (If lookup panels are available)
+	 *   <li>{@link ControlKeys#HELP_MENU ControlKeys#HELP_MENU}
+	 * </ul>
+	 * A menu left empty is left out.
+	 * @param mainMenuLayout provides access to the main menu layout
+	 * @throws IllegalStateException in case this panel has already been initialized
+	 * @see Controls.Layout#clear()
 	 */
-	protected Optional<Controls> createFileMenuControls() {
-		return Optional.of(Controls.builder()
-						.caption(FrameworkMessages.file())
-						.mnemonic(FrameworkMessages.fileMnemonic())
-						.control(createExitControl())
-						.build());
-	}
-
-	/**
-	 * @return the Controls specifying the items in the 'Tools' menu or an empty Optional to skip the menu
-	 */
-	protected Optional<Controls> createToolsMenuControls() {
-		return Optional.of(Controls.builder()
-						.caption(resourceBundle.getString("tools"))
-						.mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0))
-						.build());
-	}
-
-	/**
-	 * @return the Controls specifying the items in the 'View' menu or an empty Optional to skip the menu
-	 */
-	protected Optional<Controls> createViewMenuControls() {
-		return Optional.of(Controls.builder()
-						.caption(FrameworkMessages.view())
-						.mnemonic(FrameworkMessages.viewMnemonic())
-						.control(createSelectLookAndFeelControl())
-						.control(createSelectScalingControl())
-						.separator()
-						.control(createAlwaysOnTopControl())
-						.build());
-	}
-
-	/**
-	 * @return the Controls specifying the items in the 'Help' menu or an empty Optional to skip the menu
-	 */
-	protected Optional<Controls> createHelpMenuControls() {
-		return Optional.of(Controls.builder()
-						.caption(resourceBundle.getString(HELP))
-						.mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
-						.control(createHelpControl())
-						.control(createViewKeyboardShortcutsControl())
-						.separator()
-						.control(createLogControls())
-						.separator()
-						.control(createAboutControl())
-						.build());
-	}
-
-	/**
-	 * @return the Controls on which to base the Lookup menu or an empty Optional to skip the menu
-	 */
-	protected Optional<Controls> createLookupMenuControls() {
-		return lookupPanelBuilders.isEmpty() ? Optional.empty() : Optional.of(Controls.builder()
-						.caption(FrameworkMessages.lookup())
-						.mnemonic(FrameworkMessages.lookupMnemonic())
-						.controls(lookupPanelBuilders.stream()
-										.sorted(new LookupPanelBuilderComparator(model.entities()))
-										.map(this::createLookupPanelControl)
-										.collect(toList()))
-						.build());
-	}
-
-	/**
-	 * @return a Control for exiting the application
-	 */
-	protected final Control createExitControl() {
-		return Control.builder()
-						.command(this::exit)
-						.caption(FrameworkMessages.exit())
-						.description(FrameworkMessages.exitTip())
-						.mnemonic(FrameworkMessages.exitMnemonic())
-						.build();
-	}
-
-	/**
-	 * @return Controls for setting the log level
-	 */
-	protected final Controls createLogLevelControl() {
-		return Controls.builder()
-						.caption(resourceBundle.getString(LOG_LEVEL))
-						.description(resourceBundle.getString(LOG_LEVEL_DESC))
-						.controls(logLevelStates.entrySet().stream()
-										.map(entry -> Control.builder()
-														.toggle(entry.getValue())
-														.caption(entry.getKey().toString())
-														.build())
-										.collect(toList()))
-						.separator()
-						.control(Control.builder()
-										.command(this::advancedLogLevelConfiguration)
-										.caption(resourceBundle.getString(ADVANCED_LOG_LEVEL) + "...")
-										.mnemonic(resourceBundle.getString(ADVANCED_LOG_LEVEL_MNEMONIC).charAt(0)))
-						.build();
-	}
-
-	/**
-	 * Allows the user the select between the available Look and Feels.
-	 * @return a Control for selecting the application look and feel
-	 * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelEnabler)
-	 * @see LookAndFeelProvider#findLookAndFeel(String)
-	 * @see LookAndFeelComboBox#ENABLE_ON_SELECTION
-	 */
-	protected final Control createSelectLookAndFeelControl() {
-		return Dialogs.select()
-						.lookAndFeel()
-						.owner(this)
-						.createControl();
-	}
-
-	/**
-	 * @return a Control for selecting the scaling
-	 */
-	protected final Control createSelectScalingControl() {
-		return Control.builder()
-						.command(this::selectScaling)
-						.caption(resourceBundle.getString("scaling"))
-						.build();
-	}
-
-	/**
-	 * @return a Control controlling the always on top status
-	 */
-	protected final ToggleControl createAlwaysOnTopControl() {
-		return Control.builder()
-						.toggle(alwaysOnTopState)
-						.caption(resourceBundle.getString(ALWAYS_ON_TOP))
-						.build();
-	}
-
-	/**
-	 * @return a Control for viewing information about the application
-	 */
-	protected final Control createAboutControl() {
-		return Control.builder()
-						.command(this::displayAbout)
-						.caption(resourceBundle.getString(ABOUT) + "...")
-						.build();
-	}
-
-	/**
-	 * @return a Control for displaying the help
-	 */
-	protected final Control createHelpControl() {
-		return Control.builder()
-						.command(this::displayHelp)
-						.caption(resourceBundle.getString(HELP) + "...")
-						.build();
-	}
-
-	/**
-	 * @return Controls for log handling
-	 */
-	protected final Controls createLogControls() {
-		ControlsBuilder builder = Controls.builder()
-						.caption(resourceBundle.getString("log"))
-						.mnemonic(resourceBundle.getString("log_mnemonic").charAt(0));
-		if (!logLevelStates.isEmpty()) {
-			builder.control(createLogLevelControl());
-		}
-		createOpenLogControls().ifPresent(builder::control);
-		createTracingControls().ifPresent(builder::control);
-
-		return builder.build();
-	}
-
-	/**
-	 * @return a Control for displaying the keyboard shortcuts overview
-	 */
-	protected final Control createViewKeyboardShortcutsControl() {
-		return Control.builder()
-						.command(this::displayKeyboardShortcuts)
-						.caption(resourceBundle.getString(SHORTCUTS) + "...")
-						.build();
+	protected final void configureMainMenu(Consumer<Controls.Layout> mainMenuLayout) {
+		throwIfInitialized();
+		requireNonNull(mainMenuLayout).accept(this.mainMenuLayout);
 	}
 
 	/**
@@ -808,15 +742,15 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	/**
 	 * Creates the JMenuBar to use on the application Frame
-	 * @return by default a JMenuBar based on the main menu controls or an empty Optional in case of no menu bar
-	 * @see #createMainMenuControls()
+	 * @return by default a JMenuBar based on the main menu layout or an empty Optional in case of no menu bar
+	 * @see #configureMainMenu(Consumer)
 	 */
 	protected Optional<JMenuBar> createMenuBar() {
-		return createMainMenuControls()
-						.filter(controls -> controls.size() > 0)
-						.map(mainMenuControls -> menu()
-										.controls(mainMenuControls)
-										.buildMenuBar());
+		Controls mainMenuControls = mainMenuLayout.create(controlMap);
+
+		return mainMenuControls.size() == 0 ? Optional.empty() : Optional.of(menu()
+						.controls(mainMenuControls)
+						.buildMenuBar());
 	}
 
 	// Provided by EntityApplication at startup (already migrated); package private
@@ -948,6 +882,150 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.caption(panelBuilder.caption().orElse(model.entities().definition(panelBuilder.entityType()).caption()))
 						.description(panelBuilder.description().orElse(null))
 						.icon(panelBuilder.icon().orElse(null))
+						.build();
+	}
+
+	private void createControls() {
+		controlMap.control(ControlKeys.EXIT).set(exitControl());
+		controlMap.control(ControlKeys.SELECT_LOOK_AND_FEEL).set(selectLookAndFeelControl());
+		controlMap.control(ControlKeys.SELECT_SCALING).set(selectScalingControl());
+		controlMap.control(ControlKeys.ALWAYS_ON_TOP).set(alwaysOnTopControl());
+		controlMap.control(ControlKeys.HELP).set(helpControl());
+		controlMap.control(ControlKeys.KEYBOARD_SHORTCUTS).set(keyboardShortcutsControl());
+		controlMap.control(ControlKeys.LOG_CONTROLS).set(logControls());
+		controlMap.control(ControlKeys.ABOUT).set(aboutControl());
+	}
+
+	// The menus, unless already set, laid out by their keys' layouts, with the controls as configured before the
+	// initialization, a menu configured via the main menu layout taking only its caption and mnemonic from these
+	private void setupMenus() {
+		setupMenu(ControlKeys.FILE_MENU, () -> layoutMenu(ControlKeys.FILE_MENU,
+						FrameworkMessages.file(), FrameworkMessages.fileMnemonic()));
+		setupMenu(ControlKeys.VIEW_MENU, () -> layoutMenu(ControlKeys.VIEW_MENU,
+						FrameworkMessages.view(), FrameworkMessages.viewMnemonic()));
+		setupMenu(ControlKeys.TOOLS_MENU, () -> layoutMenu(ControlKeys.TOOLS_MENU,
+						resourceBundle.getString("tools"), resourceBundle.getString("tools_mnemonic").charAt(0)));
+		setupMenu(ControlKeys.LOOKUP_MENU, this::lookupMenu);
+		setupMenu(ControlKeys.HELP_MENU, () -> layoutMenu(ControlKeys.HELP_MENU,
+						resourceBundle.getString(HELP), resourceBundle.getString("help_mnemonic").charAt(0)));
+	}
+
+	private void setupMenu(ControlKey<Controls> menuKey, Supplier<@Nullable Controls> menu) {
+		Value<Controls> menuControls = controlMap.control(menuKey);
+		if (menuControls.isNull()) {
+			menuControls.set(menu.get());
+		}
+	}
+
+	// Null without lookup panels
+	private @Nullable Controls lookupMenu() {
+		return lookupPanelBuilders.isEmpty() ? null : Controls.builder()
+						.caption(FrameworkMessages.lookup())
+						.mnemonic(FrameworkMessages.lookupMnemonic())
+						.controls(lookupPanelBuilders.stream()
+										.sorted(new LookupPanelBuilderComparator(model.entities()))
+										.map(this::createLookupPanelControl)
+										.collect(toList()))
+						.build();
+	}
+
+	// The menu's items laid out by its key's default layout
+	private Controls layoutMenu(ControlsKey menuKey, String caption, char mnemonic) {
+		return Controls.builder()
+						.caption(caption)
+						.mnemonic(mnemonic)
+						.actions(menuKey.defaultLayout()
+										.orElseThrow(IllegalStateException::new)
+										.create(controlMap)
+										.actions())
+						.build();
+	}
+
+	private void throwIfInitialized() {
+		if (initialized) {
+			throw new IllegalStateException("Method must be called before the panel is initialized");
+		}
+	}
+
+	private CommandControl exitControl() {
+		return Control.builder()
+						.command(this::exit)
+						.caption(FrameworkMessages.exit())
+						.description(FrameworkMessages.exitTip())
+						.mnemonic(FrameworkMessages.exitMnemonic())
+						.build();
+	}
+
+	private Controls logLevelControls() {
+		return Controls.builder()
+						.caption(resourceBundle.getString(LOG_LEVEL))
+						.description(resourceBundle.getString(LOG_LEVEL_DESC))
+						.controls(logLevelStates.entrySet().stream()
+										.map(entry -> Control.builder()
+														.toggle(entry.getValue())
+														.caption(entry.getKey().toString())
+														.build())
+										.collect(toList()))
+						.separator()
+						.control(Control.builder()
+										.command(this::advancedLogLevelConfiguration)
+										.caption(resourceBundle.getString(ADVANCED_LOG_LEVEL) + "...")
+										.mnemonic(resourceBundle.getString(ADVANCED_LOG_LEVEL_MNEMONIC).charAt(0)))
+						.build();
+	}
+
+	private CommandControl selectLookAndFeelControl() {
+		return Dialogs.select()
+						.lookAndFeel()
+						.owner(this)
+						.createControl();
+	}
+
+	private CommandControl selectScalingControl() {
+		return Control.builder()
+						.command(this::selectScaling)
+						.caption(resourceBundle.getString("scaling"))
+						.build();
+	}
+
+	private ToggleControl alwaysOnTopControl() {
+		return Control.builder()
+						.toggle(alwaysOnTopState)
+						.caption(resourceBundle.getString(ALWAYS_ON_TOP))
+						.build();
+	}
+
+	private CommandControl aboutControl() {
+		return Control.builder()
+						.command(this::displayAbout)
+						.caption(resourceBundle.getString(ABOUT) + "...")
+						.build();
+	}
+
+	private CommandControl helpControl() {
+		return Control.builder()
+						.command(this::displayHelp)
+						.caption(resourceBundle.getString(HELP) + "...")
+						.build();
+	}
+
+	private Controls logControls() {
+		ControlsBuilder builder = Controls.builder()
+						.caption(resourceBundle.getString("log"))
+						.mnemonic(resourceBundle.getString("log_mnemonic").charAt(0));
+		if (!logLevelStates.isEmpty()) {
+			builder.control(logLevelControls());
+		}
+		createOpenLogControls().ifPresent(builder::control);
+		createTracingControls().ifPresent(builder::control);
+
+		return builder.build();
+	}
+
+	private CommandControl keyboardShortcutsControl() {
+		return Control.builder()
+						.command(this::displayKeyboardShortcuts)
+						.caption(resourceBundle.getString(SHORTCUTS) + "...")
 						.build();
 	}
 
