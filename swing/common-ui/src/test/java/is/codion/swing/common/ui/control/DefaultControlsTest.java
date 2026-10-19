@@ -214,6 +214,51 @@ public class DefaultControlsTest {
 	}
 
 	@Test
+	void remove() {
+		ControlMap controlMap = ControlMap.controlMap(LayoutKeys.class);
+		CommandControl one = Control.command(() -> {});
+		CommandControl two = Control.command(() -> {});
+		CommandControl three = Control.command(() -> {});
+		CommandControl custom = Control.command(() -> {});
+		controlMap.control(LayoutKeys.ONE).set(one);
+		controlMap.control(LayoutKeys.TWO).set(two);
+		controlMap.control(LayoutKeys.THREE).set(three);
+		List<ControlKey<?>> defaults = asList(LayoutKeys.ONE, ControlKey.SEPARATOR, LayoutKeys.TWO, ControlKey.SEPARATOR, LayoutKeys.THREE);
+
+		// The others left as they are
+		assertEquals(asList(one, Controls.SEPARATOR, three), Controls.layout(defaults)
+						.remove(LayoutKeys.TWO)
+						.create(controlMap).actions());
+		// A control not in the layout
+		assertEquals(asList(one, Controls.SEPARATOR, two), Controls.layout(asList(LayoutKeys.ONE, ControlKey.SEPARATOR, LayoutKeys.TWO))
+						.remove(LayoutKeys.THREE)
+						.create(controlMap).actions());
+		// The insertion point staying where it is among the remaining controls
+		assertEquals(asList(two, custom, Controls.SEPARATOR, three), Controls.layout(defaults)
+						.after(LayoutKeys.TWO)
+						.remove(LayoutKeys.ONE)
+						.control(custom)
+						.create(controlMap).actions());
+		assertEquals(asList(one, custom, Controls.SEPARATOR, three), Controls.layout(defaults)
+						.after(LayoutKeys.ONE)
+						.remove(LayoutKeys.TWO)
+						.control(custom)
+						.create(controlMap).actions());
+		// In the removed control's place
+		assertEquals(asList(one, Controls.SEPARATOR, custom, Controls.SEPARATOR, three), Controls.layout(defaults)
+						.before(LayoutKeys.TWO)
+						.remove(LayoutKeys.TWO)
+						.control(custom)
+						.create(controlMap).actions());
+		// A removed default added again by the defaults, at the end
+		assertEquals(asList(one, Controls.SEPARATOR, three, Controls.SEPARATOR, two), Controls.layout(defaults)
+						.remove(LayoutKeys.TWO)
+						.defaults()
+						.create(controlMap).actions());
+		assertThrows(IllegalArgumentException.class, () -> Controls.layout(defaults).remove(ControlKey.SEPARATOR));
+	}
+
+	@Test
 	void layoutCopy() {
 		ControlMap controlMap = ControlMap.controlMap(LayoutKeys.class);
 		CommandControl one = Control.command(() -> {});

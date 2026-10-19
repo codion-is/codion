@@ -204,6 +204,16 @@ public interface Controls extends Control {
 		Layout before(ControlKey<?> controlKey);
 
 		/**
+		 * Removes the given control from this layout, one of this layout, not of a nested one, the layout left as it is in
+		 * case it is not in this layout. The insertion point stays where it is among the remaining controls. Note that
+		 * {@link #defaults()} adds a default control removed again.
+		 * @param controlKey the key identifying the control to remove
+		 * @return this layout instance
+		 * @throws IllegalArgumentException in case of {@link ControlKey#SEPARATOR}
+		 */
+		Layout remove(ControlKey<?> controlKey);
+
+		/**
 		 * Clears all controls from this layout, moving the insertion point to the end
 		 * @return this layout instance
 		 */

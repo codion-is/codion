@@ -228,6 +228,18 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
+		public Layout remove(ControlKey<?> controlKey) {
+			int index = anchor(controlKey);
+			if (index != -1) {
+				items.remove(index);
+				if (insertAt > index) {
+					insertAt--;
+				}
+			}
+			return this;
+		}
+
+		@Override
 		public Layout clear() {
 			items.clear();
 			insertAt = -1;
@@ -290,7 +302,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private int anchor(ControlKey<?> controlKey) {
 			if (requireNonNull(controlKey) == ControlKey.SEPARATOR) {
-				throw new IllegalArgumentException("A separator is not an anchor");
+				throw new IllegalArgumentException("A separator can not be identified by its key");
 			}
 
 			return indexOf(controlKey);

@@ -11,6 +11,7 @@ Codion Change Log
 - Controls.Layout.copy() bug fixed, now copies the layout as configured, nested layouts included, where it returned a layout of its defaults alone.
 - Controls.Layout.after(ControlKey) and before(ControlKey) added, moving the insertion point controls and separators are added at, at the end by default, the defaults always added at the end.
 - LookAndFeelSelectionDialogBuilder.createControl() now returns CommandControl.
+- Controls.Layout.remove(ControlKey) added.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
 - EntityTablePanel bug fixed, the column controls configured via configurePopupMenu() now hold one column selection and one auto-resize-mode selection, as by default, where they held both column selections.
