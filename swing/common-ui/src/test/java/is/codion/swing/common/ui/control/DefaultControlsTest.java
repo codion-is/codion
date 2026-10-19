@@ -34,6 +34,7 @@ public class DefaultControlsTest {
 		public static final ControlKey<CommandControl> ONE = CommandControl.key("one");
 		public static final ControlKey<CommandControl> TWO = CommandControl.key("two");
 		public static final ControlKey<CommandControl> THREE = CommandControl.key("three");
+		public static final ControlKey<Controls> GROUP = Controls.key("group");
 	}
 
 	@Test
@@ -62,6 +63,21 @@ public class DefaultControlsTest {
 						.control(LayoutKeys.ONE)
 						.control(ControlKey.SEPARATOR)
 						.control(LayoutKeys.TWO)
+						.create(controlMap).actions());
+		// A group without a caption flattened into the parent, its separators included, one with a caption nested
+		controlMap.control(LayoutKeys.GROUP).set(Controls.builder()
+						.control(two)
+						.separator()
+						.control(three)
+						.build());
+		assertEquals(asList(one, two, Controls.SEPARATOR, three), Controls.layout(asList(LayoutKeys.ONE, LayoutKeys.GROUP))
+						.create(controlMap).actions());
+		Controls group = Controls.builder()
+						.caption("group")
+						.control(two)
+						.build();
+		controlMap.control(LayoutKeys.GROUP).set(group);
+		assertEquals(asList(one, group), Controls.layout(asList(LayoutKeys.ONE, LayoutKeys.GROUP))
 						.create(controlMap).actions());
 		// A null separator rejected
 		assertThrows(NullPointerException.class, () -> Controls.layout(asList(LayoutKeys.ONE, null)));

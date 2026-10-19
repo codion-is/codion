@@ -279,7 +279,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			public void addTo(ControlsBuilder builder, ControlMap controlMap) {
 				controlMap.control(controlKey).optional().ifPresent(control -> {
 					if (control instanceof Controls) {
-						addControls(builder, (Controls) control, controlMap);
+						addControls(builder, (Controls) control);
 					}
 					else {
 						builder.control(control);
@@ -292,12 +292,11 @@ final class DefaultControls extends AbstractControl implements Controls {
 				return Optional.of(controlKey);
 			}
 
-			private static void addControls(ControlsBuilder builder, Controls controlsToAdd, ControlMap controlMap) {
+			// Without a caption, flattened into the parent, separators included
+			private static void addControls(ControlsBuilder builder, Controls controlsToAdd) {
 				if (controlsToAdd.size() > 0) {
 					if (!controlsToAdd.caption().isPresent()) {
-						controlsToAdd.actions().stream()
-										.filter(action -> action != SEPARATOR)
-										.forEach(action -> new CustomAction(action).addTo(builder, controlMap));
+						builder.actions(controlsToAdd.actions());
 					}
 					else {
 						builder.control(controlsToAdd);
