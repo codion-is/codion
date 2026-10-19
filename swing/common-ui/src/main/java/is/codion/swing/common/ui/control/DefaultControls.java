@@ -199,10 +199,19 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Layout controls(ControlsKey controlsKey, Consumer<Layout> layout) {
-			Layout defaultLayout = controlsKey.defaultLayout()
+			requireNonNull(layout);
+			int index = indexOf(controlsKey);
+			ControlItem item = index == -1 ? null : items.get(index);
+			Layout controlsLayout = item instanceof StandardControls ? ((StandardControls) item).layout : controlsKey.defaultLayout()
 							.orElseThrow(() -> new IllegalArgumentException("No default controls layout available"));
-			layout.accept(defaultLayout);
-			items.add(new StandardControls(controlsKey, defaultLayout));
+			layout.accept(controlsLayout);
+			StandardControls controls = new StandardControls(controlsKey, controlsLayout);
+			if (index == -1) {
+				items.add(controls);
+			}
+			else {
+				items.set(index, controls);
+			}
 			return this;
 		}
 
@@ -253,10 +262,17 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		private boolean contains(ControlKey<?> controlKey) {
-			return items.stream()
-							.map(ControlItem::controlKey)
-							.flatMap(Optional::stream)
-							.anyMatch(controlKey::equals);
+			return indexOf(controlKey) != -1;
+		}
+
+		private int indexOf(ControlKey<?> controlKey) {
+			for (int i = 0; i < items.size(); i++) {
+				if (items.get(i).controlKey().map(controlKey::equals).orElse(false)) {
+					return i;
+				}
+			}
+
+			return -1;
 		}
 
 		private interface ControlItem {

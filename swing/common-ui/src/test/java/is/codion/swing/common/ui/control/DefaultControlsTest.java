@@ -35,6 +35,7 @@ public class DefaultControlsTest {
 		public static final ControlKey<CommandControl> TWO = CommandControl.key("two");
 		public static final ControlKey<CommandControl> THREE = CommandControl.key("three");
 		public static final ControlKey<Controls> GROUP = Controls.key("group");
+		public static final Controls.ControlsKey CONFIGURABLE = Controls.key("configurable", Controls.layout(asList(ONE, TWO)));
 	}
 
 	@Test
@@ -82,6 +83,42 @@ public class DefaultControlsTest {
 		// A null separator rejected
 		assertThrows(NullPointerException.class, () -> Controls.layout(asList(LayoutKeys.ONE, null)));
 		assertThrows(UnsupportedOperationException.class, ControlKey.SEPARATOR::defaultKeystroke);
+	}
+
+	@Test
+	void controlsConfiguredInPlace() {
+		ControlMap controlMap = ControlMap.controlMap(LayoutKeys.class);
+		CommandControl one = Control.command(() -> {});
+		CommandControl two = Control.command(() -> {});
+		CommandControl three = Control.command(() -> {});
+		controlMap.control(LayoutKeys.ONE).set(one);
+		controlMap.control(LayoutKeys.TWO).set(two);
+		controlMap.control(LayoutKeys.THREE).set(three);
+		controlMap.control(LayoutKeys.CONFIGURABLE).set(Controls.builder()
+						.caption("configurable")
+						.control(one)
+						.control(two)
+						.build());
+
+		// Configured in place, among the defaults, not added again
+		Controls.Layout layout = Controls.layout(asList(LayoutKeys.THREE, ControlKey.SEPARATOR,
+										LayoutKeys.CONFIGURABLE, ControlKey.SEPARATOR, LayoutKeys.ONE))
+						.controls(LayoutKeys.CONFIGURABLE, configurable -> configurable.clear().control(LayoutKeys.TWO));
+		List<Action> actions = layout.create(controlMap).actions();
+		assertEquals(5, actions.size());
+		assertEquals(asList(three, Controls.SEPARATOR), actions.subList(0, 2));
+		assertEquals("configurable", ((Controls) actions.get(2)).caption().orElse(null));
+		assertEquals(asList(two), ((Controls) actions.get(2)).actions());
+		assertEquals(asList(Controls.SEPARATOR, one), actions.subList(3, 5));
+		// Configured again, given the layout configured so far
+		layout.controls(LayoutKeys.CONFIGURABLE, configurable -> configurable.control(LayoutKeys.ONE));
+		assertEquals(asList(two, one), ((Controls) layout.create(controlMap).actions().get(2)).actions());
+		// Added where not in the layout, given the key's default layout
+		actions = Controls.layout(asList(LayoutKeys.THREE))
+						.controls(LayoutKeys.CONFIGURABLE, configurable -> {})
+						.create(controlMap).actions();
+		assertEquals(2, actions.size());
+		assertEquals(asList(one, two), ((Controls) actions.get(1)).actions());
 	}
 
 	@Test

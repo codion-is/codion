@@ -154,11 +154,12 @@ public interface Controls extends Control {
 		Layout controls(ControlKey<Controls> controlsKey);
 
 		/**
-		 * Adds standard configurable controls
+		 * Configures the standard controls identified by the given key, in place where already in this layout, otherwise
+		 * added. The consumer receives the layout configured so far, a copy of the key's default layout to begin with.
 		 * @param controlsKey the controls key
-		 * @param layout provides a way to configure the layout
+		 * @param layout configures the controls layout
 		 * @return this layout instance
-		 * @throws IllegalArgumentException in case the {@link Controls} associated with {@code controlsKey} does not provide a default layout
+		 * @throws IllegalArgumentException in case {@code controlsKey} does not provide a default layout
 		 */
 		Layout controls(ControlsKey controlsKey, Consumer<Layout> layout);
 
