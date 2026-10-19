@@ -118,6 +118,9 @@ public interface Controls extends Control {
 
 	/**
 	 * Specifies a layout for a {@link Controls} instance.
+	 * <p>Controls and separators are added at the insertion point, which follows each one added. It is at the end of the
+	 * layout, unless moved via {@link #after(ControlKey)} or {@link #before(ControlKey)}. The defaults are always added
+	 * at the end, via {@link #defaults()} and {@link #defaults(ControlKey)}, the insertion point left where it is.
 	 */
 	interface Layout {
 
@@ -183,13 +186,32 @@ public interface Controls extends Control {
 		Layout defaults(ControlKey<?> stopAt);
 
 		/**
-		 * Clears all controls from this layout
+		 * Moves the insertion point to right after the given control, one of this layout, not of a nested one, or to the
+		 * end in case it is not in this layout.
+		 * @param controlKey the key identifying the control to add after
+		 * @return this layout instance
+		 * @throws IllegalArgumentException in case of {@link ControlKey#SEPARATOR}, not an anchor
+		 */
+		Layout after(ControlKey<?> controlKey);
+
+		/**
+		 * Moves the insertion point to right before the given control, one of this layout, not of a nested one, or to the
+		 * end in case it is not in this layout.
+		 * @param controlKey the key identifying the control to add before
+		 * @return this layout instance
+		 * @throws IllegalArgumentException in case of {@link ControlKey#SEPARATOR}, not an anchor
+		 */
+		Layout before(ControlKey<?> controlKey);
+
+		/**
+		 * Clears all controls from this layout, moving the insertion point to the end
 		 * @return this layout instance
 		 */
 		Layout clear();
 
 		/**
-		 * @return a copy of this {@link Layout} as configured, the layouts of configured controls copied as well
+		 * @return a copy of this {@link Layout} as configured, the layouts of configured controls copied as well, its
+		 * insertion point at the end
 		 */
 		Layout copy();
 

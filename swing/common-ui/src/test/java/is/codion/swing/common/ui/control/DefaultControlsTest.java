@@ -129,6 +129,91 @@ public class DefaultControlsTest {
 	}
 
 	@Test
+	void insertionPoint() {
+		ControlMap controlMap = ControlMap.controlMap(LayoutKeys.class);
+		CommandControl one = Control.command(() -> {});
+		CommandControl two = Control.command(() -> {});
+		CommandControl three = Control.command(() -> {});
+		CommandControl custom = Control.command(() -> {});
+		CommandControl another = Control.command(() -> {});
+		controlMap.control(LayoutKeys.ONE).set(one);
+		controlMap.control(LayoutKeys.TWO).set(two);
+		controlMap.control(LayoutKeys.THREE).set(three);
+		Controls configurable = Controls.builder()
+						.caption("configurable")
+						.build();
+		controlMap.control(LayoutKeys.CONFIGURABLE).set(configurable);
+		List<ControlKey<?>> defaults = asList(LayoutKeys.ONE, ControlKey.SEPARATOR, LayoutKeys.TWO, ControlKey.SEPARATOR, LayoutKeys.THREE);
+
+		// After a control, in order, the defaults left as they are
+		assertEquals(asList(one, custom, another, Controls.SEPARATOR, two, Controls.SEPARATOR, three), Controls.layout(defaults)
+						.after(LayoutKeys.ONE)
+						.control(custom)
+						.control(another)
+						.create(controlMap).actions());
+		// Before a control, a separator following the one added
+		assertEquals(asList(one, Controls.SEPARATOR, custom, Controls.SEPARATOR, two, Controls.SEPARATOR, three), Controls.layout(defaults)
+						.before(LayoutKeys.TWO)
+						.control(custom)
+						.separator()
+						.create(controlMap).actions());
+		// A separator not added after another
+		assertEquals(asList(one, Controls.SEPARATOR, custom, two, Controls.SEPARATOR, three), Controls.layout(defaults)
+						.before(LayoutKeys.TWO)
+						.separator()
+						.control(custom)
+						.create(controlMap).actions());
+		// A separator added after a control, whatever the layout ends with
+		assertEquals(asList(one, Controls.SEPARATOR, custom, two), Controls.layout(asList(LayoutKeys.ONE, LayoutKeys.TWO, ControlKey.SEPARATOR))
+						.after(LayoutKeys.ONE)
+						.separator()
+						.control(custom)
+						.create(controlMap).actions());
+		// Standard controls and configured ones at the insertion point as well
+		List<Action> actions = Controls.layout(asList(LayoutKeys.ONE, LayoutKeys.TWO))
+						.after(LayoutKeys.ONE)
+						.control(LayoutKeys.THREE)
+						.controls(LayoutKeys.CONFIGURABLE, layout -> layout.clear().control(LayoutKeys.TWO))
+						.create(controlMap).actions();
+		assertEquals(asList(one, three), actions.subList(0, 2));
+		assertEquals("configurable", ((Controls) actions.get(2)).caption().orElse(null));
+		assertEquals(asList(two), actions.subList(3, 4));
+		// An anchor not in the layout, at the end
+		assertEquals(asList(one, custom), Controls.layout(asList(LayoutKeys.ONE))
+						.after(LayoutKeys.TWO)
+						.control(custom)
+						.create(controlMap).actions());
+		assertEquals(asList(one, custom), Controls.layout(asList(LayoutKeys.ONE))
+						.before(LayoutKeys.TWO)
+						.control(custom)
+						.create(controlMap).actions());
+		// The defaults at the end, the insertion point left where it is
+		assertEquals(asList(one, custom, three, Controls.SEPARATOR, two), Controls.layout(defaults)
+						.clear()
+						.control(LayoutKeys.THREE)
+						.before(LayoutKeys.THREE)
+						.control(LayoutKeys.ONE)
+						.defaults()
+						.control(custom)
+						.create(controlMap).actions());
+		// Clearing and copying move it to the end
+		assertEquals(asList(two, custom), Controls.layout(defaults)
+						.after(LayoutKeys.ONE)
+						.clear()
+						.control(LayoutKeys.TWO)
+						.control(custom)
+						.create(controlMap).actions());
+		assertEquals(asList(one, Controls.SEPARATOR, two, Controls.SEPARATOR, three, custom), Controls.layout(defaults)
+						.after(LayoutKeys.ONE)
+						.copy()
+						.control(custom)
+						.create(controlMap).actions());
+		// A separator is not an anchor
+		assertThrows(IllegalArgumentException.class, () -> Controls.layout(defaults).after(ControlKey.SEPARATOR));
+		assertThrows(IllegalArgumentException.class, () -> Controls.layout(defaults).before(ControlKey.SEPARATOR));
+	}
+
+	@Test
 	void layoutCopy() {
 		ControlMap controlMap = ControlMap.controlMap(LayoutKeys.class);
 		CommandControl one = Control.command(() -> {});

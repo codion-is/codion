@@ -142,6 +142,9 @@ final class DefaultControls extends AbstractControl implements Controls {
 		private final List<ControlKey<?>> defaults;
 		private final List<ControlItem> items = new ArrayList<>();
 
+		// The index the next item is inserted at, -1 for the end
+		private int insertAt = -1;
+
 		DefaultLayout(List<ControlKey<?>> defaults) {
 			requireNonNull(defaults).forEach(controlKey -> requireNonNull(controlKey, "A separator is ControlKey.SEPARATOR, not null"));
 			this.defaults = defaults;
@@ -155,8 +158,9 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Layout separator() {
-			if (items.isEmpty() || items.get(items.size() - 1) != SEPARATOR) {
-				items.add(SEPARATOR);
+			int index = insertAt == -1 ? items.size() : insertAt;
+			if (index == 0 || items.get(index - 1) != SEPARATOR) {
+				insert(SEPARATOR);
 			}
 			return this;
 		}
@@ -172,7 +176,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Layout control(Control control) {
-			items.add(new CustomAction(requireNonNull(control)));
+			insert(new CustomAction(requireNonNull(control)));
 			return this;
 		}
 
@@ -183,7 +187,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Layout action(Action action) {
-			items.add(new CustomAction(requireNonNull(action)));
+			insert(new CustomAction(requireNonNull(action)));
 			return this;
 		}
 
@@ -202,7 +206,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			layout.accept(controlsLayout);
 			StandardControls controls = new StandardControls(controlsKey, controlsLayout);
 			if (index == -1) {
-				items.add(controls);
+				insert(controls);
 			}
 			else {
 				items.set(index, controls);
@@ -211,8 +215,22 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
+		public Layout after(ControlKey<?> controlKey) {
+			int index = anchor(controlKey);
+			insertAt = index == -1 ? -1 : index + 1;
+			return this;
+		}
+
+		@Override
+		public Layout before(ControlKey<?> controlKey) {
+			insertAt = anchor(controlKey);
+			return this;
+		}
+
+		@Override
 		public Layout clear() {
 			items.clear();
+			insertAt = -1;
 			return this;
 		}
 
@@ -239,21 +257,43 @@ final class DefaultControls extends AbstractControl implements Controls {
 			return builder.build();
 		}
 
+		// Added at the end, the insertion point left where it is, the items before it unmoved
 		private Layout doDefaults(@Nullable ControlKey<?> stopAt) {
+			int insertionPoint = insertAt;
+			insertAt = -1;
 			for (ControlKey<?> controlKey : defaults) {
 				control(controlKey);
 				if (controlKey == stopAt) {
 					break;
 				}
 			}
+			insertAt = insertionPoint;
 
 			return this;
 		}
 
 		private void add(ControlKey<?> controlKey) {
 			if (!contains(controlKey)) {
-				items.add(new StandardControl(controlKey));
+				insert(new StandardControl(controlKey));
 			}
+		}
+
+		// At the insertion point, which then follows it
+		private void insert(ControlItem item) {
+			if (insertAt == -1) {
+				items.add(item);
+			}
+			else {
+				items.add(insertAt++, item);
+			}
+		}
+
+		private int anchor(ControlKey<?> controlKey) {
+			if (requireNonNull(controlKey) == ControlKey.SEPARATOR) {
+				throw new IllegalArgumentException("A separator is not an anchor");
+			}
+
+			return indexOf(controlKey);
 		}
 
 		private boolean contains(ControlKey<?> controlKey) {
