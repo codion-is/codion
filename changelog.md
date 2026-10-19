@@ -8,6 +8,7 @@ Codion Change Log
 - Controls.Layout, the separator filter removed from the flattening of a group without a caption, having never filtered, its separators kept as before.
 - Controls.Layout.controls(ControlsKey, Consumer) bug fixed, now configures the controls in place where already in the layout, the consumer given the layout configured so far, where a second copy was added.
 - Controls.Layout bug fixed, controls configured via controls(ControlsKey, Consumer) are now left out where the control map has none, as when added by key, where creating the layout threw a NoSuchElementException.
+- Controls.Layout.copy() bug fixed, now copies the layout as configured, nested layouts included, where it returned a layout of its defaults alone.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
 

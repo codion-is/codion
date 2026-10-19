@@ -18,12 +18,9 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.reactive.value.Value;
-
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.Action;
-import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -142,7 +139,6 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private static final ControlItem SEPARATOR = new Separator();
 
-		private final Value<KeyStroke> keyStroke = Value.nullable();
 		private final List<ControlKey<?>> defaults;
 		private final List<ControlItem> items = new ArrayList<>();
 
@@ -153,9 +149,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		private DefaultLayout(DefaultLayout layout) {
-			this.keyStroke.set(layout.keyStroke.get());
 			this.defaults = new ArrayList<>(layout.defaults);
-			defaults();
+			layout.items.forEach(item -> items.add(item.copy()));
 		}
 
 		@Override
@@ -281,6 +276,11 @@ final class DefaultControls extends AbstractControl implements Controls {
 			default Optional<ControlKey<?>> controlKey() {
 				return Optional.empty();
 			}
+
+			// The items are immutable, but for a configured layout
+			default ControlItem copy() {
+				return this;
+			}
 		}
 
 		private static final class StandardControl implements ControlItem {
@@ -342,6 +342,11 @@ final class DefaultControls extends AbstractControl implements Controls {
 			@Override
 			public Optional<ControlKey<?>> controlKey() {
 				return Optional.of(controlsKey);
+			}
+
+			@Override
+			public ControlItem copy() {
+				return new StandardControls(controlsKey, layout.copy());
 			}
 		}
 

@@ -189,7 +189,7 @@ public interface Controls extends Control {
 		Layout clear();
 
 		/**
-		 * @return a copy of this {@link Layout} instance
+		 * @return a copy of this {@link Layout} as configured, the layouts of configured controls copied as well
 		 */
 		Layout copy();
 

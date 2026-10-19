@@ -129,6 +129,34 @@ public class DefaultControlsTest {
 	}
 
 	@Test
+	void layoutCopy() {
+		ControlMap controlMap = ControlMap.controlMap(LayoutKeys.class);
+		CommandControl one = Control.command(() -> {});
+		CommandControl two = Control.command(() -> {});
+		CommandControl custom = Control.command(() -> {});
+		controlMap.control(LayoutKeys.ONE).set(one);
+		controlMap.control(LayoutKeys.TWO).set(two);
+		controlMap.control(LayoutKeys.CONFIGURABLE).set(Controls.builder()
+						.caption("configurable")
+						.build());
+
+		// The layout as configured, not its defaults alone
+		Controls.Layout layout = Controls.layout(asList(LayoutKeys.ONE))
+						.control(custom)
+						.controls(LayoutKeys.CONFIGURABLE, configurable -> configurable.clear().control(LayoutKeys.TWO));
+		Controls.Layout copy = layout.copy();
+		List<Action> actions = copy.create(controlMap).actions();
+		assertEquals(asList(one, custom), actions.subList(0, 2));
+		assertEquals(asList(two), ((Controls) actions.get(2)).actions());
+		// Configuring the copy, nested layouts included, leaves the original as it is
+		copy.controls(LayoutKeys.CONFIGURABLE, configurable -> configurable.control(LayoutKeys.ONE));
+		copy.control(LayoutKeys.TWO);
+		actions = layout.create(controlMap).actions();
+		assertEquals(3, actions.size());
+		assertEquals(asList(two), ((Controls) actions.get(2)).actions());
+	}
+
+	@Test
 	void test() {
 		Control one = Control.command(() -> {});
 		Control two = Control.command(() -> {});
