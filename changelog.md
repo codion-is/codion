@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.92
+
 ## 0.18.91
 ### is.codion.common.db
 - Database.getter(Class) added, a column of a class without an SQL type of its own, such as UUID, or of a java.sql temporal class, now read via ResultSet.getObject(int) with LEGACY_JDBC, where it failed on Android, whose ResultSet lacks getObject(int, Class).
