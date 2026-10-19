@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
@@ -40,6 +41,8 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.AbstractButton;
+import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -319,6 +322,31 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
+	void sharedLayouts() {
+		// a layout set as the default is copied for each panel, configuring one panel's leaving the others' as they are
+		EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList(REFRESH, ControlKey.SEPARATOR, COPY_CONTROLS)));
+		EntityTablePanel.Config.TOOLBAR_LAYOUT.set(Controls.layout(asList(DELETE, EDIT_ATTRIBUTE)));
+		try {
+			EntityTablePanel before = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
+			EntityTablePanel configured = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
+			configured.configurePopupMenu(layout -> layout.clear().control(REFRESH));
+			configured.configureToolBar(layout -> layout.clear().control(EDIT_ATTRIBUTE));
+			EntityTablePanel after = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
+			asList(before, configured, after).forEach(EntityTablePanel::initialize);
+			assertFalse(popupMenuActions(configured).contains(configured.control(COPY_CELL).get()));
+			assertFalse(buttonActions(configured, new ArrayList<>()).contains(configured.control(DELETE).get()));
+			for (EntityTablePanel tablePanel : asList(before, after)) {
+				assertTrue(popupMenuActions(tablePanel).contains(tablePanel.control(COPY_CELL).get()));
+				assertTrue(buttonActions(tablePanel, new ArrayList<>()).contains(tablePanel.control(DELETE).get()));
+			}
+		}
+		finally {
+			EntityTablePanel.Config.POPUP_MENU_LAYOUT.clear();
+			EntityTablePanel.Config.TOOLBAR_LAYOUT.clear();
+		}
+	}
+
+	@Test
 	void tableControlsReplaced() {
 		// the table panel controls replace the table ones, which have no key stroke
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
@@ -360,6 +388,25 @@ public class EntityTablePanelTest {
 		finally {
 			Database.URL.set(url);
 		}
+	}
+
+	private static List<Action> popupMenuActions(EntityTablePanel tablePanel) {
+		return menuItems(tablePanel.table().getComponentPopupMenu(), new ArrayList<>()).stream()
+						.map(JMenuItem::getAction)
+						.collect(toList());
+	}
+
+	private static List<Action> buttonActions(Container container, List<Action> actions) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof AbstractButton) {
+				actions.add(((AbstractButton) component).getAction());
+			}
+			if (component instanceof Container) {
+				buttonActions((Container) component, actions);
+			}
+		}
+
+		return actions;
 	}
 
 	private static List<JMenuItem> menuItems(Container container, List<JMenuItem> menuItems) {

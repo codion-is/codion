@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.KeyStroke;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,6 +33,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests ControlKey behavior and factory methods.
  */
 public final class ControlKeyTest {
+
+	public static final class Keys {
+
+		public static final ControlKey<CommandControl> COMMAND = CommandControl.key("command");
+	}
 
 	@Test
 	void commandControlKey() {
@@ -88,11 +94,23 @@ public final class ControlKeyTest {
 		Controls.ControlsKey controlsWithLayout = Controls.key("menu", layout);
 		assertEquals("menu", controlsWithLayout.name());
 		assertTrue(controlsWithLayout.defaultLayout().isPresent());
-		assertEquals(layout, controlsWithLayout.defaultLayout().get());
+		// a copy each time
+		assertNotSame(layout, controlsWithLayout.defaultLayout().get());
+		assertNotSame(controlsWithLayout.defaultLayout().get(), controlsWithLayout.defaultLayout().get());
 
 		// Null name should throw
 		assertThrows(NullPointerException.class, () -> Controls.key(null));
 		assertThrows(NullPointerException.class, () -> Controls.key(null, layout));
+	}
+
+	@Test
+	void defaultLayoutCopied() {
+		// the key's own default layout left as it is, whatever is done with the one returned
+		ControlMap controlMap = ControlMap.controlMap(Keys.class);
+		controlMap.control(Keys.COMMAND).set(Control.command(() -> {}));
+		Controls.ControlsKey menu = Controls.key("menu", Controls.layout(singletonList(Keys.COMMAND)));
+		menu.defaultLayout().get().clear();
+		assertEquals(1, menu.defaultLayout().get().create(controlMap).size());
 	}
 
 	@Test

@@ -200,7 +200,6 @@ final class DefaultControls extends AbstractControl implements Controls {
 		@Override
 		public Layout controls(ControlsKey controlsKey, Consumer<Layout> layout) {
 			Layout defaultLayout = controlsKey.defaultLayout()
-							.map(Layout::copy)
 							.orElseThrow(() -> new IllegalArgumentException("No default controls layout available"));
 			layout.accept(defaultLayout);
 			items.add(new StandardControls(controlsKey, defaultLayout));

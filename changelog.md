@@ -4,6 +4,9 @@ Codion Change Log
 ## 0.18.92
 ### is.codion.swing.common.ui
 - LabelBuilder bug fixed, text(Observable) no longer fails with a ClassCastException on an Observable that is not a Value.
+- Controls.ControlsKey.defaultLayout() now returns a copy, the key's own default layout no longer changed by changes to the one returned.
+### is.codion.swing.framework.ui
+- EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
 
 ## 0.18.91
 ### is.codion.common.db

@@ -1727,7 +1727,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Controls.Layout createPopupMenuLayout() {
-		return Config.POPUP_MENU_LAYOUT.optional().orElse(Controls.layout(asList(
+		return Config.POPUP_MENU_LAYOUT.optional().map(Controls.Layout::copy).orElse(Controls.layout(asList(
 						REFRESH,
 						CLEAR,
 						ControlKey.SEPARATOR,
@@ -1758,7 +1758,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Controls.Layout createToolBarLayout() {
-		return Config.TOOLBAR_LAYOUT.optional().orElse(Controls.layout(asList(
+		return Config.TOOLBAR_LAYOUT.optional().map(Controls.Layout::copy).orElse(Controls.layout(asList(
 						TOGGLE_SUMMARIES,
 						TOGGLE_CONDITION_VIEW,
 						TOGGLE_FILTER_VIEW,
@@ -2113,6 +2113,7 @@ public class EntityTablePanel extends JPanel {
 		 * <li>Value type: {@link Controls.Layout}
 		 * <li>Default value: null
 		 * </ul>
+		 * Each panel gets a copy, which {@link EntityTablePanel#configurePopupMenu(Consumer)} configures.
 		 * @see EntityTablePanel#configurePopupMenu(Consumer)
 		 */
 		public static final PropertyValue<Controls.Layout> POPUP_MENU_LAYOUT =
@@ -2132,6 +2133,7 @@ public class EntityTablePanel extends JPanel {
 		 * <li>Value type: {@link Controls.Layout}
 		 * <li>Default value: null
 		 * </ul>
+		 * Each panel gets a copy, which {@link EntityTablePanel#configureToolBar(Consumer)} configures.
 		 * @see EntityTablePanel#configureToolBar(Consumer)
 		 */
 		public static final PropertyValue<Controls.Layout> TOOLBAR_LAYOUT =

@@ -54,7 +54,7 @@ final class DefaultControlsKey implements ControlsKey {
 
 	@Override
 	public Optional<Layout> defaultLayout() {
-		return Optional.ofNullable(defaultLayout);
+		return Optional.ofNullable(defaultLayout).map(Layout::copy);
 	}
 
 	@Override

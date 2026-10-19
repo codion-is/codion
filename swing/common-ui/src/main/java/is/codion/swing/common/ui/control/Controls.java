@@ -111,7 +111,7 @@ public interface Controls extends Control {
 	interface ControlsKey extends ControlKey<Controls> {
 
 		/**
-		 * @return the default layout config, if available
+		 * @return a copy of the default layout, if available, the key's own left as it is
 		 */
 		Optional<Layout> defaultLayout();
 	}
