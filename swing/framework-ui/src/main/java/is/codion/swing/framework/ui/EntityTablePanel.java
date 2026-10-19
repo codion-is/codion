@@ -88,6 +88,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -324,12 +325,14 @@ public class EntityTablePanel extends JPanel {
 		public static final ControlKey<Controls> EDIT_ATTRIBUTE_CONTROLS = Controls.key("editAttributeControls");
 		/**
 		 * A {@link Control} for displaying a dialog for selecting the visible table columns.
-		 * @see Config#columnSelection(ColumnSelection)
+		 * <p>Available with {@link SelectionMode#DIALOG} column selection.
+		 * @see Config#columnSelection(SelectionMode)
 		 */
 		public static final ControlKey<CommandControl> SELECT_COLUMNS = CommandControl.key("selectColumns");
 		/**
 		 * A {@link Controls} instance containing a {@link ToggleControl} for each columns' visibility.
-		 * @see Config#columnSelection(ColumnSelection)
+		 * <p>Available with {@link SelectionMode#MENU} column selection.
+		 * @see Config#columnSelection(SelectionMode)
 		 */
 		public static final ControlKey<Controls> TOGGLE_COLUMN_CONTROLS = Controls.key("toggleColumnControls");
 		/**
@@ -338,12 +341,16 @@ public class EntityTablePanel extends JPanel {
 		public static final ControlKey<CommandControl> RESET_COLUMNS = CommandControl.key("resetColumns");
 		/**
 		 * A {@link Control} for displaying a dialog for configuring the column auto-resize-mode.
+		 * <p>Available with {@link SelectionMode#DIALOG} auto-resize-mode selection.
 		 * @see JTable#setAutoResizeMode(int)
+		 * @see Config#autoResizeModeSelection(SelectionMode)
 		 */
 		public static final ControlKey<CommandControl> SELECT_AUTO_RESIZE_MODE = CommandControl.key("selectAutoResizeMode");
 		/**
 		 * A {@link Controls} instance containing a {@link ToggleControl} for each auto-resize-mode.
+		 * <p>Available with {@link SelectionMode#MENU} auto-resize-mode selection.
 		 * @see JTable#setAutoResizeMode(int)
+		 * @see Config#autoResizeModeSelection(SelectionMode)
 		 */
 		public static final ControlKey<Controls> TOGGLE_AUTO_RESIZE_MODE_CONTROLS = Controls.key("toggleAutoResizeModeControls");
 		/**
@@ -421,7 +428,7 @@ public class EntityTablePanel extends JPanel {
 		 * @see #SELECT_AUTO_RESIZE_MODE
 		 * @see #TOGGLE_AUTO_RESIZE_MODE_CONTROLS
 		 */
-		public static final ControlsKey COLUMN_CONTROLS = Controls.key("columnControls", Controls.layout(asList(SELECT_COLUMNS, TOGGLE_COLUMN_CONTROLS, RESET_COLUMNS, SELECT_AUTO_RESIZE_MODE)));
+		public static final ControlsKey COLUMN_CONTROLS = Controls.key("columnControls", Controls.layout(asList(SELECT_COLUMNS, TOGGLE_COLUMN_CONTROLS, RESET_COLUMNS, SELECT_AUTO_RESIZE_MODE, TOGGLE_AUTO_RESIZE_MODE_CONTROLS)));
 		/**
 		 * Requests focus for the table search field, if one is available.<br>
 		 * Default key stroke: CTRL-F
@@ -1291,39 +1298,25 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private @Nullable Controls createColumnControls() {
-		ControlsBuilder builder = Controls.builder()
+		return createFromLayout(COLUMN_CONTROLS, Controls.builder()
 						.caption(MESSAGES.getString("columns"))
-						.icon(ICONS.columns());
-		if (configuration.columnSelection == SelectionMode.DIALOG) {
-			control(SELECT_COLUMNS).optional().ifPresent(builder::control);
-		}
-		else {
-			control(TOGGLE_COLUMN_CONTROLS).optional().ifPresent(builder::control);
-		}
-		control(RESET_COLUMNS).optional().ifPresent(builder::control);
-		if (configuration.autoResizeModeSelection == SelectionMode.DIALOG) {
-			control(SELECT_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);
-		}
-		else {
-			control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).optional().ifPresent(builder::control);
-		}
-
-		Controls columnControls = builder.build();
-
-		return columnControls.size() == 0 ? null : columnControls;
+						.icon(ICONS.columns()));
 	}
 
 	private @Nullable Controls createCopyControls() {
-		ControlsBuilder builder = Controls.builder()
+		return createFromLayout(COPY_CONTROLS, Controls.builder()
 						.caption(Messages.copy())
-						.icon(ICONS.copy());
-		control(COPY_CELL).optional().ifPresent(builder::control);
-		control(COPY_COLUMN).optional().ifPresent(builder::control);
-		control(COPY_ROWS).optional().ifPresent(builder::control);
+						.icon(ICONS.copy()));
+	}
 
-		Controls copyControls = builder.build();
+	// Laid out by the key's default layout, the one source of their contents, as a configured layout lays them out, null when empty
+	private @Nullable Controls createFromLayout(ControlsKey controlsKey, ControlsBuilder controls) {
+		List<Action> actions = controlsKey.defaultLayout()
+						.orElseThrow(IllegalStateException::new)
+						.create(configuration.controlMap)
+						.actions();
 
-		return copyControls.size() == 0 ? null : copyControls;
+		return actions.isEmpty() ? null : controls.actions(actions).build();
 	}
 
 	private CommandControl createCopyRowsControl() {
@@ -1540,11 +1533,20 @@ public class EntityTablePanel extends JPanel {
 			controlMap.control(CLEAR).set(createClearControl());
 		}
 		controlMap.control(REFRESH).set(createRefreshControl());
-		controlMap.control(SELECT_COLUMNS).set(table.createSelectColumnsControl());
-		controlMap.control(TOGGLE_COLUMN_CONTROLS).set(table.createToggleColumnsControls());
+		// One of each alternative, by its selection mode, the column controls laid out by their key's layout listing both
+		if (configuration.columnSelection == SelectionMode.DIALOG) {
+			controlMap.control(SELECT_COLUMNS).set(table.createSelectColumnsControl());
+		}
+		else {
+			controlMap.control(TOGGLE_COLUMN_CONTROLS).set(table.createToggleColumnsControls());
+		}
 		controlMap.control(RESET_COLUMNS).set(table.createResetColumnsControl());
-		controlMap.control(SELECT_AUTO_RESIZE_MODE).set(table.createSelectAutoResizeModeControl());
-		controlMap.control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).set(table.createToggleAutoResizeModeControls());
+		if (configuration.autoResizeModeSelection == SelectionMode.DIALOG) {
+			controlMap.control(SELECT_AUTO_RESIZE_MODE).set(table.createSelectAutoResizeModeControl());
+		}
+		else {
+			controlMap.control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).set(table.createToggleAutoResizeModeControls());
+		}
 		if (includeViewDependenciesControl()) {
 			controlMap.control(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}

@@ -347,6 +347,31 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
+	void columnControls() {
+		// one way of selecting columns and one of selecting the auto-resize mode, by their selection modes, the same
+		// whether the column controls are configured or not
+		EntityTablePanel dialogs = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
+		EntityTablePanel configured = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
+		configured.configurePopupMenu(layout -> layout.controls(COLUMN_CONTROLS, columns -> {}));
+		for (EntityTablePanel tablePanel : asList(configured, dialogs)) {
+			tablePanel.initialize();
+			assertEquals(asList(tablePanel.control(SELECT_COLUMNS).get(), tablePanel.control(RESET_COLUMNS).get(),
+							tablePanel.control(SELECT_AUTO_RESIZE_MODE).get()), columnMenuActions(tablePanel));
+			assertNull(tablePanel.control(TOGGLE_COLUMN_CONTROLS).get());
+			assertNull(tablePanel.control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).get());
+		}
+		EntityTablePanel menus = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config -> config
+						.columnSelection(EntityTablePanel.SelectionMode.MENU)
+						.autoResizeModeSelection(EntityTablePanel.SelectionMode.MENU));
+		menus.configurePopupMenu(layout -> layout.controls(COLUMN_CONTROLS, columns -> {}));
+		menus.initialize();
+		assertNull(menus.control(SELECT_COLUMNS).get());
+		assertNull(menus.control(SELECT_AUTO_RESIZE_MODE).get());
+		assertEquals(asList(menus.control(TOGGLE_COLUMN_CONTROLS).get(), menus.control(RESET_COLUMNS).get(),
+						menus.control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).get()), columnMenuActions(menus));
+	}
+
+	@Test
 	void tableControlsReplaced() {
 		// the table panel controls replace the table ones, which have no key stroke
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
@@ -388,6 +413,26 @@ public class EntityTablePanelTest {
 		finally {
 			Database.URL.set(url);
 		}
+	}
+
+	// The actions of the popup menu's column menu, the one holding the reset control, a submenu's being its controls
+	private static List<Action> columnMenuActions(EntityTablePanel tablePanel) {
+		Action reset = tablePanel.control(RESET_COLUMNS).get();
+		for (Component component : tablePanel.table().getComponentPopupMenu().getComponents()) {
+			if (component instanceof JMenu) {
+				List<Action> actions = new ArrayList<>();
+				for (Component item : ((JMenu) component).getMenuComponents()) {
+					if (item instanceof JMenuItem) {
+						actions.add(((JMenuItem) item).getAction());
+					}
+				}
+				if (actions.contains(reset)) {
+					return actions;
+				}
+			}
+		}
+
+		throw new IllegalStateException("No column menu");
 	}
 
 	private static List<Action> popupMenuActions(EntityTablePanel tablePanel) {

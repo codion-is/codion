@@ -12,6 +12,8 @@ Codion Change Log
 - Controls.Layout.after(ControlKey) and before(ControlKey) added, moving the insertion point controls and separators are added at, at the end by default, the defaults always added at the end.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
+- EntityTablePanel bug fixed, the column controls configured via configurePopupMenu() now hold one column selection and one auto-resize-mode selection, as by default, where they held both column selections.
+- EntityTablePanel, of SELECT_COLUMNS and TOGGLE_COLUMN_CONTROLS, and of SELECT_AUTO_RESIZE_MODE and TOGGLE_AUTO_RESIZE_MODE_CONTROLS, only the one of the configured selection mode is now available, the column and copy controls created from their keys' default layouts, COLUMN_CONTROLS' now including TOGGLE_AUTO_RESIZE_MODE_CONTROLS.
 
 ## 0.18.91
 ### is.codion.common.db
