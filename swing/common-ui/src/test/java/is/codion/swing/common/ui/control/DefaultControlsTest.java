@@ -119,6 +119,13 @@ public class DefaultControlsTest {
 						.create(controlMap).actions();
 		assertEquals(2, actions.size());
 		assertEquals(asList(one, two), ((Controls) actions.get(1)).actions());
+		// Left out where the map has none, as when added by key
+		controlMap.control(LayoutKeys.CONFIGURABLE).set(null);
+		assertEquals(asList(three), Controls.layout(asList(LayoutKeys.THREE, LayoutKeys.CONFIGURABLE))
+						.controls(LayoutKeys.CONFIGURABLE, configurable -> {})
+						.create(controlMap).actions());
+		assertEquals(asList(three), Controls.layout(asList(LayoutKeys.THREE, LayoutKeys.CONFIGURABLE))
+						.create(controlMap).actions());
 	}
 
 	@Test

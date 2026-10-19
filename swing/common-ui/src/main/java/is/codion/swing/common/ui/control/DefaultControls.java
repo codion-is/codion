@@ -333,11 +333,10 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 			@Override
 			public void addTo(ControlsBuilder builder, ControlMap controlMap) {
-				Controls defaultControls = controlMap.control(controlsKey).getOrThrow();
-				Controls configuredControls = layout.create(controlMap);
-				builder.control(defaultControls.copy()
+				// left out where the map has none, as a standard control is
+				controlMap.control(controlsKey).optional().ifPresent(defaultControls -> builder.control(defaultControls.copy()
 								.removeAll()
-								.actions(configuredControls.actions()));
+								.actions(layout.create(controlMap).actions())));
 			}
 
 			@Override
