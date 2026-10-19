@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.reactive.observer.Observable;
-import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -51,8 +50,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<JLabel,
 
 	@Override
 	public LabelBuilder<T> text(Observable<String> text) {
-		link((Value<T>) text);
-		return this;
+		return link((Observable<T>) text);
 	}
 
 	@Override
