@@ -745,12 +745,28 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		return derivedValue;
 	}
 
+	// Null where a source value is missing, a missing value not being a null one, without calling the provider
 	private @Nullable <T> T derived(DerivedAttributeDefinition<T> derivedDefinition) {
-		return derivedDefinition.value().from(sourceValues(derivedDefinition, false));
+		return sourcesPresent(derivedDefinition) ? derivedDefinition.value().from(sourceValues(derivedDefinition, false)) : null;
 	}
 
 	private @Nullable <T> T derivedOriginal(DerivedAttributeDefinition<T> derivedDefinition) {
-		return derivedDefinition.value().from(sourceValues(derivedDefinition, true));
+		return sourcesPresent(derivedDefinition) ? derivedDefinition.value().from(sourceValues(derivedDefinition, true)) : null;
+	}
+
+	// A derived source present where its own sources are
+	private boolean sourcesPresent(DerivedAttributeDefinition<?> derivedDefinition) {
+		for (Attribute<?> source : derivedDefinition.attributes()) {
+			AttributeDefinition<?> sourceDefinition = definition.attributes().definition(source);
+			boolean present = sourceDefinition instanceof DerivedAttributeDefinition
+							? sourcesPresent((DerivedAttributeDefinition<?>) sourceDefinition)
+							: values.containsKey(source);
+			if (!present) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private DerivedValue.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,

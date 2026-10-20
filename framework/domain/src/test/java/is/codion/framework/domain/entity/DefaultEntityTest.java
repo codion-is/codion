@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
@@ -1313,6 +1314,61 @@ public class DefaultEntityTest {
 
 			// Attributes based on no source values should not be cached
 			assertNotEquals(entity.get(derivedAttributeNoSource), entity.get(derivedAttributeNoSource));
+		}
+
+		@Test
+		@DisplayName("derived value null where a source value is missing, without calling the provider")
+		void derivedAttribute_sourceMissing_null() {
+			DomainType domainType = DomainType.domainType("missing_source");
+			EntityType type = domainType.entityType("derived");
+			Attribute<String> first = type.stringAttribute("first");
+			Attribute<String> second = type.stringAttribute("second");
+			Attribute<String> both = type.stringAttribute("both");
+			Attribute<Integer> length = type.integerAttribute("length");
+			AtomicInteger calls = new AtomicInteger();
+
+			class DerivedDomain extends DomainModel {
+				DerivedDomain() {
+					super(domainType);
+					add(type.as()
+									.attributes(
+													first.as()
+																	.attribute(),
+													second.as()
+																	.attribute(),
+													both.as()
+																	.derived()
+																	.from(first, second)
+																	.with(values -> {
+																		calls.incrementAndGet();
+
+																		return values.get(first) + "-" + values.get(second);
+																	}),
+													length.as()
+																	.derived()
+																	.from(both)
+																	.with(values -> values.get(both).length()))
+									.build());
+				}
+			}
+
+			Entity entity = new DerivedDomain().entities().entity(type)
+							.with(first, "a")
+							.build();
+			assertNull(entity.get(both));
+			assertNull(entity.original(both));
+			// derived from a derived value, whose source is missing
+			assertNull(entity.get(length));
+			// made immutable, the cached derived values computed
+			assertNull(entity.immutable().get(both));
+			assertEquals(0, calls.get());
+
+			entity.set(second, "b");
+			assertEquals("a-b", entity.get(both));
+			assertEquals(3, entity.get(length));
+			// present, as null
+			entity.set(second, null);
+			assertEquals("a-null", entity.get(both));
 		}
 	}
 

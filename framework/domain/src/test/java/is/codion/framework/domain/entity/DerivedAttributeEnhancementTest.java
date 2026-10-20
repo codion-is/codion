@@ -480,7 +480,13 @@ public final class DerivedAttributeEnhancementTest {
 							.with(ComplexEntity.VALUE1, "Only One")
 							.with(ComplexEntity.NUMBER1, 42)
 							.build();
+			// missing source values, not null ones
+			assertNull(complex.get(ComplexEntity.CONCAT_VALUES));
+			assertNull(complex.get(ComplexEntity.SUM_NUMBERS));
+			assertNull(complex.get(ComplexEntity.COMPLEX_DERIVED));
 
+			complex.set(ComplexEntity.VALUE2, null);
+			complex.set(ComplexEntity.NUMBER2, null);
 			assertEquals("Only One", complex.get(ComplexEntity.CONCAT_VALUES));
 			assertEquals(42, complex.get(ComplexEntity.SUM_NUMBERS));
 			assertEquals("Only One [Sum: 42]", complex.get(ComplexEntity.COMPLEX_DERIVED));

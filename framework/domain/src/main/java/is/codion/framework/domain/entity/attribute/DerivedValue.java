@@ -74,12 +74,14 @@ import static java.util.Objects.requireNonNull;
 public interface DerivedValue<T> extends Serializable {
 
 	/**
-	 * <p>Must be total, that is, return a value or null for every combination of source values, including
-	 * all null, which a new entity presents. A cached derived value is computed for every attribute of an
-	 * entity being made immutable, not only for the ones a caller happens to read, so a provider throwing
-	 * on some combination throws from {@link is.codion.framework.domain.entity.Entity#immutable()} rather
-	 * than from the read it would once have failed.
-	 * @param values the source values, mapped to their respective attributes
+	 * <p>Called only when the entity has every source value, null or not, the derived value being null where one
+	 * is missing, for example a column not selected. A missing value is not a null one, which would derive a value
+	 * the source values do not support.
+	 * <p>Must be total over the source values, that is, return a value or null for every combination of them,
+	 * including all null. A cached derived value is computed for every attribute of an entity being made immutable,
+	 * not only for the ones a caller happens to read, so a provider throwing on some combination throws from
+	 * {@link is.codion.framework.domain.entity.Entity#immutable()} rather than from the read it would once have failed.
+	 * @param values the source values, mapped to their respective attributes, each one present
 	 * @return the derived value
 	 */
 	@Nullable
