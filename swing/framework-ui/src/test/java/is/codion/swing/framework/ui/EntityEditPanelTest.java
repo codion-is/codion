@@ -20,8 +20,13 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
+import is.codion.framework.model.EditorLink;
+import is.codion.framework.model.EntityMerge;
+import is.codion.framework.model.EntityMerge.AttributeMerge;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
@@ -34,6 +39,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,7 +48,9 @@ import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.VK_A;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityEditPanelTest {
@@ -88,6 +96,101 @@ public final class EntityEditPanelTest {
 		//an attribute from another entity is rejected, as the javadoc advertises
 		assertThrows(IllegalArgumentException.class, () ->
 						new ConfigEditPanel(editModel, config -> config.excludeFromSelection(singletonList(Department.NAME))));
+	}
+
+	@Test
+	void mergeModified() throws EntityValidationException {
+		CONNECTION.startTransaction();
+		try {
+			SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+			List<EntityModifiedException> handled = new ArrayList<>();
+			EntityEditPanel editPanel = new EntityEditPanel(editModel) {
+				@Override
+				protected void initializeUI() {}
+
+				@Override
+				protected void onEntityModifiedException(EntityModifiedException exception) {
+					handled.add(exception);
+				}
+			};
+			Entity allen = CONNECTION.selectSingle(Employee.NAME.equalTo("ALLEN"));
+			editModel.editor().entity().set(allen);
+			editModel.editor().value(Employee.NAME).set("MINE");
+			// someone else raises the salary
+			Entity theirs = allen.copy().mutable();
+			theirs.set(Employee.SALARY, 2500d);
+			CONNECTION.update(theirs);
+
+			EntityModifiedException exception = assertThrows(EntityModifiedException.class, () -> editModel.editor().update());
+			editPanel.onException(exception);
+			assertEquals(singletonList(exception), handled);
+			assertTrue(editPanel.merges(exception));
+			assertFalse(new ConfigEditPanel(editModel, config -> config.mergeModified(false)).merges(exception));
+
+			EntityMerge merge = editPanel.merge(exception).get();
+			assertEquals(asList(Employee.NAME, Employee.SALARY), merge.attributes().stream()
+							.map(AttributeMerge::attribute)
+							.collect(toList()));
+			// mine changed the name, theirs the salary, both pre-selected
+			assertTrue(merge.complete().is());
+			// as the dialog's Merge does
+			editModel.editor().entity().replace(merge.merged());
+			assertTrue(editModel.editor().entity().modified().is());
+			editModel.editor().update();
+			Entity updated = CONNECTION.select(allen.primaryKey());
+			assertEquals("MINE", updated.get(Employee.NAME));
+			assertEquals(2500d, updated.get(Employee.SALARY));
+
+			// deleted by now, nothing to merge
+			Entity mine = updated.copy().mutable();
+			mine.set(Employee.NAME, "DELETED");
+			CONNECTION.delete(updated.primaryKey());
+			assertFalse(editPanel.merge(new EntityModifiedException(mine, updated, singletonList(Employee.NAME))).isPresent());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void mergeModifiedDetail() throws EntityValidationException {
+		CONNECTION.startTransaction();
+		try {
+			Entity operations = CONNECTION.selectSingle(Department.NAME.equalTo("OPERATIONS"));
+			// the department's only employee, its detail
+			Entity employee = CONNECTION.insertSelect(CONNECTION.entities().entity(Employee.TYPE)
+							.with(Employee.NAME, "DETAIL")
+							.with(Employee.DEPARTMENT_FK, operations)
+							.with(Employee.SALARY, 1000d)
+							.with(Employee.HIREDATE, LocalDate.now())
+							.build());
+			SwingEntityEditModel departmentEditModel = new SwingEntityEditModel(Department.TYPE, CONNECTION);
+			SwingEntityEditModel employeeEditModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+			departmentEditModel.editor().detail().add(EditorLink.builder()
+							.editor(employeeEditModel.editor())
+							.foreignKey(Employee.DEPARTMENT_FK)
+							.build());
+			EntityEditPanel editPanel = new EntityEditPanel(departmentEditModel) {
+				@Override
+				protected void initializeUI() {}
+			};
+			departmentEditModel.editor().entity().set(operations);
+			assertEquals(employee, employeeEditModel.editor().entity().get());
+			departmentEditModel.editor().value(Department.LOCATION).set("MINE");
+			employeeEditModel.editor().value(Employee.NAME).set("MINE");
+			// someone else raises the detail's salary
+			Entity theirs = employee.copy().mutable();
+			theirs.set(Employee.SALARY, 2000d);
+			CONNECTION.update(theirs);
+
+			EntityModifiedException exception = assertThrows(EntityModifiedException.class, () -> departmentEditModel.editor().update());
+			// a detail editor's entity, which the department editor can not take, the exception displayed
+			assertEquals(Employee.TYPE, exception.entity().type());
+			assertFalse(editPanel.merges(exception));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
 	}
 
 	private static final class ConfigEditPanel extends EntityEditPanel {

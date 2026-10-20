@@ -25,6 +25,7 @@ Codion Change Log
 - EntityApplicationPanel.ControlKeys, control(ControlKey) and configureMainMenu(Consumer) added, the main menu and its menus laid out by key, as the table panel's popup menu is.
 - EntityApplicationPanel, the menu factories, createMainMenuControls() and the like, and the control factories, createExitControl() and the like, removed, replaced by configureMainMenu() and control(ControlKey).
 - EntityMergePanel added, displaying an EntityMerge, a row per attribute whose values differ, the value to take chosen with Left and Right or a click.
+- EntityEditPanel.onEntityModifiedException() and Config.mergeModified() added, an update failing on the entity being edited, modified by someone else since it was loaded, now offering to merge the two versions in a dialog by default, the merge result put into the editor for the user to update, where the error was displayed.
 
 ## 0.18.91
 ### is.codion.common.db

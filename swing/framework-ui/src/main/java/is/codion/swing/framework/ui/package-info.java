@@ -32,6 +32,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#VALID_INDICATOR}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MODIFIED_INDICATOR}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MODIFIED_WARNING}
+ * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MERGE_MODIFIED}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_FOCUS_ACTIVATION}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_ENTITY_VIEWER}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_INSPECTOR}

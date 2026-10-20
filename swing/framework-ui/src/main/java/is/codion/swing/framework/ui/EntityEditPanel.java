@@ -28,12 +28,14 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
+import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -42,6 +44,7 @@ import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityEditor.EditorTask;
 import is.codion.framework.model.EntityEditor.EditorTask.Result;
+import is.codion.framework.model.EntityMerge;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -96,6 +99,10 @@ import java.util.stream.Collectors;
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
+import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.domain.entity.condition.Condition.key;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
@@ -517,9 +524,9 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
-	 * Propagates the exception to {@link #onValidationException(EntityValidationException)} or
-	 * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
-	 * otherwise forwards to the super implementation.
+	 * Propagates the exception to {@link #onValidationException(EntityValidationException)},
+	 * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} or
+	 * {@link #onEntityModifiedException(EntityModifiedException)} depending on type, otherwise displays it.
 	 * @param exception the exception to handle
 	 */
 	protected void onException(Exception exception) {
@@ -528,6 +535,9 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 		else if (exception instanceof ReferentialIntegrityException) {
 			onReferentialIntegrityException((ReferentialIntegrityException) exception);
+		}
+		else if (exception instanceof EntityModifiedException) {
+			onEntityModifiedException((EntityModifiedException) exception);
 		}
 		else if (!(exception instanceof CancelException)) {
 			displayException(exception);
@@ -546,6 +556,39 @@ public abstract class EntityEditPanel extends JPanel {
 		if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
 			EntityDependenciesPanel.displayDependencies(singletonList(editor().entity().get()), model.connection(),
 							this, dependenciesDialogSize, dependencyPanelPreferences, true);
+		}
+		else {
+			displayException(exception);
+		}
+	}
+
+	/**
+	 * Called when an update fails with an {@link EntityModifiedException}, the entity having been modified by someone
+	 * else since it was loaded. With merging enabled, the entity as modified is selected and merged with the one being
+	 * edited, in a dialog displaying a {@link EntityMergePanel}. The merge result is put into the editor, modified over
+	 * theirs, for the user to review and update, or theirs is taken instead, the edit discarded. Otherwise, in case the
+	 * entity has been deleted, or the exception concerns another entity, one of a detail editor for example, the
+	 * exception is displayed.
+	 * @param exception the exception
+	 * @see Config#mergeModified(boolean)
+	 */
+	protected void onEntityModifiedException(EntityModifiedException exception) {
+		requireNonNull(exception);
+		if (merges(exception)) {
+			Dialogs.progressWorker()
+							.task(() -> merge(exception))
+							.owner(this)
+							.title(MESSAGES.getString("refreshing"))
+							.onResult(merge -> {
+								if (merge.isPresent()) {
+									displayMerge(merge.get());
+								}
+								else {
+									displayException(exception);
+								}
+							})
+							.onException(this::displayException)
+							.execute();
 		}
 		else {
 			displayException(exception);
@@ -826,13 +869,80 @@ public abstract class EntityEditPanel extends JPanel {
 
 	private void handleException(Exception exception) {
 		if (exception instanceof EntityValidationException ||
-						exception instanceof ReferentialIntegrityException) {
+						exception instanceof ReferentialIntegrityException ||
+						exception instanceof EntityModifiedException) {
 			LOG.debug(exception.getMessage(), exception);
 		}
 		else {
 			LOG.error(exception.getMessage(), exception);
 		}
 		onException(exception);
+	}
+
+	// The entity being edited, rather than one of a detail editor, which this editor can not take
+	boolean merges(EntityModifiedException exception) {
+		Entity editing = editor().entity().get();
+
+		return configuration.mergeModified && exception.modified().isPresent()
+						&& exception.entity().type().equals(editing.type())
+						&& exception.entity().originalPrimaryKey().equals(editing.originalPrimaryKey());
+	}
+
+	// Theirs selected with the lazy columns mine has, empty in case the entity has been deleted by now
+	Optional<EntityMerge> merge(EntityModifiedException exception) {
+		Entity mine = exception.entity();
+		List<Entity> theirs = model.connection().select(where(key(mine.originalPrimaryKey()))
+						.include(model.entityDefinition().columns().definitions().stream()
+										.filter(definition -> !definition.selected())
+										.map(ColumnDefinition::attribute)
+										.filter(mine::contains)
+										.collect(toSet()))
+						.build());
+		if (theirs.isEmpty()) {
+			return Optional.empty();
+		}
+
+		return Optional.of(EntityMerge.builder()
+						.mine(mine)
+						.theirs(theirs.get(0))
+						.base(mine.copy().builder().original().build())
+						.build());
+	}
+
+	private void displayMerge(EntityMerge merge) {
+		EntityMergePanel mergePanel = EntityMergePanel.builder(merge).build();
+		Runnable dispose = () -> Ancestor.window().of(mergePanel).dispose();
+		Dialogs.action()
+						.component(borderLayoutPanel()
+										.center(mergePanel)
+										.border(emptyBorder()))
+						.owner(this)
+						.title(model.entityDefinition().caption() + " - " + MESSAGES.getString("modified"))
+						.defaultAction(Control.builder()
+										.command(() -> {
+											// modified over theirs, for the user to review and update
+											editor().entity().replace(merge.merged());
+											dispose.run();
+										})
+										.caption(MESSAGES.getString("merge"))
+										.mnemonic(MESSAGES.getString("merge_mnemonic").charAt(0))
+										.enabled(merge.complete())
+										.build())
+						.action(Control.builder()
+										.command(() -> {
+											editor().entity().replace(merge.theirs());
+											dispose.run();
+										})
+										.caption(MESSAGES.getString("use_theirs"))
+										.mnemonic(MESSAGES.getString("use_theirs_mnemonic").charAt(0))
+										.build())
+						.escapeAction(Control.builder()
+										.command(dispose::run)
+										.caption(Messages.cancel())
+										.mnemonic(Messages.cancelMnemonic())
+										.build())
+						.onShown(dialog -> mergePanel.requestFocusInWindow())
+						.show();
 	}
 
 	private Optional<ComponentEntry> firstInvalid(Collection<AttributeValidationException> invalidAttributes) {
@@ -1084,6 +1194,18 @@ public abstract class EntityEditPanel extends JPanel {
 		public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
 						booleanValue(EntityEditPanel.class.getName() + ".transferFocusOnEnter", true);
 
+		/**
+		 * Specifies whether an update failing because the entity has been modified by someone else since it was loaded
+		 * offers to merge the two versions, rather than displaying the error
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 * @see EntityEditPanel#onEntityModifiedException(EntityModifiedException)
+		 */
+		public static final PropertyValue<Boolean> MERGE_MODIFIED =
+						booleanValue(EntityEditPanel.class.getName() + ".mergeModified", true);
+
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
@@ -1103,6 +1225,7 @@ public abstract class EntityEditPanel extends JPanel {
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
 		private Set<Attribute<?>> excludeFromSelection = emptySet();
 		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
+		private boolean mergeModified = MERGE_MODIFIED.getOrThrow();
 		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
 		private boolean warningIndicator = WARNING_INDICATOR.getOrThrow();
 		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
@@ -1134,6 +1257,7 @@ public abstract class EntityEditPanel extends JPanel {
 			this.includeInspector = config.includeInspector;
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 			this.modifiedWarning = config.modifiedWarning;
+			this.mergeModified = config.mergeModified;
 			this.validIndicator = config.validIndicator;
 			this.warningIndicator = config.warningIndicator;
 			this.modifiedIndicator = config.modifiedIndicator;
@@ -1293,6 +1417,18 @@ public abstract class EntityEditPanel extends JPanel {
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;
+			return this;
+		}
+
+		/**
+		 * @param mergeModified true if an update failing because the entity has been modified by someone else should
+		 * offer to merge the two versions, false to display the error
+		 * @return this Config instance
+		 * @see #MERGE_MODIFIED
+		 * @see EntityEditPanel#onEntityModifiedException(EntityModifiedException)
+		 */
+		public Config mergeModified(boolean mergeModified) {
+			this.mergeModified = mergeModified;
 			return this;
 		}
 

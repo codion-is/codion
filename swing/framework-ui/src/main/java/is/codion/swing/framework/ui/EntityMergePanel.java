@@ -47,8 +47,7 @@ import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -58,7 +57,8 @@ import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
  * <p>Displays an {@link EntityMerge}, a row for each attribute whose values differ between the two versions, with the
  * value of each, and with a base, which version changed it and its original value. The value taken is shown in bold.
  * <p>Left takes yours for the selected attributes and Right theirs, as does clicking a value. The panel has no
- * actions of its own, whoever shows it merging once {@link EntityMerge#complete()}.
+ * actions of its own, whoever shows it merging once {@link EntityMerge#complete()}, and leaves Enter to the window
+ * it is in, the default action of a dialog for example.
  * @see #builder(EntityMerge)
  */
 public final class EntityMergePanel extends JPanel {
@@ -113,6 +113,8 @@ public final class EntityMergePanel extends JPanel {
 						.build();
 		merge.attributes().forEach(attribute -> attribute.side().addListener(table::repaint));
 		table.addMouseListener(new TakeOnClick());
+		// left to the dialog, its default action, rather than moving to the next row
+		table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(keyStroke(VK_ENTER), "none");
 		bindKey(ControlKeys.MINE, Side.MINE);
 		bindKey(ControlKeys.THEIRS, Side.THEIRS);
 		if (!merge.attributes().isEmpty()) {
@@ -286,7 +288,7 @@ public final class EntityMergePanel extends JPanel {
 				case CHANGE:
 					return change(row);
 				case BASE:
-					return row.change() == EntityMerge.Change.UNKNOWN ? "" : formatted(merge.base().orElseThrow(), row);
+					return row.change() == EntityMerge.Change.UNKNOWN ? "" : formatted(merge.base().get(), row);
 				case MINE:
 					return formatted(merge.mine(), row);
 				case THEIRS:

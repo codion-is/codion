@@ -27,6 +27,8 @@ import is.codion.demos.chinook.ui.CustomerEditPanel;
 import is.codion.demos.chinook.ui.MediaTypeEditPanel;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.model.EntityMerge;
+import is.codion.framework.model.EntityMerge.Side;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -45,6 +47,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.component.SwingEntityTableTreeModel;
 import is.codion.swing.framework.model.component.SwingEntityTreeModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityMergePanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
@@ -250,6 +253,49 @@ final class FrameworkUIDemo {
 			}
 		}
 		// end::editPanelConfiguration[]
+	}
+
+	void editPanelMergeModified() {
+		// tag::editPanelMergeModified[]
+		class TrackEditPanel extends EntityEditPanel {
+			public TrackEditPanel(SwingEntityEditModel editModel) {
+				// Display the error, rather than offering to merge
+				super(editModel, config -> config.mergeModified(false));
+			}
+
+			@Override
+			protected void initializeUI() {
+				// UI setup
+			}
+		}
+		// end::editPanelMergeModified[]
+	}
+
+	void entityMerge(Entity mine, Entity theirs, Entity base) {
+		// tag::entityMerge[]
+		// Two versions of a customer, each changed since the base
+		EntityMerge merge = EntityMerge.builder()
+						.mine(mine)
+						.theirs(theirs)
+						.base(base)
+						.build();
+
+		// The attributes whose values differ, each with a side pre-selected
+		// where only one version changed the value, here taking mine for the rest
+		merge.attributes().stream()
+						.filter(attribute -> attribute.side().isNull())
+						.forEach(attribute -> attribute.side().set(Side.MINE));
+
+		// Theirs, with the values of mine chosen,
+		// modified where those differ, updatable over theirs
+		Entity merged = merge.merged();
+
+		// Or let the user choose
+		EntityMergePanel mergePanel = EntityMergePanel.builder(merge)
+						.mineCaption("This device")
+						.theirsCaption("The server")
+						.build();
+		// end::entityMerge[]
 	}
 
 	void editPanelFocusManagement(EntityConnection connection) {

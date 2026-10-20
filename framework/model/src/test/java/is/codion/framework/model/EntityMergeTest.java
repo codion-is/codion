@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -241,7 +242,7 @@ public final class EntityMergeTest {
 						.mine(mine)
 						.theirs(theirs)
 						.build();
-		assertEquals(List.of(MergeDomain.Child.NAME), attributes(merge));
+		assertEquals(singletonList(MergeDomain.Child.NAME), attributes(merge));
 
 		merge = EntityMerge.builder()
 						.mine(mine)
@@ -263,7 +264,7 @@ public final class EntityMergeTest {
 						.base(allen)
 						.build();
 		// the foreign key, not its column, nor the denormalized location
-		assertEquals(List.of(Employee.DEPARTMENT_FK), attributes(merge));
+		assertEquals(singletonList(Employee.DEPARTMENT_FK), attributes(merge));
 		AttributeMerge<?> department = merge.attributes().get(0);
 		assertEquals(Change.MINE, department.change());
 		assertEquals(research, department.mine());
@@ -291,7 +292,7 @@ public final class EntityMergeTest {
 						.theirs(allen)
 						.base(allen)
 						.build();
-		assertEquals(List.of(Employee.DEPARTMENT_FK), attributes(merge));
+		assertEquals(singletonList(Employee.DEPARTMENT_FK), attributes(merge));
 
 		Entity merged = merge.merged();
 		assertEquals(20, merged.get(Employee.DEPARTMENT));
@@ -328,14 +329,14 @@ public final class EntityMergeTest {
 		assertThrows(IllegalArgumentException.class, () -> EntityMerge.builder()
 						.mine(mine)
 						.theirs(allen)
-						.attributes(List.of(Employee.DATA))
+						.attributes(singletonList(Employee.DATA))
 						.build());
 
 		EntityMerge merge = EntityMerge.builder()
 						.mine(mine)
 						.theirs(allenWithData)
 						.build();
-		assertEquals(List.of(Employee.DATA), attributes(merge));
+		assertEquals(singletonList(Employee.DATA), attributes(merge));
 		merge.attributes().get(0).side().set(Side.MINE);
 		assertEquals("MINE", merge.merged().get(Employee.DATA));
 
@@ -365,10 +366,10 @@ public final class EntityMergeTest {
 		EntityMerge.Builder builder = EntityMerge.builder()
 						.mine(mine)
 						.theirs(allen);
-		assertThrows(IllegalArgumentException.class, () -> builder.attributes(List.of(Employee.ID)));
-		assertThrows(IllegalArgumentException.class, () -> builder.attributes(List.of(Employee.INITIAL)));
-		assertThrows(IllegalArgumentException.class, () -> builder.attributes(List.of(Employee.DEPARTMENT_LOCATION)));
-		assertThrows(IllegalArgumentException.class, () -> builder.attributes(List.of(Department.NAME)));
+		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singletonList(Employee.ID)));
+		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singletonList(Employee.INITIAL)));
+		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singletonList(Employee.DEPARTMENT_LOCATION)));
+		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singletonList(Department.NAME)));
 	}
 
 	@Test
@@ -384,7 +385,7 @@ public final class EntityMergeTest {
 		// immutable copies
 		assertFalse(merge.mine().mutable());
 		assertFalse(merge.theirs().mutable());
-		assertFalse(merge.base().orElseThrow().mutable());
+		assertFalse(merge.base().get().mutable());
 		mine.set(Employee.NAME, "CHANGED");
 		assertEquals("MINE", merge.mine().get(Employee.NAME));
 

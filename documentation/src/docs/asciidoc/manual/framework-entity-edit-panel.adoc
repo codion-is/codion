@@ -197,6 +197,49 @@ EntityEditPanel can include detail panels for master-detail relationships:
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelDetailIntegration]
 ----
 
+[#_merging_a_modified_entity]
+== Merging a modified entity
+
+With optimistic locking, an update fails with an {url-javadoc}{framework-db}/is/codion/framework/db/exception/EntityModifiedException.html[EntityModifiedException] when someone else has modified the entity since it was loaded. Rather than only displaying the error, the edit panel offers to merge the two versions.
+
+It selects the entity as it now is, and displays the two versions in an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityMergePanel.html[EntityMergePanel], with a row for each attribute whose values differ:
+
+* *Changed* tells which version changed the value since the entity was loaded, and *Original* shows the value as loaded.
+* A value changed by one version only is pre-selected from that version.
+* A value changed by both has to be chosen, *Merge* waiting until each has a side.
+* The value taken is shown in bold. Left takes yours for the selected rows and Right theirs, as does clicking a value.
+
+The merge is displayed even when every value is pre-selected. The values of an entity often belong together, so changes to different attributes can still conflict.
+
+The dialog offers three choices:
+
+* *Merge* puts the merge result into the editor, for you to review and update. The update then succeeds, unless the entity has been modified yet again. Enter merges.
+* *Use theirs* discards your changes, the editor taking the entity as modified.
+* *Cancel* leaves the editor as it is.
+
+Where the entity has been deleted by now, or the update failed on another entity, one of a detail editor for example, the error is displayed.
+
+Merging is enabled by default. It can be turned off globally via {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.Config.html#MERGE_MODIFIED[EntityEditPanel.Config.MERGE_MODIFIED], or for a single panel:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelMergeModified]
+----
+
+To handle the exception differently, override {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html#onEntityModifiedException(is.codion.framework.db.exception.EntityModifiedException)[onEntityModifiedException()].
+
+=== EntityMerge
+
+The merge itself is an {url-javadoc}{framework-model}/is/codion/framework/model/EntityMerge.html[EntityMerge], which can be used on its own to merge any two versions of an entity, a sync conflict for example.
+
+* Without a base, it isn't known which version changed a value, so nothing is pre-selected.
+* Theirs must have every attribute compared that mine has, a lazy column included, since the merge result would otherwise lose your edit of it.
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=entityMerge]
+----
+
 == Custom actions
 
 The action mechanism used throughout the Codion framework is based on the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/control/Controls.html[Controls] class which represents a collection of controls.
