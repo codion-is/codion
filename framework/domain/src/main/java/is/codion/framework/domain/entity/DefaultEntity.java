@@ -353,7 +353,17 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 	@Override
 	public final boolean contains(Attribute<?> attribute) {
-		return values.containsKey(requireNonNull(attribute));
+		if (values.containsKey(requireNonNull(attribute))) {
+			return true;
+		}
+		// a derived value contained where its sources are, cached or not, the definition looked up only for an attribute
+		// which may be derived, a column or a foreign key never being
+		if (attribute instanceof Column || attribute instanceof ForeignKey || !attribute.entityType().equals(definition.type())) {
+			return false;
+		}
+		AttributeDefinition<?> attributeDefinition = definition.attributes().definition(attribute);
+
+		return attributeDefinition.derived() && sourcesPresent((DerivedAttributeDefinition<?>) attributeDefinition);
 	}
 
 	@Override
@@ -431,9 +441,10 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	/**
-	 * Forces every cached derived value into the values map. Called during {@link ImmutableEntity} construction
-	 * (single-threaded) so that {@link #derivedCached} never has to write the map afterwards, keeping shared
-	 * immutable instances genuinely read-only and therefore thread-safe.
+	 * Forces every cached derived value into the values map, those whose sources are present, one with a source
+	 * missing never cached. Called during {@link ImmutableEntity} construction (single-threaded) so that
+	 * {@link #derivedCached} never has to write the map afterwards, keeping shared immutable instances genuinely
+	 * read-only and therefore thread-safe.
 	 */
 	final void populateCachedDerivedValues() {
 		for (AttributeDefinition<?> attributeDefinition : definition.attributes().definitions()) {
@@ -735,11 +746,15 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		return new CompositeColumnKey(definition, keyValues, true);
 	}
 
+	// Cached only where the sources are present, contains() taking a cached value as present
 	private <T> @Nullable T derivedCached(DerivedAttributeDefinition<T> attributeDefinition) {
 		if (values.containsKey(attributeDefinition.attribute())) {
 			return (T) values.get(attributeDefinition.attribute());
 		}
-		T derivedValue = derived(attributeDefinition);
+		if (!sourcesPresent(attributeDefinition)) {
+			return null;
+		}
+		T derivedValue = attributeDefinition.value().from(sourceValues(attributeDefinition, false));
 		values.put(attributeDefinition.attribute(), derivedValue);
 
 		return derivedValue;
@@ -754,14 +769,9 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		return sourcesPresent(derivedDefinition) ? derivedDefinition.value().from(sourceValues(derivedDefinition, true)) : null;
 	}
 
-	// A derived source present where its own sources are
 	private boolean sourcesPresent(DerivedAttributeDefinition<?> derivedDefinition) {
 		for (Attribute<?> source : derivedDefinition.attributes()) {
-			AttributeDefinition<?> sourceDefinition = definition.attributes().definition(source);
-			boolean present = sourceDefinition instanceof DerivedAttributeDefinition
-							? sourcesPresent((DerivedAttributeDefinition<?>) sourceDefinition)
-							: values.containsKey(source);
-			if (!present) {
+			if (!contains(source)) {
 				return false;
 			}
 		}
@@ -823,11 +833,6 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private boolean valueEqual(Entity entity, Attribute<?> attribute) {
-		if (definition.attributes().definition(attribute).derived()) {
-			//a derived value is computed on demand and its presence in the values map is a caching detail,
-			//so compare by value alone, not by contains() symmetry which flips once the value has been read
-			return Objects.deepEquals(get(attribute), entity.get(attribute));
-		}
 		if (contains(attribute) != entity.contains(attribute)) {
 			return false;
 		}

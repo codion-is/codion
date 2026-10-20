@@ -21,7 +21,9 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.Entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 
 import org.jspecify.annotations.Nullable;
@@ -58,6 +60,10 @@ final class DefaultEntityBuilder implements Entity.Builder {
 											 @Nullable Map<Attribute<?>, Object> originalValues) {
 		this.definition = definition;
 		this.values = new HashMap<>(values);
+		// the derived values cached, derived again from the values as built, which clear() and original() may change
+		this.values.keySet().removeIf(attribute ->
+						!(attribute instanceof Column) && !(attribute instanceof ForeignKey) &&
+										definition.attributes().definition(attribute).derived());
 		this.originalValues = originalValues == null ? EMPTY_MAP : new HashMap<>(originalValues);
 	}
 

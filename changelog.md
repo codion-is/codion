@@ -14,6 +14,8 @@ Codion Change Log
 - Controls.Layout.remove(ControlKey) added.
 ### is.codion.framework.domain
 - Entity bug fixed, a derived value is now null where one of its source values is missing, for example a column not selected, where it was derived as if the missing value were null, and an entity made immutable no longer fails on a provider not expecting a missing value.
+- Entity.contains() bug fixed, now answers for a derived attribute whether each of its source attributes is contained, where it answered whether its value had been cached.
+- Entity.Builder bug fixed, a derived value of an entity copied via copy().builder() is now derived again from the values as built, where a value cached before survived a change to its sources via clear() or original().
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
 - EntityTablePanel bug fixed, the column controls configured via configurePopupMenu() now hold one column selection and one auto-resize-mode selection, as by default, where they held both column selections.

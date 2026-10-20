@@ -1370,6 +1370,103 @@ public class DefaultEntityTest {
 			entity.set(second, null);
 			assertEquals("a-null", entity.get(both));
 		}
+
+		@Test
+		@DisplayName("a derived attribute contained where its source attributes are, cached or not")
+		void derivedAttribute_contains() {
+			DomainType domainType = DomainType.domainType("contains_derived");
+			EntityType type = domainType.entityType("derived");
+			Attribute<String> first = type.stringAttribute("first");
+			Attribute<String> second = type.stringAttribute("second");
+			Attribute<String> both = type.stringAttribute("both");
+			Attribute<Integer> length = type.integerAttribute("length");
+			Attribute<String> nonCached = type.stringAttribute("non_cached");
+			Attribute<UUID> noSource = type.attribute("no_source", UUID.class);
+
+			class DerivedDomain extends DomainModel {
+				DerivedDomain() {
+					super(domainType);
+					add(type.as()
+									.attributes(
+													first.as()
+																	.attribute(),
+													second.as()
+																	.attribute(),
+													both.as()
+																	.derived()
+																	.from(first, second)
+																	.with(values -> values.get(first) + "-" + values.get(second)),
+													length.as()
+																	.derived()
+																	.from(both)
+																	.with(values -> values.get(both).length()),
+													nonCached.as()
+																	.derived()
+																	.from(first)
+																	.with(values -> values.get(first))
+																	.cached(false),
+													noSource.as()
+																	.derived()
+																	.from()
+																	.with(values -> UUID.randomUUID()))
+									.build());
+				}
+			}
+
+			Entity entity = new DerivedDomain().entities().entity(type)
+							.with(first, "a")
+							.build();
+			assertFalse(entity.contains(both));
+			assertFalse(entity.contains(length));
+			// read, still missing
+			assertNull(entity.get(both));
+			assertFalse(entity.contains(both));
+			assertFalse(entity.immutable().contains(both));
+			// not read, not cached
+			assertTrue(entity.contains(nonCached));
+			assertTrue(entity.contains(noSource));
+			// a derived attribute of another type
+			assertFalse(entity.contains(Detail.INT_DERIVED));
+
+			entity.set(second, "b");
+			// before and after being read
+			assertTrue(entity.contains(both));
+			assertTrue(entity.contains(length));
+			assertEquals(3, entity.get(length));
+			assertTrue(entity.contains(both));
+			assertTrue(entity.immutable().contains(both));
+
+			entity.remove(second);
+			assertFalse(entity.contains(both));
+			assertFalse(entity.contains(length));
+			assertNull(entity.get(length));
+		}
+
+		@Test
+		@DisplayName("a derived value built from a copy follows its sources as built")
+		void derivedAttribute_builder_notStale() {
+			Entity entity = ENTITIES.entity(Detail.TYPE)
+							.with(Detail.ID, 0L)
+							.with(Detail.INT, 1)
+							.build();
+			// cached
+			assertEquals(10, entity.get(Detail.INT_DERIVED));
+
+			Entity cleared = entity.copy().builder()
+							.clear(Detail.INT)
+							.build();
+			assertNull(cleared.get(Detail.INT_DERIVED));
+			assertFalse(cleared.contains(Detail.INT_DERIVED));
+
+			entity.set(Detail.INT, 2);
+			// cached, from the modified value
+			assertEquals(20, entity.get(Detail.INT_DERIVED));
+			Entity original = entity.copy().builder()
+							.original()
+							.build();
+			assertEquals(1, original.get(Detail.INT));
+			assertEquals(10, original.get(Detail.INT_DERIVED));
+		}
 	}
 
 	// Helper methods

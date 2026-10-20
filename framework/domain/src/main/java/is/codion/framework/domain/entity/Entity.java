@@ -199,6 +199,7 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	/**
 	 * Removes the given value from this Entity along with the original value if any.
 	 * If no value is mapped to the given attribute, this method has no effect.
+	 * For a derived attribute, discards its cached value if any, derived again when read.
 	 * @param attribute the attribute to remove
 	 * @param <T> the value type
 	 * @return the previous value mapped to the given attribute
@@ -219,8 +220,10 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 
 	/**
 	 * Returns true if this Entity contains a value for the given attribute, that value can be null.
+	 * A derived attribute is contained where each of its source attributes is, whether its value has been derived or
+	 * not, its value otherwise being null.
 	 * @param attribute the attribute
-	 * @return true if a value is mapped to this attribute
+	 * @return true if a value is mapped to this attribute, or for a derived attribute, to each of its source attributes
 	 */
 	boolean contains(Attribute<?> attribute);
 
