@@ -24,6 +24,7 @@ Codion Change Log
 - EntityTablePanel, of SELECT_COLUMNS and TOGGLE_COLUMN_CONTROLS, and of SELECT_AUTO_RESIZE_MODE and TOGGLE_AUTO_RESIZE_MODE_CONTROLS, only the one of the configured selection mode is now available, the column and copy controls created from their keys' default layouts, COLUMN_CONTROLS' now including TOGGLE_AUTO_RESIZE_MODE_CONTROLS.
 - EntityApplicationPanel.ControlKeys, control(ControlKey) and configureMainMenu(Consumer) added, the main menu and its menus laid out by key, as the table panel's popup menu is.
 - EntityApplicationPanel, the menu factories, createMainMenuControls() and the like, and the control factories, createExitControl() and the like, removed, replaced by configureMainMenu() and control(ControlKey).
+- EntityMergePanel added, displaying an EntityMerge, a row per attribute whose values differ, the value to take chosen with Left and Right or a click.
 
 ## 0.18.91
 ### is.codion.common.db
