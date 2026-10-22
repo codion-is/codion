@@ -2093,7 +2093,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 						.collect(toList());
 	}
 
-	private static String createValueString(List<?> values, List<ColumnDefinition<?>> columnDefinitions) {
+	// package-private for the tests
+	static String createValueString(List<?> values, List<ColumnDefinition<?>> columnDefinitions) {
 		if (columnDefinitions.isEmpty() || columnDefinitions.size() != values.size()) {
 			return values.stream()
 							.map(Objects::toString)
@@ -2102,28 +2103,25 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<String> stringValues = new ArrayList<>(values.size());
 		for (int i = 0; i < values.size(); i++) {
 			ColumnDefinition<Object> columnDefinition = (ColumnDefinition<Object>) columnDefinitions.get(i);
-			Object value = values.get(i);
-			Object columnValue;
-			String stringValue;
-			try {
-				Column.Converter<Object, Object> converter = columnDefinition.converter();
-				if (value != null || converter.handlesNull()) {
-					columnValue = converter.fromColumn(value);
-				}
-				else {
-					columnValue = null;
-				}
-				stringValue = String.valueOf(value);
-			}
-			catch (Exception e) {
-				//fallback to the original value
-				columnValue = value;
-				stringValue = String.valueOf(value);
-			}
-			stringValues.add(columnValue == null ? "null" : addSingleQuotes(columnDefinition.sqlType(), stringValue));
+			Object columnValue = columnValue(columnDefinition, values.get(i));
+			stringValues.add(columnValue == null ? "null" : addSingleQuotes(columnDefinition.sqlType(), String.valueOf(columnValue)));
 		}
 
 		return String.join(", ", stringValues);
+	}
+
+	// The value as set in the statement, 1 for a boolean an integer column holds, so the logged values can be pasted
+	// into it for debugging. A best effort, without the statement, which a converter rarely needs, the value as it is
+	// where the converter fails, since creating a log message should never fail
+	private static @Nullable Object columnValue(ColumnDefinition<Object> columnDefinition, @Nullable Object value) {
+		try {
+			Column.Converter<Object, Object> converter = columnDefinition.converter();
+
+			return value != null || converter.handlesNull() ? converter.toColumn(value, null) : null;
+		}
+		catch (Exception e) {
+			return value;
+		}
 	}
 
 	private static String addSingleQuotes(int columnType, String string) {

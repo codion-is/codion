@@ -46,6 +46,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import org.junit.jupiter.api.AfterEach;
@@ -2374,6 +2375,13 @@ public class DefaultLocalEntityConnectionTest {
 		entity.set(NullConverter.NAME, "null");
 		entity = connection.updateSelect(entity);
 		assertFalse(entity.present(NullConverter.NAME));
+	}
+
+	@Test
+	void logValueString() {
+		ColumnDefinition<?> name = DOMAIN.entities().definition(NullConverter.TYPE).columns().definition(NullConverter.NAME);
+		// the values as set in the statement, converted, for pasting into it
+		assertEquals("'null', 'name'", DefaultLocalEntityConnection.createValueString(asList(null, "name"), asList(name, name)));
 	}
 
 	@Test

@@ -136,8 +136,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	}
 
 	@Override
-	public <C> Converter<C, T> converter() {
-		return (Converter<C, T>) converter;
+	public <C> Converter<T, C> converter() {
+		return (Converter<T, C>) converter;
 	}
 
 	@Override

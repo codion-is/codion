@@ -14,10 +14,12 @@ Codion Change Log
 - Controls.Layout.remove(ControlKey) added.
 ### is.codion.framework.db.local
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) replaced with join(Domain).
+- LocalEntityConnection bug fixed, the statement values logged with a failed statement are again logged as set in the statement, converted by their columns' converters, for pasting into it, where they were converted backwards, as if read from the database, and logged unconverted.
 ### is.codion.framework.domain
 - Entity bug fixed, a derived value is now null where one of its source values is missing, for example a column not selected, where it was derived as if the missing value were null, and an entity made immutable no longer fails on a provider not expecting a missing value.
 - Entity.contains() bug fixed, now answers for a derived attribute whether each of its source attributes is contained, where it answered whether its value had been cached.
 - Entity.Builder bug fixed, a derived value of an entity copied via copy().builder() is now derived again from the values as built, where a value cached before survived a change to its sources via clear() or original().
+- ColumnDefinition.converter() bug fixed, now returns Converter<T, C>, where its type parameters were reversed.
 ### is.codion.framework.model
 - EntityMerge added, merging two versions of an entity changed since a common base, attribute by attribute, a side pre-selected where the base tells which version changed the value.
 ### is.codion.swing.framework.ui

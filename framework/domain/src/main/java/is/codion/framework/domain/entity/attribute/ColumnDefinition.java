@@ -133,7 +133,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 	 * @param <C> the column value type
 	 * @return the {@link Converter} for this column.
 	 */
-	<C> Converter<C, T> converter();
+	<C> Converter<T, C> converter();
 
 	/**
 	 * @return this columns zero based index in the primary key, -1 if this column is not part of a primary key
