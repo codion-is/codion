@@ -102,11 +102,6 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public boolean subqueryRequiresAlias() {
-		return true;
-	}
-
-	@Override
 	public int maximumParameters() {
 		return MAXIMUM_STATEMENT_PARAMETERS;
 	}

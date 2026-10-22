@@ -170,12 +170,14 @@ final class SelectQueries {
 			// For COUNT queries, we build a subquery that selects only the primary key columns (or the GROUP BY output)
 			// and count over it, which respects WHERE and HAVING and yields correct counts for aggregate entities.
 			// The rows are unique by construction (primary key / GROUP BY), there is no explicit DISTINCT.
+			// The subquery is aliased, as MySQL, MariaDB, Derby, PostgreSQL and SQL Server require, without AS, which Oracle
+			// rejects before a table alias.
 			return columns(COUNT).from("(" + builder(definition)
 							.select(Select.where(count.where())
 											.having(count.having())
 											.attributes(definition.primaryKey().columns())
 											.build())
-							.build() + ")" + (database.subqueryRequiresAlias() ? " AS row_count" : ""));
+							.build() + ") row_count");
 		}
 
 		Builder from(String from) {

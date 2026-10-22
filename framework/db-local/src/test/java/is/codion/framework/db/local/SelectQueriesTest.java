@@ -324,6 +324,8 @@ public final class SelectQueriesTest {
 		assertTrue(query.contains("SELECT"));
 		assertTrue(query.contains("WHERE"));
 		assertTrue(query.contains("deptno = ?"));
+		// aliased on every database, without AS, which Oracle rejects
+		assertTrue(query.contains(") row_count"));
 	}
 
 	@Test

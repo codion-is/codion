@@ -12,9 +12,12 @@ Codion Change Log
 - Controls.Layout.after(ControlKey) and before(ControlKey) added, moving the insertion point controls and separators are added at, at the end by default, the defaults always added at the end.
 - LookAndFeelSelectionDialogBuilder.createControl() now returns CommandControl.
 - Controls.Layout.remove(ControlKey) added.
+### is.codion.common.db
+- Database.subqueryRequiresAlias() removed, the count query's subquery now aliased on every database.
 ### is.codion.framework.db.local
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) replaced with join(Domain).
 - LocalEntityConnection bug fixed, the statement values logged with a failed statement are again logged as set in the statement, converted by their columns' converters, for pasting into it, where they were converted backwards, as if read from the database, and logged unconverted.
+- LocalEntityConnection.count() bug fixed, its subquery now aliased on every database, without AS, which Oracle rejects, where it failed on MySQL, MariaDB and Derby, which require an alias.
 ### is.codion.framework.domain
 - Entity bug fixed, a derived value is now null where one of its source values is missing, for example a column not selected, where it was derived as if the missing value were null, and an entity made immutable no longer fails on a provider not expecting a missing value.
 - Entity.contains() bug fixed, now answers for a derived attribute whether each of its source attributes is contained, where it answered whether its value had been cached.

@@ -157,14 +157,6 @@ final class SQLServerDatabase extends AbstractDatabase {
 		return ordered ? offsetFetchNext : UNORDERED + offsetFetchNext;
 	}
 
-	/**
-	 * @return true
-	 */
-	@Override
-	public boolean subqueryRequiresAlias() {
-		return true;
-	}
-
 	@Override
 	public int maximumParameters() {
 		return MAXIMUM_STATEMENT_PARAMETERS;

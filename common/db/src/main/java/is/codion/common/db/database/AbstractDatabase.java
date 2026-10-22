@@ -246,11 +246,6 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
-	public boolean subqueryRequiresAlias() {
-		return false;
-	}
-
-	@Override
 	public boolean releasesSavepoints() {
 		return true;
 	}

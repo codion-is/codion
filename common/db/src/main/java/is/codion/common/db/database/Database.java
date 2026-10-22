@@ -230,12 +230,6 @@ public interface Database extends ConnectionFactory {
 	String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered);
 
 	/**
-	 * Returns true if this database requires that subqueries by aliased.
-	 * @return true if subqueries require an alias
-	 */
-	boolean subqueryRequiresAlias();
-
-	/**
 	 * Returns true if this database releases savepoints, {@link Connection#releaseSavepoint(java.sql.Savepoint)}.
 	 * A database which does not keeps a savepoint until its transaction ends.
 	 * @return true if this database releases savepoints
