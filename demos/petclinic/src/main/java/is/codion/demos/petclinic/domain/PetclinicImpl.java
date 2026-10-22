@@ -31,9 +31,6 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.attribute.Column.Converter;
-
-import java.sql.Statement;
 
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
@@ -165,12 +162,13 @@ public final class PetclinicImpl extends DomainModel {
 														.column()
 														.caption("Telephone")
 														.maximumLength(20),
+										// tag::enumColumn[]
 										Owner.PHONE_TYPE.as()
 														.column()
 														.caption("Phone type")
 														.nullable(false)
-														.defaultValue(PhoneType.MOBILE)
-														.converter(String.class, new PhoneTypeConverter()))
+														.defaultValue(PhoneType.MOBILE))
+										// end::enumColumn[]
 						.caption("Owners")
 						.formatter(EntityFormatter.builder()
 										.value(Owner.LAST_NAME)
@@ -179,19 +177,6 @@ public final class PetclinicImpl extends DomainModel {
 										.build())
 						.orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME))
 						.build();
-	}
-
-	private static final class PhoneTypeConverter implements Converter<PhoneType, String> {
-
-		@Override
-		public String toColumn(PhoneType value, Statement statement) {
-			return value.name();
-		}
-
-		@Override
-		public PhoneType fromColumn(String value) {
-			return PhoneType.valueOf(value);
-		}
 	}
 
 	EntityDefinition pet() {

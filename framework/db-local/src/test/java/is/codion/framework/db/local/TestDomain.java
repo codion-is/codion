@@ -106,6 +106,30 @@ public final class TestDomain extends DomainModel {
 		queryWithCte();
 		queryWithRecursiveCte();
 		queryWithMultipleCtes();
+		employeeTitle();
+	}
+
+	public interface EmployeeTitle {
+		EntityType TYPE = DOMAIN.entityType("employees.employee_title");
+
+		Column<Integer> ID = TYPE.integerColumn("empno");
+		Column<Title> JOB = TYPE.column("job", Title.class);
+
+		enum Title {
+			ANALYST, CLERK, MANAGER, PRESIDENT, SALESMAN
+		}
+	}
+
+	// The employee's job as an enum, held by the name of its constant, without a converter
+	private void employeeTitle() {
+		add(EmployeeTitle.TYPE.as()
+						.attributes(
+										EmployeeTitle.ID.as()
+														.primaryKey(),
+										EmployeeTitle.JOB.as()
+														.column())
+						.table("employees.employee")
+						.build());
 	}
 
 	public interface Department {

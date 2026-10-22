@@ -32,9 +32,11 @@ public interface Owner {
 	Column<String> ADDRESS = TYPE.stringColumn("address");
 	Column<String> CITY = TYPE.stringColumn("city");
 	Column<String> TELEPHONE = TYPE.stringColumn("telephone");
+	// tag::enumColumn[]
 	Column<PhoneType> PHONE_TYPE = TYPE.column("phone_type", PhoneType.class);
 
 	enum PhoneType {
 		MOBILE, HOME, WORK
 	}
+	// end::enumColumn[]
 }

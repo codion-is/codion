@@ -236,6 +236,31 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 	}
 
+	// An enum by the name of its constant, trimmed when read, as a CHAR column pads it, no constant's name having spaces
+	private static final class EnumConverter<E extends Enum<E>> implements Converter<E, String> {
+
+		private final Class<E> enumType;
+
+		private EnumConverter(Class<E> enumType) {
+			this.enumType = enumType;
+		}
+
+		@Override
+		public String toColumn(E value, Statement statement) {
+			return value.name();
+		}
+
+		@Override
+		public E fromColumn(String columnValue) {
+			return Enum.valueOf(enumType, columnValue.trim());
+		}
+
+		private static <T> Converter<T, String> instance(Column<T> column) {
+			//noinspection rawtypes
+			return (Converter<T, String>) new EnumConverter(column.type().get());
+		}
+	}
+
 	private static Map<Class<?>, Integer> createTypeMap() {
 		Map<Class<?>, Integer> typeMap = new HashMap<>();
 		typeMap.put(Long.class, Types.BIGINT);
@@ -300,6 +325,9 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 			this.groupBy = false;
 			this.aggregate = false;
 			this.selected = true;
+			if (column.type().isEnum()) {
+				converter(String.class, EnumConverter.instance(column));
+			}
 		}
 
 		@Override

@@ -2385,6 +2385,32 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void enumColumn() {
+		// held by the name of its constant, without a converter, the employee's job as an enum
+		assertEquals(connection.count(where(Employee.JOB.equalTo("CLERK"))),
+						connection.count(where(EmployeeTitle.JOB.equalTo(EmployeeTitle.Title.CLERK))));
+		assertEquals(connection.count(where(Employee.JOB.in("MANAGER", "ANALYST"))),
+						connection.count(where(EmployeeTitle.JOB.in(EmployeeTitle.Title.MANAGER, EmployeeTitle.Title.ANALYST))));
+		connection.startTransaction();
+		try {
+			Entity president = connection.selectSingle(EmployeeTitle.JOB.equalTo(EmployeeTitle.Title.PRESIDENT));
+			president.set(EmployeeTitle.JOB, EmployeeTitle.Title.MANAGER);
+			connection.update(president);
+			assertEquals("MANAGER", connection.selectSingle(Employee.ID.equalTo(president.get(EmployeeTitle.ID))).get(Employee.JOB));
+			// a value not one of the constants fails to read, naming the column
+			connection.update(Update.where(Employee.ID.equalTo(president.get(EmployeeTitle.ID)))
+							.set(Employee.JOB, "COOK")
+							.build());
+			DatabaseException exception = assertThrows(DatabaseException.class, () ->
+							connection.select(EmployeeTitle.ID.equalTo(president.get(EmployeeTitle.ID))));
+			assertTrue(exception.getMessage().contains("COOK"));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void generatorTestWithPk() {
 		Entity entity = ENTITIES.entity(GeneratorTestWithPk.TYPE)
 						.with(GeneratorTestWithPk.DATA, "Hello")

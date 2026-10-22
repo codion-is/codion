@@ -123,6 +123,46 @@ public final class ColumnDefinitionTest {
 		assertEquals(Arrays.asList(UUID.class, Types.VARCHAR), getters);
 	}
 
+	enum Color {
+		RED, GREEN
+	}
+
+	@Test
+	void enumByName() throws SQLException {
+		// held by the name of its constant, as text, without a converter, a CHAR column's padding trimmed
+		ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+						.method("getString", int.class, parameters -> "GREEN  ")
+						.build();
+		List<Object> getters = new ArrayList<>();
+		ColumnDefinition<Color> column = (ColumnDefinition<Color>) ENTITY_TYPE.column("color", Color.class).as()
+						.column()
+						.build();
+		assertEquals(Types.VARCHAR, column.sqlType());
+		assertEquals(Color.GREEN, column.get(resultSet, 1, database(getters)));
+		assertEquals(Arrays.asList(Types.VARCHAR), getters);
+		Column.Converter<Color, String> converter = column.converter();
+		Statement statement = ProxyBuilder.of(Statement.class).build();
+		assertEquals("RED", converter.toColumn(Color.RED, statement));
+		assertThrows(IllegalArgumentException.class, () -> converter.fromColumn("PURPLE"));
+		// a converter replaces it, an enum held as a code
+		ColumnDefinition<Color> coded = (ColumnDefinition<Color>) ENTITY_TYPE.column("coded", Color.class).as()
+						.column()
+						.converter(Integer.class, new Column.Converter<Color, Integer>() {
+							@Override
+							public Integer toColumn(Color value, Statement statement) {
+								return value.ordinal() + 1;
+							}
+
+							@Override
+							public Color fromColumn(Integer columnValue) {
+								return Color.values()[columnValue - 1];
+							}
+						})
+						.build();
+		assertEquals(Types.INTEGER, coded.sqlType());
+		assertEquals(2, coded.<Integer>converter().toColumn(Color.GREEN, statement));
+	}
+
 	// A database providing the getters a modern driver supports, recording the class or SQL type of each one asked for
 	private static Database database(List<Object> getters) {
 		return ProxyBuilder.of(Database.class)

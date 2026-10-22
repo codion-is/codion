@@ -7,6 +7,7 @@
 :dir-world-source: ../../../../../demos/world/src/main/java
 :dir-world-resources: ../../../../../demos/world/src/main/resources
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:dir-petclinic-source: ../../../../../demos/petclinic/src/main/java
 :url-javadoc: link:../api
 
 [#_domain_modelling]
@@ -335,6 +336,22 @@ entity.set(Customer.ACTIVE, true);
 
 Boolean isActive = entity.get(Customer.ACTIVE);
 ----
+
+=== Enum
+
+An enum column needs no converter, its value held by the name of its constant, as text.
+
+[source,java,indent=0]
+----
+include::{dir-petclinic-source}/is/codion/demos/petclinic/domain/api/Owner.java[tags=enumColumn]
+----
+
+[source,java,indent=0]
+----
+include::{dir-petclinic-source}/is/codion/demos/petclinic/domain/PetclinicImpl.java[tags=enumColumn]
+----
+
+An enum held otherwise, as a code for example, needs a converter, as does one in a PostgreSQL enum type, which takes its value bound as `Types.OTHER`, through the setter given with the converter.
 
 === Item
 

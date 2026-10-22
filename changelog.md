@@ -23,6 +23,7 @@ Codion Change Log
 - Entity.contains() bug fixed, now answers for a derived attribute whether each of its source attributes is contained, where it answered whether its value had been cached.
 - Entity.Builder bug fixed, a derived value of an entity copied via copy().builder() is now derived again from the values as built, where a value cached before survived a change to its sources via clear() or original().
 - ColumnDefinition.converter() bug fixed, now returns Converter<T, C>, where its type parameters were reversed.
+- ColumnDefinition, an enum column without a converter is now held by the name of its constant, as text, where reading and writing it failed, no driver mapping an enum.
 ### is.codion.framework.model
 - EntityMerge added, merging two versions of an entity changed since a common base, attribute by attribute, a side pre-selected where the base tells which version changed the value.
 ### is.codion.swing.framework.ui

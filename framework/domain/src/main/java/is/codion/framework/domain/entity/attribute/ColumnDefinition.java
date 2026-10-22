@@ -234,6 +234,9 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
+		 * <p>An enum column is held by the name of its constant, as text, without a converter. A converter replaces that,
+		 * for an enum held as a code for example, or in a PostgreSQL enum type, which takes its value bound as
+		 * {@link java.sql.Types#OTHER}, see {@link #converter(Class, Converter, SetValue)}.
 		 * @param <C> the column type
 		 * @param columnType the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
