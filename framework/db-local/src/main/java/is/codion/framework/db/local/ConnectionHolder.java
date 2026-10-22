@@ -35,7 +35,7 @@ import java.sql.Connection;
  * ((ConnectionHolder) entityConnection).attach(connectionPool.connection(user)); // @end}
  * A self-managing connection, see {@link LocalEntityConnection#builder()}, does not implement this,
  * its underlying connection being its own to manage. A joined connection, see
- * {@link LocalEntityConnection#localEntityConnection(is.codion.framework.domain.Domain, LocalEntityConnection)},
+ * {@link LocalEntityConnection#join(is.codion.framework.domain.Domain)},
  * throws {@link UnsupportedOperationException} from both methods, its JDBC connection being the one it joined's.
  */
 public interface ConnectionHolder {

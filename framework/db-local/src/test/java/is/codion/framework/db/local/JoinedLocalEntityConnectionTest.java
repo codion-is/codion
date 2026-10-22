@@ -34,7 +34,6 @@ import is.codion.framework.domain.operation.FunctionType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -69,7 +68,7 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void transactionStartedOnParent() {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER);
-				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+				 LocalEntityConnection joined = parent.join(joinedDomain)) {
 			parent.startTransaction();
 			assertTrue(joined.transactionOpen());
 			insertDepartment(parent, 71);
@@ -94,7 +93,7 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void transactionStartedOnJoined() {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER);
-				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+				 LocalEntityConnection joined = parent.join(joinedDomain)) {
 			joined.startTransaction();
 			assertTrue(parent.transactionOpen());
 			assertThrows(IllegalStateException.class, parent::startTransaction);
@@ -118,7 +117,7 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void outsideTransaction() {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER);
-				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+				 LocalEntityConnection joined = parent.join(joinedDomain)) {
 			insertMaster(joined, "joined");
 			assertEquals(1, masters());
 		}
@@ -127,7 +126,7 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void transactionHelperJoinsTheParentTransaction() {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER);
-				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+				 LocalEntityConnection joined = parent.join(joinedDomain)) {
 			parent.startTransaction();
 			EntityConnection.transaction(joined, () -> insertMaster(joined, "joined"));
 			assertTrue(parent.transactionOpen());
@@ -142,7 +141,7 @@ public final class JoinedLocalEntityConnectionTest {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER)) {
 			assertThrows(DatabaseException.class, () -> parent.execute(ParentDomain.RUN, connection ->
 							EntityConnection.transaction(connection, () -> {
-								LocalEntityConnection joined = localEntityConnection(joinedDomain, connection);
+								LocalEntityConnection joined = connection.join(joinedDomain);
 								insertMaster(joined, "joined");
 								insertDepartment(connection, 71);
 								insertDepartment(connection, 71);
@@ -152,7 +151,7 @@ public final class JoinedLocalEntityConnectionTest {
 
 			parent.execute(ParentDomain.RUN, connection ->
 							EntityConnection.transaction(connection, () -> {
-								LocalEntityConnection joined = localEntityConnection(joinedDomain, connection);
+								LocalEntityConnection joined = connection.join(joinedDomain);
 								insertMaster(joined, "joined");
 								insertDepartment(connection, 71);
 							}));
@@ -164,7 +163,7 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void close() {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER)) {
-			LocalEntityConnection joined = localEntityConnection(joinedDomain, parent);
+			LocalEntityConnection joined = parent.join(joinedDomain);
 			parent.startTransaction();
 			insertDepartment(parent, 71);
 			joined.close();
@@ -178,7 +177,7 @@ public final class JoinedLocalEntityConnectionTest {
 			parent.commitTransaction();
 			assertEquals(1, departments());
 
-			LocalEntityConnection other = localEntityConnection(joinedDomain, parent);
+			LocalEntityConnection other = parent.join(joinedDomain);
 			parent.close();
 			assertFalse(other.connected());
 			assertThrows(DatabaseException.class, () -> other.count(Count.all(Master.TYPE)));
@@ -190,7 +189,7 @@ public final class JoinedLocalEntityConnectionTest {
 		Connection first = DATABASE.createConnection(UNIT_TEST_USER);
 		Connection second = DATABASE.createConnection(UNIT_TEST_USER);
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, first);
-				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+				 LocalEntityConnection joined = parent.join(joinedDomain)) {
 			assertEquals(0, joinedDomain.configured.get());
 			joined.count(Count.all(Master.TYPE));
 			joined.count(Count.all(Master.TYPE));
@@ -224,7 +223,7 @@ public final class JoinedLocalEntityConnectionTest {
 						.domain(PARENT)
 						.user(UNIT_TEST_USER)
 						.build();
-		try (LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+		try (LocalEntityConnection joined = parent.join(joinedDomain)) {
 			parent.startTransaction();
 			assertTrue(joined.transactionOpen());
 			insertMaster(joined, "joined");
@@ -245,7 +244,7 @@ public final class JoinedLocalEntityConnectionTest {
 		finally {
 			parent.close();
 		}
-		assertThrows(IllegalStateException.class, () -> localEntityConnection(joinedDomain, parent));
+		assertThrows(IllegalStateException.class, () -> parent.join(joinedDomain));
 	}
 
 	@Test
@@ -257,7 +256,7 @@ public final class JoinedLocalEntityConnectionTest {
 						.domain(PARENT)
 						.user(UNIT_TEST_USER)
 						.build();
-		try (LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+		try (LocalEntityConnection joined = parent.join(joinedDomain)) {
 			joined.count(Count.all(Master.TYPE));
 			// the connection goes bad, and the parent re-establishes it
 			parent.connection().close();
@@ -286,7 +285,7 @@ public final class JoinedLocalEntityConnectionTest {
 						.domain(PARENT)
 						.user(UNIT_TEST_USER)
 						.build();
-		try (LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+		try (LocalEntityConnection joined = parent.join(joinedDomain)) {
 			joined.count(Count.all(Master.TYPE));
 			parent.connection().close();
 			assertThrows(DatabaseException.class, joined::startTransaction);
@@ -304,7 +303,7 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void savepoints() throws Exception {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER);
-				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+				 LocalEntityConnection joined = parent.join(joinedDomain)) {
 			parent.startTransaction();
 			insertDepartment(parent, 71);
 			Savepoint savepoint = joined.savepoint();
@@ -323,7 +322,7 @@ public final class JoinedLocalEntityConnectionTest {
 						.domain(PARENT)
 						.user(UNIT_TEST_USER)
 						.build();
-		try (LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+		try (LocalEntityConnection joined = parent.join(joinedDomain)) {
 			parent.startTransaction();
 			Savepoint savepoint = joined.savepoint();
 			insertMaster(joined, "joined");
@@ -354,8 +353,8 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void joinedToJoined() {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER)) {
-			LocalEntityConnection joined = localEntityConnection(joinedDomain, parent);
-			LocalEntityConnection second = localEntityConnection(joinedDomain, joined);
+			LocalEntityConnection joined = parent.join(joinedDomain);
+			LocalEntityConnection second = joined.join(joinedDomain);
 			joined.close();
 			second.startTransaction();
 			assertTrue(parent.transactionOpen());
@@ -372,7 +371,7 @@ public final class JoinedLocalEntityConnectionTest {
 			parent.optimisticLocking(!parent.optimisticLocking());
 			parent.limitReferenceDepth(!parent.limitReferenceDepth());
 			parent.iteratorBufferSize(7);
-			LocalEntityConnection joined = localEntityConnection(joinedDomain, parent);
+			LocalEntityConnection joined = parent.join(joinedDomain);
 			assertEquals(42, joined.queryTimeout());
 			assertEquals(parent.optimisticLocking(), joined.optimisticLocking());
 			assertEquals(parent.limitReferenceDepth(), joined.limitReferenceDepth());
@@ -388,7 +387,7 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void tracer() {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER);
-				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+				 LocalEntityConnection joined = parent.join(joinedDomain)) {
 			MethodTracer tracer = methodTracer(10);
 			((MethodTracer.Traceable) parent).tracer(tracer);
 			assertTrue(tracer.entries().isEmpty());
@@ -400,7 +399,7 @@ public final class JoinedLocalEntityConnectionTest {
 	@Test
 	void serialized() throws Exception {
 		try (LocalEntityConnection parent = localEntityConnection(DATABASE, PARENT, UNIT_TEST_USER);
-				 LocalEntityConnection joined = localEntityConnection(joinedDomain, parent)) {
+				 LocalEntityConnection joined = parent.join(joinedDomain)) {
 			CountDownLatch entered = new CountDownLatch(1);
 			CountDownLatch release = new CountDownLatch(1);
 			CompletableFuture<Void> function = CompletableFuture.runAsync(() -> parent.execute(ParentDomain.RUN, connection -> {
@@ -425,15 +424,6 @@ public final class JoinedLocalEntityConnectionTest {
 				release.countDown();
 			}
 		}
-	}
-
-	@Test
-	void otherImplementation() {
-		LocalEntityConnection other = (LocalEntityConnection) Proxy.newProxyInstance(LocalEntityConnection.class.getClassLoader(),
-						new Class<?>[] {LocalEntityConnection.class}, (proxy, method, args) -> {
-							throw new UnsupportedOperationException();
-						});
-		assertThrows(IllegalArgumentException.class, () -> localEntityConnection(joinedDomain, other));
 	}
 
 	private static void insertDepartment(EntityConnection connection, int deptno) {

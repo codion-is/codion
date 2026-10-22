@@ -28,6 +28,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
+import is.codion.framework.domain.Domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,6 +126,11 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 	public void queryTimeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		local().queryTimeout(queryTimeout);
+	}
+
+	@Override
+	public LocalEntityConnection join(Domain domain) {
+		return new DefaultLocalEntityConnection(domain, this, local());
 	}
 
 	@Override

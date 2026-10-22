@@ -162,16 +162,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		this(requireNonNull(domain), configureDatabase(requireNonNull(database), domain), requireNonNull(connection), user(connection));
 	}
 
-	/**
-	 * Constructs a new LocalEntityConnection instance, joined to the given connection
-	 * @param domain the domain model
-	 * @param connection the connection to join
-	 * @throws IllegalArgumentException in case the given connection was not created by this module
-	 */
-	DefaultLocalEntityConnection(Domain domain, LocalEntityConnection connection) {
-		this(requireNonNull(domain), requireNonNull(connection), joined(connection));
-	}
-
 	private DefaultLocalEntityConnection(Domain domain, Database database, Connection connection, User user) {
 		this.domain = domain;
 		this.database = database;
@@ -182,8 +172,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		this.selectQueries = new SelectQueries(database);
 	}
 
-	private DefaultLocalEntityConnection(Domain domain, LocalEntityConnection connection, DefaultLocalEntityConnection joined) {
-		this.domain = domain;
+	/**
+	 * Constructs a new LocalEntityConnection instance, joined to the given connection
+	 * @param domain the domain model
+	 * @param connection the connection to join
+	 * @param joined the connection whose session to share, the delegate of a self-managing one
+	 */
+	DefaultLocalEntityConnection(Domain domain, LocalEntityConnection connection, DefaultLocalEntityConnection joined) {
+		this.domain = requireNonNull(domain);
 		this.database = configureDatabase(joined.database, domain);
 		this.session = joined.session;
 		//a self-managing connection keeps its own transaction state, so it is the one called, rather than its delegate
@@ -995,6 +991,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		}
 	}
 
+	@Override
+	public LocalEntityConnection join(Domain domain) {
+		return new DefaultLocalEntityConnection(domain, this, this);
+	}
+
 	/**
 	 * The tracer is shared by a connection and those joined to it.
 	 */
@@ -1802,21 +1803,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		if (parent != null) {
 			throw new UnsupportedOperationException("The JDBC connection of a joined connection is the one it joined's");
 		}
-	}
-
-	/**
-	 * @param connection the connection to join
-	 * @return the connection whose session to share, the delegate of a self-managing one
-	 */
-	private static DefaultLocalEntityConnection joined(LocalEntityConnection connection) {
-		if (connection instanceof DefaultLocalEntityConnection) {
-			return (DefaultLocalEntityConnection) connection;
-		}
-		if (connection instanceof ManagedLocalEntityConnection) {
-			return ((ManagedLocalEntityConnection) connection).local();
-		}
-
-		throw new IllegalArgumentException("Only a connection created via LocalEntityConnection can be joined: " + connection.getClass());
 	}
 
 	/**

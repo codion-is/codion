@@ -12,6 +12,8 @@ Codion Change Log
 - Controls.Layout.after(ControlKey) and before(ControlKey) added, moving the insertion point controls and separators are added at, at the end by default, the defaults always added at the end.
 - LookAndFeelSelectionDialogBuilder.createControl() now returns CommandControl.
 - Controls.Layout.remove(ControlKey) added.
+### is.codion.framework.db.local
+- LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) replaced with join(Domain).
 ### is.codion.framework.domain
 - Entity bug fixed, a derived value is now null where one of its source values is missing, for example a column not selected, where it was derived as if the missing value were null, and an entity made immutable no longer fails on a provider not expecting a missing value.
 - Entity.contains() bug fixed, now answers for a derived attribute whether each of its source attributes is contained, where it answered whether its value had been cached.
