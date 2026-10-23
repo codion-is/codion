@@ -37,7 +37,7 @@ public class StoreDatabase {
 
 	static void storeEntityConnection() {
 		Database database = H2DatabaseFactory
-						.create("jdbc:h2:mem:store",
+						.database("jdbc:h2:mem:store",
 										"src/main/sql/create_schema_minimal.sql");
 
 		EntityConnection connection =

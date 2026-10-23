@@ -94,7 +94,7 @@ public final class LegacyJdbcTest {
 	private static Database legacyDatabase() {
 		LEGACY_JDBC.set(true);
 		try {
-			Database database = H2DatabaseFactory.create("jdbc:h2:mem:LegacyJdbcTest", "src/test/sql/create_legacy_jdbc.sql");
+			Database database = H2DatabaseFactory.database("jdbc:h2:mem:LegacyJdbcTest", "src/test/sql/create_legacy_jdbc.sql");
 			database.connectionProvider(new ConnectionProvider() {
 				@Override
 				public Connection connection(User user, String url) throws SQLException {

@@ -306,8 +306,8 @@ public final class NotesDemo {
 										"values ('My fifth note', '2023-10-05 18:30')",
 						"commit"
 		);
-		Database database = new H2DatabaseFactory()
-						.create("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");
+		Database database = H2DatabaseFactory
+						.database("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");
 		try (Connection connection = database.createConnection(User.user("sa"));
 				 Statement stmt = connection.createStatement()) {
 			for (String statement : CREATE_SCHEMA_STATEMENTS) {

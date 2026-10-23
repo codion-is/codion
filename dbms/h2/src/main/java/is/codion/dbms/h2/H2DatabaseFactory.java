@@ -59,7 +59,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 	 * @param initScripts initialization scripts to run on database creation
 	 * @return an H2 Database instance
 	 */
-	public static Database create(String url, String... initScripts) {
+	public static Database database(String url, String... initScripts) {
 		return new H2Database(url, initScripts == null ? emptyList() : asList(initScripts));
 	}
 

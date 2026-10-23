@@ -14,6 +14,8 @@ Codion Change Log
 - Controls.Layout.remove(ControlKey) added.
 ### is.codion.common.db
 - Database.subqueryRequiresAlias() removed, the count query's subquery now aliased on every database.
+### is.codion.dbms.h2
+- H2DatabaseFactory.create(String, String...) renamed to database(), now callable without init scripts, where create(url) resolved to the inherited instance method DatabaseFactory.create(String).
 ### is.codion.framework.db.local
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) replaced with join(Domain).
 - LocalEntityConnection bug fixed, the statement values logged with a failed statement are again logged as set in the statement, converted by their columns' converters, for pasting into it, where they were converted backwards, as if read from the database, and logged unconverted.
