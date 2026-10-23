@@ -54,6 +54,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -76,6 +78,7 @@ import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
@@ -1091,6 +1094,41 @@ public class DefaultLocalEntityConnectionTest {
 			finally {
 				statement.execute("SET QUERY_STATISTICS FALSE");
 			}
+		}
+	}
+
+	@Test
+	void closeRollsBackUncommitted() throws Exception {
+		// H2 clears a session's statement cache on a rollback, so a connection over a pooled one, closed after
+		// each request, rolls back on close only where work may be uncommitted
+		Database database = Database.instance();
+		AtomicInteger rollbacks = new AtomicInteger();
+		try (Connection pooled = database.createConnection(UNIT_TEST_USER)) {
+			try (LocalEntityConnection connection = localEntityConnection(database, DOMAIN, unclosable(pooled, rollbacks))) {
+				connection.select(all(Department.TYPE));
+				connection.startTransaction();
+				connection.select(all(Department.TYPE));
+				connection.commitTransaction();
+			}
+			assertEquals(0, rollbacks.get());
+			// a select for update outside a transaction leaves its lock for the caller to end
+			try (LocalEntityConnection connection = localEntityConnection(database, DOMAIN, unclosable(pooled, rollbacks))) {
+				connection.select(Select.where(Department.DNAME.equalTo("SALES")).forUpdate(Lock.NOWAIT).build());
+			}
+			assertEquals(1, rollbacks.get());
+			// as may anything done via the connection itself
+			try (LocalEntityConnection connection = localEntityConnection(database, DOMAIN, unclosable(pooled, rollbacks))) {
+				connection.connection();
+			}
+			assertEquals(2, rollbacks.get());
+			// and an open transaction
+			try (LocalEntityConnection connection = localEntityConnection(database, DOMAIN, unclosable(pooled, rollbacks))) {
+				connection.startTransaction();
+			}
+			assertEquals(3, rollbacks.get());
+			// and a connection closed unused, its state unknown
+			localEntityConnection(database, DOMAIN, unclosable(pooled, rollbacks)).close();
+			assertEquals(4, rollbacks.get());
 		}
 	}
 
@@ -2876,6 +2914,25 @@ public class DefaultLocalEntityConnectionTest {
 		finally {
 			connection.rollbackTransaction();
 		}
+	}
+
+	// The given connection, as a pool hands it out, closing it leaving it open, its rollbacks counted
+	private static Connection unclosable(Connection connection, AtomicInteger rollbacks) {
+		return (Connection) Proxy.newProxyInstance(DefaultLocalEntityConnectionTest.class.getClassLoader(),
+						new Class<?>[] {Connection.class}, (proxy, method, arguments) -> {
+							if (method.getName().equals("close")) {
+								return null;
+							}
+							if (method.getName().equals("rollback") && arguments == null) {
+								rollbacks.incrementAndGet();
+							}
+							try {
+								return method.invoke(connection, arguments);
+							}
+							catch (InvocationTargetException e) {
+								throw e.getCause();
+							}
+						});
 	}
 
 	private static LocalEntityConnection createConnection() {

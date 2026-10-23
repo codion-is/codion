@@ -1016,6 +1016,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			//attaching is where a connection first arrives, the constructor having seen only the first one
 			domain.configure(connection);
 			session.connection = connection;
+			session.uncommitted = true;
 			session.attached++;
 		}
 	}
@@ -1644,6 +1645,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		SQLException exception = null;
 		try {
 			session.connection.rollback();
+			session.uncommitted = false;
 		}
 		catch (SQLException e) {
 			exception = e;
@@ -1660,6 +1662,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			SQLException exception = null;
 			try {
 				session.connection.commit();
+				session.uncommitted = false;
 			}
 			catch (SQLException e) {
 				exception = e;
@@ -1723,6 +1726,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		if (closed || connection == null || connection.isClosed()) {
 			throw new SQLException(CONNECTION_IS_CLOSED);
 		}
+		session.uncommitted = true;
 		if (parent != null && configured != session.attached) {
 			//the parent configures the connections attached to it for its own domain only, and on each attachment,
 			//as Domain.configure(Connection) promises, so a joined domain configures on each attachment as well
@@ -1742,7 +1746,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private void closeConnection() {
 		Connection connection = session.connection;
 		try {
-			if (connection != null && !connection.isClosed()) {
+			if (connection != null && session.uncommitted && !connection.isClosed()) {
 				connection.rollback();
 			}
 		}
@@ -2185,6 +2189,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 		private @Nullable Connection connection;
 		private boolean transactionOpen = false;
+		//whether the connection may hold work neither committed nor rolled back, set on each use and on arrival, its
+		//state unknown, so that closing rolls back only then, a rollback clearing H2's statement cache for the session
+		private boolean uncommitted = true;
 		private MethodTracer tracer = MethodTracer.NO_OP;
 		//the number of times a connection has been attached, for the connections joined to this one to configure each
 		private long attached = 0;
@@ -2223,6 +2230,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 		private void transactionEnded() {
 			transactionOpen = false;
+			uncommitted = false;
 			savepoints.clear();
 		}
 	}
