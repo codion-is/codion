@@ -55,6 +55,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
@@ -1060,6 +1061,36 @@ public class DefaultLocalEntityConnectionTest {
 		finally {
 			connection.close();
 			connection2.close();
+		}
+	}
+
+	@Test
+	void queryTimeout() throws Exception {
+		// H2 holds the query timeout per session, a statement reporting the session's, so it is set only where it differs
+		try (LocalEntityConnection connection = createConnection();
+				 Statement statement = connection.connection().createStatement()) {
+			statement.execute("SET QUERY_STATISTICS FALSE");
+			statement.execute("SET QUERY_STATISTICS TRUE");
+			try {
+				int queryTimeout = LocalEntityConnection.QUERY_TIMEOUT.getOrThrow();
+				connection.select(all(Department.TYPE));
+				assertEquals(queryTimeout, statement.getQueryTimeout());
+				connection.select(all(Department.TYPE));
+				connection.select(Select.all(Department.TYPE).timeout(5).build());
+				assertEquals(5, statement.getQueryTimeout());
+				connection.select(all(Department.TYPE));
+				assertEquals(queryTimeout, statement.getQueryTimeout());
+				connection.select(all(Department.TYPE));
+				// the default once, the select's own, the default again
+				try (ResultSet resultSet = statement.executeQuery("SELECT SUM(EXECUTION_COUNT) FROM INFORMATION_SCHEMA.QUERY_STATISTICS " +
+								"WHERE SQL_STATEMENT = 'SET QUERY_TIMEOUT ?'")) {
+					resultSet.next();
+					assertEquals(3, resultSet.getInt(1));
+				}
+			}
+			finally {
+				statement.execute("SET QUERY_STATISTICS FALSE");
+			}
 		}
 	}
 

@@ -20,6 +20,7 @@ Codion Change Log
 - LocalEntityConnection.localEntityConnection(Domain, LocalEntityConnection) replaced with join(Domain).
 - LocalEntityConnection bug fixed, the statement values logged with a failed statement are again logged as set in the statement, converted by their columns' converters, for pasting into it, where they were converted backwards, as if read from the database, and logged unconverted.
 - LocalEntityConnection.count() bug fixed, its subquery now aliased on every database, without AS, which Oracle rejects, where it failed on MySQL, MariaDB and Derby, which require an alias.
+- LocalEntityConnection, the query timeout is now set on a statement only where it reports another, where it was set on every statement, which on H2, holding it per session, runs a command clearing every session's statement cache.
 ### is.codion.framework.domain
 - Entity bug fixed, a derived value is now null where one of its source values is missing, for example a column not selected, where it was derived as if the missing value were null, and an entity made immutable no longer fails on a provider not expecting a missing value.
 - Entity.contains() bug fixed, now answers for a derived attribute whether each of its source attributes is contained, where it answered whether its value had been cached.

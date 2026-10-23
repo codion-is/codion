@@ -1529,7 +1529,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			PreparedStatement statement = generatedKeys ?
 							verifyOpenConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
 							verifyOpenConnection().prepareStatement(query);
-			statement.setQueryTimeout(queryTimeout);
+			// H2 holds the timeout per session, setting it running a command which clears every session's statement cache
+			if (statement.getQueryTimeout() != queryTimeout) {
+				statement.setQueryTimeout(queryTimeout);
+			}
 
 			return statement;
 		}
