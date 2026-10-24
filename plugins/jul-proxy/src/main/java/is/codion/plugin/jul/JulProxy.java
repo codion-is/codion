@@ -45,19 +45,19 @@ public final class JulProxy implements LoggerProxy {
 	private static final Map<String, Logger> CONFIGURED = new ConcurrentHashMap<>();
 
 	@Override
-	public @Nullable Object getLogLevel(String logger) {
+	public @Nullable Object level(String logger) {
 		Logger julLogger = LogManager.getLogManager().getLogger(requireNonNull(logger));
 
 		return julLogger == null ? null : julLogger.getLevel();
 	}
 
 	@Override
-	public void setLogLevel(String logger, Object logLevel) {
-		if (!(logLevel instanceof Level)) {
-			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
+	public void level(String logger, Object level) {
+		if (!(level instanceof Level)) {
+			throw new IllegalArgumentException("level should be of type " + Level.class.getName());
 		}
 		Logger julLogger = Logger.getLogger(requireNonNull(logger));
-		julLogger.setLevel((Level) logLevel);
+		julLogger.setLevel((Level) level);
 		CONFIGURED.put(logger, julLogger);
 	}
 
@@ -67,7 +67,7 @@ public final class JulProxy implements LoggerProxy {
 	}
 
 	@Override
-	public String rootLogger() {
+	public String root() {
 		// the root logger, named by the empty string, the global logger being one of its children
 		return "";
 	}

@@ -48,19 +48,23 @@ import static java.util.stream.Collectors.toList;
 public final class Log4jProxy implements LoggerProxy {
 
 	@Override
-	public Object getLogLevel(String logger) {
+	public @Nullable Object level(String logger) {
 		LoggerContext context = (LoggerContext) LogManager.getContext(false);
 		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(requireNonNull(logger));
+		if (logger.equals(LogManager.ROOT_LOGGER_NAME)) {
+			return loggerConfig.getLevel();
+		}
 
-		return loggerConfig.getLevel();
+		// the config found may be that of an ancestor
+		return loggerConfig.getName().equals(logger) ? loggerConfig.getExplicitLevel() : null;
 	}
 
 	@Override
-	public void setLogLevel(String logger, Object logLevel) {
-		if (!(logLevel instanceof Level)) {
-			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
+	public void level(String logger, Object level) {
+		if (!(level instanceof Level)) {
+			throw new IllegalArgumentException("level should be of type " + Level.class.getName());
 		}
-		Configurator.setLevel(requireNonNull(logger), (Level) logLevel);
+		Configurator.setLevel(requireNonNull(logger), (Level) level);
 	}
 
 	@Override
@@ -69,7 +73,7 @@ public final class Log4jProxy implements LoggerProxy {
 	}
 
 	@Override
-	public String rootLogger() {
+	public String root() {
 		return LogManager.ROOT_LOGGER_NAME;
 	}
 

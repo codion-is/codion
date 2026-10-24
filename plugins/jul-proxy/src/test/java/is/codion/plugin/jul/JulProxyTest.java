@@ -28,23 +28,23 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class JulProxyTest {
 
 	@Test
-	void rootLogger() {
+	void root() {
 		JulProxy proxy = new JulProxy();
 		Logger logger = Logger.getLogger(JulProxyTest.class.getName());
-		proxy.setLogLevel(proxy.rootLogger(), Level.FINE);
-		assertEquals(Level.FINE, proxy.getLogLevel(proxy.rootLogger()));
+		proxy.level(proxy.root(), Level.FINE);
+		assertEquals(Level.FINE, proxy.level(proxy.root()));
 		assertTrue(logger.isLoggable(Level.FINE));
-		proxy.setLogLevel(proxy.rootLogger(), Level.WARNING);
+		proxy.level(proxy.root(), Level.WARNING);
 		assertFalse(logger.isLoggable(Level.INFO));
 	}
 
 	@Test
 	void noLogger() {
 		String parent = JulProxyTest.class.getName() + ".parent";
-		assertNull(new JulProxy().getLogLevel(parent));
-		new JulProxy().setLogLevel(parent, Level.FINEST);
+		assertNull(new JulProxy().level(parent));
+		new JulProxy().level(parent, Level.FINEST);
 		System.gc();
-		assertEquals(Level.FINEST, new JulProxy().getLogLevel(parent));
+		assertEquals(Level.FINEST, new JulProxy().level(parent));
 		assertTrue(Logger.getLogger(parent + ".child").isLoggable(Level.FINEST));
 	}
 }

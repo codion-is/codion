@@ -24,6 +24,7 @@ import is.codion.common.rmi.server.AbstractServerAdmin;
 import is.codion.common.utilities.logging.LoggerProxy;
 import is.codion.common.utilities.logging.MethodTrace;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,14 +71,14 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 	}
 
 	@Override
-	public Object logLevel(String logger) throws RemoteException {
-		return loggerProxy.getLogLevel(logger);
+	public @Nullable Object logLevel(String logger) throws RemoteException {
+		return loggerProxy.level(logger);
 	}
 
 	@Override
 	public void logLevel(String logger, Object level) throws RemoteException {
-		LOG.info("setLogLevel({}, {})", logger, level);
-		loggerProxy.setLogLevel(logger, level);
+		LOG.info("logLevel({}, {})", logger, level);
+		loggerProxy.level(logger, level);
 	}
 
 	@Override
@@ -87,7 +88,7 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 
 	@Override
 	public String rootLogger() throws RemoteException {
-		return loggerProxy.rootLogger();
+		return loggerProxy.root();
 	}
 
 	@Override

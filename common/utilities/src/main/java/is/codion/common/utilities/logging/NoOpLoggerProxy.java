@@ -18,6 +18,8 @@
  */
 package is.codion.common.utilities.logging;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -25,15 +27,13 @@ import static java.util.Collections.emptyList;
 
 final class NoOpLoggerProxy implements LoggerProxy {
 
-	private static final String NO_LOG_LEVEL = "NULL";
-
 	@Override
-	public Object getLogLevel(String logger) {
-		return NO_LOG_LEVEL;
+	public @Nullable Object level(String logger) {
+		return null;
 	}
 
 	@Override
-	public void setLogLevel(String logger, Object logLevel) {/*no op*/}
+	public void level(String logger, Object level) {/*no op*/}
 
 	@Override
 	public List<Object> levels() {
@@ -41,7 +41,7 @@ final class NoOpLoggerProxy implements LoggerProxy {
 	}
 
 	@Override
-	public String rootLogger() {
+	public String root() {
 		return "";
 	}
 

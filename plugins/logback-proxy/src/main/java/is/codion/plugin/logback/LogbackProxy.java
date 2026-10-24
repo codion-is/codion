@@ -26,6 +26,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.FileAppender;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
@@ -45,16 +46,16 @@ import static java.util.stream.Collectors.toList;
 public final class LogbackProxy implements LoggerProxy {
 
 	@Override
-	public Object getLogLevel(String logger) {
+	public @Nullable Object level(String logger) {
 		return ((Logger) LoggerFactory.getLogger(requireNonNull(logger))).getLevel();
 	}
 
 	@Override
-	public void setLogLevel(String logger, Object logLevel) {
-		if (!(logLevel instanceof Level)) {
-			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
+	public void level(String logger, Object level) {
+		if (!(level instanceof Level)) {
+			throw new IllegalArgumentException("level should be of type " + Level.class.getName());
 		}
-		((Logger) LoggerFactory.getLogger(requireNonNull(logger))).setLevel((Level) logLevel);
+		((Logger) LoggerFactory.getLogger(requireNonNull(logger))).setLevel((Level) level);
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public final class LogbackProxy implements LoggerProxy {
 	}
 
 	@Override
-	public String rootLogger() {
+	public String root() {
 		return org.slf4j.Logger.ROOT_LOGGER_NAME;
 	}
 

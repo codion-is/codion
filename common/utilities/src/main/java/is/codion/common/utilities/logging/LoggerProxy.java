@@ -20,6 +20,8 @@ package is.codion.common.utilities.logging;
 
 import is.codion.common.utilities.exceptions.Exceptions;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -39,17 +41,20 @@ public interface LoggerProxy {
 	LoggerProxy NONE = new NoOpLoggerProxy();
 
 	/**
+	 * Returns the level set for the given logger itself, null where it has none, the logger then inheriting
+	 * the level of its nearest ancestor with one. The {@link #root()} logger always has a level.
 	 * @param logger the logger name
-	 * @return the log level
+	 * @return the level set for the given logger, null if none is set
 	 */
-	Object getLogLevel(String logger);
+	@Nullable Object level(String logger);
 
 	/**
-	 * Sets the log level
+	 * Sets the level of the given logger
 	 * @param logger the logger name
-	 * @param logLevel the log level
+	 * @param level the level, one of {@link #levels()}
+	 * @throws IllegalArgumentException in case the level is not of the type of {@link #levels()}
 	 */
-	void setLogLevel(String logger, Object logLevel);
+	void level(String logger, Object level);
 
 	/**
 	 * @return the available log levels
@@ -57,9 +62,9 @@ public interface LoggerProxy {
 	List<Object> levels();
 
 	/**
-	 * @return the root logger name
+	 * @return the name of the root logger
 	 */
-	String rootLogger();
+	String root();
 
 	/**
 	 * @return all loggers

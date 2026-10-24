@@ -36,13 +36,15 @@ public final class Log4jProxyTest {
 	}
 
 	@Test
-	void logLevel() {
+	void level() {
 		Log4jProxy proxy = new Log4jProxy();
 		String logger = Log4jProxyTest.class.getPackage().getName();
-		proxy.setLogLevel(proxy.rootLogger(), Level.WARN);
-		proxy.setLogLevel(logger, Level.TRACE);
-		assertEquals(Level.TRACE, proxy.getLogLevel(logger));
-		assertEquals(Level.WARN, proxy.getLogLevel(proxy.rootLogger()));
+		proxy.level(proxy.root(), Level.WARN);
+		proxy.level(logger, Level.TRACE);
+		assertEquals(Level.TRACE, proxy.level(logger));
+		assertEquals(Level.WARN, proxy.level(proxy.root()));
+		assertNull(proxy.level(logger + ".child"));
+		assertNull(proxy.level("file"));
 		assertTrue(LogManager.getLogger(Log4jProxyTest.class).isTraceEnabled());
 		assertFalse(LogManager.getLogger("other").isInfoEnabled());
 	}

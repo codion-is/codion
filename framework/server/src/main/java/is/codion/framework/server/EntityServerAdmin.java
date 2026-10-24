@@ -23,6 +23,8 @@ import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.utilities.logging.MethodTrace;
 
+import org.jspecify.annotations.Nullable;
+
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
@@ -93,10 +95,10 @@ public interface EntityServerAdmin extends ServerAdmin {
 
 	/**
 	 * @param logger the logger
-	 * @return the log level
+	 * @return the level set for the given logger, null if none is set
 	 * @throws RemoteException in case of a communication error
 	 */
-	Object logLevel(String logger) throws RemoteException;
+	@Nullable Object logLevel(String logger) throws RemoteException;
 
 	/**
 	 * @param logger the logger

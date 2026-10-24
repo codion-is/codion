@@ -18,12 +18,29 @@
  */
 package is.codion.plugin.logback;
 
+import ch.qos.logback.classic.Level;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class LogbackProxyTest {
 
 	@Test
 	void test() {
 		new LogbackProxy().files();
+	}
+
+	@Test
+	void level() {
+		LogbackProxy proxy = new LogbackProxy();
+		String logger = LogbackProxyTest.class.getPackage().getName();
+		proxy.level(proxy.root(), Level.WARN);
+		proxy.level(logger, Level.TRACE);
+		assertEquals(Level.TRACE, proxy.level(logger));
+		assertEquals(Level.WARN, proxy.level(proxy.root()));
+		assertNull(proxy.level(logger + ".child"));
+		assertTrue(LoggerFactory.getLogger(LogbackProxyTest.class).isTraceEnabled());
+		assertFalse(LoggerFactory.getLogger("other").isInfoEnabled());
 	}
 }

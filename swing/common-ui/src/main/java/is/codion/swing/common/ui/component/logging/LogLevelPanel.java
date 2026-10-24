@@ -74,7 +74,7 @@ import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
  *   <li>The ROOT logger level if no parent has an explicit configuration</li>
  * </ul>
  * <p>
- * Changes to log levels are applied immediately via {@link LoggerProxy#setLogLevel(String, Object)}.
+ * Changes to log levels are applied immediately via {@link LoggerProxy#level(String, Object)}.
  * When a logger's level is changed, child loggers that don't have explicit levels will automatically
  * inherit the new level. The table refreshes after each change to reflect the current state of the
  * logging system.
@@ -191,13 +191,13 @@ public final class LogLevelPanel extends JPanel {
 		public Collection<LogLevelRow> get() {
 			List<LogLevelRow> rows = new ArrayList<>();
 			Map<String, Object> logLevels = new HashMap<>();
-			Object rootLevel = logLevels.computeIfAbsent(loggerProxy.rootLogger(), loggerProxy::getLogLevel);
+			Object rootLevel = logLevels.computeIfAbsent(loggerProxy.root(), loggerProxy::level);
 			loggerProxy.loggers().stream().sorted().forEach(logger -> {
 				String loggerName = logger;
-				Object logLevel = loggerProxy.getLogLevel(loggerName);
+				Object logLevel = loggerProxy.level(loggerName);
 				while (logLevel == null && loggerName.contains(".")) {
 					loggerName = loggerName.substring(0, loggerName.lastIndexOf('.'));
-					logLevel = logLevels.computeIfAbsent(loggerName, loggerProxy::getLogLevel);
+					logLevel = logLevels.computeIfAbsent(loggerName, loggerProxy::level);
 				}
 				rows.add(new DefaultLogLevelRow(logger, logLevel == null ? rootLevel : logLevel));
 			});
@@ -222,7 +222,7 @@ public final class LogLevelPanel extends JPanel {
 		@Override
 		public void set(Object value, int rowIndex, LogLevelRow row, LogLevelColumn identifier) {
 			if (LogLevelColumn.LEVEL.equals(identifier)) {
-				loggerProxy.setLogLevel(row.logger(), value);
+				loggerProxy.level(row.logger(), value);
 				tableModel.items().refresh();
 			}
 		}

@@ -39,6 +39,7 @@ import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -572,7 +573,7 @@ public final class ServerMonitor {
 	private final class ServerLoggerProxy implements LoggerProxy {
 
 		@Override
-		public Object getLogLevel(String logger) {
+		public @Nullable Object level(String logger) {
 			try {
 				return server.logLevel(logger);
 			}
@@ -582,7 +583,7 @@ public final class ServerMonitor {
 		}
 
 		@Override
-		public void setLogLevel(String logger, Object level) {
+		public void level(String logger, Object level) {
 			try {
 				server.logLevel(logger, level);
 			}
@@ -602,7 +603,7 @@ public final class ServerMonitor {
 		}
 
 		@Override
-		public String rootLogger() {
+		public String root() {
 			try {
 				return server.rootLogger();
 			}

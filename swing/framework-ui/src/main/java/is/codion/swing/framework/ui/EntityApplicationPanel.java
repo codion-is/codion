@@ -1120,13 +1120,13 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		if (loggerProxy == LoggerProxy.NONE) {
 			return Collections.emptyMap();
 		}
-		Object currentLogLevel = loggerProxy.getLogLevel(loggerProxy.rootLogger());
+		Object currentLogLevel = loggerProxy.level(loggerProxy.root());
 		Map<Object, State> levelStateMap = new LinkedHashMap<>();
 		State.Group logLevelStateGroup = State.group();
 		for (Object logLevel : loggerProxy.levels()) {
 			levelStateMap.put(logLevel, State.builder()
 							.value(Objects.equals(logLevel, currentLogLevel))
-							.when(true, () -> loggerProxy.setLogLevel(loggerProxy.rootLogger(), logLevel))
+							.when(true, () -> loggerProxy.level(loggerProxy.root(), logLevel))
 							.group(logLevelStateGroup)
 							.build());
 		}

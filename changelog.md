@@ -12,6 +12,8 @@ Codion Change Log
 - Controls.Layout.after(ControlKey) and before(ControlKey) added, moving the insertion point controls and separators are added at, at the end by default, the defaults always added at the end.
 - LookAndFeelSelectionDialogBuilder.createControl() now returns CommandControl.
 - Controls.Layout.remove(ControlKey) added.
+### is.codion.common.utilities
+- LoggerProxy.getLogLevel() and setLogLevel() renamed to level(), rootLogger() to root(), level(String) now nullable, returning the level set for the logger itself, null where it inherits that of an ancestor, the root logger always having one, NONE returning null.
 ### is.codion.common.db
 - Database.subqueryRequiresAlias() removed, the count query's subquery now aliased on every database.
 ### is.codion.dbms.h2
@@ -33,9 +35,12 @@ Codion Change Log
 ### is.codion.plugin.log4j.proxy
 - Log4jProxy.setLogLevel() bug fixed, now sets the level of the given logger, where it set the root logger's level, whichever logger was given.
 - Log4jProxy.files() bug fixed, now returns the files of every file appender configured, plain, random access and memory mapped included, where it returned those of the rolling file appenders of the proxy's own logger, usually the root's.
+- Log4jProxy.level(String) now returns null for a logger without a level of its own, where it returned the level it inherited.
 ### is.codion.plugin.jul.proxy
 - JulProxy.rootLogger() bug fixed, now returns the name of the root logger, the empty string, where it returned that of the global logger, whose level no other logger inherits.
 - JulProxy bug fixed, getLogLevel() and setLogLevel() no longer fail with a NullPointerException on a name without a logger, such as a package name, which the log level panel walks up through, getLogLevel() returning null and setLogLevel() creating the logger, keeping a reference for its level to last.
+### is.codion.framework.server
+- EntityServerAdmin.logLevel(String) now nullable, as LoggerProxy.level(String) is.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
 - EntityTablePanel bug fixed, the column controls configured via configurePopupMenu() now hold one column selection and one auto-resize-mode selection, as by default, where they held both column selections.
