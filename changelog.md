@@ -50,6 +50,8 @@ Codion Change Log
 - EntityApplicationPanel, the menu factories, createMainMenuControls() and the like, and the control factories, createExitControl() and the like, removed, replaced by configureMainMenu() and control(ControlKey).
 - EntityMergePanel added, displaying an EntityMerge, a row per attribute whose values differ, the value to take chosen with Left and Right or a click.
 - EntityEditPanel.onEntityModifiedException() and Config.mergeModified() added, an update failing on the entity being edited, modified by someone else since it was loaded, now offering to merge the two versions in a dialog by default, the merge result put into the editor for the user to update, where the error was displayed.
+### is.codion.tools.swing.mcp
+- codion-tools-swing-mcp no longer brings codion-plugin-logback-proxy at runtime, leaving the choice of logging to the application, and SwingMcpBridge no longer logs, a failure reaching standard error as an exception, where Logback's default configuration logged it to standard output, which carries the protocol.
 
 ## 0.18.91
 ### is.codion.common.db

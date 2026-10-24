@@ -25,8 +25,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,8 +50,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Default port is 8080.
  */
 public final class SwingMcpBridge {
-
-	private static final Logger LOG = LoggerFactory.getLogger(SwingMcpBridge.class);
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private static final String NO_APPLICATION = "No application listening on ";
@@ -275,10 +271,6 @@ public final class SwingMcpBridge {
 			while ((line = stdin.readLine()) != null) {
 				handleRequest(baseUrl, line, stdout);
 			}
-		}
-		catch (IOException e) {
-			LOG.error("Bridge error: {}", e.getMessage(), e);
-			throw e;
 		}
 	}
 

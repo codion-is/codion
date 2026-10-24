@@ -8,8 +8,6 @@ dependencies {
 
     implementation(libs.jackson.databind)
     implementation(libs.slf4j.api)
-
-    runtimeOnly(project(":codion-plugin-logback-proxy"))
 }
 
 application {
