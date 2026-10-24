@@ -30,6 +30,8 @@ Codion Change Log
 - ColumnDefinition, an enum column without a converter is now held by the name of its constant, as text, where reading and writing it failed, no driver mapping an enum.
 ### is.codion.framework.model
 - EntityMerge added, merging two versions of an entity changed since a common base, attribute by attribute, a side pre-selected where the base tells which version changed the value.
+### is.codion.plugin.log4j.proxy
+- Log4jProxy.setLogLevel() bug fixed, now sets the level of the given logger, where it set the root logger's level, whichever logger was given.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
 - EntityTablePanel bug fixed, the column controls configured via configurePopupMenu() now hold one column selection and one auto-resize-mode selection, as by default, where they held both column selections.

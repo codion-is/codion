@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import java.util.Collection;
@@ -55,10 +56,7 @@ public final class Log4jProxy implements LoggerProxy {
 		if (!(logLevel instanceof Level)) {
 			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
 		}
-		LoggerContext context = (LoggerContext) LogManager.getContext(false);
-		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-		loggerConfig.setLevel((Level) logLevel);
-		context.updateLoggers();
+		Configurator.setLevel(requireNonNull(logger), (Level) logLevel);
 	}
 
 	@Override

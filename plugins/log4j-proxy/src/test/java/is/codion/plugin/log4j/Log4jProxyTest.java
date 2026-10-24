@@ -18,12 +18,28 @@
  */
 package is.codion.plugin.log4j;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class Log4jProxyTest {
 
 	@Test
 	void test() {
 		new Log4jProxy().files();
+	}
+
+	@Test
+	void logLevel() {
+		Log4jProxy proxy = new Log4jProxy();
+		String logger = Log4jProxyTest.class.getPackageName();
+		proxy.setLogLevel(proxy.rootLogger(), Level.WARN);
+		proxy.setLogLevel(logger, Level.TRACE);
+		assertEquals(Level.TRACE, proxy.getLogLevel(logger));
+		assertEquals(Level.WARN, proxy.getLogLevel(proxy.rootLogger()));
+		assertTrue(LogManager.getLogger(Log4jProxyTest.class).isTraceEnabled());
+		assertFalse(LogManager.getLogger("other").isInfoEnabled());
 	}
 }
