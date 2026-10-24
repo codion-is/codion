@@ -20,10 +20,21 @@ package is.codion.plugin.jul;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 public final class JulProxyTest {
 
 	@Test
-	void test() {
-		new JulProxy();
+	void rootLogger() {
+		JulProxy proxy = new JulProxy();
+		Logger logger = Logger.getLogger(JulProxyTest.class.getName());
+		proxy.setLogLevel(proxy.rootLogger(), Level.FINE);
+		assertEquals(Level.FINE, proxy.getLogLevel(proxy.rootLogger()));
+		assertTrue(logger.isLoggable(Level.FINE));
+		proxy.setLogLevel(proxy.rootLogger(), Level.WARNING);
+		assertFalse(logger.isLoggable(Level.INFO));
 	}
 }

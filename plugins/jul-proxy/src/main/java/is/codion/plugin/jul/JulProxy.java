@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -56,7 +55,8 @@ public final class JulProxy implements LoggerProxy {
 
 	@Override
 	public String rootLogger() {
-		return Logger.GLOBAL_LOGGER_NAME;
+		// the root logger, named by the empty string, the global logger being one of its children
+		return "";
 	}
 
 	@Override
