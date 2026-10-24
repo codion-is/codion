@@ -63,7 +63,7 @@ public final class JulProxy implements LoggerProxy {
 
 	@Override
 	public List<Object> levels() {
-		return unmodifiableList(asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF));
+		return unmodifiableList(asList(Level.ALL, Level.FINEST, Level.FINER, Level.FINE, Level.CONFIG, Level.INFO, Level.WARNING, Level.SEVERE, Level.OFF));
 	}
 
 	@Override

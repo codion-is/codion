@@ -57,7 +57,7 @@ public interface LoggerProxy {
 	void level(String logger, Object level);
 
 	/**
-	 * @return the available log levels
+	 * @return the available log levels, ordered from the most to the least verbose, OFF last
 	 */
 	List<Object> levels();
 

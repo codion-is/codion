@@ -22,9 +22,20 @@ import ch.qos.logback.classic.Level;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class LogbackProxyTest {
+
+	@Test
+	void levels() {
+		List<Object> levels = new LogbackProxy().levels();
+		for (int i = 1; i < levels.size(); i++) {
+			assertTrue(((Level) levels.get(i - 1)).toInt() < ((Level) levels.get(i)).toInt());
+		}
+		assertEquals(Level.OFF, levels.get(levels.size() - 1));
+	}
 
 	@Test
 	void test() {

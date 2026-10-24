@@ -23,11 +23,22 @@ import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class Log4jProxyTest {
+
+	@Test
+	void levels() {
+		List<Object> levels = new Log4jProxy().levels();
+		for (int i = 1; i < levels.size(); i++) {
+			// the lower the int level, the more severe
+			assertTrue(((Level) levels.get(i - 1)).intLevel() > ((Level) levels.get(i)).intLevel());
+		}
+		assertEquals(Level.OFF, levels.get(levels.size() - 1));
+	}
 
 	@Test
 	void files() {

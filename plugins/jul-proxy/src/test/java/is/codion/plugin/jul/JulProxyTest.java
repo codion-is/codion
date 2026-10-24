@@ -20,12 +20,22 @@ package is.codion.plugin.jul;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class JulProxyTest {
+
+	@Test
+	void levels() {
+		List<Object> levels = new JulProxy().levels();
+		for (int i = 1; i < levels.size(); i++) {
+			assertTrue(((Level) levels.get(i - 1)).intValue() < ((Level) levels.get(i)).intValue());
+		}
+		assertEquals(Level.OFF, levels.get(levels.size() - 1));
+	}
 
 	@Test
 	void root() {

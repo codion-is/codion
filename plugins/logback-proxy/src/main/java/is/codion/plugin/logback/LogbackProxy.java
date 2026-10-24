@@ -60,7 +60,7 @@ public final class LogbackProxy implements LoggerProxy {
 
 	@Override
 	public List<Object> levels() {
-		return unmodifiableList(asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR));
+		return unmodifiableList(asList(Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.OFF));
 	}
 
 	@Override

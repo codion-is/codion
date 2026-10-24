@@ -14,6 +14,7 @@ Codion Change Log
 - Controls.Layout.remove(ControlKey) added.
 ### is.codion.common.utilities
 - LoggerProxy.getLogLevel() and setLogLevel() renamed to level(), rootLogger() to root(), level(String) now nullable, returning the level set for the logger itself, null where it inherits that of an ancestor, the root logger always having one, NONE returning null.
+- LoggerProxy.levels() now ordered from the most to the least verbose, OFF last, the Logback, Log4j and JUL proxies each having had an order of its own.
 ### is.codion.common.db
 - Database.subqueryRequiresAlias() removed, the count query's subquery now aliased on every database.
 ### is.codion.dbms.h2
