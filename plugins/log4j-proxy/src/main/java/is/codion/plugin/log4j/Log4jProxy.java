@@ -22,16 +22,20 @@ import is.codion.common.utilities.logging.LoggerProxy;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
+import org.apache.logging.log4j.core.appender.FileManager;
+import org.apache.logging.log4j.core.appender.MemoryMappedFileManager;
+import org.apache.logging.log4j.core.appender.OutputStreamManager;
+import org.apache.logging.log4j.core.appender.RandomAccessFileManager;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -78,12 +82,27 @@ public final class Log4jProxy implements LoggerProxy {
 
 	@Override
 	public Collection<String> files() {
-		Map<String, Appender> appenderMap = ((Logger) LogManager.getLogger()).getAppenders();
+		LoggerContext context = (LoggerContext) LogManager.getContext(false);
 
-		return unmodifiableList(appenderMap.values().stream()
-						.filter(RollingFileAppender.class::isInstance)
-						.map(RollingFileAppender.class::cast)
-						.map(RollingFileAppender::getFileName)
+		return unmodifiableList(context.getConfiguration().getAppenders().values().stream()
+						.filter(AbstractOutputStreamAppender.class::isInstance)
+						.map(appender -> ((AbstractOutputStreamAppender<?>) appender).getManager())
+						.map(Log4jProxy::fileName)
+						.filter(Objects::nonNull)
 						.collect(toList()));
+	}
+
+	private static @Nullable String fileName(OutputStreamManager manager) {
+		if (manager instanceof FileManager) {
+			return ((FileManager) manager).getFileName();
+		}
+		if (manager instanceof RandomAccessFileManager) {
+			return ((RandomAccessFileManager) manager).getFileName();
+		}
+		if (manager instanceof MemoryMappedFileManager) {
+			return ((MemoryMappedFileManager) manager).getFileName();
+		}
+
+		return null;
 	}
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+  <Appenders>
+    <Console name="console"/>
+    <File name="file" fileName="build/log4j/file.log" createOnDemand="true"/>
+    <RollingFile name="rolling" fileName="build/log4j/rolling.log" filePattern="build/log4j/rolling-%i.log" createOnDemand="true">
+      <SizeBasedTriggeringPolicy size="1 MB"/>
+    </RollingFile>
+    <RandomAccessFile name="randomAccess" fileName="build/log4j/random-access.log"/>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="console"/>
+    </Root>
+    <Logger name="file" additivity="false">
+      <AppenderRef ref="file"/>
+      <AppenderRef ref="rolling"/>
+      <AppenderRef ref="randomAccess"/>
+    </Logger>
+  </Loggers>
+</Configuration>

@@ -22,19 +22,23 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class Log4jProxyTest {
 
 	@Test
-	void test() {
-		new Log4jProxy().files();
+	void files() {
+		assertEquals(new HashSet<>(asList("build/log4j/file.log", "build/log4j/rolling.log", "build/log4j/random-access.log")),
+						new HashSet<>(new Log4jProxy().files()));
 	}
 
 	@Test
 	void logLevel() {
 		Log4jProxy proxy = new Log4jProxy();
-		String logger = Log4jProxyTest.class.getPackageName();
+		String logger = Log4jProxyTest.class.getPackage().getName();
 		proxy.setLogLevel(proxy.rootLogger(), Level.WARN);
 		proxy.setLogLevel(logger, Level.TRACE);
 		assertEquals(Level.TRACE, proxy.getLogLevel(logger));
