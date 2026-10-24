@@ -35,6 +35,7 @@ Codion Change Log
 - Log4jProxy.files() bug fixed, now returns the files of every file appender configured, plain, random access and memory mapped included, where it returned those of the rolling file appenders of the proxy's own logger, usually the root's.
 ### is.codion.plugin.jul.proxy
 - JulProxy.rootLogger() bug fixed, now returns the name of the root logger, the empty string, where it returned that of the global logger, whose level no other logger inherits.
+- JulProxy bug fixed, getLogLevel() and setLogLevel() no longer fail with a NullPointerException on a name without a logger, such as a package name, which the log level panel walks up through, getLogLevel() returning null and setLogLevel() creating the logger, keeping a reference for its level to last.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, a layout set via Config.POPUP_MENU_LAYOUT or TOOLBAR_LAYOUT is now copied for each panel, where configuring one panel's popup menu or toolbar changed every panel's.
 - EntityTablePanel bug fixed, the column controls configured via configurePopupMenu() now hold one column selection and one auto-resize-mode selection, as by default, where they held both column selections.

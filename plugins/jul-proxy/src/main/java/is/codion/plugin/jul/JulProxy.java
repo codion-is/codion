@@ -20,11 +20,16 @@ package is.codion.plugin.jul;
 
 import is.codion.common.utilities.logging.LoggerProxy;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -35,9 +40,15 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JulProxy implements LoggerProxy {
 
+	// JUL holds loggers weakly, a level set on a logger nothing else references lost along with it,
+	// and LoggerProxy.instance() returns a new proxy each time, so the references outlive any one proxy
+	private static final Map<String, Logger> CONFIGURED = new ConcurrentHashMap<>();
+
 	@Override
-	public Object getLogLevel(String logger) {
-		return LogManager.getLogManager().getLogger(requireNonNull(logger)).getLevel();
+	public @Nullable Object getLogLevel(String logger) {
+		Logger julLogger = LogManager.getLogManager().getLogger(requireNonNull(logger));
+
+		return julLogger == null ? null : julLogger.getLevel();
 	}
 
 	@Override
@@ -45,7 +56,9 @@ public final class JulProxy implements LoggerProxy {
 		if (!(logLevel instanceof Level)) {
 			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
 		}
-		LogManager.getLogManager().getLogger(requireNonNull(logger)).setLevel((Level) logLevel);
+		Logger julLogger = Logger.getLogger(requireNonNull(logger));
+		julLogger.setLevel((Level) logLevel);
+		CONFIGURED.put(logger, julLogger);
 	}
 
 	@Override

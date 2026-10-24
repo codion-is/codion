@@ -37,4 +37,14 @@ public final class JulProxyTest {
 		proxy.setLogLevel(proxy.rootLogger(), Level.WARNING);
 		assertFalse(logger.isLoggable(Level.INFO));
 	}
+
+	@Test
+	void noLogger() {
+		String parent = JulProxyTest.class.getName() + ".parent";
+		assertNull(new JulProxy().getLogLevel(parent));
+		new JulProxy().setLogLevel(parent, Level.FINEST);
+		System.gc();
+		assertEquals(Level.FINEST, new JulProxy().getLogLevel(parent));
+		assertTrue(Logger.getLogger(parent + ".child").isLoggable(Level.FINEST));
+	}
 }
