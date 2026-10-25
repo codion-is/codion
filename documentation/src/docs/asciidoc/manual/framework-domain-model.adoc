@@ -212,6 +212,17 @@ interface Child {
 }
 ----
 
+A composite foreign key with some of its columns null, which databases accept without checking, references nothing.
+Setting it to null leaves the values of its other columns as they are.
+
+=== Foreign keys sharing a column
+
+A column may be part of more than one foreign key: a count on a line, say, referencing the line by its visit and line number, and the visit by the visit column alone.
+Setting a foreign key sets its columns, and setting it to null clears them, so two foreign keys setting one column overwrite and clear it for each other.
+
+A column shared by foreign keys must therefore be read-only in all of them but one at most, marked via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKeyDefinition.Builder.html#readOnly(is.codion.framework.domain.entity.attribute.Column)[ForeignKeyDefinition.Builder.readOnly(Column)], the entity definition failing to build otherwise.
+The foreign key the column belongs with sets it, the visit's in the example, the others reading it, or none does, the column then being set on its own.
+
 [#_attributes]
 == Attributes
 

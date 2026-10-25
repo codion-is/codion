@@ -32,6 +32,7 @@ Codion Change Log
 - ColumnDefinition.converter() bug fixed, now returns Converter<T, C>, where its type parameters were reversed.
 - ColumnDefinition, an enum column without a converter is now held by the name of its constant, as text, where reading and writing it failed, no driver mapping an enum.
 - Entity bug fixed, setting a foreign key to null no longer clears its columns where it references nothing, a composite one with some of its columns null, as a select populating such a row did, the row then modified and an update writing those columns null.
+- EntityDefinition.Builder.build() now refuses a column shared by foreign keys, unless read-only in all of them but one at most, two foreign keys setting it overwriting and clearing it for each other.
 ### is.codion.framework.model
 - EntityMerge added, merging two versions of an entity changed since a common base, attribute by attribute, a side pre-selected where the base tells which version changed the value.
 ### is.codion.plugin.log4j.proxy

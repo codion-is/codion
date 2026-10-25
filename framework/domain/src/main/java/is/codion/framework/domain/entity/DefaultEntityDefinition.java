@@ -557,6 +557,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			this.foreignKeyDefinitions = unmodifiableList(foreignKeyDefinitions());
 			this.foreignKeyDefinitionMap = unmodifiableMap(foreignKeyDefinitionMap());
 			this.columnForeignKeyDefinitions = unmodifiableMap(columnForeignKeyDefinitions());
+			validateSharedColumns(columnForeignKeyDefinitions, entityType);
 			this.derivedAttributes = unmodifiableMap(derivedAttributes());
 			this.defaultSelectAttributes = unmodifiableList(defaultSelectAttributes());
 		}
@@ -715,6 +716,21 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 							.map(DerivedAttributeDefinition.class::cast)
 							.forEach(sourceDefinition -> checkForCycle(sourceDefinition, attributes, path));
 			path.remove(attribute);
+		}
+
+		// A column shared by foreign keys, set by more than one of them, each one setting or clearing it for the others
+		private static void validateSharedColumns(Map<Column<?>, Collection<ForeignKeyDefinition>> columnForeignKeyDefinitions,
+																							EntityType entityType) {
+			columnForeignKeyDefinitions.forEach((column, foreignKeyDefinitions) -> {
+				List<ForeignKey> setting = foreignKeyDefinitions.stream()
+								.filter(foreignKeyDefinition -> !foreignKeyDefinition.readOnly(column))
+								.map(ForeignKeyDefinition::attribute)
+								.collect(toList());
+				if (setting.size() > 1) {
+					throw new IllegalArgumentException("Column " + column + " is set by more than one foreign key " + setting +
+									" in entity: " + entityType + ", it must be read-only in all of them but one at most");
+				}
+			});
 		}
 
 		private static Map<String, Attribute<?>> attributeNameMap(Map<Attribute<?>, AttributeDefinition<?>> attributeDefinitions) {

@@ -259,6 +259,48 @@ public class DefaultEntityDefinitionTest {
 	}
 
 	@Test
+	void sharedForeignKeyColumn() {
+		EntityType parent = DOMAIN_TYPE.entityType("sharedColumnParent");
+		EntityType line = DOMAIN_TYPE.entityType("sharedColumnLine");
+		EntityType entityType = DOMAIN_TYPE.entityType("sharedForeignKeyColumn");
+		Column<Integer> id = entityType.integerColumn("id");
+		Column<Integer> parentId = entityType.integerColumn("parent_id");
+		Column<Integer> lineNo = entityType.integerColumn("line_no");
+		ForeignKey parentFk = entityType.foreignKey("parent_fk", parentId, parent.integerColumn("id"));
+		ForeignKey lineFk = entityType.foreignKey("line_fk",
+						parentId, line.integerColumn("parent_id"),
+						lineNo, line.integerColumn("line_no"));
+
+		// both setting parent_id
+		assertThrows(IllegalArgumentException.class, () -> entityType.as()
+						.attributes(
+										id.as().primaryKey(),
+										parentId.as().column(),
+										lineNo.as().column(),
+										parentFk.as().foreignKey(),
+										lineFk.as().foreignKey())
+						.build());
+		// the parent setting it, the line reading it
+		entityType.as()
+						.attributes(
+										id.as().primaryKey(),
+										parentId.as().column(),
+										lineNo.as().column(),
+										parentFk.as().foreignKey(),
+										lineFk.as().foreignKey().readOnly(parentId))
+						.build();
+		// neither setting it, the column set on its own
+		entityType.as()
+						.attributes(
+										id.as().primaryKey(),
+										parentId.as().column(),
+										lineNo.as().column(),
+										parentFk.as().foreignKey().readOnly(parentId),
+										lineFk.as().foreignKey().readOnly(parentId))
+						.build();
+	}
+
+	@Test
 	void invalidDenormalizedAttribute() {
 		Attribute<String> denormalized = Employee.TYPE.stringAttribute("denormalized");
 		assertThrows(IllegalArgumentException.class, () -> Employee.TYPE.as()

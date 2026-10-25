@@ -160,10 +160,16 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 		Builder soft(boolean soft);
 
 		/**
-		 * Marks the given foreign key reference column as read-only, which causes an exception being
-		 * thrown when the given column value is modified via this foreign key.
+		 * Marks the given foreign key reference column as read-only: setting this foreign key, to an entity or to null,
+		 * leaves the column as it is, and setting it to an entity whose value for the column differs from the one the
+		 * column holds throws an {@link IllegalArgumentException}.
+		 * <p>A column shared by foreign keys must be read-only in all of them but one at most, the definition failing to
+		 * build otherwise: the foreign key it belongs with sets it, the others reading it, or none does, the column then
+		 * set on its own. A count on a line, say, referencing the line by its visit and number and the visit by the
+		 * visit column alone, the visit's foreign key setting that column, the line's reading it.
 		 * @param column the reference column
 		 * @return this instance
+		 * @throws IllegalArgumentException in case the column is not part of this foreign key
 		 */
 		Builder readOnly(Column<?> column);
 
