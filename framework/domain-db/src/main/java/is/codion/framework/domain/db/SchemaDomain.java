@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -153,6 +154,8 @@ public final class SchemaDomain extends DomainModel {
 
 	private List<AttributeDefinition.Builder<?, ?>> defineAttributes(MetaDataTable table, EntityType entityType,
 																																	 Collection<MetaDataForeignKeyConstraint> foreignKeyConstraints) {
+		Map<MetaDataColumn, MetaDataForeignKeyConstraint> owners = owners(foreignKeyConstraints);
+		Map<MetaDataForeignKeyConstraint, String> foreignKeyNames = foreignKeyNames(foreignKeyConstraints);
 		List<AttributeDefinition.Builder<?, ?>> builders = new ArrayList<>();
 		List<AttributeDefinition.Builder<?, ?>> auditColumnBuilders = new ArrayList<>();
 		table.columns().forEach(column -> {
@@ -168,15 +171,15 @@ public final class SchemaDomain extends DomainModel {
 				builders.add(columnDefinitionBuilder);
 			}
 			if (column.foreignKeyColumn()) {
-				foreignKeyConstraints.stream()
-								//if this is the last column in the foreign key
+				//each foreign key this is the last column of, two of them ending on the same column
+				List<MetaDataForeignKeyConstraint> ending = foreignKeyConstraints.stream()
 								.filter(foreignKeyConstraint -> lastKeyColumn(foreignKeyConstraint, column))
-								.findFirst()
-								.ifPresent(foreignKeyConstraint -> {
-									//we add the foreign key just below it
-									foreignKeyConstraints.remove(foreignKeyConstraint);
-									builders.add(foreignKeyDefinitionBuilder(foreignKeyConstraint, entityType));
-								});
+								.collect(toList());
+				ending.forEach(foreignKeyConstraint -> {
+					//we add the foreign key just below it
+					foreignKeyConstraints.remove(foreignKeyConstraint);
+					builders.add(foreignKeyDefinitionBuilder(foreignKeyConstraint, foreignKeyNames.get(foreignKeyConstraint), entityType, owners));
+				});
 			}
 		});
 		builders.addAll(auditColumnBuilders);
@@ -184,19 +187,38 @@ public final class SchemaDomain extends DomainModel {
 		return builders;
 	}
 
-	private AttributeDefinition.Builder<?, ?> foreignKeyDefinitionBuilder(MetaDataForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
+	private AttributeDefinition.Builder<?, ?> foreignKeyDefinitionBuilder(MetaDataForeignKeyConstraint foreignKeyConstraint, String name,
+																																				EntityType entityType, Map<MetaDataColumn, MetaDataForeignKeyConstraint> owners) {
 		MetaDataTable referencedTable = foreignKeyConstraint.referencedTable();
 		EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
-		String name = createForeignKeyName(foreignKeyConstraint) + "_FK";
-		if (settings.lowerCaseIdentifiers()) {
-			name = name.toLowerCase(Locale.ROOT);
-		}
 		ForeignKey foreignKey = entityType.foreignKey(name,
 						foreignKeyConstraint.references().entrySet().stream()
 										.map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
 										.collect(toList()));
+		ForeignKeyDefinition.Builder builder = foreignKey.as().foreignKey()
+						.caption(caption(referencedTable.tableName().toLowerCase(Locale.ROOT)));
+		//reading the columns it shares with a foreign key setting them
+		foreignKeyConstraint.references().keySet().stream()
+						.filter(column -> owners.get(column) != foreignKeyConstraint)
+						.forEach(column -> builder.readOnly(column(entityType, column)));
 
-		return foreignKey.as().foreignKey().caption(caption(referencedTable.tableName().toLowerCase(Locale.ROOT)));
+		return builder;
+	}
+
+	// The foreign key setting each column the given ones reference by, a column shared by foreign keys being read-only in
+	// all of them but one: the one with the fewest columns, the first among equals, the others reading it
+	private static Map<MetaDataColumn, MetaDataForeignKeyConstraint> owners(Collection<MetaDataForeignKeyConstraint> foreignKeyConstraints) {
+		Map<MetaDataColumn, MetaDataForeignKeyConstraint> owners = new HashMap<>();
+		for (MetaDataForeignKeyConstraint foreignKeyConstraint : foreignKeyConstraints) {
+			for (MetaDataColumn column : foreignKeyConstraint.references().keySet()) {
+				MetaDataForeignKeyConstraint owner = owners.get(column);
+				if (owner == null || foreignKeyConstraint.references().size() < owner.references().size()) {
+					owners.put(column, foreignKeyConstraint);
+				}
+			}
+		}
+
+		return owners;
 	}
 
 	private ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
@@ -247,6 +269,24 @@ public final class SchemaDomain extends DomainModel {
 						.mapToInt(MetaDataColumn::position)
 						.max()
 						.orElse(-1) == column.position();
+	}
+
+	// The name of each foreign key, its columns' names joined, the referenced table's name added where another of the
+	// given ones has the same columns, two foreign keys from one column say
+	private Map<MetaDataForeignKeyConstraint, String> foreignKeyNames(Collection<MetaDataForeignKeyConstraint> foreignKeyConstraints) {
+		Map<String, Long> columnNameCounts = foreignKeyConstraints.stream()
+						.collect(groupingBy(this::createForeignKeyName, counting()));
+		Map<MetaDataForeignKeyConstraint, String> names = new HashMap<>();
+		for (MetaDataForeignKeyConstraint foreignKeyConstraint : foreignKeyConstraints) {
+			String name = createForeignKeyName(foreignKeyConstraint);
+			if (columnNameCounts.get(name) > 1) {
+				name = name + "_" + foreignKeyConstraint.referencedTable().tableName().toUpperCase(Locale.ROOT);
+			}
+			name = name + "_FK";
+			names.put(foreignKeyConstraint, settings.lowerCaseIdentifiers() ? name.toLowerCase(Locale.ROOT) : name);
+		}
+
+		return names;
 	}
 
 	private String createForeignKeyName(MetaDataForeignKeyConstraint foreignKeyConstraint) {

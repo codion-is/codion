@@ -33,6 +33,9 @@ Codion Change Log
 - ColumnDefinition, an enum column without a converter is now held by the name of its constant, as text, where reading and writing it failed, no driver mapping an enum.
 - Entity bug fixed, setting a foreign key to null no longer clears its columns where it references nothing, a composite one with some of its columns null, as a select populating such a row did, the row then modified and an update writing those columns null.
 - EntityDefinition.Builder.build() now refuses a column shared by foreign keys, unless read-only in all of them but one at most, two foreign keys setting it overwriting and clearing it for each other.
+### is.codion.framework.domain.db
+- SchemaDomain bug fixed, a foreign key ending on the same column as another was left out, the second of two foreign keys from one column say; both are now defined, named by the tables they reference where their columns would name them alike.
+- SchemaDomain, a column shared by foreign keys is now read-only in all of them but the one with the fewest columns, the first among equals.
 ### is.codion.framework.model
 - EntityMerge added, merging two versions of an entity changed since a common base, attribute by attribute, a side pre-selected where the base tells which version changed the value.
 ### is.codion.plugin.log4j.proxy
@@ -52,6 +55,8 @@ Codion Change Log
 - EntityApplicationPanel, the menu factories, createMainMenuControls() and the like, and the control factories, createExitControl() and the like, removed, replaced by configureMainMenu() and control(ControlKey).
 - EntityMergePanel added, displaying an EntityMerge, a row per attribute whose values differ, the value to take chosen with Left and Right or a click.
 - EntityEditPanel.onEntityModifiedException() and Config.mergeModified() added, an update failing on the entity being edited, modified by someone else since it was loaded, now offering to merge the two versions in a dialog by default, the merge result put into the editor for the user to update, where the error was displayed.
+### is.codion.tools.generator.domain
+- DomainSource, the columns a foreign key holds read-only are now written, readOnly(column) in its definition.
 ### is.codion.tools.swing.mcp
 - codion-tools-swing-mcp no longer brings codion-plugin-logback-proxy at runtime, leaving the choice of logging to the application, and SwingMcpBridge no longer logs, a failure reaching standard error as an exception, where Logback's default configuration logged it to standard output, which carries the protocol.
 

@@ -330,5 +330,47 @@ add constraint country_capital_fk
 foreign key (capital)
 references world.city(id);
 
+-- Foreign keys sharing a column: an otolith referencing its species, and its maturity stage by the species and the
+-- stage; a measure referencing its one to one extensions by its own key
+create schema samples;
+
+create table samples.species (
+  species_no int primary key,
+  name varchar(40) not null
+);
+
+create table samples.maturity (
+  species_no int not null,
+  stage int not null,
+  name varchar(40),
+  constraint maturity_pk primary key (species_no, stage),
+  constraint maturity_species_fk foreign key (species_no) references samples.species(species_no)
+);
+
+create table samples.otolith (
+  id int primary key,
+  species_no int not null,
+  stage int,
+  constraint otolith_species_fk foreign key (species_no) references samples.species(species_no),
+  constraint otolith_maturity_fk foreign key (species_no, stage) references samples.maturity(species_no, stage)
+);
+
+create table samples.label (
+  measure_id int primary key,
+  note varchar(40)
+);
+
+create table samples.remark (
+  measure_id int primary key,
+  note varchar(40)
+);
+
+create table samples.measure (
+  id int primary key,
+  size_mm int,
+  constraint measure_label_fk foreign key (id) references samples.label(measure_id),
+  constraint measure_remark_fk foreign key (id) references samples.remark(measure_id)
+);
+
 create user scott password 'tiger';
 alter user scott admin true;

@@ -27,8 +27,10 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 
@@ -124,6 +126,47 @@ public final class SchemaDomainTest {
 		finally {
 			Locale.setDefault(locale);
 		}
+	}
+
+	@Test
+	void sharedForeignKeyColumns() throws Exception {
+		try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
+			SchemaDomain samples = SchemaDomain.schemaDomain(connection.getMetaData(), "SAMPLES");
+
+			// species_no set by the species, the foreign key with the fewest columns, the maturity reading it
+			EntityDefinition otolith = samples.entities().definition("samples.otolith");
+			Column<?> speciesNo = column(otolith, "species_no");
+			ForeignKeyDefinition species = foreignKey(otolith, "samples.species");
+			ForeignKeyDefinition maturity = foreignKey(otolith, "samples.maturity");
+			assertFalse(species.readOnly(speciesNo));
+			assertTrue(maturity.readOnly(speciesNo));
+			assertFalse(maturity.readOnly(column(otolith, "stage")));
+
+			// both foreign keys on the measure's own key, ending on the same column, one of them setting it
+			EntityDefinition measure = samples.entities().definition("samples.measure");
+			Column<?> id = column(measure, "id");
+			ForeignKeyDefinition label = foreignKey(measure, "samples.label");
+			ForeignKeyDefinition remark = foreignKey(measure, "samples.remark");
+			assertNotEquals(label.readOnly(id), remark.readOnly(id));
+		}
+	}
+
+	private static ForeignKeyDefinition foreignKey(EntityDefinition definition, String referencedType) {
+		List<ForeignKeyDefinition> foreignKeys = definition.foreignKeys().definitions().stream()
+						.filter(foreignKey -> foreignKey.attribute().referencedType().name().equals(referencedType))
+						.collect(toList());
+		assertEquals(1, foreignKeys.size());
+
+		return foreignKeys.get(0);
+	}
+
+	private static Column<?> column(EntityDefinition definition, String name) {
+		List<Column<?>> columns = definition.columns().get().stream()
+						.filter(column -> column.name().equals(name))
+						.collect(toList());
+		assertEquals(1, columns.size());
+
+		return columns.get(0);
 	}
 
 	@Test

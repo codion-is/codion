@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
@@ -132,6 +133,31 @@ public final class DomainSourceTest {
 			String worldCombined = textFileContents(DomainSourceTest.class, "World.java");
 			assertEquals(worldCombined, domainSource.combined());
 		}
+	}
+
+	@Test
+	void sharedForeignKeyColumns() throws Exception {
+		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "SAMPLES");
+			String source = DomainSource.builder()
+							.domain(schemaDomain)
+							.domainPackage("is.codion.samples.domain")
+							.build()
+							.combined()
+							.lines()
+							.map(String::strip)
+							.collect(joining("\n"));
+			// the maturity reading the species column the species sets, and one of the measure's two foreign keys on its key
+			// reading it, the two named by the tables they reference
+			assertEquals(1, occurrences(source, ".readOnly(Otolith.SPECIES_NO)"), source);
+			assertEquals(1, occurrences(source, ".readOnly(Measure.ID)"), source);
+			assertTrue(source.contains("ForeignKey ID_LABEL_FK = TYPE.foreignKey(\"id_label_fk\""), source);
+			assertTrue(source.contains("ForeignKey ID_REMARK_FK = TYPE.foreignKey(\"id_remark_fk\""), source);
+		}
+	}
+
+	private static int occurrences(String source, String text) {
+		return source.split(Pattern.quote(text), -1).length - 1;
 	}
 
 	@Test

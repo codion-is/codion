@@ -1137,6 +1137,11 @@ public final class DomainSource {
 							.append(TRIPLE_INDENT).append(".foreignKey()");
 			captionStrategy.attributeCaption(definition.caption()).ifPresent(caption ->
 							builder.append("\n").append(TRIPLE_INDENT).append(caption));
+			// the columns it shares with a foreign key setting them
+			definition.references().stream()
+							.filter(reference -> definition.readOnly(reference.column()))
+							.forEach(reference -> builder.append("\n").append(TRIPLE_INDENT).append(".readOnly(")
+											.append(interfaceName).append(".").append(reference.column().name().toUpperCase(Locale.ROOT)).append(")"));
 
 			return builder.toString();
 		}
