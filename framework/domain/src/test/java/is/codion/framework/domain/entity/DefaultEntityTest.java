@@ -26,6 +26,7 @@ import is.codion.framework.domain.TestDomain.CompositeDetail;
 import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
+import is.codion.framework.domain.TestDomain.Detail2;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.ForeignKeyLazyColumn;
 import is.codion.framework.domain.TestDomain.InvalidDerived;
@@ -651,6 +652,32 @@ public class DefaultEntityTest {
 			assertTrue(employee.present(Employee.DEPARTMENT_FK));
 			assertNotNull(employee.get(Employee.DEPARTMENT_FK));
 			assertNotNull(employee.get(Employee.DEPARTMENT_NO));
+		}
+
+		@Test
+		@DisplayName("foreign key set to null keeps the columns of a reference it doesn't have")
+		void foreignKeyNull_keepsPartlyNullReference() {
+			// partly null, as a database allows a composite foreign key, referencing nothing
+			Entity partlyNull = ENTITIES.entity(Detail2.TYPE)
+							.with(Detail2.MASTER_ID_1, 1)
+							.with(Detail2.MASTER_ID_2, null)
+							.build();
+			assertNull(partlyNull.key(Detail2.MASTER_FK));
+
+			// as a select populates it, a row it read left as it is
+			partlyNull.set(Detail2.MASTER_FK, null);
+			assertTrue(partlyNull.contains(Detail2.MASTER_FK));
+			assertEquals(1, partlyNull.get(Detail2.MASTER_ID_1));
+			assertFalse(partlyNull.modified());
+
+			// a reference set to null clears its columns, as before
+			Entity complete = ENTITIES.entity(Detail2.TYPE)
+							.with(Detail2.MASTER_ID_1, 1)
+							.with(Detail2.MASTER_ID_2, 2)
+							.build();
+			complete.set(Detail2.MASTER_FK, null);
+			assertNull(complete.get(Detail2.MASTER_ID_1));
+			assertNull(complete.get(Detail2.MASTER_ID_2));
 		}
 
 		@Test

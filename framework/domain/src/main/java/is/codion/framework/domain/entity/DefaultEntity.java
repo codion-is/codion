@@ -609,16 +609,19 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	 * Sets the values of the columns used in the reference to the corresponding values found in {@code referencedEntity}.
 	 * Example: EntityOne references EntityTwo via entityTwoId, after a call to this method the EntityOne.entityTwoId
 	 * attribute has the value of EntityTwos primary key attribute. If {@code referencedEntity} is null then
-	 * the corresponding reference values are set to null.
+	 * the corresponding reference values are set to null, unless the foreign key references nothing, a composite one
+	 * with some of its columns null, the others then keeping their values: clearing a reference that isn't there
+	 * changes nothing.
 	 * @param foreignKeyDefinition the foreign key definition
 	 * @param referencedEntity the referenced entity
 	 */
 	private void updateReferencedColumns(ForeignKeyDefinition foreignKeyDefinition, @Nullable Entity referencedEntity) {
 		removeCachedKey(foreignKeyDefinition.attribute());
+		boolean referencesNothing = referencedEntity == null && key(foreignKeyDefinition.attribute()) == null;
 		List<ForeignKey.Reference<?>> references = foreignKeyDefinition.references();
 		for (int i = 0; i < references.size(); i++) {
 			ForeignKey.Reference<?> reference = references.get(i);
-			if (!foreignKeyDefinition.readOnly(reference.column())) {
+			if (!foreignKeyDefinition.readOnly(reference.column()) && !(referencesNothing && get(reference.column()) != null)) {
 				AttributeDefinition<Object> columnDefinition = definition.columns().definition((Column<Object>) reference.column());
 				set(columnDefinition, referencedEntity == null ? null : referencedEntity.get(reference.foreign()));
 			}

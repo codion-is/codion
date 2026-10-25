@@ -2665,6 +2665,30 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void partlyNullCompositeReference() {
+		// A composite foreign key with one of its columns null, unchecked by the database, referencing nothing
+		Entity reference = connection.insertSelect(ENTITIES.entity(PartialReference.TYPE)
+						.with(PartialReference.ID, 1)
+						.with(PartialReference.MASTER_ID, 42)
+						.with(PartialReference.DATA, "Partial")
+						.build());
+
+		// Selected with its foreign key populated, null, its columns as the database has them
+		assertNull(reference.get(PartialReference.MASTER_FK));
+		assertEquals(42, reference.get(PartialReference.MASTER_ID));
+		assertFalse(reference.modified());
+
+		// An update of another column leaves them
+		Entity updated = reference.copy().mutable();
+		updated.set(PartialReference.DATA, "Updated");
+		connection.update(updated);
+		assertEquals(42, connection.select(reference.primaryKey()).get(PartialReference.MASTER_ID));
+
+		// Clean up
+		connection.delete(reference.primaryKey());
+	}
+
+	@Test
 	void emptyEntityWithGenerators() {
 		// Test entity with only generated columns (minimal user-provided values)
 		// DATA is NOT NULL so we need to provide it

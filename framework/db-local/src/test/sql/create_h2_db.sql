@@ -169,5 +169,15 @@ create table employees.partial_generated_pk (
     constraint partial_generated_pk_pk primary key (id, manual_id)
 );
 
+-- Table with a composite foreign key, which the database leaves unchecked where one of its columns is null
+create table employees.partial_reference (
+    id int primary key,
+    master_id int,
+    master_manual_id int,
+    data varchar(10),
+    constraint partial_reference_master_fk foreign key (master_id, master_manual_id)
+        references employees.partial_generated_pk (id, manual_id)
+);
+
 create user scott password 'tiger';
 alter user scott admin true;

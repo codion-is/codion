@@ -103,6 +103,7 @@ public final class TestDomain extends DomainModel {
 		noPkIdentical();
 		mixedGenerated();
 		partialGeneratedPk();
+		partialReference();
 		queryWithCte();
 		queryWithRecursiveCte();
 		queryWithMultipleCtes();
@@ -951,6 +952,36 @@ public final class TestDomain extends DomainModel {
 										PartialGeneratedPk.MANUAL_ID.as()
 														.primaryKey(1),
 										PartialGeneratedPk.DATA.as()
+														.column()
+														.maximumLength(10))
+						.build());
+	}
+
+	public interface PartialReference {
+		EntityType TYPE = DOMAIN.entityType("employees.partial_reference");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> MASTER_ID = TYPE.integerColumn("master_id");
+		Column<Integer> MASTER_MANUAL_ID = TYPE.integerColumn("master_manual_id");
+		Column<String> DATA = TYPE.stringColumn("data");
+
+		ForeignKey MASTER_FK = TYPE.foreignKey("master_fk",
+						MASTER_ID, PartialGeneratedPk.ID,
+						MASTER_MANUAL_ID, PartialGeneratedPk.MANUAL_ID);
+	}
+
+	void partialReference() {
+		add(PartialReference.TYPE.as()
+						.attributes(
+										PartialReference.ID.as()
+														.primaryKey(),
+										PartialReference.MASTER_ID.as()
+														.column(),
+										PartialReference.MASTER_MANUAL_ID.as()
+														.column(),
+										PartialReference.MASTER_FK.as()
+														.foreignKey(),
+										PartialReference.DATA.as()
 														.column()
 														.maximumLength(10))
 						.build());
