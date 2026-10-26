@@ -784,8 +784,33 @@ is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
 
 |deleting|Deleting|Eyði
 |inserting|Inserting|Vista
+|merge|Merge|Sameina
+|merge_mnemonic|M|S
+|modified|Modified by someone else|Breytt af öðrum
 |refreshing|Refreshing|Endurhleð
 |updating|Updating|Uppfæri
+|use_theirs|Use theirs|Nota þeirra
+|use_theirs_mnemonic|T|N
+|===
+
+=== is/codion/swing/framework/ui/EntityMergePanel.java
+
+[source]
+----
+is/codion/swing/framework/ui/EntityMergePanel.properties
+is/codion/swing/framework/ui/EntityMergePanel_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|attribute|Attribute|Gildi
+|both|Both|Bæði
+|changed|Changed|Breytt
+|original|Original|Upprunalegt
+|theirs|Theirs|Þeirra
+|yours|Yours|Þitt
 |===
 
 === is/codion/swing/framework/ui/EntityPanel.java

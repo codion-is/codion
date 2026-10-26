@@ -587,8 +587,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	/**
 	 * Configures the main menu layout, before this panel is initialized.<br>
-	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
-	 * which must be cleared in order to start with an empty configuration.
+	 * Note that the {@link Controls.Layout} instance has pre-configured defaults, which can be edited in place, see
+	 * {@link Controls.Layout#after(ControlKey)} and {@link Controls.Layout#remove(ControlKey)}, or cleared in order to
+	 * start with an empty configuration.
 	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityApplicationPanelSnippets" region = "configureMainMenu":
 	 * configureMainMenu(layout -> layout // @start region=configureMainMenu
 	 *         .controls(ControlKeys.TOOLS_MENU, tools -> tools

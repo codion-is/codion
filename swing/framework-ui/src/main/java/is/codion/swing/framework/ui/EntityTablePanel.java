@@ -785,15 +785,15 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Configures the toolbar controls layout.<br>
-	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
-	 * which must be cleared in order to start with an empty configuration.
+	 * Note that the {@link Controls.Layout} instance has pre-configured defaults, which can be edited in place, see
+	 * {@link Controls.Layout#after(ControlKey)} and {@link Controls.Layout#remove(ControlKey)}, or cleared in order to
+	 * start with an empty configuration.
 	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "configureToolBar":
-	 * configureToolBar(layout -> layout.clear() // @start region=configureToolBar
-	 *         .control(ControlKeys.REFRESH)
+	 * configureToolBar(layout -> layout // @start region=configureToolBar
+	 *         .after(ControlKeys.TOGGLE_FILTER_VIEW)
 	 *         .separator()
 	 *         .control(createCustomControl())
-	 *         .separator()
-	 *         .defaults()); // @end}
+	 *         .remove(ControlKeys.PRINT)); // @end}
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#TOGGLE_SUMMARIES ControlKeys#TOGGLE_SUMMARIES}
@@ -820,15 +820,16 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Configures the popup menu controls layout.<br>
-	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
-	 * which must be cleared in order to start with an empty configuration.
+	 * Note that the {@link Controls.Layout} instance has pre-configured defaults, which can be edited in place, see
+	 * {@link Controls.Layout#after(ControlKey)} and {@link Controls.Layout#remove(ControlKey)}, or cleared in order to
+	 * start with an empty configuration.
 	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "configurePopupMenu":
-	 * configurePopupMenu(layout -> layout.clear() // @start region=configurePopupMenu
-	 *         .control(ControlKeys.REFRESH)
-	 *         .separator()
+	 * configurePopupMenu(layout -> layout // @start region=configurePopupMenu
+	 *         .after(ControlKeys.REFRESH)
 	 *         .control(createCustomControl())
-	 *         .separator()
-	 *         .defaults()); // @end}
+	 *         .controls(ControlKeys.COPY_CONTROLS, copy -> copy
+	 *                 .remove(ControlKeys.COPY_COLUMN))
+	 *         .remove(ControlKeys.VIEW_DEPENDENCIES)); // @end}
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}

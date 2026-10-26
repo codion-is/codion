@@ -35,18 +35,17 @@ final class EntityTablePanelSnippets {
 
     CustomTablePanel(SwingEntityTableModel tableModel) {
       super(tableModel);
-      configureToolBar(layout -> layout.clear() // @start region=configureToolBar
-              .control(ControlKeys.REFRESH)
+      configureToolBar(layout -> layout // @start region=configureToolBar
+              .after(ControlKeys.TOGGLE_FILTER_VIEW)
               .separator()
               .control(createCustomControl())
-              .separator()
-              .defaults()); // @end
-      configurePopupMenu(layout -> layout.clear() // @start region=configurePopupMenu
-              .control(ControlKeys.REFRESH)
-              .separator()
+              .remove(ControlKeys.PRINT)); // @end
+      configurePopupMenu(layout -> layout // @start region=configurePopupMenu
+              .after(ControlKeys.REFRESH)
               .control(createCustomControl())
-              .separator()
-              .defaults()); // @end
+              .controls(ControlKeys.COPY_CONTROLS, copy -> copy
+                      .remove(ControlKeys.COPY_COLUMN))
+              .remove(ControlKeys.VIEW_DEPENDENCIES)); // @end
     }
 
     @Override

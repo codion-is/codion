@@ -35,7 +35,7 @@ Codion is a full-stack Java rich client desktop CRUD application framework based
 ./gradlew :demo-chinook:runClientLocal           # Run the Chinook demo with a local connection
 ```
 
-- **A change is done when the full `./gradlew build` passes.** Javadoc is part of it and catches broken `{@link}`s that compilation and tests miss.
+- **Verify in proportion to the change.** An internal change: the module's tests. A public API or javadoc change: `./gradlew build -x test`, which compiles every dependent and runs javadoc, catching broken `{@link}`s, plus the touched modules' tests. The full `./gradlew build` before a release.
 - **Spotless only checks license headers,** on Java sources including `package-info.java` and `module-info.java`. Formatting and import order are kept by hand, following the surrounding code.
 
 ## Modules
