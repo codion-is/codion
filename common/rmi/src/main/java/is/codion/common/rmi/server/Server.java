@@ -50,8 +50,9 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	 * @param connectionRequest the information required for establishing a connection
 	 * @return a remote connection instance
 	 * @throws RemoteException in case of a communication error
-	 * @throws ConnectionNotAvailableException in case the server isn't accepting more connections
-	 * @throws LoginException in case the login fails, or if the server is shutting down
+	 * @throws ConnectionNotAvailableException in case the server isn't accepting more connections, its connection
+	 * limit reached, or it shutting down
+	 * @throws LoginException in case the login fails
 	 * @throws NullPointerException in case the request, or its user, connectionId or clientType, is null
 	 */
 	C connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException, LoginException;

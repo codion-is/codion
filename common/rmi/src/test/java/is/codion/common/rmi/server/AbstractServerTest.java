@@ -286,6 +286,19 @@ public class AbstractServerTest {
 	}
 
 	@Test
+	void shuttingDown() throws RemoteException {
+		//a server shutting down refuses a connection as one not accepting more, rather than as a login failing
+		TestServer shuttingDown = new TestServer(ServerConfiguration.builder()
+						.port(PORT + 2)
+						.serverName("shuttingDownTestServer")
+						.objectInputFilterFactoryRequired(false)
+						.build());
+		shuttingDown.shutdown();
+		assertThrows(ConnectionNotAvailableException.class, () -> shuttingDown.connect(ConnectionRequest.builder()
+						.user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build()));
+	}
+
+	@Test
 	void emptyServerName() {
 		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder().port(PORT).serverName((String) null).build());
 		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder().port(PORT).serverName("").build());

@@ -26,7 +26,7 @@ import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**
- * An exception indicating that the server is not accepting new connections.
+ * An exception indicating that the server is not accepting new connections, its connection limit reached, or it shutting down.
  * <p>The message is looked up when read, in the language of the reader, a client that is, not the server.
  */
 public final class ConnectionNotAvailableException extends ServerException {

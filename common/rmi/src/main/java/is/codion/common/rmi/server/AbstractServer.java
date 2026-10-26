@@ -202,7 +202,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	@Override
 	public final T connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException, LoginException {
 		if (shuttingDown.get()) {
-			throw new LoginException("Server is shutting down");
+			//a server shutting down is one not accepting more connections, not a login failing
+			throw new ConnectionNotAvailableException();
 		}
 		//with RMI disabled the server may still be exported for the admin interface, but it hands out no
 		//data connections over RMI; an in-process (HTTP auxiliary server) call has no active RMI client host
@@ -217,7 +218,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 			//re-check within the monitor, shutdown() snapshots the connections while holding it,
 			//so a connection created here can not escape the disconnect sweep
 			if (shuttingDown.get()) {
-				throw new LoginException("Server is shutting down");
+				throw new ConnectionNotAvailableException();
 			}
 			SessionConnection<T> sessionConnection = connections.get(connectionRequest.connectionId());
 			if (sessionConnection != null) {

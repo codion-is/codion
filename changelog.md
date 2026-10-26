@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.93
+### is.codion.common.rmi
+- AbstractServer, a connection requested while the server is shutting down is now refused with ConnectionNotAvailableException, where a LoginException was thrown, which the json channel reported as an internal error, logged as an error.
 ### is.codion.framework.db.http
 - HttpEntityConnection bug fixed, building a connection with a domain instance now establishes it on the server, validating the user's credentials, where no request was made before the first operation, invalid credentials accepted until then.
 ### is.codion.framework.servlet
