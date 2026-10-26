@@ -81,25 +81,36 @@ final class DefaultServerLocator implements Server.Locator {
 					throws RemoteException {
 		LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", requested server port: {}, registry port {}",
 						hostname, serverNamePrefix, requestedServerPort, registryPort);
-		List<Server<T, A>> servers = new ArrayList<>();
+		List<Server<T, A>> available = new ArrayList<>();
+		List<Server<T, A>> full = new ArrayList<>();
 		Registry registry = LocateRegistry.getRegistry(hostname, registryPort);
 		for (String serverName : registry.list()) {
 			if (serverName.startsWith(serverNamePrefix)) {
-				addIfReachable(serverName, requestedServerPort, registry, servers);
+				addIfReachable(serverName, requestedServerPort, registry, available, full);
 			}
 		}
+		//the servers without connections available last rather than left out, a client finding only those
+		//connecting to one, which then refuses it with the reason, rather than finding no server at all
+		available.addAll(full);
 
-		return servers;
+		return available;
 	}
 
 	private static <T extends Remote, A extends ServerAdmin> void addIfReachable(String serverName, int requestedServerPort,
-																																							 Registry registry, List<Server<T, A>> servers) {
+																																							 Registry registry, List<Server<T, A>> available,
+																																							 List<Server<T, A>> full) {
 		LOG.info("Found server \"{}\"", serverName);
 		try {
 			Server<T, A> server = getIfReachable((Server<T, A>) registry.lookup(serverName), requestedServerPort);
 			if (server != null) {
-				LOG.info("Adding server \"{}\"", serverName);
-				servers.add(server);
+				if (server.connectionsAvailable()) {
+					LOG.info("Adding server \"{}\"", serverName);
+					available.add(server);
+				}
+				else {
+					LOG.warn("No connections available in server \"{}\"", serverName);
+					full.add(server);
+				}
 			}
 		}
 		catch (Exception e) {
@@ -115,12 +126,8 @@ final class DefaultServerLocator implements Server.Locator {
 							serverInformation.name(), serverInformation.port(), requestedServerPort);
 			return null;
 		}
-		if (server.connectionsAvailable()) {
-			return server;
-		}
-		LOG.warn("No connections available in server \"{}\"", serverInformation.name());
 
-		return null;
+		return server;
 	}
 
 	static final class DefaultBuilder implements Server.Locator.Builder {

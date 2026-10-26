@@ -116,6 +116,22 @@ public class RemoteEntityConnectionTest {
 	}
 
 	@Test
+	void buildConnectionNotAvailable() throws RemoteException {
+		//a server not accepting more connections, the only one, found rather than hidden from discovery: its refusal, as
+		//a DatabaseException with its message, as the http connections throw, rather than a server 'not available'
+		int connectionLimit = admin.connectionLimit();
+		admin.connectionLimit(0);
+		try {
+			assertThrowsExactly(DatabaseException.class, () -> builder()
+							.user(UNIT_TEST_USER)
+							.build());
+		}
+		finally {
+			admin.connectionLimit(connectionLimit);
+		}
+	}
+
+	@Test
 	void reconnectConnectionNotAvailable() throws RemoteException {
 		//a server not accepting more connections hides from discovery, a new client finding none available, but a client
 		//reconnecting by name, its session ended, an idle timeout say, reaches it: a DatabaseException with the server's

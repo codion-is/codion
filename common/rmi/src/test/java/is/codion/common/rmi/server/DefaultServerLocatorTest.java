@@ -29,8 +29,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test suite for DefaultServerLocator (Server.Locator).
@@ -102,6 +101,50 @@ public class DefaultServerLocatorTest {
 				}
 			}
 		}
+	}
+
+	@Test
+	void serverWithoutConnectionsAvailable() throws RemoteException, NotBoundException {
+		//a server without connections available is found last rather than left out, its connect() telling the client
+		//why, where the client found no server at all
+		String fullServerName = SERVER_NAME + "Full";
+		AbstractServer<Remote, ServerAdmin> fullServer = new TestServer(ServerConfiguration.builder()
+						.port(12346)
+						.serverName(fullServerName)
+						.sslEnabled(false)
+						.objectInputFilterFactoryRequired(false)
+						.build());
+		fullServer.connectionLimit(0);
+		Registry registry = Server.Locator.registry(Registry.REGISTRY_PORT);
+		try {
+			registry.rebind(fullServerName, fullServer);
+			assertEquals(fullServerName, locate().information().name());
+			//one with connections available found first
+			registry.rebind(SERVER_NAME, server);
+			assertEquals(SERVER_NAME, locate().information().name());
+		}
+		finally {
+			unbind(registry, fullServerName);
+			unbind(registry, SERVER_NAME);
+			fullServer.shutdown();
+			server.shutdown();
+		}
+	}
+
+	private static Server<Remote, ServerAdmin> locate() throws RemoteException, NotBoundException {
+		return Server.Locator.builder()
+						.hostname("localhost")
+						.namePrefix(SERVER_NAME)
+						.registryPort(Registry.REGISTRY_PORT)
+						.port(-1)
+						.locate();
+	}
+
+	private static void unbind(Registry registry, String name) {
+		try {
+			registry.unbind(name);
+		}
+		catch (Exception e) {/*not bound*/}
 	}
 
 	/**

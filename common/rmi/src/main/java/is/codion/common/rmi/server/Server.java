@@ -148,12 +148,14 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 
 			/**
 			 * Retrieves a Server from the registry, using the configured hostname, registry port and server
-			 * name prefix. Returns the first server satisfying the condition.
+			 * name prefix, one reachable and serving on the configured port: the first with connections available,
+			 * otherwise the first without, whose {@link Server#connect(ConnectionRequest)} then refuses with a
+			 * {@link ConnectionNotAvailableException}, telling the client why.
 			 * @param <C> the Remote connection type served by the server
 			 * @param <A> the server admin type supplied by the server
-			 * @return the first server whose name has the configured prefix
+			 * @return the first server whose name has the configured prefix, preferring one with connections available
 			 * @throws RemoteException in case of a remote exception
-			 * @throws NotBoundException in case no such server is found
+			 * @throws NotBoundException in case no such server is found, reachable and serving on the configured port
 			 */
 			<C extends Remote, A extends ServerAdmin> Server<C, A> locate() throws RemoteException, NotBoundException;
 		}
