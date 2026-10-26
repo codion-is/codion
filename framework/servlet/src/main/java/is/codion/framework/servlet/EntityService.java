@@ -1222,9 +1222,9 @@ public final class EntityService implements AuxiliaryServer {
 
 	/**
 	 * <p>Responds with the given exception, as an {@link ErrorEnvelope} on the json routes and as a serialized
-	 * exception on the serial ones, a refused login as the {@link AuthenticationException} a json client
-	 * reconstructs. The {@link ErrorKind} decides the status, the log severity and, on the json routes, the
-	 * envelope the client reconstructs the exception from.
+	 * exception on the serial ones, a refused connection as the exception a json client reconstructs. The
+	 * {@link ErrorKind} decides the status, the log severity and, on the json routes, the envelope the client
+	 * reconstructs the exception from.
 	 * <p>Note that the mode is a property of the route, not of the handler; a few handlers serve both, the json
 	 * routes for the operations which carry no payload being wired to the serial handler.
 	 */
@@ -1243,15 +1243,20 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	/**
-	 * A refused login travels as the {@link AuthenticationException} the database refused it with, or one with the
-	 * message of an authenticator's refusal, rather than as the server's checked {@link ServerAuthenticationException},
-	 * which a client would need the RMI module to read.
+	 * A refused connection travels as the exception a json client reconstructs, rather than as one of the server's
+	 * checked {@link ServerException}s, which a client would need the RMI module to read: a refused login as the
+	 * {@link AuthenticationException} the database refused it with, or one with the message of an authenticator's
+	 * refusal, and any other refusal, a server not accepting more connections or shutting down, as a
+	 * {@link DatabaseException} with its message.
 	 */
 	private static Exception serial(Exception exception) {
 		if (exception instanceof ServerAuthenticationException) {
 			return exception.getCause() instanceof AuthenticationException ?
 							(AuthenticationException) exception.getCause() :
 							new AuthenticationException(exception.getMessage());
+		}
+		if (exception instanceof ServerException) {
+			return new DatabaseException(exception.getMessage());
 		}
 
 		return exception;

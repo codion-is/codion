@@ -6,8 +6,10 @@ Codion Change Log
 - HttpEntityConnection bug fixed, building a connection with a domain instance now establishes it on the server, validating the user's credentials, where no request was made before the first operation, invalid credentials accepted until then.
 ### is.codion.framework.servlet
 - EntityService bug fixed, a refused login on the serial routes now responds with the AuthenticationException a json client reconstructs, the database's or one with the authenticator's message, where the server's ServerAuthenticationException was serialized, which a client without codion-common-rmi could not read, and one with it threw wrapped in a RuntimeException.
+- EntityService bug fixed, a connection refused on the serial routes for another reason, the server not accepting more connections or shutting down, now responds with a DatabaseException with its message, as a json client reconstructs, where the server's ConnectionNotAvailableException or LoginException was serialized.
 ### is.codion.framework.db.rmi
 - RemoteEntityConnection, a refused login now throws AuthenticationException, as the http connections do, the database's or one with the authenticator's message, where a RuntimeException wrapping the server's ServerAuthenticationException was thrown.
+- RemoteEntityConnection, a connection refused for another reason, the server not accepting more connections or shutting down, now throws a DatabaseException with its message, as the http connections do, where a RuntimeException wrapping the server's exception was thrown.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

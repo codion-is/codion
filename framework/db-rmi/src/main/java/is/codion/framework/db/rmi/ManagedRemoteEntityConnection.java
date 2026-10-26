@@ -25,6 +25,7 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.AbstractEntityConnection;
 import is.codion.framework.db.EntityConnection;
@@ -134,6 +135,11 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 			}
 			catch (ServerAuthenticationException e) {
 				throw authenticationException(e);
+			}
+			catch (ServerException e) {
+				//any other refusal, a server not accepting more connections or shutting down, as the http connections
+				//throw it, rather than the server's checked exception
+				throw new DatabaseException(e.getMessage());
 			}
 			catch (Exception e) {
 				throw Exceptions.runtime(e);

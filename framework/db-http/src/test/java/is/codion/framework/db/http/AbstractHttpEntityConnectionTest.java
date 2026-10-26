@@ -479,6 +479,21 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
+	void buildConnectionNotAvailable() {
+		//a DatabaseException with the server's message in either mode, the serial one included, which would otherwise
+		//get the server's checked ConnectionNotAvailableException, wrapped
+		int connectionLimit = server.connectionLimit();
+		server.connectionLimit(0);
+		try {
+			assertThrowsExactly(DatabaseException.class, builder::build);
+			assertThrowsExactly(DatabaseException.class, () -> builder.domain(new TestDomain()).build());
+		}
+		finally {
+			server.connectionLimit(connectionLimit);
+		}
+	}
+
+	@Test
 	void deleteDepartmentWithEmployees() {
 		Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
 		ReferentialIntegrityException exception = assertThrows(ReferentialIntegrityException.class,

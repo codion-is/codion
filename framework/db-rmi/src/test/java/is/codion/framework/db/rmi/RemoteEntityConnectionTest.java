@@ -20,6 +20,7 @@ package is.codion.framework.db.rmi;
 
 import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.AuthenticationException;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.Server;
@@ -85,14 +86,18 @@ public class RemoteEntityConnectionTest {
 	}
 
 	private static EntityConnection createConnection() {
+		return builder()
+						.user(UNIT_TEST_USER)
+						.build();
+	}
+
+	private static RemoteEntityConnection.Builder builder() {
 		return RemoteEntityConnection.builder()
 						.hostname(Clients.SERVER_HOSTNAME.get())
 						.port(configuration.port())
 						.registryPort(configuration.registryPort())
 						.clientType("RemoteEntityConnectionTest")
-						.domain(TestDomain.DOMAIN)
-						.user(UNIT_TEST_USER)
-						.build();
+						.domain(TestDomain.DOMAIN);
 	}
 
 	@AfterAll
@@ -105,14 +110,27 @@ public class RemoteEntityConnectionTest {
 	void buildValidatesCredentials() {
 		//an AuthenticationException, as the http connections throw, rather than the server's checked
 		//ServerAuthenticationException, wrapped
-		assertThrows(AuthenticationException.class, () -> RemoteEntityConnection.builder()
-						.hostname(Clients.SERVER_HOSTNAME.get())
-						.port(configuration.port())
-						.registryPort(configuration.registryPort())
-						.clientType("RemoteEntityConnectionTest")
-						.domain(TestDomain.DOMAIN)
+		assertThrows(AuthenticationException.class, () -> builder()
 						.user(User.parse("scott:lion"))
 						.build());
+	}
+
+	@Test
+	void reconnectConnectionNotAvailable() throws RemoteException {
+		//a server not accepting more connections hides from discovery, a new client finding none available, but a client
+		//reconnecting by name, its session ended, an idle timeout say, reaches it: a DatabaseException with the server's
+		//message, as the http connections throw, rather than the server's checked ConnectionNotAvailableException, wrapped
+		EntityConnection reconnecting = createConnection();
+		int connectionLimit = admin.connectionLimit();
+		try {
+			admin.disconnect(reconnecting.id());
+			admin.connectionLimit(0);
+			assertThrowsExactly(DatabaseException.class, () -> reconnecting.count(all(Department.TYPE)));
+		}
+		finally {
+			admin.connectionLimit(connectionLimit);
+			reconnecting.close();
+		}
 	}
 
 	@Test

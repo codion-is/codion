@@ -20,11 +20,13 @@ package is.codion.framework.servlet;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.AuthenticationException;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ErrorType;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.utilities.Serializer;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
@@ -89,6 +91,7 @@ public class EntityServiceTest {
 	private static final int BAD_REQUEST = 400;
 	private static final int UNAUTHORIZED = 401;
 	private static final int INTERNAL_SERVER_ERROR = 500;
+	private static final int SERVICE_UNAVAILABLE = 503;
 
 	private static String HOSTNAME;
 	private static String SERVER_BASEURL;
@@ -573,6 +576,27 @@ public class EntityServiceTest {
 		assertEquals(UNAUTHORIZED, response.statusCode());
 		AuthenticationException exception = assertInstanceOf(AuthenticationException.class, Serializer.deserialize(response.body()));
 		assertFalse(exception.errorType().isPresent());
+	}
+
+	@Test
+	void serialConnectionNotAvailable() throws Exception {
+		//a server not accepting more connections as a DatabaseException with its message, the exception a json client
+		//reconstructs, rather than the server's checked ConnectionNotAvailableException; a new connection id and a
+		//client of its own
+		int connectionLimit = server.connectionLimit();
+		server.connectionLimit(0);
+		try {
+			HttpResponse<byte[]> response = createHttpClient().send(createRequest(SERVER_BASEURL, "isTransactionOpen",
+							BodyPublishers.noBody(), UUID.randomUUID().toString(), Version.version().toString(), createAuthorizationHeader()),
+							BodyHandlers.ofByteArray());
+			assertEquals(SERVICE_UNAVAILABLE, response.statusCode());
+			DatabaseException exception = assertInstanceOf(DatabaseException.class, Serializer.deserialize(response.body()));
+			assertEquals(DatabaseException.class, exception.getClass());
+			assertEquals(new ConnectionNotAvailableException().getMessage(), exception.getMessage());
+		}
+		finally {
+			server.connectionLimit(connectionLimit);
+		}
 	}
 
 	@Test
