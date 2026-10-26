@@ -257,7 +257,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 		private static <T> Converter<T, String> instance(Column<T> column) {
 			//noinspection rawtypes
-			return (Converter<T, String>) new EnumConverter(column.type().get());
+			return new EnumConverter(column.type().get());
 		}
 	}
 

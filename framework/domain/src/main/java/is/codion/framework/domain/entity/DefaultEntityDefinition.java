@@ -70,6 +70,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	private static final String ATTRIBUTE = "attribute";
 	private static final String COLUMN = "column";
+	private static final String COLUMN_CAPITALIZED = "Column";
 
 	private final EntityType entityType;
 	private final @Nullable String caption;
@@ -410,10 +411,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		public <T> ColumnDefinition<T> definition(Column<T> column) {
 			AttributeDefinition<T> definition = (AttributeDefinition<T>) entityAttributes.attributeMap.get(requireNonNull(column, COLUMN));
 			if (definition == null) {
-				throw new IllegalArgumentException("Column " + column + " not found in entity: " + entityType);
+				throw new IllegalArgumentException(COLUMN_CAPITALIZED + " " + column + " not found in entity: " + entityType);
 			}
 			if (!(definition instanceof ColumnDefinition)) {
-				throw new IllegalArgumentException("Column " + column + " has not been defined as a column");
+				throw new IllegalArgumentException(COLUMN_CAPITALIZED + " " + column + " has not been defined as a column");
 			}
 
 			return (ColumnDefinition<T>) definition;
@@ -727,7 +728,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 								.map(ForeignKeyDefinition::attribute)
 								.collect(toList());
 				if (setting.size() > 1) {
-					throw new IllegalArgumentException("Column " + column + " is set by more than one foreign key " + setting +
+					throw new IllegalArgumentException(COLUMN_CAPITALIZED + " " + column + " is set by more than one foreign key " + setting +
 									" in entity: " + entityType + ", it must be read-only in all of them but one at most");
 				}
 			});

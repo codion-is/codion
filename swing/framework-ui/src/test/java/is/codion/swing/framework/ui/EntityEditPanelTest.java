@@ -153,7 +153,7 @@ public final class EntityEditPanelTest {
 	}
 
 	@Test
-	void mergeModifiedDetail() throws EntityValidationException {
+	void mergeModifiedDetail() {
 		CONNECTION.startTransaction();
 		try {
 			Entity operations = CONNECTION.selectSingle(Department.NAME.equalTo("OPERATIONS"));

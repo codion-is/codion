@@ -55,7 +55,7 @@ final class DefaultEntityMerge implements EntityMerge {
 		this.theirs = builder.theirs;
 		this.base = builder.base;
 		this.attributes = unmodifiableList(builder.compared().stream()
-						.filter(attribute -> !equal(mine, theirs, attribute))
+						.filter(attribute -> !valueEqual(mine, theirs, attribute))
 						.map(DefaultAttributeMerge::new)
 						.collect(toList()));
 		this.attributes.forEach(attribute -> attribute.side().addListener(this::updateComplete));
@@ -123,7 +123,7 @@ final class DefaultEntityMerge implements EntityMerge {
 	}
 
 	// A foreign key compared by its columns
-	private static boolean equal(Entity entity, Entity other, Attribute<?> attribute) {
+	private static boolean valueEqual(Entity entity, Entity other, Attribute<?> attribute) {
 		return entity.valuesEqual(other, columns(attribute));
 	}
 
@@ -198,10 +198,10 @@ final class DefaultEntityMerge implements EntityMerge {
 			if (base == null || !contains(base, attribute)) {
 				return Change.UNKNOWN;
 			}
-			if (equal(base, mine, attribute)) {
+			if (valueEqual(base, mine, attribute)) {
 				return Change.THEIRS;
 			}
-			if (equal(base, theirs, attribute)) {
+			if (valueEqual(base, theirs, attribute)) {
 				return Change.MINE;
 			}
 
@@ -242,6 +242,8 @@ final class DefaultEntityMerge implements EntityMerge {
 
 	private static final class DefaultBuilder implements Builder {
 
+		private static final String ATTRIBUTE = "Attribute ";
+
 		private final Entity mine;
 		private final Entity theirs;
 
@@ -267,13 +269,13 @@ final class DefaultEntityMerge implements EntityMerge {
 			EntityDefinition definition = mine.definition();
 			for (Attribute<?> attribute : requireNonNull(attributes)) {
 				if (!attribute.entityType().equals(mine.type())) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is not of type " + mine.type());
+					throw new IllegalArgumentException(ATTRIBUTE + attribute + " is not of type " + mine.type());
 				}
 				if (!(attribute instanceof Column || attribute instanceof ForeignKey)) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is neither a column nor a foreign key");
+					throw new IllegalArgumentException(ATTRIBUTE + attribute + " is neither a column nor a foreign key");
 				}
 				if (attribute instanceof Column && definition.columns().definition((Column<?>) attribute).primaryKey()) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is a primary key column");
+					throw new IllegalArgumentException(ATTRIBUTE + attribute + " is a primary key column");
 				}
 			}
 			this.attributes = new ArrayList<>(attributes);

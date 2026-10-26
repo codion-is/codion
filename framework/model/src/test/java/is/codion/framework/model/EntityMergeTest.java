@@ -398,7 +398,7 @@ public final class EntityMergeTest {
 	}
 
 	@Test
-	void mergedUpdatesOverTheirs() throws Exception {
+	void mergedUpdatesOverTheirs() {
 		CONNECTION.startTransaction();
 		try {
 			Entity allen = allen();
