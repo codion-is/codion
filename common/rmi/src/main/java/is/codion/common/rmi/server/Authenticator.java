@@ -38,6 +38,9 @@ public interface Authenticator {
 	/**
 	 * Returns the client type for which to use this authenticator.
 	 * If none is specified, this authenticator is shared between all client types.
+	 * <p>Note that the client type is the client's own claim, so a client claiming another one is not authenticated
+	 * by this authenticator. A server with authenticators therefore refuses a connection passing none of them, unless
+	 * its client type is exempt, see {@link ServerConfiguration#AUTHENTICATOR_EXEMPTIONS}.
 	 * @return the String identifying the client type for which to use this authenticator or an empty optional in case this authenticator should be shared
 	 */
 	default Optional<String> clientType() {

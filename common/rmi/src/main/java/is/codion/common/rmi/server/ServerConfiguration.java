@@ -193,6 +193,20 @@ public interface ServerConfiguration {
 	PropertyValue<String> AUXILIARY_SERVER_FACTORIES = stringValue("codion.server.auxiliaryServerFactories");
 
 	/**
+	 * A comma separated list of client types exempt from authentication by an {@link Authenticator}.
+	 * <p>A server with authenticators refuses a connection passing none of them, one with no shared authenticator
+	 * to pass and none for its client type, unless its client type is exempt, the connection then authenticated by
+	 * the server itself, an entity server delegating to the database. Note that the client type is the client's own
+	 * claim, so a server exempting one is no stricter than that path, whatever its authenticators require.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: none
+	 * </ul>
+	 * @see Authenticator#clientType()
+	 */
+	PropertyValue<String> AUTHENTICATOR_EXEMPTIONS = stringValue("codion.server.authenticatorExemptions");
+
+	/**
 	 * Specifies the {@link ObjectInputFilterFactory} class to use
 	 * <ul>
 	 * <li>Value type: String
@@ -269,6 +283,12 @@ public interface ServerConfiguration {
 	 * @return the class names of {@link Authenticator}s to use
 	 */
 	Collection<String> authenticators();
+
+	/**
+	 * @return the client types exempt from authentication by an {@link Authenticator}
+	 * @see #AUTHENTICATOR_EXEMPTIONS
+	 */
+	Collection<String> authenticatorExemptions();
 
 	/**
 	 * @return true if ssl is enabled
@@ -370,6 +390,13 @@ public interface ServerConfiguration {
 		 * @return this builder instance
 		 */
 		B authenticator(String authenticatorClass);
+
+		/**
+		 * @param clientTypes client types exempt from authentication by an {@link Authenticator}
+		 * @return this builder instance
+		 * @see #AUTHENTICATOR_EXEMPTIONS
+		 */
+		B authenticatorExemptions(Collection<String> clientTypes);
 
 		/**
 		 * When set to true this also sets the rmi client/server socket factories.

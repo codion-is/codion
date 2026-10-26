@@ -112,6 +112,11 @@ See also <<server.adoc#_authentication, Authentication>>.
 pattern: authenticate the session's user against an application table, then return
 `session.withDatabaseUser(databaseUser)`.
 
+The client type is the client's own claim, so make the authenticator shared, or give every client type the server
+serves one of its own. A server with authenticators refuses any other client type, unless it is exempt via
+`codion.server.authenticatorExemptions`, which on a server facing the internet should list none: an exempt client type
+is database authentication for anyone claiming it.
+
 For mobile clients, have the application present an opaque, revocable **token** as the password.
 The device then never stores a reusable credential, and access can be withdrawn without changing
 anyone's password.
@@ -316,7 +321,7 @@ not for audit.
 . `codion.server.rmi=false`, no admin port; JMX off or firewalled. Only the HTTP port reachable,
 ideally only from localhost.
 . An `Authenticator` in place, authenticating against the application, swapping in a role-specific
-pooled database user.
+pooled database user, for every client type, none exempt via `codion.server.authenticatorExemptions`.
 . Database privileges actually constrain each role.
 . `codion.server.http.serialization=false`, `codion.server.objectInputFilterFactoryRequired=true`.
 . Reverse proxy: TLS, rate limiting, body size limit, timeouts, `X-Forwarded-For` overwritten.

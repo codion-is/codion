@@ -28,6 +28,15 @@ https://blog.tneitzel.eu/posts/01-attacking-java-rmi-via-ssrf[Attacking Java RMI
 The Codion server does not perform any user authentication by default, it leaves that up the underlying database.
 An authentication layer can be added by implementing an {url-javadoc}{common-rmi}/is/codion/common/rmi/server/Authenticator.html[Authenticator] and registering it with the ServiceLoader.
 
+An authenticator is either shared, authenticating every connection, or specific to a client type. The client type
+is the client's own claim, so a server with authenticators refuses a connection passing none of them, one whose
+client type has no authenticator of its own, with no shared one to pass, unless its client type is exempt, via
+{url-javadoc}{common-rmi}/is/codion/common/rmi/server/ServerConfiguration.html#AUTHENTICATOR_EXEMPTIONS[codion.server.authenticatorExemptions],
+the database then authenticating it. A server exempting client types is a mixed setup, as strict as its loosest
+path, which suits users meant to have database accounts of their own, administrators say, beside application users
+authenticated by an authenticator. The demo server is one, the Chinook clients authenticated by the
+ChinookAuthenticator, the other demos' by the database.
+
 ==== Authenticator examples
 
 <<{dir-tutorials}/chinook/chinook.adoc#_authenticator, ChinookAuthenticator>>

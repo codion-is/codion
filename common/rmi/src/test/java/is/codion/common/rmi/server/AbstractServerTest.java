@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractServerTest {
@@ -299,6 +300,54 @@ public class AbstractServerTest {
 	}
 
 	@Test
+	void clientTypeWithoutAuthenticator() {
+		//the client type being the client's own claim, one without an authenticator, on a server with authenticators, is
+		//refused rather than connected unauthenticated, the message naming nothing but the client's own claim
+		ServerAuthenticationException exception = assertThrows(ServerAuthenticationException.class,
+						() -> server.connect(connectionRequest("UnknownClientType")));
+		assertEquals("Client type not accepted: UnknownClientType", exception.getMessage());
+	}
+
+	@Test
+	void authenticatorExemptions() throws RemoteException, ServerException {
+		//a mixed setup, one client type authenticated by its authenticator, an exempt one by connect() alone
+		TestServer mixed = new TestServer(ServerConfiguration.builder()
+						.port(PORT + 3)
+						.serverName("authenticatorExemptionsTestServer")
+						.objectInputFilterFactoryRequired(false)
+						.authenticator(OtherAuthenticator.class.getName())
+						.authenticatorExemptions(singletonList("ExemptClientType"))
+						.build());
+		try {
+			assertNotNull(mixed.connect(connectionRequest(OtherAuthenticator.CLIENT_TYPE)));
+			assertNotNull(mixed.connect(connectionRequest("ExemptClientType")));
+			assertThrows(ServerAuthenticationException.class, () -> mixed.connect(connectionRequest("UnknownClientType")));
+		}
+		finally {
+			mixed.shutdown();
+		}
+	}
+
+	@Test
+	void sharedAuthenticator() throws RemoteException, ServerException {
+		//a shared authenticator authenticating every connection, no client type is refused, one without an authenticator
+		//of its own included, beside one with
+		TestServer shared = new TestServer(ServerConfiguration.builder()
+						.port(PORT + 4)
+						.serverName("sharedAuthenticatorTestServer")
+						.objectInputFilterFactoryRequired(false)
+						.authenticator(SharedAuthenticator.class.getName())
+						.authenticator(OtherAuthenticator.class.getName())
+						.build());
+		try {
+			assertNotNull(shared.connect(connectionRequest("AnyClientType")));
+		}
+		finally {
+			shared.shutdown();
+		}
+	}
+
+	@Test
 	void emptyServerName() {
 		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder().port(PORT).serverName((String) null).build());
 		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder().port(PORT).serverName("").build());
@@ -323,6 +372,13 @@ public class AbstractServerTest {
 
 	private interface ServerTest extends Remote {
 		RemoteSession session() throws RemoteException;
+	}
+
+	private static ConnectionRequest connectionRequest(String clientType) {
+		return ConnectionRequest.builder()
+						.user(UNIT_TEST_USER)
+						.clientType(clientType)
+						.build();
 	}
 
 	private static ServerConfiguration configuration() {
@@ -362,6 +418,29 @@ public class AbstractServerTest {
 
 		@Override
 		protected void maintainConnections(Collection<SessionConnection<ServerTest>> connections) throws RemoteException {}
+	}
+
+	public static final class OtherAuthenticator implements Authenticator {
+
+		static final String CLIENT_TYPE = "OtherClientType";
+
+		@Override
+		public Optional<String> clientType() {
+			return Optional.of(CLIENT_TYPE);
+		}
+
+		@Override
+		public RemoteSession login(RemoteSession session) {
+			return session;
+		}
+	}
+
+	public static final class SharedAuthenticator implements Authenticator {
+
+		@Override
+		public RemoteSession login(RemoteSession session) {
+			return session;
+		}
 	}
 
 	public static final class TestAuthenticator implements Authenticator {

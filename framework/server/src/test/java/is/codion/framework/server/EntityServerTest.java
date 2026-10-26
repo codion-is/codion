@@ -454,6 +454,8 @@ public class EntityServerTest {
 						.sslEnabled(true)
 						.objectInputFilterFactory(SerializationFilterFactory.class.getName())
 						.authenticator(TestAuthenticator.class.getName())
+						//a mixed setup, the TestAuthenticator authenticating its own client type, the database the others
+						.authenticatorExemptions(asList("ClientType", "TestClient", EntityServerTest.class.getSimpleName()))
 						.build();
 	}
 

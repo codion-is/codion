@@ -283,6 +283,44 @@ public class DefaultServerConfigurationTest {
 	}
 
 	@Nested
+	@DisplayName("Authenticator exemptions configuration")
+	class AuthenticatorExemptionsConfigurationTest {
+
+		@Test
+		@DisplayName("No client type exempt by default")
+		void authenticatorExemptions_emptyByDefault() {
+			assertTrue(ServerConfiguration.builder().port(TEST_PORT).build().authenticatorExemptions().isEmpty());
+		}
+
+		@Test
+		@DisplayName("Exempt client types are stored, immutable")
+		void authenticatorExemptions_stored() {
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
+							.authenticatorExemptions(Arrays.asList("Employees", "The Pet Store"))
+							.build();
+
+			assertTrue(config.authenticatorExemptions().containsAll(Arrays.asList("Employees", "The Pet Store")));
+			assertEquals(2, config.authenticatorExemptions().size());
+			assertThrows(UnsupportedOperationException.class, () -> config.authenticatorExemptions().add("World"));
+		}
+
+		@Test
+		@DisplayName("Exempt client types are read from the comma separated property, trimmed")
+		void authenticatorExemptions_fromProperty() {
+			ServerConfiguration.AUTHENTICATOR_EXEMPTIONS.set("Employees, The Pet Store");
+			try {
+				ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
+
+				assertTrue(config.authenticatorExemptions().containsAll(Arrays.asList("Employees", "The Pet Store")));
+				assertEquals(2, config.authenticatorExemptions().size());
+			}
+			finally {
+				ServerConfiguration.AUTHENTICATOR_EXEMPTIONS.remove();
+			}
+		}
+	}
+
+	@Nested
 	@DisplayName("Port configuration")
 	class PortConfigurationTest {
 

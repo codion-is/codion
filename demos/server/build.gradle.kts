@@ -58,6 +58,9 @@ application {
         "-Dcodion.server.systemProperties=true",
         "-Dcodion.server.pool.factory=is.codion.plugin.hikari.pool.HikariConnectionPoolFactory",
         "-Dcodion.server.auxiliaryServerFactories=is.codion.framework.servlet.EntityServiceFactory",
+        // A mixed setup: the Chinook clients are authenticated by the ChinookAuthenticator, which the chinook domain
+        // jar registers as a service, the other demos' clients by the database, their client types exempt
+        "-Dcodion.server.authenticatorExemptions=Employees,EmployeesLoadTest,EmployeesServletLoadTest,Petclinic,The Pet Store,PetstoreLoadTest,World",
         "-Dcodion.server.objectInputFilterFactory=is.codion.common.rmi.server.SerializationFilterFactory",
         "-Dcodion.server.serialization.filter.patternFile=src/main/config/serialization-whitelist.txt",
         // Configure separate logging for serialization filter rejections

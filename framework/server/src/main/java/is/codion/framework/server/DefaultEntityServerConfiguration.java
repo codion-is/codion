@@ -97,6 +97,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
+	public Collection<String> authenticatorExemptions() {
+		return serverConfiguration.authenticatorExemptions();
+	}
+
+	@Override
 	public boolean sslEnabled() {
 		return serverConfiguration.sslEnabled();
 	}
@@ -262,6 +267,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		@Override
 		public Builder authenticator(String authenticatorClass) {
 			serverConfigurationBuilder.authenticator(authenticatorClass);
+			return this;
+		}
+
+		@Override
+		public Builder authenticatorExemptions(Collection<String> clientTypes) {
+			serverConfigurationBuilder.authenticatorExemptions(clientTypes);
 			return this;
 		}
 

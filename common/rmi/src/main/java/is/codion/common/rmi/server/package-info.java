@@ -31,6 +31,7 @@
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#SSL_ENABLED}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#IDLE_CONNECTION_TIMEOUT}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_FACTORIES}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#AUTHENTICATOR_EXEMPTIONS}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#OBJECT_INPUT_FILTER_FACTORY}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#OBJECT_INPUT_FILTER_FACTORY_REQUIRED}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#CONNECTION_MAINTENANCE_INTERVAL}

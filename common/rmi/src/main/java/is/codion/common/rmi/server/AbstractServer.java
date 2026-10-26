@@ -125,6 +125,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 			configureObjectInputFilter(configuration);
 			startAuxiliaryServers(configuration.auxiliaryServerFactories());
 			loadAuthenticators(configuration.authenticators());
+			if (!configuration.authenticatorExemptions().isEmpty()) {
+				LOG.info("Client types exempt from authentication by an authenticator: {}", configuration.authenticatorExemptions());
+			}
 		}
 		catch (Throwable exception) {
 			throw logShutdownAndReturn(new RuntimeException(exception));
@@ -445,6 +448,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		if (clientAuthenticator != null) {
 			session = clientAuthenticator.login(session);
 		}
+		else if (sharedAuthenticators.isEmpty() && authenticatorRequired(connectionRequest.clientType())) {
+			//the client type being the client's own claim, one without an authenticator would otherwise be authenticated
+			//by connect() alone, whatever the authenticators of the other client types require
+			LOG.warn("Client type not accepted, it has no authenticator and is not exempt: '{}', host: {}",
+							connectionRequest.clientType(), session.clientHost());
+			throw new ServerAuthenticationException("Client type not accepted: " + connectionRequest.clientType());
+		}
 		if (!session.id().equals(connectionRequest.connectionId())) {
 			throw new LoginException("Authenticator returned a session for a different connection: " + session.id() +
 							", expected: " + connectionRequest.connectionId());
@@ -453,6 +463,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		connections.put(session.id(), sessionConnection);
 
 		return sessionConnection;
+	}
+
+	// A server with authenticators requires a connection to pass one, unless its client type is exempt
+	private boolean authenticatorRequired(String clientType) {
+		return !authenticators.isEmpty() && !configuration.authenticatorExemptions().contains(clientType);
 	}
 
 	private void startAuxiliaryServers(Collection<String> auxiliaryServerFactories) {

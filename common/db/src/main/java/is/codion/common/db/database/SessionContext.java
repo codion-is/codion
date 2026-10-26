@@ -73,6 +73,10 @@ public interface SessionContext {
 	 * name the same client type and all of them are applied. Shared contexts are applied first, so that a
 	 * client type specific one sits on top of the general setup and, the removal running in reverse, comes
 	 * off again before it.
+	 * <p>Note that the client type is the client's own claim, so a client may avoid a client type specific context
+	 * by claiming another one. Anything relying on a context must therefore deny, rather than allow, where the context
+	 * has not been applied: a row level security policy showing no rows where the variable it reads is not set, rather
+	 * than all of them, an audit trigger refusing a write where it can not tell for whom it is.
 	 * @return the String identifying the client type for which to use this context or an empty optional in case this context should be shared
 	 * @see ClientInfo#clientType()
 	 */

@@ -57,6 +57,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final int registryPort;
 	private final Collection<String> auxiliaryServerFactories;
 	private final Collection<String> authenticators;
+	private final Collection<String> authenticatorExemptions;
 	private final int adminPort;
 	private final boolean sslEnabled;
 	private final Supplier<String> serverNameSupplier;
@@ -74,6 +75,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		this.registryPort = builder.registryPort;
 		this.auxiliaryServerFactories = unmodifiableSet(builder.auxiliaryServerFactories);
 		this.authenticators = unmodifiableSet(builder.authenticators);
+		this.authenticatorExemptions = unmodifiableSet(builder.authenticatorExemptions);
 		this.adminPort = builder.serverAdminPort;
 		this.sslEnabled = builder.sslEnabled;
 		this.serverNameSupplier = builder.serverName;
@@ -127,6 +129,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	}
 
 	@Override
+	public Collection<String> authenticatorExemptions() {
+		return authenticatorExemptions;
+	}
+
+	@Override
 	public boolean sslEnabled() {
 		return sslEnabled;
 	}
@@ -177,6 +184,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private int registryPort;
 		private final Set<String> auxiliaryServerFactories = new HashSet<>();
 		private final Set<String> authenticators = new HashSet<>();
+		private final Set<String> authenticatorExemptions = new HashSet<>();
 		private int serverAdminPort;
 		private boolean sslEnabled = true;
 		private Supplier<String> serverName = new DefaultServerName();
@@ -193,6 +201,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 			port(SERVER_PORT.getOrThrow());
 			registryPort(REGISTRY_PORT.getOrThrow());
 			auxiliaryServerFactory(parseCSV(AUXILIARY_SERVER_FACTORIES.get()));
+			authenticatorExemptions(parseCSV(AUTHENTICATOR_EXEMPTIONS.get()));
 			adminPort(ADMIN_PORT.getOrThrow());
 			sslEnabled(SSL_ENABLED.getOrThrow());
 			connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.getOrThrow());
@@ -249,6 +258,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		@Override
 		public DefaultBuilder authenticator(String authenticatorClass) {
 			this.authenticators.add(requireNonNull(authenticatorClass));
+			return this;
+		}
+
+		@Override
+		public DefaultBuilder authenticatorExemptions(Collection<String> clientTypes) {
+			this.authenticatorExemptions.addAll(requireNonNull(clientTypes));
 			return this;
 		}
 

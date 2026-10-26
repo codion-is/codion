@@ -74,6 +74,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	private static final Logger LOG = LoggerFactory.getLogger(EntityServer.class);
 
 	private static final String SHUTDOWN = "shutdown";
+	private static final String UNABLE_TO_CONNECT = "{} unable to connect";
 
 	private final EntityServerConfiguration configuration;
 	private final Map<DomainType, Domain> domainModels;
@@ -162,11 +163,11 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 		catch (IllegalArgumentException e) {
 			// a request this server can not serve, a domain not hosted here for example, typed, with its message,
 			// which may reach a client not yet authenticated, so it names nothing of the server's
-			LOG.debug("{} unable to connect", session, e);
+			LOG.debug(UNABLE_TO_CONNECT, session, e);
 			throw e;
 		}
 		catch (DatabaseException e) {
-			LOG.debug("{} unable to connect", session, e);
+			LOG.debug(UNABLE_TO_CONNECT, session, e);
 			if (e.errorType().isPresent()) {
 				// typed, the error type telling the client what failed, its message the framework's
 				throw e;
@@ -176,7 +177,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 			throw new LoginException(e.getMessage());
 		}
 		catch (Exception e) {
-			LOG.debug("{} unable to connect", session, e);
+			LOG.debug(UNABLE_TO_CONNECT, session, e);
 			throw new LoginException(e.getMessage());
 		}
 	}
