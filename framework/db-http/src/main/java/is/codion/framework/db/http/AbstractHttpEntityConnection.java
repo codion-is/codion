@@ -100,7 +100,14 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		this.clientType = requireNonNull(builder.clientType, "clientType must be specified");
 		// An injected domain is used directly (built in-process); otherwise the entity definitions are fetched
 		// from the server — the secure default, keeping the domain implementation (table names, queries) off the client.
-		this.entities = builder.domain != null ? builder.domain.entities() : initializeEntities();
+		// Either way a request establishes the connection on the server, validating the user's credentials.
+		if (builder.domain != null) {
+			this.entities = builder.domain.entities();
+			establish();
+		}
+		else {
+			this.entities = initializeEntities();
+		}
 	}
 
 	@Override
@@ -367,6 +374,19 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		}
 	}
 
+	// The connection established where no entities are fetched, by the cheapest request, whose result goes unread,
+	// so its deserialization, which may depend on subclass state, is not involved
+	private void establish() {
+		synchronized (transport) {
+			try {
+				throwIfError(execute(createRequest("isTransactionOpen")));
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
 	protected final HttpTransport.Response execute(Request request) throws IOException {
 		return transport.post(request.url, headers, request.body);
 	}
@@ -393,8 +413,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	/**
 	 * Returns the exception the given error response describes, the wire format of an error being mode specific.
-	 * <p>Note that this is called from the constructor, via {@link #initializeEntities()}, so it must not depend
-	 * on subclass state; the entities endpoint is the only request made before the subclass is initialized.
+	 * <p>Note that this is called from the constructor, via {@link #initializeEntities()} or {@link #establish()},
+	 * so it must not depend on subclass state; the request establishing the connection is the only one made before
+	 * the subclass is initialized.
 	 * @param response the error response, its status being something other than 200
 	 * @return the exception to throw
 	 */

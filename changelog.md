@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.93
+### is.codion.framework.db.http
+- HttpEntityConnection bug fixed, building a connection with a domain instance now establishes it on the server, validating the user's credentials, where no request was made before the first operation, invalid credentials accepted until then.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

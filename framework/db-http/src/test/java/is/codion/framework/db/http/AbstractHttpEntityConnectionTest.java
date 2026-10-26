@@ -20,12 +20,14 @@ package is.codion.framework.db.http;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Database.Lock;
+import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.rmi.client.Clients;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Savepoint;
@@ -464,6 +466,24 @@ abstract class AbstractHttpEntityConnectionTest {
 			one.close();
 			two.close();
 		}
+	}
+
+	@Test
+	void buildValidatesCredentials() {
+		//with the entities fetched from the server, and with a domain instance given, fetching nothing
+		User invalid = User.parse("scott:lion");
+		assertAuthenticationFailed(assertThrows(RuntimeException.class, () -> builder.user(invalid).build()));
+		assertAuthenticationFailed(assertThrows(RuntimeException.class, () -> builder.domain(new TestDomain()).user(invalid).build()));
+	}
+
+	//json throws the AuthenticationException, serial a RuntimeException wrapping the server's ServerAuthenticationException,
+	//its cause the AuthenticationException
+	private static void assertAuthenticationFailed(Throwable exception) {
+		Throwable cause = exception;
+		while (cause != null && !(cause instanceof AuthenticationException)) {
+			cause = cause.getCause();
+		}
+		assertNotNull(cause, () -> "No AuthenticationException in " + exception);
 	}
 
 	@Test
