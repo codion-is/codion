@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.93
+
 ## 0.18.92
 ### is.codion.swing.common.ui
 - LabelBuilder bug fixed, text(Observable) no longer fails with a ClassCastException on an Observable that is not a Value.
