@@ -38,6 +38,7 @@ import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.condition.Condition;
@@ -476,6 +477,17 @@ abstract class AbstractHttpEntityConnectionTest {
 		User invalid = User.parse("scott:lion");
 		assertThrows(AuthenticationException.class, () -> builder.user(invalid).build());
 		assertThrows(AuthenticationException.class, () -> builder.domain(new TestDomain()).user(invalid).build());
+	}
+
+	@Test
+	void buildUnknownDomain() {
+		//a domain not hosted by the server, an IllegalArgumentException with its message in either mode, which the
+		//server passes through rather than a LoginException, the json mode hiding its message as an internal error;
+		//the domains it does host not told, the client not yet authenticated
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+						() -> builder.domain(DomainType.domainType("unknownDomainType")).build());
+		assertTrue(exception.getMessage().contains("unknownDomainType"), exception.getMessage());
+		assertFalse(exception.getMessage().contains(TestDomain.DOMAIN.name()), exception.getMessage());
 	}
 
 	@Test

@@ -159,6 +159,22 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 		catch (RemoteException e) {
 			throw e;
 		}
+		catch (IllegalArgumentException e) {
+			// a request this server can not serve, a domain not hosted here for example, typed, with its message,
+			// which may reach a client not yet authenticated, so it names nothing of the server's
+			LOG.debug("{} unable to connect", session, e);
+			throw e;
+		}
+		catch (DatabaseException e) {
+			LOG.debug("{} unable to connect", session, e);
+			if (e.errorType().isPresent()) {
+				// typed, the error type telling the client what failed, its message the framework's
+				throw e;
+			}
+			// the driver's message, which may name the database's host, is the server's business: a LoginException,
+			// which the json channel reports as an internal error
+			throw new LoginException(e.getMessage());
+		}
 		catch (Exception e) {
 			LOG.debug("{} unable to connect", session, e);
 			throw new LoginException(e.getMessage());
@@ -397,8 +413,9 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 		}
 		Domain domain = domainModels.get(DomainType.domainTypeByName(domainTypeName));
 		if (domain == null) {
-			throw new IllegalArgumentException("Domain not found on this server: " + domainTypeName
-							+ ", hosted domains: " + domainModels.keySet());
+			// the domains hosted here logged rather than told, the client not yet authenticated
+			LOG.debug("Domain not found: {}, hosted domains: {}", domainTypeName, domainModels.keySet());
+			throw new IllegalArgumentException("Domain not found on this server: " + domainTypeName);
 		}
 
 		return domain;

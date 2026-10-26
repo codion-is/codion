@@ -10,6 +10,9 @@ Codion Change Log
 ### is.codion.framework.db.rmi
 - RemoteEntityConnection, a refused login now throws AuthenticationException, as the http connections do, the database's or one with the authenticator's message, where a RuntimeException wrapping the server's ServerAuthenticationException was thrown.
 - RemoteEntityConnection, a connection refused for another reason, the server not accepting more connections or shutting down, now throws a DatabaseException with its message, as the http connections do, where a RuntimeException wrapping the server's exception was thrown.
+### is.codion.framework.server
+- EntityServer, a connection failing on an IllegalArgumentException, a domain not hosted for example, or on a DatabaseException with an error type, now throws it, typed, where a LoginException carried its message alone, which the json channel reported as an internal error; a DatabaseException without one, its message the driver's, still a LoginException.
+- EntityServer, a domain not hosted no longer names the domains hosted in its message, which may reach a client not yet authenticated, logging them instead.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

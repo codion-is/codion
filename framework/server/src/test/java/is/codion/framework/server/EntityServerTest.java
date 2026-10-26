@@ -200,21 +200,15 @@ public class EntityServerTest {
 		admin.maximumPoolCheckOutTime(UNIT_TEST_USER.username(), 2005);
 		assertEquals(2005, admin.maximumPoolCheckOutTime(UNIT_TEST_USER.username()));
 
-		try {
-			server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientType("ClientType").build());
-			fail();
-		}
-		catch (LoginException ignored) {}
-
-		try {
-			server.connect(ConnectionRequest.builder()
-							.user(UNIT_TEST_USER)
-							.clientType("ClientType")
-							.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE,
-											new EmptyDomain().type().name()).build());
-			fail();
-		}
-		catch (LoginException ignored) {}
+		//no domain type, and a domain type not hosted here
+		assertThrows(IllegalArgumentException.class, () ->
+						server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientType("ClientType").build()));
+		assertThrows(IllegalArgumentException.class, () ->
+						server.connect(ConnectionRequest.builder()
+										.user(UNIT_TEST_USER)
+										.clientType("ClientType")
+										.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE,
+														new EmptyDomain().type().name()).build()));
 
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
@@ -309,8 +303,9 @@ public class EntityServerTest {
 
 	@Test
 	void unknownDomainType() {
-		//a domain not hosted by the server used to surface as 'LoginException: null'
-		Exception exception = assertThrows(Exception.class, () ->
+		//a domain not hosted by the server, the IllegalArgumentException itself, the server passing it through rather
+		//than a LoginException with its message, which once was 'LoginException: null'
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
 						RemoteEntityConnection.builder()
 										.hostname("localhost")
 										.port(CONFIGURATION.port())
@@ -319,12 +314,9 @@ public class EntityServerTest {
 										.clientType("TestClient")
 										.user(UNIT_TEST_USER)
 										.build());
-		Throwable cause = exception;
-		while (cause.getMessage() == null && cause.getCause() != null) {
-			cause = cause.getCause();
-		}
-		assertNotNull(cause.getMessage());
-		assertTrue(cause.getMessage().contains("unknownDomainType"), cause.getMessage());
+		assertTrue(exception.getMessage().contains("unknownDomainType"), exception.getMessage());
+		//the domains hosted here not told, the client not yet authenticated
+		assertFalse(exception.getMessage().contains(TestDomain.DOMAIN.name()), exception.getMessage());
 	}
 
 	@Test
