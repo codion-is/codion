@@ -19,6 +19,7 @@
 package is.codion.framework.db.rmi;
 
 import is.codion.common.db.database.Database.Lock;
+import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.Server;
@@ -98,6 +99,20 @@ public class RemoteEntityConnectionTest {
 	public static void tearDown() throws RemoteException {
 		admin.shutdown();
 		EntityConnection.VALIDITY_CHECK_INTERVAL.remove();
+	}
+
+	@Test
+	void buildValidatesCredentials() {
+		//an AuthenticationException, as the http connections throw, rather than the server's checked
+		//ServerAuthenticationException, wrapped
+		assertThrows(AuthenticationException.class, () -> RemoteEntityConnection.builder()
+						.hostname(Clients.SERVER_HOSTNAME.get())
+						.port(configuration.port())
+						.registryPort(configuration.registryPort())
+						.clientType("RemoteEntityConnectionTest")
+						.domain(TestDomain.DOMAIN)
+						.user(User.parse("scott:lion"))
+						.build());
 	}
 
 	@Test

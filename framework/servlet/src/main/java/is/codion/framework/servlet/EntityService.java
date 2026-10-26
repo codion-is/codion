@@ -18,6 +18,7 @@
  */
 package is.codion.framework.servlet;
 
+import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -1221,8 +1222,9 @@ public final class EntityService implements AuxiliaryServer {
 
 	/**
 	 * <p>Responds with the given exception, as an {@link ErrorEnvelope} on the json routes and as a serialized
-	 * exception on the serial ones. The {@link ErrorKind} decides the status, the log severity and, on the json
-	 * routes, the envelope the client reconstructs the exception from.
+	 * exception on the serial ones, a refused login as the {@link AuthenticationException} a json client
+	 * reconstructs. The {@link ErrorKind} decides the status, the log severity and, on the json routes, the
+	 * envelope the client reconstructs the exception from.
 	 * <p>Note that the mode is a property of the route, not of the handler; a few handlers serve both, the json
 	 * routes for the operations which carry no payload being wired to the serial handler.
 	 */
@@ -1236,8 +1238,23 @@ public final class EntityService implements AuxiliaryServer {
 							.result(envelope(kind, exception, correlationId));
 		}
 		else {
-			context.result(exceptionResult(exception));
+			context.result(exceptionResult(serial(exception)));
 		}
+	}
+
+	/**
+	 * A refused login travels as the {@link AuthenticationException} the database refused it with, or one with the
+	 * message of an authenticator's refusal, rather than as the server's checked {@link ServerAuthenticationException},
+	 * which a client would need the RMI module to read.
+	 */
+	private static Exception serial(Exception exception) {
+		if (exception instanceof ServerAuthenticationException) {
+			return exception.getCause() instanceof AuthenticationException ?
+							(AuthenticationException) exception.getCause() :
+							new AuthenticationException(exception.getMessage());
+		}
+
+		return exception;
 	}
 
 	/**

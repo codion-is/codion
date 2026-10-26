@@ -471,19 +471,11 @@ abstract class AbstractHttpEntityConnectionTest {
 	@Test
 	void buildValidatesCredentials() {
 		//with the entities fetched from the server, and with a domain instance given, fetching nothing
+		//an AuthenticationException in either mode, the serial one included, which would otherwise get the server's
+		//checked ServerAuthenticationException, wrapped
 		User invalid = User.parse("scott:lion");
-		assertAuthenticationFailed(assertThrows(RuntimeException.class, () -> builder.user(invalid).build()));
-		assertAuthenticationFailed(assertThrows(RuntimeException.class, () -> builder.domain(new TestDomain()).user(invalid).build()));
-	}
-
-	//json throws the AuthenticationException, serial a RuntimeException wrapping the server's ServerAuthenticationException,
-	//its cause the AuthenticationException
-	private static void assertAuthenticationFailed(Throwable exception) {
-		Throwable cause = exception;
-		while (cause != null && !(cause instanceof AuthenticationException)) {
-			cause = cause.getCause();
-		}
-		assertNotNull(cause, () -> "No AuthenticationException in " + exception);
+		assertThrows(AuthenticationException.class, () -> builder.user(invalid).build());
+		assertThrows(AuthenticationException.class, () -> builder.domain(new TestDomain()).user(invalid).build());
 	}
 
 	@Test

@@ -19,11 +19,12 @@
 package is.codion.framework.servlet;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.AuthenticationException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.rmi.server.ServerConfiguration;
-import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.utilities.Serializer;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
@@ -563,13 +564,27 @@ public class EntityServiceTest {
 
 	@Test
 	void serialErrorsAreStillSerializedExceptions() throws Exception {
-		//the serial channel is a java serialization channel by definition, its error wire format is unchanged
+		//the serial channel is a java serialization channel by definition, its error wire format is unchanged, a refused
+		//login travelling as the AuthenticationException a json client reconstructs, rather than the server's checked
+		//ServerAuthenticationException; the service's own refusal of a malformed header carrying no error type
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest(SERVER_BASEURL, "isTransactionOpen",
 						BodyPublishers.noBody(), CONNECTION_ID_STRING, Version.version().toString(), "Basic not!base64"),
 						BodyHandlers.ofByteArray());
 		assertEquals(UNAUTHORIZED, response.statusCode());
-		Object exception = Serializer.deserialize(response.body());
-		assertInstanceOf(ServerAuthenticationException.class, exception);
+		AuthenticationException exception = assertInstanceOf(AuthenticationException.class, Serializer.deserialize(response.body()));
+		assertFalse(exception.errorType().isPresent());
+	}
+
+	@Test
+	void serialLoginFailureCarriesErrorType() throws Exception {
+		//the database's refusal, as on the json routes, a new connection id and a client of its own
+		String wrongPassword = "Basic " + Base64.getEncoder().encodeToString((UNIT_TEST_USER.username() + ":wrong").getBytes());
+		HttpResponse<byte[]> response = createHttpClient().send(createRequest(SERVER_BASEURL, "isTransactionOpen",
+						BodyPublishers.noBody(), UUID.randomUUID().toString(), Version.version().toString(), wrongPassword),
+						BodyHandlers.ofByteArray());
+		assertEquals(UNAUTHORIZED, response.statusCode());
+		AuthenticationException exception = assertInstanceOf(AuthenticationException.class, Serializer.deserialize(response.body()));
+		assertEquals(ErrorType.AUTHENTICATION, exception.errorType().orElseThrow());
 	}
 
 	@Test

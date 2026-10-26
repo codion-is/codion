@@ -18,11 +18,13 @@
  */
 package is.codion.framework.db.rmi;
 
+import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
+import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.AbstractEntityConnection;
 import is.codion.framework.db.EntityConnection;
@@ -130,6 +132,9 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 
 				return connection;
 			}
+			catch (ServerAuthenticationException e) {
+				throw authenticationException(e);
+			}
 			catch (Exception e) {
 				throw Exceptions.runtime(e);
 			}
@@ -155,6 +160,14 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 				}
 			}
 		}
+	}
+
+	// A refused login as the http connections throw it, the AuthenticationException the database refused it with, or
+	// one with the message of an authenticator's refusal, rather than the server's checked ServerAuthenticationException
+	private static AuthenticationException authenticationException(ServerAuthenticationException exception) {
+		return exception.getCause() instanceof AuthenticationException ?
+						(AuthenticationException) exception.getCause() :
+						new AuthenticationException(exception.getMessage());
 	}
 
 	private void disconnectSilently() {
