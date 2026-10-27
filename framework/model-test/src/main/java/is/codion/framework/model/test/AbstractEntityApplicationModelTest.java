@@ -67,10 +67,12 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 	@Test
 	public void applicationModel() {
 		M deptModel = createDepartmentModel();
-		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connection, singleton(deptModel));
+		User applicationUser = User.parse("john:pass");
+		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connection, applicationUser, singleton(deptModel));
 		assertNotNull(model.models().get(Department.TYPE));
 		assertEquals(1, model.models().get().size());
-		assertEquals(UNIT_TEST_USER, model.user());
+		assertEquals(applicationUser, model.user());
+		assertEquals(UNIT_TEST_USER, model.connection().user());
 
 		assertThrows(IllegalArgumentException.class, () -> model.models().get(Employee.TYPE));
 	}
@@ -133,6 +135,10 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 
 		private TestEntityApplicationModel(EntityConnection connection, Collection<? extends M> entityModels) {
 			super(connection, entityModels);
+		}
+
+		private TestEntityApplicationModel(EntityConnection connection, User user, Collection<? extends M> entityModels) {
+			super(connection, user, entityModels);
 		}
 	}
 }

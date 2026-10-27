@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.model.AbstractEntityApplicationModel;
 
@@ -36,5 +37,15 @@ public class SwingEntityApplicationModel
 	 */
 	public SwingEntityApplicationModel(EntityConnection connection, Collection<SwingEntityModel> entityModels) {
 		super(connection, entityModels);
+	}
+
+	/**
+	 * Instantiates a new {@link SwingEntityApplicationModel}
+	 * @param connection the connection
+	 * @param user the application user, in case it differs from the connection user
+	 * @param entityModels the entity models
+	 */
+	public SwingEntityApplicationModel(EntityConnection connection, User user, Collection<SwingEntityModel> entityModels) {
+		super(connection, user, entityModels);
 	}
 }

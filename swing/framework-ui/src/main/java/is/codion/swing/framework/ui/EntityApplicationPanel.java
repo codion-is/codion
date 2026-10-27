@@ -870,7 +870,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		boolean maximized = parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH;
 
 		return new ApplicationPreferences(
-						saveDefaultUsername ? model.connection().user().username() : null,
+						//the application user, the one logging in, which may differ from the connection's
+						saveDefaultUsername ? model.user().username() : null,
 						getLookAndFeel().getClass().getName(), Scaler.SCALING.getOrThrow(),
 						//when maximized parentFrame.getSize() is the screen size, not the frame size to restore when un-maximized
 						parentFrame == null || maximized ? null : parentFrame.getSize(),

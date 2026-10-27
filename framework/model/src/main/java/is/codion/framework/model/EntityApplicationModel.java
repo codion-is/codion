@@ -61,7 +61,8 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	PropertyValue<String> PREFERENCES_KEY = stringValue("codion.client.preferencesKey");
 
 	/**
-	 * @return the current user
+	 * Note that this user may differ from the connection user, which is reachable via {@code connection().user()}
+	 * @return the application user
 	 */
 	User user();
 

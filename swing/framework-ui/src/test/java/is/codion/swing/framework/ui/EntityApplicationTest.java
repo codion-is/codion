@@ -21,15 +21,17 @@ package is.codion.swing.framework.ui;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JFrame;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityApplicationTest {
 
@@ -42,7 +44,7 @@ public final class EntityApplicationTest {
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
-						.model(TestApplicationModel::new)
+						.model(connection -> new TestApplicationModel(connection))
 						.onStarted(panel -> assertSame(user, panel.model().connection().user()))
 						.user(user)
 						.startupDialog(false)
@@ -52,7 +54,7 @@ public final class EntityApplicationTest {
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
-						.model(TestApplicationModel::new)
+						.model(connection -> new TestApplicationModel(connection))
 						.onStarted(panel -> assertSame(user2, panel.model().connection().user()))
 						.user(() -> user2)
 						.startupDialog(false)
@@ -62,7 +64,7 @@ public final class EntityApplicationTest {
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
-						.model(TestApplicationModel::new)
+						.model(connection -> new TestApplicationModel(connection))
 						.onStarted(panel -> assertSame(user3, panel.model().connection().user()))
 						.user(user3)
 						.connection(usr -> LocalEntityConnection.builder()
@@ -80,10 +82,12 @@ public final class EntityApplicationTest {
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
-						.model(TestApplicationModel::new)
+						// a connection given, no user supplied, the application user the connection's
+						.model((configured, applicationUser) -> new TestApplicationModel(configured, applicationUser))
 						.onStarted(panel -> {
 							assertSame(connection, panel.model().connection());
 							assertSame(user4, panel.model().connection().user());
+							assertSame(user4, panel.model().user());
 						})
 						.connection(connection)
 						.startupDialog(false)
@@ -91,10 +95,50 @@ public final class EntityApplicationTest {
 						.start(false);
 	}
 
+	@Test
+	void applicationUser() {
+		Preferences preferences = jsonPreferences();
+		// the user logging in, the connection opened as another, the database's
+		User login = User.parse("john:secret");
+		User database = User.user("sa");
+		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.domain(TestDomain.DOMAIN)
+						.preferences(preferences)
+						.model((connection, user) -> new TestApplicationModel(connection, user))
+						.onStarted(panel -> {
+							TestApplicationModel model = panel.model();
+							assertSame(login, model.user());
+							assertSame(database, model.connection().user());
+							// the frame title, the application user at the connection's description
+							String connectionInfo = "JOHN" + model.connection().description()
+											.filter(description -> !description.isEmpty())
+											.map(description -> "@" + description.toUpperCase())
+											.orElse("");
+							assertTrue(Ancestor.ofType(JFrame.class).of(panel).get().getTitle().endsWith(connectionInfo));
+							// the default username saved, the application user's
+							Preferences stored = jsonPreferences();
+							panel.store(stored);
+							assertEquals("john", ApplicationPreferences.load(stored).defaultLoginUser().username());
+						})
+						.user(login)
+						.connection(user -> LocalEntityConnection.builder()
+										.domain(new TestDomain())
+										.user(database)
+										.build())
+						.startupDialog(false)
+						.displayFrame(false)
+						.start(false);
+	}
+
+	// Constructors of both arities, a method reference to them ambiguous between the two model() overloads
 	public static class TestApplicationModel extends SwingEntityApplicationModel {
 
 		public TestApplicationModel(EntityConnection connection) {
 			super(connection, emptyList());
+		}
+
+		public TestApplicationModel(EntityConnection connection, User user) {
+			super(connection, user, emptyList());
 		}
 	}
 

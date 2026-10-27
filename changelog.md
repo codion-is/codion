@@ -17,6 +17,13 @@ Codion Change Log
 ### is.codion.framework.server
 - EntityServer, a connection failing on an IllegalArgumentException, a domain not hosted for example, or on a DatabaseException with an error type, now throws it, typed, where a LoginException carried its message alone, which the json channel reported as an internal error; a DatabaseException without one, its message the driver's, still a LoginException.
 - EntityServer, a domain not hosted no longer names the domains hosted in its message, which may reach a client not yet authenticated, logging them instead.
+### is.codion.framework.model
+- AbstractEntityApplicationModel(connection, user, entityModels) added, the application user, the one logged in, which may differ from the connection's user, EntityApplicationModel.user() returning it, where it was the connection's user.
+### is.codion.swing.framework.model
+- SwingEntityApplicationModel(connection, user, entityModels) added.
+### is.codion.swing.framework.ui
+- EntityApplication.model(BiFunction) added, the model factory receiving the application user along with the connection, the user logging in, which differs from the connection's user when the connection function connects as another.
+- EntityApplication, the frame title now shows the application model's user, and EntityApplicationPanel saves it as the default username, where the connection's user was shown and saved, a connection function connecting as another user showing and pre-filling that one.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

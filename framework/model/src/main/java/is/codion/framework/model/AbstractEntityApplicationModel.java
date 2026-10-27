@@ -49,6 +49,7 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 
 	private final EntityConnection connection;
 	private final DefaultEntityModels<M, E, T, R> models;
+	private final User user;
 
 	/**
 	 * Instantiates a new AbstractEntityApplicationModel
@@ -58,13 +59,26 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 	 */
 	protected AbstractEntityApplicationModel(EntityConnection connection,
 																					 Collection<? extends M> entityModels) {
+		this(requireNonNull(connection), connection.user(), entityModels);
+	}
+
+	/**
+	 * Instantiates a new AbstractEntityApplicationModel
+	 * @param connection the EntityConnection instance
+	 * @param user the application user, in case it differs from the connection user
+	 * @param entityModels the entity models
+	 * @throws NullPointerException in case connection is null
+	 */
+	protected AbstractEntityApplicationModel(EntityConnection connection, User user,
+																					 Collection<? extends M> entityModels) {
 		this.connection = requireNonNull(connection);
+		this.user = requireNonNull(user);
 		this.models = new DefaultEntityModels<>(requireNonNull(entityModels));
 	}
 
 	@Override
 	public final User user() {
-		return connection.user();
+		return user;
 	}
 
 	@Override

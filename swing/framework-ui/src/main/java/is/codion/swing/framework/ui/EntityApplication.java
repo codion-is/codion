@@ -62,6 +62,7 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -163,7 +164,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private @Nullable Function<User, EntityConnection> connectionFunction;
 	private @Nullable EntityConnection connection;
 	private @Nullable String name;
-	private Function<EntityConnection, M> model = new DefaultApplicationModelFactory();
+	private BiFunction<EntityConnection, User, M> model = new DefaultApplicationModelFactory();
 	private Function<M, P> panel = new DefaultApplicationPanelFactory();
 	private @Nullable Observable<String> frameTitle;
 	private boolean connectionInfoUpperCase = CONNECTION_INFO_UPPER_CASE.getOrThrow();
@@ -275,10 +276,26 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * @param model the application model factory
+	 * @param model the application model factory, receiving the connection
 	 * @return this {@link EntityApplication} instance
+	 * @see #model(BiFunction)
 	 */
 	public EntityApplication<M, P> model(Function<EntityConnection, M> model) {
+		requireNonNull(model);
+		this.model = (connection, user) -> model.apply(connection);
+		return this;
+	}
+
+	/**
+	 * <p>The application model factory, receiving the connection and the application user, the one logged in, for the
+	 * model to hold, see {@link EntityApplicationModel#user()}.
+	 * <p>The application user differs from the connection's user when the {@link #connection(Function) connection function}
+	 * connects as another user. With a {@link #connection(EntityConnection) connection} given, no user is supplied and the
+	 * application user is the connection's user.
+	 * @param model the application model factory, receiving the connection and the application user
+	 * @return this {@link EntityApplication} instance
+	 */
+	public EntityApplication<M, P> model(BiFunction<EntityConnection, User, M> model) {
 		this.model = requireNonNull(model);
 		return this;
 	}
@@ -319,7 +336,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connection(Function)}.
+	 * <p>The application user, the one logging in, propagated to {@link #connection(Function)} and the
+	 * {@link #model(BiFunction) model} factory.
 	 * <p>If this user is null, {@link #user(Supplier)} is used to fetch a user.
 	 * @param user the application user
 	 * @return this {@link EntityApplication} instance
@@ -331,7 +349,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connection(Function)}.
+	 * <p>Supplies the application user, the one logging in, propagated to {@link #connection(Function)} and the
+	 * {@link #model(BiFunction) model} factory.
 	 * <p>This may be via a login dialog or simply by returning a hardcoded instance.
 	 * <p>Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
 	 * @param userSupplier supplies the application user, for example via a login dialog
@@ -344,7 +363,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connection(Function)}.
+	 * <p>Supplies the application user, the one logging in, propagated to {@link #connection(Function)} and the
+	 * {@link #model(BiFunction) model} factory.
 	 * <p>This may be via a login dialog or simply by returning a hardcoded instance.
 	 * <p>This function receives the default user set via {@link #defaultUser(User)} or the one saved in application preferences, null if none is available.
 	 * <p>Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
@@ -499,7 +519,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * Overrides {@link #connection(Function)}
+	 * <p>Overrides {@link #connection(Function)}.
+	 * <p>No user is then supplied, the connection's user being the application user.
 	 * @param connection the connection for the application to use
 	 * @return this {@link EntityApplication} instance
 	 */
@@ -513,6 +534,10 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	 * given invalid credentials or an unreachable server. {@link EntityConnection#builder()} and the
 	 * transport specific builders guarantee this, building establishes the connection - a function
 	 * returning an unestablished hand-rolled {@link EntityConnection} would validate any credentials.
+	 * <p>The function may connect as another user than the one it receives, the application user, a local database
+	 * under a fixed user for example, the login meant for something else. The application user then reaches the model
+	 * via {@link #model(BiFunction)}, and once the model holds it, it's the user shown in the frame title and saved as
+	 * the default username, see {@link EntityApplicationModel#user()}.
 	 * @param connection provides the application connection, receives the user provided by {@link #user(Supplier)}
 	 * @return this {@link EntityApplication} instance
 	 */
@@ -566,11 +591,11 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 			onStarting.run();
 		}
 		//user prompts happen here, on the EDT, the connect itself in the startup progress worker
-		Supplier<EntityConnection> connection = initializeConnection();
+		Supplier<M> applicationModel = initializeApplicationModel();
 		long initializationStarted = currentTimeMillis();
 		if (startupDialog) {
 			Dialogs.progressWorker()
-							.task(new InitializeApplicationModel(connection, initializationStarted))
+							.task(new InitializeApplicationModel(applicationModel, initializationStarted))
 							.title(applicationName())
 							.icon(icon)
 							.border(emptyBorder())
@@ -578,7 +603,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 							.execute();
 		}
 		else {
-			startApplication(initializeApplicationModel(connection.get()), initializationStarted);
+			startApplication(applicationModel.get(), initializationStarted);
 		}
 	}
 
@@ -758,10 +783,6 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		return frame;
 	}
 
-	private M initializeApplicationModel(EntityConnection connection) {
-		return model.apply(connection);
-	}
-
 	private P initializeApplicationPanel(M applicationModel) {
 		P applicationPanel = panel.apply(applicationModel);
 		applicationPanel.preferences(preferences());
@@ -802,7 +823,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		if (builder.length() > 0) {
 			builder.append(DASH);
 		}
-		builder.append(connectionInfo(applicationModel.connection()));
+		builder.append(connectionInfo(applicationModel));
 
 		return builder.toString();
 	}
@@ -816,31 +837,31 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * Resolves the connection to use, prompting for a user as needed. Any dialogs happen here, on the EDT,
-	 * while the connect itself is deferred to the returned supplier, for the startup progress worker to
-	 * perform off the EDT. Building a connection establishes it, so an unreachable database or server is
-	 * then reported through the worker's exception handling instead of freezing the EDT.
-	 * @return a supplier providing the application connection
+	 * Resolves the application user, prompting for one as needed. Any dialogs happen here, on the EDT,
+	 * while the connect itself, and the model's creation, is deferred to the returned supplier, for the
+	 * startup progress worker to perform off the EDT. Building a connection establishes it, so an unreachable
+	 * database or server is then reported through the worker's exception handling instead of freezing the EDT.
+	 * @return a supplier providing the application model, created with the connection and the application user
 	 */
-	private Supplier<EntityConnection> initializeConnection() {
+	private Supplier<M> initializeApplicationModel() {
 		if (connection != null) {
 			EntityConnection configured = connection;
 
-			return () -> configured;
+			return () -> model.apply(configured, configured.user());
 		}
-		User connectionUser = user == null ? userSupplier.apply(defaultUser).get() : user;
+		User applicationUser = user == null ? userSupplier.apply(defaultUser).get() : user;
 		//the default login validator connects when validating, reuse that connection instead of connecting again
 		if (userSupplier instanceof EntityApplication.DefaultUserSupplier &&
 						((DefaultUserSupplier) userSupplier).loginValidator.connection != null) {
 			EntityConnection validated = ((DefaultUserSupplier) userSupplier).loginValidator.connection;
 
-			return () -> validated;
+			return () -> model.apply(validated, applicationUser);
 		}
 		if (connectionFunction != null) {
-			return () -> connectionFunction.apply(connectionUser);
+			return () -> model.apply(connectionFunction.apply(applicationUser), applicationUser);
 		}
 
-		return () -> createConnection(connectionUser);
+		return () -> model.apply(createConnection(applicationUser), applicationUser);
 	}
 
 	private EntityConnection createConnection(User user) {
@@ -856,9 +877,10 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 						.build();
 	}
 
-	private String connectionInfo(EntityConnection connection) {
-		String username = connection.user().username();
-		String connectionInfo = connection.description()
+	// The application user, at the connection's description
+	private String connectionInfo(M applicationModel) {
+		String username = applicationModel.user().username();
+		String connectionInfo = applicationModel.connection().description()
 						.map(connectionDescription -> username + (connectionDescription.isEmpty() ? "" : "@" + connectionDescription))
 						.orElse(username);
 		if (connectionInfoUpperCase) {
@@ -931,10 +953,11 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		}
 	}
 
-	private final class DefaultApplicationModelFactory implements Function<EntityConnection, M> {
+	// The application model's (EntityConnection) constructor, its user the connection's
+	private final class DefaultApplicationModelFactory implements BiFunction<EntityConnection, User, M> {
 
 		@Override
-		public M apply(EntityConnection connection) {
+		public M apply(EntityConnection connection, User user) {
 			try {
 				return applicationModelClass.getConstructor(EntityConnection.class).newInstance(connection);
 			}
@@ -967,18 +990,18 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private final class InitializeApplicationModel implements ResultTaskHandler<M> {
 
-		private final Supplier<EntityConnection> connection;
+		private final Supplier<M> applicationModel;
 		private final long initializationStarted;
 
-		private InitializeApplicationModel(Supplier<EntityConnection> connection, long initializationStarted) {
-			this.connection = connection;
+		private InitializeApplicationModel(Supplier<M> applicationModel, long initializationStarted) {
+			this.applicationModel = applicationModel;
 			this.initializationStarted = initializationStarted;
 		}
 
 		@Override
 		public M execute() throws Exception {
 			//the connect happens here, off the EDT, unless the login validator already connected
-			return initializeApplicationModel(connection.get());
+			return applicationModel.get();
 		}
 
 		@Override
