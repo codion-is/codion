@@ -35,7 +35,36 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides h2 database implementations
+ * Provides h2 database implementations.
+ * <p>
+ * An embedded database, in memory or in a file, runs its init scripts, {@link Database#INIT_SCRIPTS}, as sa, when an
+ * instance is created for it, once per JVM until the database is closed. Each script runs once in the database's life:
+ * <ul>
+ *   <li>a new database runs them all, in the order listed;
+ *   <li>an existing file database runs those it has not yet run, in the order listed, so a script added to the list
+ *   brings it up to date;
+ *   <li>each script run is recorded in the table {@code CODION.INIT_SCRIPT}, by its path as listed, with a SHA-256
+ *   checksum of its content, line endings aside.
+ * </ul>
+ * The database is refused with a {@link DatabaseException} where a script has changed since it ran, where a script has
+ * run but is no longer listed, or where a script not yet run is listed before one that has.
+ * <p>
+ * A script that fails is not recorded, and runs again the next time. H2's DDL commits, so a failed script may leave
+ * part of its work behind.
+ * <p>
+ * An existing file database without the table, created before the scripts were recorded, or with none listed, ran none
+ * since its creation, so the first time it records every script listed as run, running none, and only scripts added to
+ * the list later run. It is taken to hold what the list says, so:
+ * <ul>
+ *   <li>a script added in the same release as the upgrade to recorded scripts, or as the first scripts listed, is
+ *   recorded without having run: add it in a later release;
+ *   <li>a database restored from a copy taken before the upgrade, into a release whose list has grown since, records
+ *   the scripts added since without having run them: restore such a copy only into a release listing the same scripts.
+ * </ul>
+ * <p>
+ * A database on a server, or in a zip file, is not initialized, nor an existing one refusing sa without a password, its
+ * admin having one or being another: administered, its scripts run by its administrator, and a script listed for it
+ * never run.
  */
 public final class H2DatabaseFactory implements DatabaseFactory {
 
@@ -56,7 +85,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 	/**
 	 * Creates an H2 Database instance
 	 * @param url the jdbc url
-	 * @param initScripts initialization scripts to run on database creation
+	 * @param initScripts the init scripts, each run once in the database's life, see {@link H2DatabaseFactory}
 	 * @return an H2 Database instance
 	 */
 	public static Database database(String url, String... initScripts) {

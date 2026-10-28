@@ -26,10 +26,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,12 +63,26 @@ final class H2Database extends AbstractDatabase {
 	private static final String FILE_SUFFIX_MVSTORE = ".mv.db";
 	private static final String SHUTDOWN = "SHUTDOWN";
 
+	// In a schema of its own, out of the way of an application keeping its tables in PUBLIC
+	private static final String INIT_SCRIPT_TABLE = "codion.init_script";
+	private static final String CREATE_INIT_SCRIPT_SCHEMA = "create schema if not exists codion";
+	private static final String CREATE_INIT_SCRIPT_TABLE = "create table if not exists " + INIT_SCRIPT_TABLE + " (" +
+					"path varchar(1000) primary key, " +
+					"checksum varbinary(32) not null, " +
+					"run_at timestamp default current_timestamp not null)";
+	private static final String SELECT_INIT_SCRIPT_TABLE =
+					"select 1 from information_schema.tables where table_schema = 'CODION' and table_name = 'INIT_SCRIPT'";
+	private static final String SELECT_INIT_SCRIPTS = "select path, checksum from " + INIT_SCRIPT_TABLE;
+	private static final String INSERT_INIT_SCRIPT = "insert into " + INIT_SCRIPT_TABLE + " (path, checksum) values (?, ?)";
+	private static final String SELECT_CHECKSUM = "select hash('SHA-256', replace(file_read(?, 'UTF-8'), char(13)))";
+
 	static final String SEQUENCE_VALUE_QUERY = "select next value for ";
 	static final String SYSADMIN_USERNAME = "sa";
 
 	private static final String COLUMN = "column \"";
 	private static final String CONSTRAINT_VIOLATION = "constraint violation: \"";
 	private static final String SQL_STATEMENT = "; SQL statement:";
+	private static final String INIT_SCRIPT = "Init script ";
 
 	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
 
@@ -218,20 +237,127 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	private void initializeEmbeddedDatabase(List<String> scriptPaths) {
-		if ((isEmbeddedInMemory() || !databaseFileExists())) {
+		List<String> sanitizedPaths = new ArrayList<>(scriptPaths.size());
+		for (String scriptPath : scriptPaths) {
+			sanitizedPaths.add(sanitizeScriptPath(scriptPath));
+		}
+		boolean create = isEmbeddedInMemory() || !databaseFileExists();
+		if (create || !sanitizedPaths.isEmpty()) {
 			Properties properties = new Properties();
 			properties.put(USER, SYSADMIN_USERNAME);
-			if (scriptPaths.isEmpty()) {
-				initialize(properties, ";DB_CLOSE_DELAY=-1");
+			// a database created here stays open once the connection closes, until shut down
+			try (Connection connection = DriverManager.getConnection(url() + (create ? ";DB_CLOSE_DELAY=-1" : ""), properties)) {
+				if (!sanitizedPaths.isEmpty()) {
+					runInitScripts(connection, sanitizedPaths, !create);
+				}
 			}
-			else {
-				for (String scriptPath : scriptPaths) {
-					String sanitizedPath = sanitizeScriptPath(scriptPath);
-					initialize(properties, ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + sanitizedPath + "'");
+			catch (SQLException e) {
+				// a database refusing sa without a password, its admin having one or being another, is administered, not
+				// ours to initialize, as one on a server is not, which a database being created never is
+				if (errorType(e) != ErrorType.AUTHENTICATION) {
+					throw new DatabaseException(e);
 				}
 			}
 		}
 		INITIALIZED_DATABASES.add(initializedKey());
+	}
+
+	// Runs the scripts not yet run, in the order listed, each recorded with a checksum of its content once run, after
+	// checking that each one run is unchanged and still listed, and that none not yet run is listed before one that has,
+	// so that a database brought up to date one list at a time ends up as one created from the last
+	private static void runInitScripts(Connection connection, List<String> scriptPaths, boolean existing) throws SQLException {
+		connection.setAutoCommit(false);
+		// An existing database without the record was created before the scripts were recorded, or with none listed, and
+		// has run none since, so those listed are recorded as run, leaving it as it was, those added later then running.
+		// The checksums before the table, whose creation commits, so a script missing leaves no empty record behind.
+		Map<String, byte[]> baseline = new LinkedHashMap<>();
+		if (existing && !initScriptTableExists(connection)) {
+			for (String scriptPath : scriptPaths) {
+				baseline.put(scriptPath, checksum(connection, scriptPath));
+			}
+		}
+		try (Statement statement = connection.createStatement()) {
+			statement.execute(CREATE_INIT_SCRIPT_SCHEMA);
+			statement.execute(CREATE_INIT_SCRIPT_TABLE);
+		}
+		for (Map.Entry<String, byte[]> script : baseline.entrySet()) {
+			record(connection, script.getKey(), script.getValue());
+		}
+		connection.commit();
+		Map<String, byte[]> run = initScriptsRun(connection);
+		List<String> pending = new ArrayList<>();
+		for (String scriptPath : scriptPaths) {
+			byte[] checksum = run.remove(scriptPath);
+			if (checksum == null) {
+				pending.add(scriptPath);
+			}
+			else if (!pending.isEmpty()) {
+				throw new DatabaseException(INIT_SCRIPT + pending.get(0) + " has not been run, but " + scriptPath + ", listed after it, has");
+			}
+			else if (!Arrays.equals(checksum, checksum(connection, scriptPath))) {
+				throw new DatabaseException(INIT_SCRIPT + scriptPath + " has changed since it was run");
+			}
+		}
+		if (!run.isEmpty()) {
+			throw new DatabaseException("Init scripts run, but no longer listed: " + String.join(", ", run.keySet()));
+		}
+		for (String scriptPath : pending) {
+			runInitScript(connection, scriptPath);
+		}
+	}
+
+	// H2's DDL commits, so a script failing may leave part of its work behind, not recorded, to run again
+	private static void runInitScript(Connection connection, String scriptPath) throws SQLException {
+		try (Statement statement = connection.createStatement()) {
+			byte[] checksum = checksum(connection, scriptPath);
+			statement.execute("runscript from '" + scriptPath + "'");
+			record(connection, scriptPath, checksum);
+			connection.commit();
+		}
+		catch (SQLException e) {
+			connection.rollback();
+			throw new DatabaseException(e, INIT_SCRIPT + scriptPath + " failed: " + e.getMessage());
+		}
+	}
+
+	private static void record(Connection connection, String scriptPath, byte[] checksum) throws SQLException {
+		try (PreparedStatement insert = connection.prepareStatement(INSERT_INIT_SCRIPT)) {
+			insert.setString(1, scriptPath);
+			insert.setBytes(2, checksum);
+			insert.executeUpdate();
+		}
+	}
+
+	private static boolean initScriptTableExists(Connection connection) throws SQLException {
+		try (Statement statement = connection.createStatement();
+				 ResultSet resultSet = statement.executeQuery(SELECT_INIT_SCRIPT_TABLE)) {
+			return resultSet.next();
+		}
+	}
+
+	private static Map<String, byte[]> initScriptsRun(Connection connection) throws SQLException {
+		Map<String, byte[]> run = new HashMap<>();
+		try (Statement statement = connection.createStatement();
+				 ResultSet resultSet = statement.executeQuery(SELECT_INIT_SCRIPTS)) {
+			while (resultSet.next()) {
+				run.put(resultSet.getString(1), resultSet.getBytes(2));
+			}
+		}
+
+		return run;
+	}
+
+	// The script as RUNSCRIPT reads it, through H2's own file resolution, classpath: included, its carriage returns
+	// removed, so the line endings of a checkout, on Windows say, do not change it
+	private static byte[] checksum(Connection connection, String scriptPath) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(SELECT_CHECKSUM)) {
+			statement.setString(1, scriptPath);
+			try (ResultSet resultSet = statement.executeQuery()) {
+				resultSet.next();
+
+				return resultSet.getBytes(1);
+			}
+		}
 	}
 
 	private String initializedKey() {
@@ -255,12 +381,4 @@ final class H2Database extends AbstractDatabase {
 		return url.regionMatches(true, 0, prefix, 0, prefix.length());
 	}
 
-	private void initialize(Properties properties, String appendToUrl) {
-		try {
-			DriverManager.getConnection(url() + appendToUrl, properties).close();
-		}
-		catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-	}
 }

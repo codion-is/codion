@@ -8,6 +8,8 @@ Codion Change Log
 - AbstractServer, a server with authenticators now refuses a connection passing none of them, its client type, the client's own claim, having no authenticator of its own and no shared one to pass, unless exempt via ServerConfiguration.AUTHENTICATOR_EXEMPTIONS, added, where such a connection was authenticated by the database alone.
 ### is.codion.common.i18n
 - Icelandic mnemonic for clear changed to E, no longer clashes with refresh.
+### is.codion.dbms.h2
+- H2Database, an embedded database's init scripts now each run once in its life, recorded in CODION.INIT_SCRIPT with a checksum, line endings aside, an existing file database running those listed it has not yet run, in order, where they ran on its creation alone, one without the record, created before, recording every script listed as run the first time, running none, one refusing sa without a password left alone, administered, the database refused where a script has changed since it ran, has run but is no longer listed, or has run while one listed before it has not.
 ### is.codion.framework.db.http
 - HttpEntityConnection bug fixed, building a connection with a domain instance now establishes it on the server, validating the user's credentials, where no request was made before the first operation, invalid credentials accepted until then.
 ### is.codion.framework.servlet

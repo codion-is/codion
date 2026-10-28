@@ -31,12 +31,16 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.db.exception.Operation.*;
@@ -191,6 +195,113 @@ public class H2DatabaseTest {
 	}
 
 	@Test
+	void initScripts(@TempDir Path tempDir) throws SQLException, IOException {
+		Path first = tempDir.resolve("first.sql");
+		Path second = tempDir.resolve("second.sql");
+		Path third = tempDir.resolve("third.sql");
+		Path failing = tempDir.resolve("failing.sql");
+		Files.write(first, singletonList("create schema scripts; create table scripts.t1 (id int);"));
+		Files.write(second, singletonList("create table scripts.t2 (id int);"));
+		Files.write(third, singletonList("create table scripts.t3 (id int);"));
+		Files.write(failing, singletonList("create table scripts.t4 (id int); not sql;"));
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+
+		// a new database runs the scripts listed
+		H2Database database = database(url, first);
+		assertEquals(1, scriptsRun(database));
+		database.close();
+
+		// the script added runs alone, the first running again failing to create its schema
+		database = database(url, first, second);
+		assertEquals(2, scriptsRun(database));
+		database.close();
+
+		// with the line endings of a checkout on Windows, unchanged
+		Files.write(second, "create table scripts.t2 (id int);\r\n".getBytes(StandardCharsets.UTF_8));
+		database = database(url, first, second);
+		assertEquals(2, scriptsRun(database));
+		database.close();
+
+		// a script changed since it ran
+		Files.write(second, singletonList("create table scripts.t2 (id bigint);"));
+		DatabaseException changed = assertThrows(DatabaseException.class, () -> database(url, first, second));
+		assertTrue(changed.getMessage().contains(path(second)));
+		Files.write(second, singletonList("create table scripts.t2 (id int);"));
+
+		// a script run, no longer listed
+		DatabaseException unlisted = assertThrows(DatabaseException.class, () -> database(url, first));
+		assertTrue(unlisted.getMessage().contains(path(second)));
+
+		// a script not yet run, listed before one that has
+		DatabaseException order = assertThrows(DatabaseException.class, () -> database(url, first, third, second));
+		assertTrue(order.getMessage().contains(path(third)));
+
+		// a script failing is not recorded, running again the next time
+		DatabaseException failed = assertThrows(DatabaseException.class, () -> database(url, first, second, failing));
+		assertTrue(failed.getMessage().contains(path(failing)));
+		Files.write(failing, singletonList("create table if not exists scripts.t4 (id int);"));
+		database = database(url, first, second, failing);
+		assertEquals(3, scriptsRun(database));
+		try (Connection connection = database.createConnection(User.user("sa"))) {
+			connection.prepareStatement("select id from scripts.t4").execute();
+		}
+		database.close();
+	}
+
+	@Test
+	void initScriptsBaseline(@TempDir Path tempDir) throws SQLException, IOException {
+		Path first = tempDir.resolve("first.sql");
+		Path second = tempDir.resolve("second.sql");
+		Files.write(first, singletonList("create schema scripts; create table scripts.t1 (id int);"));
+		Files.write(second, singletonList("create table scripts.t2 (id int);"));
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+		// a database created from the first script before the scripts were recorded
+		try (Connection connection = DriverManager.getConnection(url, "sa", "")) {
+			execute(connection, "runscript from '" + path(first) + "'");
+		}
+
+		// a script missing leaves no record behind, which would have the next time skip the baseline
+		assertThrows(DatabaseException.class, () -> database(url, first, tempDir.resolve("missing.sql")));
+		try (Connection connection = DriverManager.getConnection(url, "sa", "")) {
+			assertFalse(connection.createStatement().executeQuery("select 1 from information_schema.tables " +
+							"where table_schema = 'CODION' and table_name = 'INIT_SCRIPT'").next());
+		}
+
+		// the scripts listed recorded as run, running none, the first running again failing to create its schema
+		H2Database database = database(url, first);
+		assertEquals(1, scriptsRun(database));
+		database.close();
+
+		// a script added later runs
+		database = database(url, first, second);
+		assertEquals(2, scriptsRun(database));
+		try (Connection connection = database.createConnection(User.user("sa"))) {
+			connection.prepareStatement("select id from scripts.t2").execute();
+		}
+		database.close();
+	}
+
+	@Test
+	void initScriptsAdministered(@TempDir Path tempDir) throws SQLException, IOException {
+		Path script = tempDir.resolve("script.sql");
+		Files.write(script, singletonList("create schema scripts; create table scripts.t1 (id int);"));
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+		// sa given a password since the database was created, and an admin of its own
+		try (Connection connection = DriverManager.getConnection(url, "sa", "")) {
+			execute(connection, "create user owner password 'owner' admin");
+			execute(connection, "alter user sa set password 'secret'");
+		}
+
+		// not ours to initialize, nothing run nor recorded
+		H2Database database = database(url, script);
+		try (Connection connection = database.createConnection(User.parse("owner:owner"));
+				 ResultSet schemas = connection.createStatement().executeQuery("select schema_name from information_schema.schemata " +
+								 "where schema_name in ('SCRIPTS', 'CODION')")) {
+			assertFalse(schemas.next());
+		}
+	}
+
+	@Test
 	void exceptions() throws SQLException {
 		// the driver being available, the actual exceptions are used
 		H2Database database = new H2Database("jdbc:h2:mem:exceptions");
@@ -258,6 +369,28 @@ public class H2DatabaseTest {
 		assertEquals(message("null_value"), DATABASE.exception(new SQLException("NULL nicht zul\u00E4ssig f\u00FCr Feld NAME", "23502", 23502), INSERT).getMessage());
 		assertEquals(message("null_value"), DATABASE.exception(new SQLException(null, "23502", 23502), INSERT).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, DATABASE.exception(new SQLException("Statement was canceled", "57014", 57014), SELECT));
+	}
+
+	private static H2Database database(String url, Path... scripts) {
+		List<String> paths = new ArrayList<>();
+		for (Path script : scripts) {
+			paths.add(path(script));
+		}
+
+		return new H2Database(url, paths);
+	}
+
+	private static String path(Path script) {
+		return script.toAbsolutePath().toString().replace("\\", "/");
+	}
+
+	private static int scriptsRun(H2Database database) throws SQLException {
+		try (Connection connection = database.createConnection(User.user("sa"));
+				 ResultSet resultSet = connection.createStatement().executeQuery("select count(*) from codion.init_script")) {
+			resultSet.next();
+
+			return resultSet.getInt(1);
+		}
 	}
 
 	private static void execute(Connection connection, String sql) throws SQLException {
