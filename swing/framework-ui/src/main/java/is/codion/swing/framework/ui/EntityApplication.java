@@ -163,7 +163,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private @Nullable Function<User, EntityConnection> connectionFunction;
 	private @Nullable EntityConnection connection;
-	private @Nullable String name;
+	private String clientType;
+	private String name;
 	private BiFunction<EntityConnection, User, M> model = new DefaultApplicationModelFactory();
 	private Function<M, P> panel = new DefaultApplicationPanelFactory();
 	private @Nullable Observable<String> frameTitle;
@@ -198,6 +199,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		this.applicationModelClass = applicationModelClass;
 		this.applicationPanelClass = applicationPanelClass;
 		this.domain = domain;
+		this.clientType = domain.name();
+		this.name = domain.name();
 	}
 
 	/**
@@ -252,17 +255,38 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * <p>Sets the application name, used as frame title and client type identifier when using remote connnections.
-	 * <p>If no application name is set, {@link DomainType#name()} is used or
-	 * {@code applicationPanelClass.getSimpleName()} in case of no domain model.
+	 * <p>Sets the application name, shown to the user: in the titles of the login dialog and the startup dialog, and in
+	 * the frame's default title, which {@link #frameTitle(String)} replaces.
+	 * <p>{@link DomainType#name()} by default.
 	 * @param name the application name
 	 * @return this {@link EntityApplication} instance
+	 * @throws IllegalArgumentException in case the name is empty
+	 * @see #clientType(String)
 	 */
 	public EntityApplication<M, P> name(String name) {
 		if (Text.nullOrEmpty(name)) {
 			throw new IllegalArgumentException("Application name cannot be null or empty");
 		}
 		this.name = name;
+		return this;
+	}
+
+	/**
+	 * <p>Sets the client type of the connection the application creates, identifying the application to a server, which
+	 * may choose its authenticator, session contexts and idle connection timeout by it. Not shown in the application,
+	 * see {@link #name(String)}.
+	 * <p>Applies only to the connection created by default, not to one {@link #connection(EntityConnection) given} or
+	 * created by a {@link #connection(Function) connection function}, which sets its own.
+	 * <p>{@link DomainType#name()} by default, as with {@link EntityConnection.Builder#clientType(String)}.
+	 * @param clientType the client type
+	 * @return this {@link EntityApplication} instance
+	 * @throws IllegalArgumentException in case the client type is empty
+	 */
+	public EntityApplication<M, P> clientType(String clientType) {
+		if (Text.nullOrEmpty(clientType)) {
+			throw new IllegalArgumentException("Application clientType cannot be null or empty");
+		}
+		this.clientType = clientType;
 		return this;
 	}
 
@@ -579,7 +603,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private void startApplication() {
-		LOG.debug("{} application starting", applicationName());
+		LOG.debug("{} application starting", name);
 		applyPreferences();
 		if (uncaughtExceptionHandler) {
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionAndExit());
@@ -596,7 +620,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		if (startupDialog) {
 			Dialogs.progressWorker()
 							.task(new InitializeApplicationModel(applicationModel, initializationStarted))
-							.title(applicationName())
+							.title(name)
 							.icon(icon)
 							.border(emptyBorder())
 							.westComponent(createStartupIconLabel())
@@ -645,17 +669,6 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		}
 
 		return preferences;
-	}
-
-	private String applicationName() {
-		if (name != null) {
-			return name;
-		}
-		if (domain != null) {
-			return domain.name();
-		}
-
-		return applicationPanelClass.getSimpleName();
 	}
 
 	private void enableLookAndFeel() {
@@ -737,7 +750,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionHandler(applicationFrame));
 		}
 		if (displayFrame) {
-			applicationFrame.setTitle(MESSAGES.getString("initializing") + " " + applicationName());
+			applicationFrame.setTitle(MESSAGES.getString("initializing") + " " + name);
 			applicationFrame.setVisible(true);
 		}
 		try {
@@ -813,7 +826,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private String createDefaultFrameTitle(M applicationModel) {
-		StringBuilder builder = new StringBuilder(applicationName());
+		StringBuilder builder = new StringBuilder(name);
 		if (version != null) {
 			if (builder.length() > 0) {
 				builder.append(DASH);
@@ -865,14 +878,10 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private EntityConnection createConnection(User user) {
-		if (domain == null) {
-			throw new IllegalArgumentException("domain must be specified before creating a EntityConnection");
-		}
-
 		return EntityConnection.builder()
 						.user(user)
 						.domain(domain)
-						.clientType(applicationName())
+						.clientType(clientType)
 						.clientVersion(version)
 						.build();
 	}
@@ -925,7 +934,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		}
 
 		private String loginDialogTitle() {
-			StringBuilder builder = new StringBuilder(applicationName());
+			StringBuilder builder = new StringBuilder(name);
 			if (builder.length() > 0 && version != null) {
 				builder.append(DASH).append(version);
 			}

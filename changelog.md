@@ -28,6 +28,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityApplication.model(BiFunction) added, the model factory receiving the application user along with the connection, the user logging in, which differs from the connection's user when the connection function connects as another.
 - EntityApplication, the frame title now shows the application model's user, and EntityApplicationPanel saves it as the default username, where the connection's user was shown and saved, a connection function connecting as another user showing and pre-filling that one.
+- EntityApplication.clientType(String) added, the client type of the connection it creates, DomainType.name() by default, the application name no longer used as client type.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

@@ -45,7 +45,12 @@ public final class EntityApplicationTest {
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
 						.model(connection -> new TestApplicationModel(connection))
-						.onStarted(panel -> assertSame(user, panel.model().connection().user()))
+						.name("Name")
+						.clientType("ClientType")
+						.onStarted(panel -> {
+							assertSame(user, panel.model().connection().user());
+							assertEquals("ClientType", panel.model().connection().clientType());
+						})
 						.user(user)
 						.startupDialog(false)
 						.displayFrame(false)
@@ -55,7 +60,12 @@ public final class EntityApplicationTest {
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
 						.model(connection -> new TestApplicationModel(connection))
-						.onStarted(panel -> assertSame(user2, panel.model().connection().user()))
+						// the name is not the client type
+						.name("Name")
+						.onStarted(panel -> {
+							assertSame(user2, panel.model().connection().user());
+							assertEquals(TestDomain.DOMAIN.name(), panel.model().connection().clientType());
+						})
 						.user(() -> user2)
 						.startupDialog(false)
 						.displayFrame(false)
