@@ -62,6 +62,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.DropMode;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -1004,19 +1005,35 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void selectSearchResult(boolean addToSelection, boolean next) {
 		selectedSearchResult(addToSelection, next).ifPresent(rowColumn -> {
-			changeSelection(rowColumn.row(), rowColumn.column(), true, true);
+			focusCell(rowColumn);
 			scrollTo.rowColumn(rowColumn.row(), rowColumn.column());
 		});
 	}
 
+	// The cell becomes the focused one, its row and column the anchor and lead, the selection as it is.
+	// Not changeSelection(), which extends the selection from the anchor, left elsewhere where the row was selected.
+	private void focusCell(RowColumn rowColumn) {
+		focus(selectionModel, rowColumn.row());
+		focus(columnModel.getSelectionModel(), rowColumn.column());
+	}
+
+	private static void focus(ListSelectionModel model, int index) {
+		model.setAnchorSelectionIndex(index);
+		if (model instanceof DefaultListSelectionModel) {
+			// setLeadSelectionIndex() extends the selection from the anchor
+			((DefaultListSelectionModel) model).moveLeadSelectionIndex(index);
+		}
+	}
+
 	private void toggleCurrentSearchResultSelection() {
-		searchModel.results().current().optional().map(RowColumn::row).ifPresent(row -> {
-			if (tableModel.selection().isSelectedIndex(row)) {
-				tableModel.selection().indexes().remove(row);
+		searchModel.results().current().optional().ifPresent(rowColumn -> {
+			if (tableModel.selection().isSelectedIndex(rowColumn.row())) {
+				tableModel.selection().indexes().remove(rowColumn.row());
 			}
 			else {
-				tableModel.selection().indexes().add(row);
+				tableModel.selection().indexes().add(rowColumn.row());
 			}
+			focusCell(rowColumn);
 		});
 	}
 

@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.component.table.FilterTable.CenterOnScroll;
 import is.codion.swing.common.ui.component.table.FilterTable.Filters;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.junit.jupiter.api.Test;
 
@@ -44,6 +45,7 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -386,6 +388,81 @@ public class FilterTableTest {
 		assertTrue(searchResult.isNull());
 
 		searchField.setText("");
+	}
+
+	@Test
+	void selectSearchResult() {
+		SwingFilterTableModel.TableColumns<List<String>, Integer> columns = new SwingFilterTableModel.TableColumns<List<String>, Integer>() {
+			@Override
+			public List<Integer> identifiers() {
+				return asList(0, 1);
+			}
+
+			@Override
+			public Class<?> type(Integer integer) {
+				return String.class;
+			}
+
+			@Override
+			public Object value(List<String> row, Integer integer) {
+				return row.get(integer);
+			}
+		};
+		SwingFilterTableModel<List<String>, Integer> tableModel =
+						SwingFilterTableModel.builder()
+										.columns(columns)
+										.items(() -> IntStream.range(0, 12)
+														.mapToObj(i -> asList("row" + i, i == 2 || i == 9 ? "hit" : ""))
+														.collect(toList()))
+										.refresh(true)
+										.build();
+		FilterTable<List<String>, Integer> table = FilterTable.builder()
+						.model(tableModel)
+						.build();
+		new JScrollPane(table);
+		JTextField searchField = table.searchField();
+
+		searchField.setText("hit");
+		// a cell in the first column clicked, rows 2 and 9 selected, the anchor at 9, the last one added
+		table.getColumnModel().getSelectionModel().setSelectionInterval(0, 0);
+		tableModel.selection().indexes().set(asList(2, 9));
+		perform(searchField, KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0));
+		assertEquals(9, table.search().results().current().getOrThrow().row());
+
+		// the previous result added to the selection, its row already selected
+		perform(searchField, KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.SHIFT_DOWN_MASK));
+		assertEquals(asList(2, 9), tableModel.selection().indexes().get());
+		// its cell the focused one
+		assertEquals(2, table.getSelectionModel().getAnchorSelectionIndex());
+		assertEquals(2, table.getSelectionModel().getLeadSelectionIndex());
+		assertEquals(1, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
+
+		// the next result selected
+		perform(searchField, KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvents.MENU_SHORTCUT_MASK));
+		assertEquals(singletonList(9), tableModel.selection().indexes().get());
+		assertEquals(9, table.getSelectionModel().getLeadSelectionIndex());
+		assertEquals(1, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
+
+		// the current result's selection toggled, a cell in the first column clicked meanwhile
+		table.getColumnModel().getSelectionModel().setSelectionInterval(0, 0);
+		perform(searchField, KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0));
+		assertEquals(2, table.search().results().current().getOrThrow().row());
+		KeyStroke toggle = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvents.MENU_SHORTCUT_MASK);
+		perform(searchField, toggle);
+		assertEquals(asList(2, 9), tableModel.selection().indexes().get());
+		assertEquals(2, table.getSelectionModel().getLeadSelectionIndex());
+		assertEquals(1, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
+		table.getColumnModel().getSelectionModel().setSelectionInterval(0, 0);
+		perform(searchField, toggle);
+		assertEquals(singletonList(9), tableModel.selection().indexes().get());
+		assertEquals(2, table.getSelectionModel().getLeadSelectionIndex());
+		assertEquals(1, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
+	}
+
+	/** Performs the action bound to the key stroke on the component */
+	private static void perform(JComponent component, KeyStroke keyStroke) {
+		component.getActionMap().get(component.getInputMap().get(keyStroke))
+						.actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, null));
 	}
 
 	@Test
