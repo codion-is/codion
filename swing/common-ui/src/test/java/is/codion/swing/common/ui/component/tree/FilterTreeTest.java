@@ -596,6 +596,56 @@ public final class FilterTreeTest {
 		});
 	}
 
+	@Test
+	void scrollToSelectedAdded() throws Exception {
+		List<String> roots = new ArrayList<>();
+		for (int i = 0; i < 30; i++) {
+			roots.add("r" + (10 + i));
+		}
+		data.put("", roots);
+		AtomicReference<FilterTree<String>> reference = new AtomicReference<>();
+		AtomicReference<JScrollPane> scrollPaneReference = new AtomicReference<>();
+		onEDT(() -> {
+			SwingFilterTreeModel<String> model = SwingFilterTreeModel.builder()
+							.roots(() -> fetch(""))
+							.children(path -> fetch(path.item()))
+							.comparator(naturalOrder())
+							.build();
+			model.nodes().loader().async().set(false);
+			model.nodes().refresh();
+			FilterTree<String> tree = FilterTree.builder()
+							.model(model)
+							.build();
+			JScrollPane scrollPane = new JScrollPane(tree);
+			scrollPane.setSize(200, 150);
+			layout(scrollPane);
+			model.selection().paths().set(singletonList(path("r12")));
+			reference.set(tree);
+			scrollPaneReference.set(scrollPane);
+		});
+		FilterTree<String> tree = reference.get();
+		SwingFilterTreeModel<String> model = tree.model();
+		JScrollPane scrollPane = scrollPaneReference.get();
+		AtomicInteger position = new AtomicInteger();
+		onEDT(() -> {});
+		onEDT(() -> {
+			assertEquals(0, scrollPane.getViewport().getViewPosition().y);
+			//a node out of view added to the selection, the one selected in view
+			model.selection().paths().add(path("r38"));
+		});
+		onEDT(() -> {});
+		onEDT(() -> {
+			assertTrue(tree.getVisibleRect().intersects(tree.getPathBounds(model.treePath(path("r38")))));
+			//a node removed from the selection, the one left out of view
+			tree.scrollRowToVisible(29);
+			assertFalse(tree.getVisibleRect().intersects(tree.getPathBounds(model.treePath(path("r12")))));
+			position.set(scrollPane.getViewport().getViewPosition().y);
+			model.selection().paths().remove(path("r38"));
+		});
+		onEDT(() -> {});
+		onEDT(() -> assertEquals(position.get(), scrollPane.getViewport().getViewPosition().y));
+	}
+
 	/**
 	 * Lays out a scroll pane not displayed
 	 */

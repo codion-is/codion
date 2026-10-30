@@ -71,6 +71,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -86,6 +87,7 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 /**
@@ -216,7 +218,7 @@ public final class FilterTree<T> extends JTree {
 		treeModel.expansion().collapsed().addConsumer(path -> reconcile(path, false));
 		ScrollToSelected scroll = new ScrollToSelected();
 		treeModel.selection().paths().addConsumer(scroll);
-		treeModel.sort().observer().addListener(scroll::scrollLater);
+		treeModel.sort().observer().addListener(scroll::sorted);
 		ControlMap controlMap = builder.controlMap;
 		controlMap.control(EXPAND).set(Control.command(this::expandSelected));
 		controlMap.control(COLLAPSE).set(Control.command(this::collapseSelected));
@@ -575,8 +577,8 @@ public final class FilterTree<T> extends JTree {
 		private ScrollTo() {}
 
 		/**
-		 * @return the {@link State} controlling whether the tree scrolls to the selected nodes when the selection
-		 * changes or the nodes are sorted, in case none of them is visible
+		 * @return the {@link State} controlling whether the tree scrolls to the nodes added to the selection, or to the
+		 * selected nodes when the nodes are sorted, in case none of them is visible
 		 */
 		public State selected() {
 			return scrollToSelected;
@@ -727,8 +729,9 @@ public final class FilterTree<T> extends JTree {
 	}
 
 	/**
-	 * Scrolls to the selected nodes when the selection changes or the nodes are sorted, not when the rows of the
-	 * selected nodes change, as they do when a node above them is expanded, which would scroll that node out of view.
+	 * Scrolls to the nodes added to the selection, or to the selected nodes when the nodes are sorted, in case none of
+	 * them is in view. Not when nodes are removed from the selection, nor when the rows of the selected nodes change,
+	 * as they do when a node above them is expanded, which would scroll that node out of view.
 	 */
 	private final class ScrollToSelected implements Consumer<List<NodePath<T>>> {
 
@@ -738,22 +741,33 @@ public final class FilterTree<T> extends JTree {
 		@Override
 		public void accept(List<NodePath<T>> paths) {
 			if (!paths.equals(selected)) {
+				Set<NodePath<T>> previous = new HashSet<>(selected);
 				selected = paths;
-				scrollLater();
+				scrollLater(paths.stream()
+								.filter(path -> !previous.contains(path))
+								.collect(toList()));
 			}
 		}
 
-		private void scrollLater() {
-			if (scrollToSelected.is() && !selected.isEmpty()) {
+		private void sorted() {
+			scrollLater(selected);
+		}
+
+		private void scrollLater(List<NodePath<T>> paths) {
+			if (scrollToSelected.is() && !paths.isEmpty()) {
 				Ancestor.ofType(JViewport.class).of(FilterTree.this).optional()
 								//once the tree has been reconciled with the model, the rows of which these are
-								.ifPresent(viewport -> SwingUtilities.invokeLater(this::scroll));
+								.ifPresent(viewport -> SwingUtilities.invokeLater(() -> scroll(paths)));
 			}
 		}
 
-		private void scroll() {
-			int[] rows = getSelectionRows();
-			if (rows != null && rows.length > 0) {
+		private void scroll(List<NodePath<T>> paths) {
+			int[] rows = paths.stream()
+							.mapToInt(path -> getRowForPath(treeModel.treePath(path)))
+							.filter(row -> row >= 0)
+							.sorted()
+							.toArray();
+			if (rows.length > 0) {
 				Rectangle visibleRect = getVisibleRect();
 				for (int row : rows) {
 					Rectangle bounds = getRowBounds(row);
@@ -919,7 +933,7 @@ public final class FilterTree<T> extends JTree {
 		Builder<T> doubleClick(Action doubleClick);
 
 		/**
-		 * @param scrollToSelected true if the tree should scroll to the selected nodes when the selection changes, default true
+		 * @param scrollToSelected true if the tree should scroll to the nodes added to the selection, default true
 		 * @return this builder instance
 		 * @see FilterTree#scrollTo()
 		 */

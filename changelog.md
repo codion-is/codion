@@ -28,6 +28,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, scrolling to the selected rows now follows the rows added to the selection, where any change to it scrolled to the first selected row when none was visible, deselecting a row scrolling to another.
 - FilterTable bug fixed, selecting a search result from the search field, or toggling its selection, now focuses its cell, leaving the rest of the selection as it is, where adding a result whose row was already selected selected, or deselected, every row between it and the anchor.
+- FilterTree bug fixed, scrolling to the selected nodes now follows the nodes added to the selection, where any change to it scrolled to the first selected node when none was visible, deselecting a node scrolling to another, a node added out of view not scrolled to while another selected one was in view.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui
