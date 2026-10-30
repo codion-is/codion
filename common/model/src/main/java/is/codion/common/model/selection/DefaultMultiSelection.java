@@ -220,6 +220,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	private final class SelectedIndexes extends AbstractValue<List<Integer>> implements Indexes {
 
+		private final Event<List<Integer>> added = Event.event();
+		private final Event<List<Integer>> removed = Event.event();
+
 		private List<Integer> lastNotified = emptyList();
 
 		private SelectedIndexes() {
@@ -315,6 +318,16 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			return indexes.isEmpty() ? Optional.empty() : Optional.of(indexes);
 		}
 
+		@Override
+		public Observer<List<Integer>> added() {
+			return added.observer();
+		}
+
+		@Override
+		public Observer<List<Integer>> removed() {
+			return removed.observer();
+		}
+
 		private void addSelectionInterval(int fromIndex, int toIndex) {
 			NavigableSet<Integer> target = new TreeSet<>(store.get());
 			target.addAll(range(fromIndex, toIndex));
@@ -337,8 +350,22 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		private void onChanged() {
 			List<Integer> current = getValue();
 			if (!lastNotified.equals(current)) {
+				List<Integer> previous = lastNotified;
 				lastNotified = current;
 				notifyObserver();
+				notifyDifference(added, current, previous);
+				notifyDifference(removed, previous, current);
+			}
+		}
+
+		// the indexes not among the others, ascending as both are, unless none
+		private void notifyDifference(Event<List<Integer>> event, List<Integer> indexes, List<Integer> others) {
+			Set<Integer> exclude = new HashSet<>(others);
+			List<Integer> difference = indexes.stream()
+							.filter(index -> !exclude.contains(index))
+							.collect(toList());
+			if (!difference.isEmpty()) {
+				event.accept(unmodifiableList(difference));
 			}
 		}
 

@@ -23,6 +23,7 @@ import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -108,6 +109,24 @@ public class FilterListSelectionTest {
 		assertEquals(1, presentCounter.get());
 		testModel.clearSelection();
 		assertEquals(2, presentCounter.get());
+	}
+
+	@Test
+	void addedRemovedByTheView() {
+		List<List<Integer>> added = new ArrayList<>();
+		List<List<Integer>> removed = new ArrayList<>();
+		testModel.indexes().added().addConsumer(added::add);
+		testModel.indexes().removed().addConsumer(removed::add);
+		// through the ListSelectionModel, as a JTable changes it
+		testModel.setSelectionInterval(0, 1);
+		testModel.addSelectionInterval(1, 2);
+		testModel.removeSelectionInterval(0, 0);
+		testModel.setValueIsAdjusting(true);
+		testModel.setSelectionInterval(0, 0);
+		testModel.addSelectionInterval(2, 2);
+		testModel.setValueIsAdjusting(false);
+		assertEquals(asList(asList(0, 1), singletonList(2), singletonList(0)), added);
+		assertEquals(asList(singletonList(0), singletonList(1)), removed);
 	}
 
 	@Test

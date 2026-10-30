@@ -1436,6 +1436,16 @@ public class DefaultFilterModelItemsTest {
 			public boolean isNullable() {
 				return indexes.isNullable();
 			}
+
+			@Override
+			public Observer<List<Integer>> added() {
+				return Event.event();
+			}
+
+			@Override
+			public Observer<List<Integer>> removed() {
+				return Event.event();
+			}
 		}
 
 		private class TestItems implements Items<String> {

@@ -26,12 +26,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultMultiSelectionTest {
@@ -171,6 +169,55 @@ public final class DefaultMultiSelectionTest {
 		assertEquals(1, indexesNotified.get());
 		assertEquals(0, itemNotified.get());
 		assertEquals(0, itemsNotified.get());
+	}
+
+	@Test
+	void addedRemoved() {
+		TestItems items = new TestItems(asList("a", "b", "c", "d", "e"));
+		MultiSelection<String> selection = new DefaultMultiSelection<>(items);
+		List<List<Integer>> added = new ArrayList<>();
+		List<List<Integer>> removed = new ArrayList<>();
+		selection.indexes().added().addConsumer(added::add);
+		selection.indexes().removed().addConsumer(removed::add);
+
+		selection.indexes().add(1);
+		selection.indexes().add(1); // already selected, nothing added
+		selection.indexes().add(asList(3, 1));
+		selection.indexes().remove(2); // not selected, nothing removed
+		assertEquals(asList(singletonList(1), singletonList(3)), added);
+		assertEquals(emptyList(), removed);
+
+		// whatever changed the selection, the difference
+		selection.indexes().set(asList(4, 3));
+		assertEquals(singletonList(4), added.get(2));
+		assertEquals(singletonList(1), removed.get(0));
+		selection.item().set("a");
+		assertEquals(singletonList(0), added.get(3));
+		assertEquals(asList(3, 4), removed.get(1));
+		selection.clear();
+		assertEquals(singletonList(0), removed.get(2));
+		selection.selectAll();
+		assertEquals(asList(0, 1, 2, 3, 4), added.get(4));
+		selection.clear();
+
+		// a group, its net change once it ends
+		selection.grouping().set(true);
+		selection.indexes().add(0);
+		selection.indexes().add(2);
+		selection.indexes().remove(0);
+		assertEquals(5, added.size());
+		selection.grouping().set(false);
+		assertEquals(asList(singletonList(2)), added.subList(5, added.size()));
+		assertEquals(4, removed.size());
+
+		// an index is a position, a selected item moving to another, the item still selected
+		items.insert(0, "x");
+		selection.grouping().set(true);
+		selection.indexes().set(singletonList(3));
+		selection.grouping().set(false);
+		assertEquals("c", selection.item().get());
+		assertEquals(singletonList(3), added.get(6));
+		assertEquals(singletonList(2), removed.get(4));
 	}
 
 	@Test

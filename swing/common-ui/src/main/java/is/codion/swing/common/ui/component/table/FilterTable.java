@@ -1160,7 +1160,7 @@ public final class FilterTable<R, C> extends JTable {
 			tableModel.sort().observer().addListener(repaintHeader);
 			searchModel.results().current().addListener(repaintHeader);
 		}
-		tableModel.selection().indexes().addConsumer(scrollTo::onSelectionChanged);
+		tableModel.selection().indexes().added().addConsumer(scrollTo::onSelectionAdded);
 		tableModel.items().included().added().addConsumer(scrollTo::onItemsAdded);
 		searchModel.results().addListener(this::repaint);
 		searchModel.results().current().addListener(this::repaint);
@@ -1355,8 +1355,9 @@ public final class FilterTable<R, C> extends JTable {
 		private ScrollTo() {}
 
 		/**
-		 * @return the {@link State} controlling whether the JTable instance scrolls automatically to the coordinate
-		 * of the item selected in the underlying table model
+		 * @return the {@link State} controlling whether the table scrolls to the rows added to the selection, in case
+		 * none of them is visible, as when a sort moves the selected rows, not when rows are removed from the selection
+		 * @see is.codion.common.model.selection.MultiSelection.Indexes#added()
 		 */
 		public State selected() {
 			return scrollToSelected;
@@ -1427,8 +1428,8 @@ public final class FilterTable<R, C> extends JTable {
 			viewport.scrollRectToVisible(cellRectangle);
 		}
 
-		private void onSelectionChanged(List<Integer> indexes) {
-			if (scrollToSelected.is() && !indexes.isEmpty()) {
+		private void onSelectionAdded(List<Integer> indexes) {
+			if (scrollToSelected.is()) {
 				viewport().ifPresent(viewport -> {
 					int column = columnModel.getSelectionModel().getLeadSelectionIndex();
 					if (noCellVisible(viewport, indexes, column)) {
@@ -1647,8 +1648,9 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> doubleClick(Action doubleClick);
 
 		/**
-		 * @param scrollToSelected true if this table should scroll to the selected item
+		 * @param scrollToSelected true if this table should scroll to the rows added to the selection
 		 * @return this builder instance
+		 * @see FilterTable.ScrollTo#selected()
 		 */
 		Builder<R, C> scrollToSelected(boolean scrollToSelected);
 

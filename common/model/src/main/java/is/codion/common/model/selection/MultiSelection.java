@@ -205,6 +205,26 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * If the selection is empty the highest available index is selected.
 		 */
 		void decrement();
+
+		/**
+		 * <p>Notified with the indexes added to the selection, ascending, whatever added them, a view sharing the
+		 * {@link IndexStore} included. Notified along with this value, after it, so only when the indexes change, and
+		 * once a group of changes has ended, with its net change, see {@link MultiSelection#grouping()}.
+		 * <p>An index is a position, not an item: a change moving a selected item to another index, a sort or an item
+		 * inserted before it, adds the new index and removes the previous one, the item still selected.
+		 * @return an {@link Observer} notified with the indexes added to the selection
+		 * @see #removed()
+		 */
+		Observer<List<Integer>> added();
+
+		/**
+		 * <p>Notified with the indexes removed from the selection, ascending, whatever removed them, a view sharing the
+		 * {@link IndexStore} included. Notified along with this value, after it, so only when the indexes change, and
+		 * once a group of changes has ended, with its net change, see {@link MultiSelection#grouping()}.
+		 * @return an {@link Observer} notified with the indexes removed from the selection
+		 * @see #added()
+		 */
+		Observer<List<Integer>> removed();
 	}
 
 	/**

@@ -43,6 +43,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -768,6 +769,44 @@ public class FilterTableTest {
 		model.items().included().add(0, new TestRow("added"));
 		assertEquals(0, table.rowAtPoint(viewport.getViewPosition()));
 		assertEquals("added", model.items().included().get(0).value);
+	}
+
+	@Test
+	void scrollToSelected() {
+		// Deliberately not setting scrollToSelected, pinning its default to true
+		FilterTable<TestRow, Integer> table = FilterTable.builder()
+						.model(createTestModel(null))
+						.build();
+		JScrollPane scrollPane = new JScrollPane(table);
+		SwingFilterTableModel<TestRow, Integer> model = table.model();
+		model.items().add(IntStream.range(0, 100)
+						.mapToObj(i -> new TestRow("" + i))
+						.collect(toList()));
+		scrollPane.setSize(200, 200);
+		scrollPane.doLayout();
+		JViewport viewport = table.viewport().get();
+		assertTrue(visible(table, viewport, 0));
+		assertFalse(visible(table, viewport, 60));
+
+		// selected by set() as well as by add()
+		model.selection().indexes().set(asList(70, 60));
+		assertTrue(visible(table, viewport, 60));
+		model.selection().indexes().add(90);
+		assertTrue(visible(table, viewport, 90));
+
+		// a row removed from the selection is no reason to scroll to those still selected
+		table.scrollTo().rowColumn(30, 0, CenterOnScroll.NEITHER);
+		Point position = viewport.getViewPosition();
+		model.selection().indexes().remove(90);
+		assertEquals(position, viewport.getViewPosition());
+
+		// a sort moving the selected rows is
+		model.sort().ascending(0);
+		assertTrue(visible(table, viewport, model.selection().index().get()));
+	}
+
+	private static boolean visible(FilterTable<?, ?> table, JViewport viewport, int row) {
+		return viewport.getViewRect().intersects(table.getCellRect(row, 0, true));
 	}
 
 	/**
