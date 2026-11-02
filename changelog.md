@@ -12,6 +12,7 @@ Codion Change Log
 - MultiSelection.Indexes.added() and removed() added, notified with the indexes added to and removed from the selection, whatever changed it, along with indexes().
 ### is.codion.dbms.h2
 - H2Database, an embedded database's init scripts now each run once in its life, recorded in CODION.INIT_SCRIPT with a checksum, line endings aside, an existing file database running those listed it has not yet run, in order, where they ran on its creation alone, one without the record, created before, recording every script listed as run the first time, running none, one refusing sa without a password left alone, administered, the database refused where a script has changed since it ran, has run but is no longer listed, or has run while one listed before it has not.
+- H2Database bug fixed, an existing database opened through a file system prefix, jdbc:h2:async: or jdbc:h2:retry:nio: for example, or in the user's home, jdbc:h2:~/, is now found, where it was taken for a new one at each start, its init scripts run again unless recorded as run, and DB_CLOSE_DELAY=-1 set on it; name() no longer includes the prefix.
 ### is.codion.framework.db.http
 - HttpEntityConnection bug fixed, building a connection with a domain instance now establishes it on the server, validating the user's credentials, where no request was made before the first operation, invalid credentials accepted until then.
 ### is.codion.framework.servlet

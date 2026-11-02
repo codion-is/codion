@@ -40,6 +40,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import static is.codion.common.utilities.user.User.user;
 import static java.util.Collections.emptyList;
@@ -54,13 +55,16 @@ final class H2Database extends AbstractDatabase {
 
 	private static final String JDBC_URL_PREFIX = "jdbc:h2:";
 	private static final String JDBC_URL_PREFIX_MEM = "jdbc:h2:mem:";
-	private static final String JDBC_URL_PREFIX_FILE = "jdbc:h2:file:";
 	private static final String JDBC_URL_PREFIX_TCP = "jdbc:h2:tcp://";
 	private static final String JDBC_URL_PREFIX_SSL = "jdbc:h2:ssl:";
 	private static final String JDBC_URL_PREFIX_ZIP = "jdbc:h2:zip:";
 
 	private static final String FILE_SUFFIX_PAGESTORE = ".h2.db";
 	private static final String FILE_SUFFIX_MVSTORE = ".mv.db";
+	// The file systems a database is opened through, stackable, retry:nio: for example, the file being the same whichever
+	// it is: H2 takes a single character before a colon for a Windows drive, unless a parameter, as in nioMemLZF:1:
+	private static final Pattern FILE_SYSTEM_PREFIXES = Pattern.compile("^(?:[a-zA-Z0-9]{2,}:|[0-9]:)+");
+	private static final String USER_HOME_DIRECTORY = "~";
 	private static final String SHUTDOWN = "SHUTDOWN";
 
 	// In a schema of its own, out of the way of an application keeping its tables in PUBLIC
@@ -206,10 +210,29 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	static String databaseName(String url) {
-		String name = removeUrlPrefixOptionsAndParameters(url, JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
-						JDBC_URL_PREFIX_MEM, JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP, JDBC_URL_PREFIX);
+		String name = startsWith(url, JDBC_URL_PREFIX_TCP) || startsWith(url, JDBC_URL_PREFIX_MEM) ||
+						startsWith(url, JDBC_URL_PREFIX_SSL) || startsWith(url, JDBC_URL_PREFIX_ZIP) ?
+						removeUrlPrefixOptionsAndParameters(url, JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_MEM,
+										JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP) : filePath(url);
 
 		return name.isEmpty() ? "private" : name;
+	}
+
+	/**
+	 * @param url an embedded file database's url
+	 * @return the path of the database's files, without their suffix, as H2 finds them
+	 */
+	static String databasePath(String url) {
+		String path = filePath(url);
+		if (path.equals(USER_HOME_DIRECTORY) || path.startsWith(USER_HOME_DIRECTORY + "/") || path.startsWith(USER_HOME_DIRECTORY + "\\")) {
+			return System.getProperty("user.home") + path.substring(USER_HOME_DIRECTORY.length());
+		}
+
+		return path;
+	}
+
+	private static String filePath(String url) {
+		return FILE_SYSTEM_PREFIXES.matcher(removeUrlPrefixOptionsAndParameters(url, JDBC_URL_PREFIX)).replaceFirst("");
 	}
 
 	/**
@@ -364,21 +387,18 @@ final class H2Database extends AbstractDatabase {
 		return url().toLowerCase(Locale.ROOT);
 	}
 
-	private String databasePath() {
-		return removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX);
-	}
-
 	private boolean isEmbeddedInMemory() {
 		return startsWith(url(), JDBC_URL_PREFIX_MEM);
 	}
 
 	private boolean databaseFileExists() {
-		return Files.exists(Paths.get(databasePath() + FILE_SUFFIX_PAGESTORE)) ||
-						Files.exists(Paths.get(databasePath() + FILE_SUFFIX_MVSTORE));
+		String databasePath = databasePath(url());
+
+		return Files.exists(Paths.get(databasePath + FILE_SUFFIX_PAGESTORE)) ||
+						Files.exists(Paths.get(databasePath + FILE_SUFFIX_MVSTORE));
 	}
 
 	private static boolean startsWith(String url, String prefix) {
 		return url.regionMatches(true, 0, prefix, 0, prefix.length());
 	}
-
 }

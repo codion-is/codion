@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.db.exception.Operation.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -61,6 +62,38 @@ public class H2DatabaseTest {
 		assertEquals("sample.db:1234/db", H2Database.databaseName("jdbc:h2:tcp://sample.db:1234/db;trace_level_file=3;trace_level_system_out=3"));
 		assertEquals("db.zip!/h2db", H2Database.databaseName("jdbc:h2:zip:db.zip!/h2db"));
 		assertEquals("db.zip!/h2db", H2Database.databaseName("jdbc:h2:zip:db.zip!/h2db;trace_level_file=3;trace_level_system_out=3"));
+		// the file systems it is opened through, stackable, not part of its name
+		assertEquals("/data/sample", H2Database.databaseName("jdbc:h2:async:/data/sample;trace_level_file=3"));
+		assertEquals("/data/sample", H2Database.databaseName("jdbc:h2:retry:/data/sample"));
+		assertEquals("/data/sample", H2Database.databaseName("jdbc:h2:retry:nio:/data/sample"));
+		assertEquals("/data/sample", H2Database.databaseName("jdbc:h2:split:10:nioMapped:/data/sample"));
+		assertEquals("/data/sample", H2Database.databaseName("jdbc:h2:nioMemLZF:1:/data/sample"));
+		assertEquals("C:/data/sample", H2Database.databaseName("jdbc:h2:async:C:/data/sample"));
+		assertEquals("~/sample", H2Database.databaseName("jdbc:h2:async:~/sample"));
+		// neither a colon in a path nor a host taken for one
+		assertEquals("/data/a:b/sample", H2Database.databaseName("jdbc:h2:/data/a:b/sample"));
+		assertEquals("localhost:9092/db", H2Database.databaseName("jdbc:h2:tcp://localhost:9092/db"));
+	}
+
+	@Test
+	void databasePath() {
+		assertEquals("/data/sample", H2Database.databasePath("jdbc:h2:/data/sample;trace_level_file=3"));
+		assertEquals("/data/sample", H2Database.databasePath("jdbc:h2:file:/data/sample;trace_level_file=3"));
+		assertEquals("/data/sample", H2Database.databasePath("jdbc:h2:async:/data/sample;trace_level_file=3"));
+		assertEquals("/data/sample", H2Database.databasePath("jdbc:h2:retry:/data/sample"));
+		assertEquals("/data/sample", H2Database.databasePath("jdbc:h2:retry:nio:/data/sample"));
+		assertEquals("C:/data/sample", H2Database.databasePath("jdbc:h2:C:/data/sample"));
+		assertEquals("C:/data/sample", H2Database.databasePath("jdbc:h2:retry:nio:C:/data/sample"));
+		assertEquals("./sample", H2Database.databasePath("jdbc:h2:./sample"));
+		assertEquals("./sample", H2Database.databasePath("jdbc:h2:async:./sample"));
+		assertEquals("/data/a:b/sample", H2Database.databasePath("jdbc:h2:/data/a:b/sample"));
+		// the user's home, as H2 expands it
+		String home = System.getProperty("user.home");
+		assertEquals(home + "/sample", H2Database.databasePath("jdbc:h2:~/sample"));
+		assertEquals(home + "/sample", H2Database.databasePath("jdbc:h2:file:~/sample"));
+		assertEquals(home + "/sample", H2Database.databasePath("jdbc:h2:async:~/sample"));
+		assertEquals(home + "\\sample", H2Database.databasePath("jdbc:h2:~\\sample"));
+		assertEquals("~sample", H2Database.databasePath("jdbc:h2:~sample"));
 	}
 
 	@Test
@@ -279,6 +312,32 @@ public class H2DatabaseTest {
 			connection.prepareStatement("select id from scripts.t2").execute();
 		}
 		database.close();
+	}
+
+	@Test
+	void initScriptsFileSystemPrefix(@TempDir Path tempDir) throws SQLException, IOException {
+		Path script = tempDir.resolve("script.sql");
+		Files.write(script, singletonList("create schema scripts; create table scripts.t1 (id int);"));
+		for (String prefix : asList("async:", "retry:", "retry:nio:")) {
+			// a database created through the file system, the script run and recorded, then opened again
+			String created = "jdbc:h2:" + prefix + tempDir.resolve("created" + prefix.replace(":", "")).toAbsolutePath();
+			H2Database database = database(created, script);
+			assertEquals(1, scriptsRun(database));
+			database.close();
+			database = database(created, script);
+			assertEquals(1, scriptsRun(database));
+			database.close();
+
+			// one created before the scripts were recorded, found through the file system, so taken for what it is, the script
+			// recorded as run, running none, running again failing to create its schema
+			Path existing = tempDir.resolve("existing" + prefix.replace(":", "")).toAbsolutePath();
+			try (Connection connection = DriverManager.getConnection("jdbc:h2:file:" + existing, "sa", "")) {
+				execute(connection, "runscript from '" + path(script) + "'");
+			}
+			database = database("jdbc:h2:" + prefix + existing, script);
+			assertEquals(1, scriptsRun(database));
+			database.close();
+		}
 	}
 
 	@Test
