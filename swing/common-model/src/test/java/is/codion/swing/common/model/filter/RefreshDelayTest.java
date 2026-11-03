@@ -75,17 +75,16 @@ public final class RefreshDelayTest {
 	}
 
 	@Test
-	void supersededRefreshIsNotInterrupted() throws Exception {
+	void oneFetchAtATime() throws Exception {
 		CountDownLatch blocked = new CountDownLatch(1);
 		CountDownLatch release = new CountDownLatch(1);
-		CountDownLatch finished = new CountDownLatch(1);
 		CountDownLatch refreshed = new CountDownLatch(1);
-		AtomicBoolean first = new AtomicBoolean(true);
+		AtomicInteger fetches = new AtomicInteger();
 		AtomicBoolean interrupted = new AtomicBoolean();
 		AtomicReference<Collection<String>> result = new AtomicReference<>();
 		Refresher<String> refresher = Refresher.<String>builder()
 						.items(() -> {
-							if (first.getAndSet(false)) {
+							if (fetches.incrementAndGet() == 1) {
 								blocked.countDown();
 								try {
 									release.await(10, SECONDS);
@@ -93,7 +92,6 @@ public final class RefreshDelayTest {
 								catch (InterruptedException e) {
 									interrupted.set(true);
 								}
-								finished.countDown();
 
 								return singletonList("superseded");
 							}
@@ -107,14 +105,153 @@ public final class RefreshDelayTest {
 						.build();
 		SwingUtilities.invokeAndWait(refresher::refresh);
 		assertTrue(blocked.await(10, SECONDS));
-		SwingUtilities.invokeAndWait(refresher::refresh);
-		assertTrue(refreshed.await(10, SECONDS));
+		//a burst while it runs, each replacing the one before, none fetching yet, each its own dispatch
+		for (int i = 0; i < 5; i++) {
+			SwingUtilities.invokeAndWait(refresher::refresh);
+		}
+		assertEquals(1, fetches.get());
+		SwingUtilities.invokeAndWait(() -> assertTrue(refresher.active().is()));
 		release.countDown();
-		assertTrue(finished.await(10, SECONDS));
+		assertTrue(refreshed.await(10, SECONDS));
+		//the one running left to finish, then the last, its result delivered, the one running's discarded
 		assertFalse(interrupted.get());
-		//its result, had it arrived, delivered by now
+		assertEquals(2, fetches.get());
+		assertEquals(singletonList("latest"), result.get());
+		SwingUtilities.invokeAndWait(() -> assertFalse(refresher.active().is()));
+	}
+
+	@Test
+	void supersededBeforeFetchingDoesNotFetch() throws Exception {
+		AtomicInteger fetches = new AtomicInteger();
+		CountDownLatch refreshed = new CountDownLatch(1);
+		Refresher<String> refresher = Refresher.<String>builder()
+						.items(() -> {
+							fetches.incrementAndGet();
+
+							return singletonList("a");
+						})
+						.onResult(items -> refreshed.countDown())
+						.build();
+		//both in one dispatch, the first unable to get past its start until this ends
+		SwingUtilities.invokeAndWait(() -> {
+			refresher.refresh();
+			refresher.refresh();
+		});
+		assertTrue(refreshed.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(() -> {});
+		assertEquals(1, fetches.get());
+	}
+
+	@Test
+	void waitingRefreshRunsAfterTheOneRunningFails() throws Exception {
+		CountDownLatch blocked = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		CountDownLatch refreshed = new CountDownLatch(1);
+		AtomicInteger fetches = new AtomicInteger();
+		AtomicInteger exceptions = new AtomicInteger();
+		Refresher<String> refresher = Refresher.<String>builder()
+						.items(() -> {
+							if (fetches.incrementAndGet() == 1) {
+								blocked.countDown();
+								try {
+									release.await(10, SECONDS);
+								}
+								catch (InterruptedException e) {
+									Thread.currentThread().interrupt();
+								}
+								throw new IllegalStateException("Superseded, nothing to say");
+							}
+
+							return singletonList("latest");
+						})
+						.onResult(items -> refreshed.countDown())
+						.onException(exception -> exceptions.incrementAndGet())
+						.build();
+		SwingUtilities.invokeAndWait(refresher::refresh);
+		assertTrue(blocked.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(refresher::refresh);
+		release.countDown();
+		assertTrue(refreshed.await(10, SECONDS));
+		assertEquals(2, fetches.get());
+		assertEquals(0, exceptions.get());
+	}
+
+	@Test
+	void syncRefreshSupersedesTheOneWaiting() throws Exception {
+		CountDownLatch blocked = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		AtomicInteger fetches = new AtomicInteger();
+		AtomicInteger waitingCallbacks = new AtomicInteger();
+		Refresher<String> refresher = Refresher.<String>builder()
+						.items(() -> {
+							if (fetches.incrementAndGet() == 1) {
+								blocked.countDown();
+								try {
+									release.await(10, SECONDS);
+								}
+								catch (InterruptedException e) {
+									Thread.currentThread().interrupt();
+								}
+							}
+
+							return singletonList("a");
+						})
+						.build();
+		SwingUtilities.invokeAndWait(refresher::refresh);
+		assertTrue(blocked.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(() -> refresher.refresh(items -> waitingCallbacks.incrementAndGet()));
+		//no dispatch context bound on this thread, so this one is synchronous, not waiting for the one running
+		AtomicReference<Collection<String>> result = new AtomicReference<>();
+		refresher.refresh(result::set);
+		assertEquals(singletonList("a"), result.get());
+		assertEquals(2, fetches.get());
+		release.countDown();
 		Thread.sleep(100);
-		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList("latest"), result.get()));
+		SwingUtilities.invokeAndWait(() -> {});
+		//the one waiting never started
+		assertEquals(2, fetches.get());
+		assertEquals(0, waitingCallbacks.get());
+		SwingUtilities.invokeAndWait(() -> assertFalse(refresher.active().is()));
+		//nor is the next held up
+		CountDownLatch next = new CountDownLatch(1);
+		SwingUtilities.invokeAndWait(() -> refresher.refresh(items -> next.countDown()));
+		assertTrue(next.await(10, SECONDS));
+	}
+
+	@Test
+	void waitingRefreshIsActive() throws Exception {
+		CountDownLatch blocked = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		AtomicInteger fetches = new AtomicInteger();
+		Refresher<String> refresher = Refresher.<String>builder()
+						.items(() -> {
+							if (fetches.incrementAndGet() == 1) {
+								blocked.countDown();
+								try {
+									release.await(10, SECONDS);
+								}
+								catch (InterruptedException e) {
+									Thread.currentThread().interrupt();
+								}
+							}
+
+							return singletonList("a");
+						})
+						.build();
+		SwingUtilities.invokeAndWait(refresher::refresh);
+		assertTrue(blocked.await(10, SECONDS));
+		//superseded by a synchronous one, so inactive with its fetch still running
+		refresher.refresh();
+		SwingUtilities.invokeAndWait(() -> assertFalse(refresher.active().is()));
+		CountDownLatch refreshed = new CountDownLatch(1);
+		SwingUtilities.invokeAndWait(() -> {
+			refresher.refresh(items -> refreshed.countDown());
+			//waiting for that fetch to end, under way all the same
+			assertTrue(refresher.active().is());
+		});
+		release.countDown();
+		assertTrue(refreshed.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(() -> assertFalse(refresher.active().is()));
 	}
 
 	@Test

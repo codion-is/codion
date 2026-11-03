@@ -527,9 +527,8 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Controls how long an asynchronous refresh waits before it starts, in milliseconds, zero by default.
 		 * <p>A refresh arriving during the wait replaces the one waiting, so a burst of them results in a single
-		 * fetch, once they stop. Without it each one cancels the fetch already running and starts another, which
-		 * is correct - only the last result is delivered either way - but against a remote backend it is a burst
-		 * of requests whose results are all discarded but one.
+		 * fetch, once they stop. Without it a burst results in two, see {@link #refresh()}: the first, whose result
+		 * is discarded, and the last, once the first has ended.
 		 * <p>Read when the refresh is requested, so changing it leaves one already waiting alone. Ignored by a
 		 * synchronous refresh, which exists to be immediate and predictable.
 		 * @return the {@link Value} controlling the refresh delay in milliseconds
@@ -561,9 +560,11 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called
 		 * where a dispatch context is bound, the UI thread on UI platforms.
+		 * <p>One asynchronous fetch runs at a time. A refresh asked for during one starts when that one ends, replacing
+		 * any already waiting, so a burst of them leaves no fetches queued on the connection behind the last.
 		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks, whether it was
-		 * already fetching or still waiting out {@link #delay()}, and whichever path the refresh that
-		 * superseded it took - a synchronous refresh cancels an asynchronous one in flight.
+		 * already fetching or still waiting, and whichever path the refresh that superseded it took - a synchronous
+		 * refresh supersedes an asynchronous one in flight, or waiting, without waiting for it.
 		 * <p>A {@link Refresher} without an items supplier does nothing here: no fetch, no callbacks, no
 		 * {@link #result()} event, and {@link #active()} never activates. That is an ordinary model rather
 		 * than a mis-built one - a {@link is.codion.common.model.component.combobox.FilterComboBoxModel}
@@ -578,9 +579,11 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called
 		 * where a dispatch context is bound, the UI thread on UI platforms.
+		 * <p>One asynchronous fetch runs at a time. A refresh asked for during one starts when that one ends, replacing
+		 * any already waiting, so a burst of them leaves no fetches queued on the connection behind the last.
 		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks, whether it was
-		 * already fetching or still waiting out {@link #delay()}, and whichever path the refresh that
-		 * superseded it took - a synchronous refresh cancels an asynchronous one in flight.
+		 * already fetching or still waiting, and whichever path the refresh that superseded it took - a synchronous
+		 * refresh supersedes an asynchronous one in flight, or waiting, without waiting for it.
 		 * <p>A {@link Refresher} without an items supplier does nothing here: no fetch, no callbacks, no
 		 * {@link #result()} event, and {@link #active()} never activates. That is an ordinary model rather
 		 * than a mis-built one - a {@link is.codion.common.model.component.combobox.FilterComboBoxModel}
@@ -608,12 +611,13 @@ public interface FilterModel<T> {
 		interface Builder<T> {
 
 			/**
-			 * <p>The supplier is called on a background thread when refreshing asynchronously. A refresh superseded
-			 * by another one has its result discarded, but it is not interrupted, as that can destroy a database
-			 * connection, see {@link is.codion.common.model.worker.ProgressWorker#cancel(boolean)}. So the supplier runs to
-			 * completion, and so does whatever it is waiting on - a query, a request to a remote backend. Where that
-			 * matters, give the refresher a {@link Refresher#delay()}, so that superseded refreshes never start in the
-			 * first place.
+			 * <p>The supplier is called on a background thread when refreshing asynchronously, one call at a time, see
+			 * {@link Refresher#refresh()}. A refresh superseded by another one has its result discarded, but it is not
+			 * interrupted, as that can destroy a database connection, see
+			 * {@link is.codion.common.model.worker.ProgressWorker#cancel(boolean)}. So the supplier runs to completion, and
+			 * so does whatever it is waiting on - a query, a request to a remote backend - and the refresh superseding it
+			 * starts once it has. A supplier which never returns holds up every later asynchronous refresh. Give the
+			 * refresher a {@link Refresher#delay()} where a superseded refresh should not start in the first place.
 			 * @param items supplies the items during refresh, null for a {@link Refresher} which does nothing
 			 * @return this builder instance
 			 */

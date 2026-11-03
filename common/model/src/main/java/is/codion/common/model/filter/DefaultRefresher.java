@@ -40,6 +40,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -47,6 +48,9 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * The default {@link Refresher} implementation, performing an async refresh via {@link ProgressWorker} when
  * {@link #async()} is enabled and the refresh is triggered where a dispatch context is bound, the UI thread on
  * UI platforms (see {@link Dispatcher#bound()}), otherwise a synchronous refresh on the calling thread.
+ * <p>One asynchronous fetch runs at a time. A superseded fetch is left to finish, as interrupting a thread using a
+ * database connection can destroy the connection, and does not stop the statement otherwise, and its result is discarded.
+ * The latest refresh asked for meanwhile starts when it ends, so a burst keeps nothing queued on the connection.
  * @param <T> the model item type
  */
 final class DefaultRefresher<T> implements Refresher<T> {
@@ -71,9 +75,11 @@ final class DefaultRefresher<T> implements Refresher<T> {
 	private final @Nullable Consumer<Collection<T>> onResult;
 	private final Consumer<Exception> onException;
 
-	private @Nullable ProgressWorker<Collection<T>, ?> worker;
-	private @Nullable RefreshTask currentTask;
+	// The latest refresh asked for, running, or waiting for the one running to end, read by the fetch off the dispatch context
+	private volatile @Nullable RefreshTask currentTask;
 	private @Nullable ScheduledRefresh scheduledRefresh;
+	// Whether a fetch is running, the current one or one superseded, confined to the dispatch context
+	private boolean fetching = false;
 
 	private DefaultRefresher(DefaultBuilder<T> builder) {
 		this.items = builder.items;
@@ -150,9 +156,21 @@ final class DefaultRefresher<T> implements Refresher<T> {
 	}
 
 	private void startRefresh(Supplier<Collection<T>> items, @Nullable Consumer<Collection<T>> onResult) {
-		currentTask = new RefreshTask(items, onResult);
-		worker = ProgressWorker.builder()
-						.task(currentTask)
+		RefreshTask task = new RefreshTask(items, onResult);
+		currentTask = task;
+		if (fetching) {
+			//started when the fetch running ends, unless replaced by then
+			active.set(true);
+		}
+		else {
+			fetch(task);
+		}
+	}
+
+	private void fetch(RefreshTask task) {
+		fetching = true;
+		ProgressWorker.builder()
+						.task(task)
 						.execute();
 	}
 
@@ -203,14 +221,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 			scheduledRefresh = null;
 			scheduled.cancel();
 		}
-		ProgressWorker<?, ?> progressWorker = worker;
-		if (progressWorker != null) {
-			worker = null;
-			currentTask = null;
-			// left to finish, its result discarded, as interrupting a thread using a database connection can destroy the
-			// connection, and does not stop the statement otherwise
-			progressWorker.cancel(false);
-		}
+		currentTask = null;
 	}
 
 	/**
@@ -272,7 +283,8 @@ final class DefaultRefresher<T> implements Refresher<T> {
 
 		@Override
 		public Collection<T> execute() throws Exception {
-			return items.get();
+			//superseded before getting this far, in which case there is nothing to fetch for
+			return currentTask == this ? items.get() : emptyList();
 		}
 
 		@Override
@@ -283,10 +295,18 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		}
 
 		@Override
+		public void onDone() {
+			fetching = false;
+			RefreshTask latest = currentTask;
+			if (latest != null && latest != this) {
+				fetch(latest);
+			}
+		}
+
+		@Override
 		public void onResult(Collection<T> result) {
 			if (currentTask == this) {
 				currentTask = null;
-				worker = null;
 				onRefreshResult(result, onResult);
 			}
 		}
@@ -295,7 +315,6 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		public void onException(Exception exception) {
 			if (currentTask == this) {
 				currentTask = null;
-				worker = null;
 				onRefreshException(exception);
 			}
 		}
