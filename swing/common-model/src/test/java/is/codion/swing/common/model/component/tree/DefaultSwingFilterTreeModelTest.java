@@ -854,7 +854,9 @@ final class DefaultSwingFilterTreeModelTest {
 	void asyncCancelled() throws Exception {
 		CountDownLatch blocked = new CountDownLatch(1);
 		CountDownLatch release = new CountDownLatch(1);
+		CountDownLatch finished = new CountDownLatch(1);
 		AtomicBoolean block = new AtomicBoolean(true);
+		AtomicBoolean interrupted = new AtomicBoolean();
 		AtomicReference<SwingFilterTreeModel<String>> reference = new AtomicReference<>();
 		SwingUtilities.invokeAndWait(() -> reference.set(SwingFilterTreeModel.builder()
 						.roots(() -> {
@@ -864,8 +866,9 @@ final class DefaultSwingFilterTreeModelTest {
 									release.await(10, SECONDS);
 								}
 								catch (InterruptedException e) {
-									Thread.currentThread().interrupt();
+									interrupted.set(true);
 								}
+								finished.countDown();
 								return asList("old");
 							}
 							return fetch("");
@@ -881,12 +884,70 @@ final class DefaultSwingFilterTreeModelTest {
 		SwingUtilities.invokeAndWait(model.nodes()::refresh);
 		assertTrue(loaded.await(10, SECONDS));
 		release.countDown();
+		assertTrue(finished.await(10, SECONDS));
+		//left to finish, its result discarded
+		assertFalse(interrupted.get());
 		//let a late result arrive, if it were to
 		Thread.sleep(100);
 		SwingUtilities.invokeAndWait(() -> {
 			assertEquals(asList(path("a"), path("b")), model.visible().get());
 			assertFalse(model.nodes().loader().active().is());
 		});
+	}
+
+	@Test
+	void asyncCancelledStopsBeforeItsNextFetch() throws Exception {
+		data.put("b", asList("b1"));
+		CountDownLatch blocked = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		AtomicBoolean block = new AtomicBoolean(false);
+		AtomicReference<Thread> cancelled = new AtomicReference<>();
+		List<String> fetchedOnceCancelled = new CopyOnWriteArrayList<>();
+		AtomicReference<SwingFilterTreeModel<String>> reference = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> reference.set(SwingFilterTreeModel.builder()
+						.roots(() -> fetch(""))
+						.children(path -> {
+							if (Thread.currentThread() == cancelled.get()) {
+								fetchedOnceCancelled.add(path.item());
+							}
+							if (block.getAndSet(false)) {
+								cancelled.set(Thread.currentThread());
+								blocked.countDown();
+								try {
+									release.await(10, SECONDS);
+								}
+								catch (InterruptedException e) {
+									Thread.currentThread().interrupt();
+								}
+							}
+							return fetch(path.item());
+						})
+						.build()));
+		SwingFilterTreeModel<String> model = reference.get();
+		awaitIdle(model, model.nodes()::refresh);
+		awaitIdle(model, () -> model.expansion().expand(path("a")));
+		awaitIdle(model, () -> model.expansion().expand(path("b")));
+		//a refresh fetching the root, then each node expanded, in turn, held at the first
+		block.set(true);
+		SwingUtilities.invokeAndWait(model.nodes()::refresh);
+		assertTrue(blocked.await(10, SECONDS));
+		//superseded by another
+		awaitIdle(model, model.nodes()::refresh);
+		release.countDown();
+		//let it carry on, if it were to
+		Thread.sleep(100);
+		assertEquals(emptyList(), fetchedOnceCancelled);
+	}
+
+	private static void awaitIdle(SwingFilterTreeModel<String> model, Runnable action) throws Exception {
+		CountDownLatch idle = new CountDownLatch(1);
+		model.nodes().loader().active().addConsumer(active -> {
+			if (!active) {
+				idle.countDown();
+			}
+		});
+		SwingUtilities.invokeAndWait(action);
+		assertTrue(idle.await(10, SECONDS));
 	}
 
 	@Test

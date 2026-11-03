@@ -10,6 +10,7 @@ Codion Change Log
 - Icelandic mnemonic for clear changed to E, no longer clashes with refresh.
 ### is.codion.common.model
 - MultiSelection.Indexes.added() and removed() added, notified with the indexes added to and removed from the selection, whatever changed it, along with indexes().
+- FilterModel.Refresher and FilterTreeModel bug fixed, a superseded refresh or load is no longer interrupted, it runs to completion, its result discarded, as an interrupt never stopped a statement, but closed the connection on Oracle and Derby, failing the newer one with it, and an H2 file database for every connection until reopened.
 ### is.codion.dbms.h2
 - H2Database, an embedded database's init scripts now each run once in its life, recorded in CODION.INIT_SCRIPT with a checksum, line endings aside, an existing file database running those listed it has not yet run, in order, where they ran on its creation alone, one without the record, created before, recording every script listed as run the first time, running none, one refusing sa without a password left alone, administered, the database refused where a script has changed since it ran, has run but is no longer listed, or has run while one listed before it has not.
 - H2Database bug fixed, an existing database opened through a file system prefix, jdbc:h2:async: or jdbc:h2:retry:nio: for example, or in the user's home, jdbc:h2:~/, is now found, where it was taken for a new one at each start, its init scripts run again unless recorded as run, and DB_CLOSE_DELAY=-1 set on it; name() no longer includes the prefix.
@@ -27,6 +28,7 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityApplicationModel(connection, user, entityModels) added, the application user, the one logged in, which may differ from the connection's user, EntityApplicationModel.user() returning it, where it was the connection's user.
 - EntityApplicationModel now AutoCloseable, close() added, closing the model along with its connection, overridden to release what an application model holds.
+- AbstractEntityEditor bug fixed, a superseded task is no longer interrupted, see FilterModel.Refresher.
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, scrolling to the selected rows now follows the rows added to the selection, where any change to it scrolled to the first selected row when none was visible, deselecting a row scrolling to another.
 - FilterTable bug fixed, selecting a search result from the search field, or toggling its selection, now focuses its cell, leaving the rest of the selection as it is, where adding a result whose row was already selected selected, or deselected, every row between it and the anchor.
@@ -38,6 +40,7 @@ Codion Change Log
 - EntityApplication, the frame title now shows the application model's user, and EntityApplicationPanel saves it as the default username, where the connection's user was shown and saved, a connection function connecting as another user showing and pre-filling that one.
 - EntityApplication.clientType(String) added, the client type of the connection it creates, DomainType.name() by default, the application name no longer used as client type.
 - EntityApplicationPanel.exit() now closes the application model rather than its connection, once the exit can no longer be cancelled and the preferences have been stored, a failure logged as an error.
+- EntitySearchField bug fixed, a search superseded or cancelled is no longer interrupted, see FilterModel.Refresher.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

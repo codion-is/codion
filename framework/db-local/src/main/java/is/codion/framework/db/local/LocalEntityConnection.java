@@ -45,6 +45,10 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * try (EntityConnection connection = localEntityConnection(database, domain, user)) {
  *   List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
  * } // @end}
+ * <p>
+ * A thread using a local connection should not be interrupted. An interrupt does not stop a statement. The JDBC driver
+ * either carries on, or fails: Oracle's and Derby's close the connection, and on an H2 file database, {@code jdbc:h2:file:},
+ * every connection fails until the database is reopened, which {@code jdbc:h2:async:} avoids.
  */
 public interface LocalEntityConnection extends EntityConnection {
 

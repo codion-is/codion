@@ -608,13 +608,12 @@ public interface FilterModel<T> {
 		interface Builder<T> {
 
 			/**
-			 * <p>The supplier is called on a background thread when refreshing asynchronously, and a refresh
-			 * superseded by another one is cancelled with an interrupt.
-			 * <p>Cancellation therefore guarantees only that the result is discarded, not that the work stops.
-			 * A supplier that does not respond to interruption runs to completion, and so does whatever it is
-			 * waiting on - a query, a request to a remote backend. Where that matters, either make the supplier
-			 * interruptible or give the refresher a {@link Refresher#delay()}, so that superseded refreshes
-			 * never start in the first place.
+			 * <p>The supplier is called on a background thread when refreshing asynchronously. A refresh superseded
+			 * by another one has its result discarded, but it is not interrupted, as that can destroy a database
+			 * connection, see {@link is.codion.common.model.worker.ProgressWorker#cancel(boolean)}. So the supplier runs to
+			 * completion, and so does whatever it is waiting on - a query, a request to a remote backend. Where that
+			 * matters, give the refresher a {@link Refresher#delay()}, so that superseded refreshes never start in the
+			 * first place.
 			 * @param items supplies the items during refresh, null for a {@link Refresher} which does nothing
 			 * @return this builder instance
 			 */

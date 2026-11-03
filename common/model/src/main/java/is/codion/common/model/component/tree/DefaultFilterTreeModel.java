@@ -50,6 +50,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -791,10 +792,10 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	 * @param loadedBelow the paths of the loaded nodes below, which are loaded as well
 	 * @param refresh true if the leaves function should be called for the node as well, in case it is not yet loaded,
 	 * which is not loaded in case the leaves function reports it as a leaf
-	 * @param interruptible true if loading should stop when the thread is interrupted
+	 * @param cancelled true once the load has been cancelled, stopping it before its next fetch
 	 * @return the children, and the leaf status of the nodes reached which are not yet loaded
 	 */
-	private Fetched<T> fetch(NodePath<T> path, Set<NodePath<T>> loadedBelow, boolean refresh, boolean interruptible) {
+	private Fetched<T> fetch(NodePath<T> path, Set<NodePath<T>> loadedBelow, boolean refresh, BooleanSupplier cancelled) {
 		Fetched<T> result = new Fetched<>();
 		if (refresh && leaves != null && !path.root() && !loadedBelow.contains(path)) {
 			boolean pathLeaf = testLeaf(path);
@@ -806,7 +807,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		Deque<NodePath<T>> queue = new ArrayDeque<>();
 		queue.add(path);
 		while (!queue.isEmpty()) {
-			interrupted(interruptible);
+			checkCancelled(cancelled);
 			NodePath<T> parent = queue.removeFirst();
 			List<T> items = validate(parent.root() ? roots.get() : children.apply(parent));
 			result.children.put(parent, items);
@@ -822,7 +823,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				}
 			}
 			if (leaves != null && !unloaded.isEmpty()) {
-				interrupted(interruptible);
+				checkCancelled(cancelled);
 				Set<NodePath<T>> leafPaths = testLeaves(unloaded);
 				for (NodePath<T> child : unloaded) {
 					result.leaves.put(child, leafPaths.contains(child));
@@ -833,8 +834,8 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		return result;
 	}
 
-	private static void interrupted(boolean interruptible) {
-		if (interruptible && Thread.currentThread().isInterrupted()) {
+	private static void checkCancelled(BooleanSupplier cancelled) {
+		if (cancelled.getAsBoolean()) {
 			throw new CancelException();
 		}
 	}
@@ -1191,7 +1192,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 			updateActive();
 			Fetched<T> result;
 			try {
-				result = fetch(task.path, task.loadedBelow, task.refresh, false);
+				result = fetch(task.path, task.loadedBelow, task.refresh, () -> false);
 			}
 			catch (Exception e) {
 				failed(task, e);
@@ -1267,7 +1268,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				LoadTask task = iterator.next();
 				if (task.worker != null && path.contains(task.path)) {
 					iterator.remove();
-					task.worker.cancel(true);
+					task.cancel();
 				}
 			}
 			Iterator<LeafTask> leafIterator = leafTasks.iterator();
@@ -1275,7 +1276,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				LeafTask task = leafIterator.next();
 				if (task.worker != null && task.paths.stream().allMatch(path::contains)) {
 					leafIterator.remove();
-					task.worker.cancel(true);
+					task.worker.cancel(false);
 				}
 			}
 		}
@@ -1293,7 +1294,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				LoadTask task = iterator.next();
 				if (task.worker != null && task.path.contains(path)) {
 					iterator.remove();
-					task.worker.cancel(true);
+					task.cancel();
 					overtaken.add(task);
 				}
 			}
@@ -1349,6 +1350,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		private final long sequence;
 
 		private @Nullable ProgressWorker<?, ?> worker;
+		private volatile boolean cancelled = false;
 
 		private LoadTask(NodePath<T> path, Set<NodePath<T>> loadedBelow, boolean refresh, long sequence) {
 			this.path = path;
@@ -1359,7 +1361,14 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 		@Override
 		public Fetched<T> execute() throws Exception {
-			return fetch(path, loadedBelow, refresh, true);
+			return fetch(path, loadedBelow, refresh, () -> cancelled);
+		}
+
+		// Stops it before its next fetch, the one under way left to finish, its result discarded, as interrupting a thread
+		// using a database connection can destroy the connection, and does not stop the statement otherwise
+		private void cancel() {
+			cancelled = true;
+			requireNonNull(worker).cancel(false);
 		}
 
 		@Override

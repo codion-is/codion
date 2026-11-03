@@ -168,6 +168,8 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 	 * <p>The {@code onDone} and {@code onCancelled} handlers are called as soon as the task is cancelled,
 	 * while it may still be running, until it notices the interruption or completes. Its result is discarded,
 	 * and any progress it reports or chunks it publishes once cancelled are dropped.
+	 * <p>Interrupting a thread using a database connection does not stop the statement it is running, and can destroy
+	 * the connection, see {@code LocalEntityConnection}, so pass true only for a task known not to use one.
 	 * @param mayInterruptIfRunning true if the thread executing the task should be interrupted
 	 * @return false if the task could not be cancelled, typically because it has already completed
 	 */

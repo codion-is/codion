@@ -75,6 +75,49 @@ public final class RefreshDelayTest {
 	}
 
 	@Test
+	void supersededRefreshIsNotInterrupted() throws Exception {
+		CountDownLatch blocked = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		CountDownLatch finished = new CountDownLatch(1);
+		CountDownLatch refreshed = new CountDownLatch(1);
+		AtomicBoolean first = new AtomicBoolean(true);
+		AtomicBoolean interrupted = new AtomicBoolean();
+		AtomicReference<Collection<String>> result = new AtomicReference<>();
+		Refresher<String> refresher = Refresher.<String>builder()
+						.items(() -> {
+							if (first.getAndSet(false)) {
+								blocked.countDown();
+								try {
+									release.await(10, SECONDS);
+								}
+								catch (InterruptedException e) {
+									interrupted.set(true);
+								}
+								finished.countDown();
+
+								return singletonList("superseded");
+							}
+
+							return singletonList("latest");
+						})
+						.onResult(items -> {
+							result.set(items);
+							refreshed.countDown();
+						})
+						.build();
+		SwingUtilities.invokeAndWait(refresher::refresh);
+		assertTrue(blocked.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(refresher::refresh);
+		assertTrue(refreshed.await(10, SECONDS));
+		release.countDown();
+		assertTrue(finished.await(10, SECONDS));
+		assertFalse(interrupted.get());
+		//its result, had it arrived, delivered by now
+		Thread.sleep(100);
+		SwingUtilities.invokeAndWait(() -> assertEquals(singletonList("latest"), result.get()));
+	}
+
+	@Test
 	void refreshWithoutDelayIsUnchanged() throws Exception {
 		AtomicInteger fetches = new AtomicInteger();
 		CountDownLatch refreshed = new CountDownLatch(1);

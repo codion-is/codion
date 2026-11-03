@@ -74,6 +74,7 @@ public final class SwingEntityEditorTest {
 	private final Entities entities = CONNECTION.entities();
 	private final List<String> events = synchronizedList(new ArrayList<>());
 	private final AtomicReference<@Nullable Entity> detailToLoad = new AtomicReference<>();
+	private final AtomicReference<Runnable> loading = new AtomicReference<>(() -> {});
 
 	private SwingEntityEditor master;
 	private SwingEntityEditor detail;
@@ -91,7 +92,11 @@ public final class SwingEntityEditorTest {
 						.editor(detail)
 						.foreignKey(Employee.DEPARTMENT_FK)
 						// Stubbed load: returns the controllable in-memory detail, never queries
-						.entity((department, connection) -> detailToLoad.get())
+						.entity((department, connection) -> {
+							loading.get().run();
+
+							return detailToLoad.get();
+						})
 						.present(employee -> employee.present(Employee.NAME))
 						.build());
 		departmentModel = new SwingEntityModel(Department.TYPE, CONNECTION);
@@ -219,6 +224,43 @@ public final class SwingEntityEditorTest {
 		flushEventQueue();
 		// The superseded set(1) never applied; only set(2) won (regardless of completion order)
 		assertEquals(singletonList(2), changedIds);
+		assertEquals(2, master.entity().get().get(Department.ID));
+	}
+
+	@Test
+	void supersededSetIsNotInterrupted() throws Exception {
+		CountDownLatch blocked = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		CountDownLatch finished = new CountDownLatch(1);
+		CountDownLatch secondApplied = new CountDownLatch(1);
+		AtomicBoolean first = new AtomicBoolean(true);
+		AtomicBoolean interrupted = new AtomicBoolean();
+		loading.set(() -> {
+			if (first.getAndSet(false)) {
+				blocked.countDown();
+				try {
+					release.await(10, SECONDS);
+				}
+				catch (InterruptedException e) {
+					interrupted.set(true);
+				}
+				finished.countDown();
+			}
+		});
+		master.entity().observer().addConsumer(department -> {
+			if (Objects.equals(department.get(Department.ID), 2)) {
+				secondApplied.countDown();
+			}
+		});
+		detailToLoad.set(employee("emp"));
+		invokeLater(() -> master.entity().set(department(1)));
+		assertTrue(blocked.await(5, SECONDS));
+		invokeLater(() -> master.entity().set(department(2)));
+		assertTrue(secondApplied.await(5, SECONDS));
+		release.countDown();
+		assertTrue(finished.await(5, SECONDS));
+		assertFalse(interrupted.get());
+		flushEventQueue();
 		assertEquals(2, master.entity().get().get(Department.ID));
 	}
 

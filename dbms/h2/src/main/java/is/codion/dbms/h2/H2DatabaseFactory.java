@@ -65,6 +65,10 @@ import static java.util.Objects.requireNonNull;
  * A database on a server, or in a zip file, is not initialized, nor an existing one refusing sa without a password, its
  * admin having one or being another: administered, its scripts run by its administrator, and a script listed for it
  * never run.
+ * <p>
+ * A thread interrupted during I/O closes the file of a database opened with {@code jdbc:h2:file:}, every connection to it
+ * failing until it is reopened. Where its threads may be interrupted, open it with {@code jdbc:h2:async:} instead, the file
+ * being the same. Every URL to a database in a JVM must then use the same prefix.
  */
 public final class H2DatabaseFactory implements DatabaseFactory {
 

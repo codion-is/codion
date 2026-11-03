@@ -406,8 +406,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private void cancelCurrentWorker() {
 		ProgressWorker<Result<Entity>, ?> currentWorker = worker;
 		if (currentWorker != null && !currentWorker.done()) {
-			// cancellation is a best-effort optimization, freeing the connection of a superseded load early
-			currentWorker.cancel(true);
+			// left to finish, its result discarded, as interrupting a thread using a database connection can destroy the
+			// connection, and does not stop the statement otherwise
+			currentWorker.cancel(false);
 		}
 	}
 

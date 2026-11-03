@@ -594,7 +594,9 @@ public final class EntitySearchField extends HintTextField {
 	private void cancelCurrentSearch() {
 		ProgressWorker<?, ?> currentWorker = searchWorker;
 		if (currentWorker != null) {
-			currentWorker.cancel(true);
+			// left to finish, its result discarded, as interrupting a thread using a database connection can destroy the
+			// connection, and does not stop the statement otherwise
+			currentWorker.cancel(false);
 		}
 	}
 

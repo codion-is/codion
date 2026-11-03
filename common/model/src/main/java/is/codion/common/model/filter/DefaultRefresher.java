@@ -207,7 +207,9 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		if (progressWorker != null) {
 			worker = null;
 			currentTask = null;
-			progressWorker.cancel(true);
+			// left to finish, its result discarded, as interrupting a thread using a database connection can destroy the
+			// connection, and does not stop the statement otherwise
+			progressWorker.cancel(false);
 		}
 	}
 
