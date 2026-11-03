@@ -44,10 +44,12 @@ import static java.util.Objects.requireNonNull;
  *   <li>an existing file database runs those it has not yet run, in the order listed, so a script added to the list
  *   brings it up to date;
  *   <li>each script run is recorded in the table {@code CODION.INIT_SCRIPT}, by its path as listed, with a SHA-256
- *   checksum of its content, line endings aside.
+ *   checksum of its content, line endings aside;
+ *   <li>a script moved, listed by another path, with the content of one recorded but no longer listed, does not run
+ *   again, its record taking the new path.
  * </ul>
- * The database is refused with a {@link DatabaseException} where a script has changed since it ran, where a script has
- * run but is no longer listed, or where a script not yet run is listed before one that has.
+ * The database is refused with a {@link DatabaseException}, and left as it was, where a script has changed since it ran,
+ * where a script has run but is no longer listed, or where a script not yet run is listed before one that has.
  * <p>
  * A script that fails is not recorded, and runs again the next time. H2's DDL commits, so a failed script may leave
  * part of its work behind.

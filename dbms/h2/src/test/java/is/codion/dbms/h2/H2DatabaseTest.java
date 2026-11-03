@@ -39,9 +39,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import static is.codion.common.db.exception.Operation.*;
 import static java.util.Arrays.asList;
@@ -282,6 +287,141 @@ public class H2DatabaseTest {
 	}
 
 	@Test
+	void initScriptsMoved(@TempDir Path tempDir) throws SQLException, IOException {
+		Path first = tempDir.resolve("first.sql");
+		Path second = tempDir.resolve("second.sql");
+		Files.write(first, singletonList("create schema scripts; create table scripts.t1 (id int);"));
+		Files.write(second, singletonList("create table scripts.t2 (id int);"));
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+		H2Database database = database(url, first, second);
+		Map<String, Timestamp> recorded = scriptsRecorded(database);
+		database.close();
+
+		// moved and renamed, the second with the line endings of a checkout on Windows, neither running again, running the
+		// first again failing to create its schema, each record following its script
+		Path movedFirst = Files.createDirectory(tempDir.resolve("moved")).resolve("first.sql");
+		Path movedSecond = tempDir.resolve("moved").resolve("renamed.sql");
+		Files.move(first, movedFirst);
+		Files.write(movedSecond, "create table scripts.t2 (id int);\r\n".getBytes(StandardCharsets.UTF_8));
+		Files.delete(second);
+		database = database(url, movedFirst, movedSecond);
+		Map<String, Timestamp> followed = scriptsRecorded(database);
+		assertEquals(new HashSet<>(asList(path(movedFirst), path(movedSecond))), followed.keySet());
+		assertEquals(recorded.get(path(first)), followed.get(path(movedFirst)));
+		assertEquals(recorded.get(path(second)), followed.get(path(movedSecond)));
+		database.close();
+
+		// as recorded from now on
+		database = database(url, movedFirst, movedSecond);
+		assertEquals(followed, scriptsRecorded(database));
+		database.close();
+
+		// moved back, with a script added after them, which runs
+		Path third = tempDir.resolve("third.sql");
+		Files.write(third, singletonList("create table scripts.t3 (id int);"));
+		Files.move(movedFirst, first);
+		Files.move(movedSecond, second);
+		database = database(url, first, second, third);
+		assertEquals(new HashSet<>(asList(path(first), path(second), path(third))), scriptsRecorded(database).keySet());
+		try (Connection connection = database.createConnection(User.user("sa"))) {
+			connection.prepareStatement("select id from scripts.t3").execute();
+		}
+		database.close();
+	}
+
+	@Test
+	void initScriptsMovedRefused(@TempDir Path tempDir) throws SQLException, IOException {
+		Path first = tempDir.resolve("first.sql");
+		Path second = tempDir.resolve("second.sql");
+		Files.write(first, singletonList("create schema scripts; create table scripts.t1 (id int);"));
+		Files.write(second, singletonList("create table scripts.t2 (id int);"));
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+		H2Database database = database(url, first, second);
+		Set<String> recorded = scriptsRecorded(database).keySet();
+		database.close();
+		Path moved = tempDir.resolve("moved.sql");
+		Path changed = tempDir.resolve("changed.sql");
+		Path third = tempDir.resolve("third.sql");
+		Files.write(moved, singletonList("create table scripts.t2 (id int);"));
+		Files.write(changed, singletonList("create table scripts.t2 (id bigint);"));
+		Files.write(third, singletonList("create table scripts.t3 (id int);"));
+
+		// moved and changed, which is not a move, and which does not run
+		DatabaseException moveChanged = assertThrows(DatabaseException.class, () -> database(url, first, changed));
+		assertTrue(moveChanged.getMessage().contains(path(second)));
+		assertEquals(recorded, scriptPaths(url));
+
+		// one moved, the other gone
+		DatabaseException gone = assertThrows(DatabaseException.class, () -> database(url, moved));
+		assertTrue(gone.getMessage().contains(path(first)));
+		assertEquals(recorded, scriptPaths(url));
+
+		// moved, listed after a script not yet run
+		DatabaseException order = assertThrows(DatabaseException.class, () -> database(url, first, third, moved));
+		assertTrue(order.getMessage().contains(path(third)));
+		assertEquals(recorded, scriptPaths(url));
+
+		// listed, but not there, with another no longer listed
+		assertThrows(DatabaseException.class, () -> database(url, first, tempDir.resolve("missing.sql")));
+		assertEquals(recorded, scriptPaths(url));
+
+		// no script run by any of them
+		assertThrows(SQLException.class, () -> {
+			try (Connection connection = DriverManager.getConnection(url, "sa", "")) {
+				connection.prepareStatement("select id from scripts.t3").execute();
+			}
+		});
+		database = database(url, first, second);
+		assertEquals(recorded, scriptsRecorded(database).keySet());
+		database.close();
+	}
+
+	@Test
+	void initScriptsMovedAlike(@TempDir Path tempDir) throws SQLException, IOException {
+		Path schema = tempDir.resolve("schema.sql");
+		Files.write(schema, singletonList("create schema scripts; create table scripts.log (id int);"));
+		Path one = tempDir.resolve("one.sql");
+		Path other = tempDir.resolve("other.sql");
+		String insert = "insert into scripts.log values (1);";
+		Files.write(one, singletonList(insert));
+		Files.write(other, singletonList(insert));
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+		H2Database database = database(url, schema, one, other);
+		assertEquals(2, rows(database));
+		database.close();
+
+		// two scripts alike both moved, neither running again
+		Path movedOne = tempDir.resolve("movedOne.sql");
+		Path movedOther = tempDir.resolve("movedOther.sql");
+		Files.write(movedOne, singletonList(insert));
+		Files.write(movedOther, singletonList(insert));
+		database = database(url, schema, movedOne, movedOther);
+		assertEquals(2, rows(database));
+		database.close();
+
+		// one of them dropped, not moved, so refused, naming the one left over
+		DatabaseException dropped = assertThrows(DatabaseException.class, () -> database(url, schema, movedOne));
+		assertTrue(dropped.getMessage().contains(path(movedOther)));
+
+		// a copy, the original still listed, is not a move, so runs, as any script added does
+		Path copy = tempDir.resolve("copy.sql");
+		Files.write(copy, singletonList(insert));
+		database = database(url, schema, movedOne, movedOther, copy);
+		assertEquals(3, rows(database));
+		database.close();
+
+		// one moved, listed by two paths, one following its record, the other a script added
+		Path movedTwice = tempDir.resolve("movedTwice.sql");
+		Files.write(movedTwice, singletonList(insert));
+		Path added = tempDir.resolve("added.sql");
+		Files.write(added, singletonList(insert));
+		database = database(url, schema, movedOne, movedOther, movedTwice, added);
+		assertEquals(4, rows(database));
+		assertEquals(5, scriptsRun(database));
+		database.close();
+	}
+
+	@Test
 	void initScriptsBaseline(@TempDir Path tempDir) throws SQLException, IOException {
 		Path first = tempDir.resolve("first.sql");
 		Path second = tempDir.resolve("second.sql");
@@ -437,6 +577,40 @@ public class H2DatabaseTest {
 		}
 
 		return new H2Database(url, paths);
+	}
+
+	private static Map<String, Timestamp> scriptsRecorded(H2Database database) throws SQLException {
+		Map<String, Timestamp> recorded = new HashMap<>();
+		try (Connection connection = database.createConnection(User.user("sa"));
+				 ResultSet resultSet = connection.createStatement().executeQuery("select path, run_at from codion.init_script")) {
+			while (resultSet.next()) {
+				recorded.put(resultSet.getString(1), resultSet.getTimestamp(2));
+			}
+		}
+
+		return recorded;
+	}
+
+	// As recorded, read directly, opening an H2Database moving the records as it finds them
+	private static Set<String> scriptPaths(String url) throws SQLException {
+		Set<String> paths = new HashSet<>();
+		try (Connection connection = DriverManager.getConnection(url, "sa", "");
+				 ResultSet resultSet = connection.createStatement().executeQuery("select path from codion.init_script")) {
+			while (resultSet.next()) {
+				paths.add(resultSet.getString(1));
+			}
+		}
+
+		return paths;
+	}
+
+	private static int rows(H2Database database) throws SQLException {
+		try (Connection connection = database.createConnection(User.user("sa"));
+				 ResultSet resultSet = connection.createStatement().executeQuery("select count(*) from scripts.log")) {
+			resultSet.next();
+
+			return resultSet.getInt(1);
+		}
 	}
 
 	private static String path(Path script) {

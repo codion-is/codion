@@ -38,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -78,6 +79,7 @@ final class H2Database extends AbstractDatabase {
 					"select 1 from information_schema.tables where table_schema = 'CODION' and table_name = 'INIT_SCRIPT'";
 	private static final String SELECT_INIT_SCRIPTS = "select path, checksum from " + INIT_SCRIPT_TABLE;
 	private static final String INSERT_INIT_SCRIPT = "insert into " + INIT_SCRIPT_TABLE + " (path, checksum) values (?, ?)";
+	private static final String UPDATE_INIT_SCRIPT_PATH = "update " + INIT_SCRIPT_TABLE + " set path = ? where path = ?";
 	private static final String SELECT_CHECKSUM = "select hash('SHA-256', replace(file_read(?, 'UTF-8'), char(13)))";
 
 	static final String SEQUENCE_VALUE_QUERY = "select next value for ";
@@ -287,7 +289,8 @@ final class H2Database extends AbstractDatabase {
 
 	// Runs the scripts not yet run, in the order listed, each recorded with a checksum of its content once run, after
 	// checking that each one run is unchanged and still listed, and that none not yet run is listed before one that has,
-	// so that a database brought up to date one list at a time ends up as one created from the last
+	// so that a database brought up to date one list at a time ends up as one created from the last. A database refused
+	// is left as it was, a moved script's record included
 	private static void runInitScripts(Connection connection, List<String> scriptPaths, boolean existing) throws SQLException {
 		connection.setAutoCommit(false);
 		// An existing database without the record was created before the scripts were recorded, or with none listed, and
@@ -308,6 +311,7 @@ final class H2Database extends AbstractDatabase {
 		}
 		connection.commit();
 		Map<String, byte[]> run = initScriptsRun(connection);
+		followMovedScripts(connection, scriptPaths, run);
 		List<String> pending = new ArrayList<>();
 		for (String scriptPath : scriptPaths) {
 			byte[] checksum = run.remove(scriptPath);
@@ -324,8 +328,37 @@ final class H2Database extends AbstractDatabase {
 		if (!run.isEmpty()) {
 			throw new DatabaseException("Init scripts run, but no longer listed: " + String.join(", ", run.keySet()));
 		}
+		connection.commit();
 		for (String scriptPath : pending) {
 			runInitScript(connection, scriptPath);
+		}
+	}
+
+	// A script listed but not recorded, with the content of one recorded but no longer listed, is that one moved, which
+	// has run, so its record follows it. One to one, so identical scripts move alike. One moved and changed is not found
+	private static void followMovedScripts(Connection connection, List<String> scriptPaths, Map<String, byte[]> run) throws SQLException {
+		Map<String, byte[]> unlisted = new HashMap<>(run);
+		unlisted.keySet().removeAll(scriptPaths);
+		for (String scriptPath : scriptPaths) {
+			if (!unlisted.isEmpty() && !run.containsKey(scriptPath)) {
+				byte[] checksum = checksum(connection, scriptPath);
+				Optional<String> moved = unlisted.keySet().stream()
+								.filter(recorded -> Arrays.equals(unlisted.get(recorded), checksum))
+								.findFirst();
+				if (moved.isPresent()) {
+					updatePath(connection, moved.get(), scriptPath);
+					run.remove(moved.get());
+					run.put(scriptPath, unlisted.remove(moved.get()));
+				}
+			}
+		}
+	}
+
+	private static void updatePath(Connection connection, String scriptPath, String newScriptPath) throws SQLException {
+		try (PreparedStatement update = connection.prepareStatement(UPDATE_INIT_SCRIPT_PATH)) {
+			update.setString(1, newScriptPath);
+			update.setString(2, scriptPath);
+			update.executeUpdate();
 		}
 	}
 
