@@ -172,6 +172,24 @@ public final class MultiInputTest {
 	}
 
 	@Test
+	void theDialogsListRemovesSeveralSelected() {
+		ValueSet<String> valueSet = ValueSet.valueSet();
+		MultiInput<JTextField, String> field = Components.multiInput()
+						.component(Components.stringField().buildValue())
+						.link(valueSet)
+						.build();
+		valueSet.set(new LinkedHashSet<>(asList("a", "b", "c", "d", "e")));
+		FilterList<String> list = field.createList();
+		// An adjacent run and one on its own
+		list.setSelectedIndices(new int[] {0, 1, 3});
+		action(list, WHEN_FOCUSED, KeyStroke.getKeyStroke(VK_DELETE, 0));
+		assertEquals(asList("c", "e"), new ArrayList<>(field.members()));
+		assertEquals(Set.of("c", "e"), valueSet.get());
+		assertEquals(2, list.getModel().getSize());
+		assertEquals(0, list.getSelectedIndex());
+	}
+
+	@Test
 	void theToolTipListsThirtyMembersAtMost() {
 		ComponentValue<MultiInput<JTextField, String>, Set<String>> value = Components.multiInput()
 						.component(Components.stringField().buildValue())

@@ -188,15 +188,28 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				boolean excludedRemoved = !removed.isEmpty();
 				boolean includedRemoved = false;
 				ListIterator<Entry<R>> iterator = included.entries.listIterator(included.entries.size());
+				//adjacent items reported as one deletion, a JList measuring all its cells for each
+				int firstIndex = -1;
+				int lastIndex = -1;
 				while (!toRemove.isEmpty() && iterator.hasPrevious()) {
 					int index = iterator.previousIndex();
 					Entry<R> entry = iterator.previous();
 					if (toRemove.remove(entry.item)) {
+						if (!includedRemoved) {
+							lastIndex = index;
+						}
+						else if (index != firstIndex - 1) {
+							notifyDeleted(firstIndex, lastIndex);
+							lastIndex = index;
+						}
+						firstIndex = index;
 						iterator.remove();
 						removed.add(entry);
-						notifyDeleted(index, index);
 						includedRemoved = true;
 					}
+				}
+				if (includedRemoved) {
+					notifyDeleted(firstIndex, lastIndex);
 				}
 				entries.removeIf(removed::contains);
 				if (includedRemoved) {

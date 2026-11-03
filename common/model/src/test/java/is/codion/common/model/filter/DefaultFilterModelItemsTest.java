@@ -235,6 +235,31 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
+		@DisplayName("Removing items fires one inclusive deleted range per adjacent run, once the run is gone")
+		void remove_firesOneDeletedRangePerAdjacentRun() {
+			RangeRecorder recorder = new RangeRecorder();
+			Items<String> model = Items.builder()
+							.<String>selection(included -> new TestMultiSelection())
+							.sort(new TestSort())
+							.included(new TestInclude())
+							.listener(recorder)
+							.build();
+			model.add(asList("a", "b", "c", "d", "e", "f", "g"));
+			List<Integer> sizes = new ArrayList<>();
+			recorder.onDeleted = () -> sizes.add(model.included().size());
+
+			model.remove(asList("a", "b", "d", "f", "g"));
+
+			assertEquals(3, recorder.deleted.size());
+			assertArrayEquals(new int[] {5, 6}, recorder.deleted.get(0));
+			assertArrayEquals(new int[] {3, 3}, recorder.deleted.get(1));
+			assertArrayEquals(new int[] {0, 1}, recorder.deleted.get(2));
+			//a listener must find the model without the run reported, and with the ones below it still there
+			assertEquals(asList(5, 4, 2), sizes);
+			assertEquals(asList("c", "e"), model.included().get());
+		}
+
+		@Test
 		@DisplayName("Clear all items")
 		void clear_shouldRemoveAll() {
 			items.add(asList("a", "b", "c"));
@@ -743,6 +768,8 @@ public class DefaultFilterModelItemsTest {
 		private final List<int[]> updated = new ArrayList<>();
 		private final List<int[]> deleted = new ArrayList<>();
 
+		private Runnable onDeleted = () -> {};
+
 		@Override
 		public void inserted(int firstIndex, int lastIndex) {
 			inserted.add(new int[] {firstIndex, lastIndex});
@@ -756,6 +783,7 @@ public class DefaultFilterModelItemsTest {
 		@Override
 		public void deleted(int firstIndex, int lastIndex) {
 			deleted.add(new int[] {firstIndex, lastIndex});
+			onDeleted.run();
 		}
 
 		@Override
