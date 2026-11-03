@@ -46,6 +46,7 @@ Codion Change Log
 - MultiInput bug fixed, the members button tool tip now lists thirty members at most, where hovering over thousands froze the application.
 - MultiInput.MultiValueSource added, implemented by the value of a wrapped component able to supply several values at a time, added at once.
 - MultiInput bug fixed, the members button tool tip now escapes the members, where one containing < or & was read as HTML, not displayed as it is.
+- FilterList bug fixed, scrolling to the selected items now follows the items added to the selection, where any change to it scrolled to the first selected item, extending the selection downwards scrolling back up, deselecting an item scrolling to another.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui

@@ -102,7 +102,7 @@ public final class FilterList<T> extends JList<T> {
 		else {
 			setCellRenderer(builder.cellRenderer);
 		}
-		builder.listModel.selection().indexes().addConsumer(new ScrollToSelected());
+		builder.listModel.selection().indexes().added().addConsumer(new ScrollToSelected());
 	}
 
 	/**
@@ -191,15 +191,31 @@ public final class FilterList<T> extends JList<T> {
 		}
 	}
 
+	/**
+	 * Scrolls to the items added to the selection, in case none of them is in view. Not when items are removed from the
+	 * selection, nor to those already selected, as the look and feel scrolls to the lead when extending the selection,
+	 * before changing it, which this would then undo by scrolling back to the first one.
+	 */
 	private final class ScrollToSelected implements Consumer<List<Integer>> {
 
 		@Override
-		public void accept(List<Integer> selectedIndexes) {
+		public void accept(List<Integer> added) {
 			Ancestor.ofType(JViewport.class).of(FilterList.this).optional().ifPresent(viewport -> {
-				if (!selectedIndexes.isEmpty()) {
-					ensureIndexIsVisible(selectedIndexes.get(0));
+				if (noneVisible(added)) {
+					ensureIndexIsVisible(added.get(0));
 				}
 			});
+		}
+
+		private boolean noneVisible(List<Integer> indexes) {
+			int first = getFirstVisibleIndex();
+			int last = getLastVisibleIndex();
+			Rectangle visible = getVisibleRect();
+
+			// only those in the visible range measured, the bounds of a row being linear in its index, unless of fixed height
+			return indexes.stream()
+							.filter(index -> index >= first && index <= last)
+							.noneMatch(index -> visible.contains(getCellBounds(index, index)));
 		}
 	}
 

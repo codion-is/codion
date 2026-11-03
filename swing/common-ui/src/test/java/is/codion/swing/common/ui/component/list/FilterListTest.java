@@ -28,16 +28,21 @@ import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.ListCellRenderer;
 import javax.swing.text.Position;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static is.codion.swing.common.ui.color.Colors.shade;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 final class FilterListTest {
@@ -173,6 +178,89 @@ final class FilterListTest {
 		list.setBackground(Color.WHITE);
 		image = paint(list);
 		assertEquals(Color.WHITE.getRGB(), image.getRGB(1, y + 1));
+	}
+
+	@Test
+	void scrollToSelected() {
+		List<String> items = IntStream.range(0, 100)
+						.mapToObj(i -> String.format("%02d", i))
+						.collect(toList());
+		SwingFilterListModel<String> model = SwingFilterListModel.builder()
+						.items(items)
+						.comparator(Text.collator())
+						.build();
+		FilterList<String> list = FilterList.builder()
+						.model(model)
+						.items()
+						.build();
+		JScrollPane scrollPane = new JScrollPane(list);
+		scrollPane.setSize(200, 100);
+		scrollPane.doLayout();
+		list.setSize(list.getPreferredSize());
+		scrollPane.getViewport().doLayout();
+		JViewport viewport = scrollPane.getViewport();
+		assertTrue(visible(list, 0));
+		assertFalse(visible(list, 50));
+
+		// Extending the selection downwards follows it, the first selected scrolled out of view
+		list.setSelectedIndex(0);
+		for (int i = 0; i < 30; i++) {
+			action(list, "selectNextRowExtendSelection");
+		}
+		assertEquals(31, list.getSelectedIndices().length);
+		assertTrue(visible(list, 30));
+		assertFalse(visible(list, 0));
+		// by the page as well
+		int lead = list.getLeadSelectionIndex();
+		action(list, "scrollDownExtendSelection");
+		assertTrue(list.getLeadSelectionIndex() > lead);
+		assertTrue(visible(list, list.getLeadSelectionIndex()));
+		assertFalse(visible(list, 0));
+
+		// Upwards, from the bottom, as it always did
+		list.setSelectedIndex(99);
+		assertTrue(visible(list, 99));
+		for (int i = 0; i < 30; i++) {
+			action(list, "selectPreviousRowExtendSelection");
+		}
+		assertTrue(visible(list, 69));
+		assertFalse(visible(list, 99));
+
+		// Added, out of view, another one selected in view
+		list.setSelectedIndex(0);
+		assertTrue(visible(list, 0));
+		model.selection().indexes().add(50);
+		assertTrue(visible(list, 50));
+		assertFalse(visible(list, 0));
+		// Several added, one of them in view, is no reason to scroll
+		Point position = viewport.getViewPosition();
+		model.selection().indexes().set(asList(0, 49, 50, 80));
+		assertEquals(position, viewport.getViewPosition());
+
+		// Removed, is no reason to scroll to those still selected
+		list.ensureIndexIsVisible(30);
+		position = viewport.getViewPosition();
+		model.selection().indexes().remove(80);
+		assertEquals(position, viewport.getViewPosition());
+
+		// Narrowing the selection to one of those selected adds nothing, so no reason either
+		list.setSelectedIndex(0);
+		assertEquals(position, viewport.getViewPosition());
+
+		// A sort moving the selected ones is
+		list.ensureIndexIsVisible(0);
+		assertTrue(visible(list, 0));
+		model.sort().descending();
+		assertEquals(99, list.getSelectedIndex());
+		assertTrue(visible(list, 99));
+	}
+
+	private static boolean visible(FilterList<?> list, int index) {
+		return list.getVisibleRect().contains(list.getCellBounds(index, index));
+	}
+
+	private static void action(FilterList<?> list, String name) {
+		list.getActionMap().get(name).actionPerformed(new ActionEvent(list, ActionEvent.ACTION_PERFORMED, name));
 	}
 
 	private static SwingFilterListModel<String> createModel() {
