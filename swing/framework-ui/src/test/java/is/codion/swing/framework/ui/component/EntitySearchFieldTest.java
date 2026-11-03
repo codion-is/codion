@@ -35,6 +35,8 @@ import org.junit.jupiter.api.Test;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
@@ -213,6 +215,78 @@ public class EntitySearchFieldTest {
 		field.selected(singletonList(sales));
 		assertEquals(sales, searchModel.selection().entity().get());
 		assertEquals(Set.of(accounting, research, operations, sales), collected.get());
+	}
+
+	@Test
+	void emptyingTheFieldClearsTheSelectionOnEnter() {
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		EntitySearchField field = EntitySearchField.builder()
+						.model(searchModel)
+						.build();
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		searchModel.selection().entity().set(sales);
+		assertFalse(searchEnabled(field));
+
+		// all at once, as Delete removes the text a selection leaves selected, the search string empty before and after
+		field.setText("");
+		assertTrue(searchEnabled(field));
+		enter(field);
+		assertFalse(searchModel.selection().present().is());
+		assertFalse(searchEnabled(field));
+
+		// one character at a time, as Backspace does
+		searchModel.selection().entity().set(sales);
+		field.setText("SALE");
+		assertTrue(searchEnabled(field));
+		field.setText("");
+		assertTrue(searchEnabled(field));
+		enter(field);
+		assertFalse(searchModel.selection().present().is());
+
+		// typed back, the field displaying the selection again
+		searchModel.selection().entity().set(sales);
+		field.setText("");
+		assertTrue(searchEnabled(field));
+		field.setText(sales.toString());
+		assertFalse(searchEnabled(field));
+	}
+
+	@Test
+	void emptyingTheFieldDoesNotCollectTheEntityOnEnter() {
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		ComponentValue<EntitySearchField, Entity> value = EntitySearchField.builder()
+						.model(searchModel)
+						.buildValue();
+		ValueSet<Entity> collected = ValueSet.valueSet();
+		Components.multiInput()
+						.component(value)
+						.link(collected)
+						.build();
+		EntitySearchField field = value.component();
+		searchModel.selection().entity().set(CONNECTION.selectSingle(Department.NAME.equalTo("SALES")));
+
+		field.setText("");
+		enter(field);
+		assertFalse(searchModel.selection().present().is());
+		assertTrue(collected.get().isEmpty());
+	}
+
+	// the observable, the control itself updated later off the event dispatch thread
+	private static boolean searchEnabled(EntitySearchField field) {
+		return field.searchControl().enabled().orElseThrow().is();
+	}
+
+	private static void enter(EntitySearchField field) {
+		KeyEvent enter = new KeyEvent(field, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_ENTER, KeyEvent.CHAR_UNDEFINED);
+		for (KeyListener listener : field.getKeyListeners()) {
+			listener.keyPressed(enter);
+		}
 	}
 
 	@Test

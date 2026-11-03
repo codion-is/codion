@@ -452,15 +452,14 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void bindEvents() {
-		getDocument().addDocumentListener((DocumentAdapter) e -> updateSearchStrings());
-		model.search().string().addListener(this::updateSearchReady);
+		getDocument().addDocumentListener((DocumentAdapter) e -> onTextChanged());
 		// notified when an updated entity replaces the selected one as well, updating the text
 		model.selection().entity().addListener(this::onSelectionChanged);
 		addFocusListener(new FocusListener());
 		addKeyListener(new EnterEscapeListener());
 	}
 
-	private void updateSearchStrings() {
+	private void onTextChanged() {
 		String text = getText();
 		if (text.isEmpty() || text.equals(selectionString())) {
 			model.search().string().clear();
@@ -468,10 +467,8 @@ public final class EntitySearchField extends HintTextField {
 		else {
 			model.search().string().set(text);
 		}
-	}
-
-	private void updateSearchReady() {
-		searchReady.set(getText().isEmpty() && model.selection().present().is() || !getText().equals(selectionString()));
+		// here, not when the search string changes, as it does not when the text displaying the selection is deleted all at once
+		searchReady.set(text.isEmpty() && model.selection().present().is() || !text.equals(selectionString()));
 	}
 
 	private void onSelectionChanged() {
@@ -1008,7 +1005,6 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public void focusLost(FocusEvent e) {
 			if (!e.isTemporary()) {
-				// Selection uses Notify.SET, so no unnecessary clear() calls
 				if (getText().isEmpty() && model().selection().present().is()) {
 					model().selection().clear();
 				}

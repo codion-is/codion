@@ -58,6 +58,7 @@ Codion Change Log
 - EntitySearchField bug fixed, a search superseded or cancelled is no longer interrupted, see FilterModel.Refresher.
 - EntitySearchField, the selector now allows several entities to be selected when the field is wrapped in a MultiInput, those going straight to the entities collected.
 - EditorComponents bug fixed, a component tool tip combining a validation message and a description now escapes them, where a line containing < or & was read as HTML, not displayed as it is.
+- EntitySearchField bug fixed, Enter now clears the selection once the text displaying it has been deleted all at once, where it did nothing, in a MultiInput adding the entity deleted.
 
 ## 0.18.92
 ### is.codion.swing.common.ui
