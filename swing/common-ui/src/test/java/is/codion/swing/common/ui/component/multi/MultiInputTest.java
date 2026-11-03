@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
@@ -168,6 +169,29 @@ public final class MultiInputTest {
 		assertEquals(Set.of("a", "c"), valueSet.get());
 		// The selection moves on to the next member
 		assertEquals(1, list.getSelectedIndex());
+	}
+
+	@Test
+	void theToolTipListsThirtyMembersAtMost() {
+		ComponentValue<MultiInput<JTextField, String>, Set<String>> value = Components.multiInput()
+						.component(Components.stringField().buildValue())
+						.buildValue();
+		JToggleButton membersButton = (JToggleButton) value.component().getComponent(1);
+		assertNull(membersButton.getToolTipText());
+		StringBuilder thirty = new StringBuilder("<html>00");
+		Set<String> members = new LinkedHashSet<>(asList("00"));
+		for (int i = 1; i < 30; i++) {
+			String member = String.format("%02d", i);
+			thirty.append("<br>").append(member);
+			members.add(member);
+		}
+		value.set(members);
+		assertEquals(thirty + "</html>", membersButton.getToolTipText());
+		members.add("30");
+		value.set(members);
+		assertEquals(thirty + "<br>...</html>", membersButton.getToolTipText());
+		value.clear();
+		assertNull(membersButton.getToolTipText());
 	}
 
 	@Test

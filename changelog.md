@@ -42,6 +42,7 @@ Codion Change Log
 - FilterTree bug fixed, scrolling to the selected nodes now follows the nodes added to the selection, where any change to it scrolled to the first selected node when none was visible, deselecting a node scrolling to another, a node added out of view not scrolled to while another selected one was in view.
 - ComponentValueBuilder.when(predicate), the predicate's parameter now nullable, as in Observer.Builder.
 - ListSelectionDialogBuilder.dialogSize() renamed size().
+- MultiInput bug fixed, the members button tool tip now lists thirty members at most, where hovering over thousands froze the application.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui

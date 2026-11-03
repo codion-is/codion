@@ -119,6 +119,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 
 	private static final int MAXIMUM_VISIBLE_ROWS = 8;
 	private static final int MINIMUM_VISIBLE_ROWS = 3;
+	// any more and the tool tip no longer fits on a screen, and at thousands parsing its HTML freezes the application
+	private static final int MAXIMUM_TOOL_TIP_MEMBERS = 30;
 	// the members button fits at least two digits, keeping its width while the count stays below 100
 	private static final String TWO_DIGITS = "00";
 	private static final int TITLE_MARGIN = 24;
@@ -546,9 +548,18 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		membersButton.setText(String.valueOf(included.size()));
 		// measuring the text, its change revalidating the layout
 		sizeMembersButton();
-		membersButton.setToolTipText(included.isEmpty() ? null : included.stream()
+		membersButton.setToolTipText(membersToolTip(included));
+	}
+
+	private @Nullable String membersToolTip(List<T> included) {
+		if (included.isEmpty()) {
+			return null;
+		}
+
+		return included.stream()
+						.limit(MAXIMUM_TOOL_TIP_MEMBERS)
 						.map(this::format)
-						.collect(Collectors.joining("<br>", "<html>", "</html>")));
+						.collect(Collectors.joining("<br>", "<html>", included.size() > MAXIMUM_TOOL_TIP_MEMBERS ? "<br>...</html>" : "</html>"));
 	}
 
 	private void onMembersShown(JDialog dialog) {
