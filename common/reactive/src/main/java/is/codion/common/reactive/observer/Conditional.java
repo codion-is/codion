@@ -42,7 +42,7 @@ final class Conditional<T> extends AbstractObserver<T> {
 		this(observer, new Equals<>(value));
 	}
 
-	Conditional(Observer<T> observer, Predicate<? super T> predicate) {
+	Conditional(Observer<T> observer, Predicate<? super @Nullable T> predicate) {
 		this.observer = observer;
 		this.predicate = predicate;
 	}

@@ -23,6 +23,7 @@ import is.codion.common.reactive.value.ValueSet;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -675,14 +676,32 @@ public class StateTest {
 	}
 
 	@Test
-	void valueMatches() {
+	void observableIs() {
 		Value<Integer> value = Value.nullable();
-		ObservableState matches = State.matches(value, 42);
+		ObservableState matches = State.is(value, 42);
 		assertFalse(matches.is());
 		value.set(42);
 		assertTrue(matches.is());
 		value.clear();
 		assertFalse(matches.is());
+	}
+
+	@Test
+	void observableMatches() {
+		Value<Integer> value = Value.nullable();
+		// inline, which an overload taking a value would make ambiguous
+		ObservableState over40 = State.matches(value, number -> number != null && number > 40);
+		ObservableState isNull = State.matches(value, Objects::isNull);
+		assertFalse(over40.is());
+		assertTrue(isNull.is());
+		value.set(42);
+		assertTrue(over40.is());
+		assertFalse(isNull.is());
+		value.set(40);
+		assertFalse(over40.is());
+		value.clear();
+		assertFalse(over40.is());
+		assertTrue(isNull.is());
 	}
 
 	@Test

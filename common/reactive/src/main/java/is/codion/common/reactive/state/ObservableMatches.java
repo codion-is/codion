@@ -22,20 +22,15 @@ import is.codion.common.reactive.observer.Observable;
 
 import org.jspecify.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.Predicate;
 
 final class ObservableMatches<T> implements Runnable {
 
 	private final Observable<T> observable;
 	private final State state = State.state();
-	private final Predicate<? super T> predicate;
+	private final Predicate<? super @Nullable T> predicate;
 
-	ObservableMatches(Observable<T> observable, @Nullable T value) {
-		this(observable, new Equals<>(value));
-	}
-
-	ObservableMatches(Observable<T> observable, Predicate<? super T> predicate) {
+	ObservableMatches(Observable<T> observable, Predicate<? super @Nullable T> predicate) {
 		this.observable = observable;
 		this.predicate = predicate;
 		this.state.set(predicate.test(observable.get()));
@@ -49,19 +44,5 @@ final class ObservableMatches<T> implements Runnable {
 
 	ObservableState observable() {
 		return state.observable();
-	}
-
-	private static final class Equals<T> implements Predicate<T> {
-
-		private final @Nullable T value;
-
-		private Equals(@Nullable T value) {
-			this.value = value;
-		}
-
-		@Override
-		public boolean test(T value) {
-			return Objects.deepEquals(this.value, value);
-		}
 	}
 }

@@ -224,7 +224,7 @@ public interface Observer<T> {
 		 * @param listener the listener
 		 * @return this builder instance
 		 */
-		B when(Predicate<? super T> predicate, Runnable listener);
+		B when(Predicate<? super @Nullable T> predicate, Runnable listener);
 
 		/**
 		 * Adds a conditional consumer
@@ -233,7 +233,7 @@ public interface Observer<T> {
 		 * @param consumer the consumer to use
 		 * @return this builder instance
 		 */
-		B when(Predicate<? super T> predicate, Consumer<? super T> consumer);
+		B when(Predicate<? super @Nullable T> predicate, Consumer<? super T> consumer);
 
 		/**
 		 * @return an {@link Observer} based on this builder

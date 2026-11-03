@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.93
+### is.codion.common.reactive
+- State.matches(observable, value) renamed is().
+- State.matches(observable, predicate) and Observer.Builder.when(predicate), the predicate's parameter now nullable, as in Observer.when(predicate).
 ### is.codion.common.rmi
 - AbstractServer, a connection requested while the server is shutting down is now refused with ConnectionNotAvailableException, where a LoginException was thrown, which the json channel reported as an internal error, logged as an error.
 - Server.Locator.Builder.locate() now finds a server without connections available, after those with, its connect() then refusing with ConnectionNotAvailableException, where it was left out, a client finding only such a server told that none was available.
@@ -37,6 +40,7 @@ Codion Change Log
 - FilterTable bug fixed, scrolling to the selected rows now follows the rows added to the selection, where any change to it scrolled to the first selected row when none was visible, deselecting a row scrolling to another.
 - FilterTable bug fixed, selecting a search result from the search field, or toggling its selection, now focuses its cell, leaving the rest of the selection as it is, where adding a result whose row was already selected selected, or deselected, every row between it and the anchor.
 - FilterTree bug fixed, scrolling to the selected nodes now follows the nodes added to the selection, where any change to it scrolled to the first selected node when none was visible, deselecting a node scrolling to another, a node added out of view not scrolled to while another selected one was in view.
+- ComponentValueBuilder.when(predicate), the predicate's parameter now nullable, as in Observer.Builder.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui

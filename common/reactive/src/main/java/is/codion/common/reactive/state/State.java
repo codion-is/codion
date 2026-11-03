@@ -189,20 +189,21 @@ public interface State extends ObservableState {
 	/**
 	 * @param <T> the value type
 	 * @param observable the observable
-	 * @param value the value to match
-	 * @return an {@link ObservableState} active when the given observable value matches the given value
+	 * @param value the value
+	 * @return an {@link ObservableState} active when the given observable's value
+	 * is equal to the given one, determined by {@link Observable#is(Object)}.
 	 */
-	static <T> ObservableState matches(Observable<T> observable, @Nullable T value) {
-		return new ObservableMatches<>(requireNonNull(observable), value).observable();
+	static <T> ObservableState is(Observable<T> observable, @Nullable T value) {
+		return new ObservableMatches<>(requireNonNull(observable), observed -> observable.is(value)).observable();
 	}
 
 	/**
 	 * @param <T> the value type
 	 * @param observable the observable
-	 * @param predicate the predicate
-	 * @return an {@link ObservableState} active when the given observable value matches the given predicate
+	 * @param predicate the predicate, tested when the state is created and each time the value changes, null included
+	 * @return an {@link ObservableState} active when the given observable's value satisfies the given predicate
 	 */
-	static <T> ObservableState matches(Observable<T> observable, Predicate<? super T> predicate) {
+	static <T> ObservableState matches(Observable<T> observable, Predicate<? super @Nullable T> predicate) {
 		return new ObservableMatches<>(requireNonNull(observable), requireNonNull(predicate)).observable();
 	}
 

@@ -294,7 +294,7 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 		}
 
 		@Override
-		public final B when(Predicate<? super T> predicate, Runnable listener) {
+		public final B when(Predicate<? super @Nullable T> predicate, Runnable listener) {
 			requireNonNull(predicate);
 			requireNonNull(listener);
 			listeners.add(observer -> observer.when(predicate).addListener(listener));
@@ -302,7 +302,7 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 		}
 
 		@Override
-		public final B when(Predicate<? super T> predicate, Consumer<? super T> consumer) {
+		public final B when(Predicate<? super @Nullable T> predicate, Consumer<? super T> consumer) {
 			requireNonNull(predicate);
 			requireNonNull(consumer);
 			listeners.add(observer -> observer.when(predicate).addConsumer(consumer));

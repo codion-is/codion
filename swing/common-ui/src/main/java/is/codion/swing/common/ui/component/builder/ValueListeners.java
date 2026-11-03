@@ -82,11 +82,11 @@ final class ValueListeners<T> {
 		listeners.add(new AddValueConsumer<>(value, requireNonNull(consumer)));
 	}
 
-	void when(Predicate<? super T> predicate, Runnable listener) {
+	void when(Predicate<? super @Nullable T> predicate, Runnable listener) {
 		listeners.add(new AddPredicateListener<>(requireNonNull(predicate), requireNonNull(listener)));
 	}
 
-	void when(Predicate<? super T> predicate, Consumer<? super T> consumer) {
+	void when(Predicate<? super @Nullable T> predicate, Consumer<? super T> consumer) {
 		listeners.add(new AddPredicateConsumer<>(requireNonNull(predicate), requireNonNull(consumer)));
 	}
 
@@ -241,10 +241,10 @@ final class ValueListeners<T> {
 
 	private static final class AddPredicateListener<T> implements Adder<T> {
 
-		private final Predicate<? super T> predicate;
+		private final Predicate<? super @Nullable T> predicate;
 		private final Runnable listener;
 
-		private AddPredicateListener(Predicate<? super T> predicate, Runnable listener) {
+		private AddPredicateListener(Predicate<? super @Nullable T> predicate, Runnable listener) {
 			this.predicate = predicate;
 			this.listener = listener;
 		}
@@ -257,10 +257,10 @@ final class ValueListeners<T> {
 
 	private static final class AddPredicateConsumer<T> implements Adder<T> {
 
-		private final Predicate<? super T> predicate;
+		private final Predicate<? super @Nullable T> predicate;
 		private final Consumer<? super T> consumer;
 
-		private AddPredicateConsumer(Predicate<? super T> predicate, Consumer<? super T> consumer) {
+		private AddPredicateConsumer(Predicate<? super @Nullable T> predicate, Consumer<? super T> consumer) {
 			this.predicate = predicate;
 			this.consumer = consumer;
 		}
