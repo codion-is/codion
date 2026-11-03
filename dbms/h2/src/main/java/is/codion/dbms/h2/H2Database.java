@@ -22,8 +22,15 @@ import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ErrorType;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -80,7 +87,9 @@ final class H2Database extends AbstractDatabase {
 	private static final String SELECT_INIT_SCRIPTS = "select path, checksum from " + INIT_SCRIPT_TABLE;
 	private static final String INSERT_INIT_SCRIPT = "insert into " + INIT_SCRIPT_TABLE + " (path, checksum) values (?, ?)";
 	private static final String UPDATE_INIT_SCRIPT_PATH = "update " + INIT_SCRIPT_TABLE + " set path = ? where path = ?";
-	private static final String SELECT_CHECKSUM = "select hash('SHA-256', replace(file_read(?, 'UTF-8'), char(13)))";
+	private static final String FILE_UTILS_CLASS_NAME = "org.h2.store.fs.FileUtils";
+	private static final String CHECKSUM_ALGORITHM = "SHA-256";
+	private static final int READ_BUFFER_SIZE = 8192;
 
 	static final String SEQUENCE_VALUE_QUERY = "select next value for ";
 	static final String SYSADMIN_USERNAME = "sa";
@@ -299,7 +308,7 @@ final class H2Database extends AbstractDatabase {
 		Map<String, byte[]> baseline = new LinkedHashMap<>();
 		if (existing && !initScriptTableExists(connection)) {
 			for (String scriptPath : scriptPaths) {
-				baseline.put(scriptPath, checksum(connection, scriptPath));
+				baseline.put(scriptPath, checksum(scriptPath));
 			}
 		}
 		try (Statement statement = connection.createStatement()) {
@@ -321,7 +330,7 @@ final class H2Database extends AbstractDatabase {
 			else if (!pending.isEmpty()) {
 				throw new DatabaseException(INIT_SCRIPT + pending.get(0) + " has not been run, but " + scriptPath + ", listed after it, has");
 			}
-			else if (!Arrays.equals(checksum, checksum(connection, scriptPath))) {
+			else if (!Arrays.equals(checksum, checksum(scriptPath))) {
 				throw new DatabaseException(INIT_SCRIPT + scriptPath + " has changed since it was run");
 			}
 		}
@@ -341,7 +350,7 @@ final class H2Database extends AbstractDatabase {
 		unlisted.keySet().removeAll(scriptPaths);
 		for (String scriptPath : scriptPaths) {
 			if (!unlisted.isEmpty() && !run.containsKey(scriptPath)) {
-				byte[] checksum = checksum(connection, scriptPath);
+				byte[] checksum = checksum(scriptPath);
 				Optional<String> moved = unlisted.keySet().stream()
 								.filter(recorded -> Arrays.equals(unlisted.get(recorded), checksum))
 								.findFirst();
@@ -365,7 +374,7 @@ final class H2Database extends AbstractDatabase {
 	// H2's DDL commits, so a script failing may leave part of its work behind, not recorded, to run again
 	private static void runInitScript(Connection connection, String scriptPath) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
-			byte[] checksum = checksum(connection, scriptPath);
+			byte[] checksum = checksum(scriptPath);
 			statement.execute("runscript from '" + scriptPath + "'");
 			record(connection, scriptPath, checksum);
 			connection.commit();
@@ -404,16 +413,36 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	// The script as RUNSCRIPT reads it, through H2's own file resolution, classpath: included, its carriage returns
-	// removed, so the line endings of a checkout, on Windows say, do not change it
-	private static byte[] checksum(Connection connection, String scriptPath) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(SELECT_CHECKSUM)) {
-			statement.setString(1, scriptPath);
-			try (ResultSet resultSet = statement.executeQuery()) {
-				resultSet.next();
+	// removed, so the line endings of a checkout, on Windows say, do not change it. Not by H2's FILE_READ, which reads no more
+	// than the size H2 finds for the file, zero for a classpath resource it can not open as a file system, on Android for one
+	private static byte[] checksum(String scriptPath) {
+		try (InputStream input = (InputStream) Class.forName(FILE_UTILS_CLASS_NAME)
+						.getMethod("newInputStream", String.class)
+						.invoke(null, scriptPath)) {
+			String content = new String(readAll(input), StandardCharsets.UTF_8).replace("\r", "");
 
-				return resultSet.getBytes(1);
-			}
+			return MessageDigest.getInstance(CHECKSUM_ALGORITHM).digest(content.getBytes(StandardCharsets.UTF_8));
 		}
+		catch (InvocationTargetException e) {
+			throw new DatabaseException(INIT_SCRIPT + scriptPath + " can not be read: " + e.getCause());
+		}
+		catch (IOException e) {
+			throw new DatabaseException(INIT_SCRIPT + scriptPath + " can not be read: " + e);
+		}
+		catch (ReflectiveOperationException | NoSuchAlgorithmException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private static byte[] readAll(InputStream input) throws IOException {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		byte[] buffer = new byte[READ_BUFFER_SIZE];
+		int read;
+		while ((read = input.read(buffer)) != -1) {
+			output.write(buffer, 0, read);
+		}
+
+		return output.toByteArray();
 	}
 
 	private String initializedKey() {

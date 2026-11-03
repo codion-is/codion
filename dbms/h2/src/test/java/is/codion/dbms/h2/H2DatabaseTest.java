@@ -31,16 +31,22 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -422,6 +428,66 @@ public class H2DatabaseTest {
 	}
 
 	@Test
+	void initScriptChecksum(@TempDir Path tempDir) throws SQLException, IOException, NoSuchAlgorithmException {
+		// the checksum of its content, line endings aside, of a file and of a classpath resource alike, H2's FILE_READ agreeing,
+		// so a database recorded by that opens the same
+		Path file = tempDir.resolve("file.sql");
+		String content = "create table script_file (id int); -- \u00FE\n";
+		Files.write(file, content.replace("\n", "\r\n").getBytes(StandardCharsets.UTF_8));
+		String classpath = "classpath:create_schema.sql";
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+		H2Database database = new H2Database(url, asList(classpath, path(file)));
+		Map<String, byte[]> checksums = checksums(url);
+		database.close();
+		assertArrayEquals(MessageDigest.getInstance("SHA-256").digest(content.getBytes(StandardCharsets.UTF_8)), checksums.get(path(file)));
+		for (String script : asList(classpath, path(file))) {
+			try (Connection connection = DriverManager.getConnection(url, "sa", "");
+					 PreparedStatement statement = connection.prepareStatement("select hash('SHA-256', replace(file_read(?, 'UTF-8'), char(13)))")) {
+				statement.setString(1, script);
+				try (ResultSet resultSet = statement.executeQuery()) {
+					resultSet.next();
+					assertArrayEquals(resultSet.getBytes(1), checksums.get(script), script);
+				}
+			}
+		}
+	}
+
+	@Test
+	void initScriptChecksumResourceWithoutASize(@TempDir Path tempDir) throws SQLException, IOException {
+		// a classpath resource H2 finds no size for, FILE_READ reading nothing of it, as on Android, here by only the context
+		// class loader finding it, which RUNSCRIPT and the checksum use, a changed script refused, not taken for a moved one
+		Path resources = Files.createDirectory(tempDir.resolve("resources"));
+		Files.write(resources.resolve("sizeless_first.sql"), singletonList("create schema scripts; create table scripts.t1 (id int);"));
+		Files.write(resources.resolve("sizeless_second.sql"), singletonList("create table scripts.t2 (id int);"));
+		Files.write(resources.resolve("sizeless_moved.sql"), singletonList("create table scripts.t2 (id int);"));
+		Files.write(resources.resolve("sizeless_other.sql"), singletonList("create table scripts.t2 (id bigint);"));
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+		try (URLClassLoader classLoader = new URLClassLoader(new URL[] {resources.toUri().toURL()}, contextClassLoader)) {
+			Thread.currentThread().setContextClassLoader(classLoader);
+			String first = "classpath:sizeless_first.sql";
+			String second = "classpath:sizeless_second.sql";
+			H2Database database = new H2Database(url, asList(first, second));
+			database.close();
+			Map<String, byte[]> checksums = checksums(url);
+			assertFalse(Arrays.equals(checksums.get(first), checksums.get(second)));
+			// changed since it ran
+			Files.write(resources.resolve("sizeless_second.sql"), singletonList("create table scripts.t2 (id bigint);"));
+			assertThrows(DatabaseException.class, () -> new H2Database(url, asList(first, second)));
+			Files.write(resources.resolve("sizeless_second.sql"), singletonList("create table scripts.t2 (id int);"));
+			// other content under another path is not a move
+			assertThrows(DatabaseException.class, () -> new H2Database(url, asList(first, "classpath:sizeless_other.sql")));
+			// the same content is
+			database = new H2Database(url, asList(first, "classpath:sizeless_moved.sql"));
+			assertEquals(new HashSet<>(asList(first, "classpath:sizeless_moved.sql")), scriptsRecorded(database).keySet());
+			database.close();
+		}
+		finally {
+			Thread.currentThread().setContextClassLoader(contextClassLoader);
+		}
+	}
+
+	@Test
 	void initScriptsBaseline(@TempDir Path tempDir) throws SQLException, IOException {
 		Path first = tempDir.resolve("first.sql");
 		Path second = tempDir.resolve("second.sql");
@@ -589,6 +655,18 @@ public class H2DatabaseTest {
 		}
 
 		return recorded;
+	}
+
+	private static Map<String, byte[]> checksums(String url) throws SQLException {
+		Map<String, byte[]> checksums = new HashMap<>();
+		try (Connection connection = DriverManager.getConnection(url, "sa", "");
+				 ResultSet resultSet = connection.createStatement().executeQuery("select path, checksum from codion.init_script")) {
+			while (resultSet.next()) {
+				checksums.put(resultSet.getString(1), resultSet.getBytes(2));
+			}
+		}
+
+		return checksums;
 	}
 
 	// As recorded, read directly, opening an H2Database moving the records as it finds them
