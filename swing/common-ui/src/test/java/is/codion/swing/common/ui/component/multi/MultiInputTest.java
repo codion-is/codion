@@ -32,10 +32,13 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.plaf.basic.BasicHTML;
+import javax.swing.text.Document;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusListener;
@@ -240,6 +243,23 @@ public final class MultiInputTest {
 		assertEquals(thirty + "<br>...</html>", membersButton.getToolTipText());
 		value.clear();
 		assertNull(membersButton.getToolTipText());
+	}
+
+	@Test
+	void theToolTipDisplaysTheMembersAsTheyAre() throws Exception {
+		ComponentValue<MultiInput<JTextField, String>, Set<String>> value = Components.multiInput()
+						.component(Components.stringField().buildValue())
+						.comparator(null)
+						.buildValue();
+		JToggleButton membersButton = (JToggleButton) value.component().getComponent(1);
+		List<String> members = asList("a<b>c", "d<1km", "x & y", "&lt;tag&gt;");
+		value.set(new LinkedHashSet<>(members));
+		assertEquals("<html>a&lt;b&gt;c<br>d&lt;1km<br>x &amp; y<br>&amp;lt;tag&amp;gt;</html>", membersButton.getToolTipText());
+		Document document = BasicHTML.createHTMLView(new JLabel(), membersButton.getToolTipText()).getDocument();
+		String displayed = document.getText(0, document.getLength());
+		for (String member : members) {
+			assertTrue(displayed.contains(member), member + " not displayed in: " + displayed);
+		}
 	}
 
 	@Test

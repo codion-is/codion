@@ -585,7 +585,13 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		return included.stream()
 						.limit(MAXIMUM_TOOL_TIP_MEMBERS)
 						.map(this::format)
+						.map(MultiInput::escape)
 						.collect(Collectors.joining("<br>", "<html>", included.size() > MAXIMUM_TOOL_TIP_MEMBERS ? "<br>...</html>" : "</html>"));
+	}
+
+	// & first, the others introducing it
+	private static String escape(String text) {
+		return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
 	}
 
 	private void onMembersShown(JDialog dialog) {

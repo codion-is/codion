@@ -45,6 +45,7 @@ Codion Change Log
 - ListSelectionDialogBuilder.dialogSize() renamed size().
 - MultiInput bug fixed, the members button tool tip now lists thirty members at most, where hovering over thousands froze the application.
 - MultiInput.MultiValueSource added, implemented by the value of a wrapped component able to supply several values at a time, added at once.
+- MultiInput bug fixed, the members button tool tip now escapes the members, where one containing < or & was read as HTML, not displayed as it is.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui
