@@ -46,10 +46,10 @@ public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T,
 	ListSelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection);
 
 	/**
-	 * @param dialogSize the preferred dialog size
+	 * @param size the preferred dialog size
 	 * @return this builder instance
 	 */
-	ListSelectionDialogBuilder<T> dialogSize(@Nullable Dimension dialogSize);
+	ListSelectionDialogBuilder<T> size(@Nullable Dimension size);
 
 	/**
 	 * @param comparator the comparator to use to sort the items

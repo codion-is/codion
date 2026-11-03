@@ -54,7 +54,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	private final Collection<T> defaultSelection = new ArrayList<>();
 
 	private @Nullable Comparator<T> comparator;
-	private @Nullable Dimension dialogSize;
+	private @Nullable Dimension size;
 
 	DefaultListSelectionDialogBuilder(Collection<T> values) {
 		super(values);
@@ -76,8 +76,8 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> dialogSize(@Nullable Dimension dialogSize) {
-		this.dialogSize = dialogSize;
+	public ListSelectionDialogBuilder<T> size(@Nullable Dimension size) {
+		this.size = size;
 		return this;
 	}
 
@@ -96,7 +96,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 
 		@Override
 		public Optional<T> single() {
-			List<T> selected = select(true, dialogSize);
+			List<T> selected = select(true, size);
 			if (selected.isEmpty()) {
 				return Optional.empty();
 			}
@@ -106,10 +106,10 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 
 		@Override
 		public Collection<T> multiple() {
-			return select(false, dialogSize);
+			return select(false, size);
 		}
 
-		private List<T> select(boolean singleSelection, @Nullable Dimension dialogSize) {
+		private List<T> select(boolean singleSelection, @Nullable Dimension size) {
 			FilterList<T> list = createList(singleSelection);
 			Control okControl = Control.builder()
 							.command(() -> Ancestor.window().of(list).dispose())
@@ -131,7 +131,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 			JDialog dialog = configure(DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
 							.component(new JScrollPane(list)))
 							.title(createTitle(singleSelection))
-							.size(dialogSize)
+							.size(size)
 							.okAction(okControl)
 							.onCancel(onCancel)
 							.build();
