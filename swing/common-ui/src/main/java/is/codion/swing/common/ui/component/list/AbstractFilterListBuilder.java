@@ -47,6 +47,7 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	@Nullable Function<T, @Nullable String> toolTip;
 	boolean alternateRowColoring = FilterList.ALTERNATE_ROW_COLORING.getOrThrow();
 	boolean rowsFillViewport = FilterList.ROWS_FILL_VIEWPORT.getOrThrow();
+	boolean scrollToSelected = true;
 
 	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
 
@@ -118,6 +119,12 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	@Override
 	public final B rowsFillViewport(boolean rowsFillViewport) {
 		this.rowsFillViewport = rowsFillViewport;
+		return self();
+	}
+
+	@Override
+	public final B scrollToSelected(boolean scrollToSelected) {
+		this.scrollToSelected = scrollToSelected;
 		return self();
 	}
 

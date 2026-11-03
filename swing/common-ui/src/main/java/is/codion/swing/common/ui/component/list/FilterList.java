@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.list;
 
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -90,11 +91,14 @@ public final class FilterList<T> extends JList<T> {
 
 	private final @Nullable Function<T, String> formatter;
 	private final boolean rowsFillViewport;
+	private final State scrollToSelected;
+	private final ScrollTo scrollTo = new ScrollTo();
 
 	FilterList(AbstractFilterListBuilder<?, T, ?> builder) {
 		super(builder.listModel);
 		this.formatter = builder.formatter;
 		this.rowsFillViewport = builder.rowsFillViewport;
+		this.scrollToSelected = State.state(builder.scrollToSelected);
 		super.setSelectionModel(builder.listModel.selection());
 		if (builder.cellRenderer == null) {
 			setCellRenderer(new DefaultCellRenderer<>(builder));
@@ -161,10 +165,35 @@ public final class FilterList<T> extends JList<T> {
 	}
 
 	/**
+	 * @return the {@link ScrollTo} instance providing scrolling actions
+	 */
+	public ScrollTo scrollTo() {
+		return scrollTo;
+	}
+
+	/**
 	 * @return a {@link Builder.ModelStep} instance
 	 */
 	public static Builder.ModelStep builder() {
 		return DefaultFilterListBuilderFactory.MODEL;
+	}
+
+	/**
+	 * Provides scrolling actions
+	 */
+	public final class ScrollTo {
+
+		private ScrollTo() {}
+
+		/**
+		 * Note that the look and feel scrolls by itself when the selection is changed with the keyboard.
+		 * @return the {@link State} controlling whether the list scrolls to the items added to the selection, in case
+		 * none of them is visible, as when a sort moves the selected items, not when items are removed from the selection
+		 * @see is.codion.common.model.selection.MultiSelection.Indexes#added()
+		 */
+		public State selected() {
+			return scrollToSelected;
+		}
 	}
 
 	@Override
@@ -200,11 +229,13 @@ public final class FilterList<T> extends JList<T> {
 
 		@Override
 		public void accept(List<Integer> added) {
-			Ancestor.ofType(JViewport.class).of(FilterList.this).optional().ifPresent(viewport -> {
-				if (noneVisible(added)) {
-					ensureIndexIsVisible(added.get(0));
-				}
-			});
+			if (scrollToSelected.is()) {
+				Ancestor.ofType(JViewport.class).of(FilterList.this).optional().ifPresent(viewport -> {
+					if (noneVisible(added)) {
+						ensureIndexIsVisible(added.get(0));
+					}
+				});
+			}
 		}
 
 		private boolean noneVisible(List<Integer> indexes) {
@@ -359,6 +390,13 @@ public final class FilterList<T> extends JList<T> {
 		 * @see #ROWS_FILL_VIEWPORT
 		 */
 		B rowsFillViewport(boolean rowsFillViewport);
+
+		/**
+		 * @param scrollToSelected true if this list should scroll to the items added to the selection, default true
+		 * @return this builder instance
+		 * @see FilterList.ScrollTo#selected()
+		 */
+		B scrollToSelected(boolean scrollToSelected);
 
 		/**
 		 * Replaces the default cell renderer, along with its colors.

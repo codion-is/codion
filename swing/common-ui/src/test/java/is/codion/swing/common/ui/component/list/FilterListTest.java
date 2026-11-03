@@ -255,6 +255,47 @@ final class FilterListTest {
 		assertTrue(visible(list, 99));
 	}
 
+	@Test
+	void scrollToSelectedDisabled() {
+		SwingFilterListModel<String> model = SwingFilterListModel.builder()
+						.items(IntStream.range(0, 100)
+										.mapToObj(i -> String.format("%02d", i))
+										.collect(toList()))
+						.build();
+		// Deliberately not setting scrollToSelected, pinning its default to true
+		assertTrue(FilterList.builder()
+						.model(model)
+						.items()
+						.build()
+						.scrollTo().selected().is());
+
+		FilterList<String> list = FilterList.builder()
+						.model(model)
+						.items()
+						.scrollToSelected(false)
+						.build();
+		assertFalse(list.scrollTo().selected().is());
+		JScrollPane scrollPane = new JScrollPane(list);
+		scrollPane.setSize(200, 100);
+		scrollPane.doLayout();
+		list.setSize(list.getPreferredSize());
+		scrollPane.getViewport().doLayout();
+
+		// Disabled, an item added out of view is not scrolled to
+		model.selection().indexes().set(asList(50));
+		assertEquals(0, scrollPane.getViewport().getViewPosition().y);
+
+		// The look and feel still scrolls for the keyboard
+		action(list, "selectNextRow");
+		assertTrue(visible(list, 51));
+
+		// Enabled while displayed
+		list.ensureIndexIsVisible(0);
+		list.scrollTo().selected().set(true);
+		model.selection().indexes().set(asList(80));
+		assertTrue(visible(list, 80));
+	}
+
 	private static boolean visible(FilterList<?> list, int index) {
 		return list.getVisibleRect().contains(list.getCellBounds(index, index));
 	}
