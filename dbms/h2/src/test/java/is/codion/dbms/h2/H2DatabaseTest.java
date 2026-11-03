@@ -383,6 +383,60 @@ public class H2DatabaseTest {
 	}
 
 	@Test
+	void validateInitScripts(@TempDir Path tempDir) throws SQLException, IOException {
+		Path first = tempDir.resolve("first.sql");
+		Path second = tempDir.resolve("second.sql");
+		Path third = tempDir.resolve("third.sql");
+		Path moved = tempDir.resolve("moved.sql");
+		Path changed = tempDir.resolve("changed.sql");
+		Files.write(first, singletonList("create schema scripts; create table scripts.t1 (id int);"));
+		Files.write(second, singletonList("create table scripts.t2 (id int);"));
+		Files.write(third, singletonList("create table scripts.t3 (id int);"));
+		Files.write(moved, "create table scripts.t2 (id int);\r\n".getBytes(StandardCharsets.UTF_8));
+		Files.write(changed, singletonList("create table scripts.t2 (id bigint);"));
+		String url = "jdbc:h2:file:" + tempDir.resolve("database").toAbsolutePath();
+		H2Database database = database(url, first, second);
+		Set<String> recorded = scriptsRecorded(database).keySet();
+		database.close();
+
+		// as run, none listed, one more listed, as an older database has, and one moved, its record not following it
+		validate(url, path(first), path(second));
+		validate(url);
+		validate(url, path(first), path(second), path(third));
+		validate(url, path(first), path(moved));
+		validate(url, path(first).replace("/", "\\"), path(second));
+
+		// refused as opening it refuses it: moved and changed, no longer listed, listed after one not yet run, not there
+		assertRefused(url, first, changed);
+		assertRefused(url, second);
+		assertRefused(url, first, third, second);
+		assertRefused(url, first, tempDir.resolve("missing.sql"));
+		// and changed where it is
+		Files.write(second, singletonList("create table scripts.t2 (id bigint);"));
+		assertRefused(url, first, second);
+
+		assertEquals(recorded, scriptPaths(url));
+
+		// without the record, created before the scripts were recorded
+		String withoutRecord = "jdbc:h2:file:" + tempDir.resolve("without").toAbsolutePath();
+		DriverManager.getConnection(withoutRecord, "sa", "").close();
+		validate(withoutRecord, path(first), path(second));
+	}
+
+	// Read only, a write failing
+	private static void validate(String url, String... scripts) throws SQLException {
+		try (Connection connection = DriverManager.getConnection(url + ";ACCESS_MODE_DATA=r", "sa", "")) {
+			H2DatabaseFactory.validateInitScripts(connection, scripts);
+		}
+	}
+
+	private static void assertRefused(String url, Path... scripts) {
+		String[] paths = Arrays.stream(scripts).map(H2DatabaseTest::path).toArray(String[]::new);
+		DatabaseException refused = assertThrows(DatabaseException.class, () -> validate(url, paths));
+		assertEquals(refused.getMessage(), assertThrows(DatabaseException.class, () -> database(url, scripts)).getMessage());
+	}
+
+	@Test
 	void initScriptsMovedAlike(@TempDir Path tempDir) throws SQLException, IOException {
 		Path schema = tempDir.resolve("schema.sql");
 		Files.write(schema, singletonList("create schema scripts; create table scripts.log (id int);"));

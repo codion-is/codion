@@ -27,6 +27,7 @@ import is.codion.common.utilities.user.User;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import static java.nio.charset.Charset.defaultCharset;
@@ -50,6 +51,7 @@ import static java.util.Objects.requireNonNull;
  * </ul>
  * The database is refused with a {@link DatabaseException}, and left as it was, where a script has changed since it ran,
  * where a script has run but is no longer listed, or where a script not yet run is listed before one that has.
+ * {@link #validateInitScripts(Connection, String...)} tells without opening it, for a copy of a database, say.
  * <p>
  * A script that fails is not recorded, and runs again the next time. H2's DDL commits, so a failed script may leave
  * part of its work behind.
@@ -96,6 +98,19 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 	 */
 	public static Database database(String url, String... initScripts) {
 		return new H2Database(url, initScripts == null ? emptyList() : asList(initScripts));
+	}
+
+	/**
+	 * Validates a database against the init scripts it would be opened with, refusing it as opening it would, see
+	 * {@link H2DatabaseFactory}, changing nothing, so the connection may be read only. A database without the record of its
+	 * scripts is never refused, nor one opened with none listed.
+	 * @param connection a connection to the database
+	 * @param initScripts the init scripts it would be opened with
+	 * @throws DatabaseException in case the database would be refused, or a script listed can not be read
+	 * @throws SQLException in case the record of the scripts run can not be read
+	 */
+	public static void validateInitScripts(Connection connection, String... initScripts) throws SQLException {
+		H2Database.validateInitScripts(requireNonNull(connection), asList(requireNonNull(initScripts)));
 	}
 
 	/**

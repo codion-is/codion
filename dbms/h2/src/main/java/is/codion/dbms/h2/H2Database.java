@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import static is.codion.common.utilities.user.User.user;
@@ -270,11 +271,17 @@ final class H2Database extends AbstractDatabase {
 		return trimmedPath.replace("\\", "/");
 	}
 
-	private void initializeEmbeddedDatabase(List<String> scriptPaths) {
+	private static List<String> sanitizeScriptPaths(List<String> scriptPaths) {
 		List<String> sanitizedPaths = new ArrayList<>(scriptPaths.size());
 		for (String scriptPath : scriptPaths) {
 			sanitizedPaths.add(sanitizeScriptPath(scriptPath));
 		}
+
+		return sanitizedPaths;
+	}
+
+	private void initializeEmbeddedDatabase(List<String> scriptPaths) {
+		List<String> sanitizedPaths = sanitizeScriptPaths(scriptPaths);
 		boolean create = isEmbeddedInMemory() || !databaseFileExists();
 		if (create || !sanitizedPaths.isEmpty()) {
 			Properties properties = new Properties();
@@ -294,6 +301,15 @@ final class H2Database extends AbstractDatabase {
 			}
 		}
 		INITIALIZED_DATABASES.add(initializedKey());
+	}
+
+	static void validateInitScripts(Connection connection, List<String> scriptPaths) throws SQLException {
+		List<String> sanitizedPaths = sanitizeScriptPaths(scriptPaths);
+		if (!sanitizedPaths.isEmpty() && initScriptTableExists(connection)) {
+			Map<String, byte[]> run = initScriptsRun(connection);
+			followMovedScripts(sanitizedPaths, run);
+			pendingScripts(sanitizedPaths, run);
+		}
 	}
 
 	// Runs the scripts not yet run, in the order listed, each recorded with a checksum of its content once run, after
@@ -320,7 +336,43 @@ final class H2Database extends AbstractDatabase {
 		}
 		connection.commit();
 		Map<String, byte[]> run = initScriptsRun(connection);
-		followMovedScripts(connection, scriptPaths, run);
+		Map<String, String> moved = followMovedScripts(scriptPaths, run);
+		List<String> pending = pendingScripts(scriptPaths, run);
+		for (Map.Entry<String, String> script : moved.entrySet()) {
+			updatePath(connection, script.getKey(), script.getValue());
+		}
+		connection.commit();
+		for (String scriptPath : pending) {
+			runInitScript(connection, scriptPath);
+		}
+	}
+
+	// A script listed but not recorded, with the content of one recorded but no longer listed, is that one moved, which
+	// has run, so its record follows it, in run, the path it was recorded by mapped to the one listed being returned.
+	// One to one, so identical scripts move alike. One moved and changed is not found
+	private static Map<String, String> followMovedScripts(List<String> scriptPaths, Map<String, byte[]> run) {
+		Map<String, byte[]> unlisted = new HashMap<>(run);
+		unlisted.keySet().removeAll(scriptPaths);
+		Map<String, String> moved = new HashMap<>();
+		for (String scriptPath : scriptPaths) {
+			if (!unlisted.isEmpty() && !run.containsKey(scriptPath)) {
+				byte[] checksum = checksum(scriptPath);
+				Optional<String> recorded = unlisted.keySet().stream()
+								.filter(path -> Arrays.equals(unlisted.get(path), checksum))
+								.findFirst();
+				if (recorded.isPresent()) {
+					moved.put(recorded.get(), scriptPath);
+					run.remove(recorded.get());
+					run.put(scriptPath, unlisted.remove(recorded.get()));
+				}
+			}
+		}
+
+		return moved;
+	}
+
+	// The scripts not yet run, in the order listed, consuming run. Refuses the database, see H2DatabaseFactory
+	private static List<String> pendingScripts(List<String> scriptPaths, Map<String, byte[]> run) {
 		List<String> pending = new ArrayList<>();
 		for (String scriptPath : scriptPaths) {
 			byte[] checksum = run.remove(scriptPath);
@@ -337,30 +389,8 @@ final class H2Database extends AbstractDatabase {
 		if (!run.isEmpty()) {
 			throw new DatabaseException("Init scripts run, but no longer listed: " + String.join(", ", run.keySet()));
 		}
-		connection.commit();
-		for (String scriptPath : pending) {
-			runInitScript(connection, scriptPath);
-		}
-	}
 
-	// A script listed but not recorded, with the content of one recorded but no longer listed, is that one moved, which
-	// has run, so its record follows it. One to one, so identical scripts move alike. One moved and changed is not found
-	private static void followMovedScripts(Connection connection, List<String> scriptPaths, Map<String, byte[]> run) throws SQLException {
-		Map<String, byte[]> unlisted = new HashMap<>(run);
-		unlisted.keySet().removeAll(scriptPaths);
-		for (String scriptPath : scriptPaths) {
-			if (!unlisted.isEmpty() && !run.containsKey(scriptPath)) {
-				byte[] checksum = checksum(scriptPath);
-				Optional<String> moved = unlisted.keySet().stream()
-								.filter(recorded -> Arrays.equals(unlisted.get(recorded), checksum))
-								.findFirst();
-				if (moved.isPresent()) {
-					updatePath(connection, moved.get(), scriptPath);
-					run.remove(moved.get());
-					run.put(scriptPath, unlisted.remove(moved.get()));
-				}
-			}
-		}
+		return pending;
 	}
 
 	private static void updatePath(Connection connection, String scriptPath, String newScriptPath) throws SQLException {
@@ -401,7 +431,7 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	private static Map<String, byte[]> initScriptsRun(Connection connection) throws SQLException {
-		Map<String, byte[]> run = new HashMap<>();
+		Map<String, byte[]> run = new TreeMap<>();
 		try (Statement statement = connection.createStatement();
 				 ResultSet resultSet = statement.executeQuery(SELECT_INIT_SCRIPTS)) {
 			while (resultSet.next()) {

@@ -17,6 +17,7 @@ Codion Change Log
 - H2Database bug fixed, an existing database opened through a file system prefix, jdbc:h2:async: or jdbc:h2:retry:nio: for example, or in the user's home, jdbc:h2:~/, is now found, where it was taken for a new one at each start, its init scripts run again unless recorded as run, and DB_CLOSE_DELAY=-1 set on it; name() no longer includes the prefix.
 - H2Database, an init script moved, listed by another path with its content unchanged, is no longer refused, its record taking the new path.
 - H2Database, an init script's checksum now read as RUNSCRIPT reads the script, H2's FILE_READ finding nothing in a classpath resource on Android.
+- H2DatabaseFactory.validateInitScripts() added, refusing a database as opening it would, changing nothing.
 ### is.codion.framework.db.http
 - HttpEntityConnection bug fixed, building a connection with a domain instance now establishes it on the server, validating the user's credentials, where no request was made before the first operation, invalid credentials accepted until then.
 ### is.codion.framework.servlet
