@@ -55,6 +55,7 @@ Codion Change Log
 - EntityApplicationPanel.exit() now closes the application model rather than its connection, once the exit can no longer be cancelled and the preferences have been stored, a failure logged as an error.
 - EntitySearchField bug fixed, a search superseded or cancelled is no longer interrupted, see FilterModel.Refresher.
 - EntitySearchField, the selector now allows several entities to be selected when the field is wrapped in a MultiInput, those going straight to the entities collected.
+- EditorComponents bug fixed, a component tool tip combining a validation message and a description now escapes them, where a line containing < or & was read as HTML, not displayed as it is.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

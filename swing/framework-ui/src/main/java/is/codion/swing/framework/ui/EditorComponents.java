@@ -641,7 +641,14 @@ public final class EditorComponents {
 				return lines.get(0);
 			}
 
-			return lines.stream().collect(joining("<br>", "<html>", "</html>"));
+			return lines.stream()
+							.map(EditorComponent::escape)
+							.collect(joining("<br>", "<html>", "</html>"));
+		}
+
+		// & first, the others introducing it
+		private static String escape(String line) {
+			return line.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
 		}
 
 		private void setComponent(JComponent comp) {

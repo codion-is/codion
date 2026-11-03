@@ -21,6 +21,9 @@ package is.codion.swing.framework.ui;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EditorLink;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -38,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -155,6 +159,25 @@ public final class EditorComponentsTest {
 		assertTrue(form.isAncestorOf(salaryLabel));
 		// no component associated with the attribute
 		assertThrows(IllegalStateException.class, () -> create.form().add(Employee.HIREDATE));
+	}
+
+	@Test
+	void toolTipEscapesTheLinesWhenTheyAreHtml() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION);
+		editModel.editor().validator().set(new EntityValidator() {
+			@Override
+			public Optional<String> warning(Entity entity, Attribute<?> attribute) {
+				return attribute.equals(Detail.BOOLEAN) || attribute.equals(Detail.BOOLEAN_NULLABLE) ?
+								Optional.of("must be < 10 & > 1") : Optional.empty();
+			}
+		});
+		editModel.editor().value(Detail.BOOLEAN).set(true);
+		ComponentFactory factory = new ComponentFactory(EditorComponents.editorComponents(editModel.editor()));
+		// beside the description
+		assertEquals("<html>must be &lt; 10 &amp; &gt; 1<br>A boolean attribute</html>",
+						factory.checkBox(Detail.BOOLEAN).build().getToolTipText());
+		// on its own, plain text
+		assertEquals("must be < 10 & > 1", factory.nullableCheckBox(Detail.BOOLEAN_NULLABLE).build().getToolTipText());
 	}
 
 	@Test
