@@ -82,7 +82,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		public <T> JComponent in(ConditionModel<T> conditionModel) {
 			ForeignKeyConditionModel condition = (ForeignKeyConditionModel) conditionModel;
 
-			// A track found is added with Enter, clearing the search field for the next
+			// A track found is added with Enter, several selected right away, clearing the search field for the next
 			return multiInput()
 							.component(EntitySearchField.builder()
 											.model(condition.models().in().searchModel())

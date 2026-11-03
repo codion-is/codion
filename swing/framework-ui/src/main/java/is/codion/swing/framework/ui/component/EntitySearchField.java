@@ -41,6 +41,8 @@ import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
+import is.codion.swing.common.ui.component.multi.MultiInput;
+import is.codion.swing.common.ui.component.multi.MultiInput.MultiValueSource;
 import is.codion.swing.common.ui.component.panel.LayoutPanelBuilder;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.HintTextField;
@@ -86,6 +88,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -124,8 +127,9 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * If the search result is empty a message is shown, if a single entity fits the
  * condition then that entity is selected, otherwise a component displaying the entities
  * fitting the condition is shown in a dialog, for selecting one of them.
- * <p>For collecting multiple entities, wrap the field in a
- * {@link is.codion.swing.common.ui.component.multi.MultiInput}.
+ * <p>For collecting multiple entities, wrap the field in a {@link MultiInput}. The selector then allows several to be
+ * selected, those going straight to the entities collected, the field emptied for the next search, while a single one
+ * is selected in the field as usual.
  * {@link ListSelector} is the default {@link Selector}.
  * Use {@link EntitySearchField#builder()} for a builder instance.
  * @see EntitySearchModel
@@ -216,6 +220,7 @@ public final class EntitySearchField extends HintTextField {
 	private @Nullable SettingsPanel settingsPanel;
 	private @Nullable ProgressWorker<List<Entity>, ?> searchWorker;
 	private @Nullable Control searchControl;
+	private @Nullable Consumer<Collection<Entity>> collector;
 
 	private Color backgroundColor;
 	private Color searchBackgroundColor;
@@ -534,6 +539,31 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
+	/**
+	 * What a selector calls with the entities the user selected.
+	 * @param entities the entities selected
+	 */
+	void selected(List<Entity> entities) {
+		if (collector != null && entities.size() > 1) {
+			// several can't be shown in the field, so they go straight to the collector, the field free for the next search
+			model.selection().clear();
+			setText("");
+			collector.accept(entities);
+		}
+		else {
+			model.selection().entity().set(entities.isEmpty() ? null : entities.get(0));
+		}
+	}
+
+	// the selectors are created for each search, by then a MultiInput has wrapped the field
+	private int selectionMode() {
+		return collector == null ? ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+	}
+
+	private String selectorTitle() {
+		return MESSAGES.getString(collector == null ? "select_entity" : "select_entities");
+	}
+
 	private final class SearchTask implements ResultTaskHandler<List<Entity>> {
 
 		private final boolean promptUser;
@@ -790,7 +820,7 @@ public final class EntitySearchField extends HintTextField {
 			Dialogs.okCancel()
 							.component(selectorPanel)
 							.owner(searchField)
-							.title(MESSAGES.getString("select_entity"))
+							.title(searchField.selectorTitle())
 							.okAction(selectControl)
 							.show();
 
@@ -809,7 +839,8 @@ public final class EntitySearchField extends HintTextField {
 
 			return FilterList.builder()
 							.model(listModel)
-							.selectedItem()
+							.items()
+							.selectionMode(searchField.selectionMode())
 							.mouseListener(new DoubleClickListener())
 							.formatter(searchField.formatter)
 							.onBuild(new RemoveDefaultEnterAction())
@@ -819,7 +850,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() {
-				searchField.model.selection().entity().set(list.getSelectedValue());
+				searchField.selected(list.getSelectedValuesList());
 				Ancestor.window().of(list).dispose();
 			}
 		}
@@ -881,7 +912,7 @@ public final class EntitySearchField extends HintTextField {
 			Dialogs.okCancel()
 							.component(selectorPanel)
 							.owner(searchField)
-							.title(MESSAGES.getString("select_entity"))
+							.title(searchField.selectorTitle())
 							.okAction(selectControl)
 							.show();
 
@@ -903,7 +934,7 @@ public final class EntitySearchField extends HintTextField {
 							.model(tableModel)
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.cellRenderers(new EntityTableCellRenderers())
-							.selectionMode(ListSelectionModel.SINGLE_SELECTION)
+							.selectionMode(searchField.selectionMode())
 							.doubleClick(selectControl)
 							.keyEvent(KeyEvents.builder()
 											.keyCode(VK_ENTER)
@@ -926,7 +957,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() {
-				searchField.model.selection().entity().set(table.model().selection().item().get());
+				searchField.selected(table.model().selection().items().get());
 				Ancestor.window().of(table).dispose();
 			}
 		}
@@ -940,7 +971,8 @@ public final class EntitySearchField extends HintTextField {
 		label.setVisible(resultLimitReached);
 	}
 
-	private static final class SelectionValue extends AbstractComponentValue<EntitySearchField, Entity> {
+	private static final class SelectionValue extends AbstractComponentValue<EntitySearchField, Entity>
+					implements MultiValueSource<Entity> {
 
 		private SelectionValue(EntitySearchField searchField) {
 			super(searchField);
@@ -955,6 +987,11 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		protected void setComponentValue(@Nullable Entity value) {
 			component().model().selection().entity().set(value);
+		}
+
+		@Override
+		public void collector(Consumer<Collection<Entity>> collector) {
+			component().collector = requireNonNull(collector);
 		}
 	}
 

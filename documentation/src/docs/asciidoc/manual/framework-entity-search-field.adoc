@@ -34,13 +34,20 @@ The search field operates as follows:
 2. If the search returns:
    - **No results**: A message dialog is shown
    - **Single result**: That entity is automatically selected
-   - **Multiple results**: A selection dialog appears, for selecting one of them
+   - **Multiple results**: A selection dialog appears, for selecting one of them, or several when collecting entities
 
 === Collecting Entities
 
-To collect entities over several searches, wrap the search field in a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multi/MultiInput.html[MultiInput], as the table condition panel does for the IN operator of a foreign key condition.
-The entity found is shown in the field and added with ENTER or INSERT, clearing the field for the next search.
+To collect entities, wrap the search field in a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multi/MultiInput.html[MultiInput], as the table condition panel does for the IN operator of a foreign key condition.
 The button beside the field shows how many entities have been collected, and opens a list of them, where DELETE removes the selected ones.
+
+The selection dialog then allows several entities to be selected, CTRL-A selecting all of them:
+
+* **One entity** is shown in the field and added with ENTER or INSERT, clearing the field for the next search
+* **Several entities** are added right away, clearing the field for the next search
+
+This goes for the selectors based on `listSelector()` and `tableSelector()`, customized or not, whereas a `Selector` implemented from scratch selects a single entity.
+The search field supplies several entities at a time via {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multi/MultiInput.MultiValueSource.html[MultiInput.MultiValueSource], which the value of any wrapped component can implement.
 
 [source,java]
 .Collecting customers for a condition

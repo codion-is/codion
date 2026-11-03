@@ -18,11 +18,13 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.ui.TestDomain;
 import is.codion.swing.framework.ui.TestDomain.Department;
@@ -33,7 +35,10 @@ import org.junit.jupiter.api.Test;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import java.awt.Color;
+import java.util.Set;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -145,6 +150,69 @@ public class EntitySearchFieldTest {
 		assertEquals(ListSelectionModel.SINGLE_SELECTION, EntitySearchField.listSelector(field).list().getSelectionMode());
 		assertEquals(ListSelectionModel.SINGLE_SELECTION,
 						EntitySearchField.tableSelector(field).table().getSelectionModel().getSelectionMode());
+	}
+
+	@Test
+	void selectorsSelectSeveralEntitiesWhenWrappedInAMultiInput() {
+		ComponentValue<EntitySearchField, Entity> value = EntitySearchField.builder()
+						.model(EntitySearchModel.builder()
+										.entityType(Employee.TYPE)
+										.connection(CONNECTION)
+										.build())
+						.buildValue();
+		Components.multiInput()
+						.component(value)
+						.build();
+		EntitySearchField field = value.component();
+		assertEquals(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION, EntitySearchField.listSelector(field).list().getSelectionMode());
+		assertEquals(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION,
+						EntitySearchField.tableSelector(field).table().getSelectionModel().getSelectionMode());
+	}
+
+	@Test
+	void severalSelectedAreCollectedOneRemainsInTheField() {
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		ComponentValue<EntitySearchField, Entity> value = EntitySearchField.builder()
+						.model(searchModel)
+						.buildValue();
+		ValueSet<Entity> collected = ValueSet.valueSet();
+		Components.multiInput()
+						.component(value)
+						.link(collected)
+						.build();
+		EntitySearchField field = value.component();
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity accounting = CONNECTION.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
+		Entity operations = CONNECTION.selectSingle(Department.NAME.equalTo("OPERATIONS"));
+
+		// One remains in the field, counted but not yet collected, as a single search result
+		field.selected(singletonList(sales));
+		assertEquals(sales, searchModel.selection().entity().get());
+		assertEquals(sales.toString(), field.getText());
+		assertEquals(Set.of(sales), collected.get());
+
+		// Several replace it, the search having been typed over it, the field emptied for the next search
+		field.setText("search");
+		assertEquals("search", searchModel.search().string().get());
+		field.selected(asList(accounting, research));
+		assertFalse(searchModel.selection().present().is());
+		assertEquals("", field.getText());
+		assertEquals("", searchModel.search().string().get());
+		assertEquals(Set.of(accounting, research), collected.get());
+
+		// Those already collected ignored, with nothing in the field to replace
+		field.selected(asList(research, operations));
+		assertEquals("", field.getText());
+		assertEquals(Set.of(accounting, research, operations), collected.get());
+
+		// One after several, still in the field
+		field.selected(singletonList(sales));
+		assertEquals(sales, searchModel.selection().entity().get());
+		assertEquals(Set.of(accounting, research, operations, sales), collected.get());
 	}
 
 	@Test

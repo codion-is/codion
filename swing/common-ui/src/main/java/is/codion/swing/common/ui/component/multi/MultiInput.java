@@ -68,6 +68,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static is.codion.common.i18n.Messages.clear;
@@ -101,6 +102,7 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  * The value is the set collected, sorted, see {@link Builder#comparator(Comparator)}, plus whatever the wrapped
  * component holds, last, so a single value typed into the component counts without being added. Setting the value
  * sets the collected values and clears the wrapped component. The wrapped component keeps every key of its own.
+ * <p>The value of a wrapped component able to supply several values at a time implements {@link MultiValueSource}.
  * @param <C> the wrapped component type
  * @param <T> the value type
  * @see Components#multiInput()
@@ -163,6 +165,9 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		members.items().included().addListener(this::onMembersChanged);
 		onMembersChanged();
 		bindKeys(component, builder.addOnEnter);
+		if (componentValue instanceof MultiInput.MultiValueSource) {
+			((MultiValueSource<T>) componentValue).collector(this::addValues);
+		}
 	}
 
 	/**
@@ -227,6 +232,20 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	 */
 	public static Builder.ComponentStep builder() {
 		return DefaultBuilder.COMPONENT;
+	}
+
+	/**
+	 * Implemented by the {@link ComponentValue} of a wrapped component able to supply several values at a time.
+	 * These go straight to the values collected, not through the component, whose own value is left as it is.
+	 * @param <T> the value type
+	 */
+	public interface MultiValueSource<T> {
+
+		/**
+		 * Called once by the {@link MultiInput} wrapping the component.
+		 * @param collector adds several values at a time, those already collected ignored, on the Event Dispatch Thread only
+		 */
+		void collector(Consumer<Collection<T>> collector);
 	}
 
 	/**
@@ -391,6 +410,13 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 			componentValue.clear();
 			displayMember(value);
 		}
+	}
+
+	// All at once, a linear lookup per value otherwise, and one notification
+	private void addValues(Collection<T> values) {
+		Set<T> union = new LinkedHashSet<>(members.items().included().get());
+		union.addAll(values);
+		members.items().set(union);
 	}
 
 	// The members are sorted, so a value added may end up anywhere, outside the visible rows for one. It is selected and

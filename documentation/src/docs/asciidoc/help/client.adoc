@@ -536,6 +536,7 @@ NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for keyboard short
 
 The *IN* and *NOT IN* fields collect a set of values, the value in the field counting as one of them.
 Press kbd:[Insert] to add the value in the field to the set, clearing the field for the next one. kbd:[Enter] does the same in a text field, and in a search field once a search has found the value, kbd:[Enter] on an empty field refreshing the table as usual.
+When a search field's search finds multiple records, several can be selected in the selection dialog, using *Ctrl + Click* and *Shift + Click*, or kbd:[Ctrl + A] for all of them, these being added to the set right away. Searching for *%* finds them all.
 The button beside the field displays the number of values collected, and opens a list of them, also available via kbd:[Alt + &#x2193;], where kbd:[Delete] removes the selected values and *Clear* removes them all.
 
 In the screenshot below we have added a wildcard condition to the *Name* column, using the *%* character as a wildcard.

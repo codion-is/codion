@@ -208,8 +208,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(),
 								tableModel.entityDefinition().attributes().definition(Invoice.CUSTOMER_FK).caption()));
-				// A customer found is added with Enter, clearing the search field for the next,
-				// the members button displaying the customers added
+				// A customer found is added with Enter, several selected right away, clearing
+				// the search field for the next, the members button displaying the customers added
 				customers = multiInput()
 								.component(EntitySearchField.builder()
 												.model(EntitySearchModel.builder()

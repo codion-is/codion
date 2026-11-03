@@ -23,6 +23,7 @@ import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -42,10 +43,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
@@ -169,6 +173,32 @@ public final class MultiInputTest {
 		assertEquals(Set.of("a", "c"), valueSet.get());
 		// The selection moves on to the next member
 		assertEquals(1, list.getSelectedIndex());
+	}
+
+	@Test
+	void aSourceAddsSeveralValuesAtATime() {
+		TestSource source = new TestSource();
+		ValueSet<String> valueSet = ValueSet.valueSet();
+		MultiInput<JTextField, String> field = Components.multiInput()
+						.component(source)
+						.link(valueSet)
+						.build();
+		AtomicInteger notifications = new AtomicInteger();
+		valueSet.addListener(notifications::incrementAndGet);
+		source.collector.accept(asList("c", "a"));
+		// Sorted, as any member, and one notification for the lot
+		assertEquals(asList("a", "c"), new ArrayList<>(field.members()));
+		assertEquals(Set.of("a", "c"), valueSet.get());
+		assertEquals(1, notifications.get());
+		// Those already collected ignored
+		source.collector.accept(asList("c", "b"));
+		assertEquals(asList("a", "b", "c"), new ArrayList<>(field.members()));
+		// A value pending in the component is left as it is
+		source.set("x");
+		source.collector.accept(asList("d", "e"));
+		assertEquals(asList("a", "b", "c", "d", "e"), new ArrayList<>(field.members()));
+		assertEquals("x", source.get());
+		assertEquals(Set.of("a", "b", "c", "d", "e", "x"), valueSet.get());
 	}
 
 	@Test
@@ -299,6 +329,32 @@ public final class MultiInputTest {
 		action(field.component(), WHEN_FOCUSED, f5);
 		assertTrue(fired.get());
 		assertTrue(asList(field.component().getFocusListeners()).contains(focusListener));
+	}
+
+	private static final class TestSource extends AbstractComponentValue<JTextField, String> implements MultiInput.MultiValueSource<String> {
+
+		private Consumer<Collection<String>> collector;
+
+		private TestSource() {
+			super(new JTextField());
+		}
+
+		@Override
+		public void collector(Consumer<Collection<String>> collector) {
+			this.collector = collector;
+		}
+
+		@Override
+		protected String getComponentValue() {
+			String text = component().getText();
+
+			return text.isEmpty() ? null : text;
+		}
+
+		@Override
+		protected void setComponentValue(String value) {
+			component().setText(value);
+		}
 	}
 
 	private static void insert(JComponent component) {

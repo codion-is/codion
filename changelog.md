@@ -44,6 +44,7 @@ Codion Change Log
 - ComponentValueBuilder.when(predicate), the predicate's parameter now nullable, as in Observer.Builder.
 - ListSelectionDialogBuilder.dialogSize() renamed size().
 - MultiInput bug fixed, the members button tool tip now lists thirty members at most, where hovering over thousands froze the application.
+- MultiInput.MultiValueSource added, implemented by the value of a wrapped component able to supply several values at a time, added at once.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui
@@ -52,6 +53,7 @@ Codion Change Log
 - EntityApplication.clientType(String) added, the client type of the connection it creates, DomainType.name() by default, the application name no longer used as client type.
 - EntityApplicationPanel.exit() now closes the application model rather than its connection, once the exit can no longer be cancelled and the preferences have been stored, a failure logged as an error.
 - EntitySearchField bug fixed, a search superseded or cancelled is no longer interrupted, see FilterModel.Refresher.
+- EntitySearchField, the selector now allows several entities to be selected when the field is wrapped in a MultiInput, those going straight to the entities collected.
 
 ## 0.18.92
 ### is.codion.swing.common.ui
