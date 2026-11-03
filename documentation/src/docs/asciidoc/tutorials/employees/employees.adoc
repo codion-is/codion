@@ -256,11 +256,6 @@ include::{dir-source}/is/codion/demos/employees/testing/scenarios/InsertEmployee
 
 [source,java]
 ----
-include::{dir-source}/is/codion/demos/employees/testing/scenarios/LoginLogout.java[tags=loadTest]
-----
-
-[source,java]
-----
 include::{dir-source}/is/codion/demos/employees/testing/scenarios/SelectDepartment.java[tags=loadTest]
 ----
 

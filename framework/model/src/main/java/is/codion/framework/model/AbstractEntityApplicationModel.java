@@ -117,6 +117,11 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 		}
 	}
 
+	@Override
+	public void close() {
+		connection.close();
+	}
+
 	private final class DefaultEntityModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
 					T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements EntityModels<M, E, T, R> {
 

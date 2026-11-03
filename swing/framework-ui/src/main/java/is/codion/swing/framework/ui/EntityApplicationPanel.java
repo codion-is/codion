@@ -432,8 +432,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * Exits this application. Calls {@link System#exit(int)} in case {@link #SYSTEM_EXIT} is true.
 	 * <p>Disposes all windows in the JVM so that it can end naturally when {@link #SYSTEM_EXIT} is false,
 	 * note that this closes the windows of any other Codion application sharing the JVM.
+	 * <p>Closes the application model once the exit can no longer be cancelled and the preferences have been stored.
 	 * @throws CancelException if the exit is cancelled
 	 * @see #exiting()
+	 * @see EntityApplicationModel#close()
 	 * @see EntityEditPanel.Config#MODIFIED_WARNING
 	 * @see EntityApplicationPanel#CONFIRM_EXIT
 	 * @see EntityApplicationPanel#SYSTEM_EXIT
@@ -454,10 +456,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 		storePreferences();
 		try {
-			model.connection().close();
+			model.close();
 		}
 		catch (Exception e) {
-			LOG.debug("Exception while disconnecting from database", e);
+			LOG.error("Exception while closing application", e);
 		}
 		for (Window window : Window.getWindows()) {
 			try {
@@ -734,7 +736,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * To cancel the exit add a listener throwing a {@link CancelException}.
+	 * For checking whether the application can exit, warning about unsaved data for example. To cancel the exit add a
+	 * listener throwing a {@link CancelException}. As one may do so after others have been notified, what the application
+	 * holds is released in {@link EntityApplicationModel#close()}, called once the exit can no longer be cancelled.
 	 * @return an observer notified when the application is about to exit.
 	 */
 	protected final Observer<EntityApplicationPanel<M>> exiting() {

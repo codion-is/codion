@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.CancelException;
 import is.codion.common.model.filter.SortOrder;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -128,6 +129,61 @@ public class EntityApplicationPanelTest {
 
 		assertEquals(SortOrder.ASCENDING, restoredModel.tableModel().sort().columns().get(Employee.NAME).sortOrder());
 		assertFalse(restoredPanel.tablePanel().table().columns().visible(Employee.COMMISSION).is());
+	}
+
+	@Test
+	void exit() {
+		ExitingApplicationModel model = new ExitingApplicationModel(LocalEntityConnection.builder()
+						.domain(new TestDomain())
+						.user(UNIT_TEST_USER)
+						.build());
+		ExitingApplicationPanel panel = new ExitingApplicationPanel(model);
+		panel.preferences(jsonPreferences());
+		// a listener cancelling the exit, the model left open
+		assertThrows(CancelException.class, panel::exit);
+		assertEquals(emptyList(), model.calls);
+		assertTrue(model.connection().connected());
+		// no more cancelling, the model closed last, once stored
+		panel.cancel = false;
+		panel.exit();
+		assertEquals(asList("store", "close"), model.calls);
+		assertFalse(model.connection().connected());
+	}
+
+	// Telling when it is stored and closed
+	private static final class ExitingApplicationModel extends SwingEntityApplicationModel {
+
+		private final List<String> calls = new ArrayList<>();
+
+		private ExitingApplicationModel(EntityConnection connection) {
+			super(connection, singletonList(new SwingEntityModel(Employee.TYPE, connection)));
+		}
+
+		@Override
+		public void store(Preferences preferences) {
+			calls.add("store");
+			super.store(preferences);
+		}
+
+		@Override
+		public void close() {
+			calls.add("close");
+			super.close();
+		}
+	}
+
+	private static final class ExitingApplicationPanel extends EntityApplicationPanel<ExitingApplicationModel> {
+
+		private boolean cancel = true;
+
+		private ExitingApplicationPanel(ExitingApplicationModel applicationModel) {
+			super(applicationModel, singletonList(new EntityPanel(applicationModel.models().get(Employee.TYPE))), emptyList());
+			exiting().addListener(() -> {
+				if (cancel) {
+					throw new CancelException();
+				}
+			});
+		}
 	}
 
 	private static final class TestApplicationModel extends SwingEntityApplicationModel {

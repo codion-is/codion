@@ -20,6 +20,7 @@ package is.codion.framework.model.test;
 
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.model.AbstractEntityApplicationModel;
 import is.codion.framework.model.AbstractEntityEditModel;
@@ -114,6 +115,24 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 		assertFalse(model.models().contains(Employee.TYPE));
 		M detailModel = departmentModel.detail().get(Employee.TYPE);
 		assertFalse(model.models().contains(detailModel));
+	}
+
+	@Test
+	public void close() {
+		EntityConnection closing = LocalEntityConnection.builder()
+						.user(UNIT_TEST_USER)
+						.domain(new TestDomain())
+						.build();
+		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(closing, emptyList());
+		Count all = Count.all(Department.TYPE);
+		assertTrue(closing.count(all) > 0);
+		model.close();
+		// no way back, whatever still needs the connection failing, a closed connection not being healed
+		assertFalse(closing.connected());
+		assertThrows(IllegalStateException.class, () -> closing.count(all));
+		assertFalse(closing.connected());
+		// closing it again having no effect
+		model.close();
 	}
 
 	protected final EntityConnection connection() {

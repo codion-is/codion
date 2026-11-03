@@ -25,7 +25,6 @@ import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.demos.employees.testing.scenarios.InsertDepartment;
 import is.codion.demos.employees.testing.scenarios.InsertEmployee;
-import is.codion.demos.employees.testing.scenarios.LoginLogout;
 import is.codion.demos.employees.testing.scenarios.SelectDepartment;
 import is.codion.demos.employees.testing.scenarios.UpdateEmployee;
 import is.codion.framework.db.EntityConnection;
@@ -69,12 +68,11 @@ public final class EmployeesLoadTest {
 		LoadTest<EmployeesAppModel> loadTest =
 						LoadTest.builder()
 										.createApplication(new EmployeesAppModelFactory())
-										.closeApplication(application -> application.connection().close())
+										.closeApplication(EmployeesAppModel::close)
 										.user(UNIT_TEST_USER)
 										.scenarios(List.of(
 														scenario(new InsertDepartment(), 1),
 														scenario(new InsertEmployee(), 3),
-														scenario(new LoginLogout(), 4),
 														scenario(new SelectDepartment(), 10),
 														scenario(new UpdateEmployee(), 5)))
 										.name("Employees LoadTest - " + EntityConnection.CLIENT_CONNECTION_TYPE.get())

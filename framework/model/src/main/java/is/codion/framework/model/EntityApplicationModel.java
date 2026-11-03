@@ -38,7 +38,7 @@ import static is.codion.common.utilities.Configuration.stringValue;
  * @param <R> the {@link EntityEditor} type
  */
 public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
-				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> {
+				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> extends AutoCloseable {
 
 	/**
 	 * Specifies whether the client should apply and save user preferences
@@ -103,6 +103,15 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	 * @see #store(Preferences)
 	 */
 	void restore(Preferences preferences);
+
+	/**
+	 * Closes this model along with its {@link #connection()}, after which neither can be used. Closing it again has no effect.
+	 * <p>A UI calls this as the application exits, once the exit can no longer be cancelled and the preferences have been
+	 * stored. It may block, closing a remote connection for example logging out.
+	 * <p>Override to release what a model holds, before calling super, as it may depend on the connection.
+	 */
+	@Override
+	void close();
 
 	/**
 	 * Manages the {@link EntityModel}s for a {@link EntityApplicationModel}

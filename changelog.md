@@ -26,6 +26,7 @@ Codion Change Log
 - EntityServer, a domain not hosted no longer names the domains hosted in its message, which may reach a client not yet authenticated, logging them instead.
 ### is.codion.framework.model
 - AbstractEntityApplicationModel(connection, user, entityModels) added, the application user, the one logged in, which may differ from the connection's user, EntityApplicationModel.user() returning it, where it was the connection's user.
+- EntityApplicationModel now AutoCloseable, close() added, closing the model along with its connection, overridden to release what an application model holds.
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, scrolling to the selected rows now follows the rows added to the selection, where any change to it scrolled to the first selected row when none was visible, deselecting a row scrolling to another.
 - FilterTable bug fixed, selecting a search result from the search field, or toggling its selection, now focuses its cell, leaving the rest of the selection as it is, where adding a result whose row was already selected selected, or deselected, every row between it and the anchor.
@@ -36,6 +37,7 @@ Codion Change Log
 - EntityApplication.model(BiFunction) added, the model factory receiving the application user along with the connection, the user logging in, which differs from the connection's user when the connection function connects as another.
 - EntityApplication, the frame title now shows the application model's user, and EntityApplicationPanel saves it as the default username, where the connection's user was shown and saved, a connection function connecting as another user showing and pre-filling that one.
 - EntityApplication.clientType(String) added, the client type of the connection it creates, DomainType.name() by default, the application name no longer used as client type.
+- EntityApplicationPanel.exit() now closes the application model rather than its connection, once the exit can no longer be cancelled and the preferences have been stored, a failure logged as an error.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

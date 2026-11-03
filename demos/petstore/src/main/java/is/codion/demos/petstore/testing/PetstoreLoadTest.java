@@ -90,7 +90,7 @@ public final class PetstoreLoadTest {
 		LoadTest<PetstoreAppModel> loadTest =
 						LoadTest.builder()
 										.createApplication(new PetstoreAppModelFactory())
-										.closeApplication(application -> application.connection().close())
+										.closeApplication(PetstoreAppModel::close)
 										.user(UNIT_TEST_USER)
 										.scenarios(List.of(Scenario.builder()
 														.performer(new PetstoreUsageScenario())

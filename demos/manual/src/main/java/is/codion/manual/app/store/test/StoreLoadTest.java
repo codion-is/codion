@@ -78,7 +78,7 @@ public class StoreLoadTest {
 		LoadTest<StoreApplicationModel> loadTest =
 						LoadTest.builder()
 										.createApplication(new StoreApplicationModelFactory())
-										.closeApplication(application -> application.connection().close())
+										.closeApplication(StoreApplicationModel::close)
 										.user(User.parse("scott:tiger"))
 										.scenarios(List.of(scenario(new StoreScenarioPerformer())))
 										.name("Store LoadTest - " + EntityConnection.CLIENT_CONNECTION_TYPE.get())
