@@ -65,7 +65,7 @@ class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilde
 
 	@Override
 	public final B actionListener(ActionListener actionListener) {
-		this.actionListener = actionListener;
+		this.actionListener = requireNonNull(actionListener);
 
 		return transferFocusOnEnter(false);
 	}

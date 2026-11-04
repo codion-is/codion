@@ -178,10 +178,10 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		Builder<T> buttonFocusable(boolean buttonFocusable);
 
 		/**
-		 * @param calendarIcon the calendar icon
+		 * @param calendarIcon the calendar icon, null for none
 		 * @return this builder instance
 		 */
-		Builder<T> calendarIcon(ImageIcon calendarIcon);
+		Builder<T> calendarIcon(@Nullable ImageIcon calendarIcon);
 	}
 
 	private void initializeUI() {
@@ -274,7 +274,7 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		public Builder<T> calendarIcon(ImageIcon calendarIcon) {
+		public Builder<T> calendarIcon(@Nullable ImageIcon calendarIcon) {
 			temporalFieldBuilder.calendarIcon(calendarIcon);
 			return this;
 		}

@@ -70,8 +70,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private boolean disposeOnEscape = true;
 
 	@Override
-	public ComponentDialogBuilder component(@Nullable JComponent component) {
-		this.component = component;
+	public ComponentDialogBuilder component(JComponent component) {
+		this.component = requireNonNull(component);
 		return self();
 	}
 

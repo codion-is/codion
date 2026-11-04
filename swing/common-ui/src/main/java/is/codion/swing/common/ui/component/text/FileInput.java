@@ -176,10 +176,10 @@ public final class FileInput extends JPanel {
 		Builder<T> buttonCaption(String buttonCaption);
 
 		/**
-		 * @param buttonIcon the browse button icon
+		 * @param buttonIcon the browse button icon, null for none
 		 * @return this builder instance
 		 */
-		Builder<T> buttonIcon(Icon buttonIcon);
+		Builder<T> buttonIcon(@Nullable Icon buttonIcon);
 
 		/**
 		 * @param dialogTitle the file selection dialog title, null for the default one
@@ -236,8 +236,8 @@ public final class FileInput extends JPanel {
 		}
 
 		@Override
-		public Builder<T> buttonIcon(Icon buttonIcon) {
-			this.buttonIcon = requireNonNull(buttonIcon);
+		public Builder<T> buttonIcon(@Nullable Icon buttonIcon) {
+			this.buttonIcon = buttonIcon;
 			return this;
 		}
 

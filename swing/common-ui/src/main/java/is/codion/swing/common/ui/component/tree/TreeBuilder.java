@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.tree;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.DropMode;
 import javax.swing.JPopupMenu;
@@ -67,11 +69,11 @@ public interface TreeBuilder extends ComponentBuilder<JTree, TreeBuilder> {
 	TreeBuilder showsRootHandles(boolean showsRootHandles);
 
 	/**
-	 * @param cellRenderer the cell renderer
+	 * @param cellRenderer the cell renderer, null for the default
 	 * @return this builder instance
 	 * @see JTree#setCellRenderer(TreeCellRenderer)
 	 */
-	TreeBuilder cellRenderer(TreeCellRenderer cellRenderer);
+	TreeBuilder cellRenderer(@Nullable TreeCellRenderer cellRenderer);
 
 	/**
 	 * @param dragEnabled true if drag should be enabled

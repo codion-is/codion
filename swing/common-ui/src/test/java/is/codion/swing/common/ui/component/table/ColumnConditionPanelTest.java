@@ -81,6 +81,14 @@ public class ColumnConditionPanelTest {
 		//no name provided, the components keep their default null name
 		assertTrue(panel.operands().equal().isPresent());
 		assertNull(panel.operands().equal().get().getName());
+
+		//a null name replacing one specified, unnamed again
+		ColumnConditionPanel<String> reset = ColumnConditionPanel.builder()
+						.model(model)
+						.name("test.column")
+						.name(null)
+						.build();
+		assertNull(reset.operands().equal().get().getName());
 	}
 
 	@Test

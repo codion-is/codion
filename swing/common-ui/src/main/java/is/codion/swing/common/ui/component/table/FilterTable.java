@@ -1881,18 +1881,18 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> rowMargin(int rowMargin);
 
 		/**
-		 * @param intercellSpacing the intercell spacing
+		 * @param intercellSpacing the intercell spacing, null for the look and feel default
 		 * @return this builder instance
 		 * @see JTable#setIntercellSpacing(Dimension)
 		 */
-		Builder<R, C> intercellSpacing(Dimension intercellSpacing);
+		Builder<R, C> intercellSpacing(@Nullable Dimension intercellSpacing);
 
 		/**
-		 * @param gridColor the grid color
+		 * @param gridColor the grid color, null for the look and feel default
 		 * @return this builder instance
 		 * @see JTable#setGridColor(Color)
 		 */
-		Builder<R, C> gridColor(Color gridColor);
+		Builder<R, C> gridColor(@Nullable Color gridColor);
 
 		/**
 		 * @param showGrid the show grid value
@@ -2257,13 +2257,13 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> intercellSpacing(Dimension intercellSpacing) {
+		public Builder<R, C> intercellSpacing(@Nullable Dimension intercellSpacing) {
 			this.intercellSpacing = intercellSpacing;
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> gridColor(Color gridColor) {
+		public Builder<R, C> gridColor(@Nullable Color gridColor) {
 			this.gridColor = gridColor;
 			return this;
 		}

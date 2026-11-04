@@ -366,10 +366,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		Builder<T> focusLostBehaviour(int focusLostBehaviour);
 
 		/**
-		 * @param calendarIcon the calendar icon
+		 * @param calendarIcon the calendar icon, null for none
 		 * @return this builder instance
 		 */
-		Builder<T> calendarIcon(ImageIcon calendarIcon);
+		Builder<T> calendarIcon(@Nullable ImageIcon calendarIcon);
 
 		/**
 		 * @param adjustable whether the date can be adjusted using the keyboard
@@ -468,7 +468,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 
 		@Override
-		public Builder<T> calendarIcon(ImageIcon calendarIcon) {
+		public Builder<T> calendarIcon(@Nullable ImageIcon calendarIcon) {
 			this.calendarIcon = calendarIcon;
 			return this;
 		}

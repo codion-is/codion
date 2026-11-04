@@ -858,7 +858,7 @@ public final class FilterTree<T> extends JTree {
 		 * @return this builder instance
 		 * @see JTree#setCellRenderer(TreeCellRenderer)
 		 */
-		Builder<T> cellRenderer(TreeCellRenderer cellRenderer);
+		Builder<T> cellRenderer(@Nullable TreeCellRenderer cellRenderer);
 
 		/**
 		 * Sets the UI before any other setting, see {@link TreeBuilder#ui(TreeUI)}.
@@ -1106,8 +1106,8 @@ public final class FilterTree<T> extends JTree {
 		}
 
 		@Override
-		public Builder<T> cellRenderer(TreeCellRenderer cellRenderer) {
-			this.cellRenderer = requireNonNull(cellRenderer);
+		public Builder<T> cellRenderer(@Nullable TreeCellRenderer cellRenderer) {
+			this.cellRenderer = cellRenderer;
 			return this;
 		}
 

@@ -229,7 +229,7 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 	}
 
 	@Override
-	public final B control(Control control) {
+	public final B control(@Nullable Control control) {
 		return action(control);
 	}
 

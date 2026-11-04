@@ -93,8 +93,8 @@ final class DefaultTreeBuilder extends AbstractComponentBuilder<JTree, TreeBuild
 	}
 
 	@Override
-	public TreeBuilder cellRenderer(TreeCellRenderer cellRenderer) {
-		this.cellRenderer = requireNonNull(cellRenderer);
+	public TreeBuilder cellRenderer(@Nullable TreeCellRenderer cellRenderer) {
+		this.cellRenderer = cellRenderer;
 		return this;
 	}
 

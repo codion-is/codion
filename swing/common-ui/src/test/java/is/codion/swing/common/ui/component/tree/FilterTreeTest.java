@@ -254,6 +254,20 @@ public final class FilterTreeTest {
 		JLabel label = (JLabel) tree.getCellRenderer().getTreeCellRendererComponent(tree, path("b"), false, false, true, 1, false);
 		assertEquals("B", label.getText());
 
+		// a null cell renderer replacing one specified, the default again
+		DefaultTreeCellRenderer custom = new DefaultTreeCellRenderer();
+		assertSame(custom, FilterTree.builder()
+						.model(model)
+						.cellRenderer(custom)
+						.build()
+						.getCellRenderer());
+		assertNotSame(custom, FilterTree.builder()
+						.model(model)
+						.cellRenderer(custom)
+						.cellRenderer(null)
+						.build()
+						.getCellRenderer());
+
 		// a null formatter replacing one specified, the default again
 		FilterTree<String> reset = FilterTree.builder()
 						.model(model)

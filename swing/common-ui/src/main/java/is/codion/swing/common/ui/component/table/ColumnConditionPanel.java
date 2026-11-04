@@ -367,10 +367,10 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * ({@code :operator}, {@code :equal}, {@code :lower}, {@code :upper}, {@code :in}, {@code :enabled}),
 		 * so a tool driving the UI can identify the focused condition field and its column via
 		 * {@link java.awt.Component#getName()}. Typically the column identifier.
-		 * @param name the base component name
+		 * @param name the base component name, null for none
 		 * @return this builder
 		 */
-		Builder<T> name(String name);
+		Builder<T> name(@Nullable String name);
 
 		/**
 		 * @return a new {@link ColumnConditionPanel} based on this builder
@@ -424,8 +424,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 
 		@Override
-		public Builder<T> name(String name) {
-			this.name = requireNonNull(name);
+		public Builder<T> name(@Nullable String name) {
+			this.name = name;
 			return this;
 		}
 

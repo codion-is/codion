@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.multi.MultiInput;
 import is.codion.swing.common.ui.component.panel.InputPanelLayout;
+import is.codion.swing.common.ui.component.text.FileInput;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalInput;
@@ -44,6 +45,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +59,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -77,6 +80,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicToolBarUI;
+import javax.swing.tree.DefaultTreeModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -1490,5 +1494,32 @@ public final class ComponentsTest {
 		assertThrows(IllegalArgumentException.class, () -> InputPanelLayout.border()
 						.componentConstraints(BorderLayout.WEST)
 						.labelConstraints(BorderLayout.WEST));
+	}
+
+	@Test
+	void builderNullability() {
+		// declared non-null, rejected rather than silently accepted
+		assertThrows(NullPointerException.class, () -> Components.stringField().actionListener(null));
+		assertThrows(NullPointerException.class, () -> Components.tabbedPane().tab("title", (JComponent) null));
+		assertThrows(NullPointerException.class, () -> Dialogs.builder().component((JComponent) null));
+
+		// null for none, or the default
+		Components.button()
+						.control((Control) null)
+						.build();
+		Components.localDateField()
+						.calendarIcon(null)
+						.build();
+		Components.localDateInput()
+						.calendarIcon(null)
+						.build();
+		FileInput.builder()
+						.byteArray()
+						.buttonIcon(null)
+						.build();
+		Components.tree()
+						.model(new DefaultTreeModel(null))
+						.cellRenderer(null)
+						.build();
 	}
 }

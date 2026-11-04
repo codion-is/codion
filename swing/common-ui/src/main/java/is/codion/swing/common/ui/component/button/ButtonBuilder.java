@@ -212,11 +212,11 @@ public interface ButtonBuilder<C extends AbstractButton, T, B extends ButtonBuil
 	B action(@Nullable Action action);
 
 	/**
-	 * @param control the control to base the button on
+	 * @param control the control to base the button on, null for none
 	 * @return this builder instance
 	 * @see #action(Action)
 	 */
-	B control(Control control);
+	B control(@Nullable Control control);
 
 	/**
 	 * @param control the control to base the button on

@@ -72,7 +72,7 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPan
 	@Override
 	public TabbedPaneBuilder tab(String title, JComponent component) {
 		new DefaultTabBuilder(this, title)
-						.component(component)
+						.component(requireNonNull(component))
 						.add();
 		return this;
 	}

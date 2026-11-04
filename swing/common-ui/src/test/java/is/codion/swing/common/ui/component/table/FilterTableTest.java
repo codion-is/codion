@@ -42,7 +42,9 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -846,6 +848,23 @@ public class FilterTableTest {
 		model.items().included().add(0, new TestRow("added"));
 		assertEquals(0, table.rowAtPoint(viewport.getViewPosition()));
 		assertEquals("added", model.items().included().get(0).value);
+	}
+
+	@Test
+	void nullIntercellSpacingAndGridColorForTheDefaults() {
+		FilterTable<TestRow, Integer> defaults = FilterTable.builder()
+						.model(createTestModel(null))
+						.intercellSpacing(null)
+						.gridColor(null)
+						.build();
+		assertEquals(UIManager.getColor("Table.gridColor"), defaults.getGridColor());
+		FilterTable<TestRow, Integer> specified = FilterTable.builder()
+						.model(createTestModel(null))
+						.intercellSpacing(new Dimension(3, 3))
+						.gridColor(Color.RED)
+						.build();
+		assertEquals(new Dimension(3, 3), specified.getIntercellSpacing());
+		assertEquals(Color.RED, specified.getGridColor());
 	}
 
 	@Test
