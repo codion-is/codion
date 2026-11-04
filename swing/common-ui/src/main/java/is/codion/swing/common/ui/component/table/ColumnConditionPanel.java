@@ -566,7 +566,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			return multiInput()
 							.component(createField(conditionModel).buildValue())
 							.link(conditionModel.operands().in())
-							.format(conditionModel.format().orElse(null))
+							.formatter(conditionModel.format()
+											.<Function<T, String>>map(format -> format::format)
+											.orElse(null))
 							.caption(conditionModel.caption().orElse(null))
 							.build();
 		}

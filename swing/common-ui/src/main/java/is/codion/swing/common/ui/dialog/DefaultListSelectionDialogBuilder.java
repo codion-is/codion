@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static is.codion.swing.common.ui.window.Windows.resizeToFitScreen;
 import static java.awt.event.KeyEvent.VK_ENTER;
@@ -54,6 +55,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	private final Collection<T> defaultSelection = new ArrayList<>();
 
 	private @Nullable Comparator<T> comparator;
+	private @Nullable Function<T, String> formatter;
 	private @Nullable Dimension size;
 
 	DefaultListSelectionDialogBuilder(Collection<T> values) {
@@ -84,6 +86,12 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	@Override
 	public ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<T> comparator) {
 		this.comparator = comparator;
+		return this;
+	}
+
+	@Override
+	public ListSelectionDialogBuilder<T> formatter(@Nullable Function<T, String> formatter) {
+		this.formatter = formatter;
 		return this;
 	}
 
@@ -156,6 +164,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 							.model(model)
 							.items()
 							.cellRenderer(renderer)
+							.formatter(formatter)
 							.build();
 			if (singleSelection) {
 				list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

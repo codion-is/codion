@@ -87,8 +87,8 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	}
 
 	@Override
-	public final B formatter(Function<T, String> formatter) {
-		this.formatter = requireNonNull(formatter);
+	public final B formatter(@Nullable Function<T, String> formatter) {
+		this.formatter = formatter;
 		return self();
 	}
 

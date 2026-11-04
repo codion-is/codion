@@ -127,6 +127,16 @@ final class FilterListTest {
 						.build();
 		assertEquals(ONE, render(unformatted, 0).getText());
 		assertEquals(1, unformatted.getNextMatch("t", 0, Position.Bias.Forward));
+
+		// a null formatter replacing one specified, the default again
+		FilterList<String> reset = FilterList.builder()
+						.model(createModel())
+						.items()
+						.formatter(item -> "Item " + item)
+						.formatter(null)
+						.build();
+		assertEquals(ONE, render(reset, 0).getText());
+		assertEquals(1, reset.getNextMatch("t", 0, Position.Bias.Forward));
 	}
 
 	@Test

@@ -42,6 +42,7 @@ import javax.swing.text.Document;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -202,6 +203,47 @@ public final class MultiInputTest {
 		assertEquals(asList("a", "b", "c", "d", "e"), new ArrayList<>(field.members()));
 		assertEquals("x", source.get());
 		assertEquals(Set.of("a", "b", "c", "d", "e", "x"), valueSet.get());
+	}
+
+	@Test
+	void aSelectorSuppliesTheValuesToSelectFrom() {
+		KeyStroke altInsert = KeyStroke.getKeyStroke(VK_INSERT, InputEvent.ALT_DOWN_MASK);
+		MultiInput<JTextField, String> none = Components.multiInput()
+						.component(Components.stringField().buildValue())
+						.build();
+		assertNull(none.component().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(altInsert));
+		assertTrue(none.selectable().isEmpty());
+
+		ComponentValue<JTextField, String> stringValue = Components.stringField().buildValue();
+		ValueSet<String> valueSet = ValueSet.valueSet();
+		MultiInput<JTextField, String> field = Components.multiInput()
+						.component(stringValue)
+						.selector(() -> asList("c", "a", "b", "d"))
+						.link(valueSet)
+						.build();
+		assertNotNull(field.component().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(altInsert));
+		// in the order supplied
+		assertEquals(asList("c", "a", "b", "d"), field.selectable());
+		// those already collected left out
+		valueSet.set(Set.of("a"));
+		assertEquals(asList("c", "b", "d"), field.selectable());
+		// and the one pending in the component, already part of the value
+		stringValue.set("d");
+		assertEquals(asList("c", "b"), field.selectable());
+	}
+
+	@Test
+	void theFormatterFormatsTheMembers() {
+		ComponentValue<MultiInput<JTextField, String>, Set<String>> value = Components.multiInput()
+						.component(Components.stringField().buildValue())
+						.formatter(member -> "<" + member + ">")
+						.buildValue();
+		JToggleButton membersButton = (JToggleButton) value.component().getComponent(1);
+		value.set(Set.of("a"));
+		// formatted, then escaped
+		assertEquals("<html>&lt;a&gt;</html>", membersButton.getToolTipText());
+		FilterList<String> list = value.component().createList();
+		assertEquals("<a>", ((JLabel) list.getCellRenderer().getListCellRendererComponent(list, "a", 0, false, false)).getText());
 	}
 
 	@Test

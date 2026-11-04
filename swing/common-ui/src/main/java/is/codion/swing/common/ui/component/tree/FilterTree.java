@@ -801,11 +801,11 @@ public final class FilterTree<T> extends JTree {
 
 		/**
 		 * Formats the items for display, {@link String#valueOf(Object)} by default.
-		 * @param formatter the formatter
+		 * @param formatter the formatter, null for the default
 		 * @return this builder instance
 		 * @see FilterTree#convertValueToText(Object, boolean, boolean, boolean, int, boolean)
 		 */
-		Builder<T> formatter(Function<T, String> formatter);
+		Builder<T> formatter(@Nullable Function<T, String> formatter);
 
 		/**
 		 * Provides the icon of each node, the look and feel icons used when the function returns null.
@@ -1064,8 +1064,8 @@ public final class FilterTree<T> extends JTree {
 		}
 
 		@Override
-		public Builder<T> formatter(Function<T, String> formatter) {
-			this.formatter = requireNonNull(formatter);
+		public Builder<T> formatter(@Nullable Function<T, String> formatter) {
+			this.formatter = formatter == null ? String::valueOf : formatter;
 			return this;
 		}
 

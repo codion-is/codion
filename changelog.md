@@ -48,6 +48,10 @@ Codion Change Log
 - MultiInput bug fixed, the members button tool tip now escapes the members, where one containing < or & was read as HTML, not displayed as it is.
 - FilterList bug fixed, scrolling to the selected items now follows the items added to the selection, where any change to it scrolled to the first selected item, extending the selection downwards scrolling back up, deselecting an item scrolling to another.
 - FilterList.ScrollTo added along with scrollTo() and Builder.scrollToSelected(), as in FilterTable and FilterTree.
+- MultiInput.Builder.format() replaced with formatter().
+- MultiInput.Builder.selector() added, Alt-Insert displaying the values supplied in a dialog, the ones selected added at once.
+- ListSelectionDialogBuilder.formatter() added.
+- FilterList.Builder.formatter() and FilterTree.Builder.formatter() now accept null, for the default.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui
@@ -59,6 +63,8 @@ Codion Change Log
 - EntitySearchField, the selector now allows several entities to be selected when the field is wrapped in a MultiInput, those going straight to the entities collected.
 - EditorComponents bug fixed, a component tool tip combining a validation message and a description now escapes them, where a line containing < or & was read as HTML, not displayed as it is.
 - EntitySearchField bug fixed, Enter now clears the selection once the text displaying it has been deleted all at once, where it did nothing, in a MultiInput adding the entity deleted.
+- EntityConditionComponents, the IN combo boxes of foreign keys, items and enums now provide MultiInput.Builder.selector().
+- EntityConditionComponents bug fixed, the IN values of a column are now formatted by its definition, where a column based on items displayed its values rather than their captions and a temporal column ignored its date and time pattern.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

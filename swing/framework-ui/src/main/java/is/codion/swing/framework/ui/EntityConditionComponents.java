@@ -19,9 +19,12 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.utilities.Text;
+import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.ColumnConditionModel;
 import is.codion.framework.model.EntitySearchModel;
@@ -36,13 +39,22 @@ import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.component.Components.multiInput;
 import static is.codion.swing.framework.model.component.SwingEntityComboBoxModel.model;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default component factory implementation for attributes.
@@ -123,12 +135,44 @@ public class EntityConditionComponents implements ConditionComponents {
 			return ConditionComponents.super.in(conditionModel);
 		}
 
+		Column<T> column = ((ColumnConditionModel<T>) conditionModel).attribute();
+
 		return multiInput()
-						.component(component(((ColumnConditionModel<T>) conditionModel).attribute()).buildValue())
+						.component(component(column).buildValue())
+						.selector(selector(column))
 						.link(conditionModel.operands().in())
-						.format(conditionModel.format().orElse(null))
+						// the captions of a column based on items and the date and time pattern as well
+						.formatter(entityDefinition.columns().definition(column)::format)
+						.comparator(comparator(column))
 						.caption(conditionModel.caption().orElse(null))
 						.build();
+	}
+
+	// items sorted by the captions displayed, not their values
+	private <T> Comparator<T> comparator(Column<T> column) {
+		ColumnDefinition<T> definition = entityDefinition.columns().definition(column);
+
+		return definition.items().isEmpty() ? Text.comparator() : comparing(definition::format, Text.collator());
+	}
+
+	// the values of a column displayed in a combo box, see component()
+	private <T> @Nullable Supplier<Collection<T>> selector(Column<T> column) {
+		List<Item<T>> items = entityDefinition.columns().definition(column).items();
+		if (!items.isEmpty()) {
+			List<T> values = items.stream()
+							.map(Item::get)
+							.filter(Objects::nonNull)
+							.collect(toList());
+
+			return () -> values;
+		}
+		if (column.type().isEnum()) {
+			List<T> values = asList(column.type().get().getEnumConstants());
+
+			return () -> values;
+		}
+
+		return null;
 	}
 
 	private <T> ComponentValueBuilder<? extends JComponent, T, ?> component(Column<T> column) {
@@ -165,6 +209,8 @@ public class EntityConditionComponents implements ConditionComponents {
 	private JComponent createInForeignKeyField(ForeignKeyConditionModel conditionModel) {
 		return multiInput()
 						.component(createInForeignKeyComponent(conditionModel))
+						.selector(smallDataset(conditionModel.attribute()) ?
+										() -> conditionModel.models().in().comboBoxModel().items().included().get() : null)
 						.link(conditionModel.operands().in())
 						.caption(conditionModel.caption().orElse(null))
 						.build();

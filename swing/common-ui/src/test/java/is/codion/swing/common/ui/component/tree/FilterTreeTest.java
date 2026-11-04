@@ -254,6 +254,14 @@ public final class FilterTreeTest {
 		JLabel label = (JLabel) tree.getCellRenderer().getTreeCellRendererComponent(tree, path("b"), false, false, true, 1, false);
 		assertEquals("B", label.getText());
 
+		// a null formatter replacing one specified, the default again
+		FilterTree<String> reset = FilterTree.builder()
+						.model(model)
+						.formatter(String::toUpperCase)
+						.formatter(null)
+						.build();
+		assertEquals("a", reset.convertValueToText(path("a"), false, false, false, 0, false));
+
 		Icon icon = new ImageIcon(new byte[0]);
 		FilterTree<String> withIcons = FilterTree.builder()
 						.model(model)

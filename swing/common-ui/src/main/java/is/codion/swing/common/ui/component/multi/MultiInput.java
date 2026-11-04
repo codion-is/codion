@@ -62,13 +62,15 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.Format;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static is.codion.common.i18n.Messages.clear;
@@ -78,6 +80,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -92,6 +95,8 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  * <li>{@link KeyEvent#VK_INSERT} adds the wrapped component's value to the set and clears the component, as does
  * {@link KeyEvent#VK_ENTER} while the component holds a value, see {@link Builder#addOnEnter(boolean)}; an Enter the
  * field does not use is the wrapped component's.
+ * <li>{@link KeyEvent#VK_INSERT} with Alt held displays the values to select several from in a dialog,
+ * the ones selected added at once, see {@link Builder#selector(Supplier)}.
  * <li>{@link KeyEvent#VK_DOWN} with Alt held, or the button, opens the dialog, the list in it focused, or moves the focus
  * to the list in case the dialog is already open. {@link KeyEvent#VK_UP} with Alt held, or the button, closes it.
  * <li>In the dialog {@link KeyEvent#VK_DELETE} removes the selected values, the Clear button clears the set,
@@ -129,7 +134,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 
 	private final ComponentValue<C, T> componentValue;
 	private final SwingFilterListModel<T> members;
-	private final @Nullable Format format;
+	private final @Nullable Function<T, String> formatter;
+	private final @Nullable Supplier<Collection<T>> selector;
 	private final @Nullable String caption;
 	private final State enabled = State.state(true);
 	private final State present = State.state();
@@ -149,7 +155,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	private MultiInput(DefaultBuilder<C, T> builder) {
 		super(new BorderLayout());
 		this.componentValue = builder.componentValue;
-		this.format = builder.format;
+		this.formatter = builder.formatter;
+		this.selector = builder.selector;
 		this.caption = builder.caption;
 		JComponent component = componentValue.component();
 		component.setInheritsPopupMenu(true);
@@ -256,10 +263,19 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	public interface Builder<C extends JComponent, T> extends ComponentValueBuilder<MultiInput<C, T>, Set<T>, Builder<C, T>> {
 
 		/**
-		 * @param format formats a value for the dialog and the button's tool tip, null for {@link Object#toString()}
+		 * @param formatter formats a value for the dialogs and the button's tool tip, null for {@link Object#toString()}
 		 * @return this builder instance
 		 */
-		Builder<C, T> format(@Nullable Format format);
+		Builder<C, T> formatter(@Nullable Function<T, String> formatter);
+
+		/**
+		 * Specifies the values to select from when adding several at a time, for a wrapped component with a known set of
+		 * values, a combo box for example. {@link KeyEvent#VK_INSERT} with Alt held displays them in a dialog, in the order
+		 * supplied, those already part of the value left out, the ones selected added at once.
+		 * @param selector supplies the values to select from, null for none
+		 * @return this builder instance
+		 */
+		Builder<C, T> selector(@Nullable Supplier<Collection<T>> selector);
 
 		/**
 		 * @param caption the caption of the border around the dialog's list, the caption of what is collected; null for none
@@ -313,6 +329,18 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	 */
 	Collection<T> members() {
 		return members.items().included().get();
+	}
+
+	/**
+	 * @return the values to select from, those already part of the value left out
+	 */
+	List<T> selectable() {
+		Set<T> values = new HashSet<>(members());
+		componentValue.optional().ifPresent(values::add);
+
+		return selector == null ? emptyList() : selector.get().stream()
+						.filter(value -> !values.contains(value))
+						.collect(Collectors.toList());
 	}
 
 	/**
@@ -383,6 +411,14 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.action(closeMembers)
 						.enable(component, membersButton);
+		if (selector != null) {
+			KeyEvents.builder()
+							.keyCode(VK_INSERT)
+							.modifiers(ALT_DOWN_MASK)
+							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+							.action(command(this::selectValues))
+							.enable(component, membersButton);
+		}
 		if (addOnEnter) {
 			if (component instanceof JComboBox) {
 				// The editor of a combo box takes Enter before a key listener on the combo box sees it,
@@ -409,6 +445,19 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 			}
 			componentValue.clear();
 			displayMember(value);
+		}
+	}
+
+	private void selectValues() {
+		List<T> selectable = selectable();
+		if (!selectable.isEmpty()) {
+			addValues(Dialogs.select()
+							.list(selectable)
+							.owner(this)
+							.title(caption)
+							.formatter(this::format)
+							.select()
+							.multiple());
 		}
 	}
 
@@ -605,7 +654,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 			return "";
 		}
 
-		return format == null ? value.toString() : format.format(value);
+		return formatter == null ? value.toString() : formatter.apply(value);
 	}
 
 	// The list stays when the focus goes elsewhere, so it follows the field around instead, when the field is moved or
@@ -703,7 +752,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		private final ComponentValue<C, T> componentValue;
 
 		private @Nullable Comparator<T> comparator = Text.comparator();
-		private @Nullable Format format;
+		private @Nullable Function<T, String> formatter;
+		private @Nullable Supplier<Collection<T>> selector;
 		private @Nullable String caption;
 		private boolean addOnEnter = true;
 		private boolean buttonFocusable = BUTTON_FOCUSABLE.getOrThrow();
@@ -713,8 +763,14 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 
 		@Override
-		public Builder<C, T> format(@Nullable Format format) {
-			this.format = format;
+		public Builder<C, T> formatter(@Nullable Function<T, String> formatter) {
+			this.formatter = formatter;
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> selector(@Nullable Supplier<Collection<T>> selector) {
+			this.selector = selector;
 			return this;
 		}
 

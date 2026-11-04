@@ -44,12 +44,15 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.util.Set;
 
 import static is.codion.common.utilities.item.Item.item;
@@ -86,6 +89,73 @@ public final class EntityConditionComponentsTest {
 			assertInstanceOf(EntitySearchField.class, components.equal(manager));
 			assertInstanceOf(EntitySearchField.class, ((MultiInput<?, ?>) components.in(manager)).component());
 		});
+	}
+
+	@Test
+	void comboBoxesProvideASelector() throws Exception {
+		EntityConnection connection = LocalEntityConnection.builder()
+						.domain(new NonNullableDomain())
+						.user(UNIT_TEST_USER)
+						.build();
+		EntityConditions nonNullable = EntityConditions.builder()
+						.entityType(NonNullable.TYPE)
+						.connection(connection)
+						.build();
+		EntityConditionComponents nonNullableComponents =
+						new EntityConditionComponents(connection.entities().definition(NonNullable.TYPE));
+		EntityConditions employee = EntityConditions.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build();
+		onEventDispatchThread(() -> {
+			assertTrue(hasSelector(components.in(condition(Employee.DEPARTMENT_FK))));
+			assertTrue(hasSelector(nonNullableComponents.in(nonNullable.get(NonNullable.CODE))));
+			assertTrue(hasSelector(nonNullableComponents.in(nonNullable.get(NonNullable.SIZE))));
+			// a search field and a plain text field have no values to select from
+			assertFalse(hasSelector(components.in(condition(Employee.MGR_FK))));
+			assertFalse(hasSelector(components.in(employee.get(Employee.NAME))));
+		});
+	}
+
+	@Test
+	void columnValuesFormattedByTheDefinition() throws Exception {
+		EntityConnection connection = LocalEntityConnection.builder()
+						.domain(new NonNullableDomain())
+						.user(UNIT_TEST_USER)
+						.build();
+		EntityConditions nonNullable = EntityConditions.builder()
+						.entityType(NonNullable.TYPE)
+						.connection(connection)
+						.build();
+		EntityConditionComponents nonNullableComponents =
+						new EntityConditionComponents(connection.entities().definition(NonNullable.TYPE));
+		EntityConditions employee = EntityConditions.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build();
+		onEventDispatchThread(() -> {
+			// the caption of an item, not its value, and sorted by it
+			ConditionModel<String> code = nonNullable.get(NonNullable.CODE);
+			MultiInput<?, ?> codes = (MultiInput<?, ?>) nonNullableComponents.in(code);
+			code.operands().in().set(Set.of("A"));
+			assertEquals("<html>Zulu</html>", ((JToggleButton) codes.getComponent(1)).getToolTipText());
+			code.operands().in().set(Set.of("A", "B"));
+			assertEquals("<html>B<br>Zulu</html>", ((JToggleButton) codes.getComponent(1)).getToolTipText());
+
+			// the date pattern
+			ConditionModel<LocalDate> hiredate = employee.get(Employee.HIREDATE);
+			MultiInput<?, ?> hiredates = (MultiInput<?, ?>) components.in(hiredate);
+			LocalDate date = LocalDate.of(2026, 11, 4);
+			hiredate.operands().in().set(Set.of(date));
+			String formatted = CONNECTION.entities().definition(Employee.TYPE).columns().definition(Employee.HIREDATE).format(date);
+			assertNotEquals(date.toString(), formatted);
+			assertEquals("<html>" + formatted + "</html>", ((JToggleButton) hiredates.getComponent(1)).getToolTipText());
+		});
+	}
+
+	private static boolean hasSelector(JComponent input) {
+		return ((MultiInput<?, ?>) input).component().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.get(KeyStroke.getKeyStroke(VK_INSERT, InputEvent.ALT_DOWN_MASK)) != null;
 	}
 
 	@Test
@@ -303,7 +373,7 @@ public final class EntityConditionComponentsTest {
 															.primaryKey(),
 											NonNullable.CODE.as()
 															.column()
-															.items(asList(item("A"), item("B")))
+															.items(asList(item("A", "Zulu"), item("B")))
 															.nullable(false)
 															.caption("Code"),
 											NonNullable.SIZE.as()

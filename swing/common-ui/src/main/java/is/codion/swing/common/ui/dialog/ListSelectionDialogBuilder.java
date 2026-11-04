@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * A builder for a {@link javax.swing.JList} based selection dialog.
@@ -56,6 +57,13 @@ public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T,
 	 * @return this builder instance
 	 */
 	ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<T> comparator);
+
+	/**
+	 * Ignored in case a renderer is specified, see {@link #renderer(javax.swing.ListCellRenderer)}.
+	 * @param formatter formats the items to select from, null for {@link Object#toString()}
+	 * @return this builder instance
+	 */
+	ListSelectionDialogBuilder<T> formatter(@Nullable Function<T, String> formatter);
 
 	/**
 	 * @return a {@link SelectionStep}

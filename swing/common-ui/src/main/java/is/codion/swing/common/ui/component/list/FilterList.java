@@ -345,11 +345,11 @@ public final class FilterList<T> extends JList<T> {
 		/**
 		 * Formats the items for display, and for matching the prefix typed to navigate the list, which a cell renderer
 		 * displays as it sees fit, see {@link #cellRenderer(ListCellRenderer)}. {@link Object#toString()} by default.
-		 * @param formatter the formatter
+		 * @param formatter the formatter, null for the default
 		 * @return this builder instance
 		 * @see FilterList#getNextMatch(String, int, Position.Bias)
 		 */
-		B formatter(Function<T, String> formatter);
+		B formatter(@Nullable Function<T, String> formatter);
 
 		/**
 		 * Ignored in case a cell renderer is specified, see {@link #cellRenderer(ListCellRenderer)}.

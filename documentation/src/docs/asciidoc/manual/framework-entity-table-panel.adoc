@@ -72,6 +72,10 @@ The panel above the table provides query *conditions* — what is fetched from t
 The condition panel has three views: *HIDDEN*, *SIMPLE* (a single row of fields) and *ADVANCED* (operators and bounds per column), toggled via the toolbar or CTRL-ALT-S, with CTRL-S moving focus to a condition field.
 The initial view and a custom condition panel implementation are configurable — see the *conditionPanel()* and *conditionView()* calls in the invoice panel configuration <<_configuration, above>>, where a custom condition panel provides invoice-specific search fields.
 
+The *IN* and *NOT IN* operators collect their values through a {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multi/MultiInput.html[MultiInput], one at a time or several at once.
+A search field offers several in its selection dialog, see <<_collecting_entities>>, while ALT-INSERT in a combo box displays the values not yet collected in a selection dialog.
+A custom condition panel wrapping a component with a known set of values provides them via {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/multi/MultiInput.Builder.html#selector(java.util.function.Supplier)[MultiInput.Builder.selector()].
+
 Filter panels are excluded by default and included via *Config.INCLUDE_FILTERS* (globally) or *includeFilters()* (per panel).
 
 == Exporting data
