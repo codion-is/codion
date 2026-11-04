@@ -25,6 +25,8 @@ Codion Change Log
 ### is.codion.framework.db.http
 - HttpEntityConnection bug fixed, building a connection with a domain instance now establishes it on the server, validating the user's credentials, where no request was made before the first operation, invalid credentials accepted until then.
 - HttpEntityConnection, a timeout now surfaces as a SocketTimeoutException where java.net.http is used as well, rather than its HttpTimeoutException.
+### is.codion.framework.json.domain
+- EntityObjectMapper bug fixed, a decimal in an entity, a key or a condition is no longer read through a double, losing the digits a double doesn't hold; a floating point number read into no particular type, an Object or a Number, now a BigDecimal, where it was a Double.
 ### is.codion.framework.servlet
 - EntityService bug fixed, a refused login on the serial routes now responds with the AuthenticationException a json client reconstructs, the database's or one with the authenticator's message, where the server's ServerAuthenticationException was serialized, which a client without codion-common-rmi could not read, and one with it threw wrapped in a RuntimeException.
 - EntityService bug fixed, a connection refused on the serial routes for another reason, the server not accepting more connections or shutting down, now responds with a DatabaseException with its message, as a json client reconstructs, where the server's ConnectionNotAvailableException or LoginException was serialized.

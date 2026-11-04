@@ -104,6 +104,8 @@ public final class EntityObjectMapper extends ObjectMapper {
 		registerModule(new JavaTimeModule());
 		disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+		// a decimal otherwise read through a double, losing the digits a double doesn't hold
+		enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 	}
 
 	/**

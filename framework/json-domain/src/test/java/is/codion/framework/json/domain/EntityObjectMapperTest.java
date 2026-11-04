@@ -96,6 +96,57 @@ public final class EntityObjectMapperTest {
 	}
 
 	@Test
+	void decimalsExact() throws JsonProcessingException {
+		// more digits than a double holds
+		BigDecimal decimal = new BigDecimal("12345678901234567890.1234567891");
+		LocalDateTime dateTime = LocalDateTime.now();
+		Entity entity = entities.entity(TestEntity.TYPE)
+						.with(TestEntity.DECIMAL, decimal)
+						.with(TestEntity.DATE_TIME, dateTime)
+						.build();
+		assertEquals(decimal, mapper.readValue(mapper.writeValueAsString(entity), Entity.class).get(TestEntity.DECIMAL));
+
+		BigDecimal salary = new BigDecimal("12345678901234567890.12");
+		Entity employee = entities.entity(Employee.TYPE)
+						.with(Employee.SALARY, salary)
+						.build();
+		employee.set(Employee.SALARY, BigDecimal.ONE);
+		assertEquals(salary, mapper.readValue(mapper.writeValueAsString(employee), Entity.class).original(Employee.SALARY));
+
+		Entity.Key key = entities.key(TestEntity.TYPE)
+						.with(TestEntity.DECIMAL, decimal)
+						.with(TestEntity.DATE_TIME, dateTime)
+						.build();
+		assertEquals(decimal, mapper.readValue(mapper.writeValueAsString(key), Entity.Key.class).get(TestEntity.DECIMAL));
+
+		Condition condition = TestEntity.DECIMAL.equalTo(decimal);
+		assertEquals(condition, mapper.readValue(mapper.writeValueAsString(condition), Condition.class));
+
+		Condition custom = TestEntity.CONDITION_TYPE.get(TestEntity.DECIMAL, decimal);
+		assertEquals(custom.values(), mapper.readValue(mapper.writeValueAsString(custom), Condition.class).values());
+
+		// as a database reads it, trailing zeros stripped, an exponent read back as written
+		BigDecimal hundred = new BigDecimal("100").stripTrailingZeros();
+		entity = entities.entity(TestEntity.TYPE)
+						.with(TestEntity.DECIMAL, hundred)
+						.with(TestEntity.DATE_TIME, dateTime)
+						.build();
+		assertEquals(hundred, mapper.readValue(mapper.writeValueAsString(entity), Entity.class).get(TestEntity.DECIMAL));
+
+		// a number read into no particular type
+		assertEquals(new BigDecimal("1.5"), mapper.readValue("1.5", Object.class));
+	}
+
+	@Test
+	void doublesExact() throws JsonProcessingException {
+		double[] doubles = {0.1, 1d / 3d, -21.8765432109876, 1e300, Double.MIN_VALUE, Double.MAX_VALUE};
+		for (double value : doubles) {
+			assertEquals(value, mapper.readValue(mapper.writeValueAsString(value), Double.class));
+			assertEquals(value, mapper.treeToValue(mapper.readTree(mapper.writeValueAsString(value)), Double.class));
+		}
+	}
+
+	@Test
 	void strictDeserialization() throws Exception {
 		Entity dept = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
