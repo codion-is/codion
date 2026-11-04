@@ -54,6 +54,7 @@ Codion Change Log
 - FilterList.Builder.formatter() and FilterTree.Builder.formatter() now accept null, for the default.
 - TemporalField.Builder.calendarIcon(), TemporalInput.Builder.calendarIcon(), FileInput.Builder.buttonIcon(), FilterTable.Builder.intercellSpacing() and gridColor(), FilterTree.Builder.cellRenderer(), TreeBuilder.cellRenderer(), ColumnConditionPanel.Builder.name() and ButtonBuilder.control() now accept null.
 - TextFieldBuilder.actionListener(), TabbedPaneBuilder.tab(title, component) and ComponentDialogBuilder.component() now reject null, as declared, where it was silently accepted.
+- TextInput.Builder.buttonIcon() now takes an Icon, as FileInput.Builder.buttonIcon().
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui

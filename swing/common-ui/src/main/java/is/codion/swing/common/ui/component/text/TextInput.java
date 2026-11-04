@@ -36,7 +36,7 @@ import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -233,7 +233,7 @@ public final class TextInput extends JPanel {
 		 * @param buttonIcon the button icon
 		 * @return this builder instance
 		 */
-		Builder buttonIcon(@Nullable ImageIcon buttonIcon);
+		Builder buttonIcon(@Nullable Icon buttonIcon);
 
 		/**
 		 * @param maximumLength the maximum text length
@@ -317,7 +317,7 @@ public final class TextInput extends JPanel {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private boolean buttonFocusable;
-		private @Nullable ImageIcon buttonIcon;
+		private @Nullable Icon buttonIcon;
 		private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
 		private int maximumLength = -1;
 		private @Nullable String caption;
@@ -362,7 +362,7 @@ public final class TextInput extends JPanel {
 		}
 
 		@Override
-		public Builder buttonIcon(@Nullable ImageIcon buttonIcon) {
+		public Builder buttonIcon(@Nullable Icon buttonIcon) {
 			this.buttonIcon = buttonIcon;
 			return this;
 		}
