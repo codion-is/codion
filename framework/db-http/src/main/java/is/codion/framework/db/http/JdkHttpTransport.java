@@ -22,12 +22,14 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.CookieManager;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.Executor;
 
@@ -68,6 +70,13 @@ final class JdkHttpTransport implements HttpTransport {
 			HttpResponse<byte[]> response = httpClient.send(request, BodyHandlers.ofByteArray());
 
 			return new Response(response.statusCode(), response.body());
+		}
+		catch (HttpTimeoutException e) {
+			// As HttpURLConnection reports it, callers not having to know of java.net.http
+			SocketTimeoutException timeout = new SocketTimeoutException(e.getMessage());
+			timeout.initCause(e);
+
+			throw timeout;
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();

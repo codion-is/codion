@@ -37,7 +37,8 @@ interface HttpTransport {
 	 * @param headers the request headers, as a flat array of name, value, name, value...
 	 * @param body the request body or null in case of no body
 	 * @return the response
-	 * @throws IOException in case of an I/O error
+	 * @throws java.net.SocketTimeoutException in case of a timeout, connecting or waiting for the response
+	 * @throws IOException in case of another I/O error
 	 */
 	Response post(String url, String[] headers, byte @Nullable [] body) throws IOException;
 
