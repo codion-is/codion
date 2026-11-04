@@ -22,6 +22,8 @@ Codion Change Log
 - H2Database, an init script moved, listed by another path with its content unchanged, is no longer refused, its record taking the new path.
 - H2Database, an init script's checksum now read as RUNSCRIPT reads the script, H2's FILE_READ finding nothing in a classpath resource on Android.
 - H2DatabaseFactory.validateInitScripts() added, refusing a database as opening it would, changing nothing.
+### is.codion.framework.db.local
+- LocalEntityConnection, a failure is now logged by what failed, what the database refuses at DEBUG, a row locked or a timeout at WARN without a stack trace, the rest at ERROR, its values, or a function's or procedure's parameter, only with DEBUG enabled, cut to a limit, where every failure was logged at ERROR with its values, a function's whole parameter included.
 ### is.codion.framework.db.http
 - HttpEntityConnection bug fixed, building a connection with a domain instance now establishes it on the server, validating the user's credentials, where no request was made before the first operation, invalid credentials accepted until then.
 - HttpEntityConnection, a timeout now surfaces as a SocketTimeoutException where java.net.http is used as well, rather than its HttpTimeoutException.

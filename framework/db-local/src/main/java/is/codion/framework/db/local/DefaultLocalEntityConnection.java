@@ -21,6 +21,7 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.Operation;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.user.User;
@@ -52,6 +53,7 @@ import is.codion.framework.domain.report.ReportType;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -100,6 +102,8 @@ import static java.util.stream.Collectors.*;
 final class DefaultLocalEntityConnection implements LocalEntityConnection, ConnectionHolder, MethodTracer.Traceable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
+	// A function's parameter may be all of its data
+	static final int MAX_LOGGED_VALUES_LENGTH = 4096;
 
 	private static final Map<String, User> META_DATA_USERS = new ConcurrentHashMap<>();
 	private static final String EXECUTE_UPDATE = "executeUpdate";
@@ -521,7 +525,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 			catch (SQLException e) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
+				logFailure(updateQuery, statementValues, statementColumns, e, UPDATE);
 				throw database.exception(e, UPDATE);
 			}
 		}
@@ -544,7 +548,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 			catch (SQLException e) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, e), e);
+				logFailure(deleteQuery, statementValues, statementColumns, e, DELETE);
 				throw database.exception(e, DELETE);
 			}
 		}
@@ -592,7 +596,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, exception), exception);
+				logFailure(deleteQuery, statementValues, statementColumns, exception, DELETE);
 				throwDatabaseException(exception, DELETE);
 				throw Exceptions.runtime(exception);
 			}
@@ -722,7 +726,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, exception), exception);
+				logFailure(selectQuery, statementValues, statementColumns, exception, SELECT);
 				throwDatabaseException(exception, SELECT);
 				throw Exceptions.runtime(exception);
 			}
@@ -750,7 +754,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, exception), exception);
+				logFailure(selectQuery, statementValues, statementColumns, exception, SELECT);
 				throwDatabaseException(exception, SELECT);
 				throw Exceptions.runtime(exception);
 			}
@@ -823,7 +827,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				catch (Exception e) {
 					exception = e;
 					rollbackOnFailure(transactionWasOpen);
-					LOG.error(createLogMessage(functionType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
+					logFailure(functionType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e, OTHER);
 					throwDatabaseException(e, OTHER);
 					throw Exceptions.runtime(e);
 				}
@@ -857,7 +861,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				catch (Exception e) {
 					exception = e;
 					rollbackOnFailure(transactionWasOpen);
-					LOG.error(createLogMessage(procedureType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
+					logFailure(procedureType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e, OTHER);
 					throwDatabaseException(e, OTHER);
 					throw Exceptions.runtime(e);
 				}
@@ -883,7 +887,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			catch (Exception e) {
 				exception = e;
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(null, singletonList(reportType), emptyList(), e), e);
+				logFailure(reportType.name(), emptyList(), emptyList(), e, SELECT);
 				throwDatabaseException(e, SELECT);
 				throw Exceptions.runtime(e);
 			}
@@ -1087,7 +1091,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(insertQuery, statementValues, statementColumns, exception), exception);
+				logFailure(insertQuery, statementValues, statementColumns, exception, INSERT);
 				throwDatabaseException(exception, INSERT);
 				throw Exceptions.runtime(exception);
 			}
@@ -1165,7 +1169,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 					LOG.debug(exception.getMessage(), exception);
 					throw (EntityModifiedException) exception;
 				}
-				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, exception), exception);
+				logFailure(updateQuery, statementValues, statementColumns, exception, UPDATE);
 				throwDatabaseException(exception, UPDATE);
 				throw Exceptions.runtime(exception);
 			}
@@ -1432,7 +1436,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		catch (SQLException e) {
 			closeSilently(resultSet);
 			closeSilently(statement);
-			LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, e), e);
+			logFailure(selectQuery, statementValues, statementColumns, e, SELECT);
 			throw e;
 		}
 	}
@@ -1456,7 +1460,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			session.tracer.exit(EXECUTE_UPDATE, exception, "affected rows: " + affectedRows);
 			countQuery(operation);
 			if (LOG.isDebugEnabled()) {
-				LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
+				LOG.debug(logMessage(user(), query, createValueString(statementValues, statementColumns), exception));
 			}
 		}
 	}
@@ -1476,7 +1480,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			session.tracer.exit(EXECUTE_QUERY, exception);
 			countQuery(SELECT);
 			if (LOG.isDebugEnabled()) {
-				LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
+				LOG.debug(logMessage(user(), query, createValueString(statementValues, statementColumns), exception));
 			}
 		}
 	}
@@ -1691,15 +1695,78 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		}
 	}
 
-	private String createLogMessage(@Nullable String sqlStatement, List<?> values, List<ColumnDefinition<?>> columnDefinitions, @Nullable Exception exception) {
-		StringBuilder logMessage = new StringBuilder(user().toString()).append("\n");
-		String valueString = "[" + createValueString(values, columnDefinitions) + "]";
-		logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(valueString);
-		if (exception != null) {
-			logMessage.append("\n").append(" [Exception: ").append(exception.getMessage()).append("]");
+	// A failure is logged by what failed: what a database refuses is an outcome, not a fault, and the values, which may be
+	// anyone's data, only with DEBUG enabled, where they are asked for
+	private void logFailure(String statement, List<?> values, List<ColumnDefinition<?>> columnDefinitions, Exception exception, Operation operation) {
+		String message = logMessage(user(), statement, LOG.isDebugEnabled() ? createValueString(values, columnDefinitions) : null, exception);
+		switch (failureLevel(errorType(exception, operation))) {
+			case DEBUG:
+				LOG.debug(message, exception);
+				break;
+			case WARN:
+				LOG.warn(message);
+				break;
+			default:
+				LOG.error(message, exception);
+				break;
+		}
+	}
+
+	private @Nullable ErrorType errorType(Exception exception, Operation operation) {
+		if (exception instanceof SQLException) {
+			return database.exception((SQLException) exception, operation).errorType().orElse(null);
+		}
+		if (exception instanceof DatabaseException) {
+			return ((DatabaseException) exception).errorType().orElse(null);
 		}
 
-		return logMessage.toString();
+		return null;
+	}
+
+	/**
+	 * @param errorType the error type of a failure, null for one without a type
+	 * @return the level to log the failure at: what a database refuses an outcome, DEBUG, a row locked or a timeout a
+	 * matter of load, WARN, and the rest a fault, ERROR, a missing privilege or a table not found included
+	 */
+	static Level failureLevel(@Nullable ErrorType errorType) {
+		if (errorType == null) {
+			return Level.ERROR;
+		}
+		switch (errorType) {
+			case UNIQUE_CONSTRAINT:
+			case REFERENTIAL_INTEGRITY:
+			case PARENT_MISSING:
+			case CHILD_EXISTS:
+			case NULL_VALUE:
+			case CHECK_CONSTRAINT:
+			case VALUE_TOO_LARGE:
+				return Level.DEBUG;
+			case ROW_LOCKED:
+			case TIMEOUT:
+				return Level.WARN;
+			default:
+				return Level.ERROR;
+		}
+	}
+
+	/**
+	 * @param user the user
+	 * @param statement the statement, or the name of the function, procedure or report
+	 * @param values the values, null to leave them out, cut to {@link #MAX_LOGGED_VALUES_LENGTH}
+	 * @param exception the exception, null for none
+	 * @return the log message
+	 */
+	static String logMessage(User user, String statement, @Nullable String values, @Nullable Exception exception) {
+		StringBuilder message = new StringBuilder(user.toString()).append("\n").append(statement);
+		if (values != null) {
+			message.append(", [").append(values.length() > MAX_LOGGED_VALUES_LENGTH ?
+							values.substring(0, MAX_LOGGED_VALUES_LENGTH) + "... " + values.length() + " characters" : values).append("]");
+		}
+		if (exception != null) {
+			message.append("\n [Exception: ").append(exception.getMessage()).append("]");
+		}
+
+		return message.toString();
 	}
 
 	private void countQuery(Operation operation) {
@@ -1990,7 +2057,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			columnDefinition.set(statement, parameterIndex, value, database);
 		}
 		catch (SQLException e) {
-			LOG.error("Unable to set parameter: {}, value: {}, value class: {}", columnDefinition, value, value == null ? "null" : value.getClass(), e);
+			LOG.error("Unable to set parameter: {}, value class: {}", columnDefinition, value == null ? "null" : value.getClass(), e);
+			LOG.debug("Unable to set parameter: {}, value: {}", columnDefinition, value);
 			throw e;
 		}
 	}

@@ -52,6 +52,7 @@ import is.codion.framework.domain.entity.condition.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -2451,6 +2452,41 @@ public class DefaultLocalEntityConnectionTest {
 		ColumnDefinition<?> name = DOMAIN.entities().definition(NullConverter.TYPE).columns().definition(NullConverter.NAME);
 		// the values as set in the statement, converted, for pasting into it
 		assertEquals("'null', 'name'", DefaultLocalEntityConnection.createValueString(asList(null, "name"), asList(name, name)));
+	}
+
+	@Test
+	void failureLevel() {
+		// what a database refuses, an outcome
+		for (ErrorType errorType : asList(ErrorType.UNIQUE_CONSTRAINT, ErrorType.REFERENTIAL_INTEGRITY, ErrorType.PARENT_MISSING,
+						ErrorType.CHILD_EXISTS, ErrorType.NULL_VALUE, ErrorType.CHECK_CONSTRAINT, ErrorType.VALUE_TOO_LARGE)) {
+			assertEquals(Level.DEBUG, DefaultLocalEntityConnection.failureLevel(errorType), errorType.name());
+		}
+		// a matter of load
+		assertEquals(Level.WARN, DefaultLocalEntityConnection.failureLevel(ErrorType.ROW_LOCKED));
+		assertEquals(Level.WARN, DefaultLocalEntityConnection.failureLevel(ErrorType.TIMEOUT));
+		// a fault, an error without a type among them
+		assertEquals(Level.ERROR, DefaultLocalEntityConnection.failureLevel(null));
+		for (ErrorType errorType : asList(ErrorType.MISSING_PRIVILEGES, ErrorType.TABLE_NOT_FOUND, ErrorType.AUTHENTICATION,
+						ErrorType.ACCOUNT_LOCKED, ErrorType.PASSWORD_EXPIRED)) {
+			assertEquals(Level.ERROR, DefaultLocalEntityConnection.failureLevel(errorType), errorType.name());
+		}
+	}
+
+	@Test
+	void logMessage() {
+		User user = User.user("scott");
+		Exception exception = new RuntimeException("failed");
+		// no values unless given, and those given cut
+		assertEquals(user + "\nselect 1\n [Exception: failed]",
+						DefaultLocalEntityConnection.logMessage(user, "select 1", null, exception));
+		assertEquals(user + "\nselect 1, ['value']\n [Exception: failed]",
+						DefaultLocalEntityConnection.logMessage(user, "select 1", "'value'", exception));
+		assertEquals(user + "\nselect 1", DefaultLocalEntityConnection.logMessage(user, "select 1", null, null));
+		char[] values = new char[DefaultLocalEntityConnection.MAX_LOGGED_VALUES_LENGTH * 2];
+		Arrays.fill(values, 'v');
+		String cut = DefaultLocalEntityConnection.logMessage(user, "select 1", new String(values), null);
+		assertTrue(cut.length() < values.length);
+		assertTrue(cut.endsWith("... " + values.length + " characters]"), cut);
 	}
 
 	@Test
