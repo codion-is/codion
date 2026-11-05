@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -1583,15 +1584,88 @@ public final class AbstractEntityEditorTest {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		editor.value(Employee.NAME).propagate(Employee.SALARY, value -> (double) value.length());
 		editor.value(Employee.SALARY).propagate(Employee.MANAGER_ID, Double::intValue);
-		//a cycle back to the source, terminated by the visited set
+		//a cycle back to the source, which is given its derived value and propagates no further
 		editor.value(Employee.MANAGER_ID).propagate(Employee.NAME, String::valueOf);
 
 		Entity employee = CONNECTION.entities().entity(Employee.TYPE).build();
 		editor.value(Employee.NAME).set(employee, "Scott");
 
-		assertEquals("Scott", employee.get(Employee.NAME));
+		assertEquals("5", employee.get(Employee.NAME));
 		assertEquals(5d, employee.get(Employee.SALARY));
 		assertEquals(5, employee.get(Employee.MANAGER_ID));
+	}
+
+	@Test
+	void propagateEntityUnchanged() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> 1d);
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.NAME, "Scott")
+						.with(Employee.SALARY, 1000d)
+						.build();
+
+		editor.value(Employee.NAME).set(employee, "Scott");
+		assertEquals(1000d, employee.get(Employee.SALARY));
+
+		editor.value(Employee.NAME).set(employee, "Bob");
+		assertEquals(1d, employee.get(Employee.SALARY));
+	}
+
+	@Test
+	void propagateEntityForeignKeyNotLoadedCleared() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.DEPARTMENT_FK).propagate(Employee.NAME, department -> "No department");
+		//references a department, which isn't loaded
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.NAME, "Scott")
+						.with(Employee.DEPARTMENT, 10)
+						.build();
+
+		editor.value(Employee.DEPARTMENT_FK).set(employee, null);
+		assertNull(employee.get(Employee.DEPARTMENT));
+		assertEquals("No department", employee.get(Employee.NAME));
+	}
+
+	@Test
+	void propagateTheSameInEditorAndEntity() {
+		//on itself
+		assertPropagatesTheSame(editor -> editor.value(Employee.NAME).propagate(Employee.NAME, name -> name + "!"));
+		//a pair deriving from each other, converging
+		assertPropagatesTheSame(editor -> {
+			editor.value(Employee.NAME).propagate(Employee.SALARY, name -> (double) name.length());
+			editor.value(Employee.SALARY).propagate(Employee.MANAGER_ID, Double::intValue);
+			editor.value(Employee.MANAGER_ID).propagate(Employee.SALARY, Integer::doubleValue);
+		});
+		//and not converging
+		assertPropagatesTheSame(editor -> {
+			editor.value(Employee.NAME).propagate(Employee.MANAGER_ID, String::length);
+			editor.value(Employee.MANAGER_ID).propagate(Employee.NAME, manager -> "Manager " + manager);
+		});
+		//a cycle through a third
+		assertPropagatesTheSame(editor -> {
+			editor.value(Employee.NAME).propagate(Employee.SALARY, name -> (double) name.length());
+			editor.value(Employee.SALARY).propagate(Employee.MANAGER_ID, Double::intValue);
+			editor.value(Employee.MANAGER_ID).propagate(Employee.NAME, String::valueOf);
+		});
+		//a target reached by two routes
+		assertPropagatesTheSame(editor -> {
+			editor.value(Employee.NAME).propagate(Employee.MANAGER_ID, name -> 1);
+			editor.value(Employee.NAME).propagate(Employee.SALARY, name -> 2d);
+			editor.value(Employee.MANAGER_ID).propagate(Employee.SALARY, manager -> 3d);
+		});
+	}
+
+	private static void assertPropagatesTheSame(Consumer<TestEntityEditor> propagators) {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		propagators.accept(editor);
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE).build();
+
+		editor.value(Employee.NAME).set("Scott");
+		editor.value(Employee.NAME).set(employee, "Scott");
+
+		assertEquals(editor.value(Employee.NAME).get(), employee.get(Employee.NAME));
+		assertEquals(editor.value(Employee.SALARY).get(), employee.get(Employee.SALARY));
+		assertEquals(editor.value(Employee.MANAGER_ID).get(), employee.get(Employee.MANAGER_ID));
 	}
 
 	@Test

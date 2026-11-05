@@ -1083,19 +1083,18 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * <p>Adds a propagation mapping from this attribute to the given attribute.
-		 * Each time this attribute is edited via {@link #set(Object)} or set in an entity
+		 * Each time this attribute is changed via {@link #set(Object)} or in an entity
 		 * via {@link #set(Entity, Object)}, the function is applied to derive the target attribute value.
+		 * Setting the value it already has does not propagate.
 		 * A foreign key value replaced because the referenced entity was updated or deleted elsewhere
 		 * is not an edit and does not propagate, nor does {@link EditorEntity#revert()}.
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}
 		 * instances, triggering edit events. When setting values in an entity, derived values are
 		 * set directly on the entity via {@link Entity#set(Attribute, Object)}.
 		 * <p>Propagation is transitive, a value derived for a target attribute in turn applies that attribute's
-		 * own propagators. Cycles terminate either way, but not identically. When editing via the editor,
-		 * propagation stops as soon as a derived value equals the current one, and an attribute already
+		 * own propagators. It stops as soon as a derived value equals the current one, and an attribute already
 		 * propagating in the current cascade is given its derived value but propagates no further - so a pair
-		 * deriving from each other settles after one lap whether or not it ever reaches a fixpoint. When setting
-		 * values in an entity, each attribute is propagated to once, the assignment included.
+		 * deriving from each other settles after one lap whether or not it ever reaches a fixpoint.
 		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditorSnippets" region = "propagate":
 		 * // Populate billing address fields when customer changes // @start region=propagate
 		 * editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
@@ -1110,7 +1109,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * <p>Sets the given value for the underlying attribute in the given entity,
-		 * applying the associated propagators, if any are specified.
+		 * applying the associated propagators, if any are specified, in case the value changes.
 		 * <p>This method is used by components providing edit functionality outside the editor,
 		 * such as editable table cells or multi-item editing dialogs, to ensure that
 		 * derived values are updated along with the primary attribute value.

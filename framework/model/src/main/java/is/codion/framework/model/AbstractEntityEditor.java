@@ -2674,12 +2674,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			set(requireNonNull(entity), value, new HashSet<>());
 		}
 
-		private void set(Entity entity, @Nullable T value, Set<Attribute<?>> propagated) {
-			//propagators forming a cycle never terminate otherwise
-			if (propagated.add(attribute)) {
-				entity.set(attribute, value);
+		/**
+		 * Propagates as {@link #setValue(Object)} and {@link #propagate()} do, an unchanged value not propagating
+		 * and an attribute already propagating further up the cascade given its value, going no further.
+		 */
+		private void set(Entity entity, @Nullable T value, Set<Attribute<?>> propagating) {
+			if (change(entity, value) && propagating.add(attribute)) {
 				propagators.forEach((attr, deriver) -> editorValue((Attribute<Object>) attr)
-								.set(entity, deriver.apply(entity.get(attribute)), propagated));
+								.set(entity, deriver.apply(entity.get(attribute)), propagating));
+				propagating.remove(attribute);
 			}
 		}
 
