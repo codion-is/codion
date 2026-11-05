@@ -1066,7 +1066,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * <p>Returns a {@link State} instance controlling whether the value of the given attribute is editable.
-		 * Non-editable values throw an exception on {@link EditorValue#set(Object)}
+		 * Non-editable values throw an exception on {@link EditorValue#set(Object)},
+		 * values derived via {@link #propagate(Attribute, Function)} excepted.
 		 * @return a {@link State} controlling the editable state of the value of the given attribute
 		 * @see EditorEntity#modified()
 		 */
@@ -1090,7 +1091,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * is not an edit and does not propagate, nor does {@link EditorEntity#revert()}.
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}
 		 * instances, triggering edit events. When setting values in an entity, derived values are
-		 * set directly on the entity via {@link Entity#set(Attribute, Object)}.
+		 * set directly on the entity via {@link Entity#set(Attribute, Object)}. Either way the target attribute
+		 * need not be {@link #editable()}.
 		 * <p>Propagation is transitive, a value derived for a target attribute in turn applies that attribute's
 		 * own propagators. It stops as soon as a derived value equals the current one, and an attribute already
 		 * propagating in the current cascade is given its derived value but propagates no further - so a pair

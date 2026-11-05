@@ -2563,6 +2563,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final Map<Attribute<?>, Function<@Nullable T, ?>> propagators = new HashMap<>();
 
 		private boolean propagating;
+		private boolean deriving;
 
 		private DefaultEditorValue(Attribute<T> attribute) {
 			super(nullValue(entityDefinition.attributes().definition(attribute)));
@@ -2693,7 +2694,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		protected void setValue(@Nullable T value) {
-			if (!editable().is()) {
+			if (!deriving && !editable().is()) {
 				throw new IllegalStateException("Attribute is not editable");
 			}
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
@@ -2764,10 +2765,26 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			propagating = true;
 			try {
 				propagators.forEach((attr, deriver) ->
-								value((Attribute<Object>) attr).set(deriver.apply(entity.instance.get(attribute))));
+								editorValue((Attribute<Object>) attr).derive(deriver.apply(entity.instance.get(attribute))));
 			}
 			finally {
 				propagating = false;
+			}
+		}
+
+		/**
+		 * Sets a value derived by a propagator. Editability concerns what the user can edit, and a value
+		 * which isn't editable is often just that, derived, so it doesn't apply here. Throwing would also
+		 * leave the edit half applied, the source value already set and notified.
+		 * @param value the derived value
+		 */
+		private void derive(@Nullable T value) {
+			deriving = true;
+			try {
+				set(value);
+			}
+			finally {
+				deriving = false;
 			}
 		}
 

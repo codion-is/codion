@@ -1596,6 +1596,36 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void propagateNotEditable() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		//a read only value derived from the one edited, with one derived from it in turn
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> (double) name.length());
+		editor.value(Employee.SALARY).propagate(Employee.MANAGER_ID, Double::intValue);
+		editor.value(Employee.SALARY).editable().set(false);
+		List<Double> salaries = new ArrayList<>();
+		editor.value(Employee.SALARY).edited().addConsumer(salaries::add);
+
+		editor.value(Employee.NAME).set("Scott");
+		assertEquals(5d, editor.value(Employee.SALARY).get());
+		assertEquals(5, editor.value(Employee.MANAGER_ID).get());
+		assertEquals(singletonList(5d), salaries);
+
+		//the value itself is no more editable for it
+		assertThrows(IllegalStateException.class, () -> editor.value(Employee.SALARY).set(1d));
+		assertEquals(5d, editor.value(Employee.SALARY).get());
+
+		//nor does a validator stop applying, or a derived value it rejects leave the value editable
+		editor.value(Employee.SALARY).addValidator(salary -> {
+			if (salary != null && salary > 10) {
+				throw new IllegalArgumentException();
+			}
+		});
+		assertThrows(IllegalArgumentException.class, () -> editor.value(Employee.NAME).set("A longer name"));
+		assertEquals(5d, editor.value(Employee.SALARY).get());
+		assertThrows(IllegalStateException.class, () -> editor.value(Employee.SALARY).set(1d));
+	}
+
+	@Test
 	void propagateEntityUnchanged() {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> 1d);
