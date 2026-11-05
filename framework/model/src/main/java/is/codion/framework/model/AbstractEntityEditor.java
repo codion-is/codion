@@ -2710,13 +2710,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 * <p>Used when a referenced entity has been updated or deleted elsewhere. On update the replacement is equal
 		 * to the current value according to {@link Entity#equals(Object)} (same primary key), so {@link #setValue(Object)}
 		 * would discard the notification and leave the UI showing the stale entity.
+		 * <p>Applies no propagators, this entity not having been edited. A value derived from the previous one, or
+		 * entered over it, stands.
 		 * @param value the replacement value
 		 */
 		private void replace(@Nullable T value) {
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
 			entity.instance.set(attribute, value);
 			notifyValueEdit(attribute, value, dependingValues);
-			propagate();
 		}
 
 		/**

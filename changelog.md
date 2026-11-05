@@ -42,6 +42,7 @@ Codion Change Log
 - AbstractEntityApplicationModel(connection, user, entityModels) added, the application user, the one logged in, which may differ from the connection's user, EntityApplicationModel.user() returning it, where it was the connection's user.
 - EntityApplicationModel now AutoCloseable, close() added, closing the model along with its connection, overridden to release what an application model holds.
 - AbstractEntityEditor bug fixed, a superseded task is no longer interrupted, see FilterModel.Refresher.
+- AbstractEntityEditor bug fixed, a foreign key value replaced because the referenced entity was updated or deleted elsewhere no longer applies its propagators, which overwrote the values derived from it, or entered over them, and left the entity modified.
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, scrolling to the selected rows now follows the rows added to the selection, where any change to it scrolled to the first selected row when none was visible, deselecting a row scrolling to another.
 - FilterTable bug fixed, selecting a search result from the search field, or toggling its selection, now focuses its cell, leaving the rest of the selection as it is, where adding a result whose row was already selected selected, or deselected, every row between it and the anchor.

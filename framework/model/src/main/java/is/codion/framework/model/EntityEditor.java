@@ -1082,6 +1082,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>Adds a propagation mapping from this attribute to the given attribute.
 		 * Each time this attribute is edited via {@link #set(Object)} or set in an entity
 		 * via {@link #set(Entity, Object)}, the function is applied to derive the target attribute value.
+		 * A foreign key value replaced because the referenced entity was updated or deleted elsewhere
+		 * is not an edit and does not propagate.
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}
 		 * instances, triggering edit events. When setting values in an entity, derived values are
 		 * set directly on the entity via {@link Entity#set(Attribute, Object)}.

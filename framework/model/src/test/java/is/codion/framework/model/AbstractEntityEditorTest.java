@@ -1623,6 +1623,40 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void foreignKeyReplacedDoesNotPropagate() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.DEPARTMENT_FK).propagate(Employee.NAME,
+						department -> department == null ? null : department.get(Department.NAME));
+		Entity department = CONNECTION.entities().entity(Department.TYPE)
+						.with(Department.ID, -3)
+						.with(Department.NAME, "Accounting")
+						.build();
+		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Typed by hand")
+						.with(Employee.DEPARTMENT_FK, department)
+						.build());
+
+		Entity updated = department.copy().mutable();
+		updated.set(Department.NAME, "Bookkeeping");
+		updated.save();
+
+		persistenceEvents(Department.TYPE).updated().accept(singletonMap(department, updated));
+		assertEquals("Bookkeeping", editor.value(Employee.DEPARTMENT_FK).get().get(Department.NAME));
+		//a row updated elsewhere is no edit of this one
+		assertEquals("Typed by hand", editor.value(Employee.NAME).get());
+		assertFalse(editor.entity().get().modified());
+
+		persistenceEvents(Department.TYPE).deleted().accept(singleton(updated));
+		assertNull(editor.value(Employee.DEPARTMENT_FK).get());
+		assertEquals("Typed by hand", editor.value(Employee.NAME).get());
+
+		//an edit still propagates
+		editor.value(Employee.DEPARTMENT_FK).set(updated);
+		assertEquals("Bookkeeping", editor.value(Employee.NAME).get());
+	}
+
+	@Test
 	void foreignKeyPersistenceIgnoresEditable() {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		Entity department = CONNECTION.entities().entity(Department.TYPE)
