@@ -745,7 +745,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void revert() {
 			detail.editors.values().forEach(detail -> detail.editor.entity().revert());
-			entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
+			entityDefinition.attributes().get().forEach(attribute -> editorValue(attribute).restore());
 		}
 
 		private void setEntity(Entity entity) {
@@ -2718,6 +2718,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
 			entity.instance.set(attribute, value);
 			notifyValueEdit(attribute, value, dependingValues);
+		}
+
+		/**
+		 * Restores the original value if modified, as part of reverting the entity as a whole. Applying the
+		 * propagators here would derive anew a value already restored, depending on the order of the attributes.
+		 */
+		private void restore() {
+			if (modified().is()) {
+				replace(original());
+			}
 		}
 
 		/**

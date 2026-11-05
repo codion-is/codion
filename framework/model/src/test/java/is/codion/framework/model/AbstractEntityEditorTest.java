@@ -1595,6 +1595,68 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void revertDoesNotPropagate() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		//the name is defined before the manager it is derived from, and before the salary derived from it,
+		//so a derived value is reverted both before and after its source
+		editor.value(Employee.MANAGER_ID).propagate(Employee.NAME, manager -> manager == null ? null : "Manager " + manager);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> name == null ? null : (double) name.length());
+		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Scott")
+						.with(Employee.MANAGER_ID, 99)
+						.with(Employee.SALARY, 1000d)
+						.build());
+
+		editor.value(Employee.MANAGER_ID).set(7);
+		assertEquals("Manager 7", editor.value(Employee.NAME).get());
+		assertEquals(9d, editor.value(Employee.SALARY).get());
+
+		editor.entity().revert();
+		assertEquals(99, editor.value(Employee.MANAGER_ID).get());
+		assertEquals("Scott", editor.value(Employee.NAME).get());
+		assertEquals(1000d, editor.value(Employee.SALARY).get());
+		assertFalse(editor.entity().get().modified());
+	}
+
+	@Test
+	void revertValuePropagates() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> name == null ? null : (double) name.length());
+		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Scott")
+						.with(Employee.SALARY, 1000d)
+						.build());
+
+		editor.value(Employee.NAME).set("Bob");
+		assertEquals(3d, editor.value(Employee.SALARY).get());
+
+		//reverting a single value is an edit of that value
+		editor.value(Employee.NAME).revert();
+		assertEquals("Scott", editor.value(Employee.NAME).get());
+		assertEquals(5d, editor.value(Employee.SALARY).get());
+	}
+
+	@Test
+	void revertNotEditable() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Scott")
+						.build());
+		editor.value(Employee.NAME).set("Bob");
+		editor.value(Employee.NAME).editable().set(false);
+
+		assertThrows(IllegalStateException.class, () -> editor.value(Employee.NAME).revert());
+		assertEquals("Bob", editor.value(Employee.NAME).get());
+
+		editor.entity().revert();
+		assertEquals("Scott", editor.value(Employee.NAME).get());
+		assertFalse(editor.entity().get().modified());
+	}
+
+	@Test
 	void foreignKeyUpdatedElsewhere() {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		Entity department = CONNECTION.entities().entity(Department.TYPE)

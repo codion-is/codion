@@ -654,7 +654,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		void clear();
 
 		/**
-		 * Reverts all attribute value changes.
+		 * Reverts all attribute value changes, restoring the original values as they were, not applying
+		 * propagators and regardless of {@link EditorValue#editable()}, unlike {@link EditorValue#revert()}.
 		 */
 		void revert();
 
@@ -986,7 +987,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		@Nullable T original();
 
 		/**
-		 * Reverts to the original value if modified
+		 * Reverts to the original value if modified. This is an edit of this value, like {@link #set(Object)},
+		 * applying its propagators and throwing an exception if not {@link #editable()}.
+		 * @see EditorEntity#revert()
 		 */
 		void revert();
 
@@ -1083,7 +1086,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * Each time this attribute is edited via {@link #set(Object)} or set in an entity
 		 * via {@link #set(Entity, Object)}, the function is applied to derive the target attribute value.
 		 * A foreign key value replaced because the referenced entity was updated or deleted elsewhere
-		 * is not an edit and does not propagate.
+		 * is not an edit and does not propagate, nor does {@link EditorEntity#revert()}.
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}
 		 * instances, triggering edit events. When setting values in an entity, derived values are
 		 * set directly on the entity via {@link Entity#set(Attribute, Object)}.
