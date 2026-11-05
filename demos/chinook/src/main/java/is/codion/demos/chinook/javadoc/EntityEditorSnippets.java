@@ -25,6 +25,8 @@ import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorTask;
 
+import java.util.Objects;
+
 /**
  * The {@link EntityEditor} javadoc snippets, each the region of the same name.
  */
@@ -47,5 +49,11 @@ final class EntityEditorSnippets {
             customer -> customer == null ? null : customer.get(Customer.ADDRESS));
     editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGCITY,
             customer -> customer == null ? null : customer.get(Customer.CITY)); // @end
+  }
+
+  void propagateConditional(EntityEditor<?> editor) {
+    // Populate the billing address when a customer is selected, keeping it when the customer is cleared // @start region=propagateConditional
+    editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
+            Objects::nonNull, customer -> customer.get(Customer.ADDRESS)); // @end
   }
 }

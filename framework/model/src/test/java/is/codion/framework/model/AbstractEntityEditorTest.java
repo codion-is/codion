@@ -45,6 +45,7 @@ import java.lang.ref.WeakReference;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -53,6 +54,7 @@ import java.util.function.Predicate;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
+import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -1593,6 +1595,99 @@ public final class AbstractEntityEditorTest {
 		assertEquals("5", employee.get(Employee.NAME));
 		assertEquals(5d, employee.get(Employee.SALARY));
 		assertEquals(5, employee.get(Employee.MANAGER_ID));
+	}
+
+	@Test
+	void propagateConditional() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		//selecting a manager gives the department, clearing the manager leaves it
+		editor.value(Employee.MANAGER_FK).propagate(Employee.DEPARTMENT_FK,
+						Objects::nonNull, manager -> manager.get(Employee.DEPARTMENT_FK));
+		Entity department = CONNECTION.entities().entity(Department.TYPE)
+						.with(Department.ID, -4)
+						.with(Department.NAME, "Accounting")
+						.build();
+		Entity manager = CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.DEPARTMENT_FK, department)
+						.build();
+
+		editor.value(Employee.MANAGER_FK).set(manager);
+		assertEquals(department, editor.value(Employee.DEPARTMENT_FK).get());
+		editor.value(Employee.MANAGER_FK).clear();
+		assertEquals(department, editor.value(Employee.DEPARTMENT_FK).get());
+
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE).build();
+		editor.value(Employee.MANAGER_FK).set(employee, manager);
+		assertEquals(department, employee.get(Employee.DEPARTMENT_FK));
+		editor.value(Employee.MANAGER_FK).set(employee, null);
+		assertEquals(department, employee.get(Employee.DEPARTMENT_FK));
+	}
+
+	@Test
+	void propagateConditionalOnNull() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, Objects::isNull, name -> -1d);
+
+		editor.value(Employee.NAME).set("Scott");
+		assertNull(editor.value(Employee.SALARY).get());
+		editor.value(Employee.NAME).clear();
+		assertEquals(-1d, editor.value(Employee.SALARY).get());
+	}
+
+	@Test
+	void propagateConditionalNotTransitive() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> false, name -> 1d);
+		editor.value(Employee.SALARY).propagate(Employee.MANAGER_ID, Double::intValue);
+
+		editor.value(Employee.NAME).set("Scott");
+		assertNull(editor.value(Employee.SALARY).get());
+		assertNull(editor.value(Employee.MANAGER_ID).get());
+	}
+
+	@Test
+	void propagateReplaces() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> 1d);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> 2d);
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE).build();
+
+		editor.value(Employee.NAME).set("Scott");
+		editor.value(Employee.NAME).set(employee, "Scott");
+		assertEquals(2d, editor.value(Employee.SALARY).get());
+		assertEquals(2d, employee.get(Employee.SALARY));
+
+		//a condition that doesn't hold leaves the target, the previous mapping being gone
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> false, name -> 3d);
+
+		editor.value(Employee.NAME).set("Bob");
+		editor.value(Employee.NAME).set(employee, "Bob");
+		assertEquals(2d, editor.value(Employee.SALARY).get());
+		assertEquals(2d, employee.get(Employee.SALARY));
+	}
+
+	@Test
+	void propagateInTheOrderAdded() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		List<Attribute<?>> targets = asList(Employee.ID, Employee.DEPARTMENT, Employee.MANAGER_ID, Employee.SALARY);
+		List<Attribute<?>> propagated = new ArrayList<>();
+		targets.forEach(target -> propagateRecorded(editor, target, propagated));
+
+		editor.value(Employee.NAME).set("Scott");
+		assertEquals(targets, propagated);
+
+		propagated.clear();
+		editor.value(Employee.NAME).set(CONNECTION.entities().entity(Employee.TYPE).build(), "Scott");
+		assertEquals(targets, propagated);
+	}
+
+	private static <T> void propagateRecorded(TestEntityEditor editor, Attribute<T> target, List<Attribute<?>> propagated) {
+		editor.value(Employee.NAME).propagate(target, name -> {
+			propagated.add(target);
+
+			return false;
+		}, name -> null);
 	}
 
 	@Test

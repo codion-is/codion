@@ -50,6 +50,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -79,6 +80,7 @@ public final class EntityDialogs {
 	 * @return a new builder
 	 * @see is.codion.framework.model.EntityEditor.EditorValue#set(Entity, Object)
 	 * @see is.codion.framework.model.EntityEditor.EditorValue#propagate(Attribute, Function)
+	 * @see is.codion.framework.model.EntityEditor.EditorValue#propagate(Attribute, Predicate, Function)
 	 */
 	public static <T> EditAttributeDialogBuilder<T> editAttributeDialog(SwingEntityEditor editor, Attribute<T> attribute) {
 		return new DefaultEditAttributeDialogBuilder<>(editor, attribute);

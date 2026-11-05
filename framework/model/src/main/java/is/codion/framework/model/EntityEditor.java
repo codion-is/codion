@@ -1093,6 +1093,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * instances, triggering edit events. When setting values in an entity, derived values are
 		 * set directly on the entity via {@link Entity#set(Attribute, Object)}. Either way the target attribute
 		 * need not be {@link #editable()}.
+		 * <p>A target attribute has one propagation mapping, adding another replaces it.
+		 * The mappings apply in the order their target attributes were added.
+		 * <p>The function should depend only on the value it is given. When setting a value in an entity the
+		 * editor holds a different entity, so the editor's own values say nothing about the one being set.
 		 * <p>Propagation is transitive, a value derived for a target attribute in turn applies that attribute's
 		 * own propagators. It stops as soon as a derived value equals the current one, and an attribute already
 		 * propagating in the current cascade is given its derived value but propagates no further - so a pair
@@ -1110,6 +1114,22 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		<V> void propagate(Attribute<V> attribute, Function<@Nullable T, @Nullable V> deriver);
 
 		/**
+		 * <p>Adds a conditional propagation mapping from this attribute to the given attribute. It behaves as
+		 * {@link #propagate(Attribute, Function)} when the condition holds for the value, and otherwise leaves
+		 * the target attribute as it is, nothing propagating from it.
+		 * <p>Like the function, the condition should depend only on the value it is given.
+		 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityEditorSnippets" region = "propagateConditional":
+		 * // Populate the billing address when a customer is selected, keeping it when the customer is cleared // @start region=propagateConditional
+		 * editor.value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
+		 *         Objects::nonNull, customer -> customer.get(Customer.ADDRESS)); // @end}
+		 * @param attribute the target attribute to propagate to
+		 * @param condition the condition the value must satisfy to be propagated
+		 * @param deriver the function deriving the target value from the source attribute's value
+		 * @param <V> the target attribute value type
+		 */
+		<V> void propagate(Attribute<V> attribute, Predicate<@Nullable T> condition, Function<@Nullable T, @Nullable V> deriver);
+
+		/**
 		 * <p>Sets the given value for the underlying attribute in the given entity,
 		 * applying the associated propagators, if any are specified, in case the value changes.
 		 * <p>This method is used by components providing edit functionality outside the editor,
@@ -1119,6 +1139,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @param entity the entity
 		 * @param value the value to set
 		 * @see #propagate(Attribute, Function)
+		 * @see #propagate(Attribute, Predicate, Function)
 		 */
 		void set(Entity entity, @Nullable T value);
 	}

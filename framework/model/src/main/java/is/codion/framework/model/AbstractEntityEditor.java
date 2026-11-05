@@ -2560,7 +2560,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private final Attribute<T> attribute;
 		private final Value<Supplier<@Nullable T>> defaultValue;
-		private final Map<Attribute<?>, Function<@Nullable T, ?>> propagators = new HashMap<>();
+		private final Map<Attribute<?>, Propagator<?>> propagators = new LinkedHashMap<>();
 
 		private boolean propagating;
 		private boolean deriving;
@@ -2666,8 +2666,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public <V> void propagate(Attribute<V> attribute, Function<@Nullable T, @Nullable V> deriver) {
+			propagate(attribute, value -> true, deriver);
+		}
+
+		@Override
+		public <V> void propagate(Attribute<V> attribute, Predicate<@Nullable T> condition, Function<@Nullable T, @Nullable V> deriver) {
 			entityDefinition.attributes().definition(attribute);
-			propagators.put(attribute, requireNonNull(deriver));
+			propagators.put(attribute, new Propagator<>(attribute, requireNonNull(condition), requireNonNull(deriver)));
 		}
 
 		@Override
@@ -2681,8 +2686,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 */
 		private void set(Entity entity, @Nullable T value, Set<Attribute<?>> propagating) {
 			if (change(entity, value) && propagating.add(attribute)) {
-				propagators.forEach((attr, deriver) -> editorValue((Attribute<Object>) attr)
-								.set(entity, deriver.apply(entity.get(attribute)), propagating));
+				propagators.values().forEach(propagator -> propagator.propagate(entity, propagating));
 				propagating.remove(attribute);
 			}
 		}
@@ -2764,8 +2768,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 			propagating = true;
 			try {
-				propagators.forEach((attr, deriver) ->
-								editorValue((Attribute<Object>) attr).derive(deriver.apply(entity.instance.get(attribute))));
+				propagators.values().forEach(Propagator::propagate);
 			}
 			finally {
 				propagating = false;
@@ -2876,6 +2879,33 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				}
 
 				return null;
+			}
+		}
+
+		private final class Propagator<V> {
+
+			private final Attribute<V> target;
+			private final Predicate<@Nullable T> condition;
+			private final Function<@Nullable T, @Nullable V> deriver;
+
+			private Propagator(Attribute<V> target, Predicate<@Nullable T> condition, Function<@Nullable T, @Nullable V> deriver) {
+				this.target = target;
+				this.condition = condition;
+				this.deriver = deriver;
+			}
+
+			private void propagate() {
+				T value = entity.instance.get(attribute);
+				if (condition.test(value)) {
+					editorValue(target).derive(deriver.apply(value));
+				}
+			}
+
+			private void propagate(Entity entity, Set<Attribute<?>> propagating) {
+				T value = entity.get(attribute);
+				if (condition.test(value)) {
+					editorValue(target).set(entity, deriver.apply(value), propagating);
+				}
 			}
 		}
 
