@@ -704,7 +704,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			changing.accept(null);
 			supersede();
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
-			setEntity(createEntity(this::defaultValue));
+			setEntity(defaultEntity());
 			changed.accept(null);
 		}
 
@@ -772,8 +772,31 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private void resetDefaults() {
 			supersede();
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
-			setEntity(createEntity(this::defaultValue));
+			setEntity(defaultEntity());
 			replaced.accept(null);
+		}
+
+		/**
+		 * Creates an entity holding the default values and the persisted ones, each persisted value which isn't null
+		 * applying its propagators, as if it had just been set, in the order of the attributes. A persisted null
+		 * propagates nothing, the targets keeping their default values.
+		 * @return a new entity holding the default values
+		 */
+		private Entity defaultEntity() {
+			Entity defaultEntity = createEntity(this::defaultValue);
+			entityDefinition.attributes().get().stream()
+							.filter(attribute -> persisted(attribute) && defaultEntity.get(attribute) != null)
+							.forEach(attribute -> editorValue(attribute).propagate(defaultEntity));
+			//the derived values are defaults as well
+			defaultEntity.save();
+
+			return defaultEntity;
+		}
+
+		private boolean persisted(Attribute<?> attribute) {
+			State persist = persistValues.get(attribute);
+
+			return persist != null && persist.is();
 		}
 
 		private void resetCleared() {
@@ -2681,7 +2704,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		/**
-		 * Propagates as {@link #setValue(Object)} and {@link #propagate()} do, an unchanged value not propagating
+		 * Propagates as {@link #setValue(Object)} and {@link #propagate(boolean)} do, an unchanged value not propagating
 		 * and an attribute already propagating further up the cascade given its value, going no further.
 		 */
 		private void set(Entity entity, @Nullable T value, Set<Attribute<?>> propagating) {
@@ -2690,6 +2713,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				propagators.values().forEach(propagator -> propagator.propagate(entity, modified, propagating));
 				propagating.remove(attribute);
 			}
+		}
+
+		/**
+		 * Applies the propagators to the given entity, as if this value had just been set in it.
+		 * @param entity the entity
+		 */
+		private void propagate(Entity entity) {
+			Set<Attribute<?>> propagating = new HashSet<>();
+			propagating.add(attribute);
+			propagators.values().forEach(propagator -> propagator.propagate(entity, false, propagating));
 		}
 
 		@Override

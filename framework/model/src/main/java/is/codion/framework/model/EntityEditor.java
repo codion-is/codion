@@ -626,6 +626,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Resets this editor to its default values, retaining values flagged to
 		 * {@link EditorValue#persist()}. Registered detail editors are reset to their defaults as well.
+		 * <p>A persisted value which isn't null applies its propagators, as if it had just been set, in the order of
+		 * the attributes, so the values derived from it are derived rather than given their defaults, a persisted
+		 * one included. A persisted null propagates nothing. The derived values are defaults, not edits.
 		 * <p>Fires {@link #changing()} and then {@link #changed()} on this editor; throwing a
 		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels the
 		 * operation. Detail editors are reset silently, firing only {@link #replaced()}. This is an
@@ -1090,6 +1093,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * Setting the value it already has does not propagate. Setting it back to its original value gives the
 		 * target attribute its original value back, rather than a derived one, which may differ from what the
 		 * entity held, so an edit undone, by hand or via {@link #revert()}, leaves the entity as it was.
+		 * A value {@link #persist() persisted} when {@link EditorEntity#defaults()} resets the editor, unless null,
+		 * propagates as if it had just been set.
 		 * A foreign key value replaced because the referenced entity was updated or deleted elsewhere
 		 * is not an edit and does not propagate, nor does {@link EditorEntity#revert()}.
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}

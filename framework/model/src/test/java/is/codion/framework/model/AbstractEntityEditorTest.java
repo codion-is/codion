@@ -1696,6 +1696,83 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void defaultsPropagatePersisted() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		//foreign keys persist by default, the name and salary don't
+		editor.value(Employee.DEPARTMENT_FK).propagate(Employee.NAME,
+						department -> department == null ? null : department.get(Department.NAME));
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> name == null ? null : (double) name.length());
+		Entity department = CONNECTION.entities().entity(Department.TYPE)
+						.with(Department.ID, -8)
+						.with(Department.NAME, "Accounting")
+						.build();
+		editor.value(Employee.DEPARTMENT_FK).set(department);
+		editor.value(Employee.NAME).set("Typed by hand");
+		List<String> names = new ArrayList<>();
+		editor.value(Employee.NAME).edited().addConsumer(names::add);
+
+		//the department kept, as if it had just been set
+		editor.entity().defaults();
+		assertEquals(department, editor.value(Employee.DEPARTMENT_FK).get());
+		assertEquals("Accounting", editor.value(Employee.NAME).get());
+		assertEquals(10d, editor.value(Employee.SALARY).get());
+		//which is no edit
+		assertTrue(names.isEmpty());
+		assertFalse(editor.value(Employee.NAME).modified().is());
+		assertFalse(editor.value(Employee.SALARY).modified().is());
+	}
+
+	@Test
+	void defaultsPropagateNothingKept() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.DEPARTMENT_FK).propagate(Employee.NAME,
+						department -> department == null ? null : department.get(Department.NAME));
+		editor.value(Employee.MANAGER_FK).propagate(Employee.SALARY, manager -> false, manager -> 1d);
+		editor.value(Employee.NAME).defaultValue().set(() -> "Default");
+		editor.value(Employee.SALARY).defaultValue().set(() -> 5000d);
+
+		//no department kept, so nothing is derived from it, the name keeps its default
+		editor.entity().defaults();
+		assertNull(editor.value(Employee.DEPARTMENT_FK).get());
+		assertEquals("Default", editor.value(Employee.NAME).get());
+
+		//a manager kept, but the condition doesn't hold
+		editor.value(Employee.MANAGER_FK).set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 2)
+						.build());
+		editor.entity().defaults();
+		assertNotNull(editor.value(Employee.MANAGER_FK).get());
+		assertEquals(5000d, editor.value(Employee.SALARY).get());
+	}
+
+	@Test
+	void defaultsPersistedTargetDerived() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		//both foreign keys persist
+		editor.value(Employee.MANAGER_FK).propagate(Employee.DEPARTMENT_FK,
+						Objects::nonNull, manager -> manager.get(Employee.DEPARTMENT_FK));
+		Entity accounting = CONNECTION.entities().entity(Department.TYPE)
+						.with(Department.ID, -9)
+						.with(Department.NAME, "Accounting")
+						.build();
+		Entity research = CONNECTION.entities().entity(Department.TYPE)
+						.with(Department.ID, -10)
+						.with(Department.NAME, "Research")
+						.build();
+		Entity manager = CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 2)
+						.with(Employee.DEPARTMENT_FK, research)
+						.build();
+		editor.value(Employee.MANAGER_FK).set(manager);
+		editor.value(Employee.DEPARTMENT_FK).set(accounting);
+
+		//the department derived from the manager kept, rather than the one kept
+		editor.entity().defaults();
+		assertEquals(manager, editor.value(Employee.MANAGER_FK).get());
+		assertEquals(research, editor.value(Employee.DEPARTMENT_FK).get());
+	}
+
+	@Test
 	void propagateNotEditable() {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		//a read only value derived from the one edited, with one derived from it in turn

@@ -51,6 +51,7 @@ Foreign key values persist by default, since when entering a batch of records th
 The example below disables persistence for a foreign key and uses {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#propagate(is.codion.framework.domain.entity.attribute.Attribute,java.util.function.Function)[propagate()] to populate the invoice billing address from the customer, each time the customer is edited.
 A propagated value is applied only when the source value actually changes and remains editable by the user afterwards.
 Selecting the invoice's original customer again gives back its original billing address, rather than the customer's current one, so an edit undone leaves the invoice as it was.
+Had the customer been left to persist, as foreign keys do by default, the next invoice would start out with its billing address as well, a persisted value propagating when the editor is reset to its defaults.
 A customer updated or deleted elsewhere is not an edit of the invoice and leaves its billing address as it is.
 An attribute has one propagator, adding another replaces it.
 An overload of *propagate()* takes a condition on the new value and leaves the target as it is when the condition doesn't hold, for example to keep the billing address when the customer is cleared.
