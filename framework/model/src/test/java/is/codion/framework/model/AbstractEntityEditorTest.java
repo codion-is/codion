@@ -1719,6 +1719,35 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void foreignKeyNotLoadedCleared() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		//references a department, which isn't loaded
+		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Scott")
+						.with(Employee.DEPARTMENT, 10)
+						.build());
+		assertNull(editor.value(Employee.DEPARTMENT_FK).get());
+		editor.value(Employee.DEPARTMENT_FK).propagate(Employee.NAME, department -> "No department");
+		List<Integer> columnValues = new ArrayList<>();
+		editor.value(Employee.DEPARTMENT).edited().addConsumer(columnValues::add);
+		assertFalse(editor.value(Employee.DEPARTMENT).modified().is());
+
+		//its value null both before and after, it is the reference which changes
+		editor.value(Employee.DEPARTMENT_FK).clear();
+		assertNull(editor.value(Employee.DEPARTMENT).get());
+		assertTrue(editor.value(Employee.DEPARTMENT).modified().is());
+		assertEquals(1, columnValues.size());
+		assertEquals("No department", editor.value(Employee.NAME).get());
+
+		//now it references nothing, so nothing changes
+		editor.value(Employee.NAME).set("Scott");
+		editor.value(Employee.DEPARTMENT_FK).clear();
+		assertEquals(1, columnValues.size());
+		assertEquals("Scott", editor.value(Employee.NAME).get());
+	}
+
+	@Test
 	void foreignKeyPersistenceIgnoresEditable() {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		Entity department = CONNECTION.entities().entity(Department.TYPE)

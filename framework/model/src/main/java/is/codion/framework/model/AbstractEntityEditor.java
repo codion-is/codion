@@ -2694,15 +2694,32 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				throw new IllegalStateException("Attribute is not editable");
 			}
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
-			T previousValue = entity.instance.set(attribute, value);
-			//the value the entity ends up with, which it may adjust, a trimmed string for example
-			T currentValue = entity.instance.get(attribute);
-			if (!Objects.deepEquals(currentValue, previousValue)) {
-				notifyValueEdit(attribute, currentValue, dependingValues);
+			if (change(entity.instance, value)) {
+				//the value the entity ends up with, which it may adjust, a trimmed string for example
+				notifyValueEdit(attribute, entity.instance.get(attribute), dependingValues);
 				//an unchanged value is not propagated, which settles a cycle that converges
 				//one that does not is stopped by propagate() itself
 				propagate();
 			}
+		}
+
+		/**
+		 * Sets the value in the given entity.
+		 * <p>A foreign key may change without its value changing, since its value is null when the referenced
+		 * entity isn't loaded, even though it references one. So what it references is compared as well.
+		 * @param entity the entity
+		 * @param value the value
+		 * @return true if the given value changed the entity
+		 */
+		private boolean change(Entity entity, @Nullable T value) {
+			Entity.Key previousKey = referencedKey(entity);
+			T previousValue = entity.set(attribute, value);
+
+			return !Objects.deepEquals(entity.get(attribute), previousValue) || !Objects.equals(referencedKey(entity), previousKey);
+		}
+
+		private Entity.@Nullable Key referencedKey(Entity entity) {
+			return attribute instanceof ForeignKey ? entity.key((ForeignKey) attribute) : null;
 		}
 
 		/**
