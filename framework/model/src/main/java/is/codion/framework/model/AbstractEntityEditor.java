@@ -2685,8 +2685,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 * and an attribute already propagating further up the cascade given its value, going no further.
 		 */
 		private void set(Entity entity, @Nullable T value, Set<Attribute<?>> propagating) {
+			boolean modified = entity.modified(attribute);
 			if (change(entity, value) && propagating.add(attribute)) {
-				propagators.values().forEach(propagator -> propagator.propagate(entity, propagating));
+				propagators.values().forEach(propagator -> propagator.propagate(entity, modified, propagating));
 				propagating.remove(attribute);
 			}
 		}
@@ -2702,12 +2703,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				throw new IllegalStateException("Attribute is not editable");
 			}
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
+			boolean modified = entity.instance.modified(attribute);
 			if (change(entity.instance, value)) {
 				//the value the entity ends up with, which it may adjust, a trimmed string for example
 				notifyValueEdit(attribute, entity.instance.get(attribute), dependingValues);
 				//an unchanged value is not propagated, which settles a cycle that converges
 				//one that does not is stopped by propagate() itself
-				propagate();
+				propagate(modified);
 			}
 		}
 
@@ -2761,14 +2763,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 * again. The derived value it was just given stands - it is a real value, derived by a real propagator -
 		 * it simply goes no further. A pair deriving from each other therefore settles after one lap rather than
 		 * recursing until the stack gives out.
+		 * @param modified true if this value was modified before the change being propagated
 		 */
-		private void propagate() {
+		private void propagate(boolean modified) {
 			if (propagating) {
 				return;
 			}
 			propagating = true;
 			try {
-				propagators.values().forEach(Propagator::propagate);
+				propagators.values().forEach(propagator -> propagator.propagate(modified));
 			}
 			finally {
 				propagating = false;
@@ -2894,18 +2897,32 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.deriver = deriver;
 			}
 
-			private void propagate() {
+			private void propagate(boolean modified) {
 				T value = entity.instance.get(attribute);
 				if (condition.test(value)) {
-					editorValue(target).derive(deriver.apply(value));
+					editorValue(target).derive(value(entity.instance, value, modified));
 				}
 			}
 
-			private void propagate(Entity entity, Set<Attribute<?>> propagating) {
+			private void propagate(Entity entity, boolean modified, Set<Attribute<?>> propagating) {
 				T value = entity.get(attribute);
 				if (condition.test(value)) {
-					editorValue(target).set(entity, deriver.apply(value), propagating);
+					editorValue(target).set(entity, value(entity, value, modified), propagating);
 				}
+			}
+
+			/**
+			 * A value set back to its original gives the target its original back, rather than a derived one,
+			 * which may differ from what the entity held, so an edit undone leaves the entity as it was.
+			 * The entity records no original for a value it didn't hold, so being unmodified only means
+			 * being back at the original if the value was modified before the change.
+			 */
+			private @Nullable V value(Entity entity, @Nullable T value, boolean modified) {
+				if (modified && !entity.modified(attribute)) {
+					return entity.original(target);
+				}
+
+				return deriver.apply(value);
 			}
 		}
 

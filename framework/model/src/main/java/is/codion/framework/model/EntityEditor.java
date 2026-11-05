@@ -988,7 +988,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * Reverts to the original value if modified. This is an edit of this value, like {@link #set(Object)},
-		 * applying its propagators and throwing an exception if not {@link #editable()}.
+		 * applying its propagators, which give their targets their original values back, and throwing an
+		 * exception if not {@link #editable()}.
 		 * @see EditorEntity#revert()
 		 */
 		void revert();
@@ -1086,7 +1087,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>Adds a propagation mapping from this attribute to the given attribute.
 		 * Each time this attribute is changed via {@link #set(Object)} or in an entity
 		 * via {@link #set(Entity, Object)}, the function is applied to derive the target attribute value.
-		 * Setting the value it already has does not propagate.
+		 * Setting the value it already has does not propagate. Setting it back to its original value gives the
+		 * target attribute its original value back, rather than a derived one, which may differ from what the
+		 * entity held, so an edit undone, by hand or via {@link #revert()}, leaves the entity as it was.
 		 * A foreign key value replaced because the referenced entity was updated or deleted elsewhere
 		 * is not an edit and does not propagate, nor does {@link EditorEntity#revert()}.
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}

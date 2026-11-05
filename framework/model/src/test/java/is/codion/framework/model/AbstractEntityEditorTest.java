@@ -1628,8 +1628,13 @@ public final class AbstractEntityEditorTest {
 	void propagateConditionalOnNull() {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		editor.value(Employee.NAME).propagate(Employee.SALARY, Objects::isNull, name -> -1d);
+		//a name to begin with, since clearing a new one returns it to its original, giving the salary its own
+		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Scott")
+						.build());
 
-		editor.value(Employee.NAME).set("Scott");
+		editor.value(Employee.NAME).set("Bob");
 		assertNull(editor.value(Employee.SALARY).get());
 		editor.value(Employee.NAME).clear();
 		assertEquals(-1d, editor.value(Employee.SALARY).get());
@@ -1819,7 +1824,7 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
-	void revertValuePropagates() {
+	void revertValueRestoresTarget() {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> name == null ? null : (double) name.length());
 		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
@@ -1831,10 +1836,96 @@ public final class AbstractEntityEditorTest {
 		editor.value(Employee.NAME).set("Bob");
 		assertEquals(3d, editor.value(Employee.SALARY).get());
 
-		//reverting a single value is an edit of that value
+		//reverting a single value is an edit of that value, back to its original, so the target is back to its own
 		editor.value(Employee.NAME).revert();
 		assertEquals("Scott", editor.value(Employee.NAME).get());
-		assertEquals(5d, editor.value(Employee.SALARY).get());
+		assertEquals(1000d, editor.value(Employee.SALARY).get());
+		assertFalse(editor.entity().get().modified());
+	}
+
+	@Test
+	void propagateBackToOriginal() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		//a chain, which unwinds
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> name == null ? null : (double) name.length());
+		editor.value(Employee.SALARY).propagate(Employee.MANAGER_ID, salary -> salary == null ? null : salary.intValue());
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Scott")
+						.with(Employee.SALARY, 1000d)
+						.with(Employee.MANAGER_ID, 99)
+						.build();
+		editor.entity().set(employee);
+
+		editor.value(Employee.NAME).set("Bob");
+		assertEquals(3d, editor.value(Employee.SALARY).get());
+		assertEquals(3, editor.value(Employee.MANAGER_ID).get());
+
+		//set back by hand, not reverted
+		editor.value(Employee.NAME).set("Scott");
+		assertEquals(1000d, editor.value(Employee.SALARY).get());
+		assertEquals(99, editor.value(Employee.MANAGER_ID).get());
+		assertFalse(editor.entity().get().modified());
+
+		Entity copy = employee.copy().mutable();
+		editor.value(Employee.NAME).set(copy, "Bob");
+		assertEquals(3d, copy.get(Employee.SALARY));
+		editor.value(Employee.NAME).set(copy, "Scott");
+		assertEquals(1000d, copy.get(Employee.SALARY));
+		assertEquals(99, copy.get(Employee.MANAGER_ID));
+		assertFalse(copy.modified());
+	}
+
+	@Test
+	void propagateFirstValueDerives() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> name == null ? null : (double) name.length());
+		//a row without a name, which then records no original, and is not modified, when given one
+		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.SALARY, 1000d)
+						.build());
+
+		editor.value(Employee.NAME).set("Bob");
+		assertEquals(3d, editor.value(Employee.SALARY).get());
+
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.SALARY, 1000d)
+						.build();
+		editor.value(Employee.NAME).set(employee, "Bob");
+		assertEquals(3d, employee.get(Employee.SALARY));
+	}
+
+	@Test
+	void propagateConditionalBackToOriginal() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.value(Employee.MANAGER_FK).propagate(Employee.DEPARTMENT_FK,
+						Objects::nonNull, manager -> manager.get(Employee.DEPARTMENT_FK));
+		Entity accounting = CONNECTION.entities().entity(Department.TYPE)
+						.with(Department.ID, -5)
+						.with(Department.NAME, "Accounting")
+						.build();
+		Entity research = CONNECTION.entities().entity(Department.TYPE)
+						.with(Department.ID, -6)
+						.with(Department.NAME, "Research")
+						.build();
+		Entity manager = CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 2)
+						.with(Employee.DEPARTMENT_FK, research)
+						.build();
+		//no manager to begin with
+		editor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Scott")
+						.with(Employee.DEPARTMENT_FK, accounting)
+						.with(Employee.MANAGER_FK, null)
+						.build());
+
+		editor.value(Employee.MANAGER_FK).set(manager);
+		assertEquals(research, editor.value(Employee.DEPARTMENT_FK).get());
+		//back to no manager, which the condition doesn't accept, so the department stays
+		editor.value(Employee.MANAGER_FK).clear();
+		assertEquals(research, editor.value(Employee.DEPARTMENT_FK).get());
 	}
 
 	@Test
@@ -1913,8 +2004,15 @@ public final class AbstractEntityEditorTest {
 		assertEquals("Typed by hand", editor.value(Employee.NAME).get());
 
 		//an edit still propagates
+		editor.value(Employee.DEPARTMENT_FK).set(CONNECTION.entities().entity(Department.TYPE)
+						.with(Department.ID, -7)
+						.with(Department.NAME, "Research")
+						.build());
+		assertEquals("Research", editor.value(Employee.NAME).get());
+
+		//and the original department gives the original name back
 		editor.value(Employee.DEPARTMENT_FK).set(updated);
-		assertEquals("Bookkeeping", editor.value(Employee.NAME).get());
+		assertEquals("Typed by hand", editor.value(Employee.NAME).get());
 	}
 
 	@Test
