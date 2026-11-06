@@ -81,7 +81,7 @@ public class DomainTest implements AutoCloseable {
 	 * @param user the user to use when running the tests
 	 */
 	public DomainTest(Domain domain, User user) {
-		this(domain, DefaultEntityFactory::new, user);
+		this(domain, EntityFactory::entityFactory, user);
 	}
 
 	/**
@@ -174,6 +174,17 @@ public class DomainTest implements AutoCloseable {
 		 * @throws DatabaseException in case of an exception
 		 */
 		void modify(Entity entity);
+
+		/**
+		 * Returns an {@link EntityFactory} creating and modifying entities with random values, inserting the
+		 * ones referenced via foreign keys, the one a {@link DomainTest} uses unless given another.
+		 * Extend {@link AbstractEntityFactory} to control the values for a domain.
+		 * @param connection the connection to use
+		 * @return a new {@link EntityFactory} instance
+		 */
+		static EntityFactory entityFactory(EntityConnection connection) {
+			return new DefaultEntityFactory(connection);
+		}
 	}
 
 	/**

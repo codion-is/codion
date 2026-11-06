@@ -23,8 +23,9 @@ import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.swing.framework.model.SwingEntityModel;
+
+import static is.codion.framework.domain.test.DomainTest.EntityFactory.entityFactory;
 
 // tag::loadTest[]
 public final class InsertEmployee extends AbstractPerformer {
@@ -34,7 +35,7 @@ public final class InsertEmployee extends AbstractPerformer {
 		SwingEntityModel departmentModel = application.models().get(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
-		Entity employee = new DefaultEntityFactory(application.connection()).entity(Employee.TYPE);
+		Entity employee = entityFactory(application.connection()).entity(Employee.TYPE);
 		employee.set(Employee.DEPARTMENT_FK, departmentModel.tableModel().selection().item().get());
 		employeeModel.editor().entity().set(employee);
 		employeeModel.editor().insert();

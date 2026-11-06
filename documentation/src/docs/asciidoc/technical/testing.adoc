@@ -31,7 +31,7 @@ include::{dir-source}/chinook/src/test/java/is/codion/demos/chinook/domain/Chino
 
 === Custom entity factory
 
-The random entities are created by an {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html[EntityFactory] — extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DefaultEntityFactory.html[DefaultEntityFactory] to control the values of specific attributes, for entities with constraints random values cannot satisfy:
+The random entities are created by an {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html[EntityFactory] — extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/AbstractEntityFactory.html[AbstractEntityFactory] to control the values of specific attributes, for entities with constraints random values cannot satisfy:
 
 [source,java,indent=0]
 ----

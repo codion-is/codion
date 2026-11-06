@@ -952,7 +952,7 @@ The unit tests are run within a single transaction which is rolled back after th
 
 === DomainTest
 
-The DomainTest uses a default {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DefaultEntityFactory.html[EntityFactory] implementation which provides test entities with randomly created values, based on the value constraints set in the domain model. Extend this class and pass to the super constructor, overriding the required methods.
+The DomainTest uses a default {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html[EntityFactory] implementation which provides test entities with randomly created values, based on the value constraints set in the domain model. To control the values, extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/AbstractEntityFactory.html[AbstractEntityFactory] and pass it to the DomainTest constructor, overriding the required methods.
 
 * {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#entity(is.codion.framework.domain.entity.attribute.ForeignKey)[entity(ForeignKey)] should return an entity instance for the given foreign key to use for a foreign key reference required for inserting the entity being tested.
 * {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#entity(is.codion.framework.domain.entity.EntityType)[entity(EntityType)] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.

@@ -22,7 +22,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.test.DefaultEntityFactory;
+import is.codion.framework.domain.test.AbstractEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 import is.codion.manual.app.store.domain.Store.Address;
 import is.codion.manual.app.store.domain.Store.Customer;
@@ -57,7 +57,7 @@ public class StoreTest extends DomainTest {
 		test(CustomerAddress.TYPE);
 	}
 
-	private static final class StoreEntityFactory extends DefaultEntityFactory {
+	private static final class StoreEntityFactory extends AbstractEntityFactory {
 
 		private StoreEntityFactory(EntityConnection connection) {
 			super(connection);

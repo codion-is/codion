@@ -26,7 +26,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.test.DefaultEntityFactory;
+import is.codion.framework.domain.test.AbstractEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ public final class WorldImplTest extends DomainTest {
 		connection().selectSingle(Lookup.CITY_NAME.equalTo("Genova"));
 	}
 
-	private static final class WorldEntityFactory extends DefaultEntityFactory {
+	private static final class WorldEntityFactory extends AbstractEntityFactory {
 
 		private WorldEntityFactory(EntityConnection connection) {
 			super(connection);

@@ -31,7 +31,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.test.DefaultEntityFactory;
+import is.codion.framework.domain.test.AbstractEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
@@ -226,7 +226,7 @@ public final class SchemaDomainTest {
 		}
 	}
 
-	private static final class ChinookEntityFactory extends DefaultEntityFactory {
+	private static final class ChinookEntityFactory extends AbstractEntityFactory {
 
 		private ChinookEntityFactory(EntityConnection connection) {
 			super(connection);
@@ -271,7 +271,7 @@ public final class SchemaDomainTest {
 		}
 	}
 
-	private static final class WorldEntityFactory extends DefaultEntityFactory {
+	private static final class WorldEntityFactory extends AbstractEntityFactory {
 
 		private final EntityType countryType;
 		private final EntityType countryLanguageType;

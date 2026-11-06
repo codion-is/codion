@@ -24,12 +24,13 @@ import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.framework.domain.test.DomainTest.EntityFactory;
 import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import java.util.Random;
+
+import static is.codion.framework.domain.test.DomainTest.EntityFactory.entityFactory;
 
 // tag::loadTest[]
 public final class UpdateEmployee extends AbstractPerformer {
@@ -42,7 +43,7 @@ public final class UpdateEmployee extends AbstractPerformer {
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 		SwingEntityEditor editor = employeeModel.editor();
-		EntityFactory entityFactory = new DefaultEntityFactory(application.connection());
+		EntityFactory entityFactory = entityFactory(application.connection());
 		if (employeeModel.tableModel().items().included().size() > 0) {
 			EntityConnection connection = employeeModel.connection();
 			connection.startTransaction();

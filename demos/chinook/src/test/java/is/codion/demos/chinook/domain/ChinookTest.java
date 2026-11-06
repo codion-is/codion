@@ -25,7 +25,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.test.DefaultEntityFactory;
+import is.codion.framework.domain.test.AbstractEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
@@ -149,7 +149,7 @@ public class ChinookTest extends DomainTest {
 		assertDoesNotThrow(() -> validator.validate(invoiceLine));
 	}
 
-	private static final class ChinookEntityFactory extends DefaultEntityFactory {
+	private static final class ChinookEntityFactory extends AbstractEntityFactory {
 
 		private ChinookEntityFactory(EntityConnection connection) {
 			super(connection);
