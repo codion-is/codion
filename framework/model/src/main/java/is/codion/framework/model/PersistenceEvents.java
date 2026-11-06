@@ -34,6 +34,13 @@ import static java.util.Objects.requireNonNull;
  * Instances are static and shared per entity type (see {@link #persistenceEvents(EntityType)}).
  * The {@link Inserted}, {@link Updated} and {@link Deleted} events extend {@link Consumer},
  * so any code - not just the editor - may publish persistence events.
+ * <p>
+ * The bus is shared by the whole JVM and knows nothing of connections: a listener hears the events of every editor
+ * in the JVM, whichever connection persisted the entities. This assumes one database per JVM, where two connections
+ * to it see each other's changes, as they should. Where one JVM connects to several databases with the same entity
+ * types, opt out on either side: an editor via {@link EntityEditor.Settings#publishPersistenceEvents()}, or
+ * {@link EntityEditor#PUBLISH_PERSISTENCE_EVENTS} for all, a model listening via its {@code persistenceAware()}
+ * builder option, see {@link EntityComboBoxModel#PERSISTENCE_AWARE} and {@link EntitySearchModel#PERSISTENCE_AWARE}.
  * @see EntityEditor#PUBLISH_PERSISTENCE_EVENTS
  * @see EntityEditor.Settings#publishPersistenceEvents()
  * @see #persistenceEvents(EntityType)
@@ -94,7 +101,7 @@ public interface PersistenceEvents {
 
 		/**
 		 * Notifies that the given entities have been updated.
-		 * @param updated the updated entities, mapped to their original state
+		 * @param updated the entities as submitted for update, their original values the ones before it, mapped to their updated state
 		 * @throws IllegalArgumentException in case any of the entities is of the incorrect type
 		 */
 		void accept(Map<Entity, Entity> updated);
