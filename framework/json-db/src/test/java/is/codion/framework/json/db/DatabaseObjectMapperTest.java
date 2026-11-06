@@ -134,8 +134,7 @@ public final class DatabaseObjectMapperTest {
 
 	@Test
 	void count() throws JsonProcessingException {
-		Count count = Count.builder()
-						.where(Department.DEPTNO.between(1, 2))
+		Count count = Count.where(Department.DEPTNO.between(1, 2))
 						.having(Department.NAME.equalTo("TEST"))
 						.build();
 

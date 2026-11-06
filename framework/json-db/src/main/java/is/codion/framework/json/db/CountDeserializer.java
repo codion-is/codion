@@ -54,8 +54,7 @@ final class CountDeserializer extends StdDeserializer<Count> {
 		JsonNode havingNode = jsonNode.get("having");
 		Condition having = entityObjectMapper.deserializeCondition(definition, havingNode);
 
-		return Count.builder()
-						.where(where)
+		return Count.where(where)
 						.having(having)
 						.build();
 	}

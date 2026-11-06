@@ -108,10 +108,7 @@ final class ConditionDemo {
 
 	private static void count(EntityConnection connection) {
 		// tag::count[]
-		Count countAlbumsWithCover =
-						Count.where(Album.COVER.isNotNull());
-
-		int count = connection.count(countAlbumsWithCover);
+		int count = connection.count(Count.where(Album.COVER.isNotNull()));
 		// end::count[]
 	}
 }

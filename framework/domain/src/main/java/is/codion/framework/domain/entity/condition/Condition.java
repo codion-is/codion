@@ -206,6 +206,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * Returns a new {@link Combination} instance, combining the given conditions using the AND conjunction.
 	 * @param conditions the conditions to combine
 	 * @return a new conditions combination
+	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
 	static Combination and(Condition... conditions) {
 		return and(Arrays.asList(conditions));
@@ -215,6 +216,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * Returns a new {@link Combination} instance, combining the given conditions using the AND conjunction.
 	 * @param conditions the conditions to combine
 	 * @return a new conditions combination
+	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
 	static Combination and(Collection<Condition> conditions) {
 		return combination(Conjunction.AND, conditions);
@@ -224,6 +226,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * Returns a new {@link Combination} instance, combining the given conditions using the OR conjunction.
 	 * @param conditions the conditions to combine
 	 * @return a new conditions combination
+	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
 	static Combination or(Condition... conditions) {
 		return or(Arrays.asList(conditions));
@@ -233,6 +236,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * Returns a new {@link Combination} instance, combining the given conditions using the OR conjunction.
 	 * @param conditions the conditions to combine
 	 * @return a new conditions combination
+	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
 	static Combination or(Collection<Condition> conditions) {
 		return combination(Conjunction.OR, conditions);
@@ -243,7 +247,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * @param conjunction the Conjunction to use
 	 * @param conditions the conditions to combine
 	 * @return a new {@link Combination} instance
-	 * @throws IllegalArgumentException in case {@code conditions} is empty
+	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
 	static Combination combination(Conjunction conjunction, Condition... conditions) {
 		return combination(conjunction, Arrays.asList(requireNonNull(conditions)));
@@ -254,7 +258,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * @param conjunction the Conjunction to use
 	 * @param conditions the conditions to combine
 	 * @return a new {@link Combination} instance
-	 * @throws IllegalArgumentException in case {@code conditions} is empty
+	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
 	static Combination combination(Conjunction conjunction, Collection<Condition> conditions) {
 		return new DefaultConditionCombination(conjunction, new ArrayList<>(requireNonNull(conditions)));

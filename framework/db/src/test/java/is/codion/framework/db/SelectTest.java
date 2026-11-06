@@ -67,6 +67,15 @@ public final class SelectTest {
 			assertEquals(Condition.all(Department.TYPE), select.having());
 			assertFalse(select.limit().isPresent());
 		}
+
+		@Test
+		@DisplayName("having condition of another entity type throws IllegalArgumentException")
+		void select_havingOtherEntityType_throwsIllegalArgumentException() {
+			assertThrows(IllegalArgumentException.class, () ->
+							Select.where(Employee.NAME.equalTo("Smith")).having(Department.NAME.equalTo("Sales")));
+			assertThrows(IllegalArgumentException.class, () ->
+							Select.all(Employee.TYPE).having(Department.NAME.equalTo("Sales")));
+		}
 	}
 
 	@Nested

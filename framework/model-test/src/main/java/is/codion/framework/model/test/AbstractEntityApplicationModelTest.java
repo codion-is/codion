@@ -124,7 +124,7 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 						.domain(new TestDomain())
 						.build();
 		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(closing, emptyList());
-		Count all = Count.all(Department.TYPE);
+		Count all = Count.all(Department.TYPE).build();
 		assertTrue(closing.count(all) > 0);
 		model.close();
 		// no way back, whatever still needs the connection failing, a closed connection not being healed

@@ -82,7 +82,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 === Count
 
 *{url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Count.html[EntityConnection.Count]*::
-Represents a `WHERE` condition specifically for counting records.
+Represents the `WHERE` and `HAVING` conditions for counting records, built like a `Select`.
 
 [source,java,indent=0]
 ----

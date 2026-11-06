@@ -56,30 +56,20 @@ final class DefaultCount implements Count, Serializable {
 						", having=" + having + "}";
 	}
 
-	private static final class DefaultWhereStep implements Builder.WhereStep {
-
-		@Override
-		public Builder where(Condition where) {
-			return new DefaultBuilder(where);
-		}
-	}
-
 	static final class DefaultBuilder implements Count.Builder {
-
-		static final Builder.WhereStep WHERE = new DefaultWhereStep();
 
 		private final Condition where;
 
 		private Condition having;
 
-		private DefaultBuilder(Condition where) {
+		DefaultBuilder(Condition where, Condition having) {
 			this.where = requireNonNull(where);
-			this.having = Condition.all(where.entityType());
+			this.having = DefaultSelect.validateHaving(where, having);
 		}
 
 		@Override
 		public Builder having(Condition having) {
-			this.having = requireNonNull(having);
+			this.having = DefaultSelect.validateHaving(where, having);
 			return this;
 		}
 

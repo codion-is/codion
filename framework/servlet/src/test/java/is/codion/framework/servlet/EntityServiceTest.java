@@ -294,7 +294,7 @@ public class EntityServiceTest {
 
 	@Test
 	void count() throws Exception {
-		Count where = Count.where(Department.ID.equalTo(10));
+		Count where = Count.where(Department.ID.equalTo(10)).build();
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("count",
 						BodyPublishers.ofByteArray(Serializer.serialize(where))), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());

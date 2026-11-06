@@ -1503,6 +1503,7 @@ public interface EntityConnection extends AutoCloseable {
 			 * must be based on aggregate function columns
 			 * @param having the HAVING condition
 			 * @return this builder instance
+			 * @throws IllegalArgumentException in case the condition is based on another entity type than the WHERE condition
 			 * @see ColumnDefinition#aggregate()
 			 */
 			Builder having(Condition having);
@@ -1609,9 +1610,8 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * An interface encapsulating count query parameters.
-	 * A factory for {@link Count} instances via {@link Count#all(EntityType)},
+	 * A factory for {@link Count.Builder} instances via {@link Count#all(EntityType)},
 	 * {@link Count#where(Condition)} and {@link Count#having(Condition)}.
-	 * A factory for {@link Count.Builder} instances via {@link Count#builder()}.
 	 */
 	interface Count {
 
@@ -1631,20 +1631,12 @@ public interface EntityConnection extends AutoCloseable {
 		interface Builder extends Supplier<Count> {
 
 			/**
-			 * Provides a {@link Builder}.
-			 */
-			interface WhereStep {
-
-				/**
-				 * @param where the WHERE condition
-				 * @return a {@link Count.Builder} instance
-				 */
-				Builder where(Condition where);
-			}
-
-			/**
+			 * The HAVING condition. Note that this condition
+			 * must be based on aggregate function columns
 			 * @param having the HAVING condition
 			 * @return this builder instance
+			 * @throws IllegalArgumentException in case the condition is based on another entity type than the WHERE condition
+			 * @see ColumnDefinition#aggregate()
 			 */
 			Builder having(Condition having);
 
@@ -1661,42 +1653,28 @@ public interface EntityConnection extends AutoCloseable {
 
 		/**
 		 * @param entityType the entity type
-		 * @return a {@link Count} instance
+		 * @return a new {@link Builder} instance
 		 */
-		static Count all(EntityType entityType) {
-			return where(Condition.all(entityType));
+		static Builder all(EntityType entityType) {
+			Condition all = Condition.all(requireNonNull(entityType));
+
+			return new DefaultCount.DefaultBuilder(all, all);
 		}
 
 		/**
 		 * @param where the WHERE condition
-		 * @return a {@link Count} instance
+		 * @return a new {@link Builder} instance
 		 */
-		static Count where(Condition where) {
-			requireNonNull(where);
-
-			return Count.builder()
-							.where(where)
-							.build();
+		static Builder where(Condition where) {
+			return new DefaultCount.DefaultBuilder(requireNonNull(where), Condition.all(where.entityType()));
 		}
 
 		/**
 		 * @param having the HAVING condition
-		 * @return a {@link Count} instance
+		 * @return a new {@link Builder} instance
 		 */
-		static Count having(Condition having) {
-			requireNonNull(having);
-
-			return Count.builder()
-							.where(Condition.all(having.entityType()))
-							.having(having)
-							.build();
-		}
-
-		/**
-		 * @return a {@link Builder.WhereStep} instance
-		 */
-		static Builder.WhereStep builder() {
-			return DefaultCount.DefaultBuilder.WHERE;
+		static Builder having(Condition having) {
+			return new DefaultCount.DefaultBuilder(Condition.all(requireNonNull(having).entityType()), having);
 		}
 	}
 }

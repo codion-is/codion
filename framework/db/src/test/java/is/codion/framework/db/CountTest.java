@@ -41,7 +41,7 @@ public final class CountTest {
 		@DisplayName("count with where condition builds correctly")
 		void count_whereCondition_buildsCorrectly() {
 			Condition condition = Department.LOCATION.equalTo("New York");
-			Count count = Count.where(condition);
+			Count count = Count.where(condition).build();
 
 			assertEquals(condition, count.where());
 			assertEquals(Condition.all(Department.TYPE), count.having());
@@ -50,7 +50,7 @@ public final class CountTest {
 		@Test
 		@DisplayName("count all with entity type builds correctly")
 		void count_allWithEntityType_buildsCorrectly() {
-			Count count = Count.all(Department.TYPE);
+			Count count = Count.all(Department.TYPE).build();
 
 			assertEquals(Condition.all(Department.TYPE), count.where());
 			assertEquals(Condition.all(Department.TYPE), count.having());
@@ -67,8 +67,7 @@ public final class CountTest {
 			Condition whereCondition = Employee.DEPARTMENT.equalTo(10);
 			Condition havingCondition = Employee.SALARY.greaterThan(50000d);
 
-			Count count = Count.builder()
-							.where(whereCondition)
+			Count count = Count.where(whereCondition)
 							.having(havingCondition)
 							.build();
 
@@ -79,7 +78,7 @@ public final class CountTest {
 		@Test
 		@DisplayName("having clause defaults to all condition")
 		void count_havingDefaults_toAllCondition() {
-			Count count = Count.all(Employee.TYPE);
+			Count count = Count.all(Employee.TYPE).build();
 			assertEquals(Condition.all(Employee.TYPE), count.having());
 		}
 
@@ -87,9 +86,18 @@ public final class CountTest {
 		@DisplayName("null having throws NullPointerException")
 		void count_nullHaving_throwsNullPointerException() {
 			assertThrows(NullPointerException.class, () ->
-							Count.builder().where(Condition.all(Employee.TYPE)).having(null));
+							Count.where(Condition.all(Employee.TYPE)).having(null));
 			assertThrows(NullPointerException.class, () ->
-							Count.builder().where(null));
+							Count.where(null));
+		}
+
+		@Test
+		@DisplayName("having condition of another entity type throws IllegalArgumentException")
+		void count_havingOtherEntityType_throwsIllegalArgumentException() {
+			assertThrows(IllegalArgumentException.class, () ->
+							Count.where(Employee.NAME.equalTo("Smith")).having(Department.NAME.equalTo("Sales")));
+			assertThrows(IllegalArgumentException.class, () ->
+							Count.all(Employee.TYPE).having(Department.NAME.equalTo("Sales")));
 		}
 	}
 
@@ -106,7 +114,7 @@ public final class CountTest {
 							Employee.SALARY.between(30000d, 50000d)
 			);
 
-			Count count = Count.where(condition);
+			Count count = Count.where(condition).build();
 			assertEquals(condition, count.where());
 		}
 
@@ -116,7 +124,7 @@ public final class CountTest {
 			// Using a custom condition (if available in test domain)
 			Condition customCondition = and(Employee.COMMISSION.isNotNull(), Employee.COMMISSION.greaterThan(100d));
 
-			Count count = Count.where(customCondition);
+			Count count = Count.where(customCondition).build();
 			assertEquals(customCondition, count.where());
 		}
 	}
@@ -131,8 +139,7 @@ public final class CountTest {
 			Condition whereCondition = Employee.NAME.like("J%");
 			Condition havingCondition = Employee.SALARY.greaterThan(40000d);
 
-			Count count = Count.builder()
-							.where(whereCondition)
+			Count count = Count.where(whereCondition)
 							.having(havingCondition)
 							.build();
 
@@ -151,7 +158,7 @@ public final class CountTest {
 		@DisplayName("where and having conditions use same entity type")
 		void count_whereAndHaving_sameEntityType() {
 			Condition whereCondition = Employee.DEPARTMENT.equalTo(10);
-			Count count = Count.where(whereCondition);
+			Count count = Count.where(whereCondition).build();
 
 			// Default having should be for same entity type as where
 			assertEquals(whereCondition.entityType(), count.having().entityType());
@@ -167,8 +174,7 @@ public final class CountTest {
 		void count_builderChaining_worksCorrectly() {
 			Condition havingCondition = Employee.SALARY.greaterThan(30000d);
 
-			Count count = Count.builder()
-							.where(Condition.all(Employee.TYPE))
+			Count count = Count.where(Condition.all(Employee.TYPE))
 							.having(havingCondition)
 							.build();
 
@@ -183,8 +189,7 @@ public final class CountTest {
 			Condition having2 = Employee.SALARY.greaterThan(40000d);
 			Condition having3 = Employee.SALARY.greaterThan(50000d);
 
-			Count count = Count.builder()
-							.where(Condition.all(Employee.TYPE))
+			Count count = Count.where(Condition.all(Employee.TYPE))
 							.having(having1)
 							.having(having2)
 							.having(having3)

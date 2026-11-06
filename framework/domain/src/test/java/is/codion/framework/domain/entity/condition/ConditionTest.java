@@ -99,6 +99,15 @@ public final class ConditionTest {
 							() -> Condition.combination(Conjunction.AND),
 							"Should not create empty combination");
 		}
+
+		@Test
+		@DisplayName("combination of different entity types throws exception")
+		void combination_differentEntityTypes_throwsException() {
+			assertThrows(IllegalArgumentException.class,
+							() -> Condition.and(Employee.NAME.equalTo("Smith"), Department.NAME.equalTo("Sales")));
+			assertThrows(IllegalArgumentException.class,
+							() -> Condition.or(Employee.NAME.isNull(), Condition.all(Department.TYPE)));
+		}
 	}
 
 	@Nested

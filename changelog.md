@@ -25,10 +25,14 @@ Codion Change Log
 - H2DatabaseFactory.validateInitScripts() added, refusing a database as opening it would, changing nothing.
 ### is.codion.framework.domain
 - ColumnDefinition bug fixed, a column whose name is quoted, one which isn't in the case the database folds names to for example, is now found by its name in a result set, an identity key or a column of a select query giving its columns, where it wasn't found, failing the insert or the select.
+- Condition.and(), or() and combination() now throw IllegalArgumentException for conditions based on different entity types, where the combination took the entity type of the first one.
 ### is.codion.framework.domain.db
 - SchemaDomain, a table or column name not in the case the database folds unquoted names to, one created quoted, is now quoted in SQL via EntityDefinition.Builder.table() and ColumnDefinition.Builder.name(), keeping its case in the entity type and attribute names whatever lowerCaseIdentifiers() says, captions now splitting camel case names into words.
 ### is.codion.framework.domain.test
 - DefaultEntityFactory renamed AbstractEntityFactory, now abstract with a protected constructor, an extension base, EntityFactory.entityFactory(connection) added, providing the default.
+### is.codion.framework.db
+- EntityConnection.Count.all(), where() and having() now return a Count.Builder, as the Select factories do, Count.builder() removed, a count with both clauses now Count.where(where).having(having).
+- EntityConnection.Select.Builder.having() and Count.Builder.having() now throw IllegalArgumentException for a condition based on another entity type than the WHERE condition, where it was accepted.
 ### is.codion.framework.db.local
 - LocalEntityConnection, a failure is now logged by what failed, what the database refuses at DEBUG, a row locked or a timeout at WARN without a stack trace, the rest at ERROR, its values, or a function's or procedure's parameter, only with DEBUG enabled, cut to a limit, where every failure was logged at ERROR with its values, a function's whole parameter included.
 ### is.codion.framework.db.http

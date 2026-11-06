@@ -190,6 +190,15 @@ final class DefaultSelect implements Select, Serializable {
 						", timeout=" + timeout + "}";
 	}
 
+	static Condition validateHaving(Condition where, Condition having) {
+		if (!requireNonNull(having).entityType().equals(where.entityType())) {
+			throw new IllegalArgumentException("HAVING condition entity type " + having.entityType() +
+							" does not match the WHERE condition entity type " + where.entityType());
+		}
+
+		return having;
+	}
+
 	static final class DefaultBuilder implements Select.Builder {
 
 		private final Condition where;
@@ -209,7 +218,7 @@ final class DefaultSelect implements Select, Serializable {
 
 		DefaultBuilder(Condition where, Condition having) {
 			this.where = requireNonNull(where);
-			this.having = requireNonNull(having);
+			this.having = validateHaving(where, having);
 		}
 
 		@Override
@@ -300,7 +309,7 @@ final class DefaultSelect implements Select, Serializable {
 
 		@Override
 		public Builder having(Condition having) {
-			this.having = requireNonNull(having);
+			this.having = validateHaving(where, having);
 			return this;
 		}
 

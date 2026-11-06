@@ -120,8 +120,15 @@ final class DefaultConditionCombination extends AbstractCondition implements Com
 		if (requireNonNull(conditions).isEmpty()) {
 			throw new IllegalArgumentException("One or more conditions must be specified for a condition combination");
 		}
+		EntityType entityType = conditions.iterator().next().entityType();
+		for (Condition condition : conditions) {
+			if (!condition.entityType().equals(entityType)) {
+				throw new IllegalArgumentException("Conditions based on different entity types can not be combined: " +
+								entityType + ", " + condition.entityType());
+			}
+		}
 
-		return conditions.iterator().next().entityType();
+		return entityType;
 	}
 
 	private static List<?> values(Collection<Condition> conditions) {
