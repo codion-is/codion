@@ -50,8 +50,9 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 	/**
 	 * Specifies whether entity combo box models respond to entity persistence events, by adding new entities, replacing updated and removing deleted ones.
-	 * <p>A model with a {@link #condition()} adds only the inserted entities passing it, selected by their primary keys,
-	 * asynchronously when refreshing is.
+	 * <p>A model with a {@link #condition()} adds only the inserted entities passing it, and keeps only the updated ones
+	 * still passing it, adding those now passing it, both selected by their primary keys, asynchronously when refreshing is.
+	 * An updated entity no longer passing it is removed, unless selected, in which case it stays until the next refresh.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
@@ -206,7 +207,8 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * @param persistenceAware controls whether this combo box model should respond to entity persistence events, by adding inserted items,
-		 * updating any updated items and removing deleted ones, with a {@link EntityComboBoxModel#condition()} only the inserted items passing it
+		 * updating any updated items and removing deleted ones, with a {@link EntityComboBoxModel#condition()} only the items passing it,
+		 * see {@link #PERSISTENCE_AWARE}
 		 * @return this builder instance
 		 * @see #PERSISTENCE_AWARE
 		 * @see PersistenceEvents

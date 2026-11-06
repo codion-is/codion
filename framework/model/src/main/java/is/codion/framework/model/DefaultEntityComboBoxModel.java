@@ -35,9 +35,11 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,6 +57,7 @@ import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
@@ -208,13 +211,66 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public void accept(Map<Entity, Entity> updated) {
-			items().replace(updated.entrySet().stream()
+			if (updated.isEmpty()) {
+				return;
+			}
+			//keyed by their original primary keys, the ones in this model
+			Map<Entity, Entity> replacements = updated.entrySet().stream()
 							.collect(toMap(entry -> entry.getKey().copy().builder()
 											.originalPrimaryKey()
-											.build(), Map.Entry::getValue)));
-			if (!updated.isEmpty()) {
+											.build(), Map.Entry::getValue));
+			if (entityItems.condition.getOrThrow() instanceof DefaultConditionSupplier) {
+				items().replace(replacements);
 				LOG.debug("{} - replaced {} updated entities", DefaultEntityComboBoxModel.this, updated.size());
 			}
+			else {
+				//the ones passing the condition, selected by their primary keys, as the model refreshes
+				Refresher<Entity> refresher = Refresher.<Entity>builder()
+								.items(() -> entityItems.select(replacements.values()))
+								.onResult(passing -> update(replacements, passing))
+								.build();
+				refresher.async().set(items().refresher().async().is());
+				refresher.refresh();
+			}
+		}
+
+		// Replaces or adds the ones passing the condition, removing the rest, apart from the selected one, which is
+		// replaced, staying selected until the next refresh, as the selection is when refreshing
+		private void update(Map<Entity, Entity> replacements, Collection<Entity> passing) {
+			Map<Entity.Key, Entity> passingByKey = passing.stream()
+							.collect(toMap(Entity::primaryKey, identity()));
+			Entity selected = selection().item().get();
+			Map<Entity, Entity> replace = new HashMap<>();
+			List<Entity> add = new ArrayList<>();
+			List<Entity> remove = new ArrayList<>();
+			replacements.forEach((original, updated) -> {
+				Entity entity = passingByKey.get(updated.primaryKey());
+				if (entity != null) {
+					if (items().contains(original)) {
+						replace.put(original, entity);
+					}
+					else {
+						add.add(entity);
+					}
+				}
+				else if (original.equals(selected)) {
+					replace.put(original, updated);
+				}
+				else {
+					remove.add(original);
+				}
+			});
+			if (!replace.isEmpty()) {
+				items().replace(replace);
+			}
+			if (!remove.isEmpty()) {
+				items().remove(remove);
+			}
+			if (!add.isEmpty()) {
+				items().add(add);
+			}
+			LOG.debug("{} - updated entities, {} replaced, {} removed, {} added", DefaultEntityComboBoxModel.this,
+							replace.size(), remove.size(), add.size());
 		}
 	}
 

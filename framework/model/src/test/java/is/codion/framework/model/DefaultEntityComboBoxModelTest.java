@@ -142,6 +142,51 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
+	void persistenceAwareConditionUpdate() {
+		//with a condition, the updated entities passing it are replaced or added, the rest removed, apart from the selected one
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.condition(() -> Employee.JOB.equalTo("MANAGER"))
+						.build();
+		comboBoxModel.items().refresh();
+		CONNECTION.startTransaction();
+		try {
+			Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
+			Entity jones = CONNECTION.selectSingle(Employee.NAME.equalTo("JONES"));
+			Entity clark = CONNECTION.selectSingle(Employee.NAME.equalTo("CLARK"));
+			Entity adams = CONNECTION.selectSingle(Employee.NAME.equalTo("ADAMS"));
+			comboBoxModel.selection().item().set(jones);
+
+			Map<Entity, Entity> updated = new HashMap<>();
+			//blake renamed, jones and clark no longer managers, adams now one
+			updated.put(blake, update(blake, Employee.NAME, "BLAKER"));
+			updated.put(jones, update(jones, Employee.JOB, "CLERK"));
+			updated.put(clark, update(clark, Employee.JOB, "CLERK"));
+			updated.put(adams, update(adams, Employee.JOB, "MANAGER"));
+			persistenceEvents(Employee.TYPE).updated().accept(updated);
+
+			//the selected one stays, updated
+			assertTrue(comboBoxModel.items().contains(jones));
+			assertEquals("CLERK", comboBoxModel.selection().item().getOrThrow().get(Employee.JOB));
+			assertFalse(comboBoxModel.items().contains(clark));
+			assertTrue(comboBoxModel.items().contains(adams));
+			comboBoxModel.select(blake.primaryKey());
+			assertEquals("BLAKER", comboBoxModel.selection().item().getOrThrow().get(Employee.NAME));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	private static <T> Entity update(Entity entity, Attribute<T> attribute, T value) {
+		Entity copy = entity.copy().mutable();
+		copy.set(attribute, value);
+
+		return CONNECTION.updateSelect(copy);
+	}
+
+	@Test
 	void builderReuseProducesIndependentModels() {
 		EntityComboBoxModel.Builder<?> builder = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
