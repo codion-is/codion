@@ -27,6 +27,8 @@ import is.codion.framework.server.AbstractServerEntityConnection;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 
+import org.jspecify.annotations.Nullable;
+
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -44,10 +46,10 @@ public final class EmployeeServer extends EntityServer {
 	}
 
 	@Override
-	protected AbstractServerEntityConnection createRemoteConnection(Database database,
-																																	RemoteSession session, int port,
-																																	RMIClientSocketFactory clientSocketFactory,
-																																	RMIServerSocketFactory serverSocketFactory)
+	protected AbstractServerEntityConnection createConnection(Database database,
+																														RemoteSession session, int port,
+																														@Nullable RMIClientSocketFactory clientSocketFactory,
+																														@Nullable RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
 		return new DefaultEmployeeService(domain, database, session, port);
 	}

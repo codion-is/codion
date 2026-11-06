@@ -99,7 +99,7 @@ These are established across the codebase. New code follows them, and code that 
 - **Static factory methods are named after the type they return,** for clean static imports: `State.state()`, `ReportType.reportType("name")`.
 - **Accessors use `name()`/`name(value)`,** no get/set/is prefixes, except where a contract requires bean names (JMX MXBeans). A class accessor is named `type()`.
 - **Builder methods take parameters,** `enabled(true)` rather than `enable()`, which keeps them uniform and mechanically generatable.
-- **`Abstract*` names a public extension base.** Implementations are package-private wherever possible.
+- **`Abstract*` names a public extension base.** Implementations are package-private wherever possible. The exception is a `ServiceLoader` provider, which must be public, so the only public `Default*` classes are providers, `DefaultLocalEntityConnectionBuilder` for example.
 - **Composite input components are `*Input`, leaf components `*Field`,** for example `TemporalInput` wrapping a `TemporalField`.
 - **Configure rather than extend** where a customization hook is needed. For example, `EntityConditions.Builder.condition(attribute, consumer)` hands out a builder initialized with the defaults.
 - **Packages are strictly acyclic.** A method belongs with the type at the level of what it returns: a factory returning a higher-level type is a static method there, not an instance method on the lower type.

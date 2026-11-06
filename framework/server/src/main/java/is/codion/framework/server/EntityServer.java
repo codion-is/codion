@@ -42,6 +42,7 @@ import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,7 +144,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 		try {
 			//a negative port tells the connection not to export itself; with RMI disabled the connection serves its
 			//HTTP client in-process and needs no RMI stub (a remote connect() is refused before reaching here)
-			AbstractServerEntityConnection connection = createRemoteConnection(database(), session,
+			AbstractServerEntityConnection connection = createConnection(database(), session,
 							configuration.rmi() ? configuration.port() : -1, configuration.rmiClientSocketFactory().orElse(null),
 							configuration.rmiServerSocketFactory().orElse(null));
 			connection.setTracingEnabled(methodTracing);
@@ -188,21 +189,21 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	}
 
 	/**
-	 * Creates the remote connection provided by this server
+	 * Creates the connection this server provides to a client session
 	 * @param database the underlying database
 	 * @param session the session the connection serves
-	 * @param port the port to use when exporting this remote connection
+	 * @param port the port to use when exporting the connection, negative to not export it
 	 * @param clientSocketFactory the client socket factory, null for default
 	 * @param serverSocketFactory the server socket factory, null for default
-	 * @return a remote connection
+	 * @return the connection
 	 * @throws RemoteException in case of an exception
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	protected AbstractServerEntityConnection createRemoteConnection(Database database,
-																																	RemoteSession session, int port,
-																																	RMIClientSocketFactory clientSocketFactory,
-																																	RMIServerSocketFactory serverSocketFactory)
+	protected AbstractServerEntityConnection createConnection(Database database,
+																														RemoteSession session, int port,
+																														@Nullable RMIClientSocketFactory clientSocketFactory,
+																														@Nullable RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
 		return new DefaultServerEntityConnection(clientDomainModel(session), database, session, port,
 						clientSocketFactory, serverSocketFactory);

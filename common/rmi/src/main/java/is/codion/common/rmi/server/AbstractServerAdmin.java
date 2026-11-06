@@ -49,7 +49,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base server admin implementation.
  */
-public class AbstractServerAdmin extends UnicastRemoteObject implements ServerAdmin {
+public abstract class AbstractServerAdmin extends UnicastRemoteObject implements ServerAdmin {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractServerAdmin.class);
 

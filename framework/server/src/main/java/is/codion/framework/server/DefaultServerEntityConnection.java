@@ -79,9 +79,9 @@ final class DefaultServerEntityConnection extends AbstractServerEntityConnection
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	DefaultServerEntityConnection(Domain domain, Database database, RemoteSession session,
-																int port, RMIClientSocketFactory clientSocketFactory,
-																RMIServerSocketFactory serverSocketFactory)
+	DefaultServerEntityConnection(Domain domain, Database database, RemoteSession session, int port,
+																@Nullable RMIClientSocketFactory clientSocketFactory,
+																@Nullable RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
 		super(domain, database, session, port, clientSocketFactory, serverSocketFactory);
 	}
@@ -337,14 +337,14 @@ final class DefaultServerEntityConnection extends AbstractServerEntityConnection
 	@Override
 	public ServerEntityResultIterator iterator(Condition condition) throws RemoteException {
 		synchronized (connectionProxy) {
-			return remoteIterator(connectionProxy.iterator(condition));
+			return serverIterator(connectionProxy.iterator(condition));
 		}
 	}
 
 	@Override
 	public ServerEntityResultIterator iterator(Select select) throws RemoteException {
 		synchronized (connectionProxy) {
-			return remoteIterator(connectionProxy.iterator(select));
+			return serverIterator(connectionProxy.iterator(select));
 		}
 	}
 }

@@ -32,6 +32,7 @@ import is.codion.framework.db.rmi.ServerEntityResultIterator;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,11 +87,11 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	 */
 	private final Event<AbstractServerEntityConnection> closed = Event.event();
 
-	private final Set<DefaultRemoteEntityResultIterator> remoteIterators = newSetFromMap(new ConcurrentHashMap<>());
+	private final Set<DefaultServerEntityResultIterator> iterators = newSetFromMap(new ConcurrentHashMap<>());
 
 	private final int connectionPort;
-	private final RMIClientSocketFactory clientSocketFactory;
-	private final RMIServerSocketFactory serverSocketFactory;
+	private final @Nullable RMIClientSocketFactory clientSocketFactory;
+	private final @Nullable RMIServerSocketFactory serverSocketFactory;
 	private final boolean exported;
 
 	/**
@@ -107,10 +108,9 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	protected AbstractServerEntityConnection(Domain domain, Database database,
-																					 RemoteSession session, int port,
-																					 RMIClientSocketFactory clientSocketFactory,
-																					 RMIServerSocketFactory serverSocketFactory)
+	protected AbstractServerEntityConnection(Domain domain, Database database, RemoteSession session, int port,
+																					 @Nullable RMIClientSocketFactory clientSocketFactory,
+																					 @Nullable RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
 		this.connectionHandler = new LocalConnectionHandler(domain, session, database);
 		this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
@@ -173,7 +173,7 @@ public abstract class AbstractServerEntityConnection implements Remote {
 					LOG.error(e.getMessage(), e);
 				}
 			}
-			remoteIterators.forEach(this::close);
+			iterators.forEach(this::close);
 			connectionHandler.close();
 		}
 		closed.accept(this);
@@ -235,13 +235,13 @@ public abstract class AbstractServerEntityConnection implements Remote {
 		return closed.observer();
 	}
 
-	final ServerEntityResultIterator remoteIterator(EntityResultIterator iterator) throws RemoteException {
+	final ServerEntityResultIterator serverIterator(EntityResultIterator iterator) throws RemoteException {
 		try {
-			return new DefaultRemoteEntityResultIterator(connectionPort, clientSocketFactory, serverSocketFactory, iterator);
+			return new DefaultServerEntityResultIterator(connectionPort, clientSocketFactory, serverSocketFactory, iterator);
 		}
 		catch (RemoteException e) {
 			//the connection was pinned when the iterator was created, but the export failed, so the
-			//iterator never reached remoteIterators and nothing else will ever close it
+			//iterator never reached iterators and nothing else will ever close it
 			closeIterator(iterator);
 			connectionHandler.iteratorClosed();
 			throw e;
@@ -249,8 +249,8 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	}
 
 	final void cleanupIterators() {
-		remoteIterators.stream()
-						.filter(DefaultRemoteEntityResultIterator::timedOut)
+		iterators.stream()
+						.filter(DefaultServerEntityResultIterator::timedOut)
 						.forEach(this::close);
 	}
 
@@ -277,7 +277,7 @@ public abstract class AbstractServerEntityConnection implements Remote {
 		return ServerMetrics.INSTANCE.requestsPerSecond();
 	}
 
-	private final class DefaultRemoteEntityResultIterator extends UnicastRemoteObject implements ServerEntityResultIterator {
+	private final class DefaultServerEntityResultIterator extends UnicastRemoteObject implements ServerEntityResultIterator {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -288,12 +288,12 @@ public abstract class AbstractServerEntityConnection implements Remote {
 
 		private volatile long lastAccessTime = currentTimeMillis();
 
-		private DefaultRemoteEntityResultIterator(int port, RMIClientSocketFactory clientSocketFactory,
-																							RMIServerSocketFactory serverSocketFactory,
+		private DefaultServerEntityResultIterator(int port, @Nullable RMIClientSocketFactory clientSocketFactory,
+																							@Nullable RMIServerSocketFactory serverSocketFactory,
 																							EntityResultIterator iterator) throws RemoteException {
 			super(port, clientSocketFactory, serverSocketFactory);
 			this.iterator = iterator;
-			remoteIterators.add(this);
+			iterators.add(this);
 		}
 
 		//the iterator holds a live ResultSet on the same JDBC connection the connection proxy uses,
@@ -323,7 +323,7 @@ public abstract class AbstractServerEntityConnection implements Remote {
 					iterator.close();
 				}
 				catch (Exception ignored) {/*ignored*/}
-				if (remoteIterators.remove(this)) {
+				if (iterators.remove(this)) {
 					//only the first close decrements, so double-close (client + maintenance) is safe.
 					//the decrement precedes the unexport, which throws, so the count is never stranded
 					connectionHandler.iteratorClosed();

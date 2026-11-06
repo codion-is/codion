@@ -400,7 +400,7 @@ public class AbstractServerTest {
 
 		private TestServer(ServerConfiguration configuration) throws RemoteException {
 			super(configuration);
-			setAdmin(new AbstractServerAdmin(this, configuration));
+			setAdmin(new AbstractServerAdmin(this, configuration) {});
 		}
 
 		@Override

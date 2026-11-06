@@ -10,6 +10,7 @@ Codion Change Log
 - AbstractServer, a connection requested while the server is shutting down is now refused with ConnectionNotAvailableException, where a LoginException was thrown, which the json channel reported as an internal error, logged as an error.
 - Server.Locator.Builder.locate() now finds a server without connections available, after those with, its connect() then refusing with ConnectionNotAvailableException, where it was left out, a client finding only such a server told that none was available.
 - AbstractServer, a server with authenticators now refuses a connection passing none of them, its client type, the client's own claim, having no authenticator of its own and no shared one to pass, unless exempt via ServerConfiguration.AUTHENTICATOR_EXEMPTIONS, added, where such a connection was authenticated by the database alone.
+- AbstractServerAdmin is now abstract, as its name says, its constructor protected as before.
 ### is.codion.common.i18n
 - Icelandic mnemonic for clear changed to E, no longer clashes with refresh.
 ### is.codion.common.model
@@ -50,6 +51,8 @@ Codion Change Log
 - EntityServer, a connection failing on an IllegalArgumentException, a domain not hosted for example, or on a DatabaseException with an error type, now throws it, typed, where a LoginException carried its message alone, which the json channel reported as an internal error; a DatabaseException without one, its message the driver's, still a LoginException.
 - EntityServer, a domain not hosted no longer names the domains hosted in its message, which may reach a client not yet authenticated, logging them instead.
 - The remote iterator timeout property renamed from codion.db.remote.iteratorTimeout to codion.server.connection.iteratorTimeout.
+- EntityServer.createRemoteConnection() renamed createConnection(), following AbstractServerEntityConnection.
+- EntityServer.createConnection() and the AbstractServerEntityConnection constructor, the socket factory parameters now @Nullable, as documented.
 ### is.codion.framework.model
 - AbstractEntityApplicationModel(connection, user, entityModels) added, the application user, the one logged in, which may differ from the connection's user, EntityApplicationModel.user() returning it, where it was the connection's user.
 - EntityApplicationModel now AutoCloseable, close() added, closing the model along with its connection, overridden to release what an application model holds.
