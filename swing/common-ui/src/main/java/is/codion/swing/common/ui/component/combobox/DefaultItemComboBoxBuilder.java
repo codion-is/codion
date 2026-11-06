@@ -189,7 +189,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 		}
 		itemListeners.forEach(new AddItemListener(comboBox));
 		enterActions.forEach(action -> EnterActions.add(comboBox, action));
-		if (DefaultComboBoxBuilder.systemOrCrossPlatformLookAndFeelEnabled()) {
+		if (AbstractComboBoxBuilder.systemOrCrossPlatformLookAndFeelEnabled()) {
 			new SteppedComboBoxUI(comboBox, popupWidth);
 		}
 		comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());

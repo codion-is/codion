@@ -35,7 +35,6 @@ import is.codion.swing.common.ui.dialog.DialogBuilder;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.component.DefaultEditComponent;
 import is.codion.swing.framework.ui.component.EditComponent;
 
 import org.jspecify.annotations.Nullable;
@@ -55,6 +54,7 @@ import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.framework.ui.component.EditComponent.editComponent;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
@@ -268,7 +268,7 @@ public final class EntityDialogs {
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditor editor, Attribute<T> attribute) {
 			this.editor = requireNonNull(editor);
 			this.attribute = requireNonNull(attribute);
-			this.editComponent = new DefaultEditComponent<>(attribute);
+			this.editComponent = editComponent(attribute);
 		}
 
 		@Override

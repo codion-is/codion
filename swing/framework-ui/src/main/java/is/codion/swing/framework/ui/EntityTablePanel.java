@@ -80,7 +80,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel.AttributeDefinitionComparator;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTableCellRenderers.ConditionIndicator;
-import is.codion.swing.framework.ui.component.DefaultEditComponent;
 import is.codion.swing.framework.ui.component.EditComponent;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -151,6 +150,7 @@ import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDialogs.*;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.HANDLING;
+import static is.codion.swing.framework.ui.component.EditComponent.editComponent;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -939,7 +939,7 @@ public class EntityTablePanel extends JPanel {
 		return editAttributeDialog(model.editor(), attribute)
 						.owner(this)
 						.component((EditComponent<?, T>) configuration.editComponents
-										.getOrDefault(attribute, new DefaultEditComponent<>(attribute)));
+										.getOrDefault(attribute, editComponent(attribute)));
 	}
 
 	/**

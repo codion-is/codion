@@ -1,0 +1,250 @@
+/*
+ * This file is part of Codion.
+ *
+ * Codion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Codion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2021 - 2026, Björn Darri Sigurðsson.
+ */
+package is.codion.swing.common.ui.component.combobox;
+
+import is.codion.common.i18n.Messages;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
+
+import org.jspecify.annotations.Nullable;
+
+import javax.swing.Action;
+import javax.swing.ComboBoxEditor;
+import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.ListCellRenderer;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.systemLookAndFeelClassName;
+import static java.util.Objects.requireNonNull;
+import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
+import static javax.swing.UIManager.getLookAndFeel;
+
+/**
+ * A base class for {@link ComboBoxBuilder} implementations, extendable in order to build combo box subclasses.
+ * {@link ComboBoxBuilder#builder()} provides one building a {@link JComboBox}.
+ * @param <C> the component type
+ * @param <T> the value type
+ * @param <B> the builder type
+ */
+public abstract class AbstractComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBoxBuilder<C, T, B>> extends AbstractComponentValueBuilder<C, T, B>
+				implements ComboBoxBuilder<C, T, B> {
+
+	protected final ComboBoxModel<T> comboBoxModel;
+
+	private final List<ItemListener> itemListeners = new ArrayList<>();
+	private final List<Action> enterActions = new ArrayList<>();
+
+	private boolean editable = false;
+	private Completion.Mode completionMode = Completion.MODE.getOrThrow();
+	private boolean normalize = true;
+	private @Nullable ListCellRenderer<? super T> renderer;
+	private @Nullable ComboBoxEditor editor;
+	private boolean mouseWheelScrolling = MOUSE_WHEEL_SCROLLING.getOrThrow();
+	private boolean mouseWheelScrollingWithWrapAround = false;
+	private int maximumRowCount = -1;
+	private boolean moveCaretToFrontOnSelection = true;
+	private int popupWidth = 0;
+
+	protected AbstractComboBoxBuilder(ComboBoxModel<T> comboBoxModel) {
+		this.comboBoxModel = requireNonNull(comboBoxModel);
+		value((T) comboBoxModel.getSelectedItem());
+		if (comboBoxModel instanceof SwingFilterComboBoxModel) {
+			popupControls((comboBox, controls) ->
+							controls.control(Control.builder()
+											.command(new RefreshCommand((SwingFilterComboBoxModel<?>) comboBoxModel))
+											.caption(Messages.refresh())
+											.build()));
+		}
+	}
+
+	@Override
+	public final B editable(boolean editable) {
+		this.editable = editable;
+		return self();
+	}
+
+	@Override
+	public final B completionMode(Completion.Mode completionMode) {
+		this.completionMode = requireNonNull(completionMode);
+		return self();
+	}
+
+	@Override
+	public final B normalize(boolean normalize) {
+		this.normalize = normalize;
+		return self();
+	}
+
+	@Override
+	public final B renderer(@Nullable ListCellRenderer<? super T> renderer) {
+		this.renderer = renderer;
+		return self();
+	}
+
+	@Override
+	public final B editor(@Nullable ComboBoxEditor editor) {
+		this.editor = editor;
+		return self();
+	}
+
+	@Override
+	public final B mouseWheelScrolling(boolean mouseWheelScrolling) {
+		this.mouseWheelScrolling = mouseWheelScrolling;
+		if (mouseWheelScrolling) {
+			this.mouseWheelScrollingWithWrapAround = false;
+		}
+		return self();
+	}
+
+	@Override
+	public final B mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround) {
+		this.mouseWheelScrollingWithWrapAround = mouseWheelScrollingWithWrapAround;
+		if (mouseWheelScrollingWithWrapAround) {
+			this.mouseWheelScrolling = false;
+		}
+		return self();
+	}
+
+	@Override
+	public final B maximumRowCount(int maximumRowCount) {
+		this.maximumRowCount = maximumRowCount;
+		return self();
+	}
+
+	@Override
+	public final B moveCaretToFrontOnSelection(boolean moveCaretToFrontOnSelection) {
+		this.moveCaretToFrontOnSelection = moveCaretToFrontOnSelection;
+		return self();
+	}
+
+	@Override
+	public final B popupWidth(int popupWidth) {
+		this.popupWidth = popupWidth;
+		return self();
+	}
+
+	@Override
+	public final B itemListener(ItemListener itemListener) {
+		this.itemListeners.add(requireNonNull(itemListener));
+		return self();
+	}
+
+	@Override
+	public final B enterAction(Action action) {
+		this.enterActions.add(requireNonNull(action));
+
+		return transferFocusOnEnter(false);
+	}
+
+	@Override
+	protected final C createComponent() {
+		C comboBox = createComboBox();
+		if (editable) {
+			comboBox.setEditable(true);
+		}
+		if (!editable && editor == null) {
+			Completion.builder()
+							.mode(completionMode)
+							.normalize(normalize)
+							.enable(comboBox);
+		}
+		if (comboBoxModel instanceof SwingFilterComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
+			((SwingFilterComboBoxModel<T>) comboBoxModel).selection().item().addConsumer(new MoveCaretToStart<>(comboBox));
+		}
+		if (renderer != null) {
+			comboBox.setRenderer(renderer);
+		}
+		if (editor != null) {
+			comboBox.setEditor(editor);
+		}
+		if (mouseWheelScrolling) {
+			comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox, false));
+		}
+		if (mouseWheelScrollingWithWrapAround) {
+			comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox, true));
+		}
+		if (maximumRowCount >= 0) {
+			comboBox.setMaximumRowCount(maximumRowCount);
+		}
+		itemListeners.forEach(new AddItemListener(comboBox));
+		enterActions.forEach(action -> EnterActions.add(comboBox, action));
+		if (systemOrCrossPlatformLookAndFeelEnabled()) {
+			new SteppedComboBoxUI(comboBox, popupWidth);
+		}
+		comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
+
+		return comboBox;
+	}
+
+	@Override
+	protected final ComponentValue<C, T> createValue(C component) {
+		return new SelectedValue<>(component);
+	}
+
+	protected C createComboBox() {
+		return (C) new FocusableComboBox<>(comboBoxModel);
+	}
+
+	@Override
+	protected void setName(C component, String name) {
+		super.setName(component, name);
+		component.getEditor().getEditorComponent().setName(name);
+	}
+
+	static boolean systemOrCrossPlatformLookAndFeelEnabled() {
+		String lookAndFeelClassName = getLookAndFeel().getClass().getName();
+
+		return lookAndFeelClassName.equals(systemLookAndFeelClassName()) ||
+						lookAndFeelClassName.equals(getCrossPlatformLookAndFeelClassName());
+	}
+
+	private static final class AddItemListener implements Consumer<ItemListener> {
+
+		private final JComboBox<?> comboBox;
+
+		private AddItemListener(JComboBox<?> comboBox) {
+			this.comboBox = comboBox;
+		}
+
+		@Override
+		public void accept(ItemListener listener) {
+			comboBox.addItemListener(listener);
+		}
+	}
+
+	private static final class RefreshCommand implements Control.Command {
+
+		private final SwingFilterComboBoxModel<?> comboBoxModel;
+
+		private RefreshCommand(SwingFilterComboBoxModel<?> comboBoxModel) {
+			this.comboBoxModel = comboBoxModel;
+		}
+
+		@Override
+		public void execute() {
+			comboBoxModel.items().refresh();
+		}
+	}
+}

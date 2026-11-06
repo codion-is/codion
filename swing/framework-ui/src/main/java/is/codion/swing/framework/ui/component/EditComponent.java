@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditor;
@@ -49,5 +50,17 @@ public interface EditComponent<C extends JComponent, T> {
 	 */
 	default Optional<String> caption(AttributeDefinition<T> attributeDefinition) {
 		return Optional.of(requireNonNull(attributeDefinition).caption());
+	}
+
+	/**
+	 * Returns an {@link EditComponent} providing the default component for the given attribute.
+	 * Extend {@link AbstractEditComponent} to adjust the components.
+	 * @param attribute the attribute
+	 * @param <C> the component type
+	 * @param <T> the value type
+	 * @return a new {@link EditComponent} instance
+	 */
+	static <C extends JComponent, T> EditComponent<C, T> editComponent(Attribute<T> attribute) {
+		return new DefaultEditComponent<>(requireNonNull(attribute));
 	}
 }

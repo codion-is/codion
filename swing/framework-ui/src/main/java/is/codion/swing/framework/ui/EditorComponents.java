@@ -40,7 +40,7 @@ import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
-import is.codion.swing.common.ui.component.panel.DefaultFormBuilder;
+import is.codion.swing.common.ui.component.panel.AbstractFormBuilder;
 import is.codion.swing.common.ui.component.panel.FormBuilder;
 import is.codion.swing.common.ui.component.panel.InputPanelBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
@@ -1078,7 +1078,7 @@ public final class EditorComponents {
 		/**
 		 * An attribute based {@link FormBuilder} extension.
 		 */
-		public final class AttributeFormBuilder extends DefaultFormBuilder<AttributeFormBuilder> {
+		public final class AttributeFormBuilder extends AbstractFormBuilder<AttributeFormBuilder> {
 
 			private AttributeFormBuilder() {}
 

@@ -76,6 +76,7 @@ Codion Change Log
 - TemporalField.Builder.calendarIcon(), TemporalInput.Builder.calendarIcon(), FileInput.Builder.buttonIcon(), FilterTable.Builder.intercellSpacing() and gridColor(), FilterTree.Builder.cellRenderer(), TreeBuilder.cellRenderer(), ColumnConditionPanel.Builder.name() and ButtonBuilder.control() now accept null.
 - TextFieldBuilder.actionListener(), TabbedPaneBuilder.tab(title, component) and ComponentDialogBuilder.component() now reject null, as declared, where it was silently accepted.
 - TextInput.Builder.buttonIcon() now takes an Icon, as FileInput.Builder.buttonIcon().
+- DefaultComboBoxBuilder and DefaultFormBuilder renamed AbstractComboBoxBuilder and AbstractFormBuilder, now abstract extension bases, the defaults package-private, provided by ComboBoxBuilder.builder() and FormBuilder.builder() as before.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui
@@ -90,6 +91,7 @@ Codion Change Log
 - EntityConditionComponents, the IN combo boxes of foreign keys, items and enums now provide MultiInput.Builder.selector().
 - EntityConditionComponents bug fixed, the IN values of a column are now formatted by its definition, where a column based on items displayed its values rather than their captions and a temporal column ignored its date and time pattern.
 - EntitySearchField selector ok buttons now active only when a selection is present.
+- DefaultEditComponent renamed AbstractEditComponent, now abstract with a protected constructor, EditComponent.editComponent(attribute) added, providing the default, the text field columns configuration key now is.codion.swing.framework.ui.component.AbstractEditComponent.textFieldColumns.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, entity type, column and foreign key names are now written as the domain gives them, where they were written in lower case, SchemaDomain.SchemaSettings.lowerCaseIdentifiers(false) having no effect on the source.
 - DomainSource, a column or table name which differs from its attribute or entity type name, a quoted one, now written via name() and table(), the constant, interface and DTO component names now splitting camel case names into words, VERBATIM_LOCALITY and verbatimLocality.

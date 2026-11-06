@@ -1,0 +1,148 @@
+/*
+ * This file is part of Codion.
+ *
+ * Codion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Codion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2020 - 2026, Björn Darri Sigurðsson.
+ */
+package is.codion.swing.framework.ui.component;
+
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
+import is.codion.swing.common.ui.component.calendar.CalendarPanel;
+import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.framework.model.SwingEntityEditor;
+
+import javax.swing.JComponent;
+import java.time.temporal.Temporal;
+
+import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
+import static java.util.Objects.requireNonNull;
+
+/**
+ * A base class for {@link EditComponent} implementations, providing the default component for an attribute.
+ * Extend it to adjust the components: override {@link #comboBox(ForeignKey, SwingEntityEditor)} or
+ * {@link #searchField(ForeignKey, SwingEntityEditor)} to configure those for a foreign key.
+ * {@link EditComponent#editComponent(Attribute)} provides one with the default components.
+ * @param <C> the component type
+ * @param <T> the attribute type
+ */
+public abstract class AbstractEditComponent<C extends JComponent, T> implements EditComponent<C, T> {
+
+	/**
+	 * Specifies the default number of text field columns
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 20
+	 * </ul>
+	 */
+	public static final PropertyValue<Integer> TEXT_FIELD_COLUMNS =
+					integerValue(AbstractEditComponent.class.getName() + ".textFieldColumns", 20);
+
+	private static final int MAXIMUM_TEXT_FIELD_COLUMNS = 30;
+
+	private final Attribute<T> attribute;
+
+	/**
+	 * @param attribute the attribute for which this instance creates a {@link ComponentValue}
+	 */
+	protected AbstractEditComponent(Attribute<T> attribute) {
+		this.attribute = requireNonNull(attribute);
+	}
+
+	@Override
+	public ComponentValue<C, T> component(SwingEntityEditor editor) {
+		requireNonNull(editor);
+		if (attribute instanceof ForeignKey) {
+			return createForeignKeyComponentValue((ForeignKey) attribute, editor);
+		}
+		if (attribute.type().isTemporal()) {
+			return createTemporalComponentValue(attribute, entityComponents(editor.entityDefinition()));
+		}
+		AttributeDefinition<T> attributeDefinition = editor.entityDefinition().attributes().definition(attribute);
+		if (!(attributeDefinition instanceof ValueAttributeDefinition)) {
+			throw new IllegalArgumentException("Value based attribute expected: " + attribute);
+		}
+		EntityComponents components = entityComponents(editor.entityDefinition());
+		ValueAttributeDefinition<T> definition = (ValueAttributeDefinition<T>) attributeDefinition;
+		if (attribute.type().isString() && definition.items().isEmpty()) {
+			return (ComponentValue<C, T>) components.textFieldInput((Attribute<String>) attribute)
+							.columns(textFieldColumns((ValueAttributeDefinition<String>) definition))
+							.buildValue();
+		}
+
+		return (ComponentValue<C, T>) components.component(attribute).buildValue();
+	}
+
+	/**
+	 * @return the attribute
+	 */
+	protected final Attribute<T> attribute() {
+		return attribute;
+	}
+
+	/**
+	 * @param foreignKey the foreign key
+	 * @param editor the editor providing the combo box model factory
+	 * @return a {@link EntityComboBox.Builder} instance
+	 * @see SwingEntityEditor.ComboBoxModels
+	 */
+	protected EntityComboBox.Builder comboBox(ForeignKey foreignKey, SwingEntityEditor editor) {
+		return entityComponents(requireNonNull(editor).entityDefinition()).comboBox(requireNonNull(foreignKey), editor.comboBoxModels().create(foreignKey));
+	}
+
+	/**
+	 * @param foreignKey the foreign key
+	 * @param editor the editor providing the search model factory
+	 * @return a {@link EntitySearchField.Builder} instance
+	 * @see SwingEntityEditor.SearchModels
+	 */
+	protected EntitySearchField.Builder searchField(ForeignKey foreignKey, SwingEntityEditor editor) {
+		return entityComponents(requireNonNull(editor).entityDefinition()).searchField(requireNonNull(foreignKey), editor.searchModels().create(foreignKey))
+						.searchOnFocusLost(false);
+	}
+
+	private ComponentValue<C, T> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditor editor) {
+		if (editor.entities().definition(foreignKey.referencedType()).smallDataset()) {
+			return (ComponentValue<C, T>) comboBox(foreignKey, editor)
+							.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
+							.buildValue();
+		}
+
+		return (ComponentValue<C, T>) searchField(foreignKey, editor)
+						.buildValue();
+	}
+
+	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<C, T> createTemporalComponentValue(A attribute,
+																																																										 EntityComponents inputComponents) {
+		if (CalendarPanel.supports((Class<Temporal>) attribute.type().get())) {
+			return (ComponentValue<C, T>) inputComponents.temporalFieldInput((Attribute<Temporal>) attribute).buildValue();
+		}
+
+		return (ComponentValue<C, T>) inputComponents.temporalField((Attribute<Temporal>) attribute).buildValue();
+	}
+
+	private static int textFieldColumns(ValueAttributeDefinition<String> definition) {
+		int defaultTextFieldColumns = TEXT_FIELD_COLUMNS.getOrThrow();
+		if (definition.maximumLength() > defaultTextFieldColumns) {
+			return MAXIMUM_TEXT_FIELD_COLUMNS;
+		}
+
+		return defaultTextFieldColumns;
+	}
+}

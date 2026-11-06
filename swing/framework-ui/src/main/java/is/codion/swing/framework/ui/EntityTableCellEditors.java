@@ -26,11 +26,12 @@ import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.component.DefaultEditComponent;
 import is.codion.swing.framework.ui.component.EditComponent;
 
 import javax.swing.JComponent;
 import java.util.Optional;
+
+import static is.codion.swing.framework.ui.component.EditComponent.editComponent;
 
 final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Entity, Attribute<?>> {
 
@@ -42,7 +43,7 @@ final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Enti
 		}
 
 		EditComponent<JComponent, Object> editComponent =
-						new DefaultEditComponent<>((Attribute<Object>) attribute);
+						editComponent((Attribute<Object>) attribute);
 
 		return Optional.of(FilterTableCellEditor.builder()
 						.component(() -> editComponent.component(editor))

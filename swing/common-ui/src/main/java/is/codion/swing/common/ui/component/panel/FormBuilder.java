@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * {@link java.awt.ContainerOrderFocusTraversalPolicy}.
  * @param <B> the builder type
  * @see is.codion.swing.common.ui.component.Components#form()
- * @see DefaultFormBuilder
+ * @see AbstractFormBuilder
  */
 public interface FormBuilder<B extends FormBuilder<B>> extends ComponentBuilder<JPanel, B> {
 

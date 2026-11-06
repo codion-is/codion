@@ -21,14 +21,14 @@ package is.codion.demos.chinook.ui;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditor;
-import is.codion.swing.framework.ui.component.DefaultEditComponent;
+import is.codion.swing.framework.ui.component.AbstractEditComponent;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
 /**
  * Provides a {@link EntitySearchField} using the {@link TrackSelector}.
  */
 // tag::editComponent[]
-final class TrackEditComponent extends DefaultEditComponent<EntitySearchField, Entity> {
+final class TrackEditComponent extends AbstractEditComponent<EntitySearchField, Entity> {
 
 	TrackEditComponent(ForeignKey trackForeignKey) {
 		super(trackForeignKey);

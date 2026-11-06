@@ -22,8 +22,8 @@ import is.codion.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.combobox.AbstractComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
-import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -338,7 +338,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 	}
 
-	private static final class DefaultBuilder extends DefaultComboBoxBuilder<EntityComboBox, Entity, Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComboBoxBuilder<EntityComboBox, Entity, Builder> implements Builder {
 
 		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 
