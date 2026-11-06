@@ -278,6 +278,8 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 		/**
 		 * Sets the actual string used as column name when inserting and updating.
 		 * This column name is also used when selecting unless an {@link #expression(String)} has been specified.
+		 * <p>A name which must be quoted in SQL, one which isn't in the case the database folds names to for example,
+		 * is given quoted, {@code "\"verbatimLocality\""}.
 		 * @param name the column name
 		 * @return this instance
 		 */

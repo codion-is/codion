@@ -95,6 +95,8 @@ public final class TestDomain extends DomainModel {
 		detail();
 		masterFk();
 		detailFk();
+		quoted();
+		quotedQuery();
 		employeeNonOpt();
 		nullConverter();
 		generatorTestWithPk();
@@ -666,6 +668,52 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										Detail.MASTER_2_FK.as()
 														.foreignKey())
+						.build());
+	}
+
+	public interface Quoted {
+		EntityType TYPE = DOMAIN.entityType("employees.quoted");
+
+		Column<Integer> ID = TYPE.integerColumn("quotedId");
+		Column<String> DATA = TYPE.stringColumn("quotedData");
+	}
+
+	void quoted() {
+		add(Quoted.TYPE.as()
+						.attributes(
+										Quoted.ID.as()
+														.primaryKey()
+														.name("\"quotedId\"")
+														.generator(identity()),
+										Quoted.DATA.as()
+														.column()
+														.name("\"quotedData\""))
+						.table("employees.\"Quoted\"")
+						.build());
+	}
+
+	public interface QuotedQuery {
+		EntityType TYPE = DOMAIN.entityType("employees.quoted_query");
+
+		Column<Integer> ID = TYPE.integerColumn("quotedId");
+		Column<String> DATA = TYPE.stringColumn("quotedData");
+	}
+
+	void quotedQuery() {
+		add(QuotedQuery.TYPE.as()
+						.attributes(
+										QuotedQuery.ID.as()
+														.primaryKey()
+														.name("\"quotedId\""),
+										QuotedQuery.DATA.as()
+														.column()
+														.name("\"quotedData\""))
+						.table("employees.\"Quoted\"")
+						.selectQuery(EntitySelectQuery.builder()
+										//columns given, so each one is read by its name
+										.columns("\"quotedData\", \"quotedId\"")
+										.build())
+						.readOnly(true)
 						.build());
 	}
 

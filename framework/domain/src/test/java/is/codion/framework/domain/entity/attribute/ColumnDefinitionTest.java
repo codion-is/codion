@@ -213,4 +213,21 @@ public final class ColumnDefinitionTest {
 	void searchableNonVarchar() {
 		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").as().column().searchable(true));
 	}
+
+	@Test
+	void unquote() {
+		assertEquals("verbatimLocality", DefaultColumnDefinition.unquote("\"verbatimLocality\""));
+		assertEquals("verbatimLocality", DefaultColumnDefinition.unquote("`verbatimLocality`"));
+		assertEquals("verbatimLocality", DefaultColumnDefinition.unquote("[verbatimLocality]"));
+		//a closing quote within the name doubled
+		assertEquals("a\"b", DefaultColumnDefinition.unquote("\"a\"\"b\""));
+		assertEquals("a`b", DefaultColumnDefinition.unquote("`a``b`"));
+		assertEquals("a]b", DefaultColumnDefinition.unquote("[a]]b]"));
+		//not quoted
+		assertEquals("remarks", DefaultColumnDefinition.unquote("remarks"));
+		assertEquals("\"remarks", DefaultColumnDefinition.unquote("\"remarks"));
+		assertEquals("\"remarks`", DefaultColumnDefinition.unquote("\"remarks`"));
+		assertEquals("\"", DefaultColumnDefinition.unquote("\""));
+		assertEquals("", DefaultColumnDefinition.unquote(""));
+	}
 }

@@ -1978,6 +1978,22 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void quotedColumnNames() {
+		//the identity key read back from the generated keys by its name
+		Entity.Key key = connection.insert(ENTITIES.entity(Quoted.TYPE)
+						.with(Quoted.DATA, "data")
+						.build());
+		Integer id = key.value();
+		assertNotNull(id);
+
+		//each column read by its name, the select query giving the columns
+		Entity selected = connection.selectSingle(QuotedQuery.ID.equalTo(id));
+		assertEquals("data", selected.get(QuotedQuery.DATA));
+
+		connection.delete(key);
+	}
+
+	@Test
 	void transactions() {
 		try (LocalEntityConnection connection1 = createConnection();
 				 LocalEntityConnection connection2 = createConnection()) {

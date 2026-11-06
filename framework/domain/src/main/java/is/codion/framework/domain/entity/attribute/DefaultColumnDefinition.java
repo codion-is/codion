@@ -46,7 +46,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-
 import static java.util.Objects.requireNonNull;
 
 final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<T> implements ColumnDefinition<T> {
@@ -72,6 +71,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	private final boolean generated;
 
 	private final transient String name;
+	private final transient String label;// The name a result set knows the column by, the name unquoted
 	private final transient String expression;
 	private final transient Converter<T, Object> converter;
 	private final transient @Nullable Generator<T> generator;
@@ -89,6 +89,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		this.updatable = builder.updatable;
 		this.searchable = builder.searchable;
 		this.name = builder.name;
+		this.label = unquote(builder.name);
 		this.expression = builder.expression == null ? builder.name : builder.expression;
 		this.objectType = builder.objectType;
 		this.getValue = builder.getValue;
@@ -205,7 +206,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public @Nullable T get(ResultSet resultSet, Database database) throws SQLException {
-		return get(resultSet, resultSet.findColumn(name), database);
+		return get(resultSet, resultSet.findColumn(label), database);
 	}
 
 	@Override
@@ -259,6 +260,24 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 			//noinspection rawtypes
 			return new EnumConverter(column.type().get());
 		}
+	}
+
+	/**
+	 * @param name the column name
+	 * @return the name unquoted, the name itself if not quoted
+	 */
+	static String unquote(String name) {
+		int last = name.length() - 1;
+		if (last > 0) {
+			char open = name.charAt(0);
+			char close = name.charAt(last);
+			if (((open == '"' || open == '`') && close == open) || (open == '[' && close == ']')) {
+				// a closing quote within the name is doubled
+				return name.substring(1, last).replace(new String(new char[] {close, close}), String.valueOf(close));
+			}
+		}
+
+		return name;
 	}
 
 	private static Map<Class<?>, Integer> createTypeMap() {
