@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -27,6 +28,12 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import java.awt.Component;
+import java.awt.Container;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
@@ -138,6 +145,45 @@ public final class EntityApplicationTest {
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
+	}
+
+	@Test
+	void version() {
+		Version version = Version.parse("1.2.3");
+		// a connection given, without a client version, the version shown regardless
+		LocalEntityConnection connection = LocalEntityConnection.builder()
+						.domain(new TestDomain())
+						.user(User.user("sa"))
+						.build();
+		AtomicReference<TestApplicationPanel> started = new AtomicReference<>();
+		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.domain(TestDomain.DOMAIN)
+						.preferences(jsonPreferences())
+						.model((configured, applicationUser) -> new TestApplicationModel(configured, applicationUser))
+						.connection(connection)
+						.version(version)
+						.onStarted(started::set)
+						.startupDialog(false)
+						.displayFrame(false)
+						.start(false);
+		TestApplicationPanel panel = started.get();
+		assertFalse(panel.model().connection().clientVersion().isPresent());
+		assertTrue(Ancestor.ofType(JFrame.class).of(panel).get().getTitle().contains(version.toString()));
+		assertTrue(labels(panel.createAboutPanel()).contains(version.toString()));
+	}
+
+	private static List<String> labels(Container container) {
+		List<String> labels = new ArrayList<>();
+		for (Component component : container.getComponents()) {
+			if (component instanceof JLabel) {
+				labels.add(((JLabel) component).getText());
+			}
+			else if (component instanceof Container) {
+				labels.addAll(labels((Container) component));
+			}
+		}
+
+		return labels;
 	}
 
 	// Constructors of both arities, a method reference to them ambiguous between the two model() overloads

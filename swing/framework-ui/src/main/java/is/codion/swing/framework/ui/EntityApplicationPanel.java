@@ -324,6 +324,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	// The preferences root, provided by EntityApplication or resolved lazily from the domain for a stand-alone panel
 	private @Nullable Preferences preferences;
+	private @Nullable Version version;
 
 	private @Nullable LogViewer sqlTraceViewer;
 
@@ -625,9 +626,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	protected JPanel createAboutPanel() {
 		PanelBuilder<GridLayout, ?> versionMemoryPanel = gridLayoutPanel(0, 2)
 						.border(emptyBorder());
-		model.connection().clientVersion().ifPresent(version -> versionMemoryPanel
-						.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
-						.add(new JLabel(version.toString())));
+		if (version != null) {
+			versionMemoryPanel
+							.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
+							.add(new JLabel(version.toString()));
+		}
 		versionMemoryPanel
 						.add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"))
 						.add(new JLabel(Version.versionAndMetadataString()))
@@ -761,6 +764,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	// Provided by EntityApplication at startup (already migrated); package private
 	void preferences(Preferences preferences) {
 		this.preferences = requireNonNull(preferences);
+	}
+
+	// Provided by EntityApplication at startup, the version shown in the frame title; package private
+	void version(@Nullable Version version) {
+		this.version = version;
 	}
 
 	// The application-provided root, or a lazily resolved (and migrated) default for a stand-alone panel

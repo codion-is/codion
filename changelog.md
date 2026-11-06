@@ -99,6 +99,7 @@ Codion Change Log
 - EntityConditionComponents bug fixed, the IN values of a column are now formatted by its definition, where a column based on items displayed its values rather than their captions and a temporal column ignored its date and time pattern.
 - EntitySearchField selector ok buttons now active only when a selection is present.
 - DefaultEditComponent renamed AbstractEditComponent, now abstract with a protected constructor, EditComponent.editComponent(attribute) added, providing the default, the text field columns configuration key now is.codion.swing.framework.ui.component.AbstractEditComponent.textFieldColumns.
+- EntityApplicationPanel, the About panel now shows the version given to EntityApplication.version(), as the frame title does, where it showed the connection's client version, missing when the connection was given or created by a connection function.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, entity type, column and foreign key names are now written as the domain gives them, where they were written in lower case, SchemaDomain.SchemaSettings.lowerCaseIdentifiers(false) having no effect on the source.
 - DomainSource, a column or table name which differs from its attribute or entity type name, a quoted one, now written via name() and table(), the constant, interface and DTO component names now splitting camel case names into words, VERBATIM_LOCALITY and verbatimLocality.

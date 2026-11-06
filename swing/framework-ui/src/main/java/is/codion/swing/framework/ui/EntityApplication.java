@@ -291,6 +291,10 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
+	 * <p>Sets the application version, shown in the frame title and the About panel.
+	 * <p>Also identifies the application version to a server, via {@link EntityConnection.Builder#clientVersion(Version)}.
+	 * This applies only to the connection created by default, not to one {@link #connection(EntityConnection) given} or
+	 * created by a {@link #connection(Function) connection function}, which sets its own.
 	 * @param version the application version
 	 * @return this {@link EntityApplication} instance
 	 */
@@ -799,6 +803,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private P initializeApplicationPanel(M applicationModel) {
 		P applicationPanel = panel.apply(applicationModel);
 		applicationPanel.preferences(preferences());
+		applicationPanel.version(version);
 		applicationPanel.initialize();
 
 		return applicationPanel;
