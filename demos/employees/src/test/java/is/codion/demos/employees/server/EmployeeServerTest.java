@@ -61,6 +61,7 @@ public final class EmployeeServerTest {
 						.build();
 
 		EmployeeServer employeeServer = new EmployeeServer(configuration);
+		employeeServer.start();
 
 		Server<EmployeeService, ?> remoteServer = Server.Locator.builder()
 						.hostname("localhost")

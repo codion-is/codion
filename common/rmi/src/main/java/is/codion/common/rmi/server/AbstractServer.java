@@ -66,7 +66,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.stream.Collectors.*;
 
 /**
- * A default Server implementation.
+ * A base Server implementation, constructed and then {@link #start() started}.
  * @param <T> the type of remote interface served by this server
  * @param <A> the type of the admin interface this server provides
  */
@@ -85,6 +85,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	private final boolean exported;
 	private final ServerInformation serverInformation;
 	private final Event<?> shutdownEvent = Event.event();
+	private final AtomicBoolean started = new AtomicBoolean();
 	private final AtomicBoolean shuttingDown = new AtomicBoolean();
 	private volatile int connectionLimit = -1;
 	private volatile long lastMaintenance;
@@ -93,23 +94,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	private @Nullable A admin;
 
 	/**
-	 * Instantiates a new AbstractServer.
-	 * <p>Note that this constructor starts the connection maintenance scheduler, registers a JVM shutdown
-	 * hook and creates the configured auxiliary servers (passing {@code this}), all before any subclass
-	 * constructor body runs. Subclass constructors must therefore complete quickly and must not assume that
-	 * maintenance, shutdown or auxiliary-server callbacks observe fully initialized subclass state.
+	 * Instantiates a new AbstractServer, which publishes nothing until {@link #start() started}.
 	 * @param configuration the configuration
-	 * @throws RemoteException in case of an exception
 	 */
-	protected AbstractServer(ServerConfiguration configuration) throws RemoteException {
+	protected AbstractServer(ServerConfiguration configuration) {
 		this.configuration = requireNonNull(configuration);
 		//the server object is exported for RMI data connections or for the admin/monitor interface (which the
 		//monitor reaches through the registry-bound server); when neither is enabled no RMI object is exported at all
 		this.exported = configuration.rmi() || configuration.adminPort() > 0;
-		if (exported) {
-			UnicastRemoteObject.exportObject(this, configuration.port(),
-							configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
-		}
 		this.serverInformation = new DefaultServerInformation(UUID.randomUUID(),
 						configuration.serverName(), configuration.port(), ZonedDateTime.now());
 		this.connectionMaintenanceScheduler = TaskScheduler.builder()
@@ -117,13 +109,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 						.interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
 						.initialDelay(configuration.connectionMaintenanceInterval())
 						.name("Connection maintenance")
-						.start();
+						.build();
 		connectionLimit(configuration.connectionLimit());
 		this.shutdownHook = new Thread(this::shutdown);
-		getRuntime().addShutdownHook(shutdownHook);
 		try {
 			configureObjectInputFilter(configuration);
-			startAuxiliaryServers(configuration.auxiliaryServerFactories());
 			loadAuthenticators(configuration.authenticators());
 			if (!configuration.authenticatorExemptions().isEmpty()) {
 				LOG.info("Client types exempt from authentication by an authenticator: {}", configuration.authenticatorExemptions());
@@ -271,7 +261,41 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	}
 
 	/**
-	 * Shuts down this server.
+	 * Starts this server, publishing it: exports it, when serving RMI connections or the admin interface, starts
+	 * the auxiliary servers, binds it in the registry, when exported, starts the connection maintenance and
+	 * registers a JVM shutdown hook.
+	 * <p>Nothing is published before this is called, so a subclass is fully constructed, its own subclasses
+	 * included, before a connection request can reach it. A server failing to start is shut down.
+	 * @throws RemoteException in case of an exception
+	 * @throws IllegalStateException in case this server has already been started or has been shut down
+	 */
+	public final void start() throws RemoteException {
+		if (shuttingDown.get()) {
+			throw new IllegalStateException("Server has been shut down: " + serverInformation.name());
+		}
+		if (!started.compareAndSet(false, true)) {
+			throw new IllegalStateException("Server has already been started: " + serverInformation.name());
+		}
+		try {
+			if (exported) {
+				UnicastRemoteObject.exportObject(this, configuration.port(),
+								configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
+			}
+			startAuxiliaryServers(configuration.auxiliaryServerFactories());
+			if (exported) {
+				registry().rebind(serverInformation.name(), this);
+			}
+			connectionMaintenanceScheduler.start();
+			getRuntime().addShutdownHook(shutdownHook);
+		}
+		catch (Throwable exception) {
+			logShutdownAndReturn(exception);
+			throw exception;
+		}
+	}
+
+	/**
+	 * Shuts down this server, also one not started.
 	 */
 	public final void shutdown() {
 		if (!shuttingDown.compareAndSet(false, true)) {

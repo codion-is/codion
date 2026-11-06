@@ -40,8 +40,10 @@ public class DefaultServerLocatorTest {
 
 	private static final String SERVER_NAME = "DefaultServerLocatorTestServer";
 
+	//the servers bind themselves into a registry of their own when started, the tests binding them into the default one
 	private final ServerConfiguration configuration = ServerConfiguration.builder()
 					.port(12345)
+					.registryPort(12347)
 					.serverName(SERVER_NAME)
 					.sslEnabled(false)
 					.objectInputFilterFactoryRequired(false)
@@ -50,6 +52,7 @@ public class DefaultServerLocatorTest {
 
 	public DefaultServerLocatorTest() throws RemoteException {
 		this.server = new TestServer(configuration);
+		this.server.start();
 	}
 
 	@Test
@@ -110,10 +113,12 @@ public class DefaultServerLocatorTest {
 		String fullServerName = SERVER_NAME + "Full";
 		AbstractServer<Remote, ServerAdmin> fullServer = new TestServer(ServerConfiguration.builder()
 						.port(12346)
+						.registryPort(12348)
 						.serverName(fullServerName)
 						.sslEnabled(false)
 						.objectInputFilterFactoryRequired(false)
 						.build());
+		fullServer.start();
 		fullServer.connectionLimit(0);
 		Registry registry = Server.Locator.registry(Registry.REGISTRY_PORT);
 		try {

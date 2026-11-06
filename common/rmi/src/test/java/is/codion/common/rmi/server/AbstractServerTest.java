@@ -32,13 +32,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.singletonList;
@@ -273,6 +276,7 @@ public class AbstractServerTest {
 						.objectInputFilterFactoryRequired(false)
 						.build());
 		try {
+			rmiDisabled.start();
 			//the server object is not exported for RMI: unexporting a never-exported object throws
 			//(the admin is exported by TestServer regardless, but the server itself is not)
 			assertThrows(NoSuchObjectException.class, () -> UnicastRemoteObject.unexportObject(rmiDisabled, true));
@@ -348,6 +352,35 @@ public class AbstractServerTest {
 	}
 
 	@Test
+	void start() throws RemoteException, NotBoundException {
+		TestServer started = new TestServer(ServerConfiguration.builder()
+						.port(PORT + 5)
+						.registryPort(PORT + 6)
+						.serverName("startTestServer")
+						.objectInputFilterFactoryRequired(false)
+						.authenticator(OtherAuthenticator.class.getName())
+						.auxiliaryServerFactory(singletonList(EarlyAuxiliaryServerFactory.class.getName()))
+						.build());
+		try {
+			//nothing published before start(), the server not exported, the auxiliary server not created
+			assertThrows(NoSuchObjectException.class, () -> UnicastRemoteObject.unexportObject(started, true));
+			assertTrue(started.auxiliaryServers().isEmpty());
+			started.start();
+			assertNotNull(LocateRegistry.getRegistry(PORT + 6).lookup("startTestServer"));
+			//the auxiliary server, connecting as soon as it starts, reaches a fully constructed server, its authenticators
+			//loaded, refusing a client type without one, and its admin, set by the subclass constructor, available
+			EarlyAuxiliaryServer auxiliaryServer = (EarlyAuxiliaryServer) started.auxiliaryServers().iterator().next();
+			assertInstanceOf(ServerAuthenticationException.class, auxiliaryServer.connectResult);
+			assertInstanceOf(ServerAdmin.class, auxiliaryServer.adminResult);
+			assertThrows(IllegalStateException.class, started::start);
+		}
+		finally {
+			started.shutdown();
+		}
+		assertThrows(IllegalStateException.class, started::start);
+	}
+
+	@Test
 	void emptyServerName() {
 		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder().port(PORT).serverName((String) null).build());
 		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder().port(PORT).serverName("").build());
@@ -418,6 +451,50 @@ public class AbstractServerTest {
 
 		@Override
 		protected void maintainConnections(Collection<SessionConnection<ServerTest>> connections) throws RemoteException {}
+	}
+
+	public static final class EarlyAuxiliaryServerFactory implements AuxiliaryServerFactory<Remote, ServerAdmin, EarlyAuxiliaryServer> {
+
+		@Override
+		public EarlyAuxiliaryServer create(Server<Remote, ServerAdmin> server) {
+			return new EarlyAuxiliaryServer(server);
+		}
+	}
+
+	// Connects as soon as it starts, as a client of an HTTP server may, recording the results
+	static final class EarlyAuxiliaryServer implements AuxiliaryServer {
+
+		private final Server<Remote, ServerAdmin> server;
+
+		private volatile Object connectResult;
+		private volatile Object adminResult;
+
+		private EarlyAuxiliaryServer(Server<Remote, ServerAdmin> server) {
+			this.server = server;
+		}
+
+		@Override
+		public void start() {
+			connectResult = result(() -> server.connect(connectionRequest("UnknownClientType")));
+			adminResult = result(() -> server.admin(UNIT_TEST_USER));
+		}
+
+		@Override
+		public void stop() {}
+
+		@Override
+		public String information() {
+			return "EarlyAuxiliaryServer";
+		}
+
+		private static Object result(Callable<?> callable) {
+			try {
+				return callable.call();
+			}
+			catch (Exception e) {
+				return e;
+			}
+		}
 	}
 
 	public static final class OtherAuthenticator implements Authenticator {

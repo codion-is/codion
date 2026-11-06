@@ -87,7 +87,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	private int idleConnectionTimeout;
 
 	/**
-	 * Constructs a new EntityServer and binds it to a registry on the port found in the configuration.
+	 * Constructs a new EntityServer, publishing nothing until {@link #start() started}.
 	 * @param configuration the server configuration
 	 * @throws RemoteException in case of a remote exception
 	 * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
@@ -113,11 +113,6 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 			createConnectionPools(configuration.database(), configuration.connectionPoolFactory(), configuration.connectionPoolUsers());
 			if (EntityServerConfiguration.JMX.getOrThrow()) {
 				metricsMBeans = MetricsMBeans.register(this);
-			}
-			//bound into the registry when exported for RMI data or for the admin/monitor interface; a pure-HTTP
-			//server (rmi=false, no admin) is not exported and creates no registry
-			if (configuration.rmi() || configuration.adminPort() > 0) {
-				registry().rebind(information().name(), this);
 			}
 		}
 		catch (Throwable t) {
@@ -471,7 +466,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	}
 
 	/**
-	 * Starts the server, using the configuration from system properties.
+	 * Constructs and starts the server, using the configuration from system properties.
 	 * @return the server instance
 	 * @throws RemoteException in case of an exception
 	 */
@@ -481,16 +476,18 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	}
 
 	/**
-	 * Starts the server.
+	 * Constructs and starts the server.
 	 * @param configuration the configuration
 	 * @return the server instance
 	 * @throws RemoteException in case of an exception
+	 * @see #start()
 	 */
 	public static synchronized EntityServer startServer(EntityServerConfiguration configuration) throws RemoteException {
 		requireNonNull(configuration);
 		long currentTime = System.currentTimeMillis();
 		try {
 			EntityServer server = new EntityServer(configuration);
+			server.start();
 			printStartupInfo(server, System.currentTimeMillis() - currentTime);
 
 			return server;
