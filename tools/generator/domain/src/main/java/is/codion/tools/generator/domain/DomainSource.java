@@ -767,7 +767,7 @@ public final class DomainSource {
 											attribute.name().toUpperCase(Locale.ROOT))
 							.addModifiers(PUBLIC, STATIC, FINAL)
 							.initializer("TYPE.foreignKey($S, $L)",
-											attribute.name().toLowerCase(Locale.ROOT),
+											attribute.name(),
 											createReferences(foreignKey))
 							.build());
 		}
@@ -778,12 +778,12 @@ public final class DomainSource {
 		if (Object.class.equals(column.type().get())) {
 			//special handling for mapping unknown column data types to Object columns
 			columnBuilder.initializer("TYPE.column($S, $L)",
-							column.name().toLowerCase(Locale.ROOT), "Object.class");
+							column.name(), "Object.class");
 		}
 		else {
 			columnBuilder.initializer("TYPE.$LColumn($S)",
 							attributeTypePrefix(column.type().get().getSimpleName()),
-							column.name().toLowerCase(Locale.ROOT));
+							column.name());
 		}
 	}
 
@@ -1015,7 +1015,7 @@ public final class DomainSource {
 
 		@Override
 		public String entityTypeInitializer(EntityDefinition definition, String interfaceName) {
-			return "DOMAIN.entityType(\"" + definition.table().toLowerCase(Locale.ROOT) + "\")";
+			return "DOMAIN.entityType(\"" + definition.type().name() + "\")";
 		}
 
 		@Override
@@ -1051,7 +1051,7 @@ public final class DomainSource {
 
 		@Override
 		public String entityTypeInitializer(EntityDefinition definition, String interfaceName) {
-			return "DOMAIN.entityType(\"" + definition.table().toLowerCase(Locale.ROOT) + "\", " + interfaceName + ".class)";
+			return "DOMAIN.entityType(\"" + definition.type().name() + "\", " + interfaceName + ".class)";
 		}
 
 		@Override

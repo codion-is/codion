@@ -84,6 +84,8 @@ Codion Change Log
 - EntityConditionComponents, the IN combo boxes of foreign keys, items and enums now provide MultiInput.Builder.selector().
 - EntityConditionComponents bug fixed, the IN values of a column are now formatted by its definition, where a column based on items displayed its values rather than their captions and a temporal column ignored its date and time pattern.
 - EntitySearchField selector ok buttons now active only when a selection is present.
+### is.codion.tools.generator.domain
+- DomainSource bug fixed, entity type, column and foreign key names are now written as the domain gives them, where they were written in lower case, SchemaDomain.SchemaSettings.lowerCaseIdentifiers(false) having no effect on the source.
 
 ## 0.18.92
 ### is.codion.swing.common.ui

@@ -156,6 +156,24 @@ public final class DomainSourceTest {
 		}
 	}
 
+	@Test
+	void identifiersNotLowerCase() throws Exception {
+		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "SAMPLES", SchemaSettings.builder()
+							.lowerCaseIdentifiers(false)
+							.build());
+			String source = DomainSource.builder()
+							.domain(schemaDomain)
+							.domainPackage("is.codion.samples.domain")
+							.build()
+							.combined();
+			// H2 holds the names in upper case, written as the schema domain gives them
+			assertTrue(source.contains("EntityType TYPE = DOMAIN.entityType(\"SAMPLES.SPECIES\");"), source);
+			assertTrue(source.contains("Column<Integer> SPECIES_NO = TYPE.integerColumn(\"SPECIES_NO\");"), source);
+			assertTrue(source.contains("ForeignKey ID_LABEL_FK = TYPE.foreignKey(\"ID_LABEL_FK\""), source);
+		}
+	}
+
 	private static int occurrences(String source, String text) {
 		return source.split(Pattern.quote(text), -1).length - 1;
 	}
