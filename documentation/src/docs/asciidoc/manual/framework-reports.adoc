@@ -58,6 +58,12 @@ The easiest way to make this work is to design the report using field names that
 include::{dir-source}/is/codion/manual/plugin/jasperreports/JasperReportsDemo.java[tags=jasperReportDataSource]
 ----
 
+A report filled this way runs in the client, which can select more entities via the *EntityConnection* as it fills, whatever the connection type.
+The World demo's *CountryReportDataSource* does so for a subreport, selecting each country's largest cities.
+
+A report registered in the domain, on the other hand, is filled with the connection's JDBC connection, on the server when the connection is remote.
+So a report based on entities, for a client which can not host the reporting engine, belongs in a <<framework-domain-procedures-functions.adoc#_procedures_functions, database function>>, which receives the *EntityConnection*, selects the entities and returns the exported document.
+
 == Examples
 
 * <<{dir-tutorials}/employees/employees.adoc#_ui, Employees UI layer>>

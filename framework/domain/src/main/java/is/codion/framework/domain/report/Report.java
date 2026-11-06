@@ -55,7 +55,14 @@ public interface Report<T, P extends @Nullable Object, R> {
 	PropertyValue<Boolean> CACHE_REPORTS = booleanValue("codion.report.cache", true);
 
 	/**
-	 * Loads and fills the report using the given database connection
+	 * Loads and fills the report using the given database connection.
+	 * <p>The connection is the JDBC connection of the entity connection filling the report, on the server when
+	 * the entity connection is remote. Filling runs within its transaction handling, inside a transaction when one
+	 * is open, the connection committed afterwards when none is, so the report must not commit, roll back or close it.
+	 * <p>A report based on entities rather than on SQL is filled in the client instead, from the entities it has,
+	 * selecting any more via the entity connection as it fills. Where the client can not host the reporting engine,
+	 * a database function, which receives the entity connection, can fill and export it on the server, see
+	 * {@link is.codion.framework.domain.operation.FunctionType}.
 	 * @param connection the connection to use for the report generation
 	 * @param parameters the report parameters
 	 * @return a filled report ready for display
