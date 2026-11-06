@@ -69,7 +69,7 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	 * <li>Default value: 300000 (5 minutes)
 	 * </ul>
 	 */
-	static final PropertyValue<Long> ITERATOR_TIMEOUT = longValue("codion.db.remote.iteratorTimeout", TimeUnit.MINUTES.toMillis(5));
+	static final PropertyValue<Long> ITERATOR_TIMEOUT = longValue("codion.server.connection.iteratorTimeout", TimeUnit.MINUTES.toMillis(5));
 
 	/**
 	 * A Proxy for logging method calls

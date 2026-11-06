@@ -911,7 +911,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * a network round-trip. For large result sets, consider using {@link #select(Condition)}
 	 * instead to load entities in a single batch.
 	 * <p><b>Remote Connection Resource Management:</b> Iterators over remote connections that
-	 * remain idle for longer than the configured timeout ({@code codion.db.remote.iteratorTimeout},
+	 * remain idle for longer than the configured timeout ({@code codion.server.connection.iteratorTimeout},
 	 * default 5 minutes) are automatically closed server-side.
 	 * <p><b>Local Connection Sharing:</b> A local iterator drives a live result set outside the connection
 	 * monitor, so do not perform other operations on the same connection while iterating, and on databases whose
@@ -939,7 +939,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * a network round-trip. For large result sets, consider using {@link #select(Select)}
 	 * instead to load entities in a single batch.
 	 * <p><b>Remote Connection Resource Management:</b> Iterators over remote connections that
-	 * remain idle for longer than the configured timeout ({@code codion.db.remote.iteratorTimeout},
+	 * remain idle for longer than the configured timeout ({@code codion.server.connection.iteratorTimeout},
 	 * default 5 minutes) are automatically closed server-side.
 	 * <p><b>Local Connection Sharing:</b> A local iterator drives a live result set outside the connection
 	 * monitor, so do not perform other operations on the same connection while iterating, and on databases whose

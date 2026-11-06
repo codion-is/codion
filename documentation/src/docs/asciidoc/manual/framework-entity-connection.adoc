@@ -147,7 +147,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 For iterating over a result set instead of loading it entirely into memory. This is useful when processing large result sets or when memory is constrained.
 
-IMPORTANT: When using remote connections, each call to `hasNext()` and `next()` involves a network round-trip. For large result sets, consider using `select()` instead to load entities in a single batch. Iterators over remote connections that remain idle for longer than the configured timeout (`codion.db.remote.iteratorTimeout`, default 5 minutes) are automatically closed server-side.
+IMPORTANT: When using remote connections, each call to `hasNext()` and `next()` involves a network round-trip. For large result sets, consider using `select()` instead to load entities in a single batch. Iterators over remote connections that remain idle for longer than the configured timeout (`codion.server.connection.iteratorTimeout`, default 5 minutes) are automatically closed server-side.
 
 NOTE: `iterator()` is not supported on HTTP based connections, and throws `UnsupportedOperationException`.
 
