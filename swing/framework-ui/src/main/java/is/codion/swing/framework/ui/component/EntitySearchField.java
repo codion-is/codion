@@ -103,7 +103,6 @@ import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.color.Colors.shade;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -784,17 +783,24 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultListSelector implements ListSelector {
 
 		private final EntitySearchField searchField;
+		private final Control selectControl;
 		private final FilterList<Entity> list;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.TRAILING)
 						.build();
-		private final Control selectControl = command(new SelectCommand());
 
 		private DefaultListSelector(EntitySearchField searchField) {
 			this.searchField = requireNonNull(searchField);
-			this.list = createList();
-			this.selectorPanel = borderLayoutPanel()
+			SwingFilterListModel<Entity> listModel = SwingFilterListModel.builder()
+							.<Entity>items()
+							.build();
+			selectControl = Control.builder()
+							.command(new SelectCommand())
+							.enabled(listModel.selection().present())
+							.build();
+			list = createList(listModel);
+			selectorPanel = borderLayoutPanel()
 							.center(scrollPane()
 											.view(list))
 							.south(resultLimitLabel)
@@ -829,11 +835,7 @@ public final class EntitySearchField extends HintTextField {
 			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private FilterList<Entity> createList() {
-			SwingFilterListModel<Entity> listModel = SwingFilterListModel.builder()
-							.<Entity>items()
-							.build();
-
+		private FilterList<Entity> createList(SwingFilterListModel<Entity> listModel) {
 			return FilterList.builder()
 							.model(listModel)
 							.items()
@@ -873,16 +875,23 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultTableSelector implements TableSelector {
 
 		private final EntitySearchField searchField;
+		private final Control selectControl;
 		private final FilterTable<Entity, Attribute<?>> table;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.TRAILING)
 						.build();
-		private final Control selectControl = command(new SelectCommand());
 
 		private DefaultTableSelector(EntitySearchField searchField) {
 			this.searchField = requireNonNull(searchField);
-			table = createTable();
+			SwingEntityTableModel tableModel =
+							SwingEntityTableModel.of(searchField.model.entityDefinition().type(),
+											emptyList(), searchField.model.connection());
+			selectControl = Control.builder()
+							.command(new SelectCommand())
+							.enabled(tableModel.selection().present())
+							.build();
+			table = createTable(tableModel);
 			selectorPanel = borderLayoutPanel()
 							.center(scrollPane()
 											.view(table))
@@ -922,11 +931,7 @@ public final class EntitySearchField extends HintTextField {
 			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private FilterTable<Entity, Attribute<?>> createTable() {
-			SwingEntityTableModel tableModel =
-							SwingEntityTableModel.of(searchField.model.entityDefinition().type(),
-											emptyList(), searchField.model.connection());
-
+		private FilterTable<Entity, Attribute<?>> createTable(SwingEntityTableModel tableModel) {
 			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder()
 							.model(tableModel)
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)

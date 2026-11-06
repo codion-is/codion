@@ -81,6 +81,7 @@ Codion Change Log
 - EntitySearchField bug fixed, Enter now clears the selection once the text displaying it has been deleted all at once, where it did nothing, in a MultiInput adding the entity deleted.
 - EntityConditionComponents, the IN combo boxes of foreign keys, items and enums now provide MultiInput.Builder.selector().
 - EntityConditionComponents bug fixed, the IN values of a column are now formatted by its definition, where a column based on items displayed its values rather than their captions and a temporal column ignored its date and time pattern.
+- EntitySearchField selector ok buttons now active only when a selection is present.
 
 ## 0.18.92
 ### is.codion.swing.common.ui
