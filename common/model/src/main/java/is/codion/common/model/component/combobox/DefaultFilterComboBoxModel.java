@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -44,7 +43,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static is.codion.common.utilities.Nulls.rejectNulls;
@@ -176,6 +174,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final Sort<T> sort;
 		private final Refresher<T> refresher;
+		//every item, included and excluded, in natural order: as set, then added, the order an unsorted model shows
+		private final List<T> natural = new ArrayList<>();
 		private final DefaultIncludedItems included;
 		private final DefaultExcludedItems excluded = new DefaultExcludedItems();
 		private final Predicate<T> validator;
@@ -233,15 +233,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Collection<T> get() {
 			synchronized (lock) {
-				List<T> includedItems = included.get();
-				if (excluded.items.isEmpty()) {
-					return unmodifiableList(new ArrayList<>(includedItems));
-				}
-				List<T> entities = new ArrayList<>(includedItems.size() + excluded.items.size());
-				entities.addAll(includedItems);
-				entities.addAll(excluded.items);
-
-				return unmodifiableList(entities);
+				return unmodifiableList(new ArrayList<>(natural));
 			}
 		}
 
@@ -250,13 +242,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			//null is the reserved sentinel (see nullable), it must not appear among the actual items
 			requireNonNull(items).forEach(this::validate);
 			synchronized (lock) {
-				excluded.items.clear();
-				included.items.clear();
-				if (nullable) {
-					included.items.add(0, null);
-				}
+				natural.clear();
 				//remove duplicates while preserving the original order
-				included.items.addAll(new LinkedHashSet<>(items));
+				natural.addAll(new LinkedHashSet<>(items));
 				filterInternal();
 				if (filterSelected
 								&& selection.selected.item != null
@@ -265,7 +253,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				}
 				replaceSelectedItem();
 				cleared = items.isEmpty();
-				included.sortInternal();
 				included.notifyChanges();
 				excluded.notifyChanges();
 			}
@@ -280,8 +267,16 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						//an item can linger in excluded if its stateful predicate flipped without predicate.set(),
 						//remove it so it does not end up in both partitions
 						boolean wasExcluded = excluded.items.remove(item);
-						included.items.add(item);
-						included.sortInternal();
+						addNatural(item);
+						if (wasExcluded) {
+							//back at its natural position
+							includeInternal();
+						}
+						else {
+							//a new item, last in natural order
+							included.items.add(item);
+							included.sortInternal();
+						}
 						included.added.accept(singleton(item));
 						included.notifyChanges();
 						if (wasExcluded) {
@@ -292,6 +287,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				else if (!excluded.items.contains(item)) {
 					boolean wasIncluded = included.items.remove(item);
 					excluded.items.add(item);
+					addNatural(item);
 					excluded.notifyChanges();
 					if (wasIncluded) {
 						included.notifyChanges();
@@ -316,9 +312,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			requireNonNull(item);
 			synchronized (lock) {
 				if (excluded.items.remove(item)) {
+					natural.remove(item);
 					excluded.notifyChanges();
 				}
 				else if (included.items.remove(item)) {
+					natural.remove(item);
 					included.notifyChanges();
 					updateSelectedItem(item);
 				}
@@ -339,7 +337,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void remove(Predicate<T> predicate) {
 			requireNonNull(predicate);
 			synchronized (lock) {
-				remove(Stream.concat(included.items.stream(), excluded.items.stream())
+				remove(natural.stream()
 								.filter(predicate)
 								.collect(toList()));
 			}
@@ -365,7 +363,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public int size() {
 			synchronized (lock) {
-				return included.size() + excluded.size();
+				return natural.size();
 			}
 		}
 
@@ -373,10 +371,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void filter() {
 			synchronized (lock) {
 				if (size() > 0) {
-					included.items.addAll(excluded.items);
-					excluded.items.clear();
 					filterInternal();
-					included.sortInternal();
 					if (filterSelected
 									&& selection.selected.item != null
 									&& !included.items.contains(selection.selected.item)) {
@@ -409,11 +404,19 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			requireNonNull(items).values().forEach(this::validate);
 			synchronized (lock) {
 				Map<T, T> replacements = new HashMap<>(items);
+				items.forEach((item, replacement) -> {
+					int index = natural.indexOf(item);
+					if (index != -1) {
+						natural.set(index, replacement);
+					}
+				});
+				boolean reincluded = false;
 				for (T itemToReplace : items.keySet()) {
 					if (excluded.items.remove(itemToReplace)) {
 						T replacement = replacements.remove(itemToReplace);
 						if (included.predicate.test(replacement)) {
-							included.items.add(replacement);
+							//included below, at its natural position
+							reincluded = true;
 						}
 						else {
 							excluded.items.add(replacement);
@@ -439,7 +442,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				if (selectedItem != null && items.containsKey(selectedItem)) {
 					selection.selected.replaceWith(items.get(selectedItem));
 				}
-				included.sortInternal();
+				if (reincluded) {
+					includeInternal();
+				}
+				else {
+					included.sortInternal();
+				}
 				included.notifyChanges();
 				excluded.notifyChanges();
 			}
@@ -460,16 +468,42 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return nullItem;
 		}
 
+		// Excludes the items not passing the predicate, in natural order, and includes the rest
 		private void filterInternal() {
+			excluded.items.clear();
 			Predicate<T> predicate = included.predicate.get();
 			if (predicate != null) {
-				for (Iterator<T> iterator = included.items.listIterator(); iterator.hasNext(); ) {
-					T item = iterator.next();
-					if (item != null && !predicate.test(item)) {
+				for (T item : natural) {
+					if (!predicate.test(item)) {
 						excluded.items.add(item);
-						iterator.remove();
 					}
 				}
+			}
+			includeInternal();
+		}
+
+		// The included items, the ones not excluded, in natural order, then sorted when sorting
+		private void includeInternal() {
+			included.items.clear();
+			if (nullable) {
+				included.items.add(null);
+			}
+			for (T item : natural) {
+				if (!excluded.items.contains(item)) {
+					included.items.add(item);
+				}
+			}
+			included.sortInternal();
+		}
+
+		// A new item last in natural order, an existing one replaced in place, the given instance being the current one
+		private void addNatural(T item) {
+			int index = natural.indexOf(item);
+			if (index == -1) {
+				natural.add(item);
+			}
+			else {
+				natural.set(index, item);
 			}
 		}
 

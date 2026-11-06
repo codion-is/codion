@@ -151,9 +151,8 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * Specifies the {@link OrderBy} to use when selecting entities for this model.
-		 * <p>Note that when {@code orderBy} is specified the model is left unsorted and the database order is used.
-		 * That order is retained across refreshes, but only survives until the first foreign key filter transition,
-		 * after which re-included items are appended (in an unsorted model) rather than restored to their original position.
+		 * <p>Note that when {@code orderBy} is specified the model is left unsorted, keeping the order of the query,
+		 * filtering included. Entities added afterwards, inserted ones for example, come last until the next refresh.
 		 * @param orderBy the {@link OrderBy} to use when selecting
 		 * @return this builder instance
 		 */

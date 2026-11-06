@@ -210,7 +210,8 @@ public final class DefaultFilterComboBoxModelTest {
 	@Test
 	void removeByPredicate() {
 		testModel.items().included().predicate().set(item -> !item.startsWith("t"));
-		testModel.items().remove(item -> item != null && item.contains("n"));
+		//the null item is no item, the predicate never sees it
+		testModel.items().remove(item -> item.contains("n"));
 		assertEquals(3, testModel.items().size());
 		assertEquals(1, testModel.items().excluded().size());
 		assertEquals(2, testModel.items().included().size());
@@ -517,6 +518,67 @@ public final class DefaultFilterComboBoxModelTest {
 		assertFalse(model.items().nullable());
 		assertNull(model.items().nullItem());
 		assertNull(model.selectedItem());
+	}
+
+	@Test
+	void filterKeepsNaturalOrder() {
+		//an unsorted model keeps the order of its items through filtering, the included and excluded ones in natural order
+		List<String> items = asList(TOMAS, ANNA, SIGGI, KALLI, BJORN);
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
+						.items(items)
+						.comparator(null)
+						.nullable(true)
+						.build();
+		model.items().included().predicate().set(item -> !item.equals(ANNA) && !item.equals(KALLI));
+		assertEquals(asList(TOMAS, SIGGI, BJORN), model.items().included().get());
+		assertEquals(items, model.items().get());
+		model.items().included().predicate().set(item -> !item.equals(TOMAS) && !item.equals(SIGGI));
+		assertEquals(asList(ANNA, KALLI, BJORN), model.items().included().get());
+		assertEquals(asList(TOMAS, SIGGI), model.items().excluded().get());
+		model.items().included().predicate().clear();
+		assertEquals(items, model.items().included().get());
+		assertTrue(model.items().included().contains(null));
+	}
+
+	@Test
+	void addAndReplaceKeepNaturalOrder() {
+		//a new item goes last, an item included again goes back to its natural position
+		boolean[] hideSiggi = {true};
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
+						.items(asList(ANNA, KALLI, SIGGI))
+						.comparator(null)
+						.build();
+		model.items().add(TOMAS);
+		assertEquals(asList(ANNA, KALLI, SIGGI, TOMAS), model.items().included().get());
+		model.items().included().predicate().set(item -> !item.equals(KALLI) && !(hideSiggi[0] && item.equals(SIGGI)));
+		assertEquals(asList(ANNA, TOMAS), model.items().included().get());
+
+		//an excluded item replaced by one passing the predicate
+		String karl = "karl";
+		model.items().replace(KALLI, karl);
+		assertEquals(asList(ANNA, karl, TOMAS), model.items().included().get());
+
+		//an excluded item added again, its stateful predicate having flipped without predicate.set()
+		hideSiggi[0] = false;
+		model.items().add(SIGGI);
+		assertEquals(asList(ANNA, karl, SIGGI, TOMAS), model.items().included().get());
+		assertEquals(asList(ANNA, karl, SIGGI, TOMAS), model.items().get());
+
+		model.items().remove(karl);
+		model.items().included().predicate().clear();
+		assertEquals(asList(ANNA, SIGGI, TOMAS), model.items().included().get());
+	}
+
+	@Test
+	void sortedFilterCycle() {
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
+						.items(asList(TOMAS, ANNA, SIGGI, KALLI))
+						.build();
+		model.items().included().predicate().set(item -> !item.equals(ANNA));
+		model.items().add(BJORN);
+		model.items().included().predicate().clear();
+		assertEquals(asList(ANNA, BJORN, KALLI, SIGGI, TOMAS), model.items().included().get());
+		assertEquals(asList(TOMAS, ANNA, SIGGI, KALLI, BJORN), model.items().get());
 	}
 
 	@BeforeEach

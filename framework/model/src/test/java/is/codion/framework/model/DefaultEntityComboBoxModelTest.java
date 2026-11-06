@@ -585,6 +585,31 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
+	void orderByForeignKeyFilter() {
+		//the order of the query survives foreign key filtering
+		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		departmentComboBoxModel.items().refresh();
+		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.orderBy(OrderBy.descending(Employee.NAME))
+						.filter(Employee.DEPARTMENT_FK, departmentComboBoxModel)
+						.build();
+		//not strict, all included without a department selected
+		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(false);
+		employeeComboBoxModel.items().refresh();
+		List<Entity> ordered = employeeComboBoxModel.items().included().get();
+		assertEquals(16, ordered.size());
+		departmentComboBoxModel.select(CONNECTION.entities().primaryKey(Department.TYPE, 10));
+		assertTrue(employeeComboBoxModel.items().included().size() < ordered.size());
+		departmentComboBoxModel.selection().clear();
+		assertEquals(ordered, employeeComboBoxModel.items().included().get());
+	}
+
+	@Test
 	void comparator() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
