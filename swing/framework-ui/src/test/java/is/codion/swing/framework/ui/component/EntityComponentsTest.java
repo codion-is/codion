@@ -170,8 +170,10 @@ public final class EntityComponentsTest {
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 
 		SwingFilterComboBoxModel<Item<Integer>> model = (SwingFilterComboBoxModel<Item<Integer>>) comboBox.getModel();
-		assertEquals(0, model.items().included().indexOf(null));
-		assertTrue(model.items().contains(null));
+		//the null item first, not among the included items
+		assertSame(model.items().nullItem(), model.getElementAt(0));
+		assertEquals(-1, model.items().included().indexOf(null));
+		assertTrue(model.items().nullable());
 
 		assertNull(editor.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(1);
@@ -193,7 +195,7 @@ public final class EntityComponentsTest {
 		SwingFilterComboBoxModel<Item<Integer>> model = (SwingFilterComboBoxModel<Item<Integer>>) componentValue.component().getModel();
 
 		//null item should be first, regardless of sorting
-		assertEquals(0, model.items().included().indexOf(null));
+		assertSame(model.items().nullItem(), model.getElementAt(0));
 	}
 
 	@Test

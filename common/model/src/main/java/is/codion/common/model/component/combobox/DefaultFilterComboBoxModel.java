@@ -356,7 +356,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean contains(T item) {
 			synchronized (lock) {
-				return included.items.contains(item) || excluded.items.contains(item);
+				//the null item is no item, see nullable()
+				return item != null && natural.contains(item);
 			}
 		}
 
@@ -583,7 +584,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			@Override
 			public boolean contains(T item) {
 				if (item == null) {
-					return nullable;
+					//the null item is no item, see nullable()
+					return false;
 				}
 				synchronized (lock) {
 					return items.contains(item);
@@ -593,14 +595,22 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			@Override
 			public int indexOf(T item) {
 				synchronized (lock) {
-					return items.indexOf(item);
+					//the null item, first when nullable, has no index
+					int index = items.indexOf(item);
+
+					return nullable && index != -1 ? index - 1 : index;
 				}
 			}
 
 			@Override
-			public @Nullable T get(int index) {
+			public T get(int index) {
 				synchronized (lock) {
-					return items.get(index);
+					int size = size();
+					if (index < 0 || index >= size) {
+						throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
+					}
+
+					return items.get(nullable ? index + 1 : index);
 				}
 			}
 

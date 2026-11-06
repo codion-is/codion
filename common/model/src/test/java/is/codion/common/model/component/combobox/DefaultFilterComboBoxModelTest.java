@@ -323,7 +323,8 @@ public final class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void setNullValueString() {
-		assertTrue(testModel.items().included().contains(null));
+		assertTrue(testModel.items().nullable());
+		assertFalse(testModel.items().included().contains(null));
 		testModel.items().refresh();
 		assertEquals(5, testModel.items().included().size());
 		testModel.selection().item().set(null);
@@ -345,12 +346,14 @@ public final class DefaultFilterComboBoxModelTest {
 						.items(strings)
 						.nullable(true)
 						.build();
-		assertTrue(model.items().contains(null));
+		assertTrue(model.items().nullable());
+		assertFalse(model.items().contains(null));
 		model = FilterComboBoxModel.builder()
 						.items(strings)
 						.nullItem("-")
 						.build();
-		assertTrue(model.items().contains(null));
+		assertTrue(model.items().nullable());
+		assertFalse(model.items().contains(null));
 		assertEquals("-", model.selectedItem());
 		model.selection().item().set("-");
 		assertNull(model.selection().item().get());
@@ -450,30 +453,30 @@ public final class DefaultFilterComboBoxModelTest {
 						.selected(3)
 						.build();
 
-		assertEquals(0, model.items().included().indexOf(null));
-		assertEquals(1, model.items().included().indexOf(aOne));
-		assertEquals(2, model.items().included().indexOf(bTwo));
-		assertEquals(3, model.items().included().indexOf(cThree));
-		assertEquals(4, model.items().included().indexOf(dFour));
+		assertEquals(-1, model.items().included().indexOf(null));
+		assertEquals(0, model.items().included().indexOf(aOne));
+		assertEquals(1, model.items().included().indexOf(bTwo));
+		assertEquals(2, model.items().included().indexOf(cThree));
+		assertEquals(3, model.items().included().indexOf(dFour));
 		assertEquals(3, model.selection().item().get().get());
 
 		model.items().refresh();
 
-		assertEquals(0, model.items().included().indexOf(null));
-		assertEquals(1, model.items().included().indexOf(aOne));
-		assertEquals(2, model.items().included().indexOf(bTwo));
-		assertEquals(3, model.items().included().indexOf(cThree));
-		assertEquals(4, model.items().included().indexOf(dFour));
+		assertEquals(-1, model.items().included().indexOf(null));
+		assertEquals(0, model.items().included().indexOf(aOne));
+		assertEquals(1, model.items().included().indexOf(bTwo));
+		assertEquals(2, model.items().included().indexOf(cThree));
+		assertEquals(3, model.items().included().indexOf(dFour));
 
 		FilterComboBoxModel<Item<Integer>> unsortedModel = FilterComboBoxModel.builder()
 						.items(items)
 						.build();
 
-		assertEquals(0, unsortedModel.items().included().indexOf(null));
-		assertEquals(1, unsortedModel.items().included().indexOf(cThree));
-		assertEquals(2, unsortedModel.items().included().indexOf(bTwo));
-		assertEquals(3, unsortedModel.items().included().indexOf(aOne));
-		assertEquals(4, unsortedModel.items().included().indexOf(dFour));
+		assertEquals(-1, unsortedModel.items().included().indexOf(null));
+		assertEquals(0, unsortedModel.items().included().indexOf(cThree));
+		assertEquals(1, unsortedModel.items().included().indexOf(bTwo));
+		assertEquals(2, unsortedModel.items().included().indexOf(aOne));
+		assertEquals(3, unsortedModel.items().included().indexOf(dFour));
 	}
 
 	@Test
@@ -521,6 +524,26 @@ public final class DefaultFilterComboBoxModelTest {
 	}
 
 	@Test
+	void nullableIndexes() {
+		//the null item has no index, the included items indexed without it
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
+						.items(asList(ANNA, KALLI))
+						.nullable(true)
+						.build();
+		assertEquals(2, model.items().included().size());
+		assertEquals(ANNA, model.items().included().get(0));
+		assertEquals(KALLI, model.items().included().get(1));
+		assertEquals(0, model.items().included().indexOf(ANNA));
+		assertEquals(1, model.items().included().indexOf(KALLI));
+		assertEquals(-1, model.items().included().indexOf(null));
+		assertThrows(IndexOutOfBoundsException.class, () -> model.items().included().get(-1));
+		assertThrows(IndexOutOfBoundsException.class, () -> model.items().included().get(2));
+		//nor is it among the items, null being selectable is what nullable() says
+		assertFalse(model.items().included().contains(null));
+		assertFalse(model.items().contains(null));
+	}
+
+	@Test
 	void filterKeepsNaturalOrder() {
 		//an unsorted model keeps the order of its items through filtering, the included and excluded ones in natural order
 		List<String> items = asList(TOMAS, ANNA, SIGGI, KALLI, BJORN);
@@ -537,7 +560,6 @@ public final class DefaultFilterComboBoxModelTest {
 		assertEquals(asList(TOMAS, SIGGI), model.items().excluded().get());
 		model.items().included().predicate().clear();
 		assertEquals(items, model.items().included().get());
-		assertTrue(model.items().included().contains(null));
 	}
 
 	@Test

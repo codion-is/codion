@@ -718,8 +718,10 @@ public final class ComponentsTest {
 						.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 		SwingFilterComboBoxModel<Item<Integer>> model = (SwingFilterComboBoxModel<Item<Integer>>) comboBox.getModel();
-		assertEquals(0, model.items().included().indexOf(null));
-		assertTrue(model.items().contains(null));
+		//the null item first, not among the included items
+		assertSame(model.items().nullItem(), model.getElementAt(0));
+		assertEquals(-1, model.items().included().indexOf(null));
+		assertTrue(model.items().nullable());
 
 		assertNull(value.get());
 		comboBox.setSelectedItem(1);

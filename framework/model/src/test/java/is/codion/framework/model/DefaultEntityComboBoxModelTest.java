@@ -229,7 +229,7 @@ public final class DefaultEntityComboBoxModelTest {
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(true);
 		assertEquals(0, employeeComboBoxModel.items().included().size());
 		assertEquals(16, employeeComboBoxModel.items().excluded().size());
-		assertTrue(managerComboBoxModel.items().included().contains(null));
+		assertTrue(managerComboBoxModel.items().nullable());
 		assertEquals(0, managerComboBoxModel.items().included().size());
 		assertEquals(4, managerComboBoxModel.items().excluded().size());
 		assertFalse(departmentComboBoxModel.items().included().contains(null));
@@ -271,9 +271,9 @@ public final class DefaultEntityComboBoxModelTest {
 						.condition(() -> Employee.JOB.in("MANAGER"))
 						.build();
 		// Foreign key is nullable
-		assertTrue(employeeComboBoxModel.items().included().contains(null));
+		assertTrue(employeeComboBoxModel.items().nullable());
 		employeeComboBoxModel.items().refresh();
-		Entity entity = employeeComboBoxModel.items().included().get(1);
+		Entity entity = employeeComboBoxModel.items().included().get(0);
 		// Foreign key included attributes specified, should only contain NAME, JOB (and MGR_FK)
 		assertTrue(entity.contains(Employee.NAME));
 		assertTrue(entity.contains(Employee.JOB));
@@ -634,7 +634,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.nullable(true)
 						.build();
 		model.items().refresh();
-		assertTrue(model.items().contains(null));
+		assertTrue(model.items().nullable());
 		assertEquals("-", model.selectedItem().toString());
 		assertNull(model.selection().item().get());
 	}

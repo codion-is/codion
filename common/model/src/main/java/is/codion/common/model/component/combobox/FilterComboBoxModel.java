@@ -131,7 +131,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		B comparator(@Nullable Comparator<T> comparator);
 
 		/**
-		 * @param nullable true if a null item should be included
+		 * @param nullable true if null should be selectable, via a null item shown first
 		 * @return this builder
 		 */
 		B nullable(boolean nullable);
@@ -250,6 +250,9 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 	 * Note that the {@link #included()} items do not support indexed mutation - the index based
 	 * {@code add}, {@code set} and {@code remove} methods throw {@link UnsupportedOperationException},
 	 * since a combo box model manages its own item order (including the null item sentinel).
+	 * <p>
+	 * The null item of a {@link #nullable()} model is not among the {@link #included()} items, which are indexed
+	 * without it, {@code size()}, {@code get(int)} and {@code indexOf()} alike. The UI models present it first.
 	 * @param <T> the item type
 	 */
 	interface ComboBoxItems<T> extends Items<T> {
@@ -260,7 +263,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		boolean cleared();
 
 		/**
-		 * @return true if a null item is included, shown as the first item
+		 * @return true if null is selectable, via a null item shown first, which is not among the items
 		 * @see FilterComboBoxModel.Builder#nullable(boolean)
 		 * @see FilterComboBoxModel.Builder#nullItem(Object)
 		 */
