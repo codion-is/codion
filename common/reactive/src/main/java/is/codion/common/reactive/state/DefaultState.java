@@ -20,7 +20,6 @@ package is.codion.common.reactive.state;
 
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.reactive.value.Value.Validator;
 
 import org.jspecify.annotations.Nullable;
@@ -126,6 +125,7 @@ final class DefaultState implements State {
 
 		@Override
 		public void accept(Boolean value) {
+			//the value notifies on change only, and a boolean changes to its opposite
 			synchronized (DefaultState.this.value) {
 				if (observableState != null) {
 					observableState.notifyObservers(value, !value);
@@ -145,12 +145,6 @@ final class DefaultState implements State {
 		@Override
 		public Builder value(boolean value) {
 			this.valueBuilder.value(value);
-			return this;
-		}
-
-		@Override
-		public Builder notify(Notify notify) {
-			valueBuilder.notify(notify);
 			return this;
 		}
 

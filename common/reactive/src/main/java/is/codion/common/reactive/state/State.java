@@ -20,7 +20,6 @@ package is.codion.common.reactive.state;
 
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
 
@@ -69,9 +68,8 @@ public interface State extends ObservableState {
 	void toggle();
 
 	/**
-	 * Returns an {@link ObservableState} notified when the state changes (default) or is set, depending on the {@link Notify} policy
-	 * @return an {@link ObservableState} notified each time the state changes or is set
-	 * @see Builder#notify(Notify)
+	 * Returns an {@link ObservableState} notified each time the state changes, setting it to its current value notifying no one.
+	 * @return an {@link ObservableState} notified each time the state changes
 	 */
 	ObservableState observable();
 
@@ -325,15 +323,6 @@ public interface State extends ObservableState {
 		 * @return this builder instance
 		 */
 		Builder value(boolean value);
-
-		/**
-		 * Note that with {@link Notify#SET} the {@link ObservableState} observers (and {@link State#not()} and
-		 * {@link State#observer()}) are notified on every {@link State#set(boolean)}, not only on genuine transitions.
-		 * @param notify the notify policy for this state, default {@link Notify#CHANGED}
-		 * @return this builder instance
-		 * @see Notify#SET
-		 */
-		Builder notify(Notify notify);
 
 		/**
 		 * Adds a validator to the resulting value

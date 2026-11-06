@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.reactive
 - State.matches(observable, value) renamed is().
 - State.matches(observable, predicate) and Observer.Builder.when(predicate), the predicate's parameter now nullable, as in Observer.when(predicate).
+- State.Builder.notify() removed, a state now always notifies on change only, its observers, not() and the state combinations notified only of genuine transitions.
 ### is.codion.common.rmi
 - AbstractServer, a connection requested while the server is shutting down is now refused with ConnectionNotAvailableException, where a LoginException was thrown, which the json channel reported as an internal error, logged as an error.
 - Server.Locator.Builder.locate() now finds a server without connections available, after those with, its connect() then refusing with ConnectionNotAvailableException, where it was left out, a client finding only such a server told that none was available.

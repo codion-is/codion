@@ -244,24 +244,18 @@ public final class ObserverTest {
 		assertEquals(1, trueCounter.get());
 		assertEquals(1, falseCounter.get());
 
-		state = State.builder()
-						.notify(Notify.SET)
-						.build();
+		AtomicInteger stateCounter = new AtomicInteger();
+		AtomicInteger notCounter = new AtomicInteger();
+		state.addListener(stateCounter::incrementAndGet);
+		state.not().addListener(notCounter::incrementAndGet);
 
-		trueCounter.set(0);
-		falseCounter.set(0);
-		state.when(true)
-						.addListener(trueCounter::incrementAndGet);
-		state.when(false)
-						.addListener(falseCounter::incrementAndGet);
-
+		// setting a state to its current value notifies no one
+		state.set(false);
 		state.set(true);
 		state.set(true);
-		state.set(false);
-		state.set(false);
 
-		assertEquals(2, trueCounter.get());
-		assertEquals(2, falseCounter.get());
+		assertEquals(1, stateCounter.get());
+		assertEquals(1, notCounter.get());
 	}
 
 	@Test
