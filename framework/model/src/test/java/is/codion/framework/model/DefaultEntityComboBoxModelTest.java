@@ -44,6 +44,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -118,6 +119,26 @@ public final class DefaultEntityComboBoxModelTest {
 
 		persistenceEvents.deleted().accept(singletonList(temp));
 		assertFalse(comboBoxModel.items().included().contains(temp));
+	}
+
+	@Test
+	void persistenceAwareCondition() {
+		//with a condition, only the inserted entities passing it are added
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.condition(() -> Employee.JOB.equalTo("MANAGER"))
+						.build();
+		comboBoxModel.items().refresh();
+		Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
+		Entity adams = CONNECTION.selectSingle(Employee.NAME.equalTo("ADAMS"));
+		assertEquals("MANAGER", blake.get(Employee.JOB));
+		assertNotEquals("MANAGER", adams.get(Employee.JOB));
+		comboBoxModel.items().remove(blake);
+
+		persistenceEvents(Employee.TYPE).inserted().accept(asList(blake, adams));
+		assertTrue(comboBoxModel.items().contains(blake));
+		assertFalse(comboBoxModel.items().contains(adams));
 	}
 
 	@Test

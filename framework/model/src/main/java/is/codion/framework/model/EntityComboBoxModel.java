@@ -49,7 +49,9 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 	/**
-	 * Specifies whether entity combo box models respond to entity persistence events, by adding new entities, replacing updated and removing deleted ones
+	 * Specifies whether entity combo box models respond to entity persistence events, by adding new entities, replacing updated and removing deleted ones.
+	 * <p>A model with a {@link #condition()} adds only the inserted entities passing it, selected by their primary keys,
+	 * asynchronously when refreshing is.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
@@ -204,7 +206,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * @param persistenceAware controls whether this combo box model should respond to entity persistence events, by adding inserted items,
-		 * updating any updated items and removing deleted ones
+		 * updating any updated items and removing deleted ones, with a {@link EntityComboBoxModel#condition()} only the inserted items passing it
 		 * @return this builder instance
 		 * @see #PERSISTENCE_AWARE
 		 * @see PersistenceEvents

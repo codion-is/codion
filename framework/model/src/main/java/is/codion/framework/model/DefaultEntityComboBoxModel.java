@@ -48,6 +48,9 @@ import java.util.function.Supplier;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.domain.entity.Entity.primaryKeys;
+import static is.codion.framework.domain.entity.condition.Condition.and;
+import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
@@ -177,10 +180,27 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public void accept(Collection<Entity> inserted) {
-			inserted.forEach(items()::add);
-			if (!inserted.isEmpty()) {
+			if (inserted.isEmpty()) {
+				return;
+			}
+			if (entityItems.condition.getOrThrow() instanceof DefaultConditionSupplier) {
+				items().add(inserted);
 				LOG.debug("{} - added {} inserted entities", DefaultEntityComboBoxModel.this, inserted.size());
 			}
+			else {
+				//only the ones passing the condition, selected by their primary keys, as the model refreshes
+				Refresher<Entity> refresher = Refresher.<Entity>builder()
+								.items(() -> entityItems.select(inserted))
+								.onResult(this::add)
+								.build();
+				refresher.async().set(items().refresher().async().is());
+				refresher.refresh();
+			}
+		}
+
+		private void add(Collection<Entity> inserted) {
+			items().add(inserted);
+			LOG.debug("{} - added {} inserted entities passing the condition", DefaultEntityComboBoxModel.this, inserted.size());
 		}
 	}
 
@@ -403,6 +423,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			return connection.select(where(validate(condition.getOrThrow().get()))
 							.attributes(attributes)
 							.orderBy(orderBy));
+		}
+
+		// The given entities passing the condition, selected by their primary keys
+		private Collection<Entity> select(Collection<Entity> entities) {
+			return connection.select(where(and(validate(condition.getOrThrow().get()), keys(primaryKeys(entities))))
+							.attributes(attributes));
 		}
 
 		private Condition validate(Condition queryCondition) {
