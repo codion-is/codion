@@ -174,7 +174,7 @@ Schema settings control how database metadata is interpreted and transformed int
 |`false`
 
 |Lowercase Identifiers
-|Use lowercase for entity type and attribute names
+|Use lowercase for entity type and attribute names, apart from case sensitive ones, see <<_naming_conventions, Naming Conventions>>
 |`true`
 |===
 
@@ -598,7 +598,17 @@ The generator applies consistent naming transformations:
 
 |View: `ACTIVE_ORDERS_VW`
 |EntityType: `active_orders` (with `viewSuffix="VW"`)
+
+|Column: `"verbatimLocality"` (case sensitive)
+|Column constant: `VERBATIM_LOCALITY = TYPE.stringColumn("verbatimLocality")`, defined with `.name("\"verbatimLocality\"")`
+
+|Table: `"Occurrence"` (case sensitive)
+|EntityType: `gbif.Occurrence`, defined with `.table("gbif.\"Occurrence\"")`, in schema `gbif`
 |===
+
+A name created quoted, in a case other than the one the database folds unquoted names to, such as the camel case names of a PostgreSQL schema mirroring GBIF, is case sensitive and can only be reached quoted.
+The generator finds these names using the database metadata, quotes them in SQL via `name()` and `table()`, and keeps their case in the entity type and attribute names whatever `lowerCaseIdentifiers` says, since the case is part of the name.
+The constants, captions and DTO components split the camel case into words: `VERBATIM_LOCALITY`, "Verbatim locality" and `verbatimLocality`.
 
 == DTO Generation
 

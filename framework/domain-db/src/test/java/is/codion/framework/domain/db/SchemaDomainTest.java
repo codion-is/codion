@@ -151,6 +151,44 @@ public final class SchemaDomainTest {
 		}
 	}
 
+	@Test
+	void caseSensitiveNames() throws Exception {
+		try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
+			SchemaDomain gbif = SchemaDomain.schemaDomain(connection.getMetaData(), "GBIF");
+
+			// created quoted, keeping their case, quoted in SQL
+			EntityDefinition occurrence = gbif.entities().definition("gbif.Occurrence");
+			assertEquals("gbif.\"Occurrence\"", occurrence.table());
+			assertEquals("Occurrence", occurrence.caption());
+			ColumnDefinition<?> verbatimLocality = occurrence.columns().definition(column(occurrence, "verbatimLocality"));
+			assertEquals("\"verbatimLocality\"", verbatimLocality.name());
+			assertEquals("Verbatim locality", verbatimLocality.caption());
+			assertEquals("datasetID_fk", foreignKey(occurrence, "gbif.dataset").attribute().name());
+			// folded to upper case, in lower case and unquoted
+			assertEquals("remarks", occurrence.columns().definition(column(occurrence, "remarks")).name());
+			EntityDefinition dataset = gbif.entities().definition("gbif.dataset");
+			assertEquals("gbif.dataset", dataset.table());
+			EntityDefinition export = gbif.entities().definition("gbif.occurrence_export");
+			assertEquals("\"datasetName\"", export.columns().definition(column(export, "datasetName")).name());
+
+			try (DomainTest domainTest = new DomainTest(gbif, UNIT_TEST_USER)) {
+				for (EntityDefinition entityDefinition : gbif.entities().definitions()) {
+					domainTest.test(entityDefinition.type());
+				}
+			}
+
+			// without lower case identifiers only the folded names differ
+			SchemaDomain upperCase = SchemaDomain.schemaDomain(connection.getMetaData(), "GBIF", SchemaSettings.builder()
+							.lowerCaseIdentifiers(false)
+							.build());
+			EntityDefinition upperCaseOccurrence = upperCase.entities().definition("GBIF.Occurrence");
+			assertEquals("GBIF.\"Occurrence\"", upperCaseOccurrence.table());
+			column(upperCaseOccurrence, "REMARKS");
+			column(upperCaseOccurrence, "verbatimLocality");
+			assertEquals("datasetID_FK", foreignKey(upperCaseOccurrence, "GBIF.DATASET").attribute().name());
+		}
+	}
+
 	private static ForeignKeyDefinition foreignKey(EntityDefinition definition, String referencedType) {
 		List<ForeignKeyDefinition> foreignKeys = definition.foreignKeys().definitions().stream()
 						.filter(foreignKey -> foreignKey.attribute().referencedType().name().equals(referencedType))

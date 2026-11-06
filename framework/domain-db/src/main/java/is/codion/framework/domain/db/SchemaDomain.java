@@ -62,10 +62,17 @@ public final class SchemaDomain extends DomainModel {
 	private final Map<MetaDataTable, EntityType> tableEntityTypes = new HashMap<>();
 
 	private final SchemaSettings settings;
+	private final Identifiers identifiers;
 
 	private SchemaDomain(DatabaseMetaData metaData, String schemaName, SchemaSettings settings) throws SQLException {
-		super(domainType(settings.lowerCaseIdentifiers() ? schemaName.toLowerCase(Locale.ROOT) : schemaName));
+		this(metaData, schemaName, settings, new Identifiers(metaData, settings.lowerCaseIdentifiers()));
+	}
+
+	private SchemaDomain(DatabaseMetaData metaData, String schemaName, SchemaSettings settings,
+											 Identifiers identifiers) throws SQLException {
+		super(domainType(identifiers.name(schemaName)));
 		this.settings = settings;
+		this.identifiers = identifiers;
 		validateForeignKeys(false);
 		new MetaDataModel(metaData, schemaName)
 						.schema().tables().values().forEach(this::defineEntity);
@@ -120,16 +127,9 @@ public final class SchemaDomain extends DomainModel {
 				captionName = removePrefix(captionName, settings.viewPrefix());
 				captionName = removeSuffix(captionName, settings.viewSuffix());
 			}
-			// Apply lowercase to actual table name if configured
-			String entityTypeName = tableName;
-			if (settings.lowerCaseIdentifiers()) {
-				entityTypeName = entityTypeName.toLowerCase(Locale.ROOT);
-			}
-			String schemaName = table.schema().name();
-			if (schemaName != null && settings.lowerCaseIdentifiers()) {
-				schemaName = schemaName.toLowerCase(Locale.ROOT);
-			}
-			EntityType entityType = type().entityType(table.schema().none() ? entityTypeName : schemaName + "." + entityTypeName);
+			String entityTypeName = identifiers.name(tableName);
+			EntityType entityType = type().entityType(table.schema().none() ? entityTypeName :
+							identifiers.name(table.schema().name()) + "." + entityTypeName);
 			tableEntityTypes.put(table, entityType);
 			table.foreignKeys().stream()
 							.map(MetaDataForeignKeyConstraint::referencedTable)
@@ -143,6 +143,11 @@ public final class SchemaDomain extends DomainModel {
 		List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders = defineAttributes(table, entityType, new ArrayList<>(table.foreignKeys()));
 		if (!attributeDefinitionBuilders.isEmpty()) {
 			EntityDefinition.Builder entityDefinitionBuilder = entityType.as().attributes(attributeDefinitionBuilders);
+			String tableName = table.schema().none() ? identifiers.sql(table.tableName()) :
+							identifiers.sql(table.schema().name()) + "." + identifiers.sql(table.tableName());
+			if (!tableName.equals(entityType.name())) {
+				entityDefinitionBuilder.table(tableName);
+			}
 			entityDefinitionBuilder.caption(caption(captionName));
 			if (!nullOrEmpty(table.comment())) {
 				entityDefinitionBuilder.description(table.comment());
@@ -196,7 +201,7 @@ public final class SchemaDomain extends DomainModel {
 										.map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
 										.collect(toList()));
 		ForeignKeyDefinition.Builder builder = foreignKey.as().foreignKey()
-						.caption(caption(referencedTable.tableName().toLowerCase(Locale.ROOT)));
+						.caption(caption(referencedTable.tableName()));
 		//reading the columns it shares with a foreign key setting them
 		foreignKeyConstraint.references().keySet().stream()
 						.filter(column -> owners.get(column) != foreignKeyConstraint)
@@ -231,6 +236,9 @@ public final class SchemaDomain extends DomainModel {
 		else {
 			builder = column.as().column().caption(caption);
 		}
+		if (identifiers.caseSensitive(metadataColumn.name())) {
+			builder.name(identifiers.sql(metadataColumn.name()));
+		}
 		if (metadataColumn.autoIncrement()) {
 			builder.generator(identity());
 		}
@@ -254,12 +262,15 @@ public final class SchemaDomain extends DomainModel {
 	}
 
 	private <T> Column<T> column(EntityType entityType, MetaDataColumn column) {
-		return (Column<T>) entityType.column(settings.lowerCaseIdentifiers() ?
-						column.name().toLowerCase(Locale.ROOT) : column.name(), column.type());
+		return (Column<T>) entityType.column(identifiers.name(column.name()), column.type());
 	}
 
+	// verbatimLocality -> Verbatim locality, COUNTRY_CITY -> Country city
 	private static String caption(String name) {
-		String caption = name.toLowerCase(Locale.ROOT).replace("_", " ");
+		String caption = name
+						.replaceAll("([a-z0-9])([A-Z])", "$1 $2")
+						.replaceAll("([A-Z]+)([A-Z][a-z])", "$1 $2")
+						.toLowerCase(Locale.ROOT).replace("_", " ");
 
 		return caption.substring(0, 1).toUpperCase(Locale.ROOT) + caption.substring(1);
 	}
@@ -280,10 +291,9 @@ public final class SchemaDomain extends DomainModel {
 		for (MetaDataForeignKeyConstraint foreignKeyConstraint : foreignKeyConstraints) {
 			String name = createForeignKeyName(foreignKeyConstraint);
 			if (columnNameCounts.get(name) > 1) {
-				name = name + "_" + foreignKeyConstraint.referencedTable().tableName().toUpperCase(Locale.ROOT);
+				name = name + "_" + foreignKeyNamePart(foreignKeyConstraint.referencedTable().tableName());
 			}
-			name = name + "_FK";
-			names.put(foreignKeyConstraint, settings.lowerCaseIdentifiers() ? name.toLowerCase(Locale.ROOT) : name);
+			names.put(foreignKeyConstraint, name + (settings.lowerCaseIdentifiers() ? "_fk" : "_FK"));
 		}
 
 		return names;
@@ -292,9 +302,18 @@ public final class SchemaDomain extends DomainModel {
 	private String createForeignKeyName(MetaDataForeignKeyConstraint foreignKeyConstraint) {
 		return foreignKeyConstraint.references().keySet().stream()
 						.map(MetaDataColumn::name)
-						.map(String::toUpperCase)
+						.map(this::foreignKeyNamePart)
 						.map(this::removePrimaryKeyColumnSuffix)
 						.collect(joining("_"));
+	}
+
+	// a case sensitive name keeping its case, the others in upper case, or lower case with lowerCaseIdentifiers()
+	private String foreignKeyNamePart(String name) {
+		if (identifiers.caseSensitive(name)) {
+			return name;
+		}
+
+		return settings.lowerCaseIdentifiers() ? name.toLowerCase(Locale.ROOT) : name.toUpperCase(Locale.ROOT);
 	}
 
 	private String removePrimaryKeyColumnSuffix(String columnName) {
@@ -309,6 +328,52 @@ public final class SchemaDomain extends DomainModel {
 	private static String removePrefix(String name, String prefix) {
 		return name.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT)) ?
 						name.substring(prefix.length()) : name;
+	}
+
+	/**
+	 * How the database stores identifiers, folding unquoted ones to upper or lower case, so that one which isn't in
+	 * that case was created quoted, its case part of its name, and can only be reached quoted.
+	 */
+	private static final class Identifiers {
+
+		private final boolean upperCase;
+		private final boolean lowerCase;
+		private final String quote;
+		private final boolean lowerCaseNames;
+
+		private Identifiers(DatabaseMetaData metaData, boolean lowerCaseNames) throws SQLException {
+			this.upperCase = metaData.storesUpperCaseIdentifiers();
+			this.lowerCase = metaData.storesLowerCaseIdentifiers();
+			String quoteString = metaData.getIdentifierQuoteString();
+			// a space if quoting identifiers isn't supported
+			this.quote = quoteString == null ? "" : quoteString.trim();
+			this.lowerCaseNames = lowerCaseNames;
+		}
+
+		/**
+		 * @param identifier the identifier
+		 * @return true if the identifier isn't in the case the database folds unquoted identifiers to
+		 */
+		private boolean caseSensitive(String identifier) {
+			return !quote.isEmpty() && ((upperCase && !identifier.equals(identifier.toUpperCase(Locale.ROOT)))
+							|| (lowerCase && !identifier.equals(identifier.toLowerCase(Locale.ROOT))));
+		}
+
+		/**
+		 * @param identifier the identifier
+		 * @return the name in the domain, in lower case if configured so, unless case sensitive
+		 */
+		private String name(String identifier) {
+			return lowerCaseNames && !caseSensitive(identifier) ? identifier.toLowerCase(Locale.ROOT) : identifier;
+		}
+
+		/**
+		 * @param identifier the identifier
+		 * @return the identifier as used in SQL, quoted if case sensitive, otherwise its name in the domain
+		 */
+		private String sql(String identifier) {
+			return caseSensitive(identifier) ? quote + identifier.replace(quote, quote + quote) + quote : name(identifier);
+		}
 	}
 
 	/**

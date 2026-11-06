@@ -174,6 +174,35 @@ public final class DomainSourceTest {
 		}
 	}
 
+	@Test
+	void caseSensitiveNames() throws Exception {
+		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "GBIF");
+			String source = DomainSource.builder()
+							.domain(schemaDomain)
+							.domainPackage("is.codion.gbif.domain")
+							.dtos(entityTypes(schemaDomain))
+							.build()
+							.combined()
+							.lines()
+							.map(String::strip)
+							.collect(joining("\n"));
+			// the names keep their case, the camel case splitting the java names
+			assertTrue(source.contains("interface Occurrence {"), source);
+			assertTrue(source.contains("EntityType TYPE = DOMAIN.entityType(\"gbif.Occurrence\");"), source);
+			assertTrue(source.contains("Column<String> VERBATIM_LOCALITY = TYPE.stringColumn(\"verbatimLocality\");"), source);
+			assertTrue(source.contains("ForeignKey DATASET_ID_FK = TYPE.foreignKey(\"datasetID_fk\", DATASET_ID, Dataset.DATASET_ID);"), source);
+			assertTrue(source.contains("interface OccurrenceExportView {"), source);
+			assertTrue(source.contains("String verbatimLocality"), source);
+			// quoted in SQL
+			assertTrue(source.contains(".table(\"gbif.\\\"Occurrence\\\"\")"), source);
+			assertTrue(source.contains("Occurrence.VERBATIM_LOCALITY.as()\n.column()\n.name(\"\\\"verbatimLocality\\\"\")\n.caption(\"Verbatim locality\")"), source);
+			// the folded ones not
+			assertTrue(source.contains("Column<String> REMARKS = TYPE.stringColumn(\"remarks\");"), source);
+			assertFalse(source.contains(".name(\"remarks\")"), source);
+		}
+	}
+
 	private static int occurrences(String source, String text) {
 		return source.split(Pattern.quote(text), -1).length - 1;
 	}

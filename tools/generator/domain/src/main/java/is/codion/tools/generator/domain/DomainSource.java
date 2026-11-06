@@ -590,12 +590,12 @@ public final class DomainSource {
 	private void addRecordField(Attribute<?> attribute, MethodSpec.Builder constructorBuilder) {
 		if (attribute instanceof Column<?>) {
 			constructorBuilder.addParameter(ParameterSpec.builder(((Column<?>) attribute).type().get(),
-							underscoreToCamelCase(attribute.name().toLowerCase(Locale.ROOT))).build());
+							memberName(attribute.name())).build());
 		}
 		else if (attribute instanceof ForeignKey) {
 			EntityDefinition referenced = referencedDefinition((ForeignKey) attribute);
 			constructorBuilder.addParameter(ParameterSpec.builder(dtoName(referenced),
-							underscoreToCamelCase(attribute.name().toLowerCase(Locale.ROOT).replace(FK_SUFFIX, "").replace(FK_ALTERNATE_SUFFIX, ""))).build());
+							foreignKeyMemberName(attribute.name())).build());
 		}
 	}
 
@@ -613,16 +613,16 @@ public final class DomainSource {
 		attributes.forEach(attribute -> {
 			if (attribute instanceof Column<?>) {
 				builder.append("\t.with(")
-								.append(attribute.name().toUpperCase(Locale.ROOT))
+								.append(constantName(attribute.name()))
 								.append(", ")
-								.append(underscoreToCamelCase(attribute.name().toLowerCase(Locale.ROOT)))
+								.append(memberName(attribute.name()))
 								.append(")\n");
 			}
 			else if (attribute instanceof ForeignKey) {
 				builder.append("\t.with(")
-								.append(attribute.name().toUpperCase(Locale.ROOT))
+								.append(constantName(attribute.name()))
 								.append(", ")
-								.append(underscoreToCamelCase(attribute.name().toLowerCase(Locale.ROOT).replace(FK_SUFFIX, "").replace(FK_ALTERNATE_SUFFIX, "")))
+								.append(foreignKeyMemberName(attribute.name()))
 								.append("." + ENTITY_METHOD_NAME + "(" + ENTITIES_PARAM_NAME + ")")
 								.append(")\n");
 			}
@@ -644,12 +644,12 @@ public final class DomainSource {
 		List<String> arguments = new ArrayList<>();
 		attributes.forEach(attribute -> {
 			if (attribute instanceof Column<?>) {
-				arguments.add(parameter + ".get(" + attribute.name().toUpperCase(Locale.ROOT) + ")");
+				arguments.add(parameter + ".get(" + constantName(attribute.name()) + ")");
 			}
 			else if (attribute instanceof ForeignKey) {
 				EntityDefinition referenced = referencedDefinition((ForeignKey) attribute);
 				arguments.add(interfaceName(referenced, true)
-								+ "." + DTO_METHOD_NAME + "(" + parameter + ".get(" + attribute.name().toUpperCase(Locale.ROOT) + "))");
+								+ "." + DTO_METHOD_NAME + "(" + parameter + ".get(" + constantName(attribute.name()) + "))");
 			}
 		});
 
@@ -706,6 +706,10 @@ public final class DomainSource {
 										.map(attributeDefinition -> createAttribute(attributeDefinition, definition, formatter))
 										.collect(joining(",\n")))
 						.append(")");
+		// a table name which must be quoted in SQL, a case sensitive one
+		if (!definition.table().equals(definition.type().name())) {
+			builder.append("\n").append(INDENT).append(CodeBlock.of(".table($S)", definition.table()));
+		}
 		builder.append(captionStrategy.entityCaption(definition));
 		builder.append(captionStrategy.entityDescription(definition));
 		if (definition.readOnly()) {
@@ -755,7 +759,7 @@ public final class DomainSource {
 			Column<?> column = (Column<?>) attribute;
 			FieldSpec.Builder columnBuilder = FieldSpec.builder(ParameterizedTypeName.get(Column.class,
 															column.type().get()),
-											column.name().toUpperCase(Locale.ROOT))
+											constantName(column.name()))
 							.addModifiers(PUBLIC, STATIC, FINAL);
 			addInitializer(columnBuilder, column);
 			interfaceBuilder.addField(columnBuilder.build());
@@ -764,7 +768,7 @@ public final class DomainSource {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			//todo wrap references if more than four
 			interfaceBuilder.addField(FieldSpec.builder(ForeignKey.class,
-											attribute.name().toUpperCase(Locale.ROOT))
+											constantName(attribute.name()))
 							.addModifiers(PUBLIC, STATIC, FINAL)
 							.initializer("TYPE.foreignKey($S, $L)",
 											attribute.name(),
@@ -790,9 +794,9 @@ public final class DomainSource {
 	private static String createReferences(ForeignKey foreignKey) {
 		return foreignKey.references().stream()
 						.map(reference -> new StringBuilder()
-										.append(reference.column().name().toUpperCase(Locale.ROOT)).append(", ")
+										.append(constantName(reference.column().name())).append(", ")
 										.append(interfaceName(reference.foreign().entityType().name(), true))
-										.append(".").append(reference.foreign().name().toUpperCase(Locale.ROOT))
+										.append(".").append(constantName(reference.foreign().name()))
 										.toString())
 						.collect(joining(", "));
 	}
@@ -825,15 +829,15 @@ public final class DomainSource {
 		}
 
 		// For tables, use the table name as before
-		return interfaceName(definition.table(), uppercase);
+		return interfaceName(definition.type().name(), uppercase);
 	}
 
 	private static String interfaceName(String tableName, boolean uppercase) {
-		String name = requireNonNull(tableName).toLowerCase(Locale.ROOT);
+		String name = requireNonNull(tableName);
 		if (name.contains(".")) {
 			name = name.substring(name.lastIndexOf('.') + 1);
 		}
-		name = underscoreToCamelCase(name);
+		name = memberName(name);
 		if (uppercase) {
 			name = name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
 		}
@@ -921,6 +925,26 @@ public final class DomainSource {
 
 	private static boolean identityGenerated(ColumnDefinition<?> column) {
 		return column.generated() && column.generator() instanceof Identity<?>;
+	}
+
+	// verbatimLocality -> VERBATIM_LOCALITY, occurrenceID -> OCCURRENCE_ID, COUNTRY_CITY as it is
+	static String constantName(String name) {
+		return snakeCase(name).toUpperCase(Locale.ROOT);
+	}
+
+	// verbatimLocality as it is, occurrenceID -> occurrenceId, COUNTRY_CITY -> countryCity
+	private static String memberName(String name) {
+		return underscoreToCamelCase(snakeCase(name).toLowerCase(Locale.ROOT));
+	}
+
+	private static String foreignKeyMemberName(String name) {
+		return underscoreToCamelCase(snakeCase(name).toLowerCase(Locale.ROOT)
+						.replace(FK_SUFFIX, "").replace(FK_ALTERNATE_SUFFIX, ""));
+	}
+
+	// the words of a camel case name separated by underscores, verbatimLocality -> verbatim_Locality
+	private static String snakeCase(String name) {
+		return name.replaceAll("([a-z0-9])([A-Z])", "$1_$2").replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2");
 	}
 
 	static String underscoreToCamelCase(String text) {
@@ -1116,7 +1140,7 @@ public final class DomainSource {
 		private String formatColumn(ColumnDefinition<?> column, ColumnContext context) {
 			List<String> calls = columnCalls(column, context, captionStrategy);
 			StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
-							.append(interfaceName).append(".").append(column.name().toUpperCase(Locale.ROOT));
+							.append(interfaceName).append(".").append(constantName(column.attribute().name()));
 			Template template = templates.template(column.attribute());
 			if (template == null) {
 				builder.append(".as()");
@@ -1131,7 +1155,7 @@ public final class DomainSource {
 		}
 
 		private String formatForeignKey(ForeignKeyDefinition definition) {
-			String foreignKeyName = definition.attribute().name().toUpperCase(Locale.ROOT);
+			String foreignKeyName = constantName(definition.attribute().name());
 			StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
 							.append(interfaceName).append(".").append(foreignKeyName).append(".as()\n")
 							.append(TRIPLE_INDENT).append(".foreignKey()");
@@ -1141,7 +1165,7 @@ public final class DomainSource {
 			definition.references().stream()
 							.filter(reference -> definition.readOnly(reference.column()))
 							.forEach(reference -> builder.append("\n").append(TRIPLE_INDENT).append(".readOnly(")
-											.append(interfaceName).append(".").append(reference.column().name().toUpperCase(Locale.ROOT)).append(")"));
+											.append(interfaceName).append(".").append(constantName(reference.column().name())).append(")"));
 
 			return builder.toString();
 		}
@@ -1150,6 +1174,10 @@ public final class DomainSource {
 		private static List<String> columnCalls(ColumnDefinition<?> column, ColumnContext context, CaptionStrategy captionStrategy) {
 			List<String> calls = new ArrayList<>();
 			calls.add("." + definitionType(column, context.compositePrimaryKey));
+			// a name which must be quoted in SQL, a case sensitive one
+			if (!column.name().equals(column.attribute().name())) {
+				calls.add(CodeBlock.of(".name($S)", column.name()).toString());
+			}
 			if (!context.foreignKeyColumn && !column.primaryKey()) {
 				captionStrategy.attributeCaption(column.caption()).ifPresent(calls::add);
 			}
@@ -1245,7 +1273,7 @@ public final class DomainSource {
 							.filter(definition -> !definition.readOnly())
 							.forEach(definition -> definition.columns().definitions().forEach(column -> {
 								Class<?> type = column.attribute().type().get();
-								String name = column.name().toLowerCase(Locale.ROOT);
+								String name = column.attribute().name().toLowerCase(Locale.ROOT);
 								if (column.primaryKey() && definition.primaryKey().columns().size() == 1 && identityGenerated(column)) {
 									identityKeys.computeIfAbsent(type, k -> new ArrayList<>())
 													.add(new TemplateColumn(definition, column, captionStrategy));
@@ -1266,7 +1294,7 @@ public final class DomainSource {
 							IDENTITY_KEY : typeName(type) + "_" + IDENTITY_KEY, type, columns));
 			auditColumns.forEach((name, columnsByType) -> {
 				Map.Entry<Class<?>, List<TemplateColumn>> mostCommon = mostCommonType(columnsByType);
-				templates.add(name.toUpperCase(Locale.ROOT), mostCommon.getKey(), mostCommon.getValue());
+				templates.add(constantName(mostCommon.getValue().get(0).column.name()), mostCommon.getKey(), mostCommon.getValue());
 			});
 
 			return templates;
