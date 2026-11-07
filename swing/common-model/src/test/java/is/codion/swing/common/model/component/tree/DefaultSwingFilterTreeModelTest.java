@@ -216,12 +216,14 @@ final class DefaultSwingFilterTreeModelTest {
 		assertEquals(2, selection.count());
 		selection.singleSelection().set(true);
 		assertEquals(TreeSelectionModel.SINGLE_TREE_SELECTION, selection.getSelectionMode());
-		//cleared on mode change
-		assertEquals(0, selection.count());
+		//the highest row kept on switching to single selection
+		assertEquals(singletonList(1), selection.indexes().get());
 		selection.indexes().set(asList(0, 1));
 		assertEquals(singletonList(1), selection.indexes().get());
 		selection.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		assertFalse(selection.singleSelection().is());
+		//the selection as is on switching back
+		assertEquals(singletonList(1), selection.indexes().get());
 	}
 
 	@Test

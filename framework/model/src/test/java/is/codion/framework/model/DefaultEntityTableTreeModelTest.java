@@ -279,11 +279,11 @@ public final class DefaultEntityTableTreeModelTest {
 		assertFalse(tree.selection().singleSelection().is());
 		tableModel.selection().items().set(asList(employee(tableModel, "ALLEN"), employee(tableModel, "WARD")));
 		assertEquals(2, tree.selection().count());
-		// changing the mode clears both selections
+		// switching to single selection keeps one, the tree following the table
 		tableModel.selection().singleSelection().set(true);
 		assertTrue(tree.selection().singleSelection().is());
-		assertFalse(tableModel.selection().present().is());
-		assertFalse(tree.selection().present().is());
+		assertEquals(1, tableModel.selection().count());
+		assertEquals(tableModel.selection().items().get(), tree.selection().items().get());
 		// one way, the tree does not change the mode of the table
 		tree.selection().singleSelection().set(false);
 		assertTrue(tableModel.selection().singleSelection().is());

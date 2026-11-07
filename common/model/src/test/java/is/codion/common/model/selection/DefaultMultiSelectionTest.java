@@ -117,6 +117,28 @@ public final class DefaultMultiSelectionTest {
 	}
 
 	@Test
+	void singleSelectionModeSwitch() {
+		TestItems items = new TestItems(asList("a", "b", "c"));
+		MultiSelection<String> selection = new DefaultMultiSelection<>(items);
+		AtomicInteger changing = new AtomicInteger();
+		selection.changing().addListener(changing::incrementAndGet);
+		selection.indexes().set(asList(0, 2));
+		assertEquals(1, changing.get());
+		//switching to single selection keeps the highest index, a selection change notifying changing()
+		selection.singleSelection().set(true);
+		assertEquals(singletonList(2), selection.indexes().get());
+		assertEquals(2, changing.get());
+		//switching back leaves the selection as is
+		selection.singleSelection().set(false);
+		assertEquals(singletonList(2), selection.indexes().get());
+		assertEquals(2, changing.get());
+		//a single selection changes nothing on switching
+		selection.singleSelection().set(true);
+		assertEquals(singletonList(2), selection.indexes().get());
+		assertEquals(2, changing.get());
+	}
+
+	@Test
 	void incrementDecrement() {
 		TestItems items = new TestItems(asList("a", "b", "c"));
 		MultiSelection<String> selection = new DefaultMultiSelection<>(items);

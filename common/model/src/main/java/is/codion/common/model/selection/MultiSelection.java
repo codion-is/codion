@@ -67,6 +67,9 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	ObservableState single();
 
 	/**
+	 * <p>Switching to single selection keeps the highest selected index, as single selection mode does when
+	 * indexes are selected, notifying {@link #changing()} as any selection change does. Switching back leaves the
+	 * selection as is.
 	 * @return the {@link State} controlling whether single selection mode is enabled
 	 */
 	State singleSelection();
@@ -397,7 +400,8 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		boolean contains(int index);
 
 		/**
-		 * @return the {@link State} controlling single selection mode, the selection is cleared when it changes
+		 * @return the {@link State} controlling single selection mode, switching to it keeping the highest selected index,
+		 * see {@link MultiSelection#singleSelection()}
 		 */
 		State singleSelection();
 

@@ -27,6 +27,7 @@ Codion Change Log
 - FilterComboBoxModel.items().contains(null) and items().included().contains(null) now return false for a nullable model, the null item not being among the items, nullable() telling whether null is selectable.
 - TableConditions.Builder.exclude() now replaces the conditions excluded before, as builder methods do, where it added to them.
 - FilterModel.Items.remove(item), remove(items), replace(item, replacement) and replace(items) now act on every equal occurrence of an item, where they acted on one, remove(item) on the first and remove(items) on the last, so a deleted or updated entity no longer leaves an equal copy behind in a table model; removing by index still removes the one at the index.
+- MultiSelection.singleSelection(), switching to single selection now keeps the highest selected index, as single selection does when indexes are selected, notifying changing(), and switching back leaves the selection as is, where both cleared the selection.
 ### is.codion.dbms.h2
 - H2Database, an embedded database's init scripts now each run once in its life, recorded in CODION.INIT_SCRIPT with a checksum, line endings aside, an existing file database running those listed it has not yet run, in order, where they ran on its creation alone, one without the record, created before, recording every script listed as run the first time, running none, one refusing sa without a password left alone, administered, the database refused where a script has changed since it ran, has run but is no longer listed, or has run while one listed before it has not.
 - H2Database bug fixed, an existing database opened through a file system prefix, jdbc:h2:async: or jdbc:h2:retry:nio: for example, or in the user's home, jdbc:h2:~/, is now found, where it was taken for a new one at each start, its init scripts run again unless recorded as run, and DB_CLOSE_DELAY=-1 set on it; name() no longer includes the prefix.
@@ -81,6 +82,8 @@ Codion Change Log
 - EntityConditions.get(Column) now returns ColumnConditionModel, as get(ForeignKey) returns ForeignKeyConditionModel, where it returned ConditionModel.
 - AttributeConditionModel.condition() removed, along with the default methods delegating to it, the delegation now an implementation detail.
 - EntityConditions.Builder.exclude() now replaces the attributes excluded before, as builder methods do, where it added to them.
+### is.codion.swing.common.model
+- FilterListSelection and FilterTreeSelection bug fixed, a selection mode change now notifies changing() before changing the selection, as the common selection does, where the selection was cleared without it, and keeps what the new mode allows, see MultiSelection.singleSelection().
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, scrolling to the selected rows now follows the rows added to the selection, where any change to it scrolled to the first selected row when none was visible, deselecting a row scrolling to another.
 - FilterTable bug fixed, selecting a search result from the search field, or toggling its selection, now focuses its cell, leaving the rest of the selection as it is, where adding a result whose row was already selected selected, or deselected, every row between it and the anchor.

@@ -633,7 +633,12 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		private final DefaultGrouping grouping = new DefaultGrouping();
 
 		private DefaultIndexStore() {
-			singleSelection.addListener(() -> set(emptySet())); // mirror Swing: changing selection mode clears the selection
+			//a mode switch keeps what is still valid, switching to single selection keeping the highest index, as set() does
+			singleSelection.addConsumer(single -> {
+				if (single && selected.size() > 1) {
+					set(singleton(selected.last()));
+				}
+			});
 		}
 
 		@Override

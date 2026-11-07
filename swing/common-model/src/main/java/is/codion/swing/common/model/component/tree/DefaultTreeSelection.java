@@ -161,7 +161,11 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 	@Override
 	public void setSelectionMode(int selectionMode) {
 		if (getSelectionMode() != selectionMode) {
-			super.clearSelection();
+			//keeps what is still valid, switching to single selection narrowing the selection to its highest row, as the
+			//selection does in single selection mode, notifying changing(), the tree model handling contiguous selection
+			if (selectionMode == SINGLE_TREE_SELECTION && getSelectionCount() > 1) {
+				setSelectionPath(highestPath());
+			}
 			super.setSelectionMode(selectionMode);
 			singleSelection.set(selectionMode == SINGLE_TREE_SELECTION);
 		}
@@ -231,6 +235,24 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 		this.structural = structural;
 
 		return previous;
+	}
+
+	// The selected path at the highest visible row, the lead selection path when none is visible
+	private @Nullable TreePath highestPath() {
+		TreePath highest = null;
+		int highestRow = -1;
+		TreePath[] paths = getSelectionPaths();
+		if (paths != null) {
+			for (TreePath path : paths) {
+				int row = visible.indexOf((NodePath<T>) path.getLastPathComponent());
+				if (row > highestRow) {
+					highestRow = row;
+					highest = path;
+				}
+			}
+		}
+
+		return highest == null ? getLeadSelectionPath() : highest;
 	}
 
 	/**

@@ -250,9 +250,28 @@ public class FilterListSelectionTest {
 		testModel.indexes().set(asList(0, 1, 2));
 		assertEquals(3, testModel.count());
 
-		// Change to single selection - should clear selection
+		// Change to single selection keeps the highest selected index, notifying changing()
+		AtomicInteger changing = new AtomicInteger();
+		testModel.changing().addListener(changing::incrementAndGet);
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertFalse(testModel.present().is());
+		assertEquals(singletonList(2), testModel.indexes().get());
+		assertEquals(1, changing.get());
+		assertTrue(testModel.singleSelection().is());
+
+		// Change back to multiple selection leaves the selection as is
+		testModel.singleSelection().set(false);
+		assertEquals(singletonList(2), testModel.indexes().get());
+		assertEquals(1, changing.get());
+
+		// A single interval keeps a contiguous selection, narrows another
+		testModel.indexes().set(asList(0, 1));
+		testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
+		assertEquals(asList(0, 1), testModel.indexes().get());
+		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
+		testModel.indexes().set(asList(0, 2));
+		testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
+		assertEquals(singletonList(2), testModel.indexes().get());
+		testModel.setSelectionMode(SINGLE_SELECTION);
 
 		// In single selection mode, adding multiple should only keep last
 		testModel.index().set(0);

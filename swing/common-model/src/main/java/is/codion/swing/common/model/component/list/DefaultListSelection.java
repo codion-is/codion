@@ -50,6 +50,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	private final MultiSelection<R> selection;
 
 	private boolean endingGroup = false;
+	private boolean modeChanging = false;// true while the selection mode changes, the selection already allowed by the new mode
 
 	DefaultListSelection(IncludedItems<R> items) {
 		this.selection = multiSelection(requireNonNull(items), new ListStore());
@@ -130,8 +131,21 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	@Override
 	public void setSelectionMode(int selectionMode) {
 		if (getSelectionMode() != selectionMode) {
-			super.clearSelection();
-			super.setSelectionMode(selectionMode);
+			//keeps what is still valid, a selection the new mode does not allow narrowed to the highest selected index,
+			//as the selection does in single selection mode, notifying changing()
+			if (!allowed(selectionMode)) {
+				int highest = getMaxSelectionIndex();
+				setSelectionInterval(highest, highest);
+			}
+			//DefaultListSelectionModel narrows the selection to the mode itself, via setSelectionInterval(),
+			//changing nothing now that the selection is allowed, so changing() is not notified again
+			modeChanging = true;
+			try {
+				super.setSelectionMode(selectionMode);
+			}
+			finally {
+				modeChanging = false;
+			}
 			singleSelection.set(selectionMode == SINGLE_SELECTION);
 		}
 	}
@@ -144,7 +158,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 	@Override
 	public void setSelectionInterval(int fromIndex, int toIndex) {
-		changing.run();
+		if (!modeChanging) {
+			changing.run();
+		}
 		super.setSelectionInterval(fromIndex, toIndex);
 	}
 
@@ -195,6 +211,25 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		if (!isAdjusting) {
 			changed.run();
 		}
+	}
+
+	// Whether the given selection mode allows the current selection
+	private boolean allowed(int selectionMode) {
+		int min = getMinSelectionIndex();
+		int max = getMaxSelectionIndex();
+		if (min == max || selectionMode == MULTIPLE_INTERVAL_SELECTION) {
+			return true;
+		}
+		if (selectionMode == SINGLE_SELECTION) {
+			return false;
+		}
+		for (int index = min; index <= max; index++) {
+			if (!isSelectedIndex(index)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private final class DefaultGrouping implements Grouping {

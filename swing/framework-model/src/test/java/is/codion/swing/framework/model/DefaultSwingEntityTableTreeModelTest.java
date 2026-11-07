@@ -34,7 +34,8 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Tests the Swing {@code TreeModel} coat of {@link SwingEntityTableTreeModel} over a {@link SwingEntityTableModel}, the
@@ -84,11 +85,12 @@ public final class DefaultSwingEntityTableTreeModelTest {
 						.build();
 		tableModel.selection().items().set(asList(tableModel.items().included().get(0), tableModel.items().included().get(1)));
 		assertEquals(2, tree.selection().getSelectionCount());
-		// the list selection model mode followed by the tree selection model, both selections cleared
+		// the list selection model mode followed by the tree selection model, one kept, the tree following the table
 		tableModel.selection().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		assertEquals(TreeSelectionModel.SINGLE_TREE_SELECTION, tree.selection().getSelectionMode());
-		assertTrue(tableModel.selection().isSelectionEmpty());
-		assertTrue(tree.selection().isSelectionEmpty());
+		assertEquals(1, tableModel.selection().count());
+		assertEquals(1, tree.selection().getSelectionCount());
+		assertEquals(tableModel.selection().items().get(), tree.selection().items().get());
 		tableModel.selection().singleSelection().set(false);
 		assertEquals(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION, tree.selection().getSelectionMode());
 	}
