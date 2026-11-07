@@ -131,6 +131,8 @@ Codion Change Log
 - EntityPanel.Config.initialEditState() and enabledEditStates() renamed initialEditPanelState() and enabledEditPanelStates(), as editPanelState(), TabbedDetailLayout.Builder.initialDetailState() and enabledDetailStates() renamed initialDetailPanelState() and enabledDetailPanelStates().
 - EntityPanel.Config.toolbarControls() renamed toolBarControls(), as includeToolBar() and the like, the keys of TOOLBAR_CONTROLS and CONTROL_TOOLBAR_CONSTRAINTS now toolBarControls and controlToolBarConstraints.
 - EntityPanel.Config.disposeEditDialogOnEscape() and DISPOSE_EDIT_DIALOG_ON_ESCAPE renamed closeEditDialogOnEscape() and CLOSE_EDIT_DIALOG_ON_ESCAPE, its key closeEditDialogOnEscape.
+- EntityEditPanel.control() now public, as on EntityPanel and EntityTablePanel, and EntityEditPanel.displayException() and EntityTablePanel.displayException() now public, as on EntityPanel.
+- EntityTablePanel.initializeSouthPanel() now @Nullable, as documented, null meaning no south panel.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, entity type, column and foreign key names are now written as the domain gives them, where they were written in lower case, SchemaDomain.SchemaSettings.lowerCaseIdentifiers(false) having no effect on the source.
 - DomainSource, a column or table name which differs from its attribute or entity type name, a quoted one, now written via name() and table(), the constant, interface and DTO component names now splitting camel case names into words, VERBATIM_LOCALITY and verbatimLocality.

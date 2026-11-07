@@ -707,6 +707,21 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
+	 * Displays the exception in a dialog, with the dialog owner as the current focus owner
+	 * or this panel if none is available.
+	 * @param exception the exception to display
+	 */
+	public final void displayException(Exception exception) {
+		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
+		if (focusOwner == null) {
+			focusOwner = EntityTablePanel.this;
+		}
+		Dialogs.exception()
+						.owner(Ancestor.window().of(focusOwner).get())
+						.show(exception);
+	}
+
+	/**
 	 * Restores the preferences for this panel.
 	 * Override to apply panel specific preferences.
 	 * <p>Remember to call {@code super.restore(preferences)} when overriding.
@@ -771,7 +786,7 @@ public class EntityTablePanel extends JPanel {
 	 * @return the south panel, or null if no south panel should be included
 	 * @see Config#includeSouthPanel(boolean)
 	 */
-	protected JPanel initializeSouthPanel() {
+	protected @Nullable JPanel initializeSouthPanel() {
 		return new SouthPanel();
 	}
 
@@ -946,21 +961,6 @@ public class EntityTablePanel extends JPanel {
 	 */
 	protected String preferencesKey() {
 		return model.getClass().getSimpleName() + "-" + model.entityType();
-	}
-
-	/**
-	 * Displays the exception in a dialog, with the dialog owner as the current focus owner
-	 * or this panel if none is available.
-	 * @param exception the exception to display
-	 */
-	protected final void displayException(Exception exception) {
-		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
-		if (focusOwner == null) {
-			focusOwner = EntityTablePanel.this;
-		}
-		Dialogs.exception()
-						.owner(Ancestor.window().of(focusOwner).get())
-						.show(exception);
 	}
 
 	/**

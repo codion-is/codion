@@ -444,6 +444,32 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
+	 * Returns a {@link Value} containing the control associated with {@code controlKey},
+	 * an empty {@link Value} if no such control is available.
+	 * @param <T> the control type
+	 * @param controlKey the control key
+	 * @return the {@link Value} containing the control associated with {@code controlKey}
+	 */
+	public final <T extends Control> Value<T> control(ControlKey<T> controlKey) {
+		return configuration.controlMap.control(requireNonNull(controlKey));
+	}
+
+	/**
+	 * Displays the exception in a dialog, with the dialog owner as the current focus owner
+	 * or this panel if none is available.
+	 * @param exception the exception to display
+	 */
+	public final void displayException(Exception exception) {
+		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
+		if (focusOwner == null) {
+			focusOwner = EntityEditPanel.this;
+		}
+		Dialogs.exception()
+						.owner(Ancestor.window().of(focusOwner).get())
+						.show(exception);
+	}
+
+	/**
 	 * @return true if confirmed
 	 */
 	protected final boolean confirmInsert() {
@@ -627,20 +653,6 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
-	 * Displays the exception in a dialog
-	 * @param exception the exception to display
-	 */
-	protected final void displayException(Exception exception) {
-		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
-		if (focusOwner == null) {
-			focusOwner = EntityEditPanel.this;
-		}
-		Dialogs.exception()
-						.owner(Ancestor.window().of(focusOwner).get())
-						.show(exception);
-	}
-
-	/**
 	 * Override to set up any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(ControlKey)
@@ -689,17 +701,6 @@ public abstract class EntityEditPanel extends JPanel {
 			throw new IllegalStateException("Method must be called before the panel is initialized");
 		}
 		requireNonNull(controlsConfig).accept(controlsLayout);
-	}
-
-	/**
-	 * Returns a {@link Value} containing the control associated with {@code controlKey},
-	 * an empty {@link Value} if no such control is available.
-	 * @param <T> the control type
-	 * @param controlKey the control key
-	 * @return the {@link Value} containing the control associated with {@code controlKey}
-	 */
-	protected final <T extends Control> Value<T> control(ControlKey<T> controlKey) {
-		return configuration.controlMap.control(requireNonNull(controlKey));
 	}
 
 	/**
