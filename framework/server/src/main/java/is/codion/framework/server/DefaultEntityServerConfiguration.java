@@ -24,7 +24,6 @@ import is.codion.common.utilities.Text;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 
-
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
@@ -259,8 +258,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
-		public Builder auxiliaryServerFactory(Collection<String> auxiliaryServerFactory) {
-			serverConfigurationBuilder.auxiliaryServerFactory(auxiliaryServerFactory);
+		public Builder auxiliaryServerFactories(Collection<String> auxiliaryServerFactories) {
+			serverConfigurationBuilder.auxiliaryServerFactories(auxiliaryServerFactories);
 			return this;
 		}
 
@@ -368,13 +367,17 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
 		@Override
 		public Builder domainClasses(Collection<String> domainClasses) {
-			this.domainClasses.addAll(requireNonNull(domainClasses));
+			requireNonNull(domainClasses);
+			this.domainClasses.clear();
+			this.domainClasses.addAll(domainClasses);
 			return this;
 		}
 
 		@Override
 		public Builder connectionPoolUsers(Collection<User> connectionPoolUsers) {
-			this.connectionPoolUsers.addAll(requireNonNull(connectionPoolUsers));
+			requireNonNull(connectionPoolUsers);
+			this.connectionPoolUsers.clear();
+			this.connectionPoolUsers.addAll(connectionPoolUsers);
 			return this;
 		}
 

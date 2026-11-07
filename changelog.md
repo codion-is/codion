@@ -12,6 +12,7 @@ Codion Change Log
 - AbstractServer, a server with authenticators now refuses a connection passing none of them, its client type, the client's own claim, having no authenticator of its own and no shared one to pass, unless exempt via ServerConfiguration.AUTHENTICATOR_EXEMPTIONS, added, where such a connection was authenticated by the database alone.
 - AbstractServerAdmin is now abstract, as its name says, its constructor protected as before.
 - AbstractServer bug fixed, an auxiliary server, the HTTP one for example, accepted requests before the authenticators were loaded and before the subclass was constructed, the constructor now publishing nothing, AbstractServer.start() added, exporting the server, starting the auxiliary servers, binding the server in the registry and starting the connection maintenance.
+- ServerConfiguration.Builder.auxiliaryServerFactory(Collection) renamed auxiliaryServerFactories(), now replacing the factories configured via the property or set before, as authenticatorExemptions() now does, where both added to them.
 ### is.codion.common.i18n
 - Icelandic mnemonic for clear changed to E, no longer clashes with refresh.
 ### is.codion.common.model
@@ -24,6 +25,7 @@ Codion Change Log
 - FilterComboBoxModel.items().remove(Predicate) bug fixed, the predicate no longer receives the null item of a nullable model.
 - FilterComboBoxModel bug fixed, the included items of a nullable model are now indexed without the null item, get(int) and indexOf() as size() and get() already were, where get(0) returned null and an indexed loop never reached the last item.
 - FilterComboBoxModel.items().contains(null) and items().included().contains(null) now return false for a nullable model, the null item not being among the items, nullable() telling whether null is selectable.
+- TableConditions.Builder.exclude() now replaces the conditions excluded before, as builder methods do, where it added to them.
 ### is.codion.dbms.h2
 - H2Database, an embedded database's init scripts now each run once in its life, recorded in CODION.INIT_SCRIPT with a checksum, line endings aside, an existing file database running those listed it has not yet run, in order, where they ran on its creation alone, one without the record, created before, recording every script listed as run the first time, running none, one refusing sa without a password left alone, administered, the database refused where a script has changed since it ran, has run but is no longer listed, or has run while one listed before it has not.
 - H2Database bug fixed, an existing database opened through a file system prefix, jdbc:h2:async: or jdbc:h2:retry:nio: for example, or in the user's home, jdbc:h2:~/, is now found, where it was taken for a new one at each start, its init scripts run again unless recorded as run, and DB_CLOSE_DELAY=-1 set on it; name() no longer includes the prefix.
@@ -60,6 +62,7 @@ Codion Change Log
 - EntityServer.createRemoteConnection() renamed createConnection(), following AbstractServerEntityConnection.
 - EntityServer.createConnection() and the AbstractServerEntityConnection constructor, the socket factory parameters now @Nullable, as documented.
 - EntityServer no longer binds itself in the registry when constructed, start() publishes it, startServer() constructing and starting it.
+- EntityServerConfiguration.Builder.domainClasses() and connectionPoolUsers() now replace those configured via the property or set before, where they added to them.
 ### is.codion.framework.model
 - AbstractEntityApplicationModel(connection, user, entityModels) added, the application user, the one logged in, which may differ from the connection's user, EntityApplicationModel.user() returning it, where it was the connection's user.
 - EntityApplicationModel now AutoCloseable, close() added, closing the model along with its connection, overridden to release what an application model holds.
@@ -76,6 +79,7 @@ Codion Change Log
 - EntityComboBoxModel bug fixed, a model with a condition now keeps only the updated entities still passing it, adding those now passing it, selected by their primary keys, the selected one staying until the next refresh, where every updated entity in the model was replaced, whether passing or not.
 - EntityConditions.get(Column) now returns ColumnConditionModel, as get(ForeignKey) returns ForeignKeyConditionModel, where it returned ConditionModel.
 - AttributeConditionModel.condition() removed, along with the default methods delegating to it, the delegation now an implementation detail.
+- EntityConditions.Builder.exclude() now replaces the attributes excluded before, as builder methods do, where it added to them.
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, scrolling to the selected rows now follows the rows added to the selection, where any change to it scrolled to the first selected row when none was visible, deselecting a row scrolling to another.
 - FilterTable bug fixed, selecting a search result from the search field, or toggling its selection, now focuses its cell, leaving the rest of the selection as it is, where adding a result whose row was already selected selected, or deselected, every row between it and the anchor.
@@ -95,6 +99,7 @@ Codion Change Log
 - TextFieldBuilder.actionListener(), TabbedPaneBuilder.tab(title, component) and ComponentDialogBuilder.component() now reject null, as declared, where it was silently accepted.
 - TextInput.Builder.buttonIcon() now takes an Icon, as FileInput.Builder.buttonIcon().
 - DefaultComboBoxBuilder and DefaultFormBuilder renamed AbstractComboBoxBuilder and AbstractFormBuilder, now abstract extension bases, the defaults package-private, provided by ComboBoxBuilder.builder() and FormBuilder.builder() as before.
+- TableConditionPanel.Panels.exclude() now replaces the identifiers excluded before, where it added to them.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui

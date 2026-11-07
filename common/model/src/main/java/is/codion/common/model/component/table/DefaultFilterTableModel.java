@@ -196,7 +196,9 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 
 		@Override
 		public TableConditions.Builder<C> exclude(C... identifiers) {
-			excluded.addAll(asList(requireNonNull(identifiers)));
+			requireNonNull(identifiers);
+			excluded.clear();
+			excluded.addAll(asList(identifiers));
 			return this;
 		}
 

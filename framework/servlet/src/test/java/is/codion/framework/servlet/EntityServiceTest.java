@@ -687,7 +687,7 @@ public class EntityServiceTest {
 						.domainClasses(singletonList(TestDomain.class.getName()))
 						.database(Database.instance())
 						.sslEnabled(false)
-						.auxiliaryServerFactory(singletonList(EntityServiceFactory.class.getName()))
+						.auxiliaryServerFactories(singletonList(EntityServiceFactory.class.getName()))
 						.objectInputFilterFactoryRequired(false)
 						.build();
 	}

@@ -88,7 +88,7 @@ public interface TableConditions<C> {
 	interface Builder<C> {
 
 		/**
-		 * Excludes the given conditions, no condition model being created for them.
+		 * Excludes the given conditions, no condition model being created for them, replacing those excluded before.
 		 * @param identifiers the identifiers of the conditions to exclude
 		 * @return this builder
 		 */

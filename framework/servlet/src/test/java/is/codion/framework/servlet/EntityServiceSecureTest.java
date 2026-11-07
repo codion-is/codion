@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-
 import java.io.File;
 import java.io.InputStream;
 import java.net.ConnectException;
@@ -80,7 +79,7 @@ public class EntityServiceSecureTest {
 						.domainClasses(singletonList(TestDomain.class.getName()))
 						.database(Database.instance())
 						.sslEnabled(false)
-						.auxiliaryServerFactory(singletonList(EntityServiceFactory.class.getName()))
+						.auxiliaryServerFactories(singletonList(EntityServiceFactory.class.getName()))
 						.objectInputFilterFactoryRequired(false)
 						.build());
 	}

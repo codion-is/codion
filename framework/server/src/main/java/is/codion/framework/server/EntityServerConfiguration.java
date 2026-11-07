@@ -175,12 +175,14 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 		Builder connectionPoolFactory(String connectionPoolFactory);
 
 		/**
+		 * Sets the domain model classes, replacing those configured via {@link #DOMAIN_CLASSES} or set before.
 		 * @param domainClasses the domain model classes to load on startup
 		 * @return this builder instance
 		 */
 		Builder domainClasses(Collection<String> domainClasses);
 
 		/**
+		 * Sets the connection pool users, replacing those configured via {@link #CONNECTION_POOL_USERS} or set before.
 		 * @param connectionPoolUsers the users for which to initialize connection pools on startup
 		 * @return this builder instance
 		 */

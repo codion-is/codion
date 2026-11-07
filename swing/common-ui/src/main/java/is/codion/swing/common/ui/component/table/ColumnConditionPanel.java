@@ -442,7 +442,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		@Override
 		public TableConditionPanel.Panels<C> exclude(C... identifiers) {
-			excluded.addAll(asList(requireNonNull(identifiers)));
+			requireNonNull(identifiers);
+			excluded.clear();
+			excluded.addAll(asList(identifiers));
 			return this;
 		}
 

@@ -155,6 +155,14 @@ public class FilterTableTest {
 						.build();
 		assertEquals(singleton(0), table.filters().get().keySet());
 		assertNotNull(table.model().filters().get(1));
+		//the last call wins
+		table = FilterTable.builder()
+						.model(createFilterPanelsModel())
+						.filters(filters -> filters
+										.exclude(0)
+										.exclude(1))
+						.build();
+		assertEquals(singleton(0), table.filters().get().keySet());
 		// configured, with components supporting the BigInteger filter
 		ConditionComponents bigIntegerComponents = new ConditionComponents() {
 			@Override

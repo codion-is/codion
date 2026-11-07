@@ -378,11 +378,13 @@ public interface ServerConfiguration {
 		B serverName(String serverName);
 
 		/**
-		 * @param auxiliaryServerFactory the class names of auxiliary server factories,
+		 * Sets the auxiliary server factories, replacing those configured via {@link #AUXILIARY_SERVER_FACTORIES}
+		 * or set before.
+		 * @param auxiliaryServerFactories the class names of auxiliary server factories,
 		 * providing the servers to run alongside this server
 		 * @return this builder instance
 		 */
-		B auxiliaryServerFactory(Collection<String> auxiliaryServerFactory);
+		B auxiliaryServerFactories(Collection<String> auxiliaryServerFactories);
 
 		/**
 		 * Specifies an {@link Authenticator} class name, instantiated on server start, must have a parameterless constructor
@@ -392,6 +394,8 @@ public interface ServerConfiguration {
 		B authenticator(String authenticatorClass);
 
 		/**
+		 * Sets the client types exempt from authentication, replacing those configured via
+		 * {@link #AUTHENTICATOR_EXEMPTIONS} or set before.
 		 * @param clientTypes client types exempt from authentication by an {@link Authenticator}
 		 * @return this builder instance
 		 * @see #AUTHENTICATOR_EXEMPTIONS

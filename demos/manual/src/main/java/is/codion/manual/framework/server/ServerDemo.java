@@ -93,7 +93,7 @@ public final class ServerDemo {
 										.domainClasses(List.of(Store.class.getName()))
 										.database(database)
 										.sslEnabled(false)
-										.auxiliaryServerFactory(List.of(EntityServiceFactory.class.getName()))
+										.auxiliaryServerFactories(List.of(EntityServiceFactory.class.getName()))
 										.build();
 
 		EntityServer server = EntityServer.startServer(configuration);

@@ -195,7 +195,8 @@ public interface EntityConditions extends TableConditions<Attribute<?>> {
 		}
 
 		/**
-		 * Excludes the given columns and foreign keys, no condition model being created for them.
+		 * Excludes the given columns and foreign keys, no condition model being created for them, replacing those
+		 * excluded before.
 		 * @param attributes the columns and foreign keys to exclude
 		 * @return this builder
 		 */

@@ -218,7 +218,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 		/**
 		 * Excludes the condition panels of the given identifiers, their condition models unaffected,
-		 * available for use programmatically.
+		 * available for use programmatically, replacing those excluded before.
 		 * @param identifiers the identifiers of the condition panels to exclude
 		 * @return this Panels instance
 		 */

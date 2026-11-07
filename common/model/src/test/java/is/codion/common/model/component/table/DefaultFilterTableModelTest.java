@@ -63,6 +63,14 @@ public final class DefaultFilterTableModelTest {
 														.operator(Operator.GREATER_THAN)))
 						.build();
 		assertEquals(singleton(AGE), model.filters().get().keySet());
+		//the last call wins
+		assertEquals(singleton(NAME), FilterTableModel.builder()
+						.columns(new RowColumns())
+						.filters(filters -> filters
+										.exclude(NAME)
+										.exclude(AGE))
+						.build()
+						.filters().get().keySet());
 		ConditionModel<Integer> age = model.filters().get(AGE);
 		assertEquals(asList(Operator.EQUAL, Operator.GREATER_THAN), age.operators());
 		assertEquals(Operator.GREATER_THAN, age.operator().get());

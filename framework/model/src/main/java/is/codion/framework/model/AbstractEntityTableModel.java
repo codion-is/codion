@@ -392,8 +392,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	}
 
 	private static void excludeAll(EntityConditions.Builder conditions, EntityDefinition definition) {
-		definition.columns().get().forEach(conditions::exclude);
-		definition.foreignKeys().get().forEach(conditions::exclude);
+		//in one call, exclude() replacing those excluded before
+		List<Attribute<?>> attributes = new ArrayList<>(definition.columns().get());
+		attributes.addAll(definition.foreignKeys().get());
+		conditions.exclude(attributes.toArray(new Attribute<?>[0]));
 	}
 
 	private static final class DefaultConfig implements Config {

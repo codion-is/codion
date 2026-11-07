@@ -109,6 +109,15 @@ public class DefaultEntityConditionsTest {
 		assertThrows(IllegalArgumentException.class, () -> conditions.get(Employee.COMMISSION));
 		assertThrows(IllegalArgumentException.class, () -> conditions.get(Employee.MGR_FK));
 		assertNotNull(conditions.get(Employee.SALARY));
+		//the last call wins
+		EntityConditions replaced = EntityConditions.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.exclude(Employee.COMMISSION)
+						.exclude(Employee.MGR_FK)
+						.build();
+		assertNotNull(replaced.get(Employee.COMMISSION));
+		assertThrows(IllegalArgumentException.class, () -> replaced.get(Employee.MGR_FK));
 	}
 
 	@Test

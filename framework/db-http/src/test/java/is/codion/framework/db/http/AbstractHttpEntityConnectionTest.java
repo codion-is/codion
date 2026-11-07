@@ -643,7 +643,7 @@ abstract class AbstractHttpEntityConnectionTest {
 						.database(Database.instance())
 						.domainClasses(singletonList(TestDomain.class.getName()))
 						.sslEnabled(false)
-						.auxiliaryServerFactory(singletonList(EntityServiceFactory.class.getName()))
+						.auxiliaryServerFactories(singletonList(EntityServiceFactory.class.getName()))
 						.objectInputFilterFactoryRequired(false)
 						.build();
 	}

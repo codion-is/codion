@@ -200,7 +200,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 			rmi(RMI.getOrThrow());
 			port(SERVER_PORT.getOrThrow());
 			registryPort(REGISTRY_PORT.getOrThrow());
-			auxiliaryServerFactory(parseCSV(AUXILIARY_SERVER_FACTORIES.get()));
+			auxiliaryServerFactories(parseCSV(AUXILIARY_SERVER_FACTORIES.get()));
 			authenticatorExemptions(parseCSV(AUTHENTICATOR_EXEMPTIONS.get()));
 			adminPort(ADMIN_PORT.getOrThrow());
 			sslEnabled(SSL_ENABLED.getOrThrow());
@@ -250,8 +250,10 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		@Override
-		public DefaultBuilder auxiliaryServerFactory(Collection<String> auxiliaryServerFactory) {
-			this.auxiliaryServerFactories.addAll(requireNonNull(auxiliaryServerFactory));
+		public DefaultBuilder auxiliaryServerFactories(Collection<String> auxiliaryServerFactories) {
+			requireNonNull(auxiliaryServerFactories);
+			this.auxiliaryServerFactories.clear();
+			this.auxiliaryServerFactories.addAll(auxiliaryServerFactories);
 			return this;
 		}
 
@@ -263,7 +265,9 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 		@Override
 		public DefaultBuilder authenticatorExemptions(Collection<String> clientTypes) {
-			this.authenticatorExemptions.addAll(requireNonNull(clientTypes));
+			requireNonNull(clientTypes);
+			this.authenticatorExemptions.clear();
+			this.authenticatorExemptions.addAll(clientTypes);
 			return this;
 		}
 

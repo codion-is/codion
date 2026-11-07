@@ -359,7 +359,7 @@ public class AbstractServerTest {
 						.serverName("startTestServer")
 						.objectInputFilterFactoryRequired(false)
 						.authenticator(OtherAuthenticator.class.getName())
-						.auxiliaryServerFactory(singletonList(EarlyAuxiliaryServerFactory.class.getName()))
+						.auxiliaryServerFactories(singletonList(EarlyAuxiliaryServerFactory.class.getName()))
 						.build());
 		try {
 			//nothing published before start(), the server not exported, the auxiliary server not created

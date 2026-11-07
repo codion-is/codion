@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -111,7 +112,7 @@ public class DefaultServerConfigurationTest {
 			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.adminPort(TEST_ADMIN_PORT)
 							.serverName(TEST_SERVER_NAME)
-							.auxiliaryServerFactory(auxiliaryClasses)
+							.auxiliaryServerFactories(auxiliaryClasses)
 							.sslEnabled(false)
 							.objectInputFilterFactory(TEST_FILTER_CLASS)
 							.connectionMaintenanceInterval(TEST_MAINTENANCE_INTERVAL)
@@ -256,7 +257,7 @@ public class DefaultServerConfigurationTest {
 			Collection<String> classNames = Arrays.asList("com.example.Server1", "com.example.Server2");
 
 			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
-							.auxiliaryServerFactory(classNames)
+							.auxiliaryServerFactories(classNames)
 							.build();
 
 			assertTrue(config.auxiliaryServerFactories().containsAll(classNames));
@@ -267,7 +268,7 @@ public class DefaultServerConfigurationTest {
 		@DisplayName("Auxiliary server collection is immutable")
 		void auxiliaryServers_collectionIsImmutable() {
 			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
-							.auxiliaryServerFactory(Arrays.asList(TEST_AUXILIARY_CLASS))
+							.auxiliaryServerFactories(Arrays.asList(TEST_AUXILIARY_CLASS))
 							.build();
 
 			assertThrows(UnsupportedOperationException.class, () ->
@@ -278,7 +279,7 @@ public class DefaultServerConfigurationTest {
 		@DisplayName("Null auxiliary server collection throws NPE")
 		void auxiliaryServers_nullCollection_throwsNPE() {
 			assertThrows(NullPointerException.class, () ->
-							ServerConfiguration.builder().port(TEST_PORT).auxiliaryServerFactory(null));
+							ServerConfiguration.builder().port(TEST_PORT).auxiliaryServerFactories(null));
 		}
 	}
 
@@ -313,6 +314,16 @@ public class DefaultServerConfigurationTest {
 
 				assertTrue(config.authenticatorExemptions().containsAll(Arrays.asList("Employees", "The Pet Store")));
 				assertEquals(2, config.authenticatorExemptions().size());
+				//an explicit value replaces the one from the property, the last call wins
+				config = ServerConfiguration.builder().port(TEST_PORT)
+								.authenticatorExemptions(Arrays.asList("World"))
+								.build();
+				assertEquals(singleton("World"), config.authenticatorExemptions());
+				config = ServerConfiguration.builder().port(TEST_PORT)
+								.authenticatorExemptions(Arrays.asList("World"))
+								.authenticatorExemptions(Arrays.asList("Chinook"))
+								.build();
+				assertEquals(singleton("Chinook"), config.authenticatorExemptions());
 			}
 			finally {
 				ServerConfiguration.AUTHENTICATOR_EXEMPTIONS.remove();

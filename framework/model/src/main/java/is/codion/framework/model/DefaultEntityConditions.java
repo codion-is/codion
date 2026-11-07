@@ -545,7 +545,9 @@ final class DefaultEntityConditions implements EntityConditions {
 
 		@Override
 		public Builder exclude(Attribute<?>... attributes) {
-			excluded.addAll(asList(requireNonNull(attributes)));
+			requireNonNull(attributes);
+			excluded.clear();
+			excluded.addAll(asList(attributes));
 			return this;
 		}
 
