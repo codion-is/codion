@@ -58,7 +58,7 @@ public final class DialogsTest {
 						.onClosed(e -> {})
 						.closeObserver(Event.event())
 						.confirmCloseListener(state -> {})
-						.disposeOnEscape(false)
+						.closeOnEscape(false)
 						.keyEvent(KeyEvents.builder()
 										.keyCode(KeyEvent.VK_ESCAPE)
 										.action(Control.command(() -> {})))

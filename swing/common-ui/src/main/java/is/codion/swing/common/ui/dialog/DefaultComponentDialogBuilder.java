@@ -67,7 +67,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private @Nullable Action enterAction;
 	private @Nullable Observer<?> closeObserver;
 	private @Nullable Consumer<State> confirmCloseListener;
-	private boolean disposeOnEscape = true;
+	private boolean closeOnEscape = true;
 
 	@Override
 	public ComponentDialogBuilder component(JComponent component) {
@@ -117,8 +117,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	}
 
 	@Override
-	public ComponentDialogBuilder disposeOnEscape(boolean disposeOnEscape) {
-		this.disposeOnEscape = disposeOnEscape;
+	public ComponentDialogBuilder closeOnEscape(boolean closeOnEscape) {
+		this.closeOnEscape = closeOnEscape;
 		return this;
 	}
 
@@ -164,7 +164,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		dialog.addWindowListener(new DialogListener(disposeAction, onClosedConsumers, onOpenedConsumers));
 		if (closeObserver == null) {
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			if (disposeOnEscape) {
+			if (closeOnEscape) {
 				KeyEvents.builder()
 								.keyCode(VK_ESCAPE)
 								.condition(WHEN_IN_FOCUSED_WINDOW)

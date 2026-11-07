@@ -52,7 +52,7 @@ final class DialogsDemo {
 						.component(closeButton)
 						.owner(window)
 						.title("Dialog")
-						.disposeOnEscape(false)
+						.closeOnEscape(false)
 						.closeObserver(close)
 						.show();
 		// end::dialog[]

@@ -355,7 +355,7 @@ final class ProgressWorkerDemo {
 										.keyCode(VK_ESCAPE)
 										.action(cancel))
 						// Prevent the dialog from closing on Escape
-						.disposeOnEscape(false)
+						.closeOnEscape(false)
 						.build();
 
 		private int taskSize;

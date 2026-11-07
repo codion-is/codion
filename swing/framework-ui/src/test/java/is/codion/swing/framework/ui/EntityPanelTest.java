@@ -114,7 +114,7 @@ public final class EntityPanelTest {
 		EntityPanel panel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {
 			@Override
 			protected void initializeUI() {}
-		}, config -> config.enabledEditStates(PanelState.EMBEDDED, PanelState.WINDOW));
+		}, config -> config.enabledEditPanelStates(PanelState.EMBEDDED, PanelState.WINDOW));
 		assertThrows(IllegalArgumentException.class, () -> panel.editPanelState().set(PanelState.HIDDEN));
 
 		//a panel without an edit panel rejects an edit state change instead of an obscure NPE

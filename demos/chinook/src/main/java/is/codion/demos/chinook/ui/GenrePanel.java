@@ -31,7 +31,7 @@ public final class GenrePanel extends EntityPanel {
 		super(genreModel, new GenreEditPanel(genreModel.editModel()), config ->
 						config.detailLayout(entityPanel -> TabbedDetailLayout.builder()
 										.panel(entityPanel)
-										.initialDetailState(HIDDEN)
+										.initialDetailPanelState(HIDDEN)
 										.build()));
 		detail().add(new EntityPanel(genreModel.detail().get(Track.TYPE)));
 	}

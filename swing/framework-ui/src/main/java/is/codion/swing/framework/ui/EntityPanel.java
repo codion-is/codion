@@ -355,9 +355,9 @@ public class EntityPanel extends JPanel {
 		this.controlsLayout = createControlsLayout();
 		this.detailLayout = configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
-		this.editPanelStateMapper = panelStateMapper(configuration.enabledEditStates);
+		this.editPanelStateMapper = panelStateMapper(configuration.enabledEditPanelStates);
 		this.editPanelState = Value.builder()
-						.nonNull(configuration.initialEditState)
+						.nonNull(configuration.initialEditPanelState)
 						.validator(this::validateEditState)
 						.consumer(this::updateEditState)
 						.build();
@@ -875,7 +875,7 @@ public class EntityPanel extends JPanel {
 		}
 		if (containsEditPanel()) {
 			editPanel.control(SELECT_INPUT_FIELD).update(control ->
-							control.copy(this::selectInputComponent).build());
+							control.copy(this::selectInputField).build());
 		}
 	}
 
@@ -890,21 +890,21 @@ public class EntityPanel extends JPanel {
 		editPanel().focus().initial().request();
 	}
 
-	private void selectInputComponent() {
+	private void selectInputField() {
 		if (editPanelState.is(HIDDEN)) {
 			editPanelState.update(editPanelStateMapper);
 		}
-		editPanel().selectInputComponent();
+		editPanel().selectInputField();
 	}
 
 	private void validateEditState(PanelState editState) {
 		if (editPanel == null) {
 			//no edit panel to embed/window/hide, only the initial (no-op) state is valid
-			if (editState != configuration.initialEditState) {
+			if (editState != configuration.initialEditPanelState) {
 				throw new IllegalArgumentException("Edit panel state can not be set on a panel without an edit panel");
 			}
 		}
-		else if (!configuration.enabledEditStates.contains(editState)) {
+		else if (!configuration.enabledEditPanelStates.contains(editState)) {
 			throw new IllegalArgumentException("Edit panel state not enabled: " + editState);
 		}
 	}
@@ -965,7 +965,7 @@ public class EntityPanel extends JPanel {
 						.title(configuration.caption)
 						.icon(configuration.icon)
 						.modal(false)
-						.disposeOnEscape(configuration.disposeEditDialogOnEscape)
+						.closeOnEscape(configuration.closeEditDialogOnEscape)
 						.onClosed(windowEvent -> {
 							//the window can be closed when embedding the panel, don't hide if that's the case
 							if (editPanelState.isNot(EMBEDDED)) {
@@ -1345,8 +1345,8 @@ public class EntityPanel extends JPanel {
 		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE =
-						booleanValue(EntityPanel.class.getName() + ".disposeEditDialogOnEscape", true);
+		public static final PropertyValue<Boolean> CLOSE_EDIT_DIALOG_ON_ESCAPE =
+						booleanValue(EntityPanel.class.getName() + ".closeEditDialogOnEscape", true);
 
 		/**
 		 * Specifies whether a control for toggling the edit panel is available to the user
@@ -1366,7 +1366,7 @@ public class EntityPanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
-						booleanValue(EntityPanel.class.getName() + ".toolbarControls", false);
+						booleanValue(EntityPanel.class.getName() + ".toolBarControls", false);
 
 		/**
 		 * Specifies how detail and edit panels should be displayed.
@@ -1398,7 +1398,7 @@ public class EntityPanel extends JPanel {
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
-						stringValue(EntityPanel.class.getName() + ".controlToolbarConstraints", BorderLayout.WEST);
+						stringValue(EntityPanel.class.getName() + ".controlToolBarConstraints", BorderLayout.WEST);
 
 		/**
 		 * Specifies where the edit panel should be placed in a BorderLayout
@@ -1433,13 +1433,13 @@ public class EntityPanel extends JPanel {
 
 		private final EntityPanel entityPanel;
 		private final ControlMap controlMap;
-		private final Set<PanelState> enabledEditStates;
+		private final Set<PanelState> enabledEditPanelStates;
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 		private Function<Controls, JComponent> controlComponent = new DefaultControlComponent();
 		private Function<EntityEditPanel, JPanel> editBasePanel = new DefaultEditBasePanel();
-		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.getOrThrow();
-		private boolean toolbarControls = TOOLBAR_CONTROLS.getOrThrow();
+		private boolean closeEditDialogOnEscape = CLOSE_EDIT_DIALOG_ON_ESCAPE.getOrThrow();
+		private boolean toolBarControls = TOOLBAR_CONTROLS.getOrThrow();
 		private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.getOrThrow();
 		private String controlComponentConstraints = TOOLBAR_CONTROLS.getOrThrow() ?
 						CONTROL_TOOLBAR_CONSTRAINTS.getOrThrow() : CONTROL_PANEL_CONSTRAINTS.getOrThrow();
@@ -1447,7 +1447,7 @@ public class EntityPanel extends JPanel {
 		private boolean keyboardNavigation = KEYBOARD_NAVIGATION.getOrThrow();
 		private boolean focusCycleRoot = FOCUS_CYCLE_ROOT.getOrThrow();
 		private WindowType windowType = WINDOW_TYPE.getOrThrow();
-		private PanelState initialEditState = EMBEDDED;
+		private PanelState initialEditPanelState = EMBEDDED;
 		private String editPanelConstraints = EDIT_PANEL_CONSTRAINTS.getOrThrow();
 		private @Nullable Border border = createEmptyBorder(Layouts.GAP.getOrThrow(), 0, 0, 0);
 
@@ -1458,7 +1458,7 @@ public class EntityPanel extends JPanel {
 		private Config(EntityPanel entityPanel) {
 			this.entityPanel = entityPanel;
 			this.controlMap = controlMap(ControlKeys.class);
-			this.enabledEditStates = new LinkedHashSet<>(asList(PanelState.values()));
+			this.enabledEditPanelStates = new LinkedHashSet<>(asList(PanelState.values()));
 			this.caption = entityPanel.model().entityDefinition().caption();
 			this.description = entityPanel.model().entityDefinition().description().orElse(null);
 		}
@@ -1466,21 +1466,21 @@ public class EntityPanel extends JPanel {
 		private Config(Config config) {
 			this.entityPanel = config.entityPanel;
 			this.controlMap = config.controlMap.copy();
-			this.enabledEditStates = new LinkedHashSet<>(config.enabledEditStates);
+			this.enabledEditPanelStates = new LinkedHashSet<>(config.enabledEditPanelStates);
 			this.detailLayout = config.detailLayout;
 			this.controlComponent = config.controlComponent;
 			this.editBasePanel = config.editBasePanel;
-			this.toolbarControls = config.toolbarControls;
+			this.toolBarControls = config.toolBarControls;
 			this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
 			this.controlComponentConstraints = config.controlComponentConstraints;
 			this.includeControls = config.includeControls;
 			this.keyboardNavigation = config.keyboardNavigation;
 			this.focusCycleRoot = config.focusCycleRoot;
-			this.initialEditState = config.initialEditState;
+			this.initialEditPanelState = config.initialEditPanelState;
 			this.caption = config.caption;
 			this.description = config.description;
 			this.icon = config.icon;
-			this.disposeEditDialogOnEscape = config.disposeEditDialogOnEscape;
+			this.closeEditDialogOnEscape = config.closeEditDialogOnEscape;
 			this.windowType = config.windowType;
 			this.editPanelConstraints = config.editPanelConstraints;
 			this.border = config.border;
@@ -1561,12 +1561,12 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Overridden by {@link #controlComponent(Function)}.
-		 * @param toolbarControls true if the edit controls should be on a toolbar instead of a button panel
+		 * @param toolBarControls true if the edit controls should be on a toolbar instead of a button panel
 		 * @return this Config instance
 		 * @see #TOOLBAR_CONTROLS
 		 */
-		public Config toolbarControls(boolean toolbarControls) {
-			this.toolbarControls = toolbarControls;
+		public Config toolBarControls(boolean toolBarControls) {
+			this.toolBarControls = toolBarControls;
 			return this;
 		}
 
@@ -1613,7 +1613,7 @@ public class EntityPanel extends JPanel {
 		 * @param border specifies the border to use around the main panel
 		 * @return this Config instance
 		 */
-		public EntityPanel.Config border(@Nullable Border border) {
+		public Config border(@Nullable Border border) {
 			this.border = border;
 			return this;
 		}
@@ -1680,16 +1680,16 @@ public class EntityPanel extends JPanel {
 		 * @return this Config instance
 		 * @throws IllegalArgumentException in case the given state is {@link PanelState#WINDOW}
 		 * @throws IllegalArgumentException in case the given state is not enabled
-		 * @see #enabledEditStates(PanelState...)
+		 * @see #enabledEditPanelStates(PanelState...)
 		 */
-		public Config initialEditState(PanelState initialState) {
+		public Config initialEditPanelState(PanelState initialState) {
 			if (requireNonNull(initialState) == WINDOW) {
 				throw new IllegalArgumentException(WINDOW + " is not a supported initial state");
 			}
-			if (!enabledEditStates.contains(requireNonNull(initialState))) {
+			if (!enabledEditPanelStates.contains(requireNonNull(initialState))) {
 				throw new IllegalArgumentException("Edit panel state: " + initialState + " is not enabled");
 			}
-			this.initialEditState = initialState;
+			this.initialEditPanelState = initialState;
 			return this;
 		}
 
@@ -1699,27 +1699,27 @@ public class EntityPanel extends JPanel {
 		 * @return this Config instance
 		 * @throws IllegalArgumentException in case the given states do not include the initial state
 		 * @throws IllegalArgumentException in case no {@code editStates} are specified
-		 * @see #initialEditState(PanelState)
+		 * @see #initialEditPanelState(PanelState)
 		 */
-		public Config enabledEditStates(PanelState... editStates) {
+		public Config enabledEditPanelStates(PanelState... editStates) {
 			if (requireNonNull(editStates).length == 0) {
 				throw new IllegalArgumentException("No edit panel states specified");
 			}
 			List<PanelState> states = asList(editStates);
-			if (!states.contains(initialEditState)) {
-				throw new IllegalArgumentException("The enabled edit states must include the initial edit state: " + initialEditState);
+			if (!states.contains(initialEditPanelState)) {
+				throw new IllegalArgumentException("The enabled edit states must include the initial edit state: " + initialEditPanelState);
 			}
-			this.enabledEditStates.clear();
-			this.enabledEditStates.addAll(asList(editStates));
+			this.enabledEditPanelStates.clear();
+			this.enabledEditPanelStates.addAll(asList(editStates));
 			return this;
 		}
 
 		/**
-		 * @param disposeEditDialogOnEscape specifies whether entity edit panel dialogs should be closed on escape
+		 * @param closeEditDialogOnEscape specifies whether entity edit panel dialogs should be closed on escape
 		 * @return this Config instance
 		 */
-		public Config disposeEditDialogOnEscape(boolean disposeEditDialogOnEscape) {
-			this.disposeEditDialogOnEscape = disposeEditDialogOnEscape;
+		public Config closeEditDialogOnEscape(boolean closeEditDialogOnEscape) {
+			this.closeEditDialogOnEscape = closeEditDialogOnEscape;
 			return this;
 		}
 
@@ -1758,7 +1758,7 @@ public class EntityPanel extends JPanel {
 			public JComponent apply(Controls controls) {
 				requireNonNull(controls);
 
-				return toolbarControls ? createControlToolBar(controls) : createControlPanel(controls);
+				return toolBarControls ? createControlToolBar(controls) : createControlPanel(controls);
 			}
 
 			private JToolBar createControlToolBar(Controls controls) {

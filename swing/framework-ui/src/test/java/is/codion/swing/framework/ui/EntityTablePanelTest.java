@@ -361,8 +361,8 @@ public class EntityTablePanelTest {
 			assertNull(tablePanel.control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).get());
 		}
 		EntityTablePanel menus = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config -> config
-						.columnSelection(EntityTablePanel.SelectionMode.MENU)
-						.autoResizeModeSelection(EntityTablePanel.SelectionMode.MENU));
+						.columnSelection(EntityTablePanel.SelectionView.MENU)
+						.autoResizeModeSelection(EntityTablePanel.SelectionView.MENU));
 		menus.configurePopupMenu(layout -> layout.controls(COLUMN_CONTROLS, columns -> {}));
 		menus.initialize();
 		assertNull(menus.control(SELECT_COLUMNS).get());

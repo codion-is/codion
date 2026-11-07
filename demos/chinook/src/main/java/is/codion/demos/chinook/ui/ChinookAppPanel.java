@@ -53,7 +53,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.EntityTablePanel.SelectionMode;
+import is.codion.swing.framework.ui.EntityTablePanel.SelectionView;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import is.codion.tools.swing.mcp.SwingMcpServer;
@@ -261,8 +261,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		EntityTablePanel.ControlKeys.DELETE.defaultKeystroke().update(keyStroke ->
 						keyStroke(keyStroke.getKeyCode(), MENU_SHORTCUT_MASK));
 		// end::keyStroke[]
-		EntityTablePanel.Config.COLUMN_SELECTION.set(SelectionMode.MENU);
-		EntityTablePanel.Config.AUTO_RESIZE_MODE_SELECTION.set(SelectionMode.MENU);
+		EntityTablePanel.Config.COLUMN_SELECTION.set(SelectionView.MENU);
+		EntityTablePanel.Config.AUTO_RESIZE_MODE_SELECTION.set(SelectionView.MENU);
 		EntityTablePanel.Config.INCLUDE_FILTERS.set(true);
 		EntityTablePanel.Config.INCLUDE_INSPECTOR.set(true);
 		EntityTablePanel.Config.INCLUDE_EXPORT.set(true);

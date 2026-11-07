@@ -106,6 +106,7 @@ Codion Change Log
 - TextInput.Builder.buttonIcon() now takes an Icon, as FileInput.Builder.buttonIcon().
 - DefaultComboBoxBuilder and DefaultFormBuilder renamed AbstractComboBoxBuilder and AbstractFormBuilder, now abstract extension bases, the defaults package-private, provided by ComboBoxBuilder.builder() and FormBuilder.builder() as before.
 - TableConditionPanel.Panels.exclude() now replaces the identifiers excluded before, where it added to them.
+- ComponentDialogBuilder.disposeOnEscape() renamed closeOnEscape().
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui
@@ -122,6 +123,14 @@ Codion Change Log
 - EntitySearchField selector ok buttons now active only when a selection is present.
 - DefaultEditComponent renamed AbstractEditComponent, now abstract with a protected constructor, EditComponent.editComponent(attribute) added, providing the default, the text field columns configuration key now is.codion.swing.framework.ui.component.AbstractEditComponent.textFieldColumns.
 - EntityApplicationPanel, the About panel now shows the version given to EntityApplication.version(), as the frame title does, where it showed the connection's client version, missing when the connection was given or created by a connection function.
+- EntityTablePanel.editSelected() renamed editAttribute(), an attribute of the selected entities being edited, as with ControlKeys.EDIT_ATTRIBUTE.
+- EntityTablePanel.deleteSelectedWithConfirmation() renamed deleteSelected(), confirming when enabled, as EntityEditPanel.delete() does, the deleteSelected() deleting without confirmation removed, so a call to it now confirms first.
+- EntityTablePanel.SelectionMode renamed SelectionView, selection mode meaning single or multiple selection.
+- EntityEditPanel.selectInputComponent() renamed selectInputField(), as the control key and the dialog say.
+- EntityEditPanel.Config.USE_FOCUS_ACTIVATION renamed FOCUS_ACTIVATION, its key focusActivation, and EntityTablePanel.Config.INCLUDE_SUMMARY renamed INCLUDE_SUMMARIES, its key includeSummaries, following their Config methods.
+- EntityPanel.Config.initialEditState() and enabledEditStates() renamed initialEditPanelState() and enabledEditPanelStates(), as editPanelState(), TabbedDetailLayout.Builder.initialDetailState() and enabledDetailStates() renamed initialDetailPanelState() and enabledDetailPanelStates().
+- EntityPanel.Config.toolbarControls() renamed toolBarControls(), as includeToolBar() and the like, the keys of TOOLBAR_CONTROLS and CONTROL_TOOLBAR_CONSTRAINTS now toolBarControls and controlToolBarConstraints.
+- EntityPanel.Config.disposeEditDialogOnEscape() and DISPOSE_EDIT_DIALOG_ON_ESCAPE renamed closeEditDialogOnEscape() and CLOSE_EDIT_DIALOG_ON_ESCAPE, its key closeEditDialogOnEscape.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, entity type, column and foreign key names are now written as the domain gives them, where they were written in lower case, SchemaDomain.SchemaSettings.lowerCaseIdentifiers(false) having no effect on the source.
 - DomainSource, a column or table name which differs from its attribute or entity type name, a quoted one, now written via name() and table(), the constant, interface and DTO component names now splitting camel case names into words, VERBATIM_LOCALITY and verbatimLocality.

@@ -77,7 +77,7 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	ComponentDialogBuilder enterAction(Action enterAction);
 
 	/**
-	 * Sets the Observer which triggers the closing of the dialog, note that {@link #disposeOnEscape(boolean)}
+	 * Sets the Observer which triggers the closing of the dialog, note that {@link #closeOnEscape(boolean)}
 	 * has no effect if a closeObserver is specified.
 	 * @param closeObserver if specified the dialog will be disposed of when and only when this observer is notified
 	 * @return this builder instance
@@ -93,11 +93,11 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	ComponentDialogBuilder confirmCloseListener(@Nullable Consumer<State> confirmCloseListener);
 
 	/**
-	 * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,
-	 * has no effect if a <code>closeEvent</code> is specified
+	 * @param closeOnEscape true if the dialog should be closed when the ESC button is pressed,
+	 * has no effect if a {@link #closeObserver(Observer) close observer} is specified
 	 * @return this builder instance
 	 */
-	ComponentDialogBuilder disposeOnEscape(boolean disposeOnEscape);
+	ComponentDialogBuilder closeOnEscape(boolean closeOnEscape);
 
 	/**
 	 * @param onShown called each time the dialog is shown

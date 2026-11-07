@@ -314,7 +314,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * @see InputFocus#request(Attribute)
 	 * @see EditorComponents#detail()
 	 */
-	public final void selectInputComponent() {
+	public final void selectInputField() {
 		Collection<ComponentEntry> entries = selectComponentEntries();
 		if (entries.size() == 1) {
 			inputFocus.request(entries.iterator().next().component().get());
@@ -741,7 +741,7 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 		}
 		controlMap.control(CLEAR).set(createClearControl());
-		controlMap.control(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
+		controlMap.control(SELECT_INPUT_FIELD).set(createSelectInputFieldControl());
 		if (configuration.includeInspector) {
 			controlMap.control(INSPECT_EDITOR).set(command(this::inspectEditor));
 		}
@@ -776,8 +776,8 @@ public abstract class EntityEditPanel extends JPanel {
 						.build();
 	}
 
-	private CommandControl createSelectInputComponentControl() {
-		return command(this::selectInputComponent);
+	private CommandControl createSelectInputFieldControl() {
+		return command(this::selectInputField);
 	}
 
 	private void inspectEditor() {
@@ -1105,8 +1105,8 @@ public abstract class EntityEditPanel extends JPanel {
 		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
-						booleanValue(EntityEditPanel.class.getName() + ".useFocusActivation", true);
+		public static final PropertyValue<Boolean> FOCUS_ACTIVATION =
+						booleanValue(EntityEditPanel.class.getName() + ".focusActivation", true);
 
 		/**
 		 * Indicates whether the panel should ask for confirmation before inserting
@@ -1212,7 +1212,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private boolean clearAfterInsert = true;
 		private boolean requestFocusAfterInsert = true;
-		private boolean focusActivation = USE_FOCUS_ACTIVATION.getOrThrow();
+		private boolean focusActivation = FOCUS_ACTIVATION.getOrThrow();
 		private boolean includeEntityViewer = INCLUDE_ENTITY_VIEWER.getOrThrow();
 		private boolean includeInspector = INCLUDE_INSPECTOR.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
@@ -1305,7 +1305,7 @@ public abstract class EntityEditPanel extends JPanel {
 		/**
 		 * @param focusActivation true if the edit panel should be activated when it or its parent EntityPanel receives focus
 		 * @return this Config instance
-		 * @see #USE_FOCUS_ACTIVATION
+		 * @see #FOCUS_ACTIVATION
 		 */
 		public Config focusActivation(boolean focusActivation) {
 			this.focusActivation = focusActivation;
@@ -1399,7 +1399,7 @@ public abstract class EntityEditPanel extends JPanel {
 		 * @param excludeFromSelection a {@link Collection} containing the attributes to exclude from component selection
 		 * @return this Config instance
 		 * @throws IllegalArgumentException in case an attribute is not found in the underlying entity
-		 * @see #selectInputComponent()
+		 * @see #selectInputField()
 		 */
 		public Config excludeFromSelection(Collection<Attribute<?>> excludeFromSelection) {
 			requireNonNull(excludeFromSelection).forEach(attribute -> entityDefinition.attributes().definition(attribute));

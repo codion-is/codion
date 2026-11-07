@@ -173,7 +173,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		this.windowType = builder.windowType;
 		this.includeControls = builder.includeControls;
 		this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
-		this.detailController = new TabbedDetailController(builder.enabledDetailStates, builder.initialState);
+		this.detailController = new TabbedDetailController(builder.enabledDetailPanelStates, builder.initialState);
 		this.controlMap = builder.controlMap;
 		this.entityPanel.detail().added().addConsumer(this::bindEvents);
 	}
@@ -235,9 +235,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case the given state is {@link PanelState#WINDOW}
 		 * @throws IllegalArgumentException in case the given state is not enabled
-		 * @see #enabledDetailStates(PanelState...)
+		 * @see #enabledDetailPanelStates(PanelState...)
 		 */
-		Builder initialDetailState(PanelState initialState);
+		Builder initialDetailPanelState(PanelState initialState);
 
 		/**
 		 * Sets the enabled detail panel states.
@@ -247,7 +247,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		 * @throws IllegalArgumentException in case the given states do not include the initial state
 		 * @throws IllegalArgumentException in case no {@code panelStates} are specified
 		 */
-		Builder enabledDetailStates(PanelState... panelStates);
+		Builder enabledDetailPanelStates(PanelState... panelStates);
 
 		/**
 		 * @param windowType the window type to use
@@ -675,7 +675,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private final EntityPanel entityPanel;
-		private final Set<PanelState> enabledDetailStates =
+		private final Set<PanelState> enabledDetailPanelStates =
 						new LinkedHashSet<>(asList(PanelState.values()));
 
 		private PanelState initialState = EMBEDDED;
@@ -689,11 +689,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public Builder initialDetailState(PanelState initialState) {
+		public Builder initialDetailPanelState(PanelState initialState) {
 			if (requireNonNull(initialState) == WINDOW) {
 				throw new IllegalArgumentException(WINDOW + " is not a supported initial state");
 			}
-			if (!enabledDetailStates.contains(initialState)) {
+			if (!enabledDetailPanelStates.contains(initialState)) {
 				throw new IllegalArgumentException("Detail state: " + initialState + " is not enabled");
 			}
 			this.initialState = initialState;
@@ -701,7 +701,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public Builder enabledDetailStates(PanelState... panelStates) {
+		public Builder enabledDetailPanelStates(PanelState... panelStates) {
 			if (requireNonNull(panelStates).length == 0) {
 				throw new IllegalArgumentException("No detail panel states specified");
 			}
@@ -709,8 +709,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 			if (!states.contains(initialState)) {
 				throw new IllegalArgumentException("The enabled detail states must include the initial detail state: " + initialState);
 			}
-			this.enabledDetailStates.clear();
-			this.enabledDetailStates.addAll(states);
+			this.enabledDetailPanelStates.clear();
+			this.enabledDetailPanelStates.addAll(states);
 			return this;
 		}
 

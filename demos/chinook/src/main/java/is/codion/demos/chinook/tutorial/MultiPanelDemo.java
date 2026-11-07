@@ -64,7 +64,7 @@ public final class MultiPanelDemo {
 		Dialogs.builder()
 						.component(basePanel)
 						.title("Multi Panel Demo")
-						.disposeOnEscape(false)
+						.closeOnEscape(false)
 						.show()
 						.dispose();
 	}

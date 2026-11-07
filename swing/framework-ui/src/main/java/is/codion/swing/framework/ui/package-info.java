@@ -33,12 +33,12 @@
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MODIFIED_INDICATOR}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MODIFIED_WARNING}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MERGE_MODIFIED}
- * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_FOCUS_ACTIVATION}
+ * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#FOCUS_ACTIVATION}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_ENTITY_VIEWER}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_INSPECTOR}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#TRANSFER_FOCUS_ON_ENTER}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#KEYBOARD_NAVIGATION}
- * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#DISPOSE_EDIT_DIALOG_ON_ESCAPE}
+ * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#CLOSE_EDIT_DIALOG_ON_ESCAPE}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#INCLUDE_TOGGLE_EDIT_PANEL_CONTROL}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#TOOLBAR_CONTROLS}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#CONTROL_PANEL_CONSTRAINTS}
@@ -58,7 +58,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#COLUMN_SELECTION}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_CONDITIONS}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_FILTERS}
- * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_SUMMARY}
+ * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_SUMMARIES}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#REFRESH_PROGRESS_BAR}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#REFRESH_PROGRESS_BAR_DELAY}
  * <li>{@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#HANDLING}

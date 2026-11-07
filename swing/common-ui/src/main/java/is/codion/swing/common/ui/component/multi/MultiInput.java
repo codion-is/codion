@@ -550,7 +550,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 						.owner(this)
 						.modal(false)
 						.resizable(false)
-						.disposeOnEscape(true)
+						.closeOnEscape(true)
 						// Under the field, as a drop-down would be, following it around, see FollowField
 						.size(dialogSize(content))
 						.location(dialogLocation())

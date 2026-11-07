@@ -62,7 +62,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 						new ItemEditPanel(itemModel.editModel()),
 						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder()
 										.panel(entityPanel)
-										.initialDetailState(HIDDEN)
+										.initialDetailPanelState(HIDDEN)
 										.build()));
 		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
 						new TagItemEditPanel(tagItemModel.editModel()));
@@ -112,7 +112,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 						new TagEditPanel(tagModel.editModel()), config -> config
 						.detailLayout(entityPanel -> TabbedDetailLayout.builder()
 										.panel(entityPanel)
-										.initialDetailState(HIDDEN)
+										.initialDetailPanelState(HIDDEN)
 										.build()));
 		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
 						new TagItemEditPanel(tagItemModel.editModel()));
