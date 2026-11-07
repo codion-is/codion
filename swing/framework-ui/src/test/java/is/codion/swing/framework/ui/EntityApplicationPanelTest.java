@@ -148,6 +148,9 @@ public class EntityApplicationPanelTest {
 		panel.exit();
 		assertEquals(asList("store", "close"), model.calls);
 		assertFalse(model.connection().connected());
+		// the consumers receiving the panel
+		assertFalse(panel.notified.isEmpty());
+		panel.notified.forEach(notified -> assertSame(panel, notified));
 	}
 
 	// Telling when it is stored and closed
@@ -174,10 +177,13 @@ public class EntityApplicationPanelTest {
 
 	private static final class ExitingApplicationPanel extends EntityApplicationPanel<ExitingApplicationModel> {
 
+		private final List<EntityApplicationPanel<?>> notified = new ArrayList<>();
+
 		private boolean cancel = true;
 
 		private ExitingApplicationPanel(ExitingApplicationModel applicationModel) {
 			super(applicationModel, singletonList(new EntityPanel(applicationModel.models().get(Employee.TYPE))), emptyList());
+			exiting().addConsumer(notified::add);
 			exiting().addListener(() -> {
 				if (cancel) {
 					throw new CancelException();

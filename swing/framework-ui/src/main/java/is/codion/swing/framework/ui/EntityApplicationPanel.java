@@ -422,14 +422,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * @return an observer notified when this application panel is initialized
-	 * @see #initialize()
-	 */
-	public final Observer<EntityApplicationPanel<M>> initialized() {
-		return initializedEvent.observer();
-	}
-
-	/**
 	 * Exits this application. Calls {@link System#exit(int)} in case {@link #SYSTEM_EXIT} is true.
 	 * <p>Disposes all windows in the JVM so that it can end naturally when {@link #SYSTEM_EXIT} is false,
 	 * note that this closes the windows of any other Codion application sharing the JVM.
@@ -447,7 +439,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			throw new CancelException();
 		}
 		try {
-			exiting.run();
+			exiting.accept(this);
 		}
 		catch (CancelException e) {
 			throw e;
@@ -736,6 +728,14 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 							.modal(modal)
 							.show();
 		}
+	}
+
+	/**
+	 * @return an observer notified when this application panel is initialized
+	 * @see #initialize()
+	 */
+	protected final Observer<EntityApplicationPanel<M>> initialized() {
+		return initializedEvent.observer();
 	}
 
 	/**
