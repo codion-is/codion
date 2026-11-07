@@ -961,13 +961,11 @@
     "Table": {
       "alternativeRowBackground": "bg",
       "background": "bg",
-      "cellNoFocusBorder": "10,5,10,5",
       "disabledForeground": "dis",
       "dropLineColor": "accent",
       "dropLineShortColor": "accent",
       "focusCellBackground": "selBg",
       "focusCellForeground": "selFg",
-      "focusCellHighlightBorder": "10,5,10,5",
       "foreground": "fg",
       "gridColor": "bg",
       "highlightOuter": "selBg",

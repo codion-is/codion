@@ -18,20 +18,28 @@
  */
 package is.codion.plugin.flatlaf.intellij;
 
+import is.codion.plugin.flatlaf.intellij.themes.gerry.GerryDarcula;
+import is.codion.plugin.flatlaf.intellij.themes.material.MaterialOceanic;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.IntelliJTheme;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.LookAndFeel;
+import javax.swing.UIDefaults;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -63,6 +71,41 @@ public class FlatLookAndFeelIntelliJThemesTest {
 							.sorted()
 							.collect(toList());
 			assertEquals(emptyList(), unregistered);
+		}
+	}
+
+	@Test
+	void noTableCellMargins() throws IOException {
+		//a theme's table cell margins, meant for its own row height, which FlatLaf drops, are removed from the themes,
+		//leaving FlatLaf's own, should a theme imported from upstream bring them back
+		Pattern cellMargins = Pattern.compile("\"(cellNoFocusBorder|focusCellHighlightBorder)\"\\s*:\\s*\"\\d+,\\s*\\d+,\\s*\\d+,\\s*\\d+\"");
+		Path themes = Paths.get("src/main/resources/is/codion/plugin/flatlaf/intellij/themes");
+		try (Stream<Path> files = Files.walk(themes)) {
+			List<String> withCellMargins = files
+							.filter(file -> file.toString().endsWith(".theme.json"))
+							.filter(file -> cellMargins.matcher(content(file)).find())
+							.map(themes::relativize)
+							.map(Path::toString)
+							.sorted()
+							.collect(toList());
+			assertEquals(emptyList(), withCellMargins);
+		}
+		//FlatLaf defines neither, its renderers using Table.cellMargins
+		UIDefaults flatLaf = new FlatDarkLaf().getDefaults();
+		for (LookAndFeel theme : asList(new MaterialOceanic(), new GerryDarcula())) {
+			UIDefaults defaults = theme.getDefaults();
+			for (String key : asList("Table.cellNoFocusBorder", "Table.focusCellHighlightBorder")) {
+				assertEquals(flatLaf.get(key), defaults.get(key), theme.getName() + ": " + key);
+			}
+		}
+	}
+
+	private static String content(Path file) {
+		try {
+			return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

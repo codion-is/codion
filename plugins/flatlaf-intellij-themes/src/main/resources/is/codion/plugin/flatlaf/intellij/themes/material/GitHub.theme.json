@@ -1300,13 +1300,11 @@
     "Table": {
       "alternativeRowBackground": "cs",
       "background": "bg",
-      "cellNoFocusBorder": "16,4,16,4",
       "disabledForeground": "dis",
       "dropLineColor": "accent",
       "dropLineShortColor": "accent",
       "focusCellBackground": "table",
       "focusCellForeground": "activeFg",
-      "focusCellHighlightBorder": "18,6,18,6",
       "foreground": "fg",
       "gridColor": "bg",
       "highlightOuter": "table",

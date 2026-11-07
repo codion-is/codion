@@ -137,6 +137,8 @@ Codion Change Log
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, entity type, column and foreign key names are now written as the domain gives them, where they were written in lower case, SchemaDomain.SchemaSettings.lowerCaseIdentifiers(false) having no effect on the source.
 - DomainSource, a column or table name which differs from its attribute or entity type name, a quoted one, now written via name() and table(), the constant, interface and DTO component names now splitting camel case names into words, VERBATIM_LOCALITY and verbatimLocality.
+### is.codion.plugin.flatlaf.intellij.themes
+- FlatLookAndFeelIntelliJThemes, the Material and Gerry themes no longer set Table.cellNoFocusBorder and Table.focusCellHighlightBorder, padding meant for their 32px rows, applied by FlatLaf's importer to 20px ones, which made plain JDK cell renderers twice as tall.
 
 ## 0.18.92
 ### is.codion.swing.common.ui
