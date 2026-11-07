@@ -90,6 +90,8 @@ public interface FilterModel<T> {
 	 * <p>The items keep the order in which they were set, added and inserted, which filtering and sorting leave
 	 * as is: items included again by a filter take their place in it, and the included items return to it
 	 * once sorting is no longer enabled.
+	 * <p>Equal items are allowed. The methods taking an item act on every equal occurrence of it, removing or
+	 * replacing them all, the index based ones of {@link IncludedItems} on the one at the index.
 	 * @param <T> the item type
 	 */
 	interface Items<T> {
@@ -164,13 +166,13 @@ public interface FilterModel<T> {
 		void add(Collection<T> items);
 
 		/**
-		 * <p>Removes the given item from this model.
+		 * <p>Removes the given item from this model, every equal occurrence of it.
 		 * @param item the item to remove from the model
 		 */
 		void remove(T item);
 
 		/**
-		 * <p>Removes the given items from this model.
+		 * <p>Removes the given items from this model, every equal occurrence of each.
 		 * @param items the items to remove from the model
 		 */
 		void remove(Collection<T> items);
@@ -182,7 +184,7 @@ public interface FilterModel<T> {
 		void remove(Predicate<T> predicate);
 
 		/**
-		 * <p>Replaces the first occurrence of the given item. If the item is not found this method has no effect.
+		 * <p>Replaces the given item, every equal occurrence of it. If the item is not found this method has no effect.
 		 * <p>Note that this method respects the include predicate, so a
 		 * currently excluded item may be replaced with an included item and vice versa.
 		 * <p>If the included items change they are sorted if sorting is enabled.
@@ -195,7 +197,7 @@ public interface FilterModel<T> {
 		void replace(T item, T replacement);
 
 		/**
-		 * <p>Replaces the given map keys with their respective values.
+		 * <p>Replaces the given map keys with their respective values, every equal occurrence of each.
 		 * <p>Note that this method respects the include predicate, so a
 		 * currently excluded item may be replaced with an included item and vice versa.
 		 * <p>If the included items change they are sorted if sorting is enabled.

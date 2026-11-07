@@ -371,6 +371,49 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
+		@DisplayName("Removing an item removes every equal occurrence, included and excluded")
+		void remove_equalItems_shouldRemoveAll() {
+			// the same instance twice, an equal one excluded
+			String excludedA = new String("a");
+			items.add(asList("a", "b", "a", "c", excludedA));
+			includePredicate.setPredicate(item -> item != excludedA);
+			items.filter();
+			assertEquals(1, items.excluded().size());
+
+			items.remove("a");
+			assertEquals(asList("b", "c"), items.included().get());
+			assertEquals(0, items.excluded().size());
+
+			items.add(asList("b", "d"));
+			items.remove(asList("b", "c"));
+			assertEquals(singletonList("d"), items.included().get());
+		}
+
+		@Test
+		@DisplayName("Removing by index removes that occurrence only")
+		void removeIndex_equalItems_shouldRemoveOne() {
+			items.add(asList("a", "b", "a"));
+			items.included().remove(2);
+			assertEquals(asList("a", "b"), items.included().get());
+		}
+
+		@Test
+		@DisplayName("Replacing an item replaces every equal occurrence, included and excluded")
+		void replace_equalItems_shouldReplaceAll() {
+			String excludedA = new String("a");
+			items.add(asList("a", "b", "a", excludedA));
+			includePredicate.setPredicate(item -> item != excludedA);
+			items.filter();
+
+			String replacement = "x";
+			items.replace("a", replacement);
+			//the excluded one included, its replacement passing the predicate, at its position
+			assertEquals(asList(replacement, "b", replacement, replacement), items.included().get());
+			assertEquals(0, items.excluded().size());
+			assertFalse(items.contains("a"));
+		}
+
+		@Test
 		@DisplayName("Filter with sorting applied")
 		void filter_withSorting_shouldSortVisible() {
 			TestSort sort = new TestSort();

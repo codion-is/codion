@@ -35,7 +35,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -147,111 +146,21 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void remove(R item) {
 		requireNonNull(item);
-		preserveSelection(() -> {
-			synchronized (lock) {
-				Entry<R> excludedEntry = excluded.entry(item);
-				if (excludedEntry != null) {
-					entries.remove(excludedEntry);
-					excluded.notifyChanges();
-				}
-				else {
-					int index = included.indexOf(item);
-					if (index >= 0) {
-						entries.remove(included.entries.remove(index));
-						notifyDeleted(index, index);
-						included.notifyChanges();
-					}
-				}
-			}
-
-			return null;
-		});
+		removeIf(item::equals);
 	}
 
 	@Override
 	public void remove(Collection<R> items) {
 		rejectNulls(items);
-		preserveSelection(() -> {
-			synchronized (lock) {
-				Set<R> toRemove = new HashSet<>(items);
-				//entries are identified by identity, not overriding equals()
-				Set<Entry<R>> removed = new HashSet<>();
-				//an excluded item first, as before, one per item
-				for (Entry<R> entry : entries) {
-					if (toRemove.isEmpty()) {
-						break;
-					}
-					if (!entry.included && toRemove.remove(entry.item)) {
-						removed.add(entry);
-					}
-				}
-				boolean excludedRemoved = !removed.isEmpty();
-				boolean includedRemoved = false;
-				ListIterator<Entry<R>> iterator = included.entries.listIterator(included.entries.size());
-				//adjacent items reported as one deletion, a JList measuring all its cells for each
-				int firstIndex = -1;
-				int lastIndex = -1;
-				while (!toRemove.isEmpty() && iterator.hasPrevious()) {
-					int index = iterator.previousIndex();
-					Entry<R> entry = iterator.previous();
-					if (toRemove.remove(entry.item)) {
-						if (!includedRemoved) {
-							lastIndex = index;
-						}
-						else if (index != firstIndex - 1) {
-							notifyDeleted(firstIndex, lastIndex);
-							lastIndex = index;
-						}
-						firstIndex = index;
-						iterator.remove();
-						removed.add(entry);
-						includedRemoved = true;
-					}
-				}
-				if (includedRemoved) {
-					notifyDeleted(firstIndex, lastIndex);
-				}
-				entries.removeIf(removed::contains);
-				if (includedRemoved) {
-					included.notifyChanges();
-				}
-				if (excludedRemoved) {
-					excluded.notifyChanges();
-				}
-			}
-
-			return null;
-		});
+		Set<R> toRemove = new HashSet<>(items);
+		if (!toRemove.isEmpty()) {
+			removeIf(toRemove::contains);
+		}
 	}
 
 	@Override
 	public void remove(Predicate<R> predicate) {
-		requireNonNull(predicate);
-		preserveSelection(() -> {
-			synchronized (lock) {
-				int excludedSize = excluded.size();
-				Set<Entry<R>> removed = new HashSet<>();
-				ListIterator<Entry<R>> iterator = included.entries.listIterator(included.entries.size());
-				while (iterator.hasPrevious()) {
-					int index = iterator.previousIndex();
-					Entry<R> entry = iterator.previous();
-					if (predicate.test(entry.item)) {
-						iterator.remove();
-						removed.add(entry);
-						notifyDeleted(index, index);
-					}
-				}
-				entries.removeIf(entry -> removed.contains(entry) || (!entry.included && predicate.test(entry.item)));
-				if (!removed.isEmpty()) {
-					included.notifyChanges();
-				}
-				if (excluded.size() != excludedSize) {
-					excluded.notifyChanges();
-				}
-			}
-
-			return null;
-		});
+		removeIf(requireNonNull(predicate));
 	}
 
 	@Override
@@ -268,18 +177,17 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		//a selected item being replaced stays selected as its replacement, a replacement no longer included is dropped
 		preserveSelection(() -> {
 			synchronized (lock) {
-				Map<R, R> toReplace = new HashMap<>(items);
+				//every equal occurrence, the entries replaced identified by identity, not overriding equals()
+				Set<Entry<R>> replaced = new HashSet<>();
 				//the excluded items first, a replacement now included taking its place in the order among the included ones
 				int includedBefore = 0;
 				for (Entry<R> entry : entries) {
-					if (toReplace.isEmpty()) {
-						break;
-					}
 					if (entry.included) {
 						includedBefore++;
 					}
-					else if (toReplace.containsKey(entry.item)) {
-						entry.item = toReplace.remove(entry.item);
+					else if (items.containsKey(entry.item)) {
+						entry.item = items.get(entry.item);
+						replaced.add(entry);
 						if (included.predicate.test(entry.item)) {
 							entry.included = true;
 							//unsorted, the included items are in the order of the entries, and sorted just below otherwise
@@ -291,9 +199,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 					}
 				}
 				ListIterator<Entry<R>> iterator = included.entries.listIterator();
-				while (!toReplace.isEmpty() && iterator.hasNext()) {
+				while (iterator.hasNext()) {
 					Entry<R> entry = iterator.next();
-					R replacement = toReplace.remove(entry.item);
+					R replacement = replaced.contains(entry) ? null : items.get(entry.item);
 					if (replacement != null) {
 						int index = iterator.previousIndex();
 						entry.item = replacement;
@@ -319,6 +227,49 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}, selectedItems -> selectedItems.stream()
 						.map(selectedItem -> items.getOrDefault(selectedItem, selectedItem))
 						.collect(toList()));
+	}
+
+	// Removes the items passing the predicate, every equal occurrence, adjacent included ones reported as one deletion,
+	// a JList measuring all its cells for each
+	private void removeIf(Predicate<R> predicate) {
+		preserveSelection(() -> {
+			synchronized (lock) {
+				int excludedSize = excluded.size();
+				//entries are identified by identity, not overriding equals()
+				Set<Entry<R>> removed = new HashSet<>();
+				ListIterator<Entry<R>> iterator = included.entries.listIterator(included.entries.size());
+				int firstIndex = -1;
+				int lastIndex = -1;
+				while (iterator.hasPrevious()) {
+					int index = iterator.previousIndex();
+					Entry<R> entry = iterator.previous();
+					if (predicate.test(entry.item)) {
+						if (removed.isEmpty()) {
+							lastIndex = index;
+						}
+						else if (index != firstIndex - 1) {
+							notifyDeleted(firstIndex, lastIndex);
+							lastIndex = index;
+						}
+						firstIndex = index;
+						iterator.remove();
+						removed.add(entry);
+					}
+				}
+				if (!removed.isEmpty()) {
+					notifyDeleted(firstIndex, lastIndex);
+				}
+				entries.removeIf(entry -> removed.contains(entry) || (!entry.included && predicate.test(entry.item)));
+				if (!removed.isEmpty()) {
+					included.notifyChanges();
+				}
+				if (excluded.size() != excludedSize) {
+					excluded.notifyChanges();
+				}
+			}
+
+			return null;
+		});
 	}
 
 	@Override
