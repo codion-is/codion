@@ -29,6 +29,7 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTableConditionPanel;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
@@ -86,6 +87,18 @@ public class EntityTablePanelTest {
 		EntityTablePanel tablePanel = new EntityTablePanel(SwingEntityTableModel.of(Employee.TYPE, emptyList(), CONNECTION));
 		tablePanel.initialize();
 		assertThrows(IllegalStateException.class, tablePanel::conditions);
+	}
+
+	@Test
+	void filterPanelFactory() {
+		AtomicInteger created = new AtomicInteger();
+		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION), config -> config
+						.filters((filters, panels, columnModel) -> {
+							created.incrementAndGet();
+							return FilterTableConditionPanel.filterTableConditionPanel(filters, panels, columnModel);
+						}));
+		tablePanel.table().filters();
+		assertEquals(1, created.get());
 	}
 
 	@Test

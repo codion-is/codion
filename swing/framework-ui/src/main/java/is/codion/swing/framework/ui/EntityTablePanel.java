@@ -2636,8 +2636,22 @@ public class EntityTablePanel extends JPanel {
 		 * @return this Config instance
 		 * @see FilterTable.Builder#filters(Consumer)
 		 * @see FilterTable#filters()
+		 * @see #filters(TableConditionPanel.Factory)
 		 */
 		public Config filters(Consumer<TableConditionPanel.Panels<Attribute<?>>> filters) {
+			tableBuilder.filters(filters);
+			return this;
+		}
+
+		/**
+		 * Specifies the factory creating the filter panel, {@link FilterTable#filters()},
+		 * {@link FilterTableConditionPanel#filterTableConditionPanel} by default.
+		 * @param filters the factory creating the filter panel
+		 * @return this Config instance
+		 * @see #filters(Consumer)
+		 * @see FilterTable.Builder#filters(TableConditionPanel.Factory)
+		 */
+		public Config filters(TableConditionPanel.Factory<Attribute<?>> filters) {
 			tableBuilder.filters(filters);
 			return this;
 		}

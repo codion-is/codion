@@ -133,6 +133,7 @@ Codion Change Log
 - EntityPanel.Config.disposeEditDialogOnEscape() and DISPOSE_EDIT_DIALOG_ON_ESCAPE renamed closeEditDialogOnEscape() and CLOSE_EDIT_DIALOG_ON_ESCAPE, its key closeEditDialogOnEscape.
 - EntityEditPanel.control() now public, as on EntityPanel and EntityTablePanel, and EntityEditPanel.displayException() and EntityTablePanel.displayException() now public, as on EntityPanel.
 - EntityTablePanel.initializeSouthPanel() now @Nullable, as documented, null meaning no south panel.
+- EntityTablePanel.Config.filters(TableConditionPanel.Factory) added, the factory creating the filter panel, as conditions(TableConditionPanel.Factory) is for the condition panel.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, entity type, column and foreign key names are now written as the domain gives them, where they were written in lower case, SchemaDomain.SchemaSettings.lowerCaseIdentifiers(false) having no effect on the source.
 - DomainSource, a column or table name which differs from its attribute or entity type name, a quoted one, now written via name() and table(), the constant, interface and DTO component names now splitting camel case names into words, VERBATIM_LOCALITY and verbatimLocality.
