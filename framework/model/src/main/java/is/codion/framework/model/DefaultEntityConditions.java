@@ -130,10 +130,15 @@ final class DefaultEntityConditions implements EntityConditions {
 	}
 
 	@Override
-	public <T> ConditionModel<T> get(Column<T> column) {
+	public <T> ColumnConditionModel<T> get(Column<T> column) {
 		entityDefinition.columns().definition(column);
+		ConditionModel<T> model = conditions.get(column);
+		if (!(model instanceof ColumnConditionModel)) {
+			throw new IllegalArgumentException("Condition model for column " + column
+							+ " is not a " + ColumnConditionModel.class.getSimpleName() + ": " + model.getClass().getName());
+		}
 
-		return conditions.get(column);
+		return (ColumnConditionModel<T>) model;
 	}
 
 	@Override

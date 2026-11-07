@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
@@ -40,7 +39,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -53,29 +51,28 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
 
-final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel {
+final class DefaultForeignKeyConditionModel extends AbstractAttributeConditionModel<Entity> implements ForeignKeyConditionModel {
 
 	private static final List<Operator> OPERATORS = unmodifiableList(asList(EQUAL, NOT_EQUAL, IN, NOT_IN));
 
 	private final ForeignKey foreignKey;
 	private final Entities entities;
-	private final ConditionModel<Entity> condition;
 	private final DefaultModels models;
 	// strong references, the persistence events hold their consumers weakly
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
-		foreignKey = builder.foreignKey;
-		entities = builder.entities;
-		models = new DefaultModels(builder.comboBoxModel, builder.searchModel);
-		condition = ConditionModel.builder()
+		super(ConditionModel.builder()
 						.type(Entity.class)
 						// the operator before the operators, which must contain it
 						.operator(builder.operator == null ? builder.operators.get(0) : builder.operator)
 						.operators(builder.operators)
 						.caption(builder.caption)
-						.build();
+						.build());
+		foreignKey = builder.foreignKey;
+		entities = builder.entities;
+		models = new DefaultModels(builder.comboBoxModel, builder.searchModel);
 		PersistenceEvents persistenceEvents = persistenceEvents(foreignKey.referencedType());
 		persistenceEvents.updated().addWeakConsumer(updateListener);
 		persistenceEvents.deleted().addWeakConsumer(deleteListener);
@@ -84,21 +81,6 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	@Override
 	public ForeignKey attribute() {
 		return foreignKey;
-	}
-
-	@Override
-	public ConditionModel<Entity> condition() {
-		return condition;
-	}
-
-	@Override
-	public Observer<?> changed() {
-		return condition.changed();
-	}
-
-	@Override
-	public Optional<String> caption() {
-		return condition.caption();
 	}
 
 	@Override
@@ -168,7 +150,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		return new DefaultBuilder(requireNonNull(foreignKey), requireNonNull(connection));
 	}
 
-	static final class DefaultBuilder implements Builder {
+	static final class DefaultBuilder implements ForeignKeyConditionModel.Builder {
 
 		private final ForeignKey foreignKey;
 		private final Entities entities;
@@ -188,19 +170,19 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		}
 
 		@Override
-		public Builder comboBoxModel(Supplier<EntityComboBoxModel> comboBoxModel) {
+		public ForeignKeyConditionModel.Builder comboBoxModel(Supplier<EntityComboBoxModel> comboBoxModel) {
 			this.comboBoxModel = requireNonNull(comboBoxModel);
 			return this;
 		}
 
 		@Override
-		public Builder searchModel(Supplier<EntitySearchModel> searchModel) {
+		public ForeignKeyConditionModel.Builder searchModel(Supplier<EntitySearchModel> searchModel) {
 			this.searchModel = requireNonNull(searchModel);
 			return this;
 		}
 
 		@Override
-		public Builder operators(List<Operator> operators) {
+		public ForeignKeyConditionModel.Builder operators(List<Operator> operators) {
 			if (requireNonNull(operators).isEmpty()) {
 				throw new IllegalArgumentException("No operators specified");
 			}
@@ -212,19 +194,19 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		}
 
 		@Override
-		public Builder operator(Operator operator) {
+		public ForeignKeyConditionModel.Builder operator(Operator operator) {
 			this.operator = requireNonNull(operator);
 			return this;
 		}
 
 		@Override
-		public Builder negationIncludesNull(boolean negationIncludesNull) {
+		public ForeignKeyConditionModel.Builder negationIncludesNull(boolean negationIncludesNull) {
 			this.negationIncludesNull = negationIncludesNull;
 			return this;
 		}
 
 		@Override
-		public Builder caption(@Nullable String caption) {
+		public ForeignKeyConditionModel.Builder caption(@Nullable String caption) {
 			this.caption = caption;
 			return this;
 		}

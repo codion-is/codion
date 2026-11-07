@@ -91,17 +91,17 @@ public interface EntityConditions extends TableConditions<Attribute<?>> {
 	Value<Conjunction> conjunction();
 
 	/**
-	 * Returns the {@link ConditionModel} associated with the given column.
+	 * Returns the {@link ColumnConditionModel} associated with the given column.
 	 * @param <T> the column value type
-	 * @param column the column for which to retrieve the {@link ConditionModel}
-	 * @return the {@link ConditionModel} associated with {@code column}
+	 * @param column the column for which to retrieve the {@link ColumnConditionModel}
+	 * @return the {@link ColumnConditionModel} associated with {@code column}
 	 * @throws IllegalArgumentException in case no condition model exists for the given column
 	 */
-	<T> ConditionModel<T> get(Column<T> column);
+	<T> ColumnConditionModel<T> get(Column<T> column);
 
 	/**
-	 * Returns the {@link ConditionModel} associated with the given foreignKey.
-	 * @param foreignKey the foreignKey for which to retrieve the {@link ConditionModel}
+	 * Returns the {@link ForeignKeyConditionModel} associated with the given foreignKey.
+	 * @param foreignKey the foreignKey for which to retrieve the {@link ForeignKeyConditionModel}
 	 * @return the {@link ConditionModel} associated with {@code foreignKey}
 	 * @throws IllegalArgumentException in case no condition model exists for the given foreignKey
 	 */

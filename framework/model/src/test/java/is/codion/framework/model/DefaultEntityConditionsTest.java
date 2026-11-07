@@ -88,6 +88,9 @@ public class DefaultEntityConditionsTest {
 	@Test
 	void conditionModel() {
 		assertNotNull(conditionModel.get(Employee.COMMISSION));
+		//the attribute condition models, by their attributes
+		assertEquals(Employee.COMMISSION, conditionModel.get(Employee.COMMISSION).attribute());
+		assertEquals(Employee.DEPARTMENT_FK, conditionModel.get(Employee.DEPARTMENT_FK).attribute());
 	}
 
 	@Test

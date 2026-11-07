@@ -19,19 +19,10 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.reactive.state.State;
-import is.codion.common.reactive.value.Value;
-import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 
-import org.jspecify.annotations.Nullable;
-
-import java.text.Format;
-import java.util.List;
-import java.util.Optional;
-
 /**
- * A {@link ConditionModel} associated with an {@link Attribute}, delegating to an underlying condition model.
+ * A {@link ConditionModel} associated with an {@link Attribute}.
  * @param <T> the attribute type
  */
 public interface AttributeConditionModel<T> extends ConditionModel<T> {
@@ -40,74 +31,4 @@ public interface AttributeConditionModel<T> extends ConditionModel<T> {
 	 * @return the attribute
 	 */
 	Attribute<T> attribute();
-
-	/**
-	 * @return the underlying condition model
-	 */
-	ConditionModel<T> condition();
-
-	@Override
-	default State caseSensitive() {
-		return condition().caseSensitive();
-	}
-
-	@Override
-	default Optional<Format> format() {
-		return condition().format();
-	}
-
-	@Override
-	default Optional<String> dateTimePattern() {
-		return condition().dateTimePattern();
-	}
-
-	@Override
-	default State autoEnable() {
-		return condition().autoEnable();
-	}
-
-	@Override
-	default State locked() {
-		return condition().locked();
-	}
-
-	@Override
-	default Class<T> type() {
-		return condition().type();
-	}
-
-	@Override
-	default List<Operator> operators() {
-		return condition().operators();
-	}
-
-	@Override
-	default State enabled() {
-		return condition().enabled();
-	}
-
-	@Override
-	default void clear() {
-		condition().clear();
-	}
-
-	@Override
-	default Value<Operator> operator() {
-		return condition().operator();
-	}
-
-	@Override
-	default Operands<T> operands() {
-		return condition().operands();
-	}
-
-	@Override
-	default SetCondition<T> set() {
-		return condition().set();
-	}
-
-	@Override
-	default boolean accepts(@Nullable Comparable<T> value) {
-		return condition().accepts(value);
-	}
 }

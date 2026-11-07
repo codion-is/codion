@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.reactive.observer.Observer;
 import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
@@ -28,20 +27,27 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
+final class DefaultColumnConditionModel<T> extends AbstractAttributeConditionModel<T> implements ColumnConditionModel<T> {
 
 	private final Column<T> column;
-	private final ConditionModel<T> condition;
 
 	private DefaultColumnConditionModel(DefaultBuilder<T> builder) {
+		super(condition(builder));
 		column = builder.columnDefinition.attribute();
+	}
+
+	@Override
+	public Column<T> attribute() {
+		return column;
+	}
+
+	private static <T> ConditionModel<T> condition(DefaultBuilder<T> builder) {
 		ConditionModel.Builder<T> conditionBuilder = ConditionModel.builder()
-						.type(column.type().get())
+						.type(builder.columnDefinition.attribute().type().get())
 						.format(builder.columnDefinition.format().orElse(null))
 						.caption(builder.columnDefinition.caption())
 						.dateTimePattern(builder.columnDefinition.dateTimePattern().orElse(null))
@@ -53,34 +59,15 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 		else if (builder.operator != null) {
 			conditionBuilder.operator(builder.operator);
 		}
-		condition = conditionBuilder.build();
-	}
 
-	@Override
-	public Column<T> attribute() {
-		return column;
-	}
-
-	@Override
-	public ConditionModel<T> condition() {
-		return condition;
-	}
-
-	@Override
-	public Observer<?> changed() {
-		return condition.changed();
-	}
-
-	@Override
-	public Optional<String> caption() {
-		return condition.caption();
+		return conditionBuilder.build();
 	}
 
 	static <T> DefaultBuilder<T> builder(ColumnDefinition<T> columnDefinition) {
 		return new DefaultBuilder<>(requireNonNull(columnDefinition));
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<T> implements ColumnConditionModel.Builder<T> {
 
 		private final ColumnDefinition<T> columnDefinition;
 
@@ -93,7 +80,7 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 		}
 
 		@Override
-		public Builder<T> operators(List<Operator> operators) {
+		public ColumnConditionModel.Builder<T> operators(List<Operator> operators) {
 			if (requireNonNull(operators).isEmpty()) {
 				throw new IllegalArgumentException("No operators specified");
 			}
@@ -102,13 +89,13 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 		}
 
 		@Override
-		public Builder<T> operator(Operator operator) {
+		public ColumnConditionModel.Builder<T> operator(Operator operator) {
 			this.operator = requireNonNull(operator);
 			return this;
 		}
 
 		@Override
-		public Builder<T> negationIncludesNull(boolean negationIncludesNull) {
+		public ColumnConditionModel.Builder<T> negationIncludesNull(boolean negationIncludesNull) {
 			this.negationIncludesNull = negationIncludesNull;
 			return this;
 		}

@@ -74,6 +74,8 @@ Codion Change Log
 - AbstractEntityEditor bug fixed, EditorEntity.defaults() now applies the propagators of a persisted value which isn't null, as if it had just been set, where the values derived from it were given their defaults, with no way of deriving them again by selecting the persisted value.
 - EntityComboBoxModel bug fixed, a model with a condition now adds only the inserted entities passing it, selected by their primary keys, where every inserted entity was added, until the next refresh.
 - EntityComboBoxModel bug fixed, a model with a condition now keeps only the updated entities still passing it, adding those now passing it, selected by their primary keys, the selected one staying until the next refresh, where every updated entity in the model was replaced, whether passing or not.
+- EntityConditions.get(Column) now returns ColumnConditionModel, as get(ForeignKey) returns ForeignKeyConditionModel, where it returned ConditionModel.
+- AttributeConditionModel.condition() removed, along with the default methods delegating to it, the delegation now an implementation detail.
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, scrolling to the selected rows now follows the rows added to the selection, where any change to it scrolled to the first selected row when none was visible, deselecting a row scrolling to another.
 - FilterTable bug fixed, selecting a search result from the search field, or toggling its selection, now focuses its cell, leaving the rest of the selection as it is, where adding a result whose row was already selected selected, or deselected, every row between it and the anchor.
