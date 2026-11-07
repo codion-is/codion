@@ -109,6 +109,7 @@ Codion Change Log
 - DefaultComboBoxBuilder and DefaultFormBuilder renamed AbstractComboBoxBuilder and AbstractFormBuilder, now abstract extension bases, the defaults package-private, provided by ComboBoxBuilder.builder() and FormBuilder.builder() as before.
 - TableConditionPanel.Panels.exclude() now replaces the identifiers excluded before, where it added to them.
 - ComponentDialogBuilder.disposeOnEscape() renamed closeOnEscape().
+- FilterTableCellRenderer.customizers() now returns an unmodifiable List, in the order the customizers run, where it returned the renderer's own modifiable collection.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui

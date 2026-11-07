@@ -28,7 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
-import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -160,9 +160,10 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	Border cellBorder();
 
 	/**
-	 * @return the cell renderer customizers
+	 * @return the cell renderer customizers, in the order they run, unmodifiable
+	 * @see Builder#customizer(Customizer)
 	 */
-	Collection<Customizer<R, C>> customizers();
+	List<Customizer<R, C>> customizers();
 
 	/**
 	 * @param <R> the row type
@@ -307,8 +308,11 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 		Builder<R, C, T> foreground(CellColor<R, C, T> foreground);
 
 		/**
+		 * Adds a customizer. The enabled customizers run for each cell in the order they were added, after the filter
+		 * indicator, each seeing what the ones before it did to the component, its background for example.
 		 * @param customizer customizes the renderer component for a given cell
 		 * @return this builder instance
+		 * @see #filterIndicator(boolean)
 		 */
 		Builder<R, C, T> customizer(Customizer<R, C> customizer);
 

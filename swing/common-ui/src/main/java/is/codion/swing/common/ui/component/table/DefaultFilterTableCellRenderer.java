@@ -48,11 +48,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.color.Colors.shade;
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
 
@@ -105,7 +107,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	}
 
 	@Override
-	public Collection<Customizer<R, C>> customizers() {
+	public List<Customizer<R, C>> customizers() {
 		return settings.customizers;
 	}
 
@@ -207,7 +209,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Collection<Customizer<R, C>> customizers() {
+		public List<Customizer<R, C>> customizers() {
 			return settings.customizers;
 		}
 
@@ -240,7 +242,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final boolean setBorder;
 		private final CellColor<R, C, T> backgroundColor;
 		private final CellColor<R, C, T> foregroundColor;
-		private final Collection<Customizer<R, C>> customizers = new ArrayList<>();
+		private final List<Customizer<R, C>> customizers;
 		private final int horizontalAlignment;
 		private final @Nullable Function<T, String> toolTip;
 		private final Function<T, String> formatter;
@@ -251,10 +253,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.rowColors = new RowColors("Table", builder.alternateRowColoring, builder.inactiveSelection);
 			this.uiSettings = new UISettings<>(builder.leftPadding, builder.rightPadding, rowColors.foreground());
 			this.filterIndicator = builder.filterIndicator;
+			List<Customizer<R, C>> customizerList = new ArrayList<>();
 			if (filterIndicator) {
-				customizers.add(new FilterIndicator<>());
+				customizerList.add(new FilterIndicator<>());
 			}
-			this.customizers.addAll(builder.customizers);
+			customizerList.addAll(builder.customizers);
+			this.customizers = unmodifiableList(customizerList);
 			this.backgroundColor = builder.backgroundColor;
 			this.focusedCellIndicator = builder.focusedCellIndicator;
 			this.setBorder = builder.setBorder;

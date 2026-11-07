@@ -28,12 +28,12 @@ import javax.swing.plaf.ColorUIResource;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultFilterTableCellRendererTest {
 
@@ -117,6 +117,21 @@ public final class DefaultFilterTableCellRendererTest {
 		assertShaded(dark, background(table, 1), true);
 	}
 
+	@Test
+	void customizers() {
+		Customizer<String, Integer> red = (table, row, identifier, component) -> component.setBackground(Color.RED);
+		Customizer<String, Integer> blue = (table, row, identifier, component) -> component.setBackground(Color.BLUE);
+		FilterTable<String, Integer> table = createTable(renderer -> renderer.customizer(red).customizer(blue));
+		//run in the order added, each seeing what the ones before it did
+		assertEquals(Color.BLUE, background(table, 0));
+		List<?> customizers = ((FilterTableCellRenderer<?, ?, ?>) table.getCellRenderer(0, 0)).customizers();
+		//after the filter indicator, unmodifiable
+		assertEquals(3, customizers.size());
+		assertSame(red, customizers.get(1));
+		assertSame(blue, customizers.get(2));
+		assertThrows(UnsupportedOperationException.class, customizers::clear);
+	}
+
 	private static void assertShaded(Color color, Color shaded, boolean lighter) {
 		int[] components = {color.getRed(), color.getGreen(), color.getBlue()};
 		int[] shadedComponents = {shaded.getRed(), shaded.getGreen(), shaded.getBlue()};
@@ -126,6 +141,10 @@ public final class DefaultFilterTableCellRendererTest {
 	}
 
 	private static FilterTable<String, Integer> createTable() {
+		return createTable(renderer -> {});
+	}
+
+	private static FilterTable<String, Integer> createTable(Consumer<FilterTableCellRenderer.Builder<String, Integer, String>> renderer) {
 		SwingFilterTableModel<String, Integer> model = SwingFilterTableModel.<String, Integer>builder()
 						.columns(new TableColumns<String, Integer>() {
 							@Override
@@ -149,8 +168,8 @@ public final class DefaultFilterTableCellRendererTest {
 
 		return FilterTable.builder()
 						.model(model)
-						.cellRenderer(0, String.class, renderer -> renderer
-										.foreground((filterTable, row, identifier, value) -> Color.RED))
+						.cellRenderer(0, String.class, builder -> renderer.accept(builder
+										.foreground((filterTable, row, identifier, value) -> Color.RED)))
 						.build();
 	}
 
