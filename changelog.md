@@ -13,6 +13,7 @@ Codion Change Log
 - AbstractServerAdmin is now abstract, as its name says, its constructor protected as before.
 - AbstractServer bug fixed, an auxiliary server, the HTTP one for example, accepted requests before the authenticators were loaded and before the subclass was constructed, the constructor now publishing nothing, AbstractServer.start() added, exporting the server, starting the auxiliary servers, binding the server in the registry and starting the connection maintenance.
 - ServerConfiguration.Builder.auxiliaryServerFactory(Collection) renamed auxiliaryServerFactories(), now replacing the factories configured via the property or set before, as authenticatorExemptions() now does, where both added to them.
+- ServerConfiguration.Builder.auxiliaryServerFactory(String) and authenticatorExemption(String) added, adding to those configured via the properties or set before, which the plural setters replace.
 ### is.codion.common.i18n
 - Icelandic mnemonic for clear changed to E, no longer clashes with refresh.
 ### is.codion.common.model
@@ -65,6 +66,7 @@ Codion Change Log
 - EntityServer.createConnection() and the AbstractServerEntityConnection constructor, the socket factory parameters now @Nullable, as documented.
 - EntityServer no longer binds itself in the registry when constructed, start() publishes it, startServer() constructing and starting it.
 - EntityServerConfiguration.Builder.domainClasses() and connectionPoolUsers() now replace those configured via the property or set before, where they added to them.
+- EntityServerConfiguration.Builder.domainClass(), connectionPoolUser() and clientTypeIdleConnectionTimeout() added, adding to those configured via the properties or set before, clientTypeIdleConnectionTimeouts() now replacing them, as the other plural setters do, where it added to them.
 ### is.codion.framework.model
 - AbstractEntityApplicationModel(connection, user, entityModels) added, the application user, the one logged in, which may differ from the connection's user, EntityApplicationModel.user() returning it, where it was the connection's user.
 - EntityApplicationModel now AutoCloseable, close() added, closing the model along with its connection, overridden to release what an application model holds.

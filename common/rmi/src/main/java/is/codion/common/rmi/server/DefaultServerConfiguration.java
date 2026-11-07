@@ -258,6 +258,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		@Override
+		public DefaultBuilder auxiliaryServerFactory(String auxiliaryServerFactory) {
+			this.auxiliaryServerFactories.add(requireNonNull(auxiliaryServerFactory));
+			return this;
+		}
+
+		@Override
 		public DefaultBuilder authenticator(String authenticatorClass) {
 			this.authenticators.add(requireNonNull(authenticatorClass));
 			return this;
@@ -268,6 +274,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 			requireNonNull(clientTypes);
 			this.authenticatorExemptions.clear();
 			this.authenticatorExemptions.addAll(clientTypes);
+			return this;
+		}
+
+		@Override
+		public DefaultBuilder authenticatorExemption(String clientType) {
+			this.authenticatorExemptions.add(requireNonNull(clientType));
 			return this;
 		}
 

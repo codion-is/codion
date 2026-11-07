@@ -383,8 +383,18 @@ public interface ServerConfiguration {
 		 * @param auxiliaryServerFactories the class names of auxiliary server factories,
 		 * providing the servers to run alongside this server
 		 * @return this builder instance
+		 * @see #auxiliaryServerFactory(String)
 		 */
 		B auxiliaryServerFactories(Collection<String> auxiliaryServerFactories);
+
+		/**
+		 * Adds an auxiliary server factory, to those configured via {@link #AUXILIARY_SERVER_FACTORIES} or set before.
+		 * @param auxiliaryServerFactory the class name of an auxiliary server factory,
+		 * providing a server to run alongside this server
+		 * @return this builder instance
+		 * @see #auxiliaryServerFactories(Collection)
+		 */
+		B auxiliaryServerFactory(String auxiliaryServerFactory);
 
 		/**
 		 * Specifies an {@link Authenticator} class name, instantiated on server start, must have a parameterless constructor
@@ -399,8 +409,18 @@ public interface ServerConfiguration {
 		 * @param clientTypes client types exempt from authentication by an {@link Authenticator}
 		 * @return this builder instance
 		 * @see #AUTHENTICATOR_EXEMPTIONS
+		 * @see #authenticatorExemption(String)
 		 */
 		B authenticatorExemptions(Collection<String> clientTypes);
+
+		/**
+		 * Adds a client type exempt from authentication, to those configured via {@link #AUTHENTICATOR_EXEMPTIONS}
+		 * or set before.
+		 * @param clientType a client type exempt from authentication by an {@link Authenticator}
+		 * @return this builder instance
+		 * @see #authenticatorExemptions(Collection)
+		 */
+		B authenticatorExemption(String clientType);
 
 		/**
 		 * When set to true this also sets the rmi client/server socket factories.

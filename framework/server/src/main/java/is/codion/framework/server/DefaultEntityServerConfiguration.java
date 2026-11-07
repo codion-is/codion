@@ -264,6 +264,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
+		public Builder auxiliaryServerFactory(String auxiliaryServerFactory) {
+			serverConfigurationBuilder.auxiliaryServerFactory(auxiliaryServerFactory);
+			return this;
+		}
+
+		@Override
 		public Builder authenticator(String authenticatorClass) {
 			serverConfigurationBuilder.authenticator(authenticatorClass);
 			return this;
@@ -272,6 +278,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		@Override
 		public Builder authenticatorExemptions(Collection<String> clientTypes) {
 			serverConfigurationBuilder.authenticatorExemptions(clientTypes);
+			return this;
+		}
+
+		@Override
+		public Builder authenticatorExemption(String clientType) {
+			serverConfigurationBuilder.authenticatorExemption(clientType);
 			return this;
 		}
 
@@ -382,8 +394,28 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
+		public Builder connectionPoolUser(User connectionPoolUser) {
+			this.connectionPoolUsers.add(requireNonNull(connectionPoolUser));
+			return this;
+		}
+
+		@Override
+		public Builder domainClass(String domainClass) {
+			this.domainClasses.add(requireNonNull(domainClass));
+			return this;
+		}
+
+		@Override
 		public Builder clientTypeIdleConnectionTimeouts(Map<String, Integer> clientTypeIdleConnectionTimeouts) {
-			this.clientTypeIdleConnectionTimeouts.putAll(requireNonNull(clientTypeIdleConnectionTimeouts));
+			requireNonNull(clientTypeIdleConnectionTimeouts);
+			this.clientTypeIdleConnectionTimeouts.clear();
+			this.clientTypeIdleConnectionTimeouts.putAll(clientTypeIdleConnectionTimeouts);
+			return this;
+		}
+
+		@Override
+		public Builder clientTypeIdleConnectionTimeout(String clientType, int idleConnectionTimeout) {
+			this.clientTypeIdleConnectionTimeouts.put(requireNonNull(clientType), idleConnectionTimeout);
 			return this;
 		}
 

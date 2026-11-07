@@ -178,21 +178,52 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 		 * Sets the domain model classes, replacing those configured via {@link #DOMAIN_CLASSES} or set before.
 		 * @param domainClasses the domain model classes to load on startup
 		 * @return this builder instance
+		 * @see #domainClass(String)
 		 */
 		Builder domainClasses(Collection<String> domainClasses);
+
+		/**
+		 * Adds a domain model class, to those configured via {@link #DOMAIN_CLASSES} or set before.
+		 * @param domainClass a domain model class to load on startup
+		 * @return this builder instance
+		 * @see #domainClasses(Collection)
+		 */
+		Builder domainClass(String domainClass);
 
 		/**
 		 * Sets the connection pool users, replacing those configured via {@link #CONNECTION_POOL_USERS} or set before.
 		 * @param connectionPoolUsers the users for which to initialize connection pools on startup
 		 * @return this builder instance
+		 * @see #connectionPoolUser(User)
 		 */
 		Builder connectionPoolUsers(Collection<User> connectionPoolUsers);
 
 		/**
+		 * Adds a connection pool user, to those configured via {@link #CONNECTION_POOL_USERS} or set before.
+		 * @param connectionPoolUser a user for which to initialize a connection pool on startup
+		 * @return this builder instance
+		 * @see #connectionPoolUsers(Collection)
+		 */
+		Builder connectionPoolUser(User connectionPoolUser);
+
+		/**
+		 * Sets the client type specific idle connection timeouts, replacing those configured via
+		 * {@link #CLIENT_CONNECTION_TIMEOUT} or set before.
 		 * @param clientTypeIdleConnectionTimeouts client type specific idle connection timeouts, mapped to clientType
 		 * @return this builder instance
+		 * @see #clientTypeIdleConnectionTimeout(String, int)
 		 */
 		Builder clientTypeIdleConnectionTimeouts(Map<String, Integer> clientTypeIdleConnectionTimeouts);
+
+		/**
+		 * Sets the idle connection timeout for the given client type, replacing any configured for it via
+		 * {@link #CLIENT_CONNECTION_TIMEOUT} or set before, leaving the other client types as they are.
+		 * @param clientType the client type
+		 * @param idleConnectionTimeout the idle connection timeout for the client type
+		 * @return this builder instance
+		 * @see #clientTypeIdleConnectionTimeouts(Map)
+		 */
+		Builder clientTypeIdleConnectionTimeout(String clientType, int idleConnectionTimeout);
 
 		/**
 		 * @return a new EntityServerConfiguration instance based on this builder
