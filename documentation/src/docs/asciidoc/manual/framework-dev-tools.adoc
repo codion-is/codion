@@ -34,7 +34,7 @@ EntityEditPanel.Config.INCLUDE_INSPECTOR.set(true);
 == Dependencies viewer
 
 Displays the entities *depending on* the selected rows — the incoming foreign key references — as a tabbed pane of table panels, one per dependent entity type, navigable with CTRL-ALT-LEFT/RIGHT.
-Available from the table popup menu, and shown automatically when a delete fails on a referential integrity constraint, if {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/ReferentialIntegrityErrorHandling.html[ReferentialIntegrityErrorHandling] is set to *DISPLAY_DEPENDENCIES*.
+Available from the table popup menu, and shown automatically when a delete fails on a referential integrity constraint, if {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/ReferentialIntegrityErrorHandling.html[ReferentialIntegrityErrorHandling] is set to *DEPENDENCIES*.
 
 == SQL tracing
 

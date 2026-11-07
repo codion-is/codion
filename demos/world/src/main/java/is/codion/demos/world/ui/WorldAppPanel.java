@@ -84,7 +84,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		ValidationIndicator.IMPLEMENTATION.set(FlatValidationIndicator.class.getName());
 		ReferentialIntegrityErrorHandling.HANDLING
-						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
+						.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
 		FlatLookAndFeelThemes.addAll();
 		FlatLookAndFeelIntelliJThemes.addAll();
 		EntityApplication.builder(WorldAppModel.class, WorldAppPanel.class)

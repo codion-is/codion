@@ -277,7 +277,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		ValidationIndicator.IMPLEMENTATION.set(FlatValidationIndicator.class.getName());
 		CalendarPanel.WEEK_NUMBERS.set(true);
 		ReferentialIntegrityErrorHandling.HANDLING
-						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
+						.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
 		// Include all the standard flat look and feels
 		FlatLookAndFeelThemes.addAll();
 		// and all the intellij theme based flat look and feels

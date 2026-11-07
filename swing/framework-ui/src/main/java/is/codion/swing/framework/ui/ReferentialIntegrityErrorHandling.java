@@ -29,20 +29,20 @@ public enum ReferentialIntegrityErrorHandling {
 	/**
 	 * Display the error.
 	 */
-	DISPLAY_ERROR,
+	ERROR,
 	/**
 	 * Display the dependencies causing the error.
 	 */
-	DISPLAY_DEPENDENCIES;
+	DEPENDENCIES;
 
 	/**
 	 * Specifies whether to display the error message or the dependent entities in case of a referential integrity error on delete
 	 * <ul>
 	 * <li>Value type: {@link ReferentialIntegrityErrorHandling}
-	 * <li>Default value: {@link ReferentialIntegrityErrorHandling#DISPLAY_ERROR}
+	 * <li>Default value: {@link ReferentialIntegrityErrorHandling#ERROR}
 	 * </ul>
 	 */
 	public static final PropertyValue<ReferentialIntegrityErrorHandling> HANDLING =
 					enumValue(ReferentialIntegrityErrorHandling.class.getName() + ".handling",
-									ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.DISPLAY_ERROR);
+									ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.ERROR);
 }

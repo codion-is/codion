@@ -572,14 +572,14 @@ public abstract class EntityEditPanel extends JPanel {
 
 	/**
 	 * Called when a {@link ReferentialIntegrityException} occurs. If a {@link Operation#DELETE} operation is being
-	 * performed and the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
+	 * performed and the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES},
 	 * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Exception)} is called.
 	 * @param exception the exception
 	 * @see Config#referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
 	 */
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
-		if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
+		if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
 			EntityDependenciesPanel.displayDependencies(singletonList(editor().entity().get()), model.connection(),
 							this, dependenciesDialogSize, dependencyPanelPreferences, true);
 		}
