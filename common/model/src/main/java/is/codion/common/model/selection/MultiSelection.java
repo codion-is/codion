@@ -23,6 +23,8 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -250,9 +252,10 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		List<R> get();
 
 		/**
-		 * @param items the items to select
+		 * Selects the given items, as setting them as a list does, null clearing the selection.
+		 * @param items the items to select, null for none
 		 */
-		void set(Collection<R> items);
+		void set(@Nullable Collection<R> items);
 
 		/**
 		 * Sets the items passing the predicate test as the selection

@@ -313,8 +313,9 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 
 		@Override
-		public void set(Collection<NodePath<T>> paths) {
-			setValue(new ArrayList<>(requireNonNull(paths)));
+		public void set(@Nullable Collection<NodePath<T>> paths) {
+			//as set(List), the lock and the validators applying
+			super.set(paths == null ? null : new ArrayList<>(paths));
 		}
 
 		@Override
@@ -431,8 +432,9 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 
 		@Override
-		public void set(Collection<T> items) {
-			setValue(new ArrayList<>(requireNonNull(items)));
+		public void set(@Nullable Collection<T> items) {
+			//as set(List), the lock and the validators applying
+			super.set(items == null ? null : new ArrayList<>(items));
 		}
 
 		@Override

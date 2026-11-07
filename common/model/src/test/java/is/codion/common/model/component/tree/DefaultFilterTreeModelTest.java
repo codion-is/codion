@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,8 +45,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.model.component.tree.NodePath.nodePath;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -436,6 +436,38 @@ final class DefaultFilterTreeModelTest {
 		model.nodes().refresh();
 		assertSame(shared.get(), selection.item().get());
 		assertEquals(asList(2, 2, 4, 4), asList(item.size(), items.size(), path.size(), paths.size()));
+	}
+
+	@Test
+	void selectionSetCollection() {
+		FilterTreeModel<Item> model = model();
+		model.nodes().refresh();
+		TreeSelection<Item> selection = model.selection();
+		//as set(List), validated and locked
+		List<List<NodePath<Item>>> validatedPaths = new ArrayList<>();
+		selection.paths().addValidator(validatedPaths::add);
+		selection.paths().set(new LinkedHashSet<>(paths("a", "b")));
+		assertEquals(paths("a", "b"), selection.paths().get());
+		//the current value validated when the validator is added
+		assertEquals(asList(emptyList(), paths("a", "b")), validatedPaths);
+		selection.paths().locked().set(true);
+		assertThrows(IllegalStateException.class, () -> selection.paths().set(singleton(path("c"))));
+		selection.paths().locked().set(false);
+		List<List<Item>> validatedItems = new ArrayList<>();
+		selection.items().addValidator(validatedItems::add);
+		selection.items().set(new LinkedHashSet<>(items("b", "c")));
+		assertEquals(items("b", "c"), selection.items().get());
+		assertEquals(asList(items("a", "b"), items("b", "c")), validatedItems);
+		selection.items().locked().set(true);
+		assertThrows(IllegalStateException.class, () -> selection.items().set(singleton(path("a").item())));
+		assertEquals(items("b", "c"), selection.items().get());
+		selection.items().locked().set(false);
+		//null clearing the selection
+		selection.items().set((Collection<Item>) null);
+		assertFalse(selection.present().is());
+		selection.paths().set(new LinkedHashSet<>(paths("a")));
+		selection.paths().set((Collection<NodePath<Item>>) null);
+		assertFalse(selection.present().is());
 	}
 
 	@Test

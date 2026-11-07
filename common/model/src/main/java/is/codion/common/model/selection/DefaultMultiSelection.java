@@ -426,8 +426,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
-		public void set(Collection<R> itemsToSelect) {
-			setValue(new ArrayList<>(requireNonNull(itemsToSelect)));
+		public void set(@Nullable Collection<R> itemsToSelect) {
+			//as set(List), the lock and the validators applying
+			super.set(itemsToSelect == null ? null : new ArrayList<>(itemsToSelect));
 		}
 
 		@Override

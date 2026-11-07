@@ -25,6 +25,8 @@ import is.codion.common.reactive.value.Value;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -103,6 +105,26 @@ public final class DefaultMultiSelectionTest {
 		selection.singleSelection().set(true);
 		selection.items().restore(asList("a", "b"));
 		assertEquals(singletonList("b"), selection.items().get());
+	}
+
+	@Test
+	void setCollection() {
+		TestItems items = new TestItems(asList("a", "b", "c"));
+		MultiSelection<String> selection = new DefaultMultiSelection<>(items);
+		//as set(List), validated and locked
+		List<List<String>> validated = new ArrayList<>();
+		selection.items().addValidator(validated::add);
+		selection.items().set(new LinkedHashSet<>(asList("b", "c")));
+		assertEquals(asList("b", "c"), selection.items().get());
+		//the current value validated when the validator is added
+		assertEquals(asList(emptyList(), asList("b", "c")), validated);
+		selection.items().locked().set(true);
+		assertThrows(IllegalStateException.class, () -> selection.items().set(singleton("a")));
+		assertEquals(asList("b", "c"), selection.items().get());
+		selection.items().locked().set(false);
+		//null clearing the selection
+		selection.items().set((Collection<String>) null);
+		assertFalse(selection.present().is());
 	}
 
 	@Test
