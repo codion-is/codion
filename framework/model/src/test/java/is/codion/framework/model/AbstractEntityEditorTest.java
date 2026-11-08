@@ -208,6 +208,25 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void modifiedAttributesExcludeForeignKeyColumns() {
+		Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
+		Entity research = CONNECTION.selectSingle(Department.ID.equalTo(20));
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		// the department column with a value of its own, bound to a component for example
+		editor.value(Employee.DEPARTMENT);
+		editor.entity().set(king);
+		editor.value(Employee.DEPARTMENT_FK).set(research);
+		// the column reported via its foreign key
+		assertEquals(singleton(Employee.DEPARTMENT_FK), editor.entity().modified().attributes().get());
+
+		// the column alone, its foreign key without a value
+		TestEntityEditor columnEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		columnEditor.entity().set(king);
+		columnEditor.value(Employee.DEPARTMENT).set(20);
+		assertEquals(singleton(Employee.DEPARTMENT), columnEditor.entity().modified().attributes().get());
+	}
+
+	@Test
 	void setIgnoresComponentEdits() {
 		// the continent notified first, the country second, and the other way around
 		setIgnoresComponentEdits(Specimen.TYPE, Specimen.ID, Specimen.CONTINENT_FK, Specimen.COUNTRY_FK);

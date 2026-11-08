@@ -2543,11 +2543,17 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private Set<Attribute<?>> modifiedAttributes() {
-			//editorValues, not the entity definition, only attributes with an EditorValue are reportable,
-			//the instance also reports the columns underlying a modified foreign key, which no component displays
+			//editorValues, not the entity definition, only attributes with an EditorValue are reportable
 			Set<Attribute<?>> modifiedAttributes = new HashSet<>(editorValues.keySet().stream()
 							.filter(entity.instance::modified)
 							.collect(toSet()));
+			//the instance also reports the columns underlying a modified foreign key, the foreign key standing for them
+			modifiedAttributes.stream()
+							.filter(ForeignKey.class::isInstance)
+							.flatMap(foreignKey -> ((ForeignKey) foreignKey).references().stream())
+							.map(reference -> reference.column())
+							.collect(toList())
+							.forEach(modifiedAttributes::remove);
 			detail.editors.values().stream()
 							.map(editor -> editor.editor.entity().modified().attributes().get())
 							.forEach(modifiedAttributes::addAll);

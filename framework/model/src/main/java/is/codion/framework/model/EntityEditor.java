@@ -945,8 +945,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * Indicates which editor attributes are modified.
 		 * <p>Only attributes with an associated {@link EditorValue} are reported, that is, attributes which have
-		 * been accessed via {@link #value(Attribute)}, typically by binding them to a component. The columns
-		 * underlying a modified foreign key are therefore absent, as is any attribute the editor never touched.
+		 * been accessed via {@link #value(Attribute)}, typically by binding them to a component, so any attribute
+		 * the editor never touched is absent. A column underlying a foreign key reported as modified is absent as well,
+		 * the foreign key standing for it, even when the column has an {@link EditorValue} of its own.
 		 * <p>Note that modified attributes are included, regardless of whether the entity exists, and that this
 		 * set may be empty while {@link #is()} is true, since the modified state also reflects
 		 * {@link #additional()} states.
