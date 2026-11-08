@@ -752,7 +752,22 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void revert() {
 			detail.editors.values().forEach(detail -> detail.editor.entity().revert());
-			entityDefinition.attributes().get().forEach(attribute -> editorValue(attribute).restore());
+			//the foreign keys first, each restoring its columns along with the entity it references, a column
+			//restored first leaving its foreign key without it, then the attributes still modified
+			restore(entityDefinition.foreignKeys().get());
+			restore(entityDefinition.attributes().get());
+		}
+
+		/**
+		 * Restores the given attributes which are modified, giving a value only to those.
+		 * @param attributes the attributes to restore
+		 */
+		private void restore(Collection<? extends Attribute<?>> attributes) {
+			for (Attribute<?> attribute : attributes) {
+				if (instance.modified(attribute)) {
+					editorValue(attribute).restore();
+				}
+			}
 		}
 
 		/**

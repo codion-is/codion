@@ -227,6 +227,27 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void revertRestoresForeignKeys() {
+		Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
+		Entity research = CONNECTION.selectSingle(Department.ID.equalTo(20));
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.entity().set(king);
+		editor.value(Employee.DEPARTMENT_FK).set(research);
+		editor.entity().revert();
+		// the department restored, the column defined before its foreign key restored along with it
+		Entity department = editor.value(Employee.DEPARTMENT_FK).get();
+		assertNotNull(department);
+		assertEquals(king.entity(Employee.DEPARTMENT_FK), department);
+		assertEquals(king.entity(Employee.DEPARTMENT_FK).get(Department.NAME), department.get(Department.NAME));
+		assertEquals(king.get(Employee.DEPARTMENT), editor.value(Employee.DEPARTMENT).get());
+		assertFalse(editor.entity().modified().is());
+		// so editing it again modifies it
+		editor.value(Employee.DEPARTMENT_FK).set(research);
+		assertTrue(editor.value(Employee.DEPARTMENT_FK).modified().is());
+		assertEquals(singleton(Employee.DEPARTMENT_FK), editor.entity().modified().attributes().get());
+	}
+
+	@Test
 	void setIgnoresComponentEdits() {
 		// the continent notified first, the country second, and the other way around
 		setIgnoresComponentEdits(Specimen.TYPE, Specimen.ID, Specimen.CONTINENT_FK, Specimen.COUNTRY_FK);
