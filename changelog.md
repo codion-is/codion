@@ -96,6 +96,7 @@ Codion Change Log
 - EntityEditor.EditorEntity, its consumers now receive the entity the editor holds after defaults() and clear(), as get() returns it, where they received null, so changed() now reports the actual change, Entity.exists() telling a new entity from an existing one.
 - EntityEditor.EditorEntity.changing() now returns Sensor, notified without data, as MultiSelection.changing() is.
 - AbstractEntityTableModel, the selection is now cleared when the editor holds an entity which doesn't exist, a new one set included, and a cleared selection resets only an editor holding an existing entity, so defaults() no longer resets the editor twice.
+- AbstractEntityEditor bug fixed, an edit made while the values of an entity being set are notified is now ignored, setting an entity never modifying it, where a combo box filtered by an earlier value, clearing a selection left over from the previous entity, modified the entity, the cleared value then saved along with any other edit, a consumer of one value setting another now reacting to edits via EditorValue.edited(), the values now notified in the order of the attributes, where the order followed the attribute hash codes.
 ### is.codion.swing.common.model
 - FilterListSelection and FilterTreeSelection bug fixed, a selection mode change now notifies changing() before changing the selection, as the common selection does, where the selection was cleared without it, and keeps what the new mode allows, see MultiSelection.singleSelection().
 ### is.codion.swing.common.ui

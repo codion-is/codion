@@ -529,6 +529,13 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * set via {@link #set(Entity)}, or the defaulted or cleared one after {@link #defaults()} or {@link #clear()},
 	 * never null. Whether it is an existing entity or a new one is told by {@link Entity#exists()}, or by this editor's
 	 * {@link #exists()} where its predicate has been replaced, up to date when the consumers are notified.
+	 * <p>When the entity changes as a whole, via {@link #set(Entity)}, {@link #replace(Entity)}, {@link #defaults()}
+	 * or {@link #clear()}, the editor holds every new value before any is notified, the values which changed being
+	 * notified one at a time, in the order of the attributes. An edit made while they are notified is ignored, so
+	 * setting an entity never modifies it, whether the edit comes from a component still showing a value from the
+	 * previous entity, a combo box filtered by an earlier value clearing its selection for example, or from a consumer
+	 * of one value setting another. Such a consumer reacts to edits via {@link EditorValue#edited()}, and to the
+	 * entity having been set via this editor entity's consumers, notified once every value has been.
 	 * @see #defaults()
 	 */
 	interface EditorEntity extends Observable<Entity> {
@@ -981,6 +988,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		Attribute<T> attribute();
 
 		/**
+		 * Sets this value, an edit. Ignored while the values of an entity being set are notified, setting an entity
+		 * never modifying it, see {@link EditorEntity}.
 		 * @throws IllegalStateException in case the value is not editable
 		 * @param value the value
 		 * @see #editable()

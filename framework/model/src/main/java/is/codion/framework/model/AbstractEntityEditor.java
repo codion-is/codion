@@ -639,6 +639,11 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final DefaultPresent present = new DefaultPresent();
 		private final Entity instance = createEntity(DefaultEditorEntity::nullValue);
 
+		/**
+		 * True while the values of the entity being set are notified, see {@link #setEntity(Entity)}
+		 */
+		private boolean notifying = false;
+
 		private DefaultEditorEntity() {
 			this.exists = new DefaultExists(entityDefinition);
 			this.modified = new DefaultModified();
@@ -750,11 +755,25 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			entityDefinition.attributes().get().forEach(attribute -> editorValue(attribute).restore());
 		}
 
+		/**
+		 * Sets the entity, every value at once, notifying the values which changed one at a time, in the order of
+		 * the attributes. An edit made while they are notified is ignored, so setting an entity never modifies it.
+		 * Until a value has been notified, whatever reflects it still shows the value it replaces, a combo box
+		 * filtered by an earlier value clearing a selection left over from the previous entity for example.
+		 * @param entity the entity to set
+		 */
 		private void setEntity(Entity entity) {
 			Map<Attribute<?>, Object> affectedAttributes = instance.set(entity);
 			Map<Attribute<?>, String> invalidAttributes = updateStates();
-			for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
-				notifyValueChange(affectedAttribute, invalidAttributes);
+			boolean wasNotifying = notifying;
+			notifying = true;
+			try {
+				entityDefinition.attributes().get().stream()
+								.filter(affectedAttributes::containsKey)
+								.forEach(attribute -> notifyValueChange(attribute, invalidAttributes));
+			}
+			finally {
+				notifying = wasNotifying;
 			}
 			attributeModified.forEach((attribute, modifiedState) -> modifiedState.set(instance.modified(attribute)));
 		}
@@ -2734,6 +2753,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		protected void setValue(@Nullable T value) {
+			if (entity.notifying) {
+				//setting an entity never modifies it, see DefaultEditorEntity.setEntity()
+				return;
+			}
 			if (!deriving && !editable().is()) {
 				throw new IllegalStateException("Attribute is not editable");
 			}

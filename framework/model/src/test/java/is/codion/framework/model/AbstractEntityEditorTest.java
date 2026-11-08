@@ -27,10 +27,13 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.AbstractEntityEditor.DefaultDetailEditors;
 import is.codion.framework.model.AbstractEntityEditor.DetailForeignKeyValidator;
@@ -39,6 +42,10 @@ import is.codion.framework.model.DetailDomain.DepartmentExtra;
 import is.codion.framework.model.DetailDomain.Employee;
 import is.codion.framework.model.DetailPersistenceFactory.DepartmentPersistence;
 import is.codion.framework.model.EntityEditor.EditorValue;
+import is.codion.framework.model.LocationDomain.Continent;
+import is.codion.framework.model.LocationDomain.Country;
+import is.codion.framework.model.LocationDomain.Sighting;
+import is.codion.framework.model.LocationDomain.Specimen;
 
 import org.junit.jupiter.api.Test;
 
@@ -66,6 +73,11 @@ public final class AbstractEntityEditorTest {
 
 	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new DetailDomain())
+					.user(UNIT_TEST_USER)
+					.build();
+
+	private static final EntityConnection LOCATION_CONNECTION = LocalEntityConnection.builder()
+					.domain(new LocationDomain())
 					.user(UNIT_TEST_USER)
 					.build();
 
@@ -193,6 +205,145 @@ public final class AbstractEntityEditorTest {
 		assertNotNull(changes.get(2).previous());
 		assertFalse(changes.get(2).previous().primaryKey().present());
 		assertEquals(king, changes.get(2).current());
+	}
+
+	@Test
+	void setIgnoresComponentEdits() {
+		// the continent notified first, the country second, and the other way around
+		setIgnoresComponentEdits(Specimen.TYPE, Specimen.ID, Specimen.CONTINENT_FK, Specimen.COUNTRY_FK);
+		setIgnoresComponentEdits(Sighting.TYPE, Sighting.ID, Sighting.CONTINENT_FK, Sighting.COUNTRY_FK);
+	}
+
+	@Test
+	void setIgnoresConsumerEdits() {
+		// the country notified after the continent, and before it
+		setIgnoresConsumerEdits(Specimen.TYPE, Specimen.ID, Specimen.CONTINENT_FK, Specimen.COUNTRY_FK);
+		setIgnoresConsumerEdits(Sighting.TYPE, Sighting.ID, Sighting.CONTINENT_FK, Sighting.COUNTRY_FK);
+	}
+
+	@Test
+	void setNotifiesInAttributeOrder() {
+		TestEntityEditor editor = new TestEntityEditor(Sighting.TYPE, LOCATION_CONNECTION);
+		List<Attribute<?>> notified = new ArrayList<>();
+		editor.values().changed().addConsumer(notified::add);
+		Entities entities = LOCATION_CONNECTION.entities();
+		Entity europe = entities.entity(Continent.TYPE)
+						.with(Continent.CODE, "EU")
+						.build();
+		editor.entity().set(entities.entity(Sighting.TYPE)
+						.with(Sighting.ID, 1)
+						.with(Sighting.CONTINENT_FK, europe)
+						.with(Sighting.COUNTRY_FK, entities.entity(Country.TYPE)
+										.with(Country.CODE, "IS")
+										.with(Country.CONTINENT_FK, europe)
+										.build())
+						.build());
+		assertEquals(asList(Sighting.ID, Sighting.COUNTRY_CODE, Sighting.COUNTRY_FK,
+						Sighting.CONTINENT_CODE, Sighting.CONTINENT_FK), notified);
+	}
+
+	/**
+	 * A country combo box filtered by the continent combo box, clearing a selected country excluded by the filter,
+	 * each bound to the editor as an edit panel binds them, via their selection.
+	 */
+	private static void setIgnoresComponentEdits(EntityType entityType, Column<Integer> id,
+																							 ForeignKey continentFk, ForeignKey countryFk) {
+		Entities entities = LOCATION_CONNECTION.entities();
+		Entity southAmerica = entities.entity(Continent.TYPE)
+						.with(Continent.CODE, "SA")
+						.build();
+		Entity oceania = entities.entity(Continent.TYPE)
+						.with(Continent.CODE, "OC")
+						.build();
+		Entity brazil = entities.entity(Country.TYPE)
+						.with(Country.CODE, "BR")
+						.with(Country.CONTINENT_FK, southAmerica)
+						.build();
+		Entity australia = entities.entity(Country.TYPE)
+						.with(Country.CODE, "AU")
+						.with(Country.CONTINENT_FK, oceania)
+						.build();
+
+		EntityComboBoxModel continents = EntityComboBoxModel.builder()
+						.entityType(Continent.TYPE)
+						.connection(LOCATION_CONNECTION)
+						.refresh(false)
+						.build();
+		continents.items().set(asList(southAmerica, oceania));
+		EntityComboBoxModel countries = EntityComboBoxModel.builder()
+						.entityType(Country.TYPE)
+						.connection(LOCATION_CONNECTION)
+						.refresh(false)
+						.filterSelected(true)
+						.build();
+		countries.items().set(asList(brazil, australia));
+		countries.filter().get(Country.CONTINENT_FK).link(continents);
+
+		TestEntityEditor editor = new TestEntityEditor(entityType, LOCATION_CONNECTION);
+		continents.selection().item().link(editor.value(continentFk));
+		countries.selection().item().link(editor.value(countryFk));
+		List<Entity> edited = new ArrayList<>();
+		editor.value(countryFk).edited().addConsumer(edited::add);
+
+		Entity inBrazil = entities.entity(entityType)
+						.with(id, 1)
+						.with(continentFk, southAmerica)
+						.with(countryFk, brazil)
+						.build();
+		Entity inAustralia = entities.entity(entityType)
+						.with(id, 2)
+						.with(continentFk, oceania)
+						.with(countryFk, australia)
+						.build();
+		for (Entity entity : asList(inBrazil, inAustralia, inBrazil)) {
+			editor.entity().set(entity);
+			// the country left over from the previous entity, cleared by the filter, does not replace the one set
+			assertFalse(editor.entity().modified().is());
+			assertEquals(entity.get(countryFk), editor.value(countryFk).get());
+			assertEquals(entity.get(countryFk), countries.selection().item().get());
+			assertEquals(entity.get(continentFk), continents.selection().item().get());
+		}
+		assertTrue(edited.isEmpty());
+	}
+
+	/**
+	 * A consumer of the continent clearing the country, the country changed by the entity set and unchanged.
+	 */
+	private static void setIgnoresConsumerEdits(EntityType entityType, Column<Integer> id,
+																							ForeignKey continentFk, ForeignKey countryFk) {
+		Entities entities = LOCATION_CONNECTION.entities();
+		Entity europe = entities.entity(Continent.TYPE)
+						.with(Continent.CODE, "EU")
+						.build();
+		Entity asia = entities.entity(Continent.TYPE)
+						.with(Continent.CODE, "AS")
+						.build();
+		Entity iceland = entities.entity(Country.TYPE)
+						.with(Country.CODE, "IS")
+						.with(Country.CONTINENT_FK, europe)
+						.build();
+
+		TestEntityEditor editor = new TestEntityEditor(entityType, LOCATION_CONNECTION);
+		editor.value(continentFk).addConsumer(continent -> editor.value(countryFk).clear());
+
+		editor.entity().set(entities.entity(entityType)
+						.with(id, 1)
+						.with(continentFk, europe)
+						.with(countryFk, iceland)
+						.build());
+		assertFalse(editor.entity().modified().is());
+		assertEquals(iceland, editor.value(countryFk).get());
+		editor.entity().set(entities.entity(entityType)
+						.with(id, 2)
+						.with(continentFk, asia)
+						.with(countryFk, iceland)
+						.build());
+		assertFalse(editor.entity().modified().is());
+		assertEquals(iceland, editor.value(countryFk).get());
+		// an edit still notifies the consumer, which then edits the country
+		editor.value(continentFk).set(europe);
+		assertTrue(editor.value(countryFk).isNull());
+		assertTrue(editor.entity().modified().is());
 	}
 
 	@Test
