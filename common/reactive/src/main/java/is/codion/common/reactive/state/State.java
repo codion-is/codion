@@ -198,6 +198,17 @@ public interface State extends ObservableState {
 	/**
 	 * @param <T> the value type
 	 * @param observable the observable
+	 * @param value the value
+	 * @return an {@link ObservableState} active when the given observable's value
+	 * is not equal to the given one, determined by {@link Observable#isNot(Object)}.
+	 */
+	static <T> ObservableState isNot(Observable<T> observable, @Nullable T value) {
+		return new ObservableMatches<>(requireNonNull(observable), observed -> observable.isNot(value)).observable();
+	}
+
+	/**
+	 * @param <T> the value type
+	 * @param observable the observable
 	 * @param predicate the predicate, tested when the state is created and each time the value changes, null included
 	 * @return an {@link ObservableState} active when the given observable's value satisfies the given predicate
 	 */

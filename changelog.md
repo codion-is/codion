@@ -11,6 +11,7 @@ Codion Change Log
 - Event.observer() replaced by Event.sensor(), Signal.observer() providing the observer of a signal.
 - sensor and signal packages added, holding Sensor and Signal.
 - Observable and Change moved to the observable package.
+- State.isNot(observable, value) added.
 ### is.codion.common.rmi
 - AbstractServer, a connection requested while the server is shutting down is now refused with ConnectionNotAvailableException, where a LoginException was thrown, which the json channel reported as an internal error, logged as an error.
 - Server.Locator.Builder.locate() now finds a server without connections available, after those with, its connect() then refusing with ConnectionNotAvailableException, where it was left out, a client finding only such a server told that none was available.
