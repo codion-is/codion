@@ -20,7 +20,7 @@ dependencies {
 
     implementation(project(":codion-plugin-flatlaf-themes"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
-    implementation("com.formdev:flatlaf-extras:3.7.2")
+    implementation("com.formdev:flatlaf-extras:3.8")
 
     implementation(project(":codion-tools-swing-mcp"))
 
