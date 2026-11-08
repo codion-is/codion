@@ -2566,7 +2566,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			modifiedAttributes.stream()
 							.filter(ForeignKey.class::isInstance)
 							.flatMap(foreignKey -> ((ForeignKey) foreignKey).references().stream())
-							.map(reference -> reference.column())
+							.map(ForeignKey.Reference::column)
 							.collect(toList())
 							.forEach(modifiedAttributes::remove);
 			detail.editors.values().stream()

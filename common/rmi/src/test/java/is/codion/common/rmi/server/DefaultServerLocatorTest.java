@@ -157,7 +157,7 @@ public class DefaultServerLocatorTest {
 	 */
 	private static class TestServer extends AbstractServer<Remote, ServerAdmin> {
 
-		private TestServer(ServerConfiguration configuration) throws RemoteException {
+		private TestServer(ServerConfiguration configuration) {
 			super(configuration);
 		}
 
@@ -167,7 +167,7 @@ public class DefaultServerLocatorTest {
 		}
 
 		@Override
-		public ServerAdmin admin(User user) throws RemoteException {
+		public ServerAdmin admin(User user) {
 			return null;
 		}
 
@@ -177,7 +177,7 @@ public class DefaultServerLocatorTest {
 		}
 
 		@Override
-		protected void maintainConnections(Collection<SessionConnection<Remote>> connections) throws RemoteException {
+		protected void maintainConnections(Collection<SessionConnection<Remote>> connections) {
 			// No-op for test
 		}
 	}

@@ -89,11 +89,10 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 	/**
 	 * Constructs a new EntityServer, publishing nothing until {@link #start() started}.
 	 * @param configuration the server configuration
-	 * @throws RemoteException in case of a remote exception
 	 * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
 	 * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
 	 */
-	public EntityServer(EntityServerConfiguration configuration) throws RemoteException {
+	public EntityServer(EntityServerConfiguration configuration) {
 		super(configuration);
 		addShutdownListener(new ShutdownListener());
 		this.configuration = configuration;

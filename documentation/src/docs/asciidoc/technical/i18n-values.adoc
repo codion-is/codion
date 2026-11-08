@@ -1074,6 +1074,7 @@ is/codion/swing/framework/ui/component/EntitySearchField_is_IS.properties
 |result_limited|Result limited to {0, choice, 1#record\|1<{0, number, integer} records}|Niðurstöður takmarkaðar við {0, choice, 1#færslu\|1<{0, number, integer} færslur}
 |search_columns|Search columns|Leitardálkar
 |searching|Searching|Leita
+|select_entities|Select records|Veldu færslur
 |select_entity|Select record|Veldu færslu
 |space_as_wildcard|Space as wildcard|Stafabil sem algildi
 |===
