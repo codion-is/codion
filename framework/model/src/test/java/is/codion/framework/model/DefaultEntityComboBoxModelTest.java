@@ -22,6 +22,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -404,6 +405,34 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(4, employeeComboBoxModel.items().included().size());
 		employeeComboBoxModel.selection().item().set(employeeComboBoxModel.items().included().get().get(1));
 		employeeComboBoxModel.selection().item().set(null);
+	}
+
+	@Test
+	void linkSearchModelKeepsReferencedEntity() {
+		// the department not loaded, as with the foreign key value an editor sets, the entity it references by key only
+		Entity scott = CONNECTION.selectSingle(Select.where(Employee.NAME.equalTo("SCOTT"))
+						.referenceDepth(0)
+						.build());
+		assertNull(scott.get(Employee.DEPARTMENT_FK));
+		Entity research = CONNECTION.selectSingle(Department.ID.equalTo(20));
+		EntitySearchModel departments = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		EntityComboBoxModel employees = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connection(CONNECTION)
+						.build();
+		employees.filter().get(Employee.DEPARTMENT_FK).link(departments);
+		departments.selection().entity().set(research);
+		employees.selection().item().set(scott);
+		// the department held not replaced by one holding only its key
+		assertSame(research, departments.selection().entity().get());
+		// not held, the department referenced is selected as such
+		departments.selection().clear();
+		employees.selection().item().clear();
+		employees.selection().item().set(scott);
+		assertEquals(research.primaryKey(), departments.selection().entity().getOrThrow().primaryKey());
 	}
 
 	@Test

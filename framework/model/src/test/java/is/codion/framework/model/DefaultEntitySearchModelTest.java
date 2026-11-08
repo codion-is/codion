@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -243,6 +244,32 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals(2, searchModel.search().perform().size());
 		searchModel.search().string().set("%");
 		assertEquals(all, searchModel.search().perform().size());
+	}
+
+	@Test
+	void foreignKeyFilterLinkKeepsReferencedEntity() {
+		// the department not loaded, as with the foreign key value an editor sets, the entity it references by key only
+		Entity scott = CONNECTION.selectSingle(Select.where(Employee.NAME.equalTo("SCOTT"))
+						.referenceDepth(0)
+						.build());
+		assertNull(scott.get(Employee.DEPARTMENT_FK));
+		Entity research = CONNECTION.selectSingle(Department.ID.equalTo(20));
+		EntitySearchModel departments = new DefaultBuilder(Department.TYPE, CONNECTION)
+						.search(Department.NAME)
+						.build();
+		EntitySearchModel employees = new DefaultBuilder(Employee.TYPE, CONNECTION)
+						.search(searchable)
+						.filter(Employee.DEPARTMENT_FK, departments)
+						.build();
+		departments.selection().entity().set(research);
+		employees.selection().entity().set(scott);
+		// the department held not replaced by one holding only its key
+		assertSame(research, departments.selection().entity().get());
+		// not held, the department referenced is selected as such
+		departments.selection().clear();
+		employees.selection().clear();
+		employees.selection().entity().set(scott);
+		assertEquals(research.primaryKey(), departments.selection().entity().getOrThrow().primaryKey());
 	}
 
 	@Test

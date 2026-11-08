@@ -54,6 +54,7 @@ import java.util.function.Supplier;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
 import static is.codion.framework.model.DefaultEntityComboBoxModel.selectAttributes;
+import static is.codion.framework.model.DefaultEntityComboBoxModel.selectReferenced;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
@@ -374,9 +375,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		private void select(EntitySearchModel filterModel, @Nullable Entity selected) {
-			if (selected != null && selected.present(foreignKey)) {
-				filterModel.selection().entity().set(selected.entity(foreignKey));
-			}
+			selectReferenced(filterModel, foreignKey, selected);
 		}
 	}
 

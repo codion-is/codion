@@ -78,7 +78,9 @@ public interface ForeignKeyFilter {
 	/**
 	 * Links the given search model, representing the referenced entities, to this filter,
 	 * so that the selection in the given model filters this model, an entity selected in this
-	 * model selecting the entity it references in the given model.
+	 * model selecting the entity it references in the given model, unless it already holds it.
+	 * <p>Note that the entity referenced holds only its key when it wasn't loaded along with the entity
+	 * selected, see {@link Entity#entity(ForeignKey)}, the given model then selecting it as such.
 	 * @param filterModel the search model filtering this model
 	 * @throws IllegalArgumentException in case the given model is not of the referenced entity type
 	 */

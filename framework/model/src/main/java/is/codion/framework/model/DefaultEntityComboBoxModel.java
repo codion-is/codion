@@ -419,9 +419,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		private void select(EntitySearchModel filterModel, @Nullable Entity selected) {
-			if (selected != null && selected.present(foreignKey)) {
-				filterModel.selection().entity().set(selected.entity(foreignKey));
-			}
+			selectReferenced(filterModel, foreignKey, selected);
 		}
 
 		private void set(@Nullable Entity selected) {
@@ -518,6 +516,24 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						foreignKey.references().forEach(reference -> selectAttributes.add(reference.column())));
 
 		return unmodifiableList(new ArrayList<>(selectAttributes));
+	}
+
+	/**
+	 * Selects the entity referenced via the given foreign key by the entity selected, in the given search model,
+	 * unless it already holds it. The referenced entity holds only its key when it wasn't loaded, as with the
+	 * domain-loaded foreign key value an editor sets, which must not replace the entity the search model holds.
+	 * @param filterModel the search model filtering the model the entity is selected in
+	 * @param foreignKey the foreign key
+	 * @param selected the entity selected, if any
+	 * @see Entity#entity(ForeignKey)
+	 */
+	static void selectReferenced(EntitySearchModel filterModel, ForeignKey foreignKey, @Nullable Entity selected) {
+		if (selected != null && selected.present(foreignKey)) {
+			Entity current = filterModel.selection().entity().get();
+			if (current == null || !current.primaryKey().equals(selected.key(foreignKey))) {
+				filterModel.selection().entity().set(selected.entity(foreignKey));
+			}
+		}
 	}
 
 	static void validateLink(ForeignKey foreignKey, EntityType entityType) {
