@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -477,14 +478,14 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public Collection<Entity> get() {
 			return connection.select(where(validate(condition.getOrThrow().get()))
-							.attributes(attributes)
+							.attributes(selectAttributes(entityDefinition, attributes))
 							.orderBy(orderBy));
 		}
 
 		// The given entities passing the condition, selected by their primary keys
 		private Collection<Entity> select(Collection<Entity> entities) {
 			return connection.select(where(and(validate(condition.getOrThrow().get()), keys(primaryKeys(entities))))
-							.attributes(attributes));
+							.attributes(selectAttributes(entityDefinition, attributes)));
 		}
 
 		private Condition validate(Condition queryCondition) {
@@ -498,6 +499,25 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 			return queryCondition;
 		}
+	}
+
+	/**
+	 * Returns the attributes to select, the given ones along with the foreign key columns, so that the entities can be
+	 * filtered by any of their foreign keys, and the entity selected can select the one it references in a linked model,
+	 * see {@link ForeignKeyFilter}.
+	 * @param entityDefinition the definition of the entities selected
+	 * @param attributes the attributes to select, an empty collection for the default ones
+	 * @return the attributes to select, empty if {@code attributes} is
+	 */
+	static Collection<Attribute<?>> selectAttributes(EntityDefinition entityDefinition, Collection<Attribute<?>> attributes) {
+		if (attributes.isEmpty()) {
+			return attributes;
+		}
+		Set<Attribute<?>> selectAttributes = new LinkedHashSet<>(attributes);
+		entityDefinition.foreignKeys().get().forEach(foreignKey ->
+						foreignKey.references().forEach(reference -> selectAttributes.add(reference.column())));
+
+		return unmodifiableList(new ArrayList<>(selectAttributes));
 	}
 
 	static void validateLink(ForeignKey foreignKey, EntityType entityType) {

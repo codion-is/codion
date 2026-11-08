@@ -53,6 +53,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
+import static is.codion.framework.model.DefaultEntityComboBoxModel.selectAttributes;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
@@ -95,7 +96,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 						.nonNull(NULL_CONDITION)
 						.value(builder.condition)
 						.build();
-		this.attributes = builder.attributes;
+		this.attributes = selectAttributes(entityDefinition, builder.attributes);
 		this.orderBy = builder.orderBy;
 		this.settings = unmodifiableMap(columns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));

@@ -24,6 +24,7 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.DefaultEntitySearchModel.DefaultBuilder;
@@ -245,6 +246,33 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
+	void foreignKeyFilterLinkWithAttributes() {
+		EntityComboBoxModel departments = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		departments.items().refresh();
+		List<Attribute<?>> attributes = singletonList(Employee.NAME);
+		EntitySearchModel employees = new DefaultBuilder(Employee.TYPE, CONNECTION)
+						.search(searchable)
+						.attributes(attributes)
+						.filter(Employee.DEPARTMENT_FK, departments)
+						.build();
+		// not strict, no master selection, everything
+		employees.filter().get(Employee.DEPARTMENT_FK).strict().set(false);
+		employees.search().string().set("%");
+		List<Entity> result = employees.search().perform();
+		assertFalse(result.isEmpty());
+		// the department column selected, though not among the attributes
+		assertTrue(result.stream().allMatch(employee -> employee.contains(Employee.DEPARTMENT)));
+		assertTrue(result.stream().noneMatch(employee -> employee.contains(Employee.HIREDATE)));
+		// so the entity selected selects the one it references in the master
+		Entity employee = result.get(0);
+		employees.selection().entity().set(employee);
+		assertEquals(employee.get(Employee.DEPARTMENT), departments.selection().item().getOrThrow().get(Department.ID));
+	}
+
+	@Test
 	void foreignKeyFilterLink() {
 		Entity accounting = CONNECTION.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		Entity testDept = CONNECTION.selectSingle(Department.ID.equalTo(88));
@@ -385,8 +413,12 @@ public final class DefaultEntitySearchModelTest {
 		Entity john = model.search().perform().get(0);
 		assertTrue(john.contains(Employee.ID));
 		assertTrue(john.contains(Employee.NAME));
+		// the foreign key columns always included
+		assertTrue(john.contains(Employee.DEPARTMENT));
+		assertTrue(john.contains(Employee.MGR));
+		List<Attribute<?>> included = asList(Employee.NAME, Employee.ID, Employee.DATA, Employee.DEPARTMENT, Employee.MGR);
 		ENTITIES.definition(Employee.TYPE).attributes().get().stream()
-						.filter(attribute -> !(attribute.equals(Employee.NAME) || attribute.equals(Employee.ID) || attribute.equals(Employee.DATA)))
+						.filter(attribute -> !included.contains(attribute))
 						.forEach(attribute -> assertFalse(john.contains(attribute)));
 	}
 

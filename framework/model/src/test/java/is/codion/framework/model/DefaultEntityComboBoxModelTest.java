@@ -354,6 +354,33 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
+	void foreignKeyFilterWithIncludedAttributes() {
+		// the manager foreign key includes the name, job and manager, not the department
+		EntityComboBoxModel managers = EntityComboBoxModel.builder()
+						.foreignKey(Employee.MGR_FK)
+						.connection(CONNECTION)
+						.build();
+		EntityComboBoxModel departments = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connection(CONNECTION)
+						.build();
+		managers.filter().get(Employee.DEPARTMENT_FK).link(departments);
+		managers.items().refresh();//refreshes both
+		// the department column selected, though not included, so the department filters
+		assertTrue(managers.items().get().stream().allMatch(employee -> employee.contains(Employee.DEPARTMENT)));
+		assertTrue(managers.items().get().stream().noneMatch(employee -> employee.contains(Employee.HIREDATE)));
+		departments.select(CONNECTION.entities().primaryKey(Department.TYPE, 20));
+		assertEquals(CONNECTION.select(Employee.DEPARTMENT.equalTo(20)).size(), managers.items().included().size());
+		// and the manager selected selects its department
+		Entity allen = managers.items().get().stream()
+						.filter(employee -> "ALLEN".equals(employee.get(Employee.NAME)))
+						.findFirst()
+						.orElseThrow();
+		managers.selection().item().set(allen);
+		assertEquals(allen.get(Employee.DEPARTMENT), departments.selection().item().getOrThrow().get(Department.ID));
+	}
+
+	@Test
 	void foreignKeyFilterComboBoxModel() {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
@@ -569,7 +596,8 @@ public final class DefaultEntityComboBoxModelTest {
 			assertTrue(emp.contains(Employee.DEPARTMENT));
 			assertTrue(emp.contains(Employee.DEPARTMENT_FK));
 			assertFalse(emp.contains(Employee.JOB));
-			assertFalse(emp.contains(Employee.MGR));
+			// the foreign key columns always included
+			assertTrue(emp.contains(Employee.MGR));
 			assertFalse(emp.contains(Employee.COMMISSION));
 			assertFalse(emp.contains(Employee.HIREDATE));
 			assertFalse(emp.contains(Employee.SALARY));

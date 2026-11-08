@@ -305,6 +305,8 @@ public interface EntitySearchModel {
 		Builder condition(Supplier<Condition> condition);
 
 		/**
+		 * Note that the primary key and foreign key column values are always included, the latter so that the entity
+		 * selected can select the one it references in a linked model, see {@link ForeignKeyFilter#link(EntityComboBoxModel)}.
 		 * @param attributes the attributes to include when querying entities from the database, an empty Collection means all
 		 * @return this builder
 		 * @throws IllegalArgumentException in case an attribute is not associated with the underlying entity
