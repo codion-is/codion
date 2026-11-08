@@ -22,6 +22,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.ObservableValueSet;
@@ -524,6 +525,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * Swing edit panel and the Android edit view both do on construction. The editor can not do so itself: a default
 	 * value supplied via {@link EditorValue#defaultValue()} is resolved when the defaults are applied, and the edit
 	 * model must have had the chance to configure those first.
+	 * <p>Its consumers receive the entity the editor holds once it has changed, as {@link #get()} returns it: the one
+	 * set via {@link #set(Entity)}, or the defaulted or cleared one after {@link #defaults()} or {@link #clear()},
+	 * never null. Whether it is an existing entity or a new one is told by {@link Entity#exists()}, or by this editor's
+	 * {@link #exists()} where its predicate has been replaced, up to date when the consumers are notified.
 	 * @see #defaults()
 	 */
 	interface EditorEntity extends Observable<Entity> {
@@ -572,18 +577,18 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		void set(Entity entity);
 
 		/**
-		 * <p>Fires synchronously when the active entity is about to change via {@link #set(Entity)},
+		 * <p>Notified, without data, synchronously when the active entity is about to change via {@link #set(Entity)},
 		 * {@link #defaults()} or {@link #clear()} — before any loading begins and before the detail
 		 * subtree is touched. The post-change counterpart is {@link #changed()}.
 		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener cancels the
-		 * change. Note that {@link #replace(Entity)} does not fire this event, nor do detail editors
+		 * change. Note that {@link #replace(Entity)} does not notify it, nor do detail editors
 		 * when reset as part of a master operation.
-		 * @return an observer notified each time the entity is about to change
+		 * @return a sensor notified each time the entity is about to change
 		 * @see #set(Entity)
 		 * @see #defaults()
 		 * @see #clear()
 		 */
-		Observer<Entity> changing();
+		Sensor changing();
 
 		/**
 		 * <p>Returns an observer notified each time the entity is silently replaced — via

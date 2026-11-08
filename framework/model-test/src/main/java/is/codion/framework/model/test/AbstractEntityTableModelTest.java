@@ -374,6 +374,35 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	}
 
 	@Test
+	public void newEntityClearsSelectionKeepingEditor() {
+		// the selection reflects what the editor holds, a new entity has no row,
+		// and the cleared selection leaves the editor holding it
+		T tableModel = createTableModel(Employee.TYPE, connection());
+		tableModel.items().refresh();
+		tableModel.selection().index().set(0);
+		Entity newEmployee = connection().entities().entity(Employee.TYPE)
+						.with(Employee.NAME, JONES)
+						.build();
+		tableModel.editModel().editor().entity().set(newEmployee);
+		assertFalse(tableModel.selection().present().is());
+		assertEquals(JONES, tableModel.editModel().editor().value(Employee.NAME).get());
+		assertFalse(tableModel.editModel().editor().entity().exists().is());
+	}
+
+	@Test
+	public void defaultsClearsSelectionResettingOnce() {
+		T tableModel = createTableModel(Employee.TYPE, connection());
+		tableModel.items().refresh();
+		tableModel.selection().index().set(0);
+		AtomicInteger changing = new AtomicInteger();
+		tableModel.editModel().editor().entity().changing().addListener(changing::incrementAndGet);
+		tableModel.editModel().editor().entity().defaults();
+		assertFalse(tableModel.selection().present().is());
+		// the cleared selection does not reset the editor a second time
+		assertEquals(1, changing.get());
+	}
+
+	@Test
 	public void editorKeptOnRefreshWhenModified() {
 		// A refresh must not clobber an edit in progress, the modified editor keeps its values.
 		T tableModel = createTableModel(Employee.TYPE, connection());

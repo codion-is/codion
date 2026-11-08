@@ -996,7 +996,7 @@ public abstract class EntityEditPanel extends JPanel {
 		return caption;
 	}
 
-	private void onEntityChanging(Entity entity) {
+	private void onEntityChanging() {
 		if (configuration.modifiedWarning && components.editor().entity().modified().is()) {
 			Set<Attribute<?>> modified = components.editor().entity().modified().attributes().get();
 			if (showConfirmDialog(this, createModifiedMessage(modified),
@@ -1040,7 +1040,7 @@ public abstract class EntityEditPanel extends JPanel {
 		editorComponents.defaults().warningIndicator().set(configuration.warningIndicator);
 		editorComponents.defaults().modifiedIndicator().set(configuration.modifiedIndicator);
 		editorComponents.defaults().transferFocusOnEnter().set(configuration.transferFocusOnEnter);
-		editorComponents.editor().entity().changing().addConsumer(this::onEntityChanging);
+		editorComponents.editor().entity().changing().addListener(this::onEntityChanging);
 
 		return editorComponents;
 	}

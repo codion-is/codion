@@ -299,7 +299,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		editModel.editor().events().after().insert().addConsumer(this::onInsert);
 		editModel.editor().events().after().update().addConsumer(this::onUpdate);
 		editModel.editor().events().after().delete().addConsumer(this::onDelete);
-		editModel.editor().entity().addConsumer(this::onEntityChanged);
+		editModel.editor().entity().addListener(this::onEntityChanged);
 		selection().item().addConsumer(this::onSelectionChanged);
 
 		orderQuery.addConsumer(enabled ->
@@ -341,8 +341,12 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		}
 	}
 
-	private void onEntityChanged(Entity entity) {
-		if (entity == null) {
+	/**
+	 * Syncs the selection with the editor, the selection reflecting what the editor holds: an entity which doesn't
+	 * exist, a defaulted, cleared or new one, has no row, so the selection is cleared.
+	 */
+	private void onEntityChanged() {
+		if (!editModel.editor().entity().exists().is()) {
 			selection().clear();
 		}
 	}
@@ -353,12 +357,16 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	 * update does, the replacement being the same entity by {@link Entity#equals(Object)}; an unmodified editor then
 	 * takes the fresher values, while an edit in progress is kept, a refresh must not clobber it. A write based on
 	 * the stale instance is caught by optimistic locking.
+	 * <p>A cleared selection resets an editor holding an existing entity, one holding an entity which doesn't exist
+	 * is left as is, the selection having been cleared for it, see {@link #onEntityChanged()}.
 	 * @param selected the selected entity, null if the selection was cleared
 	 */
 	private void onSelectionChanged(@Nullable Entity selected) {
 		EditorEntity editorEntity = editModel.editor().entity();
 		if (selected == null) {
-			editorEntity.defaults();
+			if (editorEntity.exists().is()) {
+				editorEntity.defaults();
+			}
 		}
 		else if (selected.equals(editorEntity.get())) {
 			//the same entity, a fresher instance, the editor takes its values unless an edit is in progress

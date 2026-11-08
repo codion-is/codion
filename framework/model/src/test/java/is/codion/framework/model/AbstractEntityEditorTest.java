@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.common.reactive.observable.Change;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
@@ -164,6 +165,34 @@ public final class AbstractEntityEditorTest {
 		assertTrue(employeeEditor.entity().get().contains(Employee.NAME));
 		assertTrue(employeeEditor.entity().get().contains(Employee.SALARY));
 		assertTrue(employeeEditor.entity().get().contains(Employee.MANAGER_ID));
+	}
+
+	@Test
+	void defaultsAndClearNotifyTheEntityHeld() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		List<Entity> notified = new ArrayList<>();
+		editor.entity().addConsumer(notified::add);
+		// the entity held, as get() returns it, never null
+		editor.entity().defaults();
+		assertNotNull(notified.get(0));
+		assertTrue(notified.get(0).valuesEqual(editor.entity().get()));
+		editor.entity().clear();
+		assertNotNull(notified.get(1));
+		assertTrue(notified.get(1).valuesEqual(editor.entity().get()));
+		// so changed() reports the actual change, the defaulted entity in between
+		Entity king = CONNECTION.selectSingle(Employee.NAME.equalTo("KING"));
+		List<Change<Entity>> changes = new ArrayList<>();
+		editor.entity().changed().addConsumer(changes::add);
+		editor.entity().set(king);
+		editor.entity().defaults();
+		editor.entity().set(king);
+		assertEquals(3, changes.size());
+		assertEquals(king, changes.get(1).previous());
+		assertNotNull(changes.get(1).current());
+		assertFalse(changes.get(1).current().primaryKey().present());
+		assertNotNull(changes.get(2).previous());
+		assertFalse(changes.get(2).previous().primaryKey().present());
+		assertEquals(king, changes.get(2).current());
 	}
 
 	@Test

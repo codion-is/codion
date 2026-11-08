@@ -92,6 +92,9 @@ Codion Change Log
 - EntityConditions.get(Column) now returns ColumnConditionModel, as get(ForeignKey) returns ForeignKeyConditionModel, where it returned ConditionModel.
 - AttributeConditionModel.condition() removed, along with the default methods delegating to it, the delegation now an implementation detail.
 - EntityConditions.Builder.exclude() now replaces the attributes excluded before, as builder methods do, where it added to them.
+- EntityEditor.EditorEntity, its consumers now receive the entity the editor holds after defaults() and clear(), as get() returns it, where they received null, so changed() now reports the actual change, Entity.exists() telling a new entity from an existing one.
+- EntityEditor.EditorEntity.changing() now returns Sensor, notified without data, as MultiSelection.changing() is.
+- AbstractEntityTableModel, the selection is now cleared when the editor holds an entity which doesn't exist, a new one set included, and a cleared selection resets only an editor holding an existing entity, so defaults() no longer resets the editor twice.
 ### is.codion.swing.common.model
 - FilterListSelection and FilterTreeSelection bug fixed, a selection mode change now notifies changing() before changing the selection, as the common selection does, where the selection was cleared without it, and keeps what the new mode allows, see MultiSelection.singleSelection().
 ### is.codion.swing.common.ui

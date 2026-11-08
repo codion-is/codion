@@ -44,12 +44,12 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	}
 
 	private void setAverageCityPopulation(Entity country) {
-		averageCityPopulation.set(country == null ? null :
-						connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE)));
+		averageCityPopulation.set(country.exists() ?
+						connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE)) : null);
 	}
 
 	private void filterCities(Entity country) {
 		editor().comboBoxModels().get(Country.CAPITAL_FK).filter().predicate().set(city ->
-						country != null && Objects.equals(city.get(City.COUNTRY_FK), country));
+						country.exists() && Objects.equals(city.get(City.COUNTRY_FK), country));
 	}
 }

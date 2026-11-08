@@ -160,7 +160,7 @@ public final class SwingEntityEditorTest {
 
 	@Test
 	void vetoCancelsSet() {
-		master.entity().changing().addConsumer(department -> {
+		master.entity().changing().addListener(() -> {
 			throw new CancelException();
 		});
 		detailToLoad.set(employee("emp"));

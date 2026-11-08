@@ -21,9 +21,11 @@ package is.codion.framework.model;
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
+import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observable.Change;
 import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
@@ -627,7 +629,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	private final class DefaultEditorEntity implements EditorEntity {
 
-		private final Signal<Entity> changing = Signal.signal();
+		private final Event changing = Event.event();
 		private final Signal<Entity> changed = Signal.signal();
 		private final Signal<Entity> replaced = Signal.signal();
 		private final State primaryKeyPresent = State.state(false);
@@ -655,7 +657,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void set(Entity entity) {
 			Entity validated = validateType(entity).immutable();
-			changing.accept(validated);
+			changing.run();
 			setEntity(validated);
 			if (!detail.editors.isEmpty()) {
 				// the detail editors must be loaded for the new entity, on a background thread
@@ -669,8 +671,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
-		public Observer<Entity> changing() {
-			return changing.observer();
+		public Sensor changing() {
+			return changing.sensor();
 		}
 
 		@Override
@@ -701,20 +703,20 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void defaults() {
-			changing.accept(null);
+			changing.run();
 			supersede();
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
 			setEntity(defaultEntity());
-			changed.accept(null);
+			changed.accept(get());
 		}
 
 		@Override
 		public void clear() {
-			changing.accept(null);
+			changing.run();
 			supersede();
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
 			setEntity(createEntity(DefaultEditorEntity::nullValue));
-			changed.accept(null);
+			changed.accept(get());
 		}
 
 		@Override
