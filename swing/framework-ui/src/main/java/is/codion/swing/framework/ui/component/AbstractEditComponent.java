@@ -81,7 +81,7 @@ public abstract class AbstractEditComponent<C extends JComponent, T> implements 
 		EntityComponents components = entityComponents(editor.entityDefinition());
 		ValueAttributeDefinition<T> definition = (ValueAttributeDefinition<T>) attributeDefinition;
 		if (attribute.type().isString() && definition.items().isEmpty()) {
-			return (ComponentValue<C, T>) components.textFieldInput((Attribute<String>) attribute)
+			return (ComponentValue<C, T>) components.textInput((Attribute<String>) attribute)
 							.columns(textFieldColumns((ValueAttributeDefinition<String>) definition))
 							.buildValue();
 		}
@@ -131,7 +131,7 @@ public abstract class AbstractEditComponent<C extends JComponent, T> implements 
 	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<C, T> createTemporalComponentValue(A attribute,
 																																																										 EntityComponents inputComponents) {
 		if (CalendarPanel.supports((Class<Temporal>) attribute.type().get())) {
-			return (ComponentValue<C, T>) inputComponents.temporalFieldInput((Attribute<Temporal>) attribute).buildValue();
+			return (ComponentValue<C, T>) inputComponents.temporalInput((Attribute<Temporal>) attribute).buildValue();
 		}
 
 		return (ComponentValue<C, T>) inputComponents.temporalField((Attribute<Temporal>) attribute).buildValue();

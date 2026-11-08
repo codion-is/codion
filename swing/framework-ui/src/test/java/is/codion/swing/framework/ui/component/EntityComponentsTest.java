@@ -290,7 +290,7 @@ public final class EntityComponentsTest {
 	@Test
 	void textInput() {
 		ComponentValue<TextInput, String> componentValue =
-						entityComponents.textFieldInput(Detail.STRING)
+						entityComponents.textInput(Detail.STRING)
 										.transferFocusOnEnter(true)
 										.columns(10)
 										.buttonFocusable(true)

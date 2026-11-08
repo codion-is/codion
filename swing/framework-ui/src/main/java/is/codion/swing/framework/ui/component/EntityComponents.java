@@ -274,7 +274,7 @@ public final class EntityComponents {
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key search input builder
 	 */
-	public EntitySearchInput.Builder searchFieldInput(ForeignKey foreignKey,
+	public EntitySearchInput.Builder searchInput(ForeignKey foreignKey,
 																										EntitySearchModel searchModel,
 																										Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
@@ -348,7 +348,7 @@ public final class EntityComponents {
 	 * @param <T> the attribute type
 	 * @return a {@link TemporalInput} builder
 	 */
-	public <T extends Temporal> TemporalInput.Builder<T> temporalFieldInput(Attribute<T> attribute) {
+	public <T extends Temporal> TemporalInput.Builder<T> temporalInput(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return Components.temporalInput()
@@ -363,7 +363,7 @@ public final class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link TextInput} builder
 	 */
-	public TextInput.Builder textFieldInput(Attribute<String> attribute) {
+	public TextInput.Builder textInput(Attribute<String> attribute) {
 		AttributeDefinition<String> attributeDefinition = definition(attribute);
 
 		return Components.textInput()

@@ -70,7 +70,7 @@ include::{dir-source}/is/codion/manual/swing/framework/ui/EntityEditPanelDemo.ja
 
 === Temporal
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#temporalFieldInput(is.codion.framework.domain.entity.attribute.Attribute)[temporalFieldInput(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#temporalInput(is.codion.framework.domain.entity.attribute.Attribute)[temporalInput(attribute)]
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#temporalField(is.codion.framework.domain.entity.attribute.Attribute)[temporalField(attribute)]
 

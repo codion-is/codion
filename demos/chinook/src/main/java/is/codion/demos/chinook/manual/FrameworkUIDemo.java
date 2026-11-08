@@ -330,7 +330,7 @@ final class FrameworkUIDemo {
 								.includeAddButton(true)
 								.includeEditButton(true);
 
-				create().searchFieldInput(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
+				create().searchInput(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
 								.preferredWidth(160)
 								.includeAddButton(true)
 								.includeEditButton(true);

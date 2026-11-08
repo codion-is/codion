@@ -118,8 +118,8 @@ public final class EntityEditPanelDemo {
 							.build();
 
 			// Include add/edit buttons
-			EntitySearchInput searchFieldInput = create()
-							.searchFieldInput(Demo.FOREIGN_KEY, this::createEditPanel)
+			EntitySearchInput searchInput = create()
+							.searchInput(Demo.FOREIGN_KEY, this::createEditPanel)
 							.includeAddButton(true)
 							.includeEditButton(true)
 							.build();

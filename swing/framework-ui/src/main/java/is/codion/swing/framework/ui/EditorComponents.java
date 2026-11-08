@@ -691,7 +691,7 @@ public final class EditorComponents {
 		 * @return a text input builder
 		 */
 		public TextInput.Builder textInput(Attribute<String> attribute) {
-			return components.component(attribute).set(entityComponents.textFieldInput(attribute));
+			return components.component(attribute).set(entityComponents.textInput(attribute));
 		}
 
 		/**
@@ -701,7 +701,7 @@ public final class EditorComponents {
 		 * @return a temporal input builder
 		 */
 		public <T extends Temporal> TemporalInput.Builder<T> temporalInput(Attribute<T> attribute) {
-			return components.component(attribute).set(entityComponents.temporalFieldInput(attribute));
+			return components.component(attribute).set(entityComponents.temporalInput(attribute));
 		}
 
 		/**
@@ -955,13 +955,13 @@ public final class EditorComponents {
 		}
 
 		/**
-		 * Creates a builder for a foreign key search field input with optional buttons for adding and editing items.
+		 * Creates a builder for a foreign key search input with optional buttons for adding and editing items.
 		 * @param foreignKey the foreign key
 		 * @param editPanel the edit panel supplier to use for the add and/or edit buttons
-		 * @return a foreign key search field input builder
+		 * @return a foreign key search input builder
 		 */
-		public EntitySearchInput.Builder searchFieldInput(ForeignKey foreignKey, Supplier<EntityEditPanel> editPanel) {
-			return components.component(foreignKey).set(entityComponents.searchFieldInput(foreignKey,
+		public EntitySearchInput.Builder searchInput(ForeignKey foreignKey, Supplier<EntityEditPanel> editPanel) {
+			return components.component(foreignKey).set(entityComponents.searchInput(foreignKey,
 							components.editor().searchModels().get(foreignKey), editPanel));
 		}
 
