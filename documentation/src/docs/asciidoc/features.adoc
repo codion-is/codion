@@ -6,7 +6,7 @@
 
 == I. The Common Foundation
 
-* <<manual/manual.adoc#_reactive_classes, Reactive State Management>> Core with <<manual/manual.adoc#_value, Value>>, <<manual/manual.adoc#_state, State>> and <<manual/manual.adoc#_event, Event>>
+* <<manual/manual.adoc#_reactive_classes, Reactive State Management>> Core with <<manual/manual.adoc#_value, Value>>, <<manual/manual.adoc#_state, State>>, <<manual/manual.adoc#_event, Event and Signal>>
 * <<manual/manual.adoc#_state_composition, Composable Boolean Logic>> for UI State
 * Observable and Thread-Safe <<manual/manual.adoc#_valuecollection, Value Collections>>
 * Declarative Asynchronous Task Execution with <<manual/manual.adoc#_progressworker, ProgressWorker>>

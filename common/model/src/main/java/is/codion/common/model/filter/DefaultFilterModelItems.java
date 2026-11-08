@@ -26,8 +26,8 @@ import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Refresher;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.value.AbstractValue;
 
 import org.jspecify.annotations.Nullable;
@@ -485,8 +485,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		private final List<Entry<R>> entries = new ArrayList<>();
 		private final IncludePredicate<R> predicate;
-		private final Event<List<R>> changed = Event.event();
-		private final Event<Collection<R>> added = Event.event();
+		private final Signal<List<R>> changed = Signal.signal();
+		private final Signal<Collection<R>> added = Signal.signal();
 
 		private boolean pendingChanges = false;
 		private @Nullable Collection<R> pendingAdded;
@@ -703,7 +703,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	private final class DefaultExcludedItems implements ExcludedItems<R> {
 
-		private final Event<Collection<R>> changed = Event.event();
+		private final Signal<Collection<R>> changed = Signal.signal();
 
 		private boolean pendingChanges = false;
 

@@ -19,8 +19,8 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.framework.db.AbstractEntityConnection;
@@ -51,7 +51,7 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 
 	private final Database database;
 
-	private final Event<MethodTrace> traceEvent = Event.event();
+	private final Signal<MethodTrace> traceSignal = Signal.signal();
 	private final State tracing = State.builder()
 					.value(TRACING.getOrThrow())
 					.consumer(this::tracingChanged)
@@ -140,7 +140,7 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 
 	@Override
 	public Observer<MethodTrace> trace() {
-		return traceEvent.observer();
+		return traceSignal.observer();
 	}
 
 	@Override
@@ -188,7 +188,7 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 
 	private MethodTracer createMethodTracer() {
 		MethodTracer methodTracer = methodTracer(TRACES.getOrThrow());
-		methodTracer.onTrace(traceEvent);
+		methodTracer.onTrace(traceSignal);
 
 		return methodTracer;
 	}

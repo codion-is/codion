@@ -18,65 +18,41 @@
  */
 package is.codion.common.reactive.event;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EventsTest {
+public class EventTest {
 
 	@Test
 	void basicEventNotification() {
-		Event<Integer> event = Event.event();
+		Event event = Event.event();
 		AtomicInteger listenerCounter = new AtomicInteger();
-		AtomicInteger consumerCounter = new AtomicInteger();
-		AtomicReference<Integer> consumerValue = new AtomicReference<>();
-
 		Runnable listener = listenerCounter::incrementAndGet;
-		Consumer<Integer> consumer = value -> {
-			consumerCounter.incrementAndGet();
-			consumerValue.set(value);
-		};
 
 		event.addListener(listener);
-		event.addConsumer(consumer);
-
-		// Test run() - notifies both listeners and consumers with null data
 		event.run();
 		assertEquals(1, listenerCounter.get());
-		assertEquals(1, consumerCounter.get());
-		assertNull(consumerValue.get());
-
-		// Test accept() - notifies both listeners and consumers with data
-		event.accept(42);
-		assertEquals(2, listenerCounter.get());
-		assertEquals(2, consumerCounter.get());
-		assertEquals(42, consumerValue.get());
 
 		// Test removal
 		event.removeListener(listener);
-		event.removeConsumer(consumer);
 		event.run();
-		assertEquals(2, listenerCounter.get());
-		assertEquals(2, consumerCounter.get());
+		assertEquals(1, listenerCounter.get());
 	}
 
 	@Test
 	void listenerNotificationOrder() {
-		Event<String> event = Event.event();
+		Event event = Event.event();
 		List<Integer> executionOrder = new ArrayList<>();
 
 		event.addListener(() -> executionOrder.add(1));
@@ -89,58 +65,35 @@ public class EventsTest {
 	}
 
 	@Test
-	void consumerNotificationOrder() {
-		Event<String> event = Event.event();
-		List<String> receivedValues = new ArrayList<>();
-
-		event.addConsumer(value -> receivedValues.add("1:" + value));
-		event.addConsumer(value -> receivedValues.add("2:" + value));
-		event.addConsumer(value -> receivedValues.add("3:" + value));
-
-		event.accept("test");
-
-		assertEquals(Arrays.asList("1:test", "2:test", "3:test"), receivedValues);
-	}
-
-	@Test
 	void preventDuplicates() {
-		Event<Integer> event = Event.event();
+		Event event = Event.event();
 		Runnable listener = () -> {};
-		Consumer<Integer> consumer = integer -> {};
 		assertTrue(event.addListener(listener));
 		assertFalse(event.addListener(listener));
 		assertFalse(event.addWeakListener(listener));
-		assertTrue(event.addConsumer(consumer));
-		assertFalse(event.addConsumer(consumer));
-		assertFalse(event.addWeakConsumer(consumer));
 
 		assertTrue(event.removeListener(listener));
 		assertFalse(event.removeListener(listener));
 		assertTrue(event.addWeakListener(listener));
 		assertFalse(event.addListener(listener));
-
-		assertTrue(event.removeConsumer(consumer));
-		assertFalse(event.removeConsumer(consumer));
-		assertTrue(event.addWeakConsumer(consumer));
-		assertFalse(event.addConsumer(consumer));
 	}
 
 	@Test
-	void eventAsConsumer() {
-		// DefaultObserver bug in 0.18.23
-		Event<Integer> event = Event.event();
-		Event<Integer> consumer = Event.event();
+	void eventAsListener() {
+		Event event = Event.event();
+		Event listener = Event.event();
+		AtomicInteger counter = new AtomicInteger();
 
-		event.addConsumer(consumer);
+		event.addListener(listener);
+		listener.addListener(counter::incrementAndGet);
 
-		consumer.addConsumer(Assertions::assertNotNull);
-
-		event.accept(1);
+		event.run();
+		assertEquals(1, counter.get());
 	}
 
 	@Test
 	void exceptionInListenerPreventsSubsequentListeners() {
-		Event<String> event = Event.event();
+		Event event = Event.event();
 		AtomicInteger counter = new AtomicInteger();
 
 		event.addListener(() -> counter.incrementAndGet());
@@ -154,49 +107,18 @@ public class EventsTest {
 	}
 
 	@Test
-	void exceptionInConsumerPreventsSubsequentConsumers() {
-		Event<String> event = Event.event();
+	void sensorView() {
+		Event event = Event.event();
 		AtomicInteger counter = new AtomicInteger();
-
-		event.addConsumer(s -> counter.incrementAndGet());
-		event.addConsumer(s -> {
-			throw new RuntimeException("Test exception");
-		});
-		event.addConsumer(s -> counter.incrementAndGet()); // Should not execute
-
-		assertThrows(RuntimeException.class, () -> event.accept("test"));
-		assertEquals(1, counter.get()); // Only first consumer executed
-	}
-
-	@Test
-	void nullDataPropagation() {
-		Event<String> event = Event.event();
-		AtomicReference<String> receivedValue = new AtomicReference<>("initial");
-		AtomicBoolean consumerCalled = new AtomicBoolean(false);
-
-		event.addConsumer(value -> {
-			consumerCalled.set(true);
-			receivedValue.set(value);
-		});
-
-		// Test explicit null
-		event.accept(null);
-		assertTrue(consumerCalled.get());
-		assertNull(receivedValue.get());
-
-		// Reset
-		receivedValue.set("reset");
-		consumerCalled.set(false);
-
-		// Test run() which passes null to consumers
+		// the sensor can not trigger the event, listeners added to it are the event's
+		event.sensor().addListener(counter::incrementAndGet);
 		event.run();
-		assertTrue(consumerCalled.get());
-		assertNull(receivedValue.get());
+		assertEquals(1, counter.get());
 	}
 
 	@Test
 	void concurrentListenerAddRemove() throws InterruptedException {
-		Event<Integer> event = Event.event();
+		Event event = Event.event();
 		int threadCount = 10;
 		int operationsPerThread = 1000;
 
@@ -246,79 +168,8 @@ public class EventsTest {
 	}
 
 	@Test
-	void concurrentEventTrigger() throws InterruptedException {
-		Event<Integer> event = Event.event();
-		int threadCount = 10;
-		int eventsPerThread = 1000;
-
-		AtomicInteger listenerCounter = new AtomicInteger();
-		AtomicInteger consumerSum = new AtomicInteger();
-
-		event.addListener(listenerCounter::incrementAndGet);
-		event.when(Objects::nonNull).addConsumer(consumerSum::addAndGet);
-
-		CountDownLatch startLatch = new CountDownLatch(1);
-		CountDownLatch doneLatch = new CountDownLatch(threadCount);
-
-		ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-
-		for (int i = 0; i < threadCount; i++) {
-			executor.submit(() -> {
-				try {
-					startLatch.await();
-					for (int j = 0; j < eventsPerThread; j++) {
-						if (j % 2 == 0) {
-							event.run();
-						}
-						else {
-							event.accept(1);
-						}
-					}
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-				finally {
-					doneLatch.countDown();
-				}
-			});
-		}
-
-		startLatch.countDown();
-		assertTrue(doneLatch.await(10, TimeUnit.SECONDS));
-		executor.shutdown();
-
-		int totalEvents = threadCount * eventsPerThread;
-		assertEquals(totalEvents, listenerCounter.get());
-		assertEquals(totalEvents / 2, consumerSum.get()); // Half the events used accept(1)
-	}
-
-	@Test
-	void recursiveEventTrigger() {
-		Event<Integer> event = Event.event();
-		AtomicInteger depth = new AtomicInteger();
-		AtomicInteger maxDepthReached = new AtomicInteger();
-
-		event.addConsumer(value -> {
-			int currentDepth = depth.incrementAndGet();
-			maxDepthReached.updateAndGet(max -> Math.max(max, currentDepth));
-
-			if (currentDepth < 10) {
-				event.accept(value + 1); // Recursive call
-			}
-
-			depth.decrementAndGet();
-		});
-
-		event.accept(1);
-
-		assertEquals(10, maxDepthReached.get());
-		assertEquals(0, depth.get()); // Should return to 0 after recursion completes
-	}
-
-	@Test
 	void concurrentModificationDuringNotification() throws InterruptedException {
-		Event<String> event = Event.event();
+		Event event = Event.event();
 		CountDownLatch notificationStarted = new CountDownLatch(1);
 		CountDownLatch modificationAttempted = new CountDownLatch(1);
 		AtomicBoolean listenerExecuted = new AtomicBoolean();

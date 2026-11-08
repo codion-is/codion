@@ -20,7 +20,7 @@ package is.codion.tools.monitor.model;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
@@ -77,7 +77,7 @@ public final class ServerMonitor {
 	private static final String REACHABLE = "Reachable";
 	private static final String UNREACHABLE = "Unreachable";
 
-	private final Event<?> serverShutDownEvent = Event.event();
+	private final Event serverShutDownEvent = Event.event();
 	private final Value<Integer> connectionLimitValue;
 	private final LoggerProxy loggerProxy = new ServerLoggerProxy();
 	private final Value<String> status = Value.nonNull("");

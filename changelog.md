@@ -6,6 +6,11 @@ Codion Change Log
 - State.matches(observable, value) renamed is().
 - State.matches(observable, predicate) and Observer.Builder.when(predicate), the predicate's parameter now nullable, as in Observer.when(predicate).
 - State.Builder.notify() removed, a state now always notifies on change only, its observers, not() and the state combinations notified only of genuine transitions.
+- Event split in two, Event now without data, triggered by run() and listened to via Sensor, and Signal added, carrying data, triggered by accept() and observed via Observer, so a consumer can no longer be notified with null by run().
+- Sensor and AbstractSensor added, the listener methods moved to Sensor from Observer, which extends it, so a listener can listen to an event, a signal, a value or a state alike.
+- Event.observer() replaced by Event.sensor(), Signal.observer() providing the observer of a signal.
+- sensor and signal packages added, holding Sensor and Signal.
+- Observable and Change moved to the observable package.
 ### is.codion.common.rmi
 - AbstractServer, a connection requested while the server is shutting down is now refused with ConnectionNotAvailableException, where a LoginException was thrown, which the json channel reported as an internal error, logged as an error.
 - Server.Locator.Builder.locate() now finds a server without connections available, after those with, its connect() then refusing with ConnectionNotAvailableException, where it was left out, a client finding only such a server told that none was available.
@@ -31,6 +36,7 @@ Codion Change Log
 - MultiSelection.singleSelection(), switching to single selection now keeps the highest selected index, as single selection does when indexes are selected, notifying changing(), and switching back leaves the selection as is, where both cleared the selection.
 - MultiSelection.Items.set(Collection) now accepts null, clearing the selection as set(List) does, which makes a call with a List no longer ambiguous from Kotlin.
 - MultiSelection.Items.set(Collection) bug fixed, a locked selection now rejects it and the validators now see its items, as with set(List), which it bypassed.
+- ConditionModel.changed(), TableConditions.changed(), SingleSelection.changing(), MultiSelection.changing(), changed() and adjusting(), the same on MultiSelection.IndexStore, and SummaryModel.valuesChanged() now return Sensor, notified without data.
 ### is.codion.dbms.h2
 - H2Database, an embedded database's init scripts now each run once in its life, recorded in CODION.INIT_SCRIPT with a checksum, line endings aside, an existing file database running those listed it has not yet run, in order, where they ran on its creation alone, one without the record, created before, recording every script listed as run the first time, running none, one refusing sa without a password left alone, administered, the database refused where a script has changed since it ran, has run but is no longer listed, or has run while one listed before it has not.
 - H2Database bug fixed, an existing database opened through a file system prefix, jdbc:h2:async: or jdbc:h2:retry:nio: for example, or in the user's home, jdbc:h2:~/, is now found, where it was taken for a new one at each start, its init scripts run again unless recorded as run, and DB_CLOSE_DELAY=-1 set on it; name() no longer includes the prefix.
@@ -110,6 +116,7 @@ Codion Change Log
 - TableConditionPanel.Panels.exclude() now replaces the identifiers excluded before, where it added to them.
 - ComponentDialogBuilder.disposeOnEscape() renamed closeOnEscape().
 - FilterTableCellRenderer.customizers() now returns an unmodifiable List, in the order the customizers run, where it returned the renderer's own modifiable collection.
+- ComponentDialogBuilder.closeObserver() renamed close(), now taking a Sensor.
 ### is.codion.swing.framework.model
 - SwingEntityApplicationModel(connection, user, entityModels) added.
 ### is.codion.swing.framework.ui
@@ -143,6 +150,10 @@ Codion Change Log
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, entity type, column and foreign key names are now written as the domain gives them, where they were written in lower case, SchemaDomain.SchemaSettings.lowerCaseIdentifiers(false) having no effect on the source.
 - DomainSource, a column or table name which differs from its attribute or entity type name, a quoted one, now written via name() and table(), the constant, interface and DTO component names now splitting camel case names into words, VERBATIM_LOCALITY and verbatimLocality.
+### is.codion.tools.loadtest
+- LoadTest.shuttingDown() now returns Sensor.
+### is.codion.tools.monitor.model
+- ConnectionPoolMonitor.statisticsUpdated() now returns Sensor.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes, the Material and Gerry themes no longer set Table.cellNoFocusBorder and Table.focusCellHighlightBorder, padding meant for their 32px rows, applied by FlatLaf's importer to 20px ones, which made plain JDK cell renderers twice as tall.
 

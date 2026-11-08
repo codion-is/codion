@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
@@ -1172,7 +1172,7 @@ public class EntityPanel extends JPanel {
 	public final class DetailPanels {
 
 		private final List<EntityPanel> panels = new ArrayList<>();
-		private final Event<EntityPanel> panelAdded = Event.event();
+		private final Signal<EntityPanel> panelAdded = Signal.signal();
 
 		private DetailPanels() {}
 
@@ -1271,7 +1271,7 @@ public class EntityPanel extends JPanel {
 	 */
 	public final class Display {
 
-		private final Event<EntityPanel> request = Event.event();
+		private final Signal<EntityPanel> request = Signal.signal();
 
 		private Display() {}
 
@@ -1299,7 +1299,7 @@ public class EntityPanel extends JPanel {
 	 */
 	public final class Activation {
 
-		private final Event<EntityPanel> request = Event.event();
+		private final Signal<EntityPanel> request = Signal.signal();
 
 		private Activation() {}
 

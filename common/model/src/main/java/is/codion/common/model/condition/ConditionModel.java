@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.condition;
 
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
@@ -205,9 +205,9 @@ public interface ConditionModel<T> {
 	 * it causes when the condition {@link #autoEnable() auto enables}.
 	 * <p>Notified when the change has finished, so a listener sees the condition as set, never half set, and only when
 	 * the condition differs from when it was last notified, an operand set to an equal value being no change.
-	 * @return an observer notified each time the condition changes
+	 * @return a sensor notified each time the condition changes
 	 */
-	Observer<?> changed();
+	Sensor changed();
 
 	/**
 	 * @return a {@link Builder.ValueTypeStep} instance

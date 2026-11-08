@@ -20,7 +20,7 @@ package is.codion.common.model.component.tree;
 
 import is.codion.common.model.component.tree.FilterTreeModel.VisibleNodes;
 import is.codion.common.model.selection.MultiSelection;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
@@ -96,7 +96,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	}
 
 	@Override
-	public Observer<?> changing() {
+	public Sensor changing() {
 		return selection.changing();
 	}
 
@@ -166,7 +166,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	}
 
 	@Override
-	public Observer<?> adjusting() {
+	public Sensor adjusting() {
 		return selection.adjusting();
 	}
 

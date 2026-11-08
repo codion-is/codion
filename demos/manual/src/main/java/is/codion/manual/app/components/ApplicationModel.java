@@ -18,7 +18,7 @@
  */
 package is.codion.manual.app.components;
 
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueList;
 import is.codion.common.utilities.item.Item;

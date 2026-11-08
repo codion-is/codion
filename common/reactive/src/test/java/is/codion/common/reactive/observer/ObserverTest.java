@@ -18,7 +18,8 @@
  */
 package is.codion.common.reactive.observer;
 
-import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
@@ -75,65 +76,65 @@ public final class ObserverTest {
 
 	@Test
 	void conditionalSubscribesWithItsListeners() {
-		Event<Integer> event = Event.event();
+		Signal<Integer> signal = Signal.signal();
 		AtomicInteger counter = new AtomicInteger();
 		Runnable listener = counter::incrementAndGet;
 
 		//an unlistened conditional leaves nothing on the observer it filters
-		Observer<Integer> conditional = event.when(1);
-		event.accept(1);
+		Observer<Integer> conditional = signal.when(1);
+		signal.accept(1);
 		assertEquals(0, counter.get());
 
 		conditional.addListener(listener);
-		event.accept(1);
-		event.accept(2);
+		signal.accept(1);
+		signal.accept(2);
 		assertEquals(1, counter.get());
 
 		//removing the last listener detaches it again
 		assertTrue(conditional.removeListener(listener));
-		event.accept(1);
+		signal.accept(1);
 		assertEquals(1, counter.get());
 
 		//and adding one re-attaches, the same conditional serving again
 		conditional.addListener(listener);
-		event.accept(1);
+		signal.accept(1);
 		assertEquals(2, counter.get());
 
 		//a second listener does not attach twice, nor does removing one of two detach
 		AtomicInteger second = new AtomicInteger();
 		Runnable secondListener = second::incrementAndGet;
 		conditional.addListener(secondListener);
-		event.accept(1);
+		signal.accept(1);
 		assertEquals(3, counter.get());
 		assertEquals(1, second.get());
 		conditional.removeListener(secondListener);
-		event.accept(1);
+		signal.accept(1);
 		assertEquals(4, counter.get());
 	}
 
 	@Test
 	void conditionalChainsAttachTransitively() {
-		Event<Integer> event = Event.event();
-		Observer<Integer> even = event.when(value -> value != null && value % 2 == 0);
+		Signal<Integer> signal = Signal.signal();
+		Observer<Integer> even = signal.when(value -> value != null && value % 2 == 0);
 		Observer<Integer> evenTens = even.when(value -> value != null && value % 10 == 0);
 		AtomicInteger counter = new AtomicInteger();
 		Runnable listener = counter::incrementAndGet;
 
 		//nothing listened to, nothing attached at any level
-		event.accept(20);
+		signal.accept(20);
 		assertEquals(0, counter.get());
 
 		//one listener at the end of the chain attaches every level, source-ward
 		evenTens.addListener(listener);
-		event.accept(20);
+		signal.accept(20);
 		assertEquals(1, counter.get());
-		event.accept(4);//even, not tens
-		event.accept(5);//neither
+		signal.accept(4);//even, not tens
+		signal.accept(5);//neither
 		assertEquals(1, counter.get());
 
 		//and removing it detaches every level again
 		evenTens.removeListener(listener);
-		event.accept(20);
+		signal.accept(20);
 		assertEquals(1, counter.get());
 	}
 
@@ -200,13 +201,13 @@ public final class ObserverTest {
 
 	@Test
 	void conditionalIsCollectableOnceUnlistened() {
-		Event<Integer> event = Event.event();
+		Signal<Integer> signal = Signal.signal();
 		Runnable listener = () -> {};
-		Observer<Integer> conditional = event.when(1);
+		Observer<Integer> conditional = signal.when(1);
 		conditional.addListener(listener);
 		WeakReference<Observer<Integer>> reference = new WeakReference<>(conditional);
 
-		//while listened to, the event holds it through the consumer it subscribed with
+		//while listened to, the signal holds it through the consumer it subscribed with
 		conditional.removeListener(listener);
 		conditional = null;
 		for (int i = 0; i < 20 && reference.get() != null; i++) {

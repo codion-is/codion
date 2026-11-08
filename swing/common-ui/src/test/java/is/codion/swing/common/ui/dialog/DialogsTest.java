@@ -56,7 +56,7 @@ public final class DialogsTest {
 						.enterAction(command(() -> {}))
 						.onOpened(e -> {})
 						.onClosed(e -> {})
-						.closeObserver(Event.event())
+						.close(Event.event())
 						.confirmCloseListener(state -> {})
 						.closeOnEscape(false)
 						.keyEvent(KeyEvents.builder()

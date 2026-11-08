@@ -15,7 +15,7 @@ Codion is a full-stack Java rich client desktop CRUD application framework based
 
 ## Design Philosophy
 
-- **Observable/Reactive Patterns Throughout** - Everything is observable (`Value<T>`, `State`, `Event<T>`)
+- **Observable/Reactive Patterns Throughout** - Everything is observable (`Value<T>`, `State`, `Event`, `Signal<T>`)
 - **Builders All the Way Down** - Fluent API configuration for consistency and discoverability
 - **Continuous Refinement** - ~20 years of development, 3+ years of polishing (see `changelog.md` for a few years worth of mostly polishing, 700+ renames, 460+ removals)
 - **Pragmatic Over Dogmatic** - Built for real internal business applications
@@ -43,7 +43,7 @@ Codion is a full-stack Java rich client desktop CRUD application framework based
 ```
 common/
   utilities/       Configuration and PropertyValue, Operator, User, text and formatting utilities
-  reactive/        Observable, Observer, Value, State, Event
+  reactive/        Sensor, Observer, Observable, Value, State, Event, Signal
   model/           UI-agnostic condition, filter, selection and table models, ProgressWorker
   db/              Database (dialect and JDBC plumbing), connection pools, database exceptions
   rmi/             Remote server and client base

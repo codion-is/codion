@@ -18,7 +18,7 @@
  */
 package is.codion.common.reactive.state;
 
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;

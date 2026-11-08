@@ -19,8 +19,10 @@
 package is.codion.tools.loadtest;
 
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
@@ -66,8 +68,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	private final State pauseOnException = State.state();
 	private final DefaultApplications applications;
 	private final ThinkTime thinkTime;
-	private final Event<?> shuttingDown = Event.event();
-	private final Event<Result> result = Event.event();
+	private final Event shuttingDown = Event.event();
+	private final Signal<Result> result = Signal.signal();
 	private final Map<String, Scenario<T>> scenarios;
 	private final ItemRandomizer<Scenario<T>> randomizer;
 	private final ScheduledExecutorService scheduledExecutor =
@@ -131,8 +133,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	}
 
 	@Override
-	public Observer<?> shuttingDown() {
-		return shuttingDown.observer();
+	public Sensor shuttingDown() {
+		return shuttingDown.sensor();
 	}
 
 	@Override

@@ -17,7 +17,8 @@
  * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * <p>{@link is.codion.common.reactive.observer.Observer} and {@link is.codion.common.reactive.observer.Observable}.
+ * <p>{@link Observer}, managing consumers notified with data, along with the listeners of the
+ * {@link is.codion.common.reactive.sensor.Sensor} it extends, and its base implementation {@link AbstractObserver}.
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.common.reactive.observer;

@@ -20,8 +20,8 @@ package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.rmi.server.RemoteSession;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.property.PropertyValue;
@@ -85,7 +85,7 @@ public abstract class AbstractServerEntityConnection implements Remote {
 	/**
 	 * An event triggered when this connection is closed
 	 */
-	private final Event<AbstractServerEntityConnection> closed = Event.event();
+	private final Signal<AbstractServerEntityConnection> closed = Signal.signal();
 
 	private final Set<DefaultServerEntityResultIterator> iterators = newSetFromMap(new ConcurrentHashMap<>());
 

@@ -19,6 +19,7 @@
 package is.codion.common.reactive;
 
 import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 
@@ -150,8 +151,8 @@ public class ConcurrencyTest {
 
 	@Test
 	@Timeout(15)
-	void eventListenerConcurrentAddRemove() throws InterruptedException {
-		Event<Integer> event = Event.event();
+	void signalListenerConcurrentAddRemove() throws InterruptedException {
+		Signal<Integer> signal = Signal.signal();
 		CountDownLatch startLatch = new CountDownLatch(1);
 		CountDownLatch doneLatch = new CountDownLatch(THREAD_COUNT * 2);
 		AtomicInteger errors = new AtomicInteger();
@@ -171,11 +172,11 @@ public class ConcurrencyTest {
 						};
 						listeners.add(listener);
 
-						boolean added = event.addListener(listener);
+						boolean added = signal.addListener(listener);
 						assertTrue(added);
-						assertFalse(event.addWeakListener(listener), "Can't add weak if strong exists");
+						assertFalse(signal.addWeakListener(listener), "Can't add weak if strong exists");
 
-						boolean removed = event.removeListener(listener);
+						boolean removed = signal.removeListener(listener);
 						assertTrue(removed);
 					}
 				}
@@ -202,11 +203,11 @@ public class ConcurrencyTest {
 						};
 						consumers.add(consumer);
 
-						boolean added = event.addConsumer(consumer);
+						boolean added = signal.addConsumer(consumer);
 						assertTrue(added);
-						assertFalse(event.addWeakConsumer(consumer), "Can't add weak if strong exists");
+						assertFalse(signal.addWeakConsumer(consumer), "Can't add weak if strong exists");
 
-						boolean removed = event.removeConsumer(consumer);
+						boolean removed = signal.removeConsumer(consumer);
 						assertTrue(removed);
 					}
 				}
@@ -282,7 +283,7 @@ public class ConcurrencyTest {
 	@Test
 	@Timeout(15)
 	void mixedListenerOperations() throws InterruptedException {
-		Event<String> event = Event.event();
+		Event event = Event.event();
 		State state = State.state();
 		Value<Integer> value = Value.nonNull(0);
 

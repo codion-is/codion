@@ -22,7 +22,7 @@ import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.component.table.FilterTableSort;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.filter.SortOrder;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;

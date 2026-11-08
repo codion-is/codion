@@ -16,7 +16,9 @@
  *
  * Copyright (c) 2024 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.reactive.observer;
+package is.codion.common.reactive.observable;
+
+import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
@@ -32,7 +34,7 @@ import static java.util.Objects.requireNonNull;
  * value access thread-safety is implementation dependent.
  * {@snippet class = "is.codion.manual.javadoc.ObservableSnippets" region = "usage":
  * class Person { // @start region=usage
- *   private final Event<String> nameChanged = Event.event();
+ *   private final Signal<String> nameChanged = Signal.signal();
  *
  *   private String name;
  *

@@ -26,8 +26,8 @@ import is.codion.common.model.filter.SortOrder;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
@@ -1117,7 +1117,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		private final Set<LeafTask> leafTasks = new HashSet<>();
 		private final State async = State.state(FilterModel.ASYNC.getOrThrow());
 		private final State active = State.state();
-		private final Event<Exception> exception = Event.event();
+		private final Signal<Exception> exception = Signal.signal();
 
 		private int synchronous = 0;
 
@@ -1456,8 +1456,8 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 	private final class DefaultExpansion implements Expansion<T> {
 
-		private final Event<NodePath<T>> expanded = Event.event();
-		private final Event<NodePath<T>> collapsed = Event.event();
+		private final Signal<NodePath<T>> expanded = Signal.signal();
+		private final Signal<NodePath<T>> collapsed = Signal.signal();
 
 		@Override
 		public void expand(NodePath<T> path) {
@@ -1556,7 +1556,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 	private final class DefaultVisibleNodes implements VisibleNodes<T> {
 
-		private final Event<List<NodePath<T>>> changed = Event.event();
+		private final Signal<List<NodePath<T>>> changed = Signal.signal();
 
 		private List<NodePath<T>> paths = emptyList();
 		private Map<NodePath<T>, Integer> indexes = emptyMap();
@@ -1636,7 +1636,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	private final class DefaultSort implements FilterTreeSort<T> {
 
 		private final @Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators;
-		private final Event<Boolean> changed = Event.event();
+		private final Signal<Boolean> changed = Signal.signal();
 		private final Value<SortOrder> order;
 
 		private DefaultSort(@Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators) {

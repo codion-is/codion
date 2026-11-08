@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.reactive.observer.Observable;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.observable.Observable;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.State;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -65,7 +65,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private boolean resizable = true;
 	private @Nullable Dimension size;
 	private @Nullable Action enterAction;
-	private @Nullable Observer<?> closeObserver;
+	private @Nullable Sensor close;
 	private @Nullable Consumer<State> confirmCloseListener;
 	private boolean closeOnEscape = true;
 
@@ -105,8 +105,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	}
 
 	@Override
-	public ComponentDialogBuilder closeObserver(@Nullable Observer<?> closeObserver) {
-		this.closeObserver = closeObserver;
+	public ComponentDialogBuilder close(@Nullable Sensor close) {
+		this.close = close;
 		return this;
 	}
 
@@ -162,7 +162,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
 		Action disposeAction = new DisposeDialogAction(new DialogSupplier(dialog), confirmCloseListener);
 		dialog.addWindowListener(new DialogListener(disposeAction, onClosedConsumers, onOpenedConsumers));
-		if (closeObserver == null) {
+		if (close == null) {
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			if (closeOnEscape) {
 				KeyEvents.builder()
@@ -173,7 +173,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 			}
 		}
 		else {
-			closeObserver.addListener(new CloseListener(disposeAction));
+			close.addListener(new CloseListener(disposeAction));
 		}
 		onBuildConsumers.forEach(consumer -> consumer.accept(dialog));
 

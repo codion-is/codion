@@ -18,19 +18,12 @@
  */
 package is.codion.common.reactive.event;
 
-import is.codion.common.reactive.observer.AbstractObserver;
+import is.codion.common.reactive.sensor.AbstractSensor;
 
-import org.jspecify.annotations.Nullable;
-
-final class DefaultEvent<T> extends AbstractObserver<T> implements Event<T> {
+final class DefaultEvent extends AbstractSensor implements Event {
 
 	@Override
 	public void run() {
-		accept(null);
-	}
-
-	@Override
-	public void accept(@Nullable T data) {
-		notifyListeners(data);
+		notifyListeners();
 	}
 }

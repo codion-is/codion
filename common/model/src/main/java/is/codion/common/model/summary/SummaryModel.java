@@ -18,8 +18,8 @@
  */
 package is.codion.common.model.summary;
 
-import is.codion.common.reactive.observer.Observable;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.observable.Observable;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 
@@ -103,9 +103,9 @@ public interface SummaryModel {
 		boolean subset();
 
 		/**
-		 * @return an observer notified when underlying values change, requiring a summary refresh
+		 * @return a sensor notified when underlying values change, requiring a summary refresh
 		 */
-		Observer<?> valuesChanged();
+		Sensor valuesChanged();
 
 		/**
 		 * @param <C> the column identifier type

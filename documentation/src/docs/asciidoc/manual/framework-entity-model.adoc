@@ -57,7 +57,7 @@ include::{dir-source}/is/codion/manual/app/store/model/StoreApplicationModel.jav
 [#_event_binding]
 == Event binding
 
-The model layer classes expose a number of <<manual.adoc#_reactive_classes, *Event*, *State* and *Value* observers>>.
+The model layer classes expose a number of <<manual.adoc#_reactive_classes, *Event*, *Signal*, *State* and *Value* observers>>.
 
 [source,java,indent=0]
 ----

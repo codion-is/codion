@@ -22,8 +22,8 @@ import is.codion.common.model.component.tree.FilterTreeModel;
 import is.codion.common.model.component.tree.FilterTreeSort;
 import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.model.component.tree.TreeSelection;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -230,7 +230,7 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 
 	private static final class DefaultUnreachableItems implements UnreachableItems {
 
-		private final Event<Collection<Entity>> event = Event.event();
+		private final Signal<Collection<Entity>> signal = Signal.signal();
 
 		private Collection<Entity> items = emptyList();
 
@@ -241,12 +241,12 @@ public abstract class AbstractEntityTableTreeModel<M extends FilterTreeModel<Ent
 
 		@Override
 		public Observer<Collection<Entity>> observer() {
-			return event.observer();
+			return signal.observer();
 		}
 
 		private void set(Collection<Entity> unreachable) {
 			items = unreachable;
-			event.accept(items);
+			signal.accept(items);
 		}
 	}
 

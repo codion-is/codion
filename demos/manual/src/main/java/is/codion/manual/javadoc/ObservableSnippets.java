@@ -18,9 +18,9 @@
  */
 package is.codion.manual.javadoc;
 
-import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 
 /**
  * The {@link Observable} javadoc snippets, each the region of the same name.
@@ -29,7 +29,7 @@ final class ObservableSnippets {
 
   void usage() {
     class Person { // @start region=usage
-      private final Event<String> nameChanged = Event.event();
+      private final Signal<String> nameChanged = Signal.signal();
 
       private String name;
 

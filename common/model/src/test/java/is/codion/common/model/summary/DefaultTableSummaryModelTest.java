@@ -19,8 +19,8 @@
 package is.codion.common.model.summary;
 
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
-import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
+import is.codion.common.reactive.signal.Signal;
 
 import org.junit.jupiter.api.Test;
 
@@ -109,7 +109,7 @@ public final class DefaultTableSummaryModelTest {
 
 	private static final class TestSummaryValues<T extends Number> implements SummaryValues<T> {
 
-		private final Event<Object> valuesChanged = Event.event();
+		private final Signal<Object> valuesChanged = Signal.signal();
 
 		@Override
 		public String format(Object value) {
@@ -127,7 +127,7 @@ public final class DefaultTableSummaryModelTest {
 		}
 
 		@Override
-		public Observer<?> valuesChanged() {
+		public Sensor valuesChanged() {
 			return valuesChanged.observer();
 		}
 	}

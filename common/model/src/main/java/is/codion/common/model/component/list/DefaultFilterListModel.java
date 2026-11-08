@@ -21,8 +21,8 @@ package is.codion.common.model.component.list;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.filter.SortOrder;
 import is.codion.common.model.selection.MultiSelection;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.value.Value;
 
 import org.jspecify.annotations.Nullable;
@@ -85,7 +85,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 	private final class DefaultListSort implements FilterListSort<T> {
 
 		private final @Nullable Comparator<T> comparator;
-		private final Event<Boolean> changed = Event.event();
+		private final Signal<Boolean> changed = Signal.signal();
 		private final Value<SortOrder> order = Value.builder()
 						.nonNull(SortOrder.ASCENDING)
 						.consumer(sortOrder -> changed.accept(sortOrder != SortOrder.UNSORTED))

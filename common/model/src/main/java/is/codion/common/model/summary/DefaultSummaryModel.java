@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.summary;
 
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 

@@ -18,8 +18,9 @@
  */
 package is.codion.tools.loadtest;
 
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
@@ -66,9 +67,9 @@ public interface LoadTest<T> {
 	Observer<Result> result();
 
 	/**
-	 * @return an observer notified when this load test model has been shutdown.
+	 * @return a sensor notified when this load test model has been shutdown.
 	 */
-	Observer<?> shuttingDown();
+	Sensor shuttingDown();
 
 	/**
 	 * @return the {@link State} controlling the paused state of this load test

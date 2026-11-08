@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui;
 
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 
 import org.jspecify.annotations.Nullable;
@@ -189,10 +189,10 @@ public final class Utilities {
 	public static <T> Observer<T> observer(JComponent component, String property) {
 		requireNonNull(component);
 		requireNonNull(property);
-		Event<T> event = Event.event();
-		component.addPropertyChangeListener(property, changeEvent -> event.accept((T) changeEvent.getNewValue()));
+		Signal<T> signal = Signal.signal();
+		component.addPropertyChangeListener(property, changeEvent -> signal.accept((T) changeEvent.getNewValue()));
 
-		return event.observer();
+		return signal.observer();
 	}
 
 	/**

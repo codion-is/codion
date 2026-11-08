@@ -21,10 +21,10 @@ package is.codion.framework.model;
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
-import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Change;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
@@ -116,7 +116,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditor.class);
 
-	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
+	private final Map<Attribute<?>, Signal<?>> editSignals = new HashMap<>();
 	private final DefaultPersistEvents persistEvents = new DefaultPersistEvents();
 	private final DefaultEditorValues values = new DefaultEditorValues();
 	private final State async = State.state(ASYNC.getOrThrow());
@@ -627,9 +627,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	private final class DefaultEditorEntity implements EditorEntity {
 
-		private final Event<Entity> changing = Event.event();
-		private final Event<Entity> changed = Event.event();
-		private final Event<Entity> replaced = Event.event();
+		private final Signal<Entity> changing = Signal.signal();
+		private final Signal<Entity> changed = Signal.signal();
+		private final Signal<Entity> replaced = Signal.signal();
 		private final State primaryKeyPresent = State.state(false);
 		private final State valid = State.state();
 		private final DefaultExists exists;
@@ -2276,7 +2276,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	private static final class DefaultEditorValues implements EditorValues {
 
-		private final Event<Attribute<?>> changed = Event.event();
+		private final Signal<Attribute<?>> changed = Signal.signal();
 
 		@Override
 		public Observer<Attribute<?>> changed() {
@@ -2673,7 +2673,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public Observer<T> edited() {
-			return ((Event<T>) editEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
+			return ((Signal<T>) editSignals.computeIfAbsent(attribute, k -> Signal.signal())).observer();
 		}
 
 		@Override
@@ -2834,9 +2834,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues,
 																		 Map<Attribute<?>, String> invalidAttributes) {
 			notifyValueChange(attribute, invalidAttributes);
-			Event<T> editEvent = (Event<T>) editEvents.get(attribute);
-			if (editEvent != null) {
-				editEvent.accept(value);
+			Signal<T> editSignal = (Signal<T>) editSignals.get(attribute);
+			if (editSignal != null) {
+				editSignal.accept(value);
 			}
 			dependingValues.forEach((dependingAttribute, previousValue) -> {
 				Object currentValue = entity.instance.get(dependingAttribute);
@@ -2979,7 +2979,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private final DefaultBeforePersist before = new DefaultBeforePersist();
 		private final DefaultAfterPersist after = new DefaultAfterPersist();
-		private final Event<Collection<Entity>> persisted = Event.event();
+		private final Signal<Collection<Entity>> persisted = Signal.signal();
 
 		@Override
 		public BeforePersist before() {
@@ -3076,9 +3076,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private static final class DefaultBeforePersist implements BeforePersist {
 
-			private final Event<Collection<Entity>> insert = Event.event();
-			private final Event<Collection<Entity>> update = Event.event();
-			private final Event<Collection<Entity>> delete = Event.event();
+			private final Signal<Collection<Entity>> insert = Signal.signal();
+			private final Signal<Collection<Entity>> update = Signal.signal();
+			private final Signal<Collection<Entity>> delete = Signal.signal();
 
 			@Override
 			public Observer<Collection<Entity>> insert() {
@@ -3098,9 +3098,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private static final class DefaultAfterPersist implements AfterPersist {
 
-			private final Event<Collection<Entity>> insert = Event.event();
-			private final Event<Map<Entity, Entity>> update = Event.event();
-			private final Event<Collection<Entity>> delete = Event.event();
+			private final Signal<Collection<Entity>> insert = Signal.signal();
+			private final Signal<Map<Entity, Entity>> update = Signal.signal();
+			private final Signal<Collection<Entity>> delete = Signal.signal();
 
 			@Override
 			public Observer<Collection<Entity>> insert() {

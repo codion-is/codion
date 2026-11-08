@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.tree.FilterTreeModel;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;

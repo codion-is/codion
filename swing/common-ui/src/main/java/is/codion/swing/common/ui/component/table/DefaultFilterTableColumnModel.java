@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.ObservableValueList;
@@ -54,8 +54,8 @@ import static java.util.stream.Collectors.toList;
 final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C> {
 
 	private final DefaultTableColumnModel tableColumnModel = new DefaultTableColumnModel();
-	private final Event<C> columnHidden = Event.event();
-	private final Event<C> columnShown = Event.event();
+	private final Signal<C> columnHidden = Signal.signal();
+	private final Signal<C> columnShown = Signal.signal();
 	private final Map<C, FilterTableColumn<C>> columns;
 	private final Map<Integer, C> columnIdentifiers = new HashMap<>();
 	private final Map<C, HiddenColumn> hiddenColumnMap = new LinkedHashMap<>();
@@ -348,7 +348,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 	private final class DefaultVisibleColumns implements VisibleColumns<C> {
 
-		private final Event<List<C>> event = Event.event();
+		private final Signal<List<C>> signal = Signal.signal();
 
 		private DefaultVisibleColumns() {
 			columnHidden.addListener(this::notifyChanged);
@@ -399,17 +399,17 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 		@Override
 		public Observer<List<C>> observer() {
-			return event.observer();
+			return signal.observer();
 		}
 
 		private void notifyChanged() {
-			event.accept(get());
+			signal.accept(get());
 		}
 	}
 
 	private final class DefaultHiddenColumns implements HiddenColumns<C> {
 
-		private final Event<Collection<C>> event = Event.event();
+		private final Signal<Collection<C>> signal = Signal.signal();
 
 		private DefaultHiddenColumns() {
 			columnHidden.addListener(this::notifyChanged);
@@ -423,7 +423,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 		@Override
 		public Observer<Collection<C>> observer() {
-			return event.observer();
+			return signal.observer();
 		}
 
 		@Override
@@ -434,7 +434,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		}
 
 		private void notifyChanged() {
-			event.accept(get());
+			signal.accept(get());
 		}
 	}
 

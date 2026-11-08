@@ -20,6 +20,8 @@ package is.codion.manual.common.reactive;
 
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -42,31 +44,48 @@ public final class ReactiveDemo {
 
 	private static void event() {
 		// tag::event[]
-		// specify an event propagating
-		// a String as the event data
-		Event<String> event = Event.event();
+		// an event, without data
+		Event event = Event.event();
 
-		// an observer manages the listeners
+		// a sensor manages the listeners
 		// for an Event but can not trigger it
-		Observer<String> observer = event.observer();
+		Sensor sensor = event.sensor();
 
-		// add a listener if you're not
-		// interested in the event data
-		observer.addListener(() -> System.out.println("Event occurred"));
+		sensor.addListener(() -> System.out.println("Event occurred"));
 
 		event.run();//output: 'Event occurred'
 
-		// or a consumer if you're
-		// interested in the event data
-		observer.addConsumer(data -> System.out.println("Event: " + data));
-
-		event.accept("info");//output: 'Event: info'
-
-		// Event implements Observer so
-		// listeneres can be added directly without
-		// referring to the Observer
-		event.addConsumer(System.out::println);
+		// Event implements Sensor so
+		// listeners can be added directly
+		// without referring to the Sensor
+		event.addListener(() -> System.out.println("Event occurred again"));
 		// end::event[]
+	}
+
+	private static void signal() {
+		// tag::signal[]
+		// a signal propagating
+		// a String as its data
+		Signal<String> signal = Signal.signal();
+
+		// an observer manages the listeners and
+		// consumers for a Signal but can not trigger it
+		Observer<String> observer = signal.observer();
+
+		// add a listener if you're not
+		// interested in the data
+		observer.addListener(() -> System.out.println("Signal occurred"));
+
+		// or a consumer if you are
+		observer.addConsumer(data -> System.out.println("Signal: " + data));
+
+		signal.accept("info");//output: 'Signal occurred', 'Signal: info'
+
+		// Signal implements Observer so listeners
+		// and consumers can be added directly
+		// without referring to the Observer
+		signal.addConsumer(System.out::println);
+		// end::signal[]
 	}
 
 	private static void state() {

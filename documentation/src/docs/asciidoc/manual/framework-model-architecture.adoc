@@ -26,7 +26,7 @@ See <<manual.adoc#_model_linking, Model linking>> for the linking configuration 
 
 == The reactive fabric
 
-Everything a model knows is exposed as an observable *Value*, *State* or *Event* — which is all a UI needs to render it, and all application logic needs to react to it:
+Everything a model knows is exposed as an observable *Value*, *State*, *Event* or *Signal* — which is all a UI needs to render it, and all application logic needs to react to it:
 
 [source,java]
 ----

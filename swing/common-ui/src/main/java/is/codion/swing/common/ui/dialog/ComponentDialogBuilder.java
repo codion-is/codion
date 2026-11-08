@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.State;
 
 import org.jspecify.annotations.Nullable;
@@ -77,12 +77,12 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	ComponentDialogBuilder enterAction(Action enterAction);
 
 	/**
-	 * Sets the Observer which triggers the closing of the dialog, note that {@link #closeOnEscape(boolean)}
-	 * has no effect if a closeObserver is specified.
-	 * @param closeObserver if specified the dialog will be disposed of when and only when this observer is notified
+	 * Sets the sensor which triggers the closing of the dialog, note that {@link #closeOnEscape(boolean)}
+	 * has no effect if one is specified.
+	 * @param close if specified the dialog will be disposed of when and only when this sensor is notified
 	 * @return this builder instance
 	 */
-	ComponentDialogBuilder closeObserver(@Nullable Observer<?> closeObserver);
+	ComponentDialogBuilder close(@Nullable Sensor close);
 
 	/**
 	 * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
@@ -94,7 +94,7 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 
 	/**
 	 * @param closeOnEscape true if the dialog should be closed when the ESC button is pressed,
-	 * has no effect if a {@link #closeObserver(Observer) close observer} is specified
+	 * has no effect if a {@link #close(Sensor) close sensor} is specified
 	 * @return this builder instance
 	 */
 	ComponentDialogBuilder closeOnEscape(boolean closeOnEscape);

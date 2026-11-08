@@ -21,8 +21,8 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.model.condition.TableConditions;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Operator;
@@ -167,7 +167,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	private static final DefaultOperatorCaptions DEFAULT_OPERATOR_CAPTIONS = new DefaultOperatorCaptions();
 
 	private final ConditionComponents components;
-	private final Event<JComponent> focusGained = Event.event();
+	private final Signal<JComponent> focusGained = Signal.signal();
 	private final @Nullable TableColumn tableColumn;
 	private final @Nullable String name;
 	private final Function<Operator, String> operatorCaptions;

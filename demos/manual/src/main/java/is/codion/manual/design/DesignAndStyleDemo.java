@@ -18,8 +18,8 @@
  */
 package is.codion.manual.design;
 
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueList;
@@ -37,7 +37,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.reactive.event.Event.event;
+import static is.codion.common.reactive.signal.Signal.signal;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 public final class DesignAndStyleDemo {
@@ -49,7 +49,7 @@ public final class DesignAndStyleDemo {
 		FilterTable<List<String>, Integer> table = null;
 
 		//tag::factories[]
-		Event<String> event = event(); // Event.event()
+		Signal<String> signal = signal(); // Signal.signal()
 
 		Value<Integer> value = Value.nullable();
 
@@ -80,7 +80,7 @@ public final class DesignAndStyleDemo {
 		//end::builders[]
 
 		//tag::accessors[]
-		Observer<String> observer = event.observer();
+		Observer<String> observer = signal.observer();
 
 
 		Entity.Key primaryKey = entity.primaryKey();

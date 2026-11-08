@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component.tree;
 
 import is.codion.common.model.component.tree.NodePath;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
@@ -176,7 +176,7 @@ public final class FilterTree<T> extends JTree {
 	private final @Nullable Function<T, @Nullable Color> foreground;
 	private final boolean rowsFillViewport;
 	private final Value<Action> doubleClick;
-	private final Event<MouseEvent> doubleClicked = Event.event();
+	private final Signal<MouseEvent> doubleClicked = Signal.signal();
 	private final State scrollToSelected;
 	private final ScrollTo scrollTo = new ScrollTo();
 	private final TreeModelListener modelReconciler = new ModelReconciler();

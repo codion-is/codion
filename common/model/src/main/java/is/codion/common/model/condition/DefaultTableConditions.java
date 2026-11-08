@@ -19,7 +19,7 @@
 package is.codion.common.model.condition;
 
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -39,7 +39,7 @@ final class DefaultTableConditions<C> implements TableConditions<C> {
 	private final Map<C, ConditionModel<?>> conditions;
 	private final ValueSet<C> persist;
 	private final ObservableState enabled;
-	private final Event<?> changed = Event.event();
+	private final Event changed = Event.event();
 
 	DefaultTableConditions(Map<C, ConditionModel<?>> conditionModels) {
 		this.conditions = unmodifiableMap(new HashMap<>(requireNonNull(conditionModels)));
@@ -82,8 +82,8 @@ final class DefaultTableConditions<C> implements TableConditions<C> {
 	}
 
 	@Override
-	public Observer<?> changed() {
-		return changed.observer();
+	public Sensor changed() {
+		return changed.sensor();
 	}
 
 	@Override

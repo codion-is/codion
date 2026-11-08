@@ -23,6 +23,7 @@ import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.TableConditions;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
@@ -78,7 +79,7 @@ final class DefaultEntityConditions implements EntityConditions {
 	private final Value<Conjunction> conjunction = Value.builder()
 					.nonNull(Conjunction.AND)
 					.build();
-	private final Event<?> changed = Event.event();
+	private final Event changed = Event.event();
 	private final DefaultAdditional additional = new DefaultAdditional();
 	private final Predicate<Attribute<?>> aggregateColumn = new AggregateColumn();
 	private final Predicate<Attribute<?>> notAggregateColumn = aggregateColumn.negate();
@@ -159,8 +160,8 @@ final class DefaultEntityConditions implements EntityConditions {
 	}
 
 	@Override
-	public Observer<?> changed() {
-		return changed.observer();
+	public Sensor changed() {
+		return changed.sensor();
 	}
 
 	@Override

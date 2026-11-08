@@ -19,6 +19,7 @@
 package is.codion.common.model.selection;
 
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -56,7 +57,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	 * items changed, the selection then following the items, see {@link Items#restore(Collection)}.
 	 */
 	@Override
-	Observer<?> changing();
+	Sensor changing();
 
 	/**
 	 * @return an {@link ObservableState} indicating whether multiple items are selected
@@ -131,15 +132,15 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	Grouping grouping();
 
 	/**
-	 * <p>Returns an observer notified on every change to the selected indexes, grouped or not, the raw stream of
+	 * <p>Returns a sensor notified on every change to the selected indexes, grouped or not, the raw stream of
 	 * changes a {@code javax.swing.event.ListSelectionListener} would see. {@link #index()}, {@link #indexes()},
-	 * {@link #item()} and {@link #items()} notify once a group of changes has ended, this observer notifies as
+	 * {@link #item()} and {@link #items()} notify once a group of changes has ended, this sensor notifies as
 	 * the changes happen, so a listener may observe intermediate states, such as the momentarily empty selection
 	 * while a refresh restores it. Suited to a live status display, not to anything acting on the selection.
-	 * @return an observer notified each time the selected indexes change, grouped or not
+	 * @return a sensor notified each time the selected indexes change, grouped or not
 	 * @see #grouping()
 	 */
-	Observer<?> adjusting();
+	Sensor adjusting();
 
 	/**
 	 * @param items the indexed items
@@ -414,20 +415,20 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		Grouping grouping();
 
 		/**
-		 * @return an observer notified before the selected indexes are changed by request
+		 * @return a sensor notified before the selected indexes are changed by request
 		 * @see #restore(Collection)
 		 */
-		Observer<?> changing();
+		Sensor changing();
 
 		/**
-		 * @return an observer notified after the selected indexes changed, by whoever changed them
+		 * @return a sensor notified after the selected indexes changed, by whoever changed them
 		 */
-		Observer<?> changed();
+		Sensor changed();
 
 		/**
-		 * @return an observer notified on every change to the selected indexes, grouped or not, as the changes happen
+		 * @return a sensor notified on every change to the selected indexes, grouped or not, as the changes happen
 		 * @see #changed()
 		 */
-		Observer<?> adjusting();
+		Sensor adjusting();
 	}
 }

@@ -21,7 +21,7 @@ package is.codion.common.reactive.state;
 import is.codion.common.reactive.observer.Observer;
 
 /**
- * An observable boolean state, extending {@link Observer} to provide listener capabilities.
+ * An observable boolean state, extending {@link Observer} to provide listener and consumer capabilities.
  * <p>
  * Listener methods are inherited from {@link Observer} and delegate to {@link #observer()}.
  * @see State

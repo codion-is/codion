@@ -24,7 +24,7 @@ import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.resource.MessageBundle;
@@ -85,7 +85,7 @@ final class EntityTableExportModel {
 	private final EntityTableExportColumns columns;
 	private final State selected;
 	private final State all;
-	private final Event<?> rowCounts = Event.event();
+	private final Event rowCounts = Event.event();
 	private final State modified = State.state();
 
 	//the configuration selected as last applied or saved, the default columns in case of none
@@ -179,8 +179,8 @@ final class EntityTableExportModel {
 	/**
 	 * @return notified when the row counts may have changed
 	 */
-	Observer<?> rowCounts() {
-		return rowCounts.observer();
+	Sensor rowCounts() {
+		return rowCounts.sensor();
 	}
 
 	/**

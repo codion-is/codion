@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.reactive.observer;
+package is.codion.common.reactive.observable;
 
 import org.jspecify.annotations.Nullable;
 

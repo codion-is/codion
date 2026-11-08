@@ -19,8 +19,9 @@
 package is.codion.common.model.component.combobox;
 
 import is.codion.common.model.selection.SingleSelection;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
@@ -145,8 +146,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final class DefaultComboBoxSort<T> implements Sort<T> {
 
 		private final Comparator<T> comparator;
-		//the comparator is immutable so the sort never changes, this event is never fired
-		private final Event<Boolean> event = Event.event();
+		//the comparator is immutable so the sort never changes, this signal is never fired
+		private final Signal<Boolean> signal = Signal.signal();
 
 		private DefaultComboBoxSort(Comparator<T> comparator) {
 			this.comparator = comparator;
@@ -164,7 +165,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public Observer<Boolean> observer() {
-			return event.observer();
+			return signal.observer();
 		}
 	}
 
@@ -544,8 +545,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 			private final IncludePredicate<T> predicate = new DefaultIncludePredicate<>();
 			private final List<@Nullable T> items = new ArrayList<>();
-			private final Event<List<T>> changed = Event.event();
-			private final Event<Collection<T>> added = Event.event();
+			private final Signal<List<T>> changed = Signal.signal();
+			private final Signal<Collection<T>> added = Signal.signal();
 
 			@Override
 			public IncludePredicate<T> predicate() {
@@ -678,7 +679,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final class DefaultExcludedItems implements ExcludedItems<T> {
 
-			private final Event<Collection<T>> changed = Event.event();
+			private final Signal<Collection<T>> changed = Signal.signal();
 			private final Set<T> items = new LinkedHashSet<>();
 
 			@Override
@@ -727,7 +728,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Observer<?> changing() {
+		public Sensor changing() {
 			return selected.changing;
 		}
 
@@ -744,7 +745,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class SelectedItem extends AbstractValue<T> {
 
-		private final Event<T> changing = Event.event();
+		private final Signal<T> changing = Signal.signal();
 		private final State present = State.state();
 		private final Function<@Nullable Object, T> translator;
 

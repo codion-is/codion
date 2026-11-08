@@ -14,29 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.reactive.observer;
+/**
+ * <p>{@link Observable}, a value observed via the {@link is.codion.common.reactive.observer.Observer} it extends, and
+ * {@link Change}, a change of value.
+ */
+@org.jspecify.annotations.NullMarked
+package is.codion.common.reactive.observable;
 
-import org.jspecify.annotations.Nullable;
-
-import static is.codion.common.reactive.observer.Change.change;
-import static java.util.Objects.deepEquals;
-
-final class ChangeObserver<T> extends AbstractObserver<Change<T>> {
-
-	private @Nullable T current;
-
-	ChangeObserver(Observable<T> observable) {
-		current = observable.get();
-		observable.addConsumer(this::notify);
-	}
-
-	private void notify(@Nullable T newValue) {
-		if (!deepEquals(current, newValue)) {
-			T previous = current;
-			current = newValue;
-			notifyListeners(change(previous, newValue));
-		}
-	}
-}

@@ -76,5 +76,5 @@ include::{dir-source}/world/src/test/java/is/codion/demos/world/model/CountryRep
 
 1. **Run DomainTest over every entity type** — it is one line per entity and catches definition/schema drift immediately.
 2. **Transactions with rollback** keep tests isolated and repeatable — no test data cleanup.
-3. **Test observable behavior** — model state is exposed as Value/State/Event; assert on those, the same surface the UI binds to.
+3. **Test observable behavior** — model state is exposed as Value/State/Event/Signal; assert on those, the same surface the UI binds to.
 4. **Load test early** — see <<{basedir}/manual/manual.adoc#_application_load_testing, application load testing>> for exercising the application under concurrent users.

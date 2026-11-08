@@ -84,7 +84,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	private final ServerConfiguration configuration;
 	private final boolean exported;
 	private final ServerInformation serverInformation;
-	private final Event<?> shutdownEvent = Event.event();
+	private final Event shutdownEvent = Event.event();
 	private final AtomicBoolean started = new AtomicBoolean();
 	private final AtomicBoolean shuttingDown = new AtomicBoolean();
 	private volatile int connectionLimit = -1;

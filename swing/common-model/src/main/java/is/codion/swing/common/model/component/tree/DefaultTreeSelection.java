@@ -24,7 +24,7 @@ import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.model.component.tree.TreeSelection;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -52,9 +52,9 @@ import static java.util.Collections.unmodifiableSet;
  */
 final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements FilterTreeSelection<T> {
 
-	private final Event<?> changing = Event.event();
-	private final Event<?> changed = Event.event();
-	private final Event<?> adjusting = Event.event();
+	private final Event changing = Event.event();
+	private final Event changed = Event.event();
+	private final Event adjusting = Event.event();
 	private final State singleSelection = State.state(false);
 	private final DefaultGrouping grouping = new DefaultGrouping();
 	private final VisibleNodes<T> visible;
@@ -94,8 +94,8 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 	}
 
 	@Override
-	public Observer<?> changing() {
-		return changing.observer();
+	public Sensor changing() {
+		return changing.sensor();
 	}
 
 	@Override
@@ -149,8 +149,8 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 	}
 
 	@Override
-	public Observer<?> adjusting() {
-		return adjusting.observer();
+	public Sensor adjusting() {
+		return adjusting.sensor();
 	}
 
 	@Override
@@ -381,18 +381,18 @@ final class DefaultTreeSelection<T> extends DefaultTreeSelectionModel implements
 		}
 
 		@Override
-		public Observer<?> changing() {
-			return changing.observer();
+		public Sensor changing() {
+			return changing.sensor();
 		}
 
 		@Override
-		public Observer<?> changed() {
-			return changed.observer();
+		public Sensor changed() {
+			return changed.sensor();
 		}
 
 		@Override
-		public Observer<?> adjusting() {
-			return adjusting.observer();
+		public Sensor adjusting() {
+			return adjusting.sensor();
 		}
 	}
 }

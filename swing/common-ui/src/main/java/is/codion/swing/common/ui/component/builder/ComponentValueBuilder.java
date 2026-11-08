@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.builder;
 
-import is.codion.common.reactive.observer.Change;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;

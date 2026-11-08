@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.calendar;
 
-import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -238,7 +238,7 @@ public final class CalendarPanel extends JPanel {
 	private final boolean includeTodayButton;
 	private final boolean includeWeekNumbers;
 	private final ObservableState enabledState;
-	private final Event<Integer> doubleClicked = Event.event();
+	private final Signal<Integer> doubleClicked = Signal.signal();
 	private @Nullable JPanel weekNumberPanel;
 
 	CalendarPanel(DefaultBuilder builder) {

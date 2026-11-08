@@ -18,76 +18,56 @@
  */
 package is.codion.common.reactive.event;
 
-import is.codion.common.reactive.observer.Observer;
-
-import org.jspecify.annotations.Nullable;
-
-import java.util.function.Consumer;
+import is.codion.common.reactive.sensor.Sensor;
 
 /**
- * <p>An event class implementing {@link Observer}.
- * <p>Events are triggered with {@link #run()} or {@link #accept(Object)}, depending
- * on whether data should be propagated with the event.
- * <p>Listeners are notified in the order they were added.
- * <p>Note that <b>both</b> listeners and consumers are notified each time the event is
- * triggered, regardless of whether {@link #run()} or {@link #accept(Object)} is used.
- * <p>Events provide access to their {@link Observer} instance via {@link #observer()}, which can
- * be used to add listeners and consumers, but can not be used to trigger the event.
+ * <p>An event, notifying its listeners each time it occurs, without data. For an event carrying data, see {@link is.codion.common.reactive.signal.Signal}.
+ * <p>An event is triggered with {@link #run()}, notifying its listeners in the order they were added.
+ * <p>Events provide access to their {@link Sensor} via {@link #sensor()}, which can be used to add listeners,
+ * but can not be used to trigger the event.
  * <p>Unhandled exceptions occurring in a listener will prevent further listeners from being notified.
- * <p><b>Thread Safety:</b> Listener and consumer management (add/remove) is thread-safe.
- * However, event triggering via {@link #run()} or {@link #accept(Object)} is NOT thread-safe
+ * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe.
+ * However, triggering via {@link #run()} is NOT thread-safe
  * and should be performed from a single thread (such as an application UI thread).</p>
  * {@snippet class = "is.codion.manual.javadoc.EventSnippets" region = "usage":
- * Event<Boolean> event = Event.event(); // @start region=usage
+ * Event event = Event.event(); // @start region=usage
  *
  * event.addListener(this::doSomething);
  *
  * event.run();
  *
- * event.addConsumer(this::onBoolean);
+ * Sensor sensor = event.sensor();
  *
- * event.accept(true);
- *
- * Observer<Boolean> observer = event.observer();
- *
- * observer.addListener(this::doSomethingElse); // @end}
- * <p>Listeners and Consumers can be added using a {@link java.lang.ref.WeakReference}, so they must be strongly
- * referenced elsewhere, a lambda or method reference only referenced by the observer being garbage collected right away.
+ * sensor.addListener(this::doSomethingElse); // @end}
+ * <p>Listeners can be added using a {@link java.lang.ref.WeakReference}, so they must be strongly
+ * referenced elsewhere, a lambda or method reference only referenced by the sensor being garbage collected right away.
  * {@snippet class = "is.codion.manual.javadoc.EventSnippets" region = "weak":
- * // listener and consumer are fields // @start region=weak
- * observer.addWeakListener(listener);
- * observer.addWeakConsumer(consumer); // @end}
- * <p>Any weak references that no longer refer to a listener/consumer instance
- * are cleared when listeners or consumers are added or removed.
+ * // listener is a field // @start region=weak
+ * sensor.addWeakListener(listener); // @end}
+ * <p>Any weak references that no longer refer to a listener instance
+ * are cleared when listeners are added or removed.
  * <p>A factory for {@link Event} instances via {@link #event()}.
- * @param <T> the type of data propagated with this event
+ * @see is.codion.common.reactive.signal.Signal
  */
-public interface Event<T> extends Runnable, Consumer<T>, Observer<T> {
+public interface Event extends Runnable, Sensor {
 
 	/**
-	 * Triggers this event.
+	 * Triggers this event, notifying its listeners.
 	 */
 	@Override
 	void run();
 
 	/**
-	 * Triggers this event.
-	 * @param data data associated with the event
+	 * @return a sensor notified each time this event occurs, which can not trigger it
 	 */
 	@Override
-	void accept(@Nullable T data);
-
-	/**
-	 * @return an observer notified each time this event occurs
-	 */
-	Observer<T> observer();
+	Sensor sensor();
 
 	/**
 	 * Creates a new {@link Event}.
-	 * @param <T> the type of data propagated to listeners on event occurrence
 	 * @return a new Event
 	 */
-	static <T> Event<T> event() {
-		return new DefaultEvent<>();
+	static Event event() {
+		return new DefaultEvent();
 	}
 }

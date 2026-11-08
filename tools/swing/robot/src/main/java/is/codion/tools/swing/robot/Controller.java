@@ -18,8 +18,8 @@
  */
 package is.codion.tools.swing.robot;
 
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -81,7 +81,7 @@ public final class Controller {
 	private final @Nullable Robot robot;
 	private final Verifier verifier = new Verifier();
 
-	private final Event<KeyStrokeDescription> keyStrokeEvent = Event.event();
+	private final Signal<KeyStrokeDescription> keyStrokeSignal = Signal.signal();
 
 	private volatile int verifyTimeout = DEFAULT_VERIFY_TIMEOUT;
 
@@ -135,7 +135,7 @@ public final class Controller {
 	public Interaction type(String text, @Nullable String description) {
 		requireNonNull(text);
 		LOG.debug("Typing text '{}', desc: '{}'", text, description);
-		keyStrokeEvent.accept(new DefaultKeyStrokeDescription("\"" + text + "\"", 1, description));
+		keyStrokeSignal.accept(new DefaultKeyStrokeDescription("\"" + text + "\"", 1, description));
 		Interaction interaction = null;
 		for (char character : text.toCharArray()) {
 			interaction = worst(interaction, verifier.verify(getKeyStroke(character),
@@ -215,7 +215,7 @@ public final class Controller {
 	 * @return an {@link Observer} notified each time a keystroke has been processed
 	 */
 	Observer<KeyStrokeDescription> key() {
-		return keyStrokeEvent.observer();
+		return keyStrokeSignal.observer();
 	}
 
 	/**
@@ -287,7 +287,7 @@ public final class Controller {
 		if (repeat < 1) {
 			throw new IllegalArgumentException("Repeat value must be greater than zero");
 		}
-		keyStrokeEvent.accept(new DefaultKeyStrokeDescription(keyStroke.toString().replace(PRESSED, ""), repeat, description));
+		keyStrokeSignal.accept(new DefaultKeyStrokeDescription(keyStroke.toString().replace(PRESSED, ""), repeat, description));
 		LOG.debug("Processing keyStroke: '{}' repeat: {}", keyStroke, repeat);
 		Interaction interaction = null;
 		for (int i = 0; i < repeat; i++) {

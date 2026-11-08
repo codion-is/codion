@@ -21,8 +21,8 @@ package is.codion.common.model.filter;
 import is.codion.common.model.filter.FilterModel.Refresher;
 import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -66,8 +66,8 @@ final class DefaultRefresher<T> implements Refresher<T> {
 						return thread;
 					});
 
-	private final Event<Collection<T>> resultEvent = Event.event();
-	private final Event<Exception> exceptionEvent = Event.event();
+	private final Signal<Collection<T>> resultSignal = Signal.signal();
+	private final Signal<Exception> exceptionSignal = Signal.signal();
 	private final State active = State.state();
 	private final @Nullable Supplier<Collection<T>> items;
 	private final State async;
@@ -110,12 +110,12 @@ final class DefaultRefresher<T> implements Refresher<T> {
 
 	@Override
 	public Observer<Collection<T>> result() {
-		return resultEvent.observer();
+		return resultSignal.observer();
 	}
 
 	@Override
 	public Observer<Exception> exception() {
-		return exceptionEvent.observer();
+		return exceptionSignal.observer();
 	}
 
 	@Override
@@ -200,7 +200,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 
 	private void onRefreshException(Exception exception) {
 		active.set(false);
-		exceptionEvent.accept(exception);
+		exceptionSignal.accept(exception);
 		onException.accept(exception);
 	}
 
@@ -212,7 +212,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		if (onResult != null) {
 			onResult.accept(result);
 		}
-		resultEvent.accept(result);
+		resultSignal.accept(result);
 	}
 
 	private void cancelCurrentRefresh() {

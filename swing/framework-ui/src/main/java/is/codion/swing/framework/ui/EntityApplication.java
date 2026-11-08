@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.exceptions.Exceptions;

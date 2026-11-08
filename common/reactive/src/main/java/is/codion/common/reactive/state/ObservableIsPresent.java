@@ -18,7 +18,7 @@
  */
 package is.codion.common.reactive.state;
 
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 
 final class ObservableIsPresent<T> implements Runnable {
 

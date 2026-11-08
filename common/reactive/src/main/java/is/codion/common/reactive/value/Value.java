@@ -18,8 +18,8 @@
  */
 package is.codion.common.reactive.value;
 
-import is.codion.common.reactive.observer.Change;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
@@ -69,16 +69,16 @@ import static java.util.Objects.requireNonNull;
 public interface Value<T> extends Observable<T> {
 
 	/**
-	 * Specifies when a Value instance notifies its listeners.
+	 * Specifies when a Value instance notifies its listeners and consumers.
 	 */
 	enum Notify {
 		/**
-		 * Notify listeners when the underlying value is set via {@link Value#set(Object)},
+		 * Notify listeners and consumers when the underlying value is set via {@link Value#set(Object)},
 		 * regardless of whether the new value is equal to the previous value.
 		 */
 		SET,
 		/**
-		 * Notify listeners when the underlying value is changed via {@link Value#set(Object)},
+		 * Notify listeners and consumers when the underlying value is changed via {@link Value#set(Object)},
 		 * that is, only when the new value differs from the previous value, determined by {@link java.util.Objects#deepEquals(Object, Object)}.
 		 */
 		CHANGED
@@ -88,7 +88,7 @@ public interface Value<T> extends Observable<T> {
 	 * Sets the value. Note that change listener notifications depend on the {@link Notify} policy associated with this value.
 	 * <p>Do not call {@link #set(Object)} from within a plain listener or consumer (the normalize-in-listener pattern,
 	 * such as trimming or clamping); notification delivers a single value snapshot, so a nested set leaves the
-	 * remaining listeners hearing the stale value and can fire a spurious reversed {@link #changed() change} event.
+	 * remaining consumers receiving the stale value and can fire a spurious reversed {@link #changed() change}.
 	 * Normalize the value in {@link #set(Object)}'s override, a {@link Validator}, or a non-null replacement instead.
 	 * @param value the value
 	 * @throws IllegalArgumentException in case the given value is invalid

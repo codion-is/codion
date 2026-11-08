@@ -27,6 +27,8 @@ import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.model.summary.TableSummaryModel;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
@@ -397,7 +399,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
 	private final Map<C, ConditionPanel<?>> filterPanels;
-	private final Event<MouseEvent> doubleClicked = Event.event();
+	private final Signal<MouseEvent> doubleClicked = Signal.signal();
 	private final Copy copy = new Copy();
 	private final ScrollTo scrollTo = new ScrollTo();
 	private final Value<Action> doubleClick;
@@ -2338,7 +2340,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final C identifier;
 		private final SwingFilterTableModel<?, C> tableModel;
 		private final Format format;
-		private final Event<?> valuesChanged = Event.event();
+		private final Event valuesChanged = Event.event();
 
 		private DefaultSummaryValues(C identifier, SwingFilterTableModel<?, C> tableModel, Format format) {
 			this.identifier = requireNonNull(identifier);
@@ -2354,8 +2356,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Observer<?> valuesChanged() {
-			return valuesChanged.observer();
+		public Sensor valuesChanged() {
+			return valuesChanged.sensor();
 		}
 
 		@Override

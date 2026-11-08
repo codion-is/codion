@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
@@ -135,7 +135,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 	private final class DefaultResults implements Results {
 
 		private final List<RowColumn> searchResults = new ArrayList<>();
-		private final Event<List<RowColumn>> resultsChanged = Event.event();
+		private final Signal<List<RowColumn>> resultsChanged = Signal.signal();
 		private final DefaultCurrentResult current = new DefaultCurrentResult();
 		private final DefaultSelectResult select = new DefaultSelectResult();
 

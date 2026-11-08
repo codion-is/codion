@@ -18,9 +18,9 @@
  */
 package is.codion.common.reactive.value;
 
+import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.AbstractObserver;
-import is.codion.common.reactive.observer.Change;
-import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
@@ -270,12 +270,12 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	}
 
 	/**
-	 * Called by {@link #notifyObserver()} before the listeners are notified, with the value they are to receive,
-	 * the listeners only notified in case this method returns true. Allows a value whose state changes outside
+	 * Called by {@link #notifyObserver()} before the listeners and consumers are notified, with the value the consumers
+	 * are to receive, the listeners and consumers only notified in case this method returns true. Allows a value whose state changes outside
 	 * {@link #set(Object)}, held by a component for example, to validate a change before it is notified.
 	 * <p>Returns true by default.
-	 * @param value the value the listeners are to receive
-	 * @return true if the listeners should be notified
+	 * @param value the value the consumers are to receive
+	 * @return true if the listeners and consumers should be notified
 	 */
 	protected boolean shouldNotify(@Nullable T value) {
 		return true;

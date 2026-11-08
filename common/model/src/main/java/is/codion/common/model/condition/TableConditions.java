@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.condition;
 
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.ValueSet;
 
@@ -61,9 +61,9 @@ public interface TableConditions<C> {
 	ObservableState enabled();
 
 	/**
-	 * @return an observer notified each time the condition changes
+	 * @return a sensor notified each time the condition changes
 	 */
-	Observer<?> changed();
+	Sensor changed();
 
 	/**
 	 * @return a {@link ValueSet} controlling the identifiers of conditions which should persist when this condition model is cleared

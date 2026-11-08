@@ -19,11 +19,7 @@
 package is.codion.manual.javadoc;
 
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
-
-import org.jspecify.annotations.Nullable;
-
-import java.util.function.Consumer;
+import is.codion.common.reactive.sensor.Sensor;
 
 /**
  * The {@link Event} javadoc snippets, each the region of the same name.
@@ -32,33 +28,25 @@ final class EventSnippets {
 
   // Strongly referenced by this instance, for the weak region
   private final Runnable listener = this::doSomethingElse;
-  private final Consumer<Boolean> consumer = this::onBoolean;
 
   void usage() {
-    Event<Boolean> event = Event.event(); // @start region=usage
+    Event event = Event.event(); // @start region=usage
 
     event.addListener(this::doSomething);
 
     event.run();
 
-    event.addConsumer(this::onBoolean);
+    Sensor sensor = event.sensor();
 
-    event.accept(true);
-
-    Observer<Boolean> observer = event.observer();
-
-    observer.addListener(this::doSomethingElse); // @end
+    sensor.addListener(this::doSomethingElse); // @end
   }
 
-  void weak(Observer<Boolean> observer) {
-    // listener and consumer are fields // @start region=weak
-    observer.addWeakListener(listener);
-    observer.addWeakConsumer(consumer); // @end
+  void weak(Sensor sensor) {
+    // listener is a field // @start region=weak
+    sensor.addWeakListener(listener); // @end
   }
 
   private void doSomething() {}
 
   private void doSomethingElse() {}
-
-  private void onBoolean(@Nullable Boolean value) {}
 }

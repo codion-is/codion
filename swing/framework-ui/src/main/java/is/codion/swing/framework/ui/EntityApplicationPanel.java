@@ -20,8 +20,8 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
@@ -309,8 +309,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 					.consumer(alwaysOnTop -> Ancestor.window().of(this).optional()
 									.ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
 					.build();
-	private final Event<EntityApplicationPanel<M>> exiting = Event.event();
-	private final Event<EntityApplicationPanel<M>> initializedEvent = Event.event();
+	private final Signal<EntityApplicationPanel<M>> exiting = Signal.signal();
+	private final Signal<EntityApplicationPanel<M>> initializedSignal = Signal.signal();
 	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.getOrThrow();
 	private final boolean userPreferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow();
 
@@ -519,7 +519,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 				setLayout(new BorderLayout());
 				add(applicationLayout.layout(), BorderLayout.CENTER);
 				bindEvents();
-				initializedEvent.accept(this);
+				initializedSignal.accept(this);
 			}
 			finally {
 				initializing = false;
@@ -735,7 +735,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @see #initialize()
 	 */
 	protected final Observer<EntityApplicationPanel<M>> initialized() {
-		return initializedEvent.observer();
+		return initializedSignal.observer();
 	}
 
 	/**

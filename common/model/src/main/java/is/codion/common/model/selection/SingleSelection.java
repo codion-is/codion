@@ -19,7 +19,7 @@
 package is.codion.common.model.selection;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 
@@ -40,9 +40,9 @@ public interface SingleSelection<T> {
 	 * Note that this is a best-effort warning mechanism, not a transactional revert: throwing a
 	 * {@link CancelException} lets a listener react before the change (for example to save unsaved edits),
 	 * but does not roll the selection or model back to a consistent state - temporary inconsistency is tolerated.
-	 * @return an observer notified when the selection is about to change
+	 * @return a sensor notified when the selection is about to change
 	 */
-	Observer<?> changing();
+	Sensor changing();
 
 	/**
 	 * <p>Returns the {@link Value} controlling the selected item.

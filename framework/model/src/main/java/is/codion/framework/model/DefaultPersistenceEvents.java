@@ -18,9 +18,9 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.AbstractObserver;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -39,7 +39,7 @@ final class DefaultPersistenceEvents implements PersistenceEvents {
 	private final Inserted inserted = new DefaultInsertEvent();
 	private final Updated updated = new DefaultUpdated();
 	private final Deleted deleted = new DefaultDeleted();
-	private final Event<Collection<Entity>> persisted = Event.event();
+	private final Signal<Collection<Entity>> persisted = Signal.signal();
 
 	DefaultPersistenceEvents(EntityType entityType) {
 		this.entityType = entityType;

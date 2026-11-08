@@ -25,9 +25,11 @@ import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Change;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -1074,7 +1076,7 @@ public class DefaultFilterModelItemsTest {
 
 		@Override
 		public Observer<Boolean> observer() {
-			return Event.event();
+			return Signal.signal();
 		}
 	}
 
@@ -1214,13 +1216,13 @@ public class DefaultFilterModelItemsTest {
 
 	private static final class ObservableSort implements Sort<String> {
 
-		private final Event<Boolean> event = Event.event();
+		private final Signal<Boolean> signal = Signal.signal();
 
 		private Comparator<String> comparator;
 
 		void comparator(Comparator<String> comparator) {
 			this.comparator = comparator;
-			event.accept(sorted());
+			signal.accept(sorted());
 		}
 
 		@Override
@@ -1235,7 +1237,7 @@ public class DefaultFilterModelItemsTest {
 
 		@Override
 		public Observer<Boolean> observer() {
-			return event.observer();
+			return signal.observer();
 		}
 	}
 
@@ -1268,13 +1270,13 @@ public class DefaultFilterModelItemsTest {
 
 		@Override
 		public Observer<Boolean> observer() {
-			return Event.event();
+			return Signal.signal();
 		}
 	}
 
 	private static class TestMultiSelection implements MultiSelection<String> {
 		private final Value<List<String>> selectedItems = Value.nonNull(new ArrayList<String>());
-		private final Observer<?> adjusting = Event.event();
+		private final Event adjusting = Event.event();
 		private final State singleSelection = State.state();
 		private final Grouping grouping = new DefaultGrouping();
 
@@ -1284,13 +1286,13 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public Observer<?> changing() {
+		public Sensor changing() {
 			return selectedItems.observer();
 		}
 
 		@Override
-		public Observer<?> adjusting() {
-			return adjusting.observer();
+		public Sensor adjusting() {
+			return adjusting.sensor();
 		}
 
 		@Override
@@ -1510,12 +1512,12 @@ public class DefaultFilterModelItemsTest {
 
 			@Override
 			public Observer<List<Integer>> added() {
-				return Event.event();
+				return Signal.signal();
 			}
 
 			@Override
 			public Observer<List<Integer>> removed() {
-				return Event.event();
+				return Signal.signal();
 			}
 		}
 

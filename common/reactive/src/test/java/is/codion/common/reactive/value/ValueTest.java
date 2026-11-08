@@ -18,8 +18,8 @@
  */
 package is.codion.common.reactive.value;
 
-import is.codion.common.reactive.observer.Change;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value.Notify;
 
@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import static is.codion.common.reactive.observer.Change.change;
+import static is.codion.common.reactive.observable.Change.change;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;

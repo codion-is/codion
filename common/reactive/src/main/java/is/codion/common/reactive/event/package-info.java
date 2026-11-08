@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * <p>Event related classes.
+ * <p>{@link is.codion.common.reactive.event.Event}, notifying its listeners without data.
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.common.reactive.event;

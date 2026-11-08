@@ -40,7 +40,7 @@ final class DialogsDemo {
 
 	private void dialog(Window window) {
 		// tag::dialog[]
-		Event<?> close = Event.event();
+		Event close = Event.event();
 
 		JButton closeButton = Components.button()
 						.control(Control.builder()
@@ -53,7 +53,7 @@ final class DialogsDemo {
 						.owner(window)
 						.title("Dialog")
 						.closeOnEscape(false)
-						.closeObserver(close)
+						.close(close)
 						.show();
 		// end::dialog[]
 	}

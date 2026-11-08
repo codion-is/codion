@@ -18,8 +18,8 @@
  */
 package is.codion.common.model.selection;
 
-import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
@@ -43,7 +43,7 @@ final class DefaultSingleSelection<T> implements SingleSelection<T> {
 	}
 
 	@Override
-	public Observer<?> changing() {
+	public Sensor changing() {
 		return selected.changing;
 	}
 
@@ -59,7 +59,7 @@ final class DefaultSingleSelection<T> implements SingleSelection<T> {
 
 	private final class SelectedItem extends AbstractValue<T> {
 
-		private final Event<T> changing = Event.event();
+		private final Signal<T> changing = Signal.signal();
 		private final State present = State.state();
 
 		private @Nullable T item = null;

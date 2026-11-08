@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.jspecify.annotations.Nullable;

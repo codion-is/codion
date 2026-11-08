@@ -20,6 +20,8 @@ package is.codion.common.model.selection;
 
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
@@ -104,7 +106,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	}
 
 	@Override
-	public Observer<?> changing() {
+	public Sensor changing() {
 		return store.changing();
 	}
 
@@ -146,7 +148,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	}
 
 	@Override
-	public Observer<?> adjusting() {
+	public Sensor adjusting() {
 		return store.adjusting();
 	}
 
@@ -220,8 +222,8 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	private final class SelectedIndexes extends AbstractValue<List<Integer>> implements Indexes {
 
-		private final Event<List<Integer>> added = Event.event();
-		private final Event<List<Integer>> removed = Event.event();
+		private final Signal<List<Integer>> added = Signal.signal();
+		private final Signal<List<Integer>> removed = Signal.signal();
 
 		private List<Integer> lastNotified = emptyList();
 
@@ -359,7 +361,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		// the indexes not among the others, ascending as both are, unless none
-		private void notifyDifference(Event<List<Integer>> event, List<Integer> indexes, List<Integer> others) {
+		private void notifyDifference(Signal<List<Integer>> event, List<Integer> indexes, List<Integer> others) {
 			Set<Integer> exclude = new HashSet<>(others);
 			List<Integer> difference = indexes.stream()
 							.filter(index -> !exclude.contains(index))
@@ -627,9 +629,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	private static final class DefaultIndexStore implements IndexStore {
 
 		private final NavigableSet<Integer> selected = new TreeSet<>();
-		private final Event<?> changing = Event.event();
-		private final Event<?> changed = Event.event();
-		private final Event<?> adjusting = Event.event();
+		private final Event changing = Event.event();
+		private final Event changed = Event.event();
+		private final Event adjusting = Event.event();
 		private final State singleSelection = State.state(false);
 		private final DefaultGrouping grouping = new DefaultGrouping();
 
@@ -700,17 +702,17 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
-		public Observer<?> changing() {
-			return changing.observer();
+		public Sensor changing() {
+			return changing.sensor();
 		}
 
 		@Override
-		public Observer<?> changed() {
-			return changed.observer();
+		public Sensor changed() {
+			return changed.sensor();
 		}
 
 		@Override
-		public Observer<?> adjusting() {
+		public Sensor adjusting() {
 			return adjusting;
 		}
 

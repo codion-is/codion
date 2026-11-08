@@ -18,8 +18,8 @@
  */
 package is.codion.tools.monitor.model;
 
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
@@ -49,8 +49,8 @@ public final class HostMonitor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(HostMonitor.class);
 
-	private final Event<ServerMonitor> serverAdded = Event.event();
-	private final Event<ServerMonitor> serverRemoved = Event.event();
+	private final Signal<ServerMonitor> serverAdded = Signal.signal();
+	private final Signal<ServerMonitor> serverRemoved = Signal.signal();
 
 	private final String hostname;
 	private final int registryPort;

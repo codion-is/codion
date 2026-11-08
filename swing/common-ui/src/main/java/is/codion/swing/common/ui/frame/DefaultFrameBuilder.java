@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.frame;
 
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.layout.Layouts;
 

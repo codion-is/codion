@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.component.tree.NodePath;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -107,7 +107,7 @@ final class EntityTableExportColumns {
 	private final SwingFilterTableModel<NodePath<AttributeDefinition<?>>, ExportColumn> columns;
 	//the headers set, the others being the default ones
 	private final Map<NodePath<AttributeDefinition<?>>, String> headers = new HashMap<>();
-	private final Event<?> changed = Event.event();
+	private final Event changed = Event.event();
 	private final SwingFilterTreeModel<AttributeDefinition<?>> attributes;
 	//the attribute definitions available for export by entity type, ordered by caption
 	private final Map<EntityType, List<AttributeDefinition<?>>> definitions = new HashMap<>();
@@ -156,10 +156,10 @@ final class EntityTableExportColumns {
 	}
 
 	/**
-	 * @return an observer notified when the columns or their headers change
+	 * @return a sensor notified when the columns or their headers change
 	 */
-	Observer<?> changed() {
-		return changed.observer();
+	Sensor changed() {
+		return changed.sensor();
 	}
 
 	/**

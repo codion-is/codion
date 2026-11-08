@@ -22,7 +22,7 @@ import is.codion.common.db.pool.ConnectionPoolState;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.scheduler.TaskScheduler;
@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ConnectionPoolMonitor {
 
-	private final Event<?> statisticsUpdated = Event.event();
+	private final Event statisticsUpdated = Event.event();
 
 	private final String username;
 	private final ConnectionPoolWrapper connectionPool;
@@ -254,10 +254,10 @@ public final class ConnectionPoolMonitor {
 	}
 
 	/**
-	 * @return an observer notified each time the statistics are updated
+	 * @return a sensor notified each time the statistics are updated
 	 */
-	public Observer<?> statisticsUpdated() {
-		return statisticsUpdated.observer();
+	public Sensor statisticsUpdated() {
+		return statisticsUpdated.sensor();
 	}
 
 	/**

@@ -25,10 +25,12 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * A filtered view of another {@link Observer}, notifying its own listeners with the values its predicate accepts.
- * <p>It subscribes to the observer it filters only while it has listeners of its own, attaching on the first and
- * detaching on the last. Since the subscription is what keeps it reachable - the observer holds {@link #consumer},
- * which holds this - one that is never listened to, or whose listeners are all removed, is left to be collected
+ * A filtered view of another {@link Observer}, notifying its own listeners and consumers of the values its predicate
+ * accepts.
+ * <p>It subscribes to the observer it filters only while it has listeners or consumers of its own, attaching on the
+ * first and detaching on the last. Since the subscription is what keeps it reachable - the observer holds
+ * {@link #consumer}, which holds this - one that is never listened to, or whose listeners and consumers are all
+ * removed, is left to be collected
  * rather than accumulating on an observer that may outlive it by a lot.
  * @param <T> the observed type
  */

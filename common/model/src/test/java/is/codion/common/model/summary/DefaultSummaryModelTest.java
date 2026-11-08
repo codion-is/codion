@@ -20,7 +20,7 @@ package is.codion.common.model.summary;
 
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 
 import org.junit.jupiter.api.Test;
 
@@ -50,8 +50,8 @@ public class DefaultSummaryModelTest {
 		}
 
 		@Override
-		public Observer<?> valuesChanged() {
-			return Event.event().observer();
+		public Sensor valuesChanged() {
+			return Event.event().sensor();
 		}
 	});
 
@@ -70,8 +70,8 @@ public class DefaultSummaryModelTest {
 		}
 
 		@Override
-		public Observer<?> valuesChanged() {
-			return Event.event().observer();
+		public Sensor valuesChanged() {
+			return Event.event().sensor();
 		}
 	});
 

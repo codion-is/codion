@@ -19,7 +19,7 @@
 package is.codion.common.model.condition;
 
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.sensor.Sensor;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
@@ -51,7 +51,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private static final String REGEX_WILDCARD = ".*";
 
-	private final Event<?> conditionChanged = Event.event();
+	private final Event conditionChanged = Event.event();
 	private final State locked = State.builder()
 					.consumer(this::locked)
 					.build();
@@ -183,8 +183,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	@Override
-	public Observer<?> changed() {
-		return conditionChanged.observer();
+	public Sensor changed() {
+		return conditionChanged.sensor();
 	}
 
 	private boolean valueAccepted(@Nullable Comparable<T> comparable) {

@@ -23,7 +23,7 @@ import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.model.worker.ProgressWorker.ProgressTaskHandler;
-import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;

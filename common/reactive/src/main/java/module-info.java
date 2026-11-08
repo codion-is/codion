@@ -19,9 +19,11 @@
 /**
  * <p>Reactive classes used throughout.
  * <ul>
+ * <li>{@link is.codion.common.reactive.sensor.Sensor}
  * <li>{@link is.codion.common.reactive.observer.Observer}
- * <li>{@link is.codion.common.reactive.observer.Observable}
+ * <li>{@link is.codion.common.reactive.observable.Observable}
  * <li>{@link is.codion.common.reactive.event.Event}
+ * <li>{@link is.codion.common.reactive.signal.Signal}
  * <li>{@link is.codion.common.reactive.state.State}
  * <li>{@link is.codion.common.reactive.state.ObservableState}
  * <li>{@link is.codion.common.reactive.value.Value}
@@ -33,6 +35,9 @@ module is.codion.common.reactive {
 
 	exports is.codion.common.reactive.event;
 	exports is.codion.common.reactive.observer;
+	exports is.codion.common.reactive.observable;
 	exports is.codion.common.reactive.state;
 	exports is.codion.common.reactive.value;
+	exports is.codion.common.reactive.signal;
+	exports is.codion.common.reactive.sensor;
 }

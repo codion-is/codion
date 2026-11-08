@@ -20,8 +20,8 @@ package is.codion.common.model.component.table;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.filter.SortOrder;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ final class DefaultFilterTableSort<R, C> implements FilterTableSort<R, C> {
 
 	private final TableColumns<R, C> columns;
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
-	private final Event<Boolean> sortingChanged = Event.event();
+	private final Signal<Boolean> sortingChanged = Signal.signal();
 	private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
 	private final Map<C, State> locked = new HashMap<>();
 	private final RowComparator comparator = new RowComparator();
