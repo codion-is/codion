@@ -121,6 +121,25 @@ public class ValueTest {
 	}
 
 	@Test
+	void changePreviousIsLatestInstance() {
+		byte[] first = {1};
+		byte[] equal = {1};
+		byte[] other = {2};
+		Value<byte[]> value = Value.builder()
+						.nullable(first)
+						.notify(Notify.SET)
+						.build();
+		List<Change<byte[]>> changes = new ArrayList<>();
+		value.changed().addConsumer(changes::add);
+		value.set(equal);
+		assertTrue(changes.isEmpty());
+		value.set(other);
+		assertEquals(1, changes.size());
+		assertSame(equal, changes.get(0).previous());
+		assertSame(other, changes.get(0).current());
+	}
+
+	@Test
 	void validator() {
 		Value.Validator<Integer> validator = value -> {
 			if (value != null && value > 10) {

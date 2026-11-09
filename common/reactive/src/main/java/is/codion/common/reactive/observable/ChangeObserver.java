@@ -35,9 +35,9 @@ final class ChangeObserver<T> extends AbstractObserver<Change<T>> {
 	}
 
 	private void notify(@Nullable T newValue) {
-		if (!deepEquals(current, newValue)) {
-			T previous = current;
-			current = newValue;
+		T previous = current;
+		current = newValue;
+		if (!deepEquals(previous, newValue)) {
 			notifyListeners(change(previous, newValue));
 		}
 	}
