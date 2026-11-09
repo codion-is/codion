@@ -97,7 +97,9 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	 * <p>Returns the {@link Items} controlling the selected items.
 	 * <p>Notifies when the selected items change, and when an instance a selected index refers to is replaced, as
 	 * happens when the items are refreshed or replaced, the replacement being the same item by {@code equals()}
-	 * but not the same object. {@link #indexes()} notifies only when the indexes change.
+	 * but not the same object. {@link #indexes()} notifies only when the indexes change, and
+	 * {@link Items#changed()} only when the selected items differ by {@code equals()}, for a listener acting on
+	 * the selection.
 	 * @return the {@link Items} controlling the selected items
 	 */
 	Items<T> items();

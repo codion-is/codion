@@ -25,7 +25,7 @@ import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.ChangeObserver;
 import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.sensor.Sensor;
@@ -1164,7 +1164,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public Observer<Change<Predicate<String>>> changed() {
+		public ChangeObserver<Predicate<String>> changed() {
 			return predicate.changed();
 		}
 
@@ -1461,7 +1461,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public Observer<Change<List<Integer>>> changed() {
+			public ChangeObserver<List<Integer>> changed() {
 				return indexes.changed();
 			}
 
@@ -1642,7 +1642,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public Observer<Change<List<String>>> changed() {
+			public ChangeObserver<List<String>> changed() {
 				return selectedItems.changed();
 			}
 

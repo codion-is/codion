@@ -48,7 +48,9 @@ public interface SingleSelection<T> {
 	 * <p>Returns the {@link Value} controlling the selected item.
 	 * <p>Notifies when the selected item changes, and when the instance the selection refers to is replaced, as
 	 * happens when the items are refreshed or replaced, the replacement being the same item by {@code equals()}
-	 * but not the same object.
+	 * but not the same object, which suits state derived from the item. A listener acting on another item being
+	 * selected, loading it or moving to it, belongs on {@link Value#changed()}, notified only when the item differs
+	 * by {@code equals()}: {@code item().changed().current().addConsumer(this::load)}.
 	 * @return the {@link Value} controlling the selected item
 	 */
 	Value<T> item();

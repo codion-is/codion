@@ -130,8 +130,9 @@ public final class FrameworkModelDemo {
 			System.out.println("Inserted: " + entities);
 		});
 
-		// Listen for selection changes
-		tableModel.selection().item()
+		// Listen for another customer being selected, item() also
+		// notifies when a refresh replaces the selected instance
+		tableModel.selection().item().changed().current()
 						.when(Objects::nonNull)
 						.addConsumer(this::loadDetails);
 		// end::eventSystem[]

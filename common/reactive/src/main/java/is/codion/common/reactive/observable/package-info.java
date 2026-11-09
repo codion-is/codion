@@ -18,7 +18,7 @@
  */
 /**
  * <p>{@link Observable}, a value observed via the {@link is.codion.common.reactive.observer.Observer} it extends, and
- * {@link Change}, a change of value.
+ * {@link Change}, a change of value, observed via {@link ChangeObserver}.
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.common.reactive.observable;

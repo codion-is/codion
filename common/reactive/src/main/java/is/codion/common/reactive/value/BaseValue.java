@@ -19,6 +19,7 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.ChangeObserver;
 import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.AbstractObserver;
 import is.codion.common.reactive.observer.Observer;
@@ -57,7 +58,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	private final @Nullable Notify notify;
 
 	private @Nullable Locked locked;
-	private @Nullable Observer<Change<T>> changeObserver;
+	private @Nullable ChangeObserver<T> changeObserver;
 	private @Nullable Set<Validator<? super T>> validators;
 	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
 	private @Nullable Map<Observable<T>, ObservableLink> linkedObservables;
@@ -144,7 +145,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	}
 
 	@Override
-	public final synchronized Observer<Change<T>> changed() {
+	public final synchronized ChangeObserver<T> changed() {
 		if (changeObserver == null) {
 			changeObserver = Value.super.changed();
 		}

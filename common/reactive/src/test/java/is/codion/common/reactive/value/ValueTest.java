@@ -19,6 +19,7 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.ChangeObserver;
 import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value.Notify;
@@ -137,6 +138,33 @@ public class ValueTest {
 		assertEquals(1, changes.size());
 		assertSame(equal, changes.get(0).previous());
 		assertSame(other, changes.get(0).current());
+	}
+
+	@Test
+	void changePreviousAndCurrent() {
+		Value<Integer> value = Value.builder()
+						.nullable(0)
+						.notify(Notify.SET)
+						.build();
+		ChangeObserver<Integer> changed = value.changed();
+		assertSame(changed.previous(), value.changed().previous());
+		assertSame(changed.current(), value.changed().current());
+		List<String> notified = new ArrayList<>();
+		changed.addConsumer(change -> notified.add("change " + change.previous() + " " + change.current()));
+		changed.current().addConsumer(current -> notified.add("current " + current));
+		changed.previous().addConsumer(previous -> notified.add("previous " + previous));
+		AtomicInteger two = new AtomicInteger();
+		changed.current().when(2).addListener(two::incrementAndGet);
+		value.set(0);
+		value.set(1);
+		value.set(1);
+		value.set(2);
+		value.clear();
+		assertEquals(asList(
+						"change 0 1", "previous 0", "current 1",
+						"change 1 2", "previous 1", "current 2",
+						"change 2 null", "previous 2", "current null"), notified);
+		assertEquals(1, two.get());
 	}
 
 	@Test

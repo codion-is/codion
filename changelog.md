@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.94
 ### is.codion.common.reactive
 - Observable.changed() bug fixed, Change.previous() is now the latest instance notified, where it was the instance last reported, an equal one replacing it since, a refreshed entity for example, ignored.
+- Observable.changed() now returns ChangeObserver, its previous() and current() observers notified with the values of each change, for method references taking the value.
 
 ## 0.18.93
 ### is.codion.common.reactive

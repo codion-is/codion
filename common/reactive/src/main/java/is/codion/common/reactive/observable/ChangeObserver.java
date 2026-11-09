@@ -14,31 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 package is.codion.common.reactive.observable;
 
-import is.codion.common.reactive.observer.AbstractObserver;
+import is.codion.common.reactive.observer.Observer;
 
-import org.jspecify.annotations.Nullable;
+/**
+ * Observes the changes of an {@link Observable}, notified with a {@link Change} when the observable notifies a value
+ * differing from the one before, by {@link java.util.Objects#deepEquals(Object, Object)}.
+ * <p>{@link #previous()} and {@link #current()} observe the values themselves, for a method reference taking the value:
+ * {@code observable.changed().current().addConsumer(this::load)}. On a change, the consumers of this observer are
+ * notified first, then those of {@link #previous()}, then those of {@link #current()}.
+ * @param <T> the value type
+ * @see Observable#changed()
+ */
+public interface ChangeObserver<T> extends Observer<Change<T>> {
 
-import static is.codion.common.reactive.observable.Change.change;
-import static java.util.Objects.deepEquals;
+	/**
+	 * @return an {@link Observer} notified with the {@link Change#previous()} value on each change
+	 */
+	Observer<T> previous();
 
-final class ChangeObserver<T> extends AbstractObserver<Change<T>> {
-
-	private @Nullable T current;
-
-	ChangeObserver(Observable<T> observable) {
-		current = observable.get();
-		observable.addConsumer(this::notify);
-	}
-
-	private void notify(@Nullable T newValue) {
-		T previous = current;
-		current = newValue;
-		if (!deepEquals(previous, newValue)) {
-			notifyListeners(change(previous, newValue));
-		}
-	}
+	/**
+	 * @return an {@link Observer} notified with the {@link Change#current()} value on each change
+	 */
+	Observer<T> current();
 }

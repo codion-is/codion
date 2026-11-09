@@ -145,7 +145,7 @@ public interface Observable<T> extends Observer<T> {
 	}
 
 	/**
-	 * The default implementation returns a new {@link Observer} instance on each call,
+	 * The default implementation returns a new {@link ChangeObserver} instance on each call,
 	 * but subclasses are free to return the same instance.
 	 * <p>Note that when a new instance is returned per call, a listener added through one
 	 * {@code changed()} instance can only be removed through that same instance; retain it
@@ -153,9 +153,9 @@ public interface Observable<T> extends Observer<T> {
 	 * <p>The observer is notified when this observable notifies a value differing from the one before, by
 	 * {@link Objects#deepEquals(Object, Object)}. An equal value, a refreshed instance for example, isn't reported,
 	 * but replaces the one before as the {@link Change#previous()} of the next change.
-	 * @return an {@link Observer} instance notified when this observable has changed
+	 * @return a {@link ChangeObserver} instance notified when this observable has changed
 	 */
-	default Observer<Change<T>> changed() {
-		return new ChangeObserver<>(this);
+	default ChangeObserver<T> changed() {
+		return new DefaultChangeObserver<>(this);
 	}
 }
