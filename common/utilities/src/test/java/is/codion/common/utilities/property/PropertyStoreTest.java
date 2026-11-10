@@ -226,6 +226,53 @@ public final class PropertyStoreTest {
 	}
 
 	@Test
+	@DisplayName("Values given as system properties are not written, unless changed")
+	void writeToFile_systemProperties_shouldNotBeWritten(@TempDir Path tempDir) throws IOException {
+		List<String> systemProperties = asList("writeOverrides.loaded", "writeOverrides.loadedChanged",
+						"writeOverrides.loadedUnbound", "writeOverrides.given", "writeOverrides.givenChanged");
+		try {
+			Path configFile = tempDir.resolve("overrides.properties");
+			Files.write(configFile, asList("writeOverrides.loaded=1", "writeOverrides.loadedChanged=2",
+							"writeOverrides.loadedUnbound=3", "writeOverrides.notGiven=4"));
+			systemProperties.forEach(property -> System.setProperty(property, "10"));
+			PropertyStore store = propertyStore(configFile);
+
+			PropertyValue<Integer> loaded = store.integerValue("writeOverrides.loaded");
+			PropertyValue<Integer> loadedChanged = store.integerValue("writeOverrides.loadedChanged");
+			loadedChanged.set(11);
+			PropertyValue<Integer> notGiven = store.integerValue("writeOverrides.notGiven");
+			PropertyValue<Integer> given = store.integerValue("writeOverrides.given", 5);
+			PropertyValue<Integer> givenChanged = store.integerValue("writeOverrides.givenChanged");
+			givenChanged.set(12);
+
+			assertEquals(10, loaded.getOrThrow());
+			assertEquals("10", store.getProperty("writeOverrides.loadedUnbound"));
+			assertEquals(4, notGiven.getOrThrow());
+			assertEquals(10, given.getOrThrow());
+
+			store.writeToFile(configFile);
+
+			Properties written = new Properties();
+			try (InputStream input = Files.newInputStream(configFile)) {
+				written.load(input);
+			}
+			// the values loaded, in place of the system properties
+			assertEquals("1", written.getProperty("writeOverrides.loaded"));
+			assertEquals("3", written.getProperty("writeOverrides.loadedUnbound"));
+			assertEquals("4", written.getProperty("writeOverrides.notGiven"));
+			assertFalse(written.containsKey("writeOverrides.given"));
+			// changed since, so written
+			assertEquals("11", written.getProperty("writeOverrides.loadedChanged"));
+			assertEquals("12", written.getProperty("writeOverrides.givenChanged"));
+		}
+		finally {
+			systemProperties.forEach(System::clearProperty);
+			// the store sets the system properties of the properties loaded
+			System.clearProperty("writeOverrides.notGiven");
+		}
+	}
+
+	@Test
 	@DisplayName("Default values behavior")
 	void propertyValue_withDefaultValue_shouldUseDefaultWhenNull() throws IOException {
 		File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");

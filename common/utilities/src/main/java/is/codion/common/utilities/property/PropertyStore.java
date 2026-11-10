@@ -59,7 +59,8 @@ import static java.util.stream.Collectors.toList;
  * does not affect the property store value, so the value should only be modified via the property store value instance.
  * If no value is found in a configuration file or in a system property, the default property value is used as the initial value.
  * When the value is set to null via {@link is.codion.common.reactive.value.Value#set(Object)} the default value is used, if one has been specified.
- * {@link #writeToFile(Path)} leaves out the values equal to their defaults.
+ * {@link #writeToFile(Path)} leaves out the values equal to their defaults, and the values given as system properties,
+ * on the command line for example, unless changed since, writing the file's own value in their place.
  * {@snippet class = "is.codion.manual.javadoc.PropertyStoreSnippets" region = "usage":
  * Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties"); // @start region=usage
  *
@@ -87,6 +88,8 @@ public final class PropertyStore {
 	private static final String VALUE_SEPARATOR = ";";
 
 	private final Map<String, PropertyValue<?>> propertyValues = new HashMap<>();
+	// the values loaded of the properties overridden by system properties, written in their place
+	private final Map<String, String> overriddenValues = new HashMap<>();
 
 	private final Properties properties = new SortedProperties();
 
@@ -104,6 +107,7 @@ public final class PropertyStore {
 			String existing = System.getProperty(property);
 			if (existing != null) {
 				// Command-line property takes precedence over config file
+				overriddenValues.put(property, this.properties.getProperty(property));
 				this.properties.setProperty(property, existing);
 			}
 			else {
@@ -324,7 +328,7 @@ public final class PropertyStore {
 			if (propertyValues.containsKey(requireNonNull(propertyName))) {
 				throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
 			}
-			PropertyValue<T> value = new PropertyValue<>(properties, propertyName, decoder, encoder, defaultValue);
+			PropertyValue<T> value = new PropertyValue<>(properties, propertyName, decoder, encoder, defaultValue, override(propertyName));
 			propertyValues.put(propertyName, value);
 
 			return value;
@@ -354,6 +358,7 @@ public final class PropertyStore {
 			if (propertyValues.containsKey(requireNonNull(propertyName))) {
 				throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
 			}
+			overriddenValues.remove(propertyName);
 			properties.setProperty(propertyName, value);
 		}
 	}
@@ -413,13 +418,17 @@ public final class PropertyStore {
 			if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
 				throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
 			}
-			propertyKeys.forEach(properties::remove);
+			propertyKeys.forEach(property -> {
+				properties.remove(property);
+				overriddenValues.remove(property);
+			});
 		}
 	}
 
 	/**
 	 * Writes the stored properties to a file, leaving out the values equal to their defaults, so that a default
-	 * changed later applies wherever the value hasn't been set otherwise.
+	 * changed later applies wherever the value hasn't been set otherwise. A value given as a system property, on the
+	 * command line for example, is left out as well, unless changed since, the value loaded written in its place.
 	 * @param propertiesFile the properties file to write to
 	 * @throws IOException in case writing the file was not successful
 	 */
@@ -430,9 +439,8 @@ public final class PropertyStore {
 				throw new IOException("Unable to create properties file: " + propertiesFile);
 			}
 			Properties toWrite = new SortedProperties();
-			properties.stringPropertyNames().stream()
-							.filter(this::nonDefault)
-							.forEach(property -> toWrite.setProperty(property, properties.getProperty(property)));
+			properties.stringPropertyNames().forEach(property ->
+							written(property).ifPresent(value -> toWrite.setProperty(property, value)));
 			try (OutputStream output = Files.newOutputStream(propertiesFile)) {
 				toWrite.store(output, null);
 			}
@@ -547,10 +555,29 @@ public final class PropertyStore {
 		return propertiesFromFile;
 	}
 
-	private boolean nonDefault(String property) {
+	/**
+	 * @return the value to write for the given property: the value loaded in place of one still as given by a system
+	 * property, none for a value equal to its default
+	 */
+	private Optional<String> written(String property) {
 		PropertyValue<?> value = propertyValues.get(property);
+		if (value == null ? overriddenValues.containsKey(property) : value.overridden()) {
+			return Optional.ofNullable(overriddenValues.get(property));
+		}
 
-		return value == null || value.nonDefault();
+		return value == null || value.nonDefault() ? Optional.ofNullable(properties.getProperty(property)) : Optional.empty();
+	}
+
+	/**
+	 * @return the system property of the given name, unless this store set it from the properties loaded, null if none
+	 */
+	private @Nullable String override(String propertyName) {
+		String systemProperty = System.getProperty(propertyName);
+		if (systemProperty != null && (overriddenValues.containsKey(propertyName) || !properties.containsKey(propertyName))) {
+			return systemProperty;
+		}
+
+		return null;
 	}
 
 	private static final class SortedProperties extends Properties {

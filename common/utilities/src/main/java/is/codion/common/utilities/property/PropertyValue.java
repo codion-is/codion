@@ -40,15 +40,18 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 	private final String name;
 	private final Function<T, String> encoder;
 	private final @Nullable T defaultValue;
+	private final @Nullable T override;
 
 	private @Nullable T value;
 
-	PropertyValue(Properties properties, String name, Function<String, T> decoder, Function<T, String> encoder, @Nullable T defaultValue) {
+	PropertyValue(Properties properties, String name, Function<String, T> decoder, Function<T, String> encoder,
+								@Nullable T defaultValue, @Nullable String override) {
 		super(defaultValue, Notify.CHANGED);
 		this.properties = properties;
 		this.name = requireNonNull(name);
 		this.encoder = requireNonNull(encoder);
 		this.defaultValue = defaultValue;
+		this.override = override == null ? null : requireNonNull(decoder).apply(override);
 		set(getInitialValue(name, requireNonNull(decoder)));
 	}
 
@@ -85,6 +88,13 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 
 	boolean nonDefault() {
 		return value == null || !value.equals(defaultValue);
+	}
+
+	/**
+	 * @return true if this value is still the one given as a system property when created
+	 */
+	boolean overridden() {
+		return override != null && override.equals(value);
 	}
 
 	@Override
