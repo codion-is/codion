@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -58,6 +59,7 @@ import static java.util.stream.Collectors.toList;
  * does not affect the property store value, so the value should only be modified via the property store value instance.
  * If no value is found in a configuration file or in a system property, the default property value is used as the initial value.
  * When the value is set to null via {@link is.codion.common.reactive.value.Value#set(Object)} the default value is used, if one has been specified.
+ * {@link #writeToFile(Path)} leaves out the values equal to their defaults.
  * {@snippet class = "is.codion.manual.javadoc.PropertyStoreSnippets" region = "usage":
  * Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties"); // @start region=usage
  *
@@ -86,16 +88,7 @@ public final class PropertyStore {
 
 	private final Map<String, PropertyValue<?>> propertyValues = new HashMap<>();
 
-	private final Properties properties = new Properties() {
-		@Override
-		public Enumeration<Object> keys() {
-			//sort to make properties file easier for human consumption
-			List<Object> keys = Collections.list(super.keys());
-			keys.sort(Comparator.comparing(Object::toString));
-
-			return Collections.enumeration(keys);
-		}
-	};
+	private final Properties properties = new SortedProperties();
 
 	private PropertyStore(Path propertiesFile) throws IOException {
 		this(loadProperties(propertiesFile));
@@ -425,7 +418,8 @@ public final class PropertyStore {
 	}
 
 	/**
-	 * Writes the stored properties to a file
+	 * Writes the stored properties to a file, leaving out the values equal to their defaults, so that a default
+	 * changed later applies wherever the value hasn't been set otherwise.
 	 * @param propertiesFile the properties file to write to
 	 * @throws IOException in case writing the file was not successful
 	 */
@@ -435,8 +429,12 @@ public final class PropertyStore {
 			if (!Files.exists(propertiesFile) && !propertiesFile.toFile().createNewFile()) {
 				throw new IOException("Unable to create properties file: " + propertiesFile);
 			}
+			Properties toWrite = new SortedProperties();
+			properties.stringPropertyNames().stream()
+							.filter(this::nonDefault)
+							.forEach(property -> toWrite.setProperty(property, properties.getProperty(property)));
 			try (OutputStream output = Files.newOutputStream(propertiesFile)) {
-				properties.store(output, null);
+				toWrite.store(output, null);
 			}
 		}
 	}
@@ -547,6 +545,27 @@ public final class PropertyStore {
 		propertiesFromFile.load(inputStream);
 
 		return propertiesFromFile;
+	}
+
+	private boolean nonDefault(String property) {
+		PropertyValue<?> value = propertyValues.get(property);
+
+		return value == null || value.nonDefault();
+	}
+
+	private static final class SortedProperties extends Properties {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		@Override
+		public Enumeration<Object> keys() {
+			//sort to make properties file easier for human consumption
+			List<Object> keys = Collections.list(super.keys());
+			keys.sort(Comparator.comparing(Object::toString));
+
+			return Collections.enumeration(keys);
+		}
 	}
 
 	private static final class ListValueDecoder<T> implements Function<String, List<T>> {

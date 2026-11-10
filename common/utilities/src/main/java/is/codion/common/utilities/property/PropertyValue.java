@@ -39,6 +39,7 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 	private final Properties properties;
 	private final String name;
 	private final Function<T, String> encoder;
+	private final @Nullable T defaultValue;
 
 	private @Nullable T value;
 
@@ -47,6 +48,7 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 		this.properties = properties;
 		this.name = requireNonNull(name);
 		this.encoder = requireNonNull(encoder);
+		this.defaultValue = defaultValue;
 		set(getInitialValue(name, requireNonNull(decoder)));
 	}
 
@@ -79,6 +81,10 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	boolean nonDefault() {
+		return value == null || !value.equals(defaultValue);
 	}
 
 	@Override

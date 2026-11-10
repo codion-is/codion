@@ -27,6 +27,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -182,8 +183,46 @@ public final class PropertyStoreTest {
 		assertTrue(propertyValues.contains("int.property2=" + (INT_VALUE_1 - 17)));
 		assertFalse(propertyValues.contains("int.property3=26"));
 		assertTrue(propertyValues.contains("double.property=" + (DOUBLE_VALUE + 1.08)));
-		assertTrue(propertyValues.contains("boolean.property=false"));
+		// set to null, its default, so not written
+		assertTrue(propertyValues.stream().noneMatch(line -> line.startsWith("boolean.property=")));
 		assertFalse(propertyValues.contains("intlist.property=1;2;3"));
+	}
+
+	@Test
+	@DisplayName("Values equal to their defaults are not written")
+	void writeToFile_valuesAtDefault_shouldNotBeWritten(@TempDir Path tempDir) throws IOException {
+		Path configFile = tempDir.resolve("defaults.properties");
+		Files.write(configFile, asList("writeDefaults.differs=1", "writeDefaults.unchanged=2", "writeDefaults.unbound=3"));
+		PropertyStore store = propertyStore(configFile);
+
+		PropertyValue<Integer> differs = store.integerValue("writeDefaults.differs", 2);
+		// a file written before, the value now the default
+		PropertyValue<Integer> unchanged = store.integerValue("writeDefaults.unchanged", 2);
+		PropertyValue<Integer> setToDefault = store.integerValue("writeDefaults.setToDefault", 4);
+		setToDefault.set(4);
+		PropertyValue<Integer> noDefault = store.integerValue("writeDefaults.noDefault");
+		noDefault.set(5);
+		PropertyValue<List<String>> emptyList = store.listValue("writeDefaults.emptyList", Objects::toString, Objects::toString);
+
+		store.writeToFile(configFile);
+
+		Properties written = new Properties();
+		try (InputStream input = Files.newInputStream(configFile)) {
+			written.load(input);
+		}
+		assertEquals("1", written.getProperty("writeDefaults.differs"));
+		assertFalse(written.containsKey("writeDefaults.unchanged"));
+		assertFalse(written.containsKey("writeDefaults.setToDefault"));
+		assertEquals("5", written.getProperty("writeDefaults.noDefault"));
+		assertFalse(written.containsKey("writeDefaults.emptyList"));
+		// properties without a value are written as they are
+		assertEquals("3", written.getProperty("writeDefaults.unbound"));
+		// the defaults remain in the store and the system properties
+		assertEquals(2, unchanged.getOrThrow());
+		assertEquals("2", store.getProperty("writeDefaults.unchanged"));
+		assertEquals("2", System.getProperty("writeDefaults.unchanged"));
+		assertEquals(1, differs.getOrThrow());
+		assertTrue(emptyList.getOrThrow().isEmpty());
 	}
 
 	@Test

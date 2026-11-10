@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.reactive
 - Observable.changed() bug fixed, Change.previous() is now the latest instance notified, where it was the instance last reported, an equal one replacing it since, a refreshed entity for example, ignored.
 - Observable.changed() now returns ChangeObserver, its previous() and current() observers notified with the values of each change, for method references taking the value.
+### is.codion.common.utilities
+- PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 
 ## 0.18.93
 ### is.codion.common.reactive
