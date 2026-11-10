@@ -273,6 +273,36 @@ public final class PropertyStoreTest {
 	}
 
 	@Test
+	@DisplayName("Setting a property to null removes it")
+	void setProperty_null_shouldRemove(@TempDir Path tempDir) throws IOException {
+		try {
+			Path configFile = tempDir.resolve("remove.properties");
+			Files.write(configFile, asList("setProperty.loaded=1", "setProperty.overridden=2"));
+			System.setProperty("setProperty.overridden", "20");
+			PropertyStore store = propertyStore(configFile);
+			store.setProperty("setProperty.set", "3");
+
+			store.setProperty("setProperty.loaded", null);
+			store.setProperty("setProperty.overridden", null);
+			store.setProperty("setProperty.set", null);
+			store.setProperty("setProperty.absent", null);
+
+			assertFalse(store.containsProperty("setProperty.loaded"));
+			assertFalse(store.containsProperty("setProperty.overridden"));
+			assertFalse(store.containsProperty("setProperty.set"));
+			assertFalse(store.containsProperty("setProperty.absent"));
+
+			store.writeToFile(configFile);
+			// the value loaded of an overridden property isn't written in its place either
+			assertTrue(Files.readAllLines(configFile).stream().noneMatch(line -> line.startsWith("setProperty.")));
+		}
+		finally {
+			System.clearProperty("setProperty.loaded");
+			System.clearProperty("setProperty.overridden");
+		}
+	}
+
+	@Test
 	@DisplayName("Default values behavior")
 	void propertyValue_withDefaultValue_shouldUseDefaultWhenNull() throws IOException {
 		File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");

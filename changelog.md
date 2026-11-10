@@ -8,6 +8,7 @@ Codion Change Log
 ### is.codion.common.utilities
 - PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.
+- PropertyStore.setProperty() bug fixed, a null value now removes the property, where it threw NullPointerException.
 
 ## 0.18.93
 ### is.codion.common.reactive

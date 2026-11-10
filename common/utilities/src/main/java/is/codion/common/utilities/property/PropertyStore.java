@@ -348,9 +348,9 @@ public final class PropertyStore {
 	}
 
 	/**
-	 * Sets the value of the given property
+	 * Sets the value of the given property, removing it in case of null
 	 * @param propertyName the property name
-	 * @param value the value
+	 * @param value the value, null to remove the property
 	 * @throws IllegalArgumentException if the property is value bound
 	 */
 	public void setProperty(String propertyName, @Nullable String value) {
@@ -359,7 +359,12 @@ public final class PropertyStore {
 				throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
 			}
 			overriddenValues.remove(propertyName);
-			properties.setProperty(propertyName, value);
+			if (value == null) {
+				properties.remove(propertyName);
+			}
+			else {
+				properties.setProperty(propertyName, value);
+			}
 		}
 	}
 
