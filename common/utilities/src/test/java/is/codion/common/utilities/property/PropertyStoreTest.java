@@ -303,6 +303,32 @@ public final class PropertyStoreTest {
 	}
 
 	@Test
+	@DisplayName("Setting and removing properties keeps the system properties in sync")
+	void setPropertyAndRemoveAll_shouldSyncSystemProperties() {
+		try {
+			Properties loaded = new Properties();
+			loaded.setProperty("sync.loaded", "1");
+			loaded.setProperty("sync.removed", "2");
+			PropertyStore store = propertyStore(loaded);
+			assertEquals("1", System.getProperty("sync.loaded"));
+
+			store.setProperty("sync.loaded", "10");
+			assertEquals("10", System.getProperty("sync.loaded"));
+			store.setProperty("sync.set", "3");
+			assertEquals("3", System.getProperty("sync.set"));
+			store.setProperty("sync.set", null);
+			assertNull(System.getProperty("sync.set"));
+
+			store.removeAll(property -> property.startsWith("sync."));
+			assertNull(System.getProperty("sync.loaded"));
+			assertNull(System.getProperty("sync.removed"));
+		}
+		finally {
+			asList("sync.loaded", "sync.removed", "sync.set").forEach(System::clearProperty);
+		}
+	}
+
+	@Test
 	@DisplayName("Default values behavior")
 	void propertyValue_withDefaultValue_shouldUseDefaultWhenNull() throws IOException {
 		File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");

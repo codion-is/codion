@@ -348,7 +348,7 @@ public final class PropertyStore {
 	}
 
 	/**
-	 * Sets the value of the given property, removing it in case of null
+	 * Sets the value of the given property and its system property, removing both in case of null
 	 * @param propertyName the property name
 	 * @param value the value, null to remove the property
 	 * @throws IllegalArgumentException if the property is value bound
@@ -361,9 +361,11 @@ public final class PropertyStore {
 			overriddenValues.remove(propertyName);
 			if (value == null) {
 				properties.remove(propertyName);
+				System.clearProperty(propertyName);
 			}
 			else {
 				properties.setProperty(propertyName, value);
+				System.setProperty(propertyName, value);
 			}
 		}
 	}
@@ -412,7 +414,7 @@ public final class PropertyStore {
 	}
 
 	/**
-	 * Removes all properties which names fulfill the given predicate.
+	 * Removes all properties which names fulfill the given predicate, along with their system properties.
 	 * Note that properties which are value bound cannot be removed.
 	 * @param predicate the predicate used to filter the properties to be removed
 	 * @throws IllegalArgumentException in case any of the properties to remove are value bound
@@ -426,6 +428,7 @@ public final class PropertyStore {
 			propertyKeys.forEach(property -> {
 				properties.remove(property);
 				overriddenValues.remove(property);
+				System.clearProperty(property);
 			});
 		}
 	}
