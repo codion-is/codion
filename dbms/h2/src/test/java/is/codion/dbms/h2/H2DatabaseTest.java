@@ -21,6 +21,7 @@ package is.codion.dbms.h2;
 import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
@@ -84,6 +85,18 @@ public class H2DatabaseTest {
 		// neither a colon in a path nor a host taken for one
 		assertEquals("/data/a:b/sample", H2Database.databaseName("jdbc:h2:/data/a:b/sample"));
 		assertEquals("localhost:9092/db", H2Database.databaseName("jdbc:h2:tcp://localhost:9092/db"));
+	}
+
+	@Test
+	void tableNotFound() throws SQLException {
+		try (Connection connection = DriverManager.getConnection("jdbc:h2:mem:table_not_found", "sa", "");
+				 Statement statement = connection.createStatement()) {
+			// a table missing, and one qualified by a schema missing, which PostgreSQL reports alike
+			for (String query : asList("select * from missing", "select * from missing.missing")) {
+				SQLException exception = assertThrows(SQLException.class, () -> statement.executeQuery(query));
+				assertEquals(ErrorType.TABLE_NOT_FOUND, DATABASE.errorType(exception), query);
+			}
+		}
 	}
 
 	@Test

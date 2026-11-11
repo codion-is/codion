@@ -110,6 +110,7 @@ final class H2Database extends AbstractDatabase {
 		ERROR_TYPES.put(57014, ErrorType.TIMEOUT);// statement was canceled
 		ERROR_TYPES.put(42102, ErrorType.TABLE_NOT_FOUND);
 		ERROR_TYPES.put(42104, ErrorType.TABLE_NOT_FOUND);// the database being empty
+		ERROR_TYPES.put(90079, ErrorType.TABLE_NOT_FOUND);// a table qualified by a schema not found, as PostgreSQL has it
 		ERROR_TYPES.put(90096, ErrorType.MISSING_PRIVILEGES);// not enough rights for object
 	}
 
