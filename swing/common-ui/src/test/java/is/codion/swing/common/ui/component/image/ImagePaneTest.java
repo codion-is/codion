@@ -23,6 +23,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.junit.jupiter.api.Test;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
@@ -33,22 +34,33 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Arrays.asList;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ImagePaneTest {
 
 	private static final String TEST_IMAGE_PATH = "../../documentation/src/docs/asciidoc/images/chinook-client.png";
+	// a JPEG's start, which no JPEG reader can decode
+	private static final byte[] CORRUPT = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
 
 	@Test
 	void imageBytes() throws IOException {
 		AtomicInteger bytesEventCounter = new AtomicInteger();
 		AtomicInteger imageEventCounter = new AtomicInteger();
 
+		// the component value sets the bytes on the event dispatch thread, decoded there with async disabled
 		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder()
 						.nullable(false)
+						.async(false)
 						.buildValue();
 		bytesValue.addListener(bytesEventCounter::incrementAndGet);
 		assertFalse(bytesValue.optional().isPresent());
@@ -138,6 +150,7 @@ public final class ImagePaneTest {
 
 		ComponentValue<ImagePane, byte[]> oriented = ImagePane.builder()
 						.orient(true)
+						.async(false)
 						.buildValue();
 		oriented.set(turned);
 		BufferedImage displayed = oriented.component().image().getOrThrow();
@@ -151,6 +164,227 @@ public final class ImagePaneTest {
 		asStored.image().set(turned);
 		assertEquals(4, asStored.image().getOrThrow().getWidth());
 		assertEquals(2, asStored.image().getOrThrow().getHeight());
+	}
+
+	@Test
+	void asyncLatestWins() throws Exception {
+		byte[] first = png(3, 1);
+		byte[] second = png(1, 3);
+		byte[] last = png(2, 2);
+		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder()
+						.image(image(Color.RED, 5, 5))
+						.buildValue();
+		ImagePane pane = bytesValue.component();
+		List<String> images = new ArrayList<>();
+		List<Boolean> decoding = new ArrayList<>();
+		CountDownLatch decoded = decoded(pane);
+		AtomicReference<byte[]> bytesAtOnce = new AtomicReference<>();
+		AtomicReference<BufferedImage> imageAtOnce = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> {
+			pane.image().addConsumer(image -> images.add(size(image)));
+			pane.decoding().addConsumer(decoding::add);
+			bytesValue.set(first);
+			bytesAtOnce.set(bytesValue.get());
+			imageAtOnce.set(pane.image().get());
+			// a burst, as when arrowing through rows, each superseding the one before
+			bytesValue.set(second);
+			bytesValue.set(last);
+		});
+		assertTrue(decoded.await(10, SECONDS));
+		AtomicReference<byte[]> bytesDecoded = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> bytesDecoded.set(bytesValue.get()));
+		// the bytes the value at once, the image cleared until decoded
+		assertArrayEquals(first, bytesAtOnce.get());
+		assertNull(imageAtOnce.get());
+		// only the last applied, decoding active throughout the burst
+		assertEquals(asList("none", "2x2"), images);
+		assertEquals(asList(true, false), decoding);
+		assertArrayEquals(last, bytesDecoded.get());
+	}
+
+	@Test
+	void asyncComponentValue() throws Exception {
+		byte[] bytes = png(2, 2);
+		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder().buildValue();
+		ImagePane pane = bytesValue.component();
+		CountDownLatch decoded = decoded(pane);
+		// notified on the event dispatch thread, in the same event as the bytes are set, before any decode can end
+		AtomicReference<BufferedImage> imageAtOnce = new AtomicReference<>(image(Color.RED, 5, 5));
+		bytesValue.addListener(() -> imageAtOnce.set(pane.image().get()));
+		// set from this thread, the component value sets the bytes on the event dispatch thread, decoded in the background
+		bytesValue.set(bytes);
+		assertNull(imageAtOnce.get());
+		assertTrue(decoded.await(10, SECONDS));
+		AtomicReference<BufferedImage> image = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> image.set(pane.image().get()));
+		assertEquals("2x2", size(image.get()));
+		// image().set(byte[]) decodes on the calling thread, off the event dispatch thread
+		pane.image().set(png(3, 1));
+		assertEquals("3x1", size(pane.image().get()));
+	}
+
+	@Test
+	void onImageSync() throws IOException {
+		List<String> called = new ArrayList<>();
+		ImagePane pane = ImagePane.builder()
+						.onException(exception -> {})
+						.build();
+		// off the event dispatch thread, called before returning
+		pane.image().set(png(2, 2), image -> called.add(size(image)));
+		assertEquals(asList("2x2"), called);
+		// the same bytes, the image already set
+		pane.image().set(png(2, 2), image -> called.add(size(image)));
+		assertEquals(asList("2x2", "2x2"), called);
+		pane.image().set(TEST_IMAGE_PATH, image -> called.add("path"));
+		assertEquals(asList("2x2", "2x2", "path"), called);
+		// no image, failed, or none, not called
+		pane.image().set(new byte[] {1, 2, 3}, image -> called.add("unreadable"));
+		pane.image().set(CORRUPT, image -> called.add("corrupt"));
+		pane.image().set(new byte[0], image -> called.add("empty"));
+		pane.image().set((byte[]) null, image -> called.add("null"));
+		assertEquals(asList("2x2", "2x2", "path"), called);
+	}
+
+	@Test
+	void onImageAsync() throws Exception {
+		byte[] superseded = png(3, 1);
+		byte[] last = png(2, 2);
+		byte[] equal = png(2, 2);
+		ImagePane pane = ImagePane.builder().build();
+		List<String> called = new ArrayList<>();
+		List<String> calledAtOnce = new ArrayList<>();
+		AtomicReference<BufferedImage> displayed = new AtomicReference<>();
+		AtomicReference<Boolean> decoding = new AtomicReference<>();
+		CountDownLatch decoded = decoded(pane);
+		SwingUtilities.invokeAndWait(() -> {
+			pane.image().set(superseded, image -> called.add("superseded"));
+			pane.image().set(last, image -> {
+				called.add(size(image));
+				displayed.set(pane.image().get());
+				decoding.set(pane.decoding().is());
+			});
+			// the same bytes again, while decoding them
+			pane.image().set(equal, image -> called.add("again"));
+			calledAtOnce.addAll(called);
+		});
+		assertTrue(calledAtOnce.isEmpty());
+		assertTrue(decoded.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(() -> {});
+		assertEquals(asList("2x2", "again"), called);
+		// called once the image is set and decoding has ended
+		assertEquals("2x2", size(displayed.get()));
+		assertFalse(decoding.get());
+		// the same bytes again, the image already set, called at once
+		SwingUtilities.invokeAndWait(() -> pane.image().set(last, image -> called.add("set")));
+		assertEquals(asList("2x2", "again", "set"), called);
+	}
+
+	@Test
+	void asyncImageSetWins() throws Exception {
+		byte[] superseded = png(3, 1);
+		byte[] last = png(2, 2);
+		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder().buildValue();
+		ImagePane pane = bytesValue.component();
+		List<String> images = new ArrayList<>();
+		List<Boolean> decoding = new ArrayList<>();
+		AtomicReference<byte[]> bytesAfterImage = new AtomicReference<>(new byte[0]);
+		List<String> called = new ArrayList<>();
+		SwingUtilities.invokeAndWait(() -> {
+			pane.image().addConsumer(image -> images.add(size(image)));
+			pane.decoding().addConsumer(decoding::add);
+			pane.image().set(superseded, image -> called.add(size(image)));
+			// an image set directly supersedes the decode under way, at once
+			pane.image().set(image(Color.RED, 5, 5));
+			bytesAfterImage.set(bytesValue.get());
+		});
+		assertEquals(asList(true, false), decoding);
+		assertNull(bytesAfterImage.get());
+		// started once the superseded decode ends, after which its result, discarded, would have arrived
+		CountDownLatch decoded = decoded(pane);
+		SwingUtilities.invokeAndWait(() -> bytesValue.set(last));
+		assertTrue(decoded.await(10, SECONDS));
+		SwingUtilities.invokeAndWait(() -> {});
+		assertEquals(asList("5x5", "none", "2x2"), images);
+		// the superseded one's callback never called
+		assertTrue(called.isEmpty());
+	}
+
+	@Test
+	void asyncFailure() throws Exception {
+		List<Exception> handled = new ArrayList<>();
+		List<Exception> observed = new ArrayList<>();
+		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder()
+						.image(image(Color.RED, 5, 5))
+						.onException(handled::add)
+						.buildValue();
+		ImagePane pane = bytesValue.component();
+		pane.exception().addConsumer(observed::add);
+		CountDownLatch decoded = decoded(pane);
+		SwingUtilities.invokeAndWait(() -> bytesValue.set(CORRUPT));
+		assertTrue(decoded.await(10, SECONDS));
+		AtomicReference<BufferedImage> image = new AtomicReference<>();
+		AtomicReference<byte[]> bytes = new AtomicReference<>();
+		SwingUtilities.invokeAndWait(() -> {
+			image.set(pane.image().get());
+			bytes.set(bytesValue.get());
+		});
+		assertEquals(1, handled.size());
+		assertInstanceOf(IIOException.class, handled.get(0));
+		assertEquals(handled, observed);
+		assertNull(image.get());
+		assertArrayEquals(CORRUPT, bytes.get());
+	}
+
+	@Test
+	void syncFailure() throws IOException {
+		ImagePane pane = ImagePane.builder()
+						.image(image(Color.RED, 5, 5))
+						.build();
+		// rethrown by default, as it is decoded on this thread, off the event dispatch thread
+		assertThrows(UncheckedIOException.class, () -> pane.image().set(CORRUPT));
+		// the image cleared, rather than left displayed beside bytes it isn't
+		assertNull(pane.image().get());
+		assertFalse(pane.decoding().is());
+
+		List<Exception> handled = new ArrayList<>();
+		ImagePane handling = ImagePane.builder()
+						.onException(handled::add)
+						.build();
+		handling.image().set(CORRUPT);
+		assertInstanceOf(IIOException.class, handled.get(0));
+		// no reader, no image, no exception
+		handling.image().set(new byte[] {1, 2, 3});
+		assertNull(handling.image().get());
+		assertEquals(1, handled.size());
+	}
+
+	@Test
+	void asyncDisabled() throws Exception {
+		byte[] bytes = png(2, 2);
+		ImagePane pane = ImagePane.builder()
+						.async(false)
+						.build();
+		AtomicReference<BufferedImage> decodedAtOnce = new AtomicReference<>();
+		AtomicReference<BufferedImage> clearedAtOnce = new AtomicReference<>(image(Color.RED, 5, 5));
+		// decoding ends twice, on the event dispatch thread, then in the background
+		CountDownLatch decoded = new CountDownLatch(2);
+		pane.decoding().addConsumer(active -> {
+			if (!active) {
+				decoded.countDown();
+			}
+		});
+		SwingUtilities.invokeAndWait(() -> {
+			// decoded on the event dispatch thread
+			pane.image().set(bytes);
+			decodedAtOnce.set(pane.image().get());
+			pane.image().clear();
+			pane.async().set(true);
+			pane.image().set(bytes);
+			clearedAtOnce.set(pane.image().get());
+		});
+		assertNotNull(decodedAtOnce.get());
+		assertNull(clearedAtOnce.get());
+		assertTrue(decoded.await(10, SECONDS));
 	}
 
 	@Test
@@ -445,9 +679,11 @@ public final class ImagePaneTest {
 
 	@Test
 	void zoomValue() throws Exception {
+		// the builder's bytes set via the component value, on the event dispatch thread
 		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.navigable(false)
+						.async(false)
 						.build();
 
 		// the pane has no size
@@ -498,10 +734,27 @@ public final class ImagePaneTest {
 		assertThrows(IllegalArgumentException.class, () -> panel.zoom().set(0.0));
 	}
 
-	@Test
-	void readImageFromFile() throws IOException {
-		ImagePane.readImage(TEST_IMAGE_PATH);
-		assertThrows(IOException.class, () -> ImagePane.readImage("nonexistent.png"));
+	// counts down once decoding ends, the image then set
+	private static CountDownLatch decoded(ImagePane pane) {
+		CountDownLatch decoded = new CountDownLatch(1);
+		pane.decoding().addConsumer(active -> {
+			if (!active) {
+				decoded.countDown();
+			}
+		});
+
+		return decoded;
+	}
+
+	private static String size(BufferedImage image) {
+		return image == null ? "none" : image.getWidth() + "x" + image.getHeight();
+	}
+
+	private static byte[] png(int width, int height) throws IOException {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		ImageIO.write(image(Color.BLUE, width, height), "png", output);
+
+		return output.toByteArray();
 	}
 
 	private static BufferedImage image(Color color, int width, int height) {

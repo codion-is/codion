@@ -16,6 +16,8 @@ Codion Change Log
 - AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
 ### is.codion.swing.common.ui
 - ImagePane.Builder.orient() and ImagePane.ORIENT added, an image set as bytes displayed turned as its EXIF orientation says, a phone's photo for example, false by default, the bytes left as they are.
+- ImagePane now decodes image bytes set on the event dispatch thread in the background, where the component value always sets them, the image null until decoded, the latest bytes winning, ImagePane.ASYNC, async(), decoding(), exception(), Builder.async() and onException() added, ImageValue.set(byte[], Consumer) and set(String, Consumer) added, called with the image once set, bytes failing to decode now clearing the image, where it was left displaying the one before.
+- ImagePane.readImage() removed, ImageValue.set(String) reading a file and decoding it in the background, ImageIO for anything else.
 
 ## 0.18.93
 ### is.codion.common.reactive

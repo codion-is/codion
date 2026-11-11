@@ -375,21 +375,6 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 |week|Week|Vika
 |===
 
-=== is/codion/swing/common/ui/component/image/ImagePane.java
-
-[source]
-----
-is/codion/swing/common/ui/component/image/ImagePane.properties
-is/codion/swing/common/ui/component/image/ImagePane_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|file_not_found|File not found|Skrá fannst ekki
-|===
-
 === is/codion/swing/common/ui/component/logging/LogLevelPanel.java
 
 [source]

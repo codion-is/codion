@@ -18,10 +18,17 @@
  */
 package is.codion.swing.common.ui.component.image;
 
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.signal.Signal;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Validator;
+import is.codion.common.utilities.dispatch.Dispatcher;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
@@ -51,21 +58,16 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.enumValue;
@@ -74,7 +76,6 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOf;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 /**
@@ -155,6 +156,15 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * a photo taken with the camera turned, which {@link ImageIO} ignores. For display only: the bytes, the component value,
  * are left as they are, while {@link #image()} and the image coordinates are those of the image as displayed. An image
  * set as a {@link BufferedImage} is displayed as it is. See {@link Builder#orient(boolean)} and {@link #ORIENT}.
+ * <b>Decoding</b>
+ * Image bytes set on the event dispatch thread are decoded in the background, a phone's photo taking the better part
+ * of a second. The {@code byte[]} {@link ComponentValue} always sets them there, whichever thread it is set from, so
+ * bytes set via an editor bound to an image column, or via the builder, are decoded in the background. The bytes are
+ * the component value at once, while the image is cleared until decoded, the latest bytes winning. So code needing the
+ * image does not belong after the bytes are set, where there is no image yet to zoom or translate coordinates on, but in
+ * a callback, see {@link ImageValue#set(byte[], Consumer)}, or a listener on {@link #image()}. See also
+ * {@link ImageValue#set(byte[])}, {@link #async()}, {@link #decoding()} and {@link #exception()}. Loading the bytes, from a database or over the network, remains the application's to do in
+ * the background.
  * <b>Coordinate Conversion</b>
  * The pane provides coordinate translation between pane and image coordinate spaces via {@link #coordinates()}.
  * Use this for overlay drawing or when working with mouse events on the image.
@@ -245,7 +255,16 @@ public final class ImagePane extends JPanel {
 	 */
 	public static final PropertyValue<Boolean> ORIENT = booleanValue(ImagePane.class.getName() + ".orient", false);
 
-	private static final ResourceBundle MESSAGES = getBundle(ImagePane.class.getName());
+	/**
+	 * Specifies whether {@link ImagePane}s decode image bytes set on the event dispatch thread in the background by default.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see #async()
+	 */
+	public static final PropertyValue<Boolean> ASYNC = booleanValue(ImagePane.class.getName() + ".async", true);
+
 	private static final byte[] EMPTY_BYTES = new byte[0];
 
 	private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of pane's width
@@ -263,6 +282,10 @@ public final class ImagePane extends JPanel {
 
 	private final List<BiConsumer<Graphics2D, ImagePane>> overlays;
 	private final boolean orient;
+	private final State async;
+	private final State decoding = State.state();
+	private final Signal<Exception> exceptionSignal = Signal.signal();
+	private final Consumer<Exception> onException;
 	private final DefaultImageValue image;
 	private final Value<ZoomDevice> zoomDevice;
 	private final State autoResize;
@@ -292,6 +315,8 @@ public final class ImagePane extends JPanel {
 		addMouseMotionListener(new ImageMouseMotionListener());
 		overlays = builder.overlays.isEmpty() ? emptyList() : new ArrayList<>(builder.overlays);
 		orient = builder.orient;
+		async = State.state(builder.async);
+		onException = builder.onException;
 		image = new DefaultImageValue(builder.image);
 		zoomDevice = new ZoomDeviceValue(builder.zoomDevice);
 		autoResize = State.state(builder.autoResize);
@@ -311,6 +336,38 @@ public final class ImagePane extends JPanel {
 	 */
 	public ImageValue image() {
 		return image;
+	}
+
+	/**
+	 * <p>Controls whether image bytes set on the event dispatch thread are decoded in the background, see
+	 * {@link ImageValue#set(byte[])}, the {@code byte[]} {@link ComponentValue} always setting them there. Elsewhere they
+	 * are decoded on the calling thread, as they are when this is disabled.
+	 * <p>Disable it where code following a bytes set needs the image at once, rather than listening to {@link #image()}
+	 * or {@link #decoding()}.
+	 * @return the {@link State} controlling whether image bytes are decoded asynchronously
+	 * @see #ASYNC
+	 */
+	public State async() {
+		return async;
+	}
+
+	/**
+	 * <p>Active from the moment image bytes are set until their image is set, or their decode fails, staying active
+	 * across a burst of them rather than flickering, as when arrowing through rows bound to an image column.
+	 * <p>Changes are notified on the event dispatch thread when decoding asynchronously, otherwise on the calling thread.
+	 * @return an observable indicating that image bytes are being decoded
+	 */
+	public ObservableState decoding() {
+		return decoding.observable();
+	}
+
+	/**
+	 * Notified on the event dispatch thread when decoding asynchronously, otherwise on the calling thread, before the
+	 * exception handler is called, see {@link Builder#onException(Consumer)}.
+	 * @return an observer notified with an exception thrown decoding image bytes
+	 */
+	public Observer<Exception> exception() {
+		return exceptionSignal.observer();
 	}
 
 	/**
@@ -419,26 +476,6 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
-	 * Reads an image from the given path
-	 * @param imagePath the path, either file or http
-	 * @return the loaded image
-	 * @throws IOException in case of an exception
-	 */
-	public static BufferedImage readImage(String imagePath) throws IOException {
-		if (imagePath.toLowerCase(Locale.ROOT).startsWith("http")) {
-			return ImageIO.read(URI.create(imagePath).toURL());
-		}
-		else {
-			File imageFile = new File(imagePath);
-			if (!imageFile.exists()) {
-				throw new FileNotFoundException(MESSAGES.getString("file_not_found") + ": " + imagePath);
-			}
-
-			return ImageIO.read(imageFile);
-		}
-	}
-
-	/**
 	 * @return a new {@link Builder} instance
 	 */
 	public static Builder builder() {
@@ -446,21 +483,62 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
-	 * Controls the image displayed in an {@link ImagePane}
+	 * <p>Controls the image displayed in an {@link ImagePane}.
+	 * <p>Image bytes set on the event dispatch thread, where the pane's {@code byte[]} {@link ComponentValue} always sets
+	 * them, are decoded in the background, unless {@link ImagePane#async()} is disabled, this value holding null until
+	 * their image is set, see {@link #set(byte[])}.
 	 */
 	public interface ImageValue extends Value<BufferedImage> {
 
 		/**
-		 * @param imageBytes the image bytes, displayed turned as their EXIF orientation says where enabled, see
-		 * {@link ImagePane.Builder#orient(boolean)}
+		 * <p>Sets the image bytes, the pane's {@code byte[]} {@link ComponentValue}, displayed turned as their EXIF
+		 * orientation says where enabled, see {@link ImagePane.Builder#orient(boolean)}.
+		 * <p>Set on the event dispatch thread, the bytes are decoded in the background, unless {@link ImagePane#async()}
+		 * is disabled. The bytes are then the component value at once, while this value is cleared, null until the image
+		 * is decoded, and notifies on the event dispatch thread when it is set. So code following this call, zooming or
+		 * translating coordinates, finds no image: it belongs in a callback, see {@link #set(byte[], Consumer)}, or a
+		 * listener on this value. Bytes set while a decode is under way supersede it, as does an image set directly, the
+		 * latest winning, a superseded decode aborted and its image discarded.
+		 * <p>Set elsewhere, or with {@link ImagePane#async()} disabled, the bytes are decoded on the calling thread. The
+		 * pane's {@code byte[]} {@link ComponentValue} sets them on the event dispatch thread, whichever thread it is set
+		 * from, so they are decoded in the background whenever set via the component value, or the builder.
+		 * <p>Bytes no image reader can read result in no image. An exception decoding them clears the image and is
+		 * passed to the exception handler, see {@link ImagePane.Builder#onException(Consumer)}, which by default rethrows
+		 * it, from this method when decoding on the calling thread.
+		 * @param imageBytes the image bytes
 		 */
 		void set(byte @Nullable [] imageBytes);
 
 		/**
+		 * <p>Sets the image bytes, see {@link #set(byte[])}, calling {@code onImage} with their image once it is set: on
+		 * the event dispatch thread when decoded in the background, before this method returns when decoded on the calling
+		 * thread, so code acting on the image works the same either way. Called once this value and
+		 * {@link ImagePane#decoding()} have notified. Where the bytes equal those already set, it is called with their
+		 * image, once set, there being nothing to decode again.
+		 * <p>Not called where no image results, from empty bytes or bytes no image reader can read, where decoding fails,
+		 * the exception handler's to handle, or where superseded before their image is set, by other bytes or an image set
+		 * directly.
+		 * @param imageBytes the image bytes
+		 * @param onImage called with the image once it is set
+		 */
+		void set(byte @Nullable [] imageBytes, Consumer<BufferedImage> onImage);
+
+		/**
+		 * Reads the image bytes from the given file, on the calling thread, and sets them, see {@link #set(byte[])}.
+		 * A file on a slow share is best read in the background, its bytes then set on the event dispatch thread.
 		 * @param imagePath the path from which to load the image
-		 * @throws IOException in case image loading failed
+		 * @throws IOException in case reading the file failed
 		 */
 		void set(String imagePath) throws IOException;
+
+		/**
+		 * Reads the image bytes from the given file, on the calling thread, and sets them, see
+		 * {@link #set(byte[], Consumer)}.
+		 * @param imagePath the path from which to load the image
+		 * @param onImage called with the image once it is set
+		 * @throws IOException in case reading the file failed
+		 */
+		void set(String imagePath, Consumer<BufferedImage> onImage) throws IOException;
 
 		/**
 		 * @param image the image
@@ -596,6 +674,24 @@ public final class ImagePane extends JPanel {
 		 * @see #ORIENT
 		 */
 		Builder orient(boolean orient);
+
+		/**
+		 * @param async true if image bytes set on the event dispatch thread should be decoded in the background
+		 * @return this builder
+		 * @see ImagePane#async()
+		 * @see #ASYNC
+		 */
+		Builder async(boolean async);
+
+		/**
+		 * Sets the handler for an exception thrown decoding image bytes, called on the event dispatch thread when decoding
+		 * in the background, otherwise on the calling thread, after {@link ImagePane#exception()} is notified. By default
+		 * the exception is rethrown, an {@link IOException} wrapped in an {@link UncheckedIOException}, reaching the
+		 * event dispatch thread's exception handler when decoding in the background.
+		 * @param onException the exception handler
+		 * @return this builder
+		 */
+		Builder onException(Consumer<Exception> onException);
 
 		/**
 		 * Default true.
@@ -1072,8 +1168,15 @@ public final class ImagePane extends JPanel {
 
 		private @Nullable BufferedImage bufferedImage;
 		private boolean settingBytesFromImage = false;
+		private boolean settingImageFromBytes = false;
 		// the zoom level before the image changed, the zoom value being created after this one
 		private double previousZoom = 0;
+		// the latest decode asked for, running or waiting for the one running to end, null once done or superseded,
+		// confined to the event dispatch thread, as is whether a decode is running, the latest or one superseded
+		private @Nullable Decode decode;
+		private boolean decodeRunning = false;
+		// the callback given with bytes being set, taken by the decode they result in
+		private @Nullable Consumer<BufferedImage> pendingOnImage;
 
 		private DefaultImageValue(@Nullable BufferedImage image) {
 			super(Notify.SET);
@@ -1089,8 +1192,37 @@ public final class ImagePane extends JPanel {
 		}
 
 		@Override
+		public void set(byte @Nullable [] imageBytes, Consumer<BufferedImage> onImage) {
+			requireNonNull(onImage);
+			pendingOnImage = onImage;
+			boolean unchanged;
+			try {
+				bytes.set(imageBytes);
+			}
+			finally {
+				// not taken where the bytes equal those already set, their image set or being decoded
+				unchanged = pendingOnImage != null;
+				pendingOnImage = null;
+			}
+			if (unchanged && imageBytes != null && imageBytes.length > 0) {
+				Decode current = decode;
+				if (current != null) {
+					current.addOnImage(onImage);
+				}
+				else if (bufferedImage != null) {
+					onImage.accept(bufferedImage);
+				}
+			}
+		}
+
+		@Override
 		public void set(String imagePath) throws IOException {
 			bytes.set(readAllBytes(Path.of(requireNonNull(imagePath))));
+		}
+
+		@Override
+		public void set(String imagePath, Consumer<BufferedImage> onImage) throws IOException {
+			set(readAllBytes(Path.of(requireNonNull(imagePath))), onImage);
 		}
 
 		@Override
@@ -1123,25 +1255,179 @@ public final class ImagePane extends JPanel {
 		}
 
 		private void onImageChanged() {
-			if (!settingBytesFromImage && !bytes.settingImageFromBytes) {
-				settingBytesFromImage = true;
-				try {
-					bytes.clear();
+			if (!settingImageFromBytes) {
+				// set directly, superseding any decode under way
+				supersede();
+				decoding.set(false);
+				if (!settingBytesFromImage) {
+					settingBytesFromImage = true;
+					try {
+						bytes.clear();
+					}
+					finally {
+						settingBytesFromImage = false;
+					}
 				}
-				finally {
-					settingBytesFromImage = false;
+			}
+		}
+
+		private void onBytesChanged(byte[] imageBytes) {
+			if (!settingBytesFromImage) {
+				Consumer<BufferedImage> onImage = pendingOnImage;
+				pendingOnImage = null;
+				supersede();
+				if (imageBytes.length == 0) {
+					decoding.set(false);
+					setFromBytes(null);
 				}
+				else if (async.is() && Dispatcher.instance().bound()) {
+					decodeAsync(imageBytes, onImage);
+				}
+				else {
+					decodeSync(imageBytes, onImage);
+				}
+			}
+		}
+
+		private void decodeSync(byte[] imageBytes, @Nullable Consumer<BufferedImage> onImage) {
+			decoding.set(true);
+			BufferedImage decoded;
+			try {
+				decoded = ImageDecoder.decode(imageBytes, orient, () -> false);
+			}
+			catch (Exception e) {
+				failed(e);
+				return;
+			}
+			decoded(decoded, onImage);
+		}
+
+		private void decodeAsync(byte[] imageBytes, @Nullable Consumer<BufferedImage> onImage) {
+			Decode request = new Decode(imageBytes, onImage);
+			decode = request;
+			decoding.set(true);
+			// cleared until decoded, rather than left displaying the previous image beside the new bytes
+			if (bufferedImage != null) {
+				setFromBytes(null);
+			}
+			if (!decodeRunning) {
+				// otherwise started when the one running ends, unless superseded by then
+				start(request);
+			}
+		}
+
+		private void start(Decode request) {
+			decodeRunning = true;
+			ProgressWorker.builder()
+							.task(request)
+							.execute();
+		}
+
+		// Flags the decode under way, if any, as superseded, aborting it if running, its result discarded either way
+		private void supersede() {
+			Decode current = decode;
+			if (current != null) {
+				current.superseded = true;
+				decode = null;
+			}
+		}
+
+		private void failed(Exception exception) {
+			if (bufferedImage != null) {
+				setFromBytes(null);
+			}
+			decoding.set(false);
+			exceptionSignal.accept(exception);
+			onException.accept(exception);
+		}
+
+		// Sets the decoded image, then calls onImage with it, unless none resulted, or a listener replaced it meanwhile
+		private void decoded(@Nullable BufferedImage image, @Nullable Consumer<BufferedImage> onImage) {
+			try {
+				setFromBytes(image);
+			}
+			finally {
+				decoding.set(false);
+			}
+			if (onImage != null && image != null && bufferedImage == image) {
+				onImage.accept(image);
+			}
+		}
+
+		// Sets the image decoded from the bytes, leaving the bytes as they are
+		private void setFromBytes(@Nullable BufferedImage decoded) {
+			settingImageFromBytes = true;
+			try {
+				set(decoded);
+			}
+			finally {
+				settingImageFromBytes = false;
+			}
+		}
+
+		/**
+		 * Decodes image bytes in the background, its image set unless superseded by the time it is done. A token, the
+		 * latest decode asked for being the only one applied, aborting a superseded one an economy only.
+		 */
+		private final class Decode implements ResultTaskHandler<@Nullable BufferedImage> {
+
+			private final byte[] bytes;
+
+			// set on the event dispatch thread, read on the decoding thread, which aborts once it is set
+			private volatile boolean superseded = false;
+			// confined to the event dispatch thread
+			private @Nullable Consumer<BufferedImage> onImage;
+
+			private Decode(byte[] bytes, @Nullable Consumer<BufferedImage> onImage) {
+				this.bytes = bytes;
+				this.onImage = onImage;
+			}
+
+			@Override
+			public @Nullable BufferedImage execute() throws IOException {
+				// superseded while waiting for the one before to end, in which case there is nothing to decode
+				return superseded ? null : ImageDecoder.decode(bytes, orient, () -> superseded);
+			}
+
+			@Override
+			public void onDone() {
+				decodeRunning = false;
+				Decode latest = decode;
+				if (latest != null && latest != this) {
+					start(latest);
+				}
+			}
+
+			@Override
+			public void onResult(@Nullable BufferedImage image) {
+				if (decode == this) {
+					decode = null;
+					decoded(image, onImage);
+				}
+			}
+
+			@Override
+			public void onException(Exception exception) {
+				if (decode == this) {
+					decode = null;
+					failed(exception);
+				}
+			}
+
+			// the same bytes set again while this decodes them
+			private void addOnImage(Consumer<BufferedImage> added) {
+				Consumer<BufferedImage> current = onImage;
+				onImage = current == null ? added : current.andThen(added);
 			}
 		}
 
 		private final class ImageBytes extends AbstractValue<byte[]> {
 
 			private byte[] bytes = EMPTY_BYTES;
-			private boolean settingImageFromBytes = false;
 
 			private ImageBytes() {
 				super(EMPTY_BYTES, Notify.CHANGED);
-				addConsumer(this::onBytesChanged);
+				addConsumer(DefaultImageValue.this::onBytesChanged);
 			}
 
 			@Override
@@ -1153,32 +1439,7 @@ public final class ImagePane extends JPanel {
 			protected void setValue(byte[] value) {
 				bytes = value;
 			}
-
-			private void onBytesChanged(byte[] bytes) {
-				if (!settingBytesFromImage) {
-					settingImageFromBytes = true;
-					try {
-						image.set(bytes.length == 0 ? null : read(bytes));
-					}
-					catch (IOException e) {
-						throw new UncheckedIOException(e);
-					}
-					finally {
-						settingImageFromBytes = false;
-					}
-				}
-			}
 		}
-	}
-
-	// The image the given bytes hold, turned as their EXIF orientation says where enabled, null where none can be read
-	private @Nullable BufferedImage read(byte[] bytes) throws IOException {
-		BufferedImage read = ImageIO.read(new ByteArrayInputStream(bytes));
-		if (read == null || !orient) {
-			return read;
-		}
-
-		return ExifOrientation.orient(read, ExifOrientation.orientation(bytes));
 	}
 
 	private final class ZoomValue extends AbstractValue<Double> {
@@ -1452,6 +1713,18 @@ public final class ImagePane extends JPanel {
 		}
 	}
 
+	private static final class RethrowExceptionHandler implements Consumer<Exception> {
+
+		@Override
+		public void accept(Exception exception) {
+			if (exception instanceof IOException) {
+				throw new UncheckedIOException((IOException) exception);
+			}
+
+			throw Exceptions.runtime(exception);
+		}
+	}
+
 	private static final class ImageValidator implements Validator<BufferedImage> {
 
 		@Override
@@ -1473,6 +1746,8 @@ public final class ImagePane extends JPanel {
 		private NavigationCorner navigationCorner = NAVIGATION_CORNER.getOrThrow();
 		private boolean movable = false;
 		private boolean orient = ORIENT.getOrThrow();
+		private boolean async = ASYNC.getOrThrow();
+		private Consumer<Exception> onException = new RethrowExceptionHandler();
 		private boolean nullable = true;
 
 		@Override
@@ -1532,6 +1807,18 @@ public final class ImagePane extends JPanel {
 		@Override
 		public Builder orient(boolean orient) {
 			this.orient = orient;
+			return this;
+		}
+
+		@Override
+		public Builder async(boolean async) {
+			this.async = async;
+			return this;
+		}
+
+		@Override
+		public Builder onException(Consumer<Exception> onException) {
+			this.onException = requireNonNull(onException);
 			return this;
 		}
 
