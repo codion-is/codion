@@ -502,7 +502,8 @@ public final class ImagePane extends JPanel {
 		 * <p>Set elsewhere, or with {@link ImagePane#async()} disabled, the bytes are decoded on the calling thread. The
 		 * pane's {@code byte[]} {@link ComponentValue} sets them on the event dispatch thread, whichever thread it is set
 		 * from, so they are decoded in the background whenever set via the component value, or the builder.
-		 * <p>Bytes no image reader can read result in no image. An exception decoding them clears the image and is
+		 * <p>Null or empty bytes clear the image, one set directly included. Bytes no image reader can read result in no
+		 * image. An exception decoding them clears the image and is
 		 * passed to the exception handler, see {@link ImagePane.Builder#onException(Consumer)}, which by default rethrows
 		 * it, from this method when decoding on the calling thread.
 		 * @param imageBytes the image bytes
@@ -1188,7 +1189,7 @@ public final class ImagePane extends JPanel {
 
 		@Override
 		public void set(byte[] imageBytes) {
-			bytes.set(imageBytes);
+			setBytes(imageBytes);
 		}
 
 		@Override
@@ -1197,7 +1198,7 @@ public final class ImagePane extends JPanel {
 			pendingOnImage = onImage;
 			boolean unchanged;
 			try {
-				bytes.set(imageBytes);
+				setBytes(imageBytes);
 			}
 			finally {
 				// not taken where the bytes equal those already set, their image set or being decoded
@@ -1212,6 +1213,14 @@ public final class ImagePane extends JPanel {
 				else if (bufferedImage != null) {
 					onImage.accept(bufferedImage);
 				}
+			}
+		}
+
+		// Empty bytes also clear an image set directly, the bytes then already empty, so unchanged
+		private void setBytes(byte @Nullable [] imageBytes) {
+			bytes.set(imageBytes);
+			if ((imageBytes == null || imageBytes.length == 0) && bufferedImage != null) {
+				clear();
 			}
 		}
 

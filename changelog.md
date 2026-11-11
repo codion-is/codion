@@ -18,6 +18,7 @@ Codion Change Log
 - ImagePane.Builder.orient() and ImagePane.ORIENT added, an image set as bytes displayed turned as its EXIF orientation says, a phone's photo for example, false by default, the bytes left as they are.
 - ImagePane now decodes image bytes set on the event dispatch thread in the background, where the component value always sets them, the image null until decoded, the latest bytes winning, ImagePane.ASYNC, async(), decoding(), exception(), Builder.async() and onException() added, ImageValue.set(byte[], Consumer) and set(String, Consumer) added, called with the image once set, bytes failing to decode now clearing the image, where it was left displaying the one before.
 - ImagePane.readImage() removed, ImageValue.set(String) reading a file and decoding it in the background, ImageIO for anything else.
+- ImagePane bug fixed, ImageValue.set(byte[]) with null or empty bytes now clears an image set directly, where it was left displayed, the bytes being empty already.
 
 ## 0.18.93
 ### is.codion.common.reactive

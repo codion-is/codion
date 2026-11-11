@@ -142,6 +142,25 @@ public final class ImagePaneTest {
 	}
 
 	@Test
+	void emptyBytesClearImage() {
+		ImagePane pane = ImagePane.builder().build();
+		AtomicInteger imageEvents = new AtomicInteger();
+		pane.image().addListener(imageEvents::incrementAndGet);
+		// an image set directly leaves the bytes empty
+		pane.image().set(image(Color.RED, 5, 5));
+		pane.image().set((byte[]) null);
+		assertNull(pane.image().get());
+		pane.image().set(image(Color.RED, 5, 5));
+		pane.image().set(new byte[0]);
+		assertNull(pane.image().get());
+		pane.image().set(image(Color.RED, 5, 5));
+		pane.image().set((byte[]) null, image -> fail());
+		assertNull(pane.image().get());
+		// each set and each clear notified once
+		assertEquals(6, imageEvents.get());
+	}
+
+	@Test
 	void orient() throws IOException {
 		// a JPEG stored as the sensor saw it, 4 by 2, its EXIF orientation turning it a quarter clockwise for display
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
