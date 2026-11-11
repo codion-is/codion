@@ -10,6 +10,8 @@ Codion Change Log
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.
 - PropertyStore.setProperty() bug fixed, a null value now removes the property, where it threw NullPointerException.
 - PropertyStore.setProperty() and removeAll() now set and clear the system properties, as PropertyValue does, where a property loaded kept its system property when changed or removed, and one set got none.
+### is.codion.framework.model
+- AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
 
 ## 0.18.93
 ### is.codion.common.reactive

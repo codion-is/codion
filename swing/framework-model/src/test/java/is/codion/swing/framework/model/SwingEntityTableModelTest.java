@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -82,6 +83,21 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(testEntities.size(), tableModel.items().get().size());
 		assertTrue(SwingEntityTableModel.of(Detail.TYPE, emptyList(), connection()).items().get().isEmpty());
 		assertThrows(IllegalArgumentException.class, () -> SwingEntityTableModel.of(emptyList(), connection()));
+	}
+
+	@Test
+	void selectedWithoutPrimaryKey() {
+		// a primary key column holding null without being nullable(true), as a view's outer join may leave it: the entity
+		// equals no other and the editor takes it for a new one, clearing the selection, the model warning of it once
+		Entity keyless = connection().entities().entity(Detail.TYPE)
+						.with(Detail.STRING, "keyless")
+						.build();
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(List.of(keyless), connection());
+		tableModel.items().refresh();
+		tableModel.selection().index().set(0);
+		assertFalse(tableModel.selection().present().is());
+		tableModel.selection().index().set(0);
+		assertFalse(tableModel.selection().present().is());
 	}
 
 	@Test

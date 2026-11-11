@@ -39,6 +39,8 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,6 +67,8 @@ import static java.util.stream.Collectors.toMap;
  */
 public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R extends EntityEditor<R>> implements EntityTableModel<E, R> {
 
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityTableModel.class);
+
 	private final FilterTableModel<Entity, Attribute<?>> filterModel;
 	private final E editModel;
 	private final EntityQueryModel queryModel;
@@ -74,6 +78,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 	//we keep a reference to this listener, since it will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
+
+	private boolean missingKeyWarned = false;
 
 	/**
 	 * Instantiates a table model whose items are not provided by its query model, the query model having no conditions.
@@ -314,6 +320,27 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 						.forEach(updated -> updated.addWeakConsumer(updateListener));
 	}
 
+	/**
+	 * Warns, once, of a selected entity whose primary key is missing, a column of it holding null without being
+	 * {@code nullable(true)}, as a view's outer join may leave it. Such an entity equals no other, itself included, and
+	 * the editor taking it for a new one clears the selection, see {@link #onEntityChanged()}: a row deselected as soon as
+	 * it is selected, with nothing saying why.
+	 * @param selected the selected entity
+	 */
+	private void warnOnMissingKey(Entity selected) {
+		Entity.Key primaryKey = selected.primaryKey();
+		if (!missingKeyWarned && primaryKey.primary() && !primaryKey.present()) {
+			missingKeyWarned = true;
+			LOG.warn("{} - the selected entity's primary key is missing, null in {}, so it equals no other entity, and by the " +
+											"default exists() predicate the editor takes it for a new one, clearing the selection; a primary key " +
+											"column which may hold null must be declared nullable(true)", this,
+							entityDefinition().primaryKey().columns().stream()
+											.filter(column -> primaryKey.get(column) == null)
+											.filter(column -> !entityDefinition().columns().definition(column).nullable())
+											.collect(toList()));
+		}
+	}
+
 	private void onInsert(Collection<Entity> insertedEntities) {
 		Collection<Entity> entitiesToAdd = insertedEntities.stream()
 						.filter(entity -> entity.type().equals(entityType()))
@@ -362,6 +389,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	 * @param selected the selected entity, null if the selection was cleared
 	 */
 	private void onSelectionChanged(@Nullable Entity selected) {
+		if (selected != null) {
+			warnOnMissingKey(selected);
+		}
 		EditorEntity editorEntity = editModel.editor().entity();
 		if (selected == null) {
 			if (editorEntity.exists().is()) {
