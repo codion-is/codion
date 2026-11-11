@@ -34,9 +34,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -63,6 +67,25 @@ import static org.junit.jupiter.api.Assertions.*;
 public class H2DatabaseTest {
 
 	private static final H2Database DATABASE = new H2Database("jdbc:h2:mem:test");
+
+	// Whether H2 holds the database file open, its lock taken, which this JVM can not then take
+	private static boolean open(Path databaseFile) throws IOException {
+		try (FileChannel channel = FileChannel.open(databaseFile, StandardOpenOption.READ, StandardOpenOption.WRITE)) {
+			FileLock lock;
+			try {
+				lock = channel.tryLock();
+			}
+			catch (OverlappingFileLockException e) {
+				return true;
+			}
+			if (lock == null) {
+				return true;
+			}
+			lock.release();
+
+			return false;
+		}
+	}
 
 	@Test
 	void databaseName() {
@@ -194,6 +217,25 @@ public class H2DatabaseTest {
 		File parentDir = dbFile.getParentFile();
 		dbFile.delete();
 		parentDir.delete();
+	}
+
+	@Test
+	void fileDatabaseClosesWithItsLastConnection(@TempDir Path tempDir) throws SQLException, IOException {
+		String url = "jdbc:h2:file:" + tempDir.toAbsolutePath() + "/closing";
+		H2Database database = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
+		try (Connection connection = database.createConnection(User.parse("scott:tiger"))) {
+			connection.prepareStatement("insert into test.test_table (id) values (1)").execute();
+			assertTrue(open(tempDir.resolve("closing.mv.db")));
+		}
+		// closed, its file released, rather than held open until shut down
+		assertFalse(open(tempDir.resolve("closing.mv.db")));
+		// and so in every later process, H2 keeping a delay as the database's setting, listed where not the default
+		try (Connection connection = DriverManager.getConnection(url, "sa", "");
+				 ResultSet resultSet = connection.createStatement()
+								 .executeQuery("select setting_value from information_schema.settings where setting_name = 'DB_CLOSE_DELAY'")) {
+			assertFalse(resultSet.next());
+		}
+		assertFalse(open(tempDir.resolve("closing.mv.db")));
 	}
 
 	@Test

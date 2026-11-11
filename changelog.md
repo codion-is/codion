@@ -12,6 +12,7 @@ Codion Change Log
 - PropertyStore.setProperty() and removeAll() now set and clear the system properties, as PropertyValue does, where a property loaded kept its system property when changed or removed, and one set got none.
 ### is.codion.dbms.h2
 - H2Database bug fixed, a table qualified by a schema that doesn't exist is now reported as ErrorType.TABLE_NOT_FOUND, as on PostgreSQL, where it had no error type.
+- H2Database bug fixed, an embedded file database is now created without DB_CLOSE_DELAY=-1, which H2 keeps as the database's own setting, so it stayed open once its last connection closed, in every later process too, until shut down; an in-memory one keeps it.
 ### is.codion.framework.model
 - AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
 ### is.codion.swing.common.ui

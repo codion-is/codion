@@ -287,8 +287,10 @@ final class H2Database extends AbstractDatabase {
 		if (create || !sanitizedPaths.isEmpty()) {
 			Properties properties = new Properties();
 			properties.put(USER, SYSADMIN_USERNAME);
-			// a database created here stays open once the connection closes, until shut down
-			try (Connection connection = DriverManager.getConnection(url() + (create ? ";DB_CLOSE_DELAY=-1" : ""), properties)) {
+			// an in-memory database stays open once the connection closes, until shut down, H2 discarding it otherwise, but
+			// not a file database: H2 keeps the delay as the database's own setting, so one created with it would stay open
+			// once its last connection closes, in every later process too
+			try (Connection connection = DriverManager.getConnection(url() + (isEmbeddedInMemory() ? ";DB_CLOSE_DELAY=-1" : ""), properties)) {
 				if (!sanitizedPaths.isEmpty()) {
 					runInitScripts(connection, sanitizedPaths, !create);
 				}
