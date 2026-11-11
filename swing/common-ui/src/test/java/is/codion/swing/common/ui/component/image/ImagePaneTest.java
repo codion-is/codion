@@ -30,6 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -126,6 +127,30 @@ public final class ImagePaneTest {
 		imagePane.image().set(new byte[0]);
 		assertNull(bytesValue.get());
 		assertFalse(bytesValue.optional().isPresent());
+	}
+
+	@Test
+	void orient() throws IOException {
+		// a JPEG stored as the sensor saw it, 4 by 2, its EXIF orientation turning it a quarter clockwise for display
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		ImageIO.write(new BufferedImage(4, 2, BufferedImage.TYPE_INT_RGB), "jpg", output);
+		byte[] turned = ExifOrientationTest.withOrientation(output.toByteArray(), 6);
+
+		ComponentValue<ImagePane, byte[]> oriented = ImagePane.builder()
+						.orient(true)
+						.buildValue();
+		oriented.set(turned);
+		BufferedImage displayed = oriented.component().image().getOrThrow();
+		assertEquals(2, displayed.getWidth());
+		assertEquals(4, displayed.getHeight());
+		// for display only, the bytes left as they are
+		assertArrayEquals(turned, oriented.get());
+
+		// as stored by default, see ORIENT
+		ImagePane asStored = ImagePane.builder().build();
+		asStored.image().set(turned);
+		assertEquals(4, asStored.image().getOrThrow().getWidth());
+		assertEquals(2, asStored.image().getOrThrow().getHeight());
 	}
 
 	@Test

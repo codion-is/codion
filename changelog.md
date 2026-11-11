@@ -14,6 +14,8 @@ Codion Change Log
 - H2Database bug fixed, a table qualified by a schema that doesn't exist is now reported as ErrorType.TABLE_NOT_FOUND, as on PostgreSQL, where it had no error type.
 ### is.codion.framework.model
 - AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
+### is.codion.swing.common.ui
+- ImagePane.Builder.orient() and ImagePane.ORIENT added, an image set as bytes displayed turned as its EXIF orientation says, a phone's photo for example, false by default, the bytes left as they are.
 
 ## 0.18.93
 ### is.codion.common.reactive

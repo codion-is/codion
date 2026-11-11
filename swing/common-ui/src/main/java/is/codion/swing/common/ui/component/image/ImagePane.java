@@ -150,6 +150,11 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * // @start region=movable
  * pane.movable().set(false); // Disable dragging // @end}
  * For programmatic navigation, use {@link #center()}.
+ * <b>Orientation</b>
+ * Where enabled, an image set as bytes, a JPEG's, is displayed turned as its EXIF orientation says, as a camera records
+ * a photo taken with the camera turned, which {@link ImageIO} ignores. For display only: the bytes, the component value,
+ * are left as they are, while {@link #image()} and the image coordinates are those of the image as displayed. An image
+ * set as a {@link BufferedImage} is displayed as it is. See {@link Builder#orient(boolean)} and {@link #ORIENT}.
  * <b>Coordinate Conversion</b>
  * The pane provides coordinate translation between pane and image coordinate spaces via {@link #coordinates()}.
  * Use this for overlay drawing or when working with mouse events on the image.
@@ -230,6 +235,16 @@ public final class ImagePane extends JPanel {
 	 */
 	public static final PropertyValue<Boolean> AUTO_RESIZE = booleanValue(ImagePane.class.getName() + ".autoResize", false);
 
+	/**
+	 * Specifies whether {@link ImagePane}s display an image set as bytes turned as its EXIF orientation says by default.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see Builder#orient(boolean)
+	 */
+	public static final PropertyValue<Boolean> ORIENT = booleanValue(ImagePane.class.getName() + ".orient", false);
+
 	private static final ResourceBundle MESSAGES = getBundle(ImagePane.class.getName());
 	private static final byte[] EMPTY_BYTES = new byte[0];
 
@@ -247,6 +262,7 @@ public final class ImagePane extends JPanel {
 	};
 
 	private final List<BiConsumer<Graphics2D, ImagePane>> overlays;
+	private final boolean orient;
 	private final DefaultImageValue image;
 	private final Value<ZoomDevice> zoomDevice;
 	private final State autoResize;
@@ -275,6 +291,7 @@ public final class ImagePane extends JPanel {
 		addMouseListener(new ImageMouseAdapter());
 		addMouseMotionListener(new ImageMouseMotionListener());
 		overlays = builder.overlays.isEmpty() ? emptyList() : new ArrayList<>(builder.overlays);
+		orient = builder.orient;
 		image = new DefaultImageValue(builder.image);
 		zoomDevice = new ZoomDeviceValue(builder.zoomDevice);
 		autoResize = State.state(builder.autoResize);
@@ -434,7 +451,8 @@ public final class ImagePane extends JPanel {
 	public interface ImageValue extends Value<BufferedImage> {
 
 		/**
-		 * @param imageBytes the image bytes
+		 * @param imageBytes the image bytes, displayed turned as their EXIF orientation says where enabled, see
+		 * {@link ImagePane.Builder#orient(boolean)}
 		 */
 		void set(byte @Nullable [] imageBytes);
 
@@ -568,6 +586,16 @@ public final class ImagePane extends JPanel {
 		 * @return this builder
 		 */
 		Builder movable(boolean movable);
+
+		/**
+		 * Whether an image set as bytes, a JPEG's, is displayed turned as its EXIF orientation says, as a camera records a
+		 * photo taken with the camera turned, which {@link ImageIO} ignores. For display only: the bytes, the component
+		 * value, are left as they are. An image set as a {@link BufferedImage} is displayed as it is.
+		 * @param orient true if an image set as bytes should be displayed as its EXIF orientation says
+		 * @return this builder
+		 * @see #ORIENT
+		 */
+		Builder orient(boolean orient);
 
 		/**
 		 * Default true.
@@ -1130,7 +1158,7 @@ public final class ImagePane extends JPanel {
 				if (!settingBytesFromImage) {
 					settingImageFromBytes = true;
 					try {
-						image.set(bytes.length == 0 ? null : ImageIO.read(new ByteArrayInputStream(bytes)));
+						image.set(bytes.length == 0 ? null : read(bytes));
 					}
 					catch (IOException e) {
 						throw new UncheckedIOException(e);
@@ -1141,6 +1169,16 @@ public final class ImagePane extends JPanel {
 				}
 			}
 		}
+	}
+
+	// The image the given bytes hold, turned as their EXIF orientation says where enabled, null where none can be read
+	private @Nullable BufferedImage read(byte[] bytes) throws IOException {
+		BufferedImage read = ImageIO.read(new ByteArrayInputStream(bytes));
+		if (read == null || !orient) {
+			return read;
+		}
+
+		return ExifOrientation.orient(read, ExifOrientation.orientation(bytes));
 	}
 
 	private final class ZoomValue extends AbstractValue<Double> {
@@ -1434,6 +1472,7 @@ public final class ImagePane extends JPanel {
 		private boolean navigable = false;
 		private NavigationCorner navigationCorner = NAVIGATION_CORNER.getOrThrow();
 		private boolean movable = false;
+		private boolean orient = ORIENT.getOrThrow();
 		private boolean nullable = true;
 
 		@Override
@@ -1487,6 +1526,12 @@ public final class ImagePane extends JPanel {
 		@Override
 		public Builder movable(boolean movable) {
 			this.movable = movable;
+			return this;
+		}
+
+		@Override
+		public Builder orient(boolean orient) {
+			this.orient = orient;
 			return this;
 		}
 
