@@ -218,7 +218,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 
 		/**
 		 * Sets the initially selected item, by its value
-		 * @param value the value of the item to select initially
+		 * @param value the value of the item to select initially, null for none, the null item representing it, if any
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the model does not contain an item with the given value
 		 */
@@ -226,11 +226,11 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 
 		/**
 		 * Sets the initially selected item
-		 * @param item the item to select initially
+		 * @param item the item to select initially, null for none, the null item representing it, if any
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the model does not contain the given item
 		 */
-		B selectedItem(Item<T> item);
+		B selectedItem(@Nullable Item<T> item);
 
 		/**
 		 * @param item receives the selected item

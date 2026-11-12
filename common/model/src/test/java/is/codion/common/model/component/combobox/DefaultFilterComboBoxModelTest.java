@@ -480,6 +480,33 @@ public final class DefaultFilterComboBoxModelTest {
 	}
 
 	@Test
+	void itemComboBoxNoSelection() {
+		Item<Integer> nullItem = item(null, "-");
+		Item<Integer> one = item(1, "One");
+		// null for none, replacing a selection set before
+		FilterComboBoxModel<Item<Integer>> model = FilterComboBoxModel.builder()
+						.items(asList(one))
+						.selectedItem(one)
+						.selectedItem(null)
+						.build();
+		assertNull(model.selection().item().get());
+		model = FilterComboBoxModel.builder()
+						.items(asList(one))
+						.selectedValue(1)
+						.selectedValue(null)
+						.build();
+		assertNull(model.selection().item().get());
+		// the null item representing none, if any
+		model = FilterComboBoxModel.builder()
+						.items(asList(nullItem, one))
+						.selectedValue(1)
+						.selectedValue(null)
+						.build();
+		assertNull(model.selection().item().get());
+		assertEquals(nullItem, model.selectedItem());
+	}
+
+	@Test
 	void addItemNotDuplicatedAcrossPartitions() {
 		//F7g: an item lingering in excluded whose stateful predicate flips must not end up in both partitions
 		boolean[] hideKalli = {true};

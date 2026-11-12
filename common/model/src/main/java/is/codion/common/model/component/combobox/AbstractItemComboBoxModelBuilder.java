@@ -77,13 +77,12 @@ public abstract class AbstractItemComboBoxModelBuilder<T, B extends ItemComboBox
 
 	@Override
 	public final B selectedValue(@Nullable T value) {
-		return selectedItem(Item.item(value));
+		return selectedItem(value == null ? null : Item.item(value));
 	}
 
 	@Override
-	public final B selectedItem(Item<T> item) {
-		requireNonNull(item);
-		if (!items.contains(item) && !Objects.equals(item, nullItem)) {
+	public final B selectedItem(@Nullable Item<T> item) {
+		if (item != null && !items.contains(item) && !Objects.equals(item, nullItem)) {
 			throw new IllegalArgumentException("Model does not contain item: " + item);
 		}
 		this.selectedItem = item;
