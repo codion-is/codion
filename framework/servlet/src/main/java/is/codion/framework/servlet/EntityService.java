@@ -181,13 +181,16 @@ public final class EntityService implements AuxiliaryServer {
 					stringValue("codion.server.http.keyStorePassword");
 
 	/**
-	 * Specifies whether virtual threads should be used.
+	 * Specifies whether the HTTP server handles requests on virtual threads.
+	 * <p>Use JDK 24 or later with virtual threads. Before JDK 24 a virtual thread blocking inside a {@code synchronized}
+	 * block pins its carrier thread (JEP 491), and a connection makes each database call inside one, so under load every
+	 * carrier thread may end up pinned waiting on the database, stalling the server.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> USE_VIRTUAL_THREADS =
+	public static final PropertyValue<Boolean> VIRTUAL_THREADS =
 					booleanValue("codion.server.http.virtualThreads", false);
 
 	/**
@@ -257,7 +260,7 @@ public final class EntityService implements AuxiliaryServer {
 	private final boolean serialization = SERIALIZATION.getOrThrow();
 	private final boolean json = JSON.getOrThrow();
 	private final boolean sslEnabled;
-	private final boolean useVirtualThreads;
+	private final boolean virtualThreads;
 
 	private final Map<DomainType, ObjectMapper> domainObjectMappers = new ConcurrentHashMap<>();
 
@@ -270,7 +273,7 @@ public final class EntityService implements AuxiliaryServer {
 		this.port = PORT.getOrThrow();
 		this.securePort = SECURE_PORT.getOrThrow();
 		this.sslEnabled = SECURE.getOrThrow();
-		this.useVirtualThreads = USE_VIRTUAL_THREADS.getOrThrow();
+		this.virtualThreads = VIRTUAL_THREADS.getOrThrow();
 		this.javalin = Javalin.create(new JavalinConfigurer());
 	}
 
@@ -1002,7 +1005,7 @@ public final class EntityService implements AuxiliaryServer {
 
 		@Override
 		public void accept(JavalinConfig config) {
-			config.concurrency.useVirtualThreads = useVirtualThreads;
+			config.concurrency.useVirtualThreads = virtualThreads;
 			if (sslEnabled) {
 				config.registerPlugin(new SslPlugin(new SslPLuginConfigurer()));
 			}

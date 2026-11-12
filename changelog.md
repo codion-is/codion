@@ -19,6 +19,8 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
 - EntityComboBoxModel.Builder.select() renamed selectedItem().
+### is.codion.framework.servlet
+- EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.ui
 - FilterTable, FilterList and FilterTree, a selection background of the look and feel too close to the rows around it to stand out, as in many themes once alternate rows are shaded, is now moved toward white or black until it is a minimum distance from them, 0.08 in OKLab, 0.05 for the inactive one, while the selection foreground keeps a contrast of 3:1, a selection background set on the component left as is.
 - ImagePane.Builder.orient() and ImagePane.ORIENT added, an image set as bytes displayed turned as its EXIF orientation says, a phone's photo for example, false by default, the bytes left as they are.
