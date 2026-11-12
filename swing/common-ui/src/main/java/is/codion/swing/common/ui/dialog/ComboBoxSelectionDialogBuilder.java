@@ -29,11 +29,11 @@ import java.util.Optional;
 public interface ComboBoxSelectionDialogBuilder<T> extends SelectionDialogBuilder<T, ComboBoxSelectionDialogBuilder<T>> {
 
 	/**
-	 * @param defaultSelection the item selected by default, null for none
+	 * @param item the item selected initially, null for none
 	 * @return this builder instance
-	 * @throws IllegalArgumentException in case the selection values do not contain the default selection item
+	 * @throws IllegalArgumentException in case the selection values do not contain the item
 	 */
-	ComboBoxSelectionDialogBuilder<T> defaultSelection(@Nullable T defaultSelection);
+	ComboBoxSelectionDialogBuilder<T> selectedItem(@Nullable T item);
 
 	/**
 	 * @return the selected value, {@link Optional#empty()} if none was selected

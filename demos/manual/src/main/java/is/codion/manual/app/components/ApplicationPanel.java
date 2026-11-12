@@ -374,7 +374,7 @@ public final class ApplicationPanel extends JPanel {
 		Dialogs.select()
 						.list(List.of("a", "few", "short", "strings", "to", "choose", "from"))
 						.owner(stringField)
-						.defaultSelection("strings")
+						.selectedItem("strings")
 						.select()
 						.single()
 						.ifPresent(stringField::setText);

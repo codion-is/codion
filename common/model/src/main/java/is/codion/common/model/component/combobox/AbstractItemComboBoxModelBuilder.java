@@ -48,7 +48,7 @@ public abstract class AbstractItemComboBoxModelBuilder<T, B extends ItemComboBox
 
 	private boolean sorted = false;
 	private @Nullable Comparator<Item<T>> comparator;
-	private @Nullable Item<T> selected;
+	private @Nullable Item<T> selectedItem;
 
 	/**
 	 * @param items the items, a null item, if any, is used as the null item
@@ -76,17 +76,17 @@ public abstract class AbstractItemComboBoxModelBuilder<T, B extends ItemComboBox
 	}
 
 	@Override
-	public final B selected(@Nullable T selected) {
-		return selected(Item.item(selected));
+	public final B selectedValue(@Nullable T value) {
+		return selectedItem(Item.item(value));
 	}
 
 	@Override
-	public final B selected(Item<T> selected) {
-		requireNonNull(selected);
-		if (!items.contains(selected) && !Objects.equals(selected, nullItem)) {
-			throw new IllegalArgumentException("Model does not contain item: " + selected);
+	public final B selectedItem(Item<T> item) {
+		requireNonNull(item);
+		if (!items.contains(item) && !Objects.equals(item, nullItem)) {
+			throw new IllegalArgumentException("Model does not contain item: " + item);
 		}
-		this.selected = selected;
+		this.selectedItem = item;
 		return self();
 	}
 
@@ -100,7 +100,7 @@ public abstract class AbstractItemComboBoxModelBuilder<T, B extends ItemComboBox
 	public FilterComboBoxModel<Item<T>> build() {
 		FilterComboBoxModel.Builder<Item<T>, ?> builder = DefaultFilterComboBoxModel.builder(items)
 						.translator(new SelectedItemTranslator<>(items))
-						.select(selected)
+						.selectedItem(selectedItem)
 						.nullItem(nullItem);
 		onSelectedItem.forEach(builder::onSelectedItem);
 		if (!sorted) {

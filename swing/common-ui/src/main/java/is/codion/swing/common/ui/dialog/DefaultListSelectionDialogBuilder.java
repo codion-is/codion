@@ -52,7 +52,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
 final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ListSelectionDialogBuilder<T>>
 				implements ListSelectionDialogBuilder<T> {
 
-	private final Collection<T> defaultSelection = new ArrayList<>();
+	private final Collection<T> selectedItems = new ArrayList<>();
 
 	private @Nullable Comparator<T> comparator;
 	private @Nullable Function<T, String> formatter;
@@ -63,17 +63,17 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> defaultSelection(@Nullable T defaultSelection) {
-		return defaultSelection(defaultSelection == null ? emptyList() : singletonList(defaultSelection));
+	public ListSelectionDialogBuilder<T> selectedItem(@Nullable T item) {
+		return selectedItems(item == null ? emptyList() : singletonList(item));
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection) {
-		if (!values.containsAll(requireNonNull(defaultSelection))) {
-			throw new IllegalArgumentException("defaultSelection was not found in selection items");
+	public ListSelectionDialogBuilder<T> selectedItems(Collection<T> items) {
+		if (!values.containsAll(requireNonNull(items))) {
+			throw new IllegalArgumentException("The items were not all found in the selection values: " + items);
 		}
-		this.defaultSelection.clear();
-		this.defaultSelection.addAll(defaultSelection);
+		this.selectedItems.clear();
+		this.selectedItems.addAll(items);
 		return this;
 	}
 
@@ -171,13 +171,13 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 			}
 			list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 
-			List<Integer> sortedDefaultSelectedIndexes = defaultSelection.stream()
+			List<Integer> sortedSelectedIndexes = selectedItems.stream()
 							.mapToInt(model.items().included()::indexOf)
 							.boxed()
 							.sorted(reverseOrder())//reverse order so that topmost item is selected last
 							.collect(toList());
-			sortedDefaultSelectedIndexes.forEach(model.selection().indexes()::add);
-			sortedDefaultSelectedIndexes.stream()
+			sortedSelectedIndexes.forEach(model.selection().indexes()::add);
+			sortedSelectedIndexes.stream()
 							.mapToInt(Integer::intValue)
 							.min()
 							.ifPresent(list::ensureIndexIsVisible);

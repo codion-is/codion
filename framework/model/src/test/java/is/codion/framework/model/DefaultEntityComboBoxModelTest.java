@@ -282,7 +282,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.nullable(true)
 						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
 						.filterSelected(true)
-						.select(CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE")))
+						.selectedItem(CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE")))
 						.filter(Employee.DEPARTMENT_FK, departmentComboBoxModel)
 						.build();
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
@@ -517,7 +517,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel deptComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
 						.connection(CONNECTION)
-						.select(accounting)
+						.selectedItem(accounting)
 						.build();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(deptComboBoxModel);
 		assertEquals(3, employeeComboBoxModel.items().included().size());
@@ -558,7 +558,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connection(CONNECTION)
-						.select(clark)
+						.selectedItem(clark)
 						.build();
 		comboBoxModel.items().refresh();
 		comboBoxModel.select(clark.primaryKey());

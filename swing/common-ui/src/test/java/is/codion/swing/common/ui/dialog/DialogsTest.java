@@ -188,14 +188,14 @@ public final class DialogsTest {
 						.title("title")
 						.allowEmptySelection(true)
 						.renderer(new DefaultListCellRenderer())
-						.defaultSelection("hello");
+						.selectedItem("hello");
 		Dialogs.select()
 						.comboBox(Collections.singletonList("hello"))
 						.owner(new JLabel())
 						.title("title")
 						.allowEmptySelection(true)
 						.renderer(new DefaultListCellRenderer())
-						.defaultSelection("hello");
+						.selectedItem("hello");
 	}
 
 	@Test
@@ -203,12 +203,12 @@ public final class DialogsTest {
 		// null for none, replacing one set before
 		Dialogs.select()
 						.list(Collections.singletonList("hello"))
-						.defaultSelection("hello")
-						.defaultSelection((String) null);
+						.selectedItem("hello")
+						.selectedItem(null);
 		Dialogs.select()
 						.comboBox(Collections.singletonList("hello"))
-						.defaultSelection("hello")
-						.defaultSelection(null);
+						.selectedItem("hello")
+						.selectedItem(null);
 	}
 
 	@Test
@@ -220,8 +220,8 @@ public final class DialogsTest {
 	@Test
 	void selectionDialogNonExistingDefaultSelection() {
 		assertThrows(IllegalArgumentException.class, () -> Dialogs.select().list(Collections.singletonList("helloist"))
-						.defaultSelection("hello"));
+						.selectedItem("hello"));
 		assertThrows(IllegalArgumentException.class, () -> Dialogs.select().comboBox(Collections.singletonList("helloist"))
-						.defaultSelection("hello"));
+						.selectedItem("hello"));
 	}
 }

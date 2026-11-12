@@ -1169,7 +1169,7 @@ public final class CalendarPanel extends JPanel {
 										.map(ZoneId::of)
 										.sorted(comparing(zoneId -> zoneId.getDisplayName(TextStyle.FULL, selectedLocale)))
 										.collect(toList()))
-						.defaultSelection(zoneIdValue.getOrThrow())
+						.selectedItem(zoneIdValue.getOrThrow())
 						.owner(this)
 						.select()
 						.ifPresent(zoneIdValue::set);

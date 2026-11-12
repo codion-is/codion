@@ -84,7 +84,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.comparator(entityItems.orderBy == null ? builder.comparator : null)
 						.validator(new EntityTypeValidator(entityItems.entityDefinition.type()))
 						.filterSelected(builder.filterSelected)
-						.select(builder.selectEntity)
+						.selectedItem(builder.selectedItem)
 						.nullItem(builder.nullItem)
 						.refresh(builder.refresh);
 		if (builder.onSelectedItem != null) {

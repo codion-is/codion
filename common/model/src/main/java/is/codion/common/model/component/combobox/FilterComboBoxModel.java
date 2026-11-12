@@ -144,10 +144,10 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		B nullItem(@Nullable T nullItem);
 
 		/**
-		 * @param item the item to select initially
+		 * @param item the item to select initially, null for none
 		 * @return this builder
 		 */
-		B select(@Nullable T item);
+		B selectedItem(@Nullable T item);
 
 		/**
 		 * Provides a way for a combo box model to translate an item received via {@link SingleSelection#item()} to an actual item to select,
@@ -217,20 +217,20 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		B sorted(Comparator<Item<T>> comparator);
 
 		/**
-		 * Sets the initially selected item
-		 * @param selected the item to select initially
+		 * Sets the initially selected item, by its value
+		 * @param value the value of the item to select initially
 		 * @return this builder
-		 * @throws IllegalArgumentException in case the model does not contain the given item
+		 * @throws IllegalArgumentException in case the model does not contain an item with the given value
 		 */
-		B selected(@Nullable T selected);
+		B selectedValue(@Nullable T value);
 
 		/**
 		 * Sets the initially selected item
-		 * @param selected the item to select initially
+		 * @param item the item to select initially
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the model does not contain the given item
 		 */
-		B selected(Item<T> selected);
+		B selectedItem(Item<T> item);
 
 		/**
 		 * @param item receives the selected item

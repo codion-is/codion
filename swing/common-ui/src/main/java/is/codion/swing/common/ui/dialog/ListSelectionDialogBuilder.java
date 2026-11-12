@@ -33,18 +33,18 @@ import java.util.function.Function;
 public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T, ListSelectionDialogBuilder<T>> {
 
 	/**
-	 * @param defaultSelection the item selected by default, null for none
+	 * @param item the item selected initially, null for none
 	 * @return this builder instance
-	 * @throws IllegalArgumentException in case the selection values do not contain the default selection item
+	 * @throws IllegalArgumentException in case the selection values do not contain the item
 	 */
-	ListSelectionDialogBuilder<T> defaultSelection(@Nullable T defaultSelection);
+	ListSelectionDialogBuilder<T> selectedItem(@Nullable T item);
 
 	/**
-	 * @param defaultSelection the items selected by default, empty for none
+	 * @param items the items selected initially, empty for none
 	 * @return this builder instance
-	 * @throws IllegalArgumentException in case the selection values do not contain the default selection items
+	 * @throws IllegalArgumentException in case the selection values do not contain the items
 	 */
-	ListSelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection);
+	ListSelectionDialogBuilder<T> selectedItems(Collection<T> items);
 
 	/**
 	 * @param size the preferred dialog size

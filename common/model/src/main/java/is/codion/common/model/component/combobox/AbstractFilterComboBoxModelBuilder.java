@@ -52,7 +52,7 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	boolean filterSelected;
 	boolean nullable;
 	@Nullable T nullItem;
-	@Nullable T selectItem;
+	@Nullable T selectedItem;
 	boolean refresh = false;
 
 	/**
@@ -99,8 +99,8 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	}
 
 	@Override
-	public final B select(@Nullable T item) {
-		this.selectItem = item;
+	public final B selectedItem(@Nullable T item) {
+		this.selectedItem = item;
 		return self();
 	}
 

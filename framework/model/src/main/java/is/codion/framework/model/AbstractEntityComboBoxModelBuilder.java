@@ -57,7 +57,7 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 	@Nullable Comparator<Entity> comparator;
 	boolean persistenceAware = PERSISTENCE_AWARE.getOrThrow();
 	boolean filterSelected = false;
-	@Nullable Entity selectEntity;
+	@Nullable Entity selectedItem;
 	@Nullable Entity nullItem;
 	@Nullable Consumer<@Nullable Entity> onSelectedItem;
 	boolean refresh = false;
@@ -127,8 +127,8 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 	}
 
 	@Override
-	public final B select(@Nullable Entity entity) {
-		this.selectEntity = entity;
+	public final B selectedItem(@Nullable Entity entity) {
+		this.selectedItem = entity;
 		return self();
 	}
 

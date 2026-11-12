@@ -10,11 +10,14 @@ Codion Change Log
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.
 - PropertyStore.setProperty() bug fixed, a null value now removes the property, where it threw NullPointerException.
 - PropertyStore.setProperty() and removeAll() now set and clear the system properties, as PropertyValue does, where a property loaded kept its system property when changed or removed, and one set got none.
+### is.codion.common.model
+- FilterComboBoxModel.Builder.select() renamed selectedItem(), ItemComboBoxModelBuilder.selected(T) renamed selectedValue() and selected(Item) renamed selectedItem().
 ### is.codion.dbms.h2
 - H2Database bug fixed, a table qualified by a schema that doesn't exist is now reported as ErrorType.TABLE_NOT_FOUND, as on PostgreSQL, where it had no error type.
 - H2Database bug fixed, an embedded file database is now created without DB_CLOSE_DELAY=-1, which H2 keeps as the database's own setting, so it stayed open once its last connection closed, in every later process too, until shut down; an in-memory one keeps it.
 ### is.codion.framework.model
 - AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
+- EntityComboBoxModel.Builder.select() renamed selectedItem().
 ### is.codion.swing.common.ui
 - FilterTable, FilterList and FilterTree, a selection background of the look and feel too close to the rows around it to stand out, as in many themes once alternate rows are shaded, is now moved toward white or black until it is a minimum distance from them, 0.08 in OKLab, 0.05 for the inactive one, while the selection foreground keeps a contrast of 3:1, a selection background set on the component left as is.
 - ImagePane.Builder.orient() and ImagePane.ORIENT added, an image set as bytes displayed turned as its EXIF orientation says, a phone's photo for example, false by default, the bytes left as they are.
@@ -22,6 +25,7 @@ Codion Change Log
 - ImagePane.readImage() removed, ImageValue.set(String) reading a file and decoding it in the background, ImageIO for anything else.
 - ImagePane bug fixed, ImageValue.set(byte[]) with null or empty bytes now clears an image set directly, where it was left displayed, the bytes being empty already.
 - ComboBoxSelectionDialogBuilder.defaultSelection() and ListSelectionDialogBuilder.defaultSelection(T) now accept null, for no default selection, replacing one set before.
+- ComboBoxSelectionDialogBuilder.defaultSelection() and ListSelectionDialogBuilder.defaultSelection(T) renamed selectedItem(), ListSelectionDialogBuilder.defaultSelection(Collection) renamed selectedItems(), so null needs no cast.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes, the table selection backgrounds of the Akusan Gray, Atom One Light, Codely Light, Darcula Solid and Github Light themes reverted to the themes' own, FilterTable now keeping a selection distinct.
 - FlatLookAndFeelIntelliJThemes, the Obsidian Sunset themes now set their selection foreground, where FlatLaf derived a near black one from their translucent selection background, unreadable on it, and Espresso Light's table and list selection foreground is now its foreground, where pink on light yellow was barely readable.

@@ -148,7 +148,7 @@ public final class DefaultFilterComboBoxModelTest {
 						.items(ITEMS)
 						.nullItem(NULL)
 						.filterSelected(true)
-						.select(BJORN)
+						.selectedItem(BJORN)
 						.build();
 		assertTrue(model.selection().item().is(BJORN));
 		model.items().included().predicate().set(hideBjorn);
@@ -159,7 +159,7 @@ public final class DefaultFilterComboBoxModelTest {
 						.items(ITEMS)
 						.nullItem(NULL)
 						.filterSelected(false)
-						.select(BJORN)
+						.selectedItem(BJORN)
 						.build();
 		model.items().included().predicate().set(hideBjorn);
 		assertNotNull(model.selectedItem());
@@ -412,7 +412,7 @@ public final class DefaultFilterComboBoxModelTest {
 
 		FilterComboBoxModel<Data> model = FilterComboBoxModel.builder()
 						.items(items)
-						.select(items.get(1))
+						.selectedItem(items.get(1))
 						.build();
 		assertEquals("2", model.selection().item().getOrThrow().data);
 
@@ -445,12 +445,12 @@ public final class DefaultFilterComboBoxModelTest {
 
 		assertThrows(IllegalArgumentException.class, () -> FilterComboBoxModel.builder()
 						.items(items)
-						.selected(5));
+						.selectedValue(5));
 
 		FilterComboBoxModel<Item<Integer>> model = FilterComboBoxModel.builder()
 						.items(items)
 						.sorted(true)
-						.selected(3)
+						.selectedValue(3)
 						.build();
 
 		assertEquals(-1, model.items().included().indexOf(null));

@@ -64,7 +64,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		selection = new DefaultComboBoxSelection(builder.translator);
 		builder.onSelectedItem.forEach(selection.item()::addConsumer);
 		modelItems = new DefaultComboBoxItems(builder, new DefaultComboBoxSort<>(builder.comparator));
-		selection.item().set(builder.selectItem);
+		selection.item().set(builder.selectedItem);
 	}
 
 	@Override

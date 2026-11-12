@@ -202,10 +202,10 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		B nullCaption(@Nullable String nullCaption);
 
 		/**
-		 * @param entity the entity to select initially
+		 * @param entity the entity to select initially, null for none
 		 * @return this builder
 		 */
-		B select(@Nullable Entity entity);
+		B selectedItem(@Nullable Entity entity);
 
 		/**
 		 * @param persistenceAware controls whether this combo box model should respond to entity persistence events, by adding inserted items,

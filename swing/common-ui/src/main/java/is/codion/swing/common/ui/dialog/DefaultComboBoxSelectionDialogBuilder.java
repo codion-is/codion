@@ -38,18 +38,18 @@ import static is.codion.swing.common.ui.window.Windows.resizeToFitScreen;
 final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ComboBoxSelectionDialogBuilder<T>>
 				implements ComboBoxSelectionDialogBuilder<T> {
 
-	private @Nullable T defaultSelection;
+	private @Nullable T selectedItem;
 
 	DefaultComboBoxSelectionDialogBuilder(Collection<T> values) {
 		super(values);
 	}
 
 	@Override
-	public ComboBoxSelectionDialogBuilder<T> defaultSelection(@Nullable T defaultSelection) {
-		if (defaultSelection != null && !values.contains(defaultSelection)) {
-			throw new IllegalArgumentException("defaultSelection was not found in selection items");
+	public ComboBoxSelectionDialogBuilder<T> selectedItem(@Nullable T item) {
+		if (item != null && !values.contains(item)) {
+			throw new IllegalArgumentException("The item was not found in the selection values: " + item);
 		}
-		this.defaultSelection = defaultSelection;
+		this.selectedItem = item;
 		return this;
 	}
 
@@ -57,7 +57,7 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 	public Optional<T> select() {
 		SwingFilterComboBoxModel<T> comboBoxModel = SwingFilterComboBoxModel.builder()
 						.items(values)
-						.select(defaultSelection)
+						.selectedItem(selectedItem)
 						.build();
 		JComboBox<T> comboBox = comboBox()
 						.model(comboBoxModel)

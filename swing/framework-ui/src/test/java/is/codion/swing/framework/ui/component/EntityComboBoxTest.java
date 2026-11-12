@@ -54,7 +54,7 @@ public class EntityComboBoxTest {
 		SwingEntityComboBoxModel model = SwingEntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
 						.connection(CONNECTION)
-						.select(operations)
+						.selectedItem(operations)
 						.build();
 		model.items().refresh();
 		ComponentValue<EntityComboBox, Entity> value = EntityComboBox.builder()
