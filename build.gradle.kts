@@ -147,13 +147,22 @@ configure(subprojects.filter { it.name != "codion-framework-bom" && it.name != "
         }
     }
 
+    // -PtestJdk=21 runs the tests on another JDK, the lowest supported one, before a release
+    tasks.withType<Test>().configureEach {
+        project.findProperty("testJdk")?.let { testJdk ->
+            javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(testJdk.toString()) }
+        }
+    }
+
+    // Built by JDK 25, to Java 21 bytecode and API
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
         }
     }
 
     tasks.withType<JavaCompile>().configureEach {
+        options.release = 21
         options.encoding = "UTF-8"
         options.isDeprecation = true
         options.compilerArgs.addAll(listOf("--module-version", project.version.toString()))
