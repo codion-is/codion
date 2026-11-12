@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Optional;
 
 /**
@@ -27,11 +29,11 @@ import java.util.Optional;
 public interface ComboBoxSelectionDialogBuilder<T> extends SelectionDialogBuilder<T, ComboBoxSelectionDialogBuilder<T>> {
 
 	/**
-	 * @param defaultSelection the item selected by default
+	 * @param defaultSelection the item selected by default, null for none
 	 * @return this builder instance
 	 * @throws IllegalArgumentException in case the selection values do not contain the default selection item
 	 */
-	ComboBoxSelectionDialogBuilder<T> defaultSelection(T defaultSelection);
+	ComboBoxSelectionDialogBuilder<T> defaultSelection(@Nullable T defaultSelection);
 
 	/**
 	 * @return the selected value, {@link Optional#empty()} if none was selected

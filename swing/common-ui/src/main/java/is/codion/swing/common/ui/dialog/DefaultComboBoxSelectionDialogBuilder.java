@@ -34,7 +34,6 @@ import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.Components.comboBox;
 import static is.codion.swing.common.ui.window.Windows.resizeToFitScreen;
-import static java.util.Objects.requireNonNull;
 
 final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ComboBoxSelectionDialogBuilder<T>>
 				implements ComboBoxSelectionDialogBuilder<T> {
@@ -46,8 +45,8 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 	}
 
 	@Override
-	public ComboBoxSelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
-		if (!values.contains(requireNonNull(defaultSelection))) {
+	public ComboBoxSelectionDialogBuilder<T> defaultSelection(@Nullable T defaultSelection) {
+		if (defaultSelection != null && !values.contains(defaultSelection)) {
 			throw new IllegalArgumentException("defaultSelection was not found in selection items");
 		}
 		this.defaultSelection = defaultSelection;

@@ -33,14 +33,14 @@ import java.util.function.Function;
 public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T, ListSelectionDialogBuilder<T>> {
 
 	/**
-	 * @param defaultSelection the item selected by default
+	 * @param defaultSelection the item selected by default, null for none
 	 * @return this builder instance
 	 * @throws IllegalArgumentException in case the selection values do not contain the default selection item
 	 */
-	ListSelectionDialogBuilder<T> defaultSelection(T defaultSelection);
+	ListSelectionDialogBuilder<T> defaultSelection(@Nullable T defaultSelection);
 
 	/**
-	 * @param defaultSelection the items selected by default
+	 * @param defaultSelection the items selected by default, empty for none
 	 * @return this builder instance
 	 * @throws IllegalArgumentException in case the selection values do not contain the default selection items
 	 */

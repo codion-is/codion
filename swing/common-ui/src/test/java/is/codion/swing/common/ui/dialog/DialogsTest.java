@@ -199,6 +199,19 @@ public final class DialogsTest {
 	}
 
 	@Test
+	void selectionDialogNoDefaultSelection() {
+		// null for none, replacing one set before
+		Dialogs.select()
+						.list(Collections.singletonList("hello"))
+						.defaultSelection("hello")
+						.defaultSelection((String) null);
+		Dialogs.select()
+						.comboBox(Collections.singletonList("hello"))
+						.defaultSelection("hello")
+						.defaultSelection(null);
+	}
+
+	@Test
 	void selectionDialogNoItems() {
 		assertThrows(IllegalArgumentException.class, () -> Dialogs.select().list(Collections.emptyList()));
 		assertThrows(IllegalArgumentException.class, () -> Dialogs.select().comboBox(Collections.emptyList()));

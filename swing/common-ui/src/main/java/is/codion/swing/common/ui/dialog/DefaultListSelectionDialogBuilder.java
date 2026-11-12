@@ -63,8 +63,8 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
-		return defaultSelection(singletonList(requireNonNull(defaultSelection)));
+	public ListSelectionDialogBuilder<T> defaultSelection(@Nullable T defaultSelection) {
+		return defaultSelection(defaultSelection == null ? emptyList() : singletonList(defaultSelection));
 	}
 
 	@Override

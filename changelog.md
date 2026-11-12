@@ -21,6 +21,7 @@ Codion Change Log
 - ImagePane now decodes image bytes set on the event dispatch thread in the background, where the component value always sets them, the image null until decoded, the latest bytes winning, ImagePane.ASYNC, async(), decoding(), exception(), Builder.async() and onException() added, ImageValue.set(byte[], Consumer) and set(String, Consumer) added, called with the image once set, bytes failing to decode now clearing the image, where it was left displaying the one before.
 - ImagePane.readImage() removed, ImageValue.set(String) reading a file and decoding it in the background, ImageIO for anything else.
 - ImagePane bug fixed, ImageValue.set(byte[]) with null or empty bytes now clears an image set directly, where it was left displayed, the bytes being empty already.
+- ComboBoxSelectionDialogBuilder.defaultSelection() and ListSelectionDialogBuilder.defaultSelection(T) now accept null, for no default selection, replacing one set before.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes, the table selection backgrounds of the Akusan Gray, Atom One Light, Codely Light, Darcula Solid and Github Light themes reverted to the themes' own, FilterTable now keeping a selection distinct.
 - FlatLookAndFeelIntelliJThemes, the Obsidian Sunset themes now set their selection foreground, where FlatLaf derived a near black one from their translucent selection background, unreadable on it, and Espresso Light's table and list selection foreground is now its foreground, where pink on light yellow was barely readable.
