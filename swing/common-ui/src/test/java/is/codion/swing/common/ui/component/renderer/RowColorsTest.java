@@ -28,8 +28,7 @@ import javax.swing.plaf.UIResource;
 import java.awt.Color;
 
 import static is.codion.swing.common.ui.color.Colors.shade;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class RowColorsTest {
 
@@ -56,6 +55,8 @@ public final class RowColorsTest {
 		UIManager.put(PREFIX + ".alternateRowColor", null);
 		UIManager.put(PREFIX + ".selectionForeground", null);
 		UIManager.put(PREFIX + ".selectionBackground", null);
+		UIManager.put(PREFIX + ".selectionInactiveForeground", null);
+		UIManager.put(PREFIX + ".selectionInactiveBackground", null);
 	}
 
 	@Test
@@ -166,6 +167,91 @@ public final class RowColorsTest {
 		assertEquals(BACKGROUND, colors.background(null, 0));
 		colors.update();
 		assertEquals(Color.YELLOW, colors.background(null, 0));
+	}
+
+	@Test
+	void distinctSelection() {
+		// Akusan Dark, its selection a shade lighter than the background, as light as the alternate rows
+		theme("#1e1e1e", "#303030", "#ebdbb2", "#262626", "#ebdbb2");
+		RowColors colors = new RowColors(PREFIX, true, false);
+		Color selection = UIManager.getColor(PREFIX + ".selectionBackground");
+		// moved lighter, to the minimum distance from the alternate rows around it
+		assertEquals(color("#414141"), colors.background(null, 0, null, true, selection));
+		assertEquals(shade(color("#414141")), colors.background(null, 1, null, true, selection));
+		// the inactive one to its own minimum
+		colors = new RowColors(PREFIX, true, true);
+		Color inactive = UIManager.getColor(PREFIX + ".selectionInactiveBackground");
+		assertEquals(color("#3c3c3c"), colors.background(null, 0, null, true, inactive));
+		// a selection background set on the component left as is
+		assertEquals(color("#303030"), colors.background(null, 0, null, true, color("#303030")));
+		// as is a selection distinct enough
+		theme("#1e1e1e", "#4f4945", "#ebdbb2", "#262626", "#ebdbb2");
+		colors = new RowColors(PREFIX, true, false);
+		assertEquals(color("#4f4945"), colors.background(null, 0, null, true, null));
+	}
+
+	@Test
+	void distinctSelectionDirection() {
+		// Gruvbox Light Soft, moved darker
+		theme("#f2e5bc", "#e6d5ae", "#3c3836", "#e6d5ae", "#3c3836");
+		assertEquals(color("#cabb99"), new RowColors(PREFIX, true, false).background(null, 0, null, true, null));
+		// Hiberbee Dark, a dark theme with a selection darker than the background, moved darker still
+		theme("#373635", "#222120", "#e6e6e6", "#323130", "#e6e6e6");
+		assertEquals(color("#151414"), new RowColors(PREFIX, true, false).background(null, 0, null, true, null));
+	}
+
+	@Test
+	void distinctSelectionTextContrast() {
+		// Espresso Light, its pink selection text at 2.7:1, the move held where it would fall lower
+		theme("#fbfbfb", "#fffae3", "#f16e8f", "#ffe1af", "#f16e8f");
+		assertEquals(color("#fffbe6"), new RowColors(PREFIX, true, false).background(null, 0, null, true, null));
+	}
+
+	@Test
+	void distinctSelectionTranslucent() {
+		// One Pauintxi, a translucent selection, composited over the background
+		theme("#202020", "#40db9a35", "#db9a35", "#161b22", "#b1bac4");
+		RowColors colors = new RowColors(PREFIX, true, false);
+		Color selection = UIManager.getColor(PREFIX + ".selectionBackground");
+		// distinct enough, left translucent
+		assertEquals(selection, colors.background(null, 0, null, true, null));
+		theme("#202030", "#4049a3a6", "#49a3a6", "#161b22", "#b1bac4");
+		colors = new RowColors(PREFIX, true, false);
+		assertEquals(color("#334955"), colors.background(null, 0, null, true, null));
+	}
+
+	@Test
+	void distinctSelectionCached() {
+		theme("#1e1e1e", "#303030", "#ebdbb2", "#262626", "#ebdbb2");
+		RowColors colors = new RowColors(PREFIX, false, false);
+		Color selection = colors.background(null, 0, null, true, null);
+		assertSame(selection, colors.background(null, 0, null, true, null));
+		colors.update();
+		assertEquals(selection, colors.background(null, 0, null, true, null));
+	}
+
+	private static void theme(String background, String selectionBackground, String selectionForeground,
+														String selectionInactiveBackground, String selectionInactiveForeground) {
+		UIManager.put(PREFIX + ".background", new ColorUIResource(color(background)));
+		UIManager.put(PREFIX + ".selectionBackground", new ColorUIResourceAlpha(color(selectionBackground)));
+		UIManager.put(PREFIX + ".selectionForeground", new ColorUIResource(color(selectionForeground)));
+		UIManager.put(PREFIX + ".selectionInactiveBackground", new ColorUIResource(color(selectionInactiveBackground)));
+		UIManager.put(PREFIX + ".selectionInactiveForeground", new ColorUIResource(color(selectionInactiveForeground)));
+	}
+
+	// #rrggbb or #aarrggbb
+	private static Color color(String hex) {
+		long value = Long.parseLong(hex.substring(1), 16);
+
+		return hex.length() == 9 ? new Color((int) value, true) : new Color((int) value);
+	}
+
+	// ColorUIResource drops the alpha
+	private static final class ColorUIResourceAlpha extends Color implements UIResource {
+
+		private ColorUIResourceAlpha(Color color) {
+			super(color.getRGB(), true);
+		}
 	}
 
 	private static void assertPlain(Color expected, Color color) {

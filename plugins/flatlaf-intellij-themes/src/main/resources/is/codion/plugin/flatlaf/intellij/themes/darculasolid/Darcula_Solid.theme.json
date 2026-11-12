@@ -71,10 +71,7 @@
       }
     },
 
-    "Table": {
-      "stripeColor": "#2b2b2d",
-      "selectionBackground": "#6b6a6a"
-    },
+    "Table.stripeColor": "#2b2b2d",
 
     "Tree": {
       "rowHeight": 20

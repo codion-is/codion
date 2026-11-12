@@ -176,17 +176,17 @@
     },
     "Table": {
       "selectionBackground": "#FFFAE3",
-      "selectionForeground": "#f16e8f",
+      "selectionForeground": "#325a7d",
       "selectionInactiveBackground": "#FFE1AF",
-      "selectionInactiveForeground": "#C77B98"
+      "selectionInactiveForeground": "#325a7d"
     },
     "List": {
       "background": "#fffdfb",
       "foreground": "#325a7d",
       "selectionBackground": "#fff0cb",
-      "selectionForeground": "#f14568",
+      "selectionForeground": "#325a7d",
       "selectionInactiveBackground": "#FFE1AF",
-      "selectionInactiveForeground": "#f16e8f",
+      "selectionInactiveForeground": "#325a7d",
       "dropLineColor": "#f16e8f"
     },
     "CompletionPopup": {

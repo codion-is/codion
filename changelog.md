@@ -16,10 +16,14 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
 ### is.codion.swing.common.ui
+- FilterTable, FilterList and FilterTree, a selection background of the look and feel too close to the rows around it to stand out, as in many themes once alternate rows are shaded, is now moved toward white or black until it is a minimum distance from them, 0.08 in OKLab, 0.05 for the inactive one, while the selection foreground keeps a contrast of 3:1, a selection background set on the component left as is.
 - ImagePane.Builder.orient() and ImagePane.ORIENT added, an image set as bytes displayed turned as its EXIF orientation says, a phone's photo for example, false by default, the bytes left as they are.
 - ImagePane now decodes image bytes set on the event dispatch thread in the background, where the component value always sets them, the image null until decoded, the latest bytes winning, ImagePane.ASYNC, async(), decoding(), exception(), Builder.async() and onException() added, ImageValue.set(byte[], Consumer) and set(String, Consumer) added, called with the image once set, bytes failing to decode now clearing the image, where it was left displaying the one before.
 - ImagePane.readImage() removed, ImageValue.set(String) reading a file and decoding it in the background, ImageIO for anything else.
 - ImagePane bug fixed, ImageValue.set(byte[]) with null or empty bytes now clears an image set directly, where it was left displayed, the bytes being empty already.
+### is.codion.plugin.flatlaf.intellij.themes
+- FlatLookAndFeelIntelliJThemes, the table selection backgrounds of the Akusan Gray, Atom One Light, Codely Light, Darcula Solid and Github Light themes reverted to the themes' own, FilterTable now keeping a selection distinct.
+- FlatLookAndFeelIntelliJThemes, the Obsidian Sunset themes now set their selection foreground, where FlatLaf derived a near black one from their translucent selection background, unreadable on it, and Espresso Light's table and list selection foreground is now its foreground, where pink on light yellow was barely readable.
 
 ## 0.18.93
 ### is.codion.common.reactive

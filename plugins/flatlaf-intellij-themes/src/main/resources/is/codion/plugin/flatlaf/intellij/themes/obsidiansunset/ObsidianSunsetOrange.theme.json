@@ -7,6 +7,7 @@
     "*": {
       "background": "#1C1B1A",
       "foreground": "#CED0D5",
+      "selectionForeground": "#CED0D5",
       "selectionBackground": "#a2a1a133",
       "selectionInactiveBackground": "#a2a1a133",
       "borderColor": "#11151c"

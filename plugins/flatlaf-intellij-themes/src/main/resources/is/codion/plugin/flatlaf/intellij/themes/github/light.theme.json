@@ -56,8 +56,6 @@
 
     "ToolBar.background": "white",
 
-    "Table.selectionBackground": "#999999",
-
     "ScrollBar.background": "#ffffff00",
     "ScrollPane.background": "#ffffff00",
 
