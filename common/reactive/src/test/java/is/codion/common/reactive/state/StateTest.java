@@ -18,6 +18,7 @@
  */
 package is.codion.common.reactive.state;
 
+import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 
@@ -567,6 +568,63 @@ public class StateTest {
 
 			assertTrue(latch.await(10, TimeUnit.SECONDS), "Concurrent reads should complete without deadlock");
 			assertFalse(errorOccurred.get(), "No exceptions should occur during concurrent reads");
+		}
+	}
+
+	@Test
+	void observableReadWhileSetting() throws InterruptedException {
+		//the observable state read on one thread while another sets the state, the reader arriving while
+		//the setter holds the state, before it notifies, the window held open by a validator
+		State state = State.state();
+		ObservableState observable = state.observable();
+		Thread reader = daemon(observable::is);
+		state.addValidator(value -> {
+			if (value) {
+				reader.start();
+				awaitBlocked(reader);
+			}
+		});
+		Thread setter = daemon(() -> state.set(true));
+		setter.start();
+		assertFinished(setter, reader);
+	}
+
+	@Test
+	void conditionalRemovedWhileNotifying() throws InterruptedException {
+		//the last listener of a when() removed on one thread, detaching it from the state, while the state
+		//notifies on another, the remover arriving while the setter notifies the listener before the when()
+		State state = State.state();
+		Observer<Boolean> conditional = state.when(true);
+		Runnable listener = () -> {};
+		Thread remover = daemon(() -> conditional.removeListener(listener));
+		state.addListener(() -> {
+			remover.start();
+			awaitBlocked(remover);
+		});
+		conditional.addListener(listener);
+		Thread setter = daemon(() -> state.set(true));
+		setter.start();
+		assertFinished(setter, remover);
+	}
+
+	private static Thread daemon(Runnable runnable) {
+		Thread thread = new Thread(runnable);
+		thread.setDaemon(true);
+
+		return thread;
+	}
+
+	private static void awaitBlocked(Thread thread) {
+		long timeout = System.currentTimeMillis() + 1000;
+		while (thread.getState() != Thread.State.BLOCKED && thread.isAlive() && System.currentTimeMillis() < timeout) {
+			Thread.onSpinWait();
+		}
+	}
+
+	private static void assertFinished(Thread... threads) throws InterruptedException {
+		for (Thread thread : threads) {
+			thread.join(2000);
+			assertFalse(thread.isAlive(), "Deadlocked");
 		}
 	}
 

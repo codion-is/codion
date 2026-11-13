@@ -41,8 +41,10 @@ final class DefaultObservableState extends AbstractObserver<Boolean> implements 
 		return Boolean.toString(is());
 	}
 
+	//not synchronized, reading final fields, since the state's set() takes the state's lock and then this one, to
+	//notify, and a lock taken here before the state's would deadlock a reader on another thread against it
 	@Override
-	public synchronized boolean is() {
+	public boolean is() {
 		return not ? !state.is() : state.is();
 	}
 
@@ -58,12 +60,19 @@ final class DefaultObservableState extends AbstractObserver<Boolean> implements 
 		return notObserver;
 	}
 
-	synchronized void notifyObservers(boolean newValue, boolean previousValue) {
+	//notifies outside this lock, which a when() losing its last listener on another thread takes to detach
+	//from this state, while holding its own, which notifying it takes
+	void notifyObservers(boolean newValue, boolean previousValue) {
 		if (previousValue != newValue) {
 			notifyListeners(newValue);
-			if (notObserver != null) {
-				notObserver.notifyObservers(previousValue, newValue);
+			DefaultObservableState notState = notObserver();
+			if (notState != null) {
+				notState.notifyObservers(previousValue, newValue);
 			}
 		}
+	}
+
+	private synchronized @Nullable DefaultObservableState notObserver() {
+		return notObserver;
 	}
 }
