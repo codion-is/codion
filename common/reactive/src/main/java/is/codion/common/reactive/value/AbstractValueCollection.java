@@ -149,7 +149,8 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 		requireNonNull(values);
 		C collection = getOrThrow();
 
-		return collection.size() == values.size() && collection.containsAll(values);
+		//by membership both ways, which sizes can not stand in for, either side may hold duplicates
+		return collection.containsAll(values) && values.containsAll(collection);
 	}
 
 	@Override

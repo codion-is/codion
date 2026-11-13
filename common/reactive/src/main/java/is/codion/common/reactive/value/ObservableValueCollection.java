@@ -50,9 +50,10 @@ public interface ObservableValueCollection<T, C extends Collection<T>> extends O
 	boolean containsAll(Collection<T> values);
 
 	/**
-	 * Returns true if this collection contains only the elements of the specified collection
+	 * Returns true if this collection contains all the elements of the specified collection and no others,
+	 * regardless of their order and of how many times an element occurs in either
 	 * @param values the elements to check
-	 * @return true if this collection contains only the elements of the specified collection
+	 * @return true if this collection contains all the elements of the specified collection and no others
 	 */
 	boolean containsOnly(Collection<T> values);
 

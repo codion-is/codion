@@ -158,6 +158,14 @@ public class ValueCollectionTest {
 		assertTrue(observer.containsOnly(asList(3, 2, 1))); // Order independent
 		assertFalse(observer.containsOnly(asList(1, 2)));    // Missing element
 		assertFalse(observer.containsOnly(asList(1, 2, 3, 4))); // Extra element
+		assertFalse(observer.containsOnly(asList(1, 1, 2))); // Missing element, a duplicate in its place
+		assertTrue(observer.containsOnly(asList(1, 2, 3, 3))); // Duplicates aside
+
+		ValueList<Integer> list = ValueList.valueList(asList(1, 2));
+		assertFalse(list.containsOnly(asList(1, 1)));
+		assertTrue(list.containsOnly(asList(2, 1, 1)));
+		list.add(1);
+		assertTrue(list.containsOnly(asList(1, 2)));
 		assertTrue(observer.containsNone(asList(4, 5, 6)));
 		assertTrue(observer.containsNone(emptyList()));
 		assertFalse(observer.containsNone(asList(3, 4, 5))); // Partial overlap
