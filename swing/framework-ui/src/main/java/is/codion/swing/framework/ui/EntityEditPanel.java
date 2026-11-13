@@ -401,7 +401,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * <p>Performs delete on the active entity.
 	 * <p>If delete confirmation is enabled, confirmation is requested first using
 	 * the {@link Confirmer} specified via {@link Config#deleteConfirmer(Confirmer)}.
-	 * @see Config#confirmDelete()
+	 * @see Config#confirmDelete(boolean)
 	 * @see Config#deleteConfirmer(Confirmer)
 	 */
 	public final void delete() {
