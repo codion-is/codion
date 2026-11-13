@@ -91,14 +91,21 @@ final class DefaultStateGroup implements State.Group {
 	 * Note the snapshot, set(false) notifies the state's own listeners synchronously, one of which may leave
 	 * the group, a panel deactivated and made undisplayable doing exactly that via {@link #remove(State)}.
 	 * The live member list must not be traversed while its elements are notifying.
+	 * <p>A listener may throw, as does a locked state, so the flag is restored in finally, and to the value it had,
+	 * since a listener adding an active state to the group nests a call.
 	 */
 	private void disableOthers(State current) {
+		boolean wasDisabling = disabling;
 		disabling = true;
-		new ArrayList<>(members).stream()
-						.filter(state -> state != current)
-						.filter(ObservableState::is)
-						.forEach(state -> state.set(false));
-		disabling = false;
+		try {
+			new ArrayList<>(members).stream()
+							.filter(state -> state != current)
+							.filter(ObservableState::is)
+							.forEach(state -> state.set(false));
+		}
+		finally {
+			disabling = wasDisabling;
+		}
 	}
 
 	private final class StateListener implements Runnable {

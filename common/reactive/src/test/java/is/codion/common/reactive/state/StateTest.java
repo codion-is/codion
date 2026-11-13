@@ -253,6 +253,36 @@ public class StateTest {
 	}
 
 	@Test
+	void groupAfterException() {
+		State one = State.state(true);
+		State two = State.state();
+		State three = State.state();
+		State.group(one, two, three);
+		//a listener of a member throwing as it is deactivated, the group enforcing itself after
+		AtomicBoolean thrown = new AtomicBoolean();
+		one.addConsumer(active -> {
+			if (!active && thrown.compareAndSet(false, true)) {
+				throw new RuntimeException();
+			}
+		});
+		assertThrows(RuntimeException.class, () -> two.set(true));
+		assertFalse(one.is());
+		assertTrue(two.is());
+		three.set(true);
+		assertFalse(two.is());
+		assertTrue(three.is());
+		//a locked member refusing to be deactivated
+		one.set(true);
+		one.value().locked().set(true);
+		assertThrows(IllegalStateException.class, () -> two.set(true));
+		one.value().locked().set(false);
+		three.set(true);
+		assertFalse(one.is());
+		assertFalse(two.is());
+		assertTrue(three.is());
+	}
+
+	@Test
 	void groupVarargsCreation() {
 		State one = State.state(true);
 		State two = State.state(true);
