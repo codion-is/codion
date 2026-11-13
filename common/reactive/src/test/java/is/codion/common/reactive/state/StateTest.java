@@ -25,6 +25,7 @@ import is.codion.common.reactive.value.ValueSet;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
@@ -838,6 +839,32 @@ public class StateTest {
 		value.clear();
 		assertFalse(over40.is());
 		assertTrue(isNull.is());
+	}
+
+	@Test
+	void valueCollectionContainsRefused() {
+		//the set refusing the change the state asks for, the state refusing it in turn, before either moves
+		ValueSet<Integer> values = ValueSet.valueSet(singleton(1));
+		State containsOne = State.contains(values, 1);
+		State containsTwo = State.contains(values, 2);
+		values.locked().set(true);
+		assertThrows(IllegalStateException.class, () -> containsTwo.set(true));
+		assertFalse(containsTwo.is());
+		assertThrows(IllegalStateException.class, () -> containsOne.set(false));
+		assertTrue(containsOne.is());
+		assertEquals(singleton(1), values.get());
+		values.locked().set(false);
+		values.addValidator(set -> {
+			if (set.contains(3)) {
+				throw new IllegalArgumentException();
+			}
+		});
+		State containsThree = State.contains(values, 3);
+		assertThrows(IllegalArgumentException.class, () -> containsThree.set(true));
+		assertFalse(containsThree.is());
+		assertEquals(singleton(1), values.get());
+		containsTwo.set(true);
+		assertEquals(new HashSet<>(asList(1, 2)), values.get());
 	}
 
 	@Test

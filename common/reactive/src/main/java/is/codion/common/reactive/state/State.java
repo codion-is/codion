@@ -226,6 +226,9 @@ public interface State extends ObservableState {
 	 * </ul>
 	 * The initial state reflects whether the value is currently contained in the set.
 	 * <p>
+	 * Setting the state asks the set first, so a change the set refuses, being {@link ValueSet#locked() locked} or
+	 * by a validator, is refused by the state as well, with the same exception, neither changing.
+	 * <p>
 	 * The synchronization is maintained via a weak listener on the {@link ValueSet}, meaning:
 	 * <ul>
 	 *   <li>As long as the returned {@link State} is reachable, the synchronization remains active</li>

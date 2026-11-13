@@ -18,11 +18,16 @@
  */
 package is.codion.common.reactive.state;
 
+import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
 
+import org.jspecify.annotations.Nullable;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
-final class ValueSetContains<T> implements Runnable, Consumer<Boolean> {
+final class ValueSetContains<T> implements Runnable, Consumer<Boolean>, Validator<Boolean> {
 
 	private final ValueSet<T> valueSet;
 	private final T value;
@@ -33,6 +38,7 @@ final class ValueSetContains<T> implements Runnable, Consumer<Boolean> {
 		this.state = State.state(valueSet.contains(value));
 		this.value = value;
 		this.valueSet.addWeakListener(this);
+		this.state.addValidator(this);
 		this.state.addConsumer(this);
 	}
 
@@ -48,6 +54,27 @@ final class ValueSetContains<T> implements Runnable, Consumer<Boolean> {
 		}
 		else if (!contains && valueSet.contains(value)) {
 			valueSet.remove(value);
+		}
+	}
+
+	/**
+	 * Asks the set before the state moves, so that a change the set refuses, locked or invalid, moves neither.
+	 */
+	@Override
+	public void validate(@Nullable Boolean contains) {
+		boolean add = Boolean.TRUE.equals(contains);
+		if (add != valueSet.contains(value)) {
+			if (valueSet.locked().is()) {
+				throw new IllegalStateException("Value is locked and can not be changed");
+			}
+			Set<T> values = new LinkedHashSet<>(valueSet.get());
+			if (add) {
+				values.add(value);
+			}
+			else {
+				values.remove(value);
+			}
+			valueSet.validate(values);
 		}
 	}
 
