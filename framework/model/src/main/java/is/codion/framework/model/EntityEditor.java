@@ -359,7 +359,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		EntityPersistence get();
 
 		/**
-		 * @param persistence the {@link EntityPersistence} to use, null for the default
+		 * Replaces the persistence this editor uses, by default the one the domain's {@link EntityPersistence.Factory}
+		 * provides for its entity type. Where that one does something of its own, recording each change for example, wrap
+		 * it rather than replace it: the one set calling the one {@link #get()} returns before.
+		 * @param persistence the {@link EntityPersistence} to use, null for the factory's
 		 */
 		void set(@Nullable EntityPersistence persistence);
 	}

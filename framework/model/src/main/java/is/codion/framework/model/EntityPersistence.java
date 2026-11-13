@@ -103,7 +103,8 @@ public interface EntityPersistence {
 
 	/**
 	 * <p>Provides the {@link EntityPersistence} of entity types in a domain, the default of every editor of those types,
-	 * whoever creates it. One set on an editor via {@link EntityEditor#persistence()} overrides it for that editor.
+	 * whoever creates it. One set on an editor via {@link EntityEditor#persistence()} replaces it for that editor, so
+	 * where it does something of its own, recording each change for example, the editor's wraps it.
 	 * <p>Found via {@link java.util.ServiceLoader}, the first one supporting the domain, resolved once per domain.
 	 */
 	interface Factory {
