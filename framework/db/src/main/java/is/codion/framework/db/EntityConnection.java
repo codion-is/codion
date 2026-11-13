@@ -1064,7 +1064,7 @@ public interface EntityConnection extends AutoCloseable {
 	 *       // Rolled back on failure, the transaction carrying on
 	 *       EntityConnection.savepoint(connection, () -> connection.insert(playlistTrack));
 	 *     }
-	 *     catch (DatabaseException e) {
+	 *     catch (UniqueConstraintException e) {
 	 *       // Already on the playlist, skipped
 	 *     }
 	 *   }

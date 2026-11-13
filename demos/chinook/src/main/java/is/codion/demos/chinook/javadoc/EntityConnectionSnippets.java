@@ -20,6 +20,7 @@ package is.codion.demos.chinook.javadoc;
 
 import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
@@ -213,7 +214,7 @@ final class EntityConnectionSnippets {
           // Rolled back on failure, the transaction carrying on
           EntityConnection.savepoint(connection, () -> connection.insert(playlistTrack));
         }
-        catch (DatabaseException e) {
+        catch (UniqueConstraintException e) {
           // Already on the playlist, skipped
         }
       }
