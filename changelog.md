@@ -13,6 +13,7 @@ Codion Change Log
 - Observable.changed() bug fixed, the default implementation, a new instance per call, now subscribes to the observable only while it, its previous() or its current() has listeners or consumers, where each instance subscribed for good, accumulating on the observable.
 - State.Builder.link() bug fixed, building a state linked to a true one no longer throws NullPointerException.
 - State.Builder bug fixed, a second state built by the same builder no longer notifies the observers of the first when set, each state's value now built from the builder's settings by a value builder of its own.
+- Value.link() bug fixed, a link refused by a validator now leaves both values as they were, where the linked value had been set and still followed the original, both ends now validated before anything is set or registered.
 ### is.codion.common.utilities
 - PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.

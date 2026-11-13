@@ -64,11 +64,16 @@ final class ValueLink<T> {
 		this.originalValidator = new LinkedValidator<>(originalValue);
 		this.linkedValidator.excluded = originalValidator;
 		this.originalValidator.excluded = linkedValidator;
-		linkedValue.set(originalValue.get());
-		originalValue.addListener(updateLinkedValue);
-		linkedValue.addListener(updateOriginalValue);
+		T value = originalValue.get();
+		//both ends validate before anything is registered, so that a link refused leaves nothing behind: the original
+		//the value the linked one is to hold, its null value replacing null, and the linked one as it is set, before
+		//anything is written
+		originalValue.validate(replaceNull(linkedValue, value));
+		linkedValue.set(value);
 		originalValue.addValidator(linkedValidator);
 		linkedValue.addValidator(originalValidator);
+		originalValue.addListener(updateLinkedValue);
+		linkedValue.addListener(updateOriginalValue);
 	}
 
 	void unlink() {
@@ -135,6 +140,11 @@ final class ValueLink<T> {
 				updateLinkedValue();
 			}
 		}
+	}
+
+	//A Value implemented outside the framework replaces null as it sees fit, so it is validated as given
+	private static <T> @Nullable T replaceNull(Value<T> value, @Nullable T newValue) {
+		return value instanceof BaseValue ? ((BaseValue<T>) value).replaceNull(newValue) : newValue;
 	}
 
 	//A listener changing a value while it is being updated sets it while it notifies, a nested set, which unlike

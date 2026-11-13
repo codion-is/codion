@@ -104,14 +104,12 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 
 	@Override
 	public @Nullable T get() {
-		T value = getValue();
-
-		return value == null ? nullValue : value;
+		return replaceNull(getValue());
 	}
 
 	@Override
 	public void set(@Nullable T value) {
-		T newValue = value == null ? nullValue : value;
+		T newValue = replaceNull(value);
 		boolean changing = !deepEquals(get(), newValue);
 		if (changing && notifying > 0) {
 			nestedSets++;
@@ -296,6 +294,14 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		return nestedSets;
 	}
 
+	/**
+	 * @param value the value
+	 * @return the null value in case the given value is null, otherwise the given value
+	 */
+	final @Nullable T replaceNull(@Nullable T value) {
+		return value == null ? nullValue : value;
+	}
+
 	final Set<Value<T>> linkedValues() {
 		return linkedValues == null ? emptySet() : linkedValues.keySet();
 	}
@@ -307,7 +313,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	 */
 	final void validate(@Nullable T value, @Nullable Validator<?> excluded) {
 		if (validators != null) {
-			T validated = value == null ? nullValue : value;
+			T validated = replaceNull(value);
 			for (Validator<? super T> validator : validators) {
 				if (validator != excluded) {
 					validator.validate(validated);

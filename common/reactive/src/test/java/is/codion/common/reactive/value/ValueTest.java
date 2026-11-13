@@ -693,6 +693,32 @@ public class ValueTest {
 	}
 
 	@Test
+	void linkRefused() {
+		//a non-null value linked to a nullable one holding null, taking its null value, which the original refuses:
+		//the link is refused and leaves nothing behind
+		Value<String> original = Value.builder()
+						.<String>nullable()
+						.validator(value -> {
+							if ("x".equals(value)) {
+								throw new IllegalArgumentException();
+							}
+						})
+						.build();
+		Value<String> linked = Value.builder()
+						.nonNull("x")
+						.value("z")
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> linked.link(original));
+		assertEquals("z", linked.get());
+		assertNull(original.get());
+		original.set("y");
+		assertEquals("z", linked.get());
+		linked.set("w");
+		assertEquals("y", original.get());
+		assertThrows(IllegalStateException.class, () -> linked.unlink(original));
+	}
+
+	@Test
 	void linkValidationDoesNotCompound() {
 		//one set validates both ends twice each, and that is the design: the bridge runs the far end's
 		//validators before anything is written, so a value one end rejects moves neither, and the write
