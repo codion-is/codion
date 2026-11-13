@@ -416,6 +416,11 @@ public interface EntityConnection extends AutoCloseable {
 	 * the transaction, see {@link #rollback(Savepoint)} and {@link #release(Savepoint)}.
 	 * <p>Savepoints nest, and end with the transaction, committed or rolled back. Note that on a remote
 	 * connection each savepoint call is a round trip, so a loop of savepoints belongs in a function.
+	 * <p>A failure may end the transaction along with its savepoints. On most databases a deadlock's victim, see
+	 * {@link is.codion.common.db.exception.ErrorType#DEADLOCK}, has its whole transaction rolled back, after which
+	 * rolling back to a savepoint fails or, on SQL Server, succeeds without undoing anything, the connection carrying on
+	 * in a new transaction. A caller carrying on after a failure should therefore take a deadlock as the end of the
+	 * transaction.
 	 * @return the savepoint
 	 * @throws IllegalStateException in case a transaction is not open
 	 * @throws DatabaseException in case setting the savepoint failed
@@ -1048,7 +1053,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the given {@link Transactional} instance in a savepoint, in the transaction open on the given connection,
 	 * releasing the savepoint on success and rolling back to it on exception, a failing release included, the transaction
-	 * remaining open either way.
+	 * remaining open either way, unless the database rolled it back, as it may on a deadlock, see {@link #savepoint()}.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions
 	 * are rethrown wrapped in a {@link RuntimeException}. Should the rollback fail, its exception is added to the one rethrown
 	 * as a suppressed exception.
@@ -1083,7 +1088,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the given {@link TransactionalResult} instance in a savepoint, in the transaction open on the given connection,
 	 * releasing the savepoint on success and rolling back to it on exception, a failing release included, the transaction
-	 * remaining open either way.
+	 * remaining open either way, unless the database rolled it back, as it may on a deadlock, see {@link #savepoint()}.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions
 	 * are rethrown wrapped in a {@link RuntimeException}. Should the rollback fail, its exception is added to the one rethrown
 	 * as a suppressed exception.
