@@ -514,6 +514,23 @@ public class StateTest {
 	}
 
 	@Test
+	void builderLink() {
+		//the link setting the state as it is built, the original being true
+		State original = State.state(true);
+		State linked = State.builder()
+						.link(original)
+						.build();
+		assertTrue(linked.is());
+		AtomicInteger notified = new AtomicInteger();
+		linked.addListener(notified::incrementAndGet);
+		original.set(false);
+		assertFalse(linked.is());
+		assertEquals(1, notified.get());
+		linked.set(true);
+		assertTrue(original.is());
+	}
+
+	@Test
 	void weakListeners() {
 		State state = State.state();
 		Runnable listener = () -> {};

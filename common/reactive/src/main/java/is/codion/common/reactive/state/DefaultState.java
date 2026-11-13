@@ -40,7 +40,8 @@ final class DefaultState implements State {
 
 	private final Value<Boolean> value;
 
-	private @Nullable DefaultObservableState observableState;
+	//volatile, read by the notifier without the value's lock, which it can not take while the value is being built
+	private volatile @Nullable DefaultObservableState observableState;
 
 	private DefaultState(DefaultBuilder builder) {
 		this.value = builder.valueBuilder.consumer(new Notifier()).build();
@@ -123,13 +124,16 @@ final class DefaultState implements State {
 
 	private final class Notifier implements Consumer<Boolean> {
 
+		/**
+		 * Called while the value is built as well, by a link of the builder setting it, before this state has a
+		 * value to synchronize on, or observers to notify.
+		 */
 		@Override
 		public void accept(Boolean value) {
-			//the value notifies on change only, and a boolean changes to its opposite
-			synchronized (DefaultState.this.value) {
-				if (observableState != null) {
-					observableState.notifyObservers(value, !value);
-				}
+			DefaultObservableState observable = observableState;
+			if (observable != null) {
+				//the value notifies on change only, and a boolean changes to its opposite
+				observable.notifyObservers(value, !value);
 			}
 		}
 	}
