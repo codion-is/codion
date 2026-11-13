@@ -155,6 +155,8 @@ public class DerbyDatabaseTest {
 						"A truncation error was encountered trying to shrink VARCHAR 'abcdefghijklmnop' to length 10.", "22001", 30000), UPDATE).getMessage());
 		assertEquals(message("table_not_found"), database.exception(new SQLException("Table/View 'MISSING' does not exist.", "42X05", 30000), SELECT).getMessage());
 		assertEquals(message("row_locked"), database.exception(new SQLException("A lock could not be obtained within the time requested", "40XL1", 30000), UPDATE).getMessage());
+		assertEquals(message("deadlock"), database.exception(new SQLException("A lock could not be obtained due to a deadlock, cycle of locks and waiters is: "
+						+ "Lock : ROW, PARENT, (1,7) ... The selected victim is XID : 200.", "40001", 30000), UPDATE).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLException("The statement has been cancelled or timed out.", "XCL52", 30000), SELECT));
 		assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLTimeoutException("timeout"), SELECT));
 		assertInstanceOf(AuthenticationException.class, database.exception(new SQLException("Connection authentication failure occurred.  Reason: Invalid authentication..", "08004", 40000), OTHER));

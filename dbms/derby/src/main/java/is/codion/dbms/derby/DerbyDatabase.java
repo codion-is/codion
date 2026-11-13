@@ -135,8 +135,9 @@ final class DerbyDatabase extends AbstractDatabase {
 			case STATEMENT_TIMEOUT:
 				return ErrorType.TIMEOUT;
 			case LOCK_TIMEOUT:
-			case DEADLOCK:
 				return ErrorType.ROW_LOCKED;
+			case DEADLOCK:
+				return ErrorType.DEADLOCK;
 			case AUTHENTICATION_FAILURE:
 				return ErrorType.AUTHENTICATION;
 			case TABLE_NOT_FOUND:

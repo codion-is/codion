@@ -57,6 +57,15 @@ public final class DatabaseExceptionTest {
 	}
 
 	@Test
+	void everyErrorTypeHasMessages() {
+		for (ErrorType errorType : ErrorType.values()) {
+			// a key missing from the icelandic bundle falling back on the english message
+			assertNotEquals(message(errorType.messageKey(), ENGLISH), message(errorType.messageKey(), ICELANDIC), errorType.name());
+		}
+		assertEquals(message("deadlock", ENGLISH), new DatabaseException(new SQLException("deadlock", "40001", 1213), ErrorType.DEADLOCK, null).message(ENGLISH));
+	}
+
+	@Test
 	void messageFollowsTheReader() throws Exception {
 		Locale defaultLocale = Locale.getDefault();
 		try {

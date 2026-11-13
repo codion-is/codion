@@ -121,6 +121,8 @@ public class MySQLDatabaseTest {
 						"Statement aborted because lock(s) could not be acquired immediately and NOWAIT is set.", "HY000", 3572), SELECT).getMessage());
 		assertEquals(message("row_locked"), database.exception(
 						new SQLException("Lock wait timeout exceeded; try restarting transaction", "HY000", 1205), SELECT).getMessage());
+		assertEquals(message("deadlock"), database.exception(
+						new SQLException("Deadlock found when trying to get lock; try restarting transaction", "40001", 1213), UPDATE).getMessage());
 		// the driver reports neither an error code nor a state for a query timeout
 		SQLException timeout = new SQLTimeoutException("Statement cancelled due to timeout or client request");
 		assertInstanceOf(QueryTimeoutException.class, database.exception(timeout, SELECT));

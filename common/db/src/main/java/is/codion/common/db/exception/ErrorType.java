@@ -71,9 +71,16 @@ public enum ErrorType {
 	 */
 	PASSWORD_EXPIRED,
 	/**
-	 * A row is locked by another transaction
+	 * A row is locked by another transaction, the lock not acquired at once, with NOWAIT, or within the lock timeout.
+	 * Usually the statement alone fails, though a database may roll back the whole transaction, as Db2 does.
 	 */
 	ROW_LOCKED,
+	/**
+	 * The transaction was chosen as the victim of a deadlock with another transaction. Depending on the database, the
+	 * statement or the whole transaction was rolled back, and a savepoint may not survive it, so the transaction should
+	 * be rolled back and redone from its start.
+	 */
+	DEADLOCK,
 	/**
 	 * A statement timed out
 	 */

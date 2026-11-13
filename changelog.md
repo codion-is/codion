@@ -13,6 +13,12 @@ Codion Change Log
 ### is.codion.common.model
 - FilterComboBoxModel.Builder.select() renamed selectedItem(), ItemComboBoxModelBuilder.selected(T) renamed selectedValue() and selected(Item) renamed selectedItem().
 - ItemComboBoxModelBuilder.selectedItem() now accepts null, for none, where it threw, and selectedValue(null) now selects none, where it threw without a null item, the null item representing none, if any.
+### is.codion.common.db
+- ErrorType.DEADLOCK added, the transaction chosen as a deadlock's victim, recognized on every database but SQLite, which has none.
+### is.codion.dbms.db2
+- Db2Database bug fixed, a deadlock, reason code 2, is now reported as ErrorType.DEADLOCK, where it was ROW_LOCKED.
+### is.codion.dbms.derby
+- DerbyDatabase bug fixed, a deadlock is now reported as ErrorType.DEADLOCK, where it was ROW_LOCKED.
 ### is.codion.dbms.h2
 - H2Database bug fixed, a table qualified by a schema that doesn't exist is now reported as ErrorType.TABLE_NOT_FOUND, as on PostgreSQL, where it had no error type.
 - H2Database bug fixed, an embedded file database is now created without DB_CLOSE_DELAY=-1, which H2 keeps as the database's own setting, so it stayed open once its last connection closed, in every later process too, until shut down; an in-memory one keeps it.

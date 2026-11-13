@@ -43,14 +43,17 @@ import static java.util.Objects.requireNonNull;
  */
 final class Db2Database extends AbstractDatabase {
 
+	private static final int ROLLED_BACK = -911;
+	private static final int UNSUCCESSFUL = -913;
+	private static final String DEADLOCK_REASON = "2";
 	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
 	private static final Map<Integer, GetValue<?>> GETTERS = new HashMap<>();
 
 	static {
 		// the error codes not covered by the sql state defaults
 		ERROR_TYPES.put(-530, ErrorType.PARENT_MISSING);// 23503, a child row being referenced reported with 23504
-		ERROR_TYPES.put(-911, ErrorType.ROW_LOCKED);// rolled back due to a deadlock or lock timeout
-		ERROR_TYPES.put(-913, ErrorType.ROW_LOCKED);// unsuccessful due to a deadlock or lock timeout
+		ERROR_TYPES.put(ROLLED_BACK, ErrorType.ROW_LOCKED);// rolled back due to a lock timeout, reason code 68, or a deadlock, reason code 2
+		ERROR_TYPES.put(UNSUCCESSFUL, ErrorType.ROW_LOCKED);// the statement alone rolled back, with the same reason codes
 		ERROR_TYPES.put(-952, ErrorType.TIMEOUT);// processing cancelled due to an interrupt
 		ERROR_TYPES.put(-551, ErrorType.MISSING_PRIVILEGES);
 		ERROR_TYPES.put(-30082, ErrorType.AUTHENTICATION);// security processing failed, -4214 being covered by its sql state
@@ -126,8 +129,15 @@ final class Db2Database extends AbstractDatabase {
 		return getter == null ? super.getter(sqlType) : getter;
 	}
 
+	/**
+	 * A transaction rolled back, -911, or a statement, -913, is a deadlock when the reason code, the message token, is 2,
+	 * a lock timeout otherwise.
+	 */
 	@Override
 	protected ErrorType errorType(SQLException exception) {
+		if (deadlock(exception)) {
+			return ErrorType.DEADLOCK;
+		}
 		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
 
 		return errorType == null ? super.errorType(exception) : errorType;
@@ -156,6 +166,14 @@ final class Db2Database extends AbstractDatabase {
 			default:
 				return null;
 		}
+	}
+
+	private static boolean deadlock(SQLException exception) {
+		int errorCode = exception.getErrorCode();
+		String message = exception.getMessage();
+
+		return (errorCode == ROLLED_BACK || errorCode == UNSUCCESSFUL) && message != null
+						&& DEADLOCK_REASON.equals(between(message, MESSAGE_TOKENS, ","));
 	}
 
 	private static final class GetLocalDate implements GetValue<LocalDate> {

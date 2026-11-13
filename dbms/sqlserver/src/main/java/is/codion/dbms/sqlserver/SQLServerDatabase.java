@@ -60,6 +60,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(18487, ErrorType.PASSWORD_EXPIRED);
 		ERROR_TYPES.put(18488, ErrorType.PASSWORD_EXPIRED);// the password must be changed
 		ERROR_TYPES.put(1222, ErrorType.ROW_LOCKED);// lock request time out period exceeded
+		ERROR_TYPES.put(1205, ErrorType.DEADLOCK);// chosen as the deadlock victim
 		ERROR_TYPES.put(208, ErrorType.TABLE_NOT_FOUND);// invalid object name
 	}
 

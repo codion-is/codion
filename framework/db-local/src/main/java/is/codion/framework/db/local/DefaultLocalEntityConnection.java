@@ -1725,8 +1725,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	/**
 	 * @param errorType the error type of a failure, null for one without a type
-	 * @return the level to log the failure at: what a database refuses an outcome, DEBUG, a row locked or a timeout a
-	 * matter of load, WARN, and the rest a fault, ERROR, a missing privilege or a table not found included
+	 * @return the level to log the failure at: what a database refuses an outcome, DEBUG, a row locked, a deadlock or a
+	 * timeout a matter of load, WARN, and the rest a fault, ERROR, a missing privilege or a table not found included
 	 */
 	static Level failureLevel(@Nullable ErrorType errorType) {
 		if (errorType == null) {
@@ -1742,6 +1742,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 			case VALUE_TOO_LARGE:
 				return Level.DEBUG;
 			case ROW_LOCKED:
+			case DEADLOCK:
 			case TIMEOUT:
 				return Level.WARN;
 			default:

@@ -118,6 +118,8 @@ public class MariaDBDatabaseTest {
 		// NOWAIT
 		assertEquals(message("row_locked"), database.exception(
 						new SQLException("(conn=6) Lock wait timeout exceeded; try restarting transaction", "HY000", 1205), SELECT).getMessage());
+		assertEquals(message("deadlock"), database.exception(
+						new SQLException("(conn=6) Deadlock found when trying to get lock; try restarting transaction", "40001", 1213), UPDATE).getMessage());
 		SQLException timeout = new SQLTimeoutException("(conn=3) Query execution was interrupted (max_statement_time exceeded)", "70100", 1969);
 		assertInstanceOf(QueryTimeoutException.class, database.exception(timeout, SELECT));
 		assertEquals(message("timeout"), database.exception(timeout, SELECT).getMessage());

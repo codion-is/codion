@@ -41,6 +41,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	private static final String FOREIGN_KEY_VIOLATION = "23503";
 	private static final String QUERY_CANCELED = "57014";
 	private static final String LOCK_NOT_AVAILABLE = "55P03";
+	private static final String DEADLOCK_DETECTED = "40P01";
 	private static final String INSUFFICIENT_PRIVILEGE = "42501";
 	private static final String UNDEFINED_TABLE = "42P01";
 
@@ -131,6 +132,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 				return ErrorType.TIMEOUT;
 			case LOCK_NOT_AVAILABLE:
 				return ErrorType.ROW_LOCKED;
+			case DEADLOCK_DETECTED:
+				return ErrorType.DEADLOCK;
 			case INSUFFICIENT_PRIVILEGE:
 				return ErrorType.MISSING_PRIVILEGES;
 			case UNDEFINED_TABLE:

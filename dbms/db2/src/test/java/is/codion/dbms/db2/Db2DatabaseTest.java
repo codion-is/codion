@@ -139,10 +139,13 @@ public class Db2DatabaseTest {
 		assertEquals(message("value_too_large"), database.exception(exception(-413, "22003", "null"), UPDATE).getMessage());
 		assertEquals(message("table_not_found"), database.exception(exception(-204, "42704", "DB2INST1.MISSING"), SELECT).getMessage());
 		assertEquals(message("missing_privileges"), database.exception(exception(-551, "42501", "SCOTT;SELECT;DB2INST1.PARENT"), SELECT).getMessage());
-		// a lock timeout or deadlock, no longer a query timeout
+		// a lock timeout, reason code 68, or a deadlock, reason code 2, no longer a query timeout
 		assertSame(DatabaseException.class, database.exception(exception(-911, "40001", "68"), UPDATE).getClass());
 		assertEquals(message("row_locked"), database.exception(exception(-911, "40001", "68"), UPDATE).getMessage());
 		assertEquals(message("row_locked"), database.exception(exception(-913, "57033", "68"), UPDATE).getMessage());
+		assertSame(DatabaseException.class, database.exception(exception(-911, "40001", "2"), UPDATE).getClass());
+		assertEquals(message("deadlock"), database.exception(exception(-911, "40001", "2"), UPDATE).getMessage());
+		assertEquals(message("deadlock"), database.exception(exception(-913, "57033", "2"), UPDATE).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, database.exception(exception(-952, "57014", "null"), SELECT));
 		assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLTimeoutException("timeout"), SELECT));
 

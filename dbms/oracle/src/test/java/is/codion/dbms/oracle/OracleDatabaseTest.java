@@ -154,6 +154,8 @@ public class OracleDatabaseTest {
 		assertEquals("ORA-04063: view \"SCOTT.V\" has errors", database.exception(exception("ORA-04063: view \"SCOTT.V\" has errors", "72000", 4063), SELECT).getMessage());
 		assertEquals(message("row_locked"), database.exception(
 						exception("ORA-00054: resource busy and acquire with NOWAIT specified or timeout expired", "61000", 54), SELECT).getMessage());
+		assertEquals(message("deadlock"), database.exception(
+						exception("ORA-00060: deadlock detected while waiting for resource", "61000", 60), UPDATE).getMessage());
 
 		SQLException timeout = new SQLTimeoutException("ORA-01013: user requested cancel of current operation", "72000", 1013);
 		assertInstanceOf(QueryTimeoutException.class, database.exception(timeout, SELECT));

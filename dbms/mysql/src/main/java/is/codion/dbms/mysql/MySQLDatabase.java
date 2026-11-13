@@ -53,6 +53,7 @@ final class MySQLDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(1820, ErrorType.PASSWORD_EXPIRED);// when executing a statement, logging in being allowed
 		ERROR_TYPES.put(1205, ErrorType.ROW_LOCKED);// lock wait timeout exceeded
 		ERROR_TYPES.put(3572, ErrorType.ROW_LOCKED);// lock could not be acquired immediately and NOWAIT is set
+		ERROR_TYPES.put(1213, ErrorType.DEADLOCK);// deadlock found when trying to get lock
 		ERROR_TYPES.put(3024, ErrorType.TIMEOUT);// max_execution_time exceeded
 		ERROR_TYPES.put(1146, ErrorType.TABLE_NOT_FOUND);
 	}

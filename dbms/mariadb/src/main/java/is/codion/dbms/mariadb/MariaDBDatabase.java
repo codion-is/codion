@@ -54,6 +54,7 @@ final class MariaDBDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(1862, ErrorType.PASSWORD_EXPIRED);// when logging in, disconnect_on_expired_password being enabled
 		ERROR_TYPES.put(1820, ErrorType.PASSWORD_EXPIRED);// when executing a statement, logging in being allowed by default
 		ERROR_TYPES.put(1205, ErrorType.ROW_LOCKED);// lock wait timeout exceeded
+		ERROR_TYPES.put(1213, ErrorType.DEADLOCK);// deadlock found when trying to get lock
 		ERROR_TYPES.put(1969, ErrorType.TIMEOUT);// max_statement_time exceeded
 		ERROR_TYPES.put(1146, ErrorType.TABLE_NOT_FOUND);
 	}

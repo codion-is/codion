@@ -64,6 +64,7 @@ final class OracleDatabase extends AbstractDatabase {
 		ERROR_TYPES.put(28000, ErrorType.ACCOUNT_LOCKED);
 		ERROR_TYPES.put(28001, ErrorType.PASSWORD_EXPIRED);
 		ERROR_TYPES.put(54, ErrorType.ROW_LOCKED);// resource busy and acquire with NOWAIT specified
+		ERROR_TYPES.put(60, ErrorType.DEADLOCK);// deadlock detected while waiting for resource
 		ERROR_TYPES.put(942, ErrorType.TABLE_NOT_FOUND);
 	}
 

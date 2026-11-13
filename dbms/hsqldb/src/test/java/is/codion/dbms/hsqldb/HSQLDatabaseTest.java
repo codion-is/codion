@@ -101,6 +101,7 @@ public class HSQLDatabaseTest {
 		assertEquals(message("value_too_large"), database.exception(new SQLException("data exception: string data, right truncation", "22001", -3401), UPDATE).getMessage());
 		assertEquals(message("value_too_large"), database.exception(new SQLException("data exception: numeric value out of range", "22003", -3403), UPDATE).getMessage());
 		assertInstanceOf(QueryTimeoutException.class, database.exception(new SQLTimeoutException("timeout"), SELECT));
+		assertEquals(message("deadlock"), database.exception(new SQLException("transaction rollback: serialization failure", "40001", -4861), UPDATE).getMessage());
 		assertInstanceOf(AuthenticationException.class, database.exception(new SQLException("invalid authorization specification: SA", "28000", -4000), OTHER));
 		assertInstanceOf(AuthenticationException.class, database.exception(new SQLException("invalid authorization specification - not found: scott", "28501", -4001), OTHER));
 		// a missing privilege and a missing object are reported as one

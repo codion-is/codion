@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import static is.codion.common.db.exception.Operation.*;
 import static java.util.Arrays.asList;
@@ -730,6 +731,22 @@ public class H2DatabaseTest {
 			connection.rollback();
 			connection2.rollback();
 
+			// a deadlock, each holding a row the other wants, one of them chosen as the victim
+			execute(connection, "insert into parent (id, name) values (2, 'b')");
+			connection.commit();
+			execute(connection, "update parent set name = 'c' where id = 1");
+			execute(connection2, "update parent set name = 'c' where id = 2");
+			CompletableFuture<SQLException> waiting = CompletableFuture.supplyAsync(() -> outcome(connection, "update parent set name = 'd' where id = 2"));
+			SQLException closing = outcome(connection2, "update parent set name = 'd' where id = 1");
+			SQLException first = waiting.join();
+			assertTrue(first == null ^ closing == null);
+			SQLException deadlock = first == null ? closing : first;
+			assertSame(DatabaseException.class, database.exception(deadlock, UPDATE).getClass());
+			assertEquals(ErrorType.DEADLOCK, database.exception(deadlock, UPDATE).errorType().orElseThrow());
+			assertEquals(message("deadlock"), database.exception(deadlock, UPDATE).getMessage());
+			connection.rollback();
+			connection2.rollback();
+
 			execute(connection, "create user scott password 'tiger'");
 			connection.commit();
 			AuthenticationException authentication = assertThrows(AuthenticationException.class,
@@ -821,6 +838,17 @@ public class H2DatabaseTest {
 
 	private static SQLException failure(Connection connection, String sql) {
 		return assertThrows(SQLException.class, () -> execute(connection, sql));
+	}
+
+	private static SQLException outcome(Connection connection, String sql) {
+		try {
+			execute(connection, sql);
+
+			return null;
+		}
+		catch (SQLException e) {
+			return e;
+		}
 	}
 
 	// independent of the default locale

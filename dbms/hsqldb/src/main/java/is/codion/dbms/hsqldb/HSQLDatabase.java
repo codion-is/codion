@@ -41,6 +41,7 @@ final class HSQLDatabase extends AbstractDatabase {
 	private static final String COLUMN = "column: ";
 	private static final int FOREIGN_KEY_NO_PARENT = -177;
 	private static final int USER_NOT_FOUND = -4001;
+	private static final int SERIALIZATION_FAILURE = -4861;
 	private static final String SHUTDOWN = "SHUTDOWN";
 	private static final String SYSADMIN_USERNAME = "sa";
 
@@ -80,7 +81,7 @@ final class HSQLDatabase extends AbstractDatabase {
 	}
 
 	/**
-	 * The sql state defaults cover all but which way a foreign key is violated and an unknown user
+	 * The sql state defaults cover all but which way a foreign key is violated, an unknown user and a deadlock
 	 */
 	@Override
 	protected ErrorType errorType(SQLException exception) {
@@ -89,6 +90,9 @@ final class HSQLDatabase extends AbstractDatabase {
 				return ErrorType.PARENT_MISSING;
 			case USER_NOT_FOUND:
 				return ErrorType.AUTHENTICATION;
+			case SERIALIZATION_FAILURE:
+				// reported for a deadlock, and for a serializable transaction's conflict in MVCC mode
+				return ErrorType.DEADLOCK;
 			default:
 				return super.errorType(exception);
 		}

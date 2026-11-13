@@ -147,6 +147,8 @@ public class SQLServerDatabaseTest {
 		assertEquals(message("missing_privileges"), database.exception(new SQLException(
 						"The SELECT permission was denied on the object 'parent', database 'db', schema 'dbo'.", "S0005", 229), SELECT).getMessage());
 		assertEquals(message("row_locked"), database.exception(new SQLException("Lock request time out period exceeded.", "S0001", 1222), SELECT).getMessage());
+		assertEquals(message("deadlock"), database.exception(new SQLException("Transaction (Process ID 74) was deadlocked on lock resources with another process "
+						+ "and has been chosen as the deadlock victim. Rerun the transaction.", "40001", 1205), UPDATE).getMessage());
 
 		// reported with error code 0
 		SQLException timeout = new SQLTimeoutException("The query has timed out.", "HY008", 0);

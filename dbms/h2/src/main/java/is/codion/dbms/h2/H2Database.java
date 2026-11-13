@@ -107,6 +107,7 @@ final class H2Database extends AbstractDatabase {
 		ERROR_TYPES.put(23503, ErrorType.CHILD_EXISTS);// referential integrity violated, child exists
 		ERROR_TYPES.put(23506, ErrorType.PARENT_MISSING);// referential integrity violated, parent missing
 		ERROR_TYPES.put(50200, ErrorType.ROW_LOCKED);// lock timeout, a timeout exception when NOWAIT is used
+		ERROR_TYPES.put(40001, ErrorType.DEADLOCK);// deadlock detected, a serializable transaction's conflict reported as one too
 		ERROR_TYPES.put(57014, ErrorType.TIMEOUT);// statement was canceled
 		ERROR_TYPES.put(42102, ErrorType.TABLE_NOT_FOUND);
 		ERROR_TYPES.put(42104, ErrorType.TABLE_NOT_FOUND);// the database being empty

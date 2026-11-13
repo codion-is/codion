@@ -2479,6 +2479,7 @@ public class DefaultLocalEntityConnectionTest {
 		}
 		// a matter of load
 		assertEquals(Level.WARN, DefaultLocalEntityConnection.failureLevel(ErrorType.ROW_LOCKED));
+		assertEquals(Level.WARN, DefaultLocalEntityConnection.failureLevel(ErrorType.DEADLOCK));
 		assertEquals(Level.WARN, DefaultLocalEntityConnection.failureLevel(ErrorType.TIMEOUT));
 		// a fault, an error without a type among them
 		assertEquals(Level.ERROR, DefaultLocalEntityConnection.failureLevel(null));

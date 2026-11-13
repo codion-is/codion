@@ -147,6 +147,7 @@ public class PostgreSQLDatabaseTest {
 		assertEquals(message("missing_privileges"), database.exception(new SQLException("permission denied", "42501"), SELECT).getMessage());
 		assertEquals(message("table_not_found"), database.exception(new SQLException("relation does not exist", "42P01"), SELECT).getMessage());
 		assertEquals(message("row_locked"), database.exception(new SQLException("could not obtain lock on row", "55P03"), SELECT).getMessage());
+		assertEquals(message("deadlock"), database.exception(new SQLException("ERROR: deadlock detected", "40P01"), UPDATE).getMessage());
 
 		SQLException timeout = new SQLException("ERROR: canceling statement due to user request", "57014");
 		assertInstanceOf(QueryTimeoutException.class, database.exception(timeout, SELECT));
