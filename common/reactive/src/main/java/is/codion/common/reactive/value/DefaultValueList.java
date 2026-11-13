@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 final class DefaultValueList<T> extends AbstractValueCollection<T, List<T>> implements ValueList<T> {
 
@@ -51,6 +52,16 @@ final class DefaultValueList<T> extends AbstractValueCollection<T, List<T>> impl
 	@Override
 	public synchronized ObservableValueList<T> observable() {
 		return (ObservableValueList<T>) super.observable();
+	}
+
+	@Override
+	List<T> create() {
+		return new ArrayList<>();
+	}
+
+	@Override
+	List<T> unmodifiable(List<T> values) {
+		return unmodifiableList(values);
 	}
 
 	@Override

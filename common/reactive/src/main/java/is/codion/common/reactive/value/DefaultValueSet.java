@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableSet;
 
 final class DefaultValueSet<T> extends AbstractValueCollection<T, Set<T>> implements ValueSet<T> {
 
@@ -51,6 +52,16 @@ final class DefaultValueSet<T> extends AbstractValueCollection<T, Set<T>> implem
 	@Override
 	public synchronized ObservableValueSet<T> observable() {
 		return (ObservableValueSet<T>) super.observable();
+	}
+
+	@Override
+	Set<T> create() {
+		return new LinkedHashSet<>();
+	}
+
+	@Override
+	Set<T> unmodifiable(Set<T> values) {
+		return unmodifiableSet(values);
 	}
 
 	@Override

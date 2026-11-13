@@ -7,6 +7,7 @@ Codion Change Log
 - Observable.changed() now returns ChangeObserver, its previous() and current() observers notified with the values of each change, for method references taking the value.
 - Value.link() bug fixed, a value set again by a listener added before the link, trimmed or reverted for example, is now followed by the other end, which was set to the value replaced, the two out of sync, and Observable.changed() no longer reports a change back to the value replaced, the link and the change observer now reading the value rather than the one notified.
 - State.Group bug fixed, an exception as a member is deactivated, from a listener or a locked member, no longer stops the group from deactivating its members, where it did for good, two members then active at once.
+- ValueList.Builder and ValueSet.Builder bug fixed, link() no longer throws NullPointerException, and the collection given to value() is now copied, where it became the value, changing with the caller's collection, unvalidated and unnotified.
 ### is.codion.common.utilities
 - PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.

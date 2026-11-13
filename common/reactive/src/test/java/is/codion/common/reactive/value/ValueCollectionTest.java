@@ -18,6 +18,8 @@
  */
 package is.codion.common.reactive.value;
 
+import is.codion.common.reactive.observable.Change;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -199,6 +201,108 @@ public class ValueCollectionTest {
 		assertEquals(1, notifications.get());
 		valueSet.set(new LinkedHashSet<>(asList("a", "b")));
 		assertEquals(1, notifications.get());
+	}
+
+	@Test
+	void builderValue() {
+		//the builder's value is copied, as set() copies
+		List<String> mutableList = new ArrayList<>(singletonList("a"));
+		ValueList<String> valueList = ValueList.<String>builder()
+						.value(mutableList)
+						.build();
+		mutableList.add("b");
+		assertEquals(singletonList("a"), valueList.get());
+		assertThrows(UnsupportedOperationException.class, () -> valueList.get().add("b"));
+
+		Set<String> mutableSet = new LinkedHashSet<>(singletonList("a"));
+		ValueSet<String> valueSet = ValueSet.<String>builder()
+						.value(mutableSet)
+						.build();
+		mutableSet.add("b");
+		assertEquals(singleton("a"), valueSet.get());
+		assertThrows(UnsupportedOperationException.class, () -> valueSet.get().add("b"));
+	}
+
+	@Test
+	void builderLink() {
+		ValueList<String> originalList = ValueList.valueList(asList("a", "b"));
+		ValueList<String> linkedList = ValueList.<String>builder()
+						.link(originalList)
+						.build();
+		assertEquals(asList("a", "b"), linkedList.get());
+		linkedList.add("c");
+		assertEquals(asList("a", "b", "c"), originalList.get());
+		ValueList<String> observingList = ValueList.<String>builder()
+						.link(originalList.observable())
+						.build();
+		assertEquals(asList("a", "b", "c"), observingList.get());
+
+		ValueSet<String> originalSet = ValueSet.valueSet(asList("a", "b"));
+		ValueSet<String> linkedSet = ValueSet.<String>builder()
+						.link(originalSet)
+						.build();
+		assertEquals(new LinkedHashSet<>(asList("a", "b")), linkedSet.get());
+		linkedSet.add("c");
+		assertEquals(new LinkedHashSet<>(asList("a", "b", "c")), originalSet.get());
+		ValueSet<String> observingSet = ValueSet.<String>builder()
+						.link(originalSet.observable())
+						.build();
+		assertEquals(new LinkedHashSet<>(asList("a", "b", "c")), observingSet.get());
+	}
+
+	@Test
+	void builderMethods() {
+		assertBuilderMethods(ValueList.builder(), ValueList.valueList(singletonList("a")), ValueList.valueList(singletonList("a")));
+		assertBuilderMethods(ValueSet.builder(), ValueSet.valueSet(singletonList("a")), ValueSet.valueSet(singletonList("a")));
+	}
+
+	private static <C extends Collection<String>, B extends ValueCollection.Builder<String, C, B>> void assertBuilderMethods(
+					B builder, ValueCollection<String, C> original, ValueCollection<String, C> observed) {
+		//every builder method at once, several of which run while the value is constructed
+		AtomicInteger listened = new AtomicInteger();
+		AtomicInteger consumed = new AtomicInteger();
+		AtomicInteger whenListened = new AtomicInteger();
+		AtomicInteger whenConsumed = new AtomicInteger();
+		AtomicInteger changes = new AtomicInteger();
+		Runnable weakListener = listened::incrementAndGet;
+		Consumer<C> weakConsumer = values -> consumed.incrementAndGet();
+		Runnable weakChangeListener = changes::incrementAndGet;
+		Consumer<Change<C>> weakChangeConsumer = change -> changes.incrementAndGet();
+		ValueCollection<String, C> value = builder
+						.value(original.get())
+						.notify(Value.Notify.CHANGED)
+						.validator(values -> {
+							if (values != null && values.contains("x")) {
+								throw new IllegalArgumentException();
+							}
+						})
+						.link(original)
+						.link(observed.observable())
+						.listener(listened::incrementAndGet)
+						.consumer(values -> consumed.incrementAndGet())
+						.weakListener(weakListener)
+						.weakConsumer(weakConsumer)
+						.when(values -> values != null && values.contains("b"), whenListened::incrementAndGet)
+						.when(values -> values != null && values.contains("b"), values -> whenConsumed.incrementAndGet())
+						.changeListener(changes::incrementAndGet)
+						.changeConsumer(change -> changes.incrementAndGet())
+						.weakChangeListener(weakChangeListener)
+						.weakChangeConsumer(weakChangeConsumer)
+						.build();
+		assertEquals(original.get(), value.get());
+		value.add("b");
+		assertTrue(original.contains("b"));
+		assertEquals(2, listened.get());
+		assertEquals(2, consumed.get());
+		assertEquals(1, whenListened.get());
+		assertEquals(1, whenConsumed.get());
+		assertEquals(4, changes.get());
+		assertThrows(IllegalArgumentException.class, () -> value.add("x"));
+		assertThrows(IllegalArgumentException.class, () -> original.add("x"));
+		observed.add("c");
+		assertTrue(value.contains("c"));
+		assertTrue(original.contains("c"));
+		assertTrue(builder.locked(true).build().locked().is());
 	}
 
 	@Test

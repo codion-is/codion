@@ -36,17 +36,12 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseValue<C> implements ValueCollection<T, C> {
 
-	private final Supplier<? extends C> create;
-	private final UnaryOperator<C> unmodifiable;
-
 	private C value;
 
 	private @Nullable Value<T> singleValue;
 
 	AbstractValueCollection(AbstractValueCollectionBuilder<C, T, ?> builder) {
 		super(builder);
-		this.create = builder.create;
-		this.unmodifiable = builder.unmodifiable;
 	}
 
 	@Override
@@ -76,20 +71,20 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 
 	@Override
 	public final synchronized void set(@Nullable Collection<T> values) {
-		C newValues = create.get();
+		C newValues = create();
 		if (values != null) {
 			newValues.addAll(values);
 		}
 
-		super.set(unmodifiable.apply(newValues));
+		super.set(unmodifiable(newValues));
 	}
 
 	@Override
 	public final synchronized boolean add(@Nullable T value) {
-		C newValues = create.get();
+		C newValues = create();
 		newValues.addAll(getOrThrow());
 		boolean added = newValues.add(value);
-		super.set(unmodifiable.apply(newValues));
+		super.set(unmodifiable(newValues));
 
 		return added;
 	}
@@ -103,20 +98,20 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	@Override
 	public final synchronized boolean addAll(Collection<? extends T> values) {
 		requireNonNull(values);
-		C newValues = create.get();
+		C newValues = create();
 		newValues.addAll(getOrThrow());
 		boolean added = newValues.addAll(values);
-		super.set(unmodifiable.apply(newValues));
+		super.set(unmodifiable(newValues));
 
 		return added;
 	}
 
 	@Override
 	public final synchronized boolean remove(@Nullable T value) {
-		C newValues = create.get();
+		C newValues = create();
 		newValues.addAll(getOrThrow());
 		boolean removed = newValues.remove(value);
-		super.set(unmodifiable.apply(newValues));
+		super.set(unmodifiable(newValues));
 
 		return removed;
 	}
@@ -130,10 +125,10 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	@Override
 	public final synchronized boolean removeAll(Collection<? extends T> values) {
 		requireNonNull(values);
-		C newValues = create.get();
+		C newValues = create();
 		newValues.addAll(getOrThrow());
 		boolean removed = newValues.removeAll(values);
-		super.set(unmodifiable.apply(newValues));
+		super.set(unmodifiable(newValues));
 
 		return removed;
 	}
@@ -202,6 +197,19 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 			notifyObserver();
 		}
 	}
+
+	/**
+	 * Methods rather than fields assigned from the builder, since the base constructor applies the builder's
+	 * links, which set this value, before a field of this class is assigned.
+	 * @return a new empty modifiable collection
+	 */
+	abstract C create();
+
+	/**
+	 * @param values the values
+	 * @return an unmodifiable view of the given values
+	 */
+	abstract C unmodifiable(C values);
 
 	private static boolean sameOrder(Collection<?> previous, Collection<?> current) {
 		Iterator<?> previousItems = previous.iterator();
@@ -286,7 +294,11 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 
 		@Override
 		protected final C prepareInitialValue() {
-			return unmodifiable.apply(super.prepareInitialValue());
+			//copied, as set() copies, so that the caller's collection can not change the value behind its back
+			C values = create.get();
+			values.addAll(super.prepareInitialValue());
+
+			return unmodifiable.apply(values);
 		}
 	}
 
