@@ -26,6 +26,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -44,7 +45,7 @@ final class DefaultState implements State {
 	private volatile @Nullable DefaultObservableState observableState;
 
 	private DefaultState(DefaultBuilder builder) {
-		this.value = builder.valueBuilder.consumer(new Notifier()).build();
+		this.value = builder.value(new Notifier());
 		builder.groups.forEach(group -> group.add(this));
 	}
 
@@ -140,27 +141,30 @@ final class DefaultState implements State {
 
 	static final class DefaultBuilder implements Builder {
 
-		private final Value.Builder<Boolean, ?> valueBuilder = Value.builder().nonNull(false);
-
+		//applied to a value builder of each state's own, each state's notifier added to its own value alone,
+		//after the listeners and consumers set here, and so before the links, which a value adds after them
+		private final List<Consumer<Value.Builder<Boolean, ?>>> settings = new ArrayList<>();
 		private final Collection<Group> groups = new ArrayList<>(1);
 
 		DefaultBuilder() {}
 
 		@Override
 		public Builder value(boolean value) {
-			this.valueBuilder.value(value);
+			settings.add(builder -> builder.value(value));
 			return this;
 		}
 
 		@Override
 		public Builder validator(Validator<? super Boolean> validator) {
-			valueBuilder.validator(validator);
+			requireNonNull(validator);
+			settings.add(builder -> builder.validator(validator));
 			return this;
 		}
 
 		@Override
 		public Builder link(State originalState) {
-			valueBuilder.link(requireNonNull(originalState).value());
+			Value<Boolean> originalValue = requireNonNull(originalState).value();
+			settings.add(builder -> builder.link(originalValue));
 			return this;
 		}
 
@@ -172,61 +176,78 @@ final class DefaultState implements State {
 
 		@Override
 		public Builder locked(boolean locked) {
-			valueBuilder.locked(locked);
+			settings.add(builder -> builder.locked(locked));
 			return this;
 		}
 
 		@Override
 		public Builder listener(Runnable listener) {
-			valueBuilder.listener(listener);
+			requireNonNull(listener);
+			settings.add(builder -> builder.listener(listener));
 			return this;
 		}
 
 		@Override
 		public Builder consumer(Consumer<? super Boolean> consumer) {
-			valueBuilder.consumer(consumer);
+			requireNonNull(consumer);
+			settings.add(builder -> builder.consumer(consumer));
 			return this;
 		}
 
 		@Override
 		public Builder weakListener(Runnable weakListener) {
-			valueBuilder.weakListener(weakListener);
+			requireNonNull(weakListener);
+			settings.add(builder -> builder.weakListener(weakListener));
 			return this;
 		}
 
 		@Override
 		public Builder weakConsumer(Consumer<? super Boolean> weakConsumer) {
-			valueBuilder.weakConsumer(weakConsumer);
+			requireNonNull(weakConsumer);
+			settings.add(builder -> builder.weakConsumer(weakConsumer));
 			return this;
 		}
 
 		@Override
 		public Builder when(boolean value, Runnable listener) {
-			valueBuilder.when(value, listener);
+			requireNonNull(listener);
+			settings.add(builder -> builder.when(value, listener));
 			return this;
 		}
 
 		@Override
 		public Builder when(boolean value, Consumer<? super Boolean> consumer) {
-			valueBuilder.when(value, consumer);
+			requireNonNull(consumer);
+			settings.add(builder -> builder.when(value, consumer));
 			return this;
 		}
 
 		@Override
 		public Builder when(Predicate<Boolean> predicate, Runnable listener) {
-			valueBuilder.when(predicate, listener);
+			requireNonNull(predicate);
+			requireNonNull(listener);
+			settings.add(builder -> builder.when(predicate, listener));
 			return this;
 		}
 
 		@Override
 		public Builder when(Predicate<Boolean> predicate, Consumer<? super Boolean> consumer) {
-			valueBuilder.when(predicate, consumer);
+			requireNonNull(predicate);
+			requireNonNull(consumer);
+			settings.add(builder -> builder.when(predicate, consumer));
 			return this;
 		}
 
 		@Override
 		public State build() {
 			return new DefaultState(this);
+		}
+
+		private Value<Boolean> value(Consumer<Boolean> notifier) {
+			Value.Builder<Boolean, ?> builder = Value.builder().nonNull(false);
+			settings.forEach(setting -> setting.accept(builder));
+
+			return builder.consumer(notifier).build();
 		}
 	}
 }

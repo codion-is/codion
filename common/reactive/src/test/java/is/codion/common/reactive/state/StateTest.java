@@ -24,6 +24,8 @@ import is.codion.common.reactive.value.ValueSet;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -251,6 +253,35 @@ public class StateTest {
 		assertTrue(two.is());
 		assertFalse(one.is());
 		assertFalse(three.is());
+	}
+
+	@Test
+	void builtTwice() {
+		State.Builder builder = State.builder();
+		State first = builder.build();
+		State second = builder.build();
+		AtomicInteger firstNotified = new AtomicInteger();
+		first.addListener(firstNotified::incrementAndGet);
+		second.set(true);
+		assertEquals(0, firstNotified.get());
+		first.set(true);
+		assertEquals(1, firstNotified.get());
+		//the state's observers notified after the builder's listeners, and before a state linked by the builder
+		State original = State.state();
+		List<String> notified = new ArrayList<>();
+		original.addListener(() -> notified.add("original"));
+		State.Builder linked = State.builder()
+						.listener(() -> notified.add("builder"))
+						.link(original);
+		State state = linked.build();
+		state.addListener(() -> notified.add("state"));
+		state.set(true);
+		assertEquals(asList("builder", "state", "original"), notified);
+		//a second state from the same builder, linked to the original as well, its own builder listener last
+		linked.build();
+		notified.clear();
+		state.set(false);
+		assertEquals(asList("builder", "state", "original", "builder"), notified);
 	}
 
 	@Test
