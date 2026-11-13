@@ -38,8 +38,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StateTest {
@@ -267,6 +266,25 @@ public class StateTest {
 						.build();
 		state.set(true);
 		assertEquals(2, notified.get());
+	}
+
+	@Test
+	void notificationSuperseded() {
+		// a listener reverting the state ends the notification of the value it replaced, once the nested one has run
+		State state = State.state();
+		state.addConsumer(value -> {
+			if (value) {
+				state.set(false);
+			}
+		});
+		List<Boolean> after = new ArrayList<>();
+		List<Boolean> not = new ArrayList<>();
+		state.addConsumer(after::add);
+		state.not().addConsumer(not::add);
+		state.set(true);
+		assertFalse(state.is());
+		assertEquals(singletonList(false), after);
+		assertEquals(singletonList(true), not);
 	}
 
 	@Test

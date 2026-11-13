@@ -90,10 +90,10 @@ public interface Value<T> extends Observable<T> {
 	/**
 	 * Sets the value. Note that change listener notifications depend on the {@link Notify} policy associated with this value.
 	 * <p>A listener or consumer setting the value again, trimming, clamping or reverting a change, starts a nested
-	 * notification of the new value, after which the listeners and consumers following it still hear the value it
-	 * replaced, a notification delivering the value it started with. Links and {@link #changed()} read the value
-	 * rather than the one delivered, and so follow the new one. Normalize the value in
-	 * {@link AbstractValue#setValue(Object)} instead, or reject it with a {@link Validator}.
+	 * notification of the new value, which supersedes the one in progress: once it has run, the notification of the
+	 * value it replaced ends, so the listeners and consumers after the one setting it hear the new value alone, and
+	 * those before it both, in order. To notify the value once, normalize it in {@link AbstractValue#setValue(Object)}
+	 * instead, or reject it with a {@link Validator}.
 	 * @param value the value
 	 * @throws IllegalArgumentException in case the given value is invalid
 	 * @throws IllegalStateException in case this value is {@link #locked() locked} and the given value differs from the current one

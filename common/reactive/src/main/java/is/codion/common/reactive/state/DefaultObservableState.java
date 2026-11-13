@@ -18,18 +18,21 @@
  */
 package is.codion.common.reactive.state;
 
+import is.codion.common.reactive.internal.Listeners;
 import is.codion.common.reactive.observer.AbstractObserver;
 
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultObservableState extends AbstractObserver<Boolean> implements ObservableState {
+final class DefaultObservableState extends AbstractObserver<Boolean> implements ObservableState, Listeners.Superseding {
 
 	private final ObservableState state;
 	private final boolean not;
 
 	private @Nullable DefaultObservableState notObserver;
+	//the notifications started, a nested one included
+	private int notifications = 0;
 
 	DefaultObservableState(ObservableState state, boolean not) {
 		this.state = requireNonNull(state);
@@ -64,9 +67,11 @@ final class DefaultObservableState extends AbstractObserver<Boolean> implements 
 	//from this state, while holding its own, which notifying it takes
 	void notifyObservers(boolean newValue, boolean previousValue) {
 		if (previousValue != newValue) {
+			int notification = ++notifications;
 			notifyListeners(newValue);
 			DefaultObservableState notState = notObserver();
-			if (notState != null) {
+			//unless superseded by a nested notification, which notified the not observer already
+			if (notState != null && notification == notifications) {
 				notState.notifyObservers(previousValue, newValue);
 			}
 		}

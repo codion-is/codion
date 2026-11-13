@@ -239,6 +239,38 @@ public class ValueTest {
 	}
 
 	@Test
+	void notificationSuperseded() {
+		// a listener setting the value again ends the notification of the value it replaced, once the nested one
+		// has run, the listeners and consumers after it hearing the new value alone
+		Value<String> value = Value.nullable();
+		List<String> before = new ArrayList<>();
+		value.addConsumer(before::add);
+		value.addConsumer(string -> {
+			if (string != null) {
+				value.set(string.toUpperCase());
+			}
+		});
+		List<String> after = new ArrayList<>();
+		value.addConsumer(after::add);
+		List<String> currents = new ArrayList<>();
+		List<String> changes = new ArrayList<>();
+		value.changed().current().addConsumer(currents::add);
+		value.changed().addConsumer(change -> {
+			changes.add(change.previous() + "->" + change.current());
+			if ("A".equals(change.current())) {
+				value.set("B");
+			}
+		});
+		value.changed().addConsumer(change -> changes.add("after " + change.previous() + "->" + change.current()));
+		value.set("a");
+		assertEquals("B", value.get());
+		assertEquals(asList("a", "A", "B"), before);
+		assertEquals(asList("A", "B"), after);
+		assertEquals(asList("null->A", "A->B", "after A->B"), changes);
+		assertEquals(asList("B"), currents);
+	}
+
+	@Test
 	void changePreviousAndCurrent() {
 		Value<Integer> value = Value.builder()
 						.nullable(0)

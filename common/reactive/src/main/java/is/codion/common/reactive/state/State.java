@@ -61,6 +61,9 @@ public interface State extends ObservableState {
 
 	/**
 	 * Sets the value
+	 * <p>A listener or consumer setting the state again, reverting a change, starts a nested notification of the new
+	 * value, which supersedes the one in progress: once it has run, the notification of the value it replaced ends,
+	 * so the listeners and consumers after the one setting it hear the new value alone.
 	 * @param value the new value
 	 */
 	void set(boolean value);

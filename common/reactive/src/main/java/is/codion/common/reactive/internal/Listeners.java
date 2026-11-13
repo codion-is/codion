@@ -40,16 +40,20 @@ public final class Listeners {
 
 	private final Object owner;
 	private final @Nullable Hooks hooks;
+	private final boolean superseding;
 
 	private @Nullable ArrayList<Listener<?>> listeners;
+	//the notifications of a superseding owner started, a nested one included, on the one thread notifying at a time
+	private int notifications = 0;
 
 	/**
 	 * @param owner the sensor or observer owning these listeners, synchronized on, its {@link Hooks} called if it
-	 * implements them
+	 * implements them, its notifications {@link Superseding} if it is
 	 */
 	public Listeners(Object owner) {
 		this.owner = requireNonNull(owner);
 		this.hooks = owner instanceof Hooks ? (Hooks) owner : null;
+		this.superseding = owner instanceof Superseding;
 	}
 
 	public boolean addListener(Runnable listener) {
@@ -113,7 +117,12 @@ public final class Listeners {
 	 * @param <T> the data type
 	 */
 	public <T> void notifyListeners(@Nullable T data) {
+		int notification = superseding ? ++notifications : 0;
 		for (Listener<?> listener : listeners()) {
+			if (superseding && notification != notifications) {
+				//a listener notified the owner again, which the listeners after it have heard
+				return;
+			}
 			notifyListener(listener, data);
 		}
 	}
@@ -223,6 +232,15 @@ public final class Listeners {
 		 */
 		void onLastListener();
 	}
+
+	/**
+	 * Marks an owner whose data is a value rather than an occurrence, the latest value being the one that counts: a
+	 * listener notifying it again, by setting the value it holds, supersedes the notification in progress, which
+	 * ends once the nested one has run, the listeners after it hearing the new value alone, rather than the new one
+	 * followed by the one it replaced. An occurrence, an event or a signal, counts each time, so its owner is not
+	 * superseding.
+	 */
+	public interface Superseding {}
 
 	private interface Listener<T> {
 

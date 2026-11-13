@@ -249,4 +249,19 @@ public class SignalTest {
 		assertEquals(10, maxDepthReached.get());
 		assertEquals(0, depth.get()); // Should return to 0 after recursion completes
 	}
+
+	@Test
+	void nestedOccurrences() {
+		//each occurrence counts, so one triggered by a listener does not end the one in progress
+		Signal<Integer> signal = Signal.signal();
+		signal.addConsumer(value -> {
+			if (value == 1) {
+				signal.accept(2);
+			}
+		});
+		List<Integer> after = new ArrayList<>();
+		signal.addConsumer(after::add);
+		signal.accept(1);
+		assertEquals(Arrays.asList(2, 1), after);
+	}
 }

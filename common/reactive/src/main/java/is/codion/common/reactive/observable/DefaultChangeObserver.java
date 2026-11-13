@@ -37,7 +37,8 @@ import static java.util.Objects.deepEquals;
  * to be collected, rather than accumulating on the observable, {@link Observable#changed()} creating one per call.
  * @param <T> the value type
  */
-final class DefaultChangeObserver<T> extends AbstractObserver<Change<T>> implements ChangeObserver<T>, Listeners.Hooks {
+final class DefaultChangeObserver<T> extends AbstractObserver<Change<T>>
+				implements ChangeObserver<T>, Listeners.Hooks, Listeners.Superseding {
 
 	private final Observable<T> observable;
 	private final Runnable notifyChange = this::notifyChange;
@@ -46,6 +47,8 @@ final class DefaultChangeObserver<T> extends AbstractObserver<Change<T>> impleme
 	private final Set<Object> listened = new HashSet<>(3);
 
 	private @Nullable T value;
+	//the changes notified, a nested one included
+	private int changes = 0;
 
 	DefaultChangeObserver(Observable<T> observable) {
 		this.observable = observable;
@@ -104,13 +107,19 @@ final class DefaultChangeObserver<T> extends AbstractObserver<Change<T>> impleme
 			value = newValue;
 		}
 		if (!deepEquals(previousValue, newValue)) {
+			int change = ++changes;
 			notifyListeners(change(previousValue, newValue));
-			previous.notify(previousValue);
-			current.notify(newValue);
+			//unless superseded by a nested change, which notified them already
+			if (change == changes) {
+				previous.notify(previousValue);
+			}
+			if (change == changes) {
+				current.notify(newValue);
+			}
 		}
 	}
 
-	private final class ValueObserver extends AbstractObserver<T> implements Listeners.Hooks {
+	private final class ValueObserver extends AbstractObserver<T> implements Listeners.Hooks, Listeners.Superseding {
 
 		@Override
 		public void onFirstListener() {

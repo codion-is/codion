@@ -18,6 +18,7 @@
  */
 package is.codion.common.reactive.value;
 
+import is.codion.common.reactive.internal.Listeners;
 import is.codion.common.reactive.observable.Change;
 import is.codion.common.reactive.observable.ChangeObserver;
 import is.codion.common.reactive.observable.Observable;
@@ -52,7 +53,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the value type
  * @see AbstractValue
  */
-abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
+abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Listeners.Superseding {
 
 	private final @Nullable T nullValue;
 	private final @Nullable Notify notify;
