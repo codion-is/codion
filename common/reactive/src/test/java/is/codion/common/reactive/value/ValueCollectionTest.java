@@ -19,6 +19,7 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observer.Observer;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -209,6 +213,127 @@ public class ValueCollectionTest {
 		assertEquals(1, notifications.get());
 		valueSet.set(new LinkedHashSet<>(asList("a", "b")));
 		assertEquals(1, notifications.get());
+	}
+
+	@Test
+	void readWhileNotifying() throws InterruptedException {
+		//a reader on another thread does not wait for the listeners of a change
+		ValueSet<String> set = ValueSet.valueSet();
+		CountDownLatch notifying = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		set.addListener(() -> {
+			notifying.countDown();
+			await(release);
+		});
+		Thread adder = daemon(() -> set.add("a"));
+		adder.start();
+		assertTrue(notifying.await(2, TimeUnit.SECONDS));
+		AtomicBoolean contains = new AtomicBoolean();
+		Thread reader = daemon(() -> contains.set(set.contains("a") && set.get().size() == 1));
+		reader.start();
+		reader.join(2000);
+		assertFalse(reader.isAlive());
+		assertTrue(contains.get());
+		release.countDown();
+		assertFinished(adder);
+	}
+
+	@Test
+	void changesTakeTurns() throws InterruptedException {
+		//a change on another thread waits for the listeners of the one before it
+		ValueList<String> list = ValueList.valueList();
+		CountDownLatch notifying = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		List<List<String>> notified = new ArrayList<>();
+		list.addConsumer(values -> {
+			if (values.equals(singletonList("a"))) {
+				notifying.countDown();
+				await(release);
+			}
+			notified.add(values);
+		});
+		Thread first = daemon(() -> list.add("a"));
+		first.start();
+		assertTrue(notifying.await(2, TimeUnit.SECONDS));
+		Thread second = daemon(() -> list.add("b"));
+		second.start();
+		awaitBlocked(second);
+		assertEquals(Thread.State.BLOCKED, second.getState());
+		release.countDown();
+		assertFinished(first, second);
+		assertEquals(asList(singletonList("a"), asList("a", "b")), notified);
+	}
+
+	@Test
+	void conditionalRemovedWhileNotifying() throws InterruptedException {
+		//the last listener of a when() removed on one thread, detaching it from the set, while the set notifies on
+		//another, the remover arriving while the setter notifies the listener before the when()
+		ValueSet<String> set = ValueSet.valueSet();
+		Observer<Set<String>> conditional = set.when(values -> values.contains("a"));
+		Runnable listener = () -> {};
+		Thread remover = daemon(() -> conditional.removeListener(listener));
+		set.addListener(() -> {
+			remover.start();
+			awaitBlocked(remover);
+		});
+		conditional.addListener(listener);
+		Thread adder = daemon(() -> set.add("a"));
+		adder.start();
+		assertFinished(adder, remover);
+	}
+
+	@Test
+	void updateAtomic() throws InterruptedException {
+		//an add on another thread while update() applies its function waits for it, rather than being lost
+		ValueList<String> list = ValueList.valueList();
+		CountDownLatch updating = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		Thread updater = daemon(() -> list.update(values -> {
+			updating.countDown();
+			await(release);
+			List<String> updated = new ArrayList<>(values);
+			updated.add("a");
+
+			return updated;
+		}));
+		updater.start();
+		assertTrue(updating.await(2, TimeUnit.SECONDS));
+		Thread adder = daemon(() -> list.add("b"));
+		adder.start();
+		awaitBlocked(adder);
+		release.countDown();
+		assertFinished(updater, adder);
+		assertEquals(asList("a", "b"), list.get());
+	}
+
+	private static void await(CountDownLatch latch) {
+		try {
+			latch.await();
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	private static Thread daemon(Runnable runnable) {
+		Thread thread = new Thread(runnable);
+		thread.setDaemon(true);
+
+		return thread;
+	}
+
+	private static void awaitBlocked(Thread thread) {
+		long timeout = System.currentTimeMillis() + 1000;
+		while (thread.getState() != Thread.State.BLOCKED && thread.isAlive() && System.currentTimeMillis() < timeout) {
+			Thread.onSpinWait();
+		}
+	}
+
+	private static void assertFinished(Thread... threads) throws InterruptedException {
+		for (Thread thread : threads) {
+			thread.join(2000);
+			assertFalse(thread.isAlive(), "Deadlocked");
+		}
 	}
 
 	@Test

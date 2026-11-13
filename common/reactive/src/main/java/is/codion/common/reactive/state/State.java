@@ -50,7 +50,8 @@ import static java.util.Objects.requireNonNull;
  * <p>The state is set before its listeners and consumers are notified, so an exception thrown by one propagates
  * from {@link #set(boolean)} with the state set, and ends the notification, those after it not notified, a linked
  * state among them.
- * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
+ * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access, and
+ * reading the state takes no lock, never waiting for a change being notified.
  * However, state modifications via {@link #set(boolean)} and notification are NOT thread-safe and should be
  * performed from a single thread (such as an application UI thread).
  * @see #state()

@@ -32,13 +32,15 @@ import static java.util.Objects.requireNonNull;
 /**
  * The listeners and consumers of an {@link is.codion.common.reactive.sensor.AbstractSensor}
  * or an {@link is.codion.common.reactive.observer.AbstractObserver}, in the order they were
- * added, strong and weak, synchronized on the sensor or observer owning them, as its monitor.
+ * added, strong and weak.
+ * <p>Synchronized on this instance, not on the sensor or observer owning it, whose monitor is then free to guard
+ * a change and its notification, as a value collection's does, without holding the listener list while the
+ * listeners run. The list is held only to copy it for a notification, and to add or remove.
  * <p><b>This is an internal class, NOT public API.</b> It is public only so that the reactive packages can share it,
  * its package is not exported from the module, and it may change or be removed at any time, without notice.
  */
 public final class Listeners {
 
-	private final Object owner;
 	private final @Nullable Hooks hooks;
 	private final boolean superseding;
 
@@ -47,11 +49,11 @@ public final class Listeners {
 	private int notifications = 0;
 
 	/**
-	 * @param owner the sensor or observer owning these listeners, synchronized on, its {@link Hooks} called if it
-	 * implements them, its notifications {@link Superseding} if it is
+	 * @param owner the sensor or observer owning these listeners, its {@link Hooks} called if it implements them,
+	 * its notifications {@link Superseding} if it is
 	 */
 	public Listeners(Object owner) {
-		this.owner = requireNonNull(owner);
+		requireNonNull(owner);
 		this.hooks = owner instanceof Hooks ? (Hooks) owner : null;
 		this.superseding = owner instanceof Superseding;
 	}
@@ -74,7 +76,7 @@ public final class Listeners {
 
 	public boolean remove(Object listener) {
 		requireNonNull(listener);
-		synchronized (owner) {
+		synchronized (this) {
 			if (listeners == null) {
 				return false;
 			}
@@ -128,7 +130,7 @@ public final class Listeners {
 	}
 
 	private List<Listener<?>> listeners() {
-		synchronized (owner) {
+		synchronized (this) {
 			if (listeners == null) {
 				return emptyList();
 			}
@@ -138,7 +140,7 @@ public final class Listeners {
 	}
 
 	private boolean add(Listener<?> listener) {
-		synchronized (owner) {
+		synchronized (this) {
 			if (contains(listener)) {
 				return false;
 			}
@@ -211,11 +213,11 @@ public final class Listeners {
 	/**
 	 * Implemented by a sensor or observer whose subscription to its source follows its own listeners and consumers
 	 * rather than its lifetime, a derived observer, such as the conditional {@code when()} returns.
-	 * <p>The hooks are called while holding the owner's monitor, so that an add and the subscription it triggers
-	 * can not be interleaved with a remove. The locks a hook goes on to take are its source's, and its source's
-	 * source's along a chain of derived observers, never a listener's, so the ordering runs one way, from derived
-	 * observer to source, as long as a source notifies outside the monitor its listeners are kept under. A value
-	 * collection notifies inside it, so a hook on another thread can deadlock against its notification.
+	 * <p>The hooks are called while holding the owner's listener list, so that an add and the subscription it
+	 * triggers can not be interleaved with a remove. The locks a hook goes on to take are its source's listener
+	 * list, and its source's source's along a chain of derived observers, never a listener's, so the ordering runs
+	 * one way, from derived observer to source. No listener list is held while listeners run, so a notification can
+	 * not hold one a hook is waiting for.
 	 */
 	public interface Hooks {
 

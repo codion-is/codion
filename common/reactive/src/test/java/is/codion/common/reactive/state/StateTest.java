@@ -670,6 +670,34 @@ public class StateTest {
 	}
 
 	@Test
+	void readWhileNotifying() throws InterruptedException {
+		//a reader on another thread does not wait for the listeners of a change
+		State state = State.state();
+		CountDownLatch notifying = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		state.addListener(() -> {
+			notifying.countDown();
+			try {
+				release.await();
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		});
+		Thread setter = daemon(() -> state.set(true));
+		setter.start();
+		assertTrue(notifying.await(2, TimeUnit.SECONDS));
+		AtomicBoolean read = new AtomicBoolean();
+		Thread reader = daemon(() -> read.set(state.is() && !state.not().is()));
+		reader.start();
+		reader.join(2000);
+		assertFalse(reader.isAlive());
+		assertTrue(read.get());
+		release.countDown();
+		assertFinished(setter);
+	}
+
+	@Test
 	void conditionalRemovedWhileNotifying() throws InterruptedException {
 		//the last listener of a when() removed on one thread, detaching it from the state, while the state
 		//notifies on another, the remover arriving while the setter notifies the listener before the when()

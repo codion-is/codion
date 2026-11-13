@@ -46,7 +46,8 @@ import static java.util.Objects.requireNonNull;
  * <p>Package private, and open where {@link AbstractValue} is sealed - {@link #get()} and {@link #set(Object)}
  * are overridable here and final there. That is the whole reason the two are separate classes: a subclass
  * inside this package can widen the mutation path, as {@link AbstractValueCollection} does by synchronizing
- * it and normalising every write into an immutable snapshot, while a subclass outside it can not, and so
+ * it, the change through its notification, and normalising every write into an immutable snapshot, while a
+ * subclass outside it can not, and so
  * can not break the ordering {@link #set(Object)} enforces.
  * <p>Java has no "final to external subclasses only", so this is how it is spelled: put the machinery in a
  * package private class and re-declare the entry points final in the public one.

@@ -26,8 +26,12 @@ import java.util.Optional;
 
 /**
  * <p>An observable wrapper for one or more values.
- * <p>Unlike {@link Value}, whose modifications are not thread-safe, all {@link ValueCollection}
- * implementations synchronize their mutators and fully support concurrent access.
+ * <p><b>Thread Safety:</b> Unlike {@link Value}, a {@link ValueCollection} can be modified from more than one thread.
+ * Each change is atomic, made and notified while holding the collection's lock, so changes take turns, none lost,
+ * notified in the order they were made. Reading the collection takes no lock, never waiting for a change being
+ * notified. Listeners run on the thread making the change, so a listener must not wait for another thread changing
+ * the same collection, which waits for it in turn. A {@link #link(Value) link} is not atomic across threads, so two
+ * linked collections changed from two threads at once can lose a change.
  * @param <T> the value type
  * @param <C> the collection type
  * @see ValueSet

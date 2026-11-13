@@ -24,7 +24,8 @@ final class DefaultValue<T> extends AbstractValue<T> {
 
 	static final BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
 
-	private @Nullable T value;
+	//volatile, so that a state, built on one, can be read from another thread without a lock
+	private volatile @Nullable T value;
 
 	private DefaultValue(DefaultBuilder<T, ?> builder) {
 		super(builder);

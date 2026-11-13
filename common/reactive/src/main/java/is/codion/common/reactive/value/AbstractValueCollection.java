@@ -34,9 +34,16 @@ import static java.util.Collections.*;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * <p>The mutators are synchronized, each change made and notified while holding this value's monitor, so changes
+ * from different threads take turns, notified in the order they were made. The value is an unmodifiable snapshot,
+ * replaced on each change and held in a volatile field, so reading it takes no lock and never waits for listeners.
+ * <p>The listener list is not guarded by this monitor, see {@link is.codion.common.reactive.internal.Listeners},
+ * so a derived observer can be detached on another thread while this value notifies.
+ */
 abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseValue<C> implements ValueCollection<T, C> {
 
-	private C value;
+	private volatile C value;
 
 	private @Nullable Value<T> singleValue;
 
@@ -45,7 +52,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final synchronized C get() {
+	public final C get() {
 		return super.get();
 	}
 
@@ -55,12 +62,17 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
+	public final synchronized void update(UnaryOperator<@Nullable C> updateFunction) {
+		set(requireNonNull(updateFunction).apply(get()));
+	}
+
+	@Override
 	public final Iterator<T> iterator() {
 		return getOrThrow().iterator();
 	}
 
 	@Override
-	public final synchronized Optional<C> optional() {
+	public final Optional<C> optional() {
 		C values = getOrThrow();
 		if (values.isEmpty()) {
 			return Optional.empty();
@@ -134,18 +146,18 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final synchronized boolean contains(@Nullable T value) {
+	public final boolean contains(@Nullable T value) {
 		return getOrThrow().contains(value);
 	}
 
 	@Override
-	public final synchronized boolean containsAll(Collection<? extends T> values) {
+	public final boolean containsAll(Collection<? extends T> values) {
 		requireNonNull(values);
 		return getOrThrow().containsAll(values);
 	}
 
 	@Override
-	public final synchronized boolean containsOnly(Collection<? extends T> values) {
+	public final boolean containsOnly(Collection<? extends T> values) {
 		requireNonNull(values);
 		C collection = getOrThrow();
 
@@ -154,18 +166,18 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final synchronized boolean containsNone(Collection<? extends T> values) {
+	public final boolean containsNone(Collection<? extends T> values) {
 		requireNonNull(values);
 		return disjoint(getOrThrow(), values);
 	}
 
 	@Override
-	public final synchronized boolean isEmpty() {
+	public final boolean isEmpty() {
 		return getOrThrow().isEmpty();
 	}
 
 	@Override
-	public final synchronized int size() {
+	public final int size() {
 		return getOrThrow().size();
 	}
 
@@ -271,10 +283,9 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 
 		@Override
 		protected @Nullable T getValue() {
-			synchronized (AbstractValueCollection.this) {
-				C collection = AbstractValueCollection.this.getOrThrow();
-				return collection.isEmpty() ? null : collection.iterator().next();
-			}
+			C collection = AbstractValueCollection.this.getOrThrow();
+
+			return collection.isEmpty() ? null : collection.iterator().next();
 		}
 
 		@Override

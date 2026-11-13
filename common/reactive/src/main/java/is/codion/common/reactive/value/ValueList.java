@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An observable wrapper for a List of values.
  * <p>A factory for {@link ValueList} instances.
- * <p>All implementations are thread-safe and support concurrent access.
+ * <p>Thread-safe, as described in {@link ValueCollection}.
  * <p>This list maintains item ordering and can be sorted via {@link #sort(Comparator)}, which triggers
  * a change event since item ordering factors into List equality.
  * @param <T> the value type

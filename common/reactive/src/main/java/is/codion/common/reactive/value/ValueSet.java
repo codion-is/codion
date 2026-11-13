@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An observable wrapper for an ordered Set of values.
  * <p>A factory for {@link ValueSet} instances.
- * <p>All implementations are thread-safe and support concurrent access.
+ * <p>Thread-safe, as described in {@link ValueCollection}.
  * <p>This set maintains item ordering and can be sorted via {@link #sort(Comparator)}, which notifies
  * when it changes the order. Note that a reorder is not a change as far as {@link Notify#CHANGED} is
  * concerned, item ordering not factoring into Set equality, so the notification comes from the sort

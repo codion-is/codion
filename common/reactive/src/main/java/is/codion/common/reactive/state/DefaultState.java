@@ -34,14 +34,16 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Implementation of State. Listener management is thread-safe; state modification and notification
- * are single-thread by design (typically an application UI thread). The internal synchronization guards
- * lazy field initialization and listener bookkeeping, not concurrent modification.
+ * are single-thread by design (typically an application UI thread). {@link #set(boolean)} and {@link #toggle()}
+ * hold the value's monitor across the change and its notification, so changes from different threads take turns,
+ * while {@link #is()} reads the volatile value without it, never waiting for listeners.
  */
 final class DefaultState implements State {
 
 	private final Value<Boolean> value;
 
-	//volatile, read by the notifier without the value's lock, which it can not take while the value is being built
+	//volatile, read without a lock, by the notifier, which can not take one while the value is being built, and by
+	//observable(), which only locks to create it
 	private volatile @Nullable DefaultObservableState observableState;
 
 	private DefaultState(DefaultBuilder builder) {
@@ -56,9 +58,7 @@ final class DefaultState implements State {
 
 	@Override
 	public boolean is() {
-		synchronized (this.value) {
-			return this.value.getOrThrow();
-		}
+		return this.value.getOrThrow();
 	}
 
 	@Override
@@ -79,13 +79,18 @@ final class DefaultState implements State {
 
 	@Override
 	public ObservableState observable() {
-		synchronized (this.value) {
-			if (observableState == null) {
-				observableState = new DefaultObservableState(this, false);
+		DefaultObservableState observable = observableState;
+		if (observable == null) {
+			//not the value's monitor, which a change holds while it notifies
+			synchronized (this) {
+				if (observableState == null) {
+					observableState = new DefaultObservableState(this, false);
+				}
+				observable = observableState;
 			}
-
-			return observableState;
 		}
+
+		return observable;
 	}
 
 	@Override
