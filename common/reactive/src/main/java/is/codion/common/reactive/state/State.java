@@ -50,6 +50,13 @@ import static java.util.Objects.requireNonNull;
  * <p>The state is set before its listeners and consumers are notified, so an exception thrown by one propagates
  * from {@link #set(boolean)} with the state set, and ends the notification, those after it not notified, a linked
  * state among them.
+ * <p>A state derived from others, by {@link #and(ObservableState...)}, {@link #or(ObservableState...)},
+ * {@link #present(Observable)}, {@link #is(Observable, Object)}, {@link #isNot(Observable, Object)} or
+ * {@link #matches(Observable, Predicate)}, subscribes to its sources when created and stays subscribed for as long
+ * as they live, whether it is still used or not. Derive it from sources that live no longer than whatever uses it,
+ * a panel from the panel's own states for example, or create it once, alongside long-lived sources, rather than
+ * once for each short-lived user. {@link #contains(ValueSet, Object)} subscribes weakly instead, for as long as the
+ * state it returns is reachable.
  * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access, and
  * reading the state takes no lock, never waiting for a change being notified.
  * However, state modifications via {@link #set(boolean)} and notification are NOT thread-safe and should be
@@ -182,6 +189,7 @@ public interface State extends ObservableState {
 	}
 
 	/**
+	 * Subscribed to the observable for as long as it lives, see {@link State}.
 	 * @param <T> the value type
 	 * @param observable the observable
 	 * @return an {@link ObservableState} active when the given observable
@@ -192,6 +200,7 @@ public interface State extends ObservableState {
 	}
 
 	/**
+	 * Subscribed to the observable for as long as it lives, see {@link State}.
 	 * @param <T> the value type
 	 * @param observable the observable
 	 * @param value the value
@@ -203,6 +212,7 @@ public interface State extends ObservableState {
 	}
 
 	/**
+	 * Subscribed to the observable for as long as it lives, see {@link State}.
 	 * @param <T> the value type
 	 * @param observable the observable
 	 * @param value the value
@@ -214,6 +224,7 @@ public interface State extends ObservableState {
 	}
 
 	/**
+	 * Subscribed to the observable for as long as it lives, see {@link State}.
 	 * @param <T> the value type
 	 * @param observable the observable
 	 * @param predicate the predicate, tested when the state is created and each time the value changes, null included
@@ -269,6 +280,7 @@ public interface State extends ObservableState {
 	 * gates alone, not enable something whose conditions were never checked.
 	 * <p>Empty is never an error - an empty combination assembled from data is a quiet "nothing to require
 	 * yet", not a reason to fail - which does mean an empty AND and an empty OR are alike {@code false}.
+	 * <p>Subscribed to the observable states for as long as they live, see {@link State}.
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
@@ -283,6 +295,7 @@ public interface State extends ObservableState {
 	 * gates alone, not enable something whose conditions were never checked.
 	 * <p>Empty is never an error - an empty combination assembled from data is a quiet "nothing to require
 	 * yet", not a reason to fail - which does mean an empty AND and an empty OR are alike {@code false}.
+	 * <p>Subscribed to the observable states for as long as they live, see {@link State}.
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
@@ -294,6 +307,7 @@ public interface State extends ObservableState {
 	 * Creates a new {@link ObservableState} instance using OR.
 	 * <p>An empty combination is {@code false}. Empty is never an error, so an empty OR and an empty AND
 	 * are alike {@code false}, see {@link #and(ObservableState...)}.
+	 * <p>Subscribed to the observable states for as long as they live, see {@link State}.
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
@@ -305,6 +319,7 @@ public interface State extends ObservableState {
 	 * Creates a new {@link ObservableState} instance using OR.
 	 * <p>An empty combination is {@code false}. Empty is never an error, so an empty OR and an empty AND
 	 * are alike {@code false}, see {@link #and(ObservableState...)}.
+	 * <p>Subscribed to the observable states for as long as they live, see {@link State}.
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
