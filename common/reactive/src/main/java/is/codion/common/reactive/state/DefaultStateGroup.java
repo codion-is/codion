@@ -81,10 +81,13 @@ final class DefaultStateGroup implements State.Group {
 
 	@Override
 	public void fallback(State state) {
-		if (!members.contains(requireNonNull(state))) {
-			throw new IllegalArgumentException("Fallback state must be a member of the group");
+		requireNonNull(state);
+		synchronized (members) {
+			if (!members.contains(state)) {
+				throw new IllegalArgumentException("Fallback state must be a member of the group");
+			}
+			this.fallback = state;
 		}
-		this.fallback = state;
 	}
 
 	/**

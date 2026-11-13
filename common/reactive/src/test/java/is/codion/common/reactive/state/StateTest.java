@@ -656,6 +656,36 @@ public class StateTest {
 		assertFinished(setter, remover);
 	}
 
+	@Test
+	void groupFallbackWhileDeactivating() throws InterruptedException {
+		//the fallback set on another thread while the group deactivates a member, waiting for it to finish
+		State one = State.state(true);
+		State two = State.state();
+		State.Group group = State.group(one, two);
+		CountDownLatch deactivating = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		one.addConsumer(active -> {
+			if (!active) {
+				deactivating.countDown();
+				try {
+					release.await();
+				}
+				catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+			}
+		});
+		Thread setter = daemon(() -> two.set(true));
+		setter.start();
+		assertTrue(deactivating.await(2, TimeUnit.SECONDS));
+		Thread fallback = daemon(() -> group.fallback(one));
+		fallback.start();
+		awaitBlocked(fallback);
+		assertEquals(Thread.State.BLOCKED, fallback.getState());
+		release.countDown();
+		assertFinished(setter, fallback);
+	}
+
 	private static Thread daemon(Runnable runnable) {
 		Thread thread = new Thread(runnable);
 		thread.setDaemon(true);
