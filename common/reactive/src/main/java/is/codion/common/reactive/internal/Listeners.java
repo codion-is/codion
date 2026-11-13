@@ -38,27 +38,18 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Listeners {
 
-	private static final Runnable NONE = () -> {};
-
 	private final Object owner;
-	private final Runnable onFirstListener;
-	private final Runnable onLastListener;
+	private final @Nullable Hooks hooks;
 
 	private @Nullable ArrayList<Listener<?>> listeners;
 
-	public Listeners(Object owner) {
-		this(owner, NONE, NONE);
-	}
-
 	/**
-	 * @param owner the sensor or observer owning these listeners, synchronized on
-	 * @param onFirstListener called when a listener or consumer is added while there were none, before the add returns
-	 * @param onLastListener called when the last listener or consumer is removed, before the remove returns
+	 * @param owner the sensor or observer owning these listeners, synchronized on, its {@link Hooks} called if it
+	 * implements them
 	 */
-	public Listeners(Object owner, Runnable onFirstListener, Runnable onLastListener) {
+	public Listeners(Object owner) {
 		this.owner = requireNonNull(owner);
-		this.onFirstListener = requireNonNull(onFirstListener);
-		this.onLastListener = requireNonNull(onLastListener);
+		this.hooks = owner instanceof Hooks ? (Hooks) owner : null;
 	}
 
 	public boolean addListener(Runnable listener) {
@@ -87,7 +78,9 @@ public final class Listeners {
 			//emptied either by the removal or by the dead weak references it pruned along the way
 			if (listeners.isEmpty()) {
 				listeners = null;
-				onLastListener.run();
+				if (hooks != null) {
+					hooks.onLastListener();
+				}
 			}
 			else {
 				listeners.trimToSize();
@@ -148,8 +141,8 @@ public final class Listeners {
 
 			listeners.add(listener);
 			listeners.trimToSize();
-			if (first) {
-				onFirstListener.run();
+			if (first && hooks != null) {
+				hooks.onFirstListener();
 			}
 
 			return true;
@@ -204,6 +197,31 @@ public final class Listeners {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Implemented by a sensor or observer whose subscription to its source follows its own listeners and consumers
+	 * rather than its lifetime, a derived observer, such as the conditional {@code when()} returns.
+	 * <p>The hooks are called while holding the owner's monitor, so that an add and the subscription it triggers
+	 * can not be interleaved with a remove. The locks a hook goes on to take are its source's, and its source's
+	 * source's along a chain of derived observers, never a listener's, so the ordering runs one way, from derived
+	 * observer to source, as long as a source notifies outside the monitor its listeners are kept under. A value
+	 * collection notifies inside it, so a hook on another thread can deadlock against its notification.
+	 */
+	public interface Hooks {
+
+		/**
+		 * Called when the owner gains a listener or consumer while it had neither, before the add returns.
+		 * <p>May be called again without an intervening {@link #onLastListener()}: an add that finds nothing but
+		 * dead weak references prunes them and counts as the first. An implementation must tolerate the repeat.
+		 */
+		void onFirstListener();
+
+		/**
+		 * Called when the owner loses its last listener or consumer, by removal or by the pruning of dead weak
+		 * references a removal does, before the remove returns.
+		 */
+		void onLastListener();
 	}
 
 	private interface Listener<T> {

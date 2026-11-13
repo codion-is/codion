@@ -18,6 +18,7 @@
  */
 package is.codion.common.reactive.observer;
 
+import is.codion.common.reactive.internal.Listeners;
 import is.codion.common.reactive.observable.Change;
 import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
@@ -183,18 +184,18 @@ public final class ObserverTest {
 		assertEquals(1, observer.last);
 	}
 
-	private static final class Counting extends AbstractObserver<String> {
+	private static final class Counting extends AbstractObserver<String> implements Listeners.Hooks {
 
 		private int first;
 		private int last;
 
 		@Override
-		void onFirstListener() {
+		public void onFirstListener() {
 			first++;
 		}
 
 		@Override
-		void onLastListener() {
+		public void onLastListener() {
 			last++;
 		}
 	}

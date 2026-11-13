@@ -48,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractObserver<T> implements Observer<T> {
 
-	private final Listeners listeners = new Listeners(this, this::onFirstListener, this::onLastListener);
+	private final Listeners listeners = new Listeners(this);
 
 	/**
 	 * Instantiates a new {@link AbstractObserver}
@@ -122,25 +122,6 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 	public final Sensor sensor() {
 		return this;
 	}
-
-	/**
-	 * Called when this observer gains a listener or consumer while it had neither, before the add returns.
-	 * <p>The hooks exist for derived observers whose subscription to their source should follow their own
-	 * listeners and consumers rather than their lifetime, {@link Conditional} being the one that does.
-	 * <p>Called while holding this observer's monitor, so that an add and the attach it triggers can not be
-	 * interleaved with a remove. The lock a hook goes on to take is always its source's, never a listener's,
-	 * so the ordering runs one way, from derived observer to source.
-	 * <p>May fire again without an intervening {@link #onLastListener()}: an add that finds nothing but
-	 * dead weak references prunes them and counts as the first. An implementation must tolerate the repeat,
-	 * as {@link Conditional}'s does, its subscription deduplicated by the source.
-	 */
-	void onFirstListener() {}
-
-	/**
-	 * Called when this observer loses its last listener or consumer, before the remove returns.
-	 * @see #onFirstListener()
-	 */
-	void onLastListener() {}
 
 	/**
 	 * Notifies the listeners and consumers, in the order they were added

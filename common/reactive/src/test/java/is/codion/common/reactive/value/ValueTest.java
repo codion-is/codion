@@ -162,6 +162,67 @@ public class ValueTest {
 	}
 
 	@Test
+	void changedSubscribesWhileListened() {
+		//an observable using the default changed(), a new instance per call, counting the reads a subscribed one makes
+		Value<Integer> value = Value.nullable(0);
+		AtomicInteger reads = new AtomicInteger();
+		Observable<Integer> observable = new Observable<>() {
+			@Override
+			public Integer get() {
+				reads.incrementAndGet();
+				return value.get();
+			}
+
+			@Override
+			public Observer<Integer> observer() {
+				return value.observer();
+			}
+		};
+		for (int i = 0; i < 10; i++) {
+			observable.changed();
+		}
+		value.set(1);
+		assertEquals(0, reads.get());
+		//subscribed while listened to, through the observer itself, previous() or current()
+		ChangeObserver<Integer> changed = observable.changed();
+		List<String> notified = new ArrayList<>();
+		Consumer<Change<Integer>> change = c -> notified.add(c.previous() + "->" + c.current());
+		Consumer<Integer> previous = p -> notified.add("previous " + p);
+		Consumer<Integer> current = c -> notified.add("current " + c);
+		changed.current().addConsumer(current);
+		changed.addConsumer(change);
+		changed.previous().addConsumer(previous);
+		value.set(2);
+		assertEquals(asList("1->2", "previous 1", "current 2"), notified);
+		changed.removeConsumer(change);
+		changed.current().removeConsumer(current);
+		value.set(3);
+		assertEquals(asList("1->2", "previous 1", "current 2", "previous 2"), notified);
+		changed.previous().removeConsumer(previous);
+		reads.set(0);
+		value.set(4);
+		assertEquals(0, reads.get());
+		//subscribed again, the previous value the one when subscribed
+		changed.addConsumer(change);
+		value.set(5);
+		assertEquals("4->5", notified.get(notified.size() - 1));
+		//a conditional on it subscribing it in turn
+		changed.removeConsumer(change);
+		AtomicInteger sixes = new AtomicInteger();
+		Runnable six = sixes::incrementAndGet;
+		Observer<Integer> whenSix = changed.current().when(6);
+		whenSix.addListener(six);
+		value.set(6);
+		assertEquals(1, sixes.get());
+		whenSix.removeListener(six);
+		reads.set(0);
+		value.set(7);
+		value.set(6);
+		assertEquals(0, reads.get());
+		assertEquals(1, sixes.get());
+	}
+
+	@Test
 	void changeAdjusted() {
 		// a listener adjusting the value, added before the change observer: the change observer then hears the
 		// value it was set to after the adjusted one, which is no change

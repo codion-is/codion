@@ -18,6 +18,8 @@
  */
 package is.codion.common.reactive.observer;
 
+import is.codion.common.reactive.internal.Listeners;
+
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -34,7 +36,7 @@ import java.util.function.Predicate;
  * rather than accumulating on an observer that may outlive it by a lot.
  * @param <T> the observed type
  */
-final class Conditional<T> extends AbstractObserver<T> {
+final class Conditional<T> extends AbstractObserver<T> implements Listeners.Hooks {
 
 	private final Observer<T> observer;
 	private final Predicate<? super @Nullable T> predicate;
@@ -50,12 +52,12 @@ final class Conditional<T> extends AbstractObserver<T> {
 	}
 
 	@Override
-	void onFirstListener() {
+	public void onFirstListener() {
 		observer.addConsumer(consumer);
 	}
 
 	@Override
-	void onLastListener() {
+	public void onLastListener() {
 		observer.removeConsumer(consumer);
 	}
 

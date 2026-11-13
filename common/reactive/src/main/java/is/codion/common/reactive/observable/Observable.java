@@ -150,6 +150,9 @@ public interface Observable<T> extends Observer<T> {
 	 * <p>Note that when a new instance is returned per call, a listener added through one
 	 * {@code changed()} instance can only be removed through that same instance; retain it
 	 * if the listener must later be removed.
+	 * <p>The instance subscribes to this observable only while it, its {@link ChangeObserver#previous()} or its
+	 * {@link ChangeObserver#current()} has listeners or consumers, so one never listened to costs nothing, and
+	 * one whose listeners and consumers are all removed is left to be collected.
 	 * <p>The observer is notified when this observable notifies a value differing from the one before, by
 	 * {@link Objects#deepEquals(Object, Object)}. An equal value, a refreshed instance for example, isn't reported,
 	 * but replaces the one before as the {@link Change#previous()} of the next change.
