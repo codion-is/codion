@@ -189,12 +189,16 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 		C previous = getOrThrow();
 		List<T> sorted = new ArrayList<>(previous);
 		sorted.sort(comparator);
+		boolean reordered = !sameOrder(previous, sorted);
+		//equality can miss a reorder entirely - Set equality ignores item order - so neither the lock nor the
+		//notification policy of set() sees it. Sorting is the one mutation whose whole purpose is a change
+		//equality may not see, so the sort checks the lock itself, and announces itself where set() did not
+		//notify, it notifying on a change only
+		if (reordered && locked().is()) {
+			throw new IllegalStateException("Value is locked and can not be changed");
+		}
 		set(sorted);
-		C current = getOrThrow();
-		//set() notifies on a change, and equality can miss a reorder entirely - Set equality ignores
-		//item order. Sorting is the one mutation whose whole purpose is a change equality may not see,
-		//so where it is missed the sort announces itself.
-		if (deepEquals(previous, current) && !sameOrder(previous, current)) {
+		if (reordered && notifiesOnChange() && deepEquals(previous, getOrThrow())) {
 			notifyObserver();
 		}
 	}

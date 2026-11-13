@@ -295,6 +295,13 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	}
 
 	/**
+	 * @return true if this value notifies its listeners when it changes, rather than each time it is set, or never
+	 */
+	final boolean notifiesOnChange() {
+		return notify == CHANGED;
+	}
+
+	/**
 	 * @param value the value
 	 * @return the null value in case the given value is null, otherwise the given value
 	 */

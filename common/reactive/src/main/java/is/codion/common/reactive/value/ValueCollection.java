@@ -121,10 +121,13 @@ public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, O
 	ObservableValueCollection<T, C> observable();
 
 	/**
-	 * <p>Sorts the items according to the given comparator, notifying observers if the order changed.
+	 * <p>Sorts the items according to the given comparator, notifying observers if the order changed,
+	 * or in any case, once, for a value notifying each time it is set.
 	 * <p>Note that the underlying collection may not preserve the item order.
 	 * Refer to the implementation javadocs for details.
 	 * @param comparator the comparator to use to sort
+	 * @throws IllegalStateException in case this value is {@link #locked() locked} and the order would change,
+	 * a set included, although a set differing only in order is equal
 	 */
 	void sort(Comparator<? super T> comparator);
 

@@ -15,6 +15,7 @@ Codion Change Log
 - State.Builder bug fixed, a second state built by the same builder no longer notifies the observers of the first when set, each state's value now built from the builder's settings by a value builder of its own.
 - Value.link() bug fixed, a link refused by a validator now leaves both values as they were, where the linked value had been set and still followed the original, both ends now validated before anything is set or registered.
 - ValueCollection.containsOnly() bug fixed, the elements now compared by membership both ways, where the sizes were compared, so that a duplicate in the values given stood in for a missing element, (a, b) containing only (a, a), and a list holding a duplicate did not contain only its own elements.
+- ValueSet.sort() bug fixed, a set notifying each time it is set now notifies once, where it notified twice, and a locked set now refuses a sort changing its order, as a locked list does, where it was sorted, the reorder being no change by set equality.
 ### is.codion.common.utilities
 - PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.

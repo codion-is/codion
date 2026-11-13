@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -174,6 +175,33 @@ public class ValueSetTest {
 		assertEquals(4, counter.get());
 		set.sort(comparator);
 		assertEquals(4, counter.get());
+	}
+
+	@Test
+	void sortNotifyingOnSet() {
+		// set() notifies on every set, the sort then announcing nothing of its own
+		AtomicInteger counter = new AtomicInteger();
+		ValueSet<Integer> set = ValueSet.<Integer>builder()
+						.value(new LinkedHashSet<>(asList(2, 1)))
+						.notify(Value.Notify.SET)
+						.listener(counter::incrementAndGet)
+						.build();
+		set.sort(comparing(Integer::intValue));
+		assertEquals(asList(1, 2), new ArrayList<>(set.get()));
+		assertEquals(1, counter.get());
+		set.sort(comparing(Integer::intValue));
+		assertEquals(2, counter.get());
+	}
+
+	@Test
+	void sortLocked() {
+		// a reorder is no change by set equality, which the lock lets through, but it is one, as for a list
+		ValueSet<Integer> set = ValueSet.valueSet(asList(2, 1));
+		set.locked().set(true);
+		assertThrows(IllegalStateException.class, () -> set.sort(comparing(Integer::intValue)));
+		assertEquals(asList(2, 1), new ArrayList<>(set.get()));
+		// the order unchanged
+		assertDoesNotThrow(() -> set.sort(comparing(Integer::intValue).reversed()));
 	}
 
 	private static void assertUnmodifiable(ObservableValueCollection<Integer, Set<Integer>> observer) {
