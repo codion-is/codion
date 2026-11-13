@@ -210,7 +210,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		if (linkedObservables == null || !linkedObservables.containsKey(observable)) {
 			throw new IllegalStateException("Values are not linked");
 		}
-		observable.removeConsumer(linkedObservables.remove(observable));
+		observable.removeListener(linkedObservables.remove(observable));
 		if (linkedObservables.isEmpty()) {
 			linkedObservables = null;
 		}
@@ -324,15 +324,20 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		return locked != null && locked.is();
 	}
 
-	private final class ObservableLink implements Consumer<T> {
+	//a listener rather than a consumer, setting the current value of the observable, not the one notified, which a
+	//listener before it may have changed since, a nested notification then having set the new one already
+	private final class ObservableLink implements Runnable {
 
-		private ObservableLink(Observable<T> originalValue) {
-			originalValue.addConsumer(this);
+		private final Observable<T> observable;
+
+		private ObservableLink(Observable<T> observable) {
+			this.observable = observable;
+			observable.addListener(this);
 		}
 
 		@Override
-		public void accept(T value) {
-			set(value);
+		public void run() {
+			set(observable.get());
 		}
 	}
 

@@ -31,11 +31,16 @@ final class DefaultChangeObserver<T> extends AbstractObserver<Change<T>> impleme
 	private final ValueObserver<T> previous = new ValueObserver<>();
 	private final ValueObserver<T> current = new ValueObserver<>();
 
+	private final Observable<T> observable;
+
 	private @Nullable T value;
 
 	DefaultChangeObserver(Observable<T> observable) {
-		value = observable.get();
-		observable.addConsumer(this::notify);
+		this.observable = observable;
+		this.value = observable.get();
+		//a listener rather than a consumer, reading the current value, not the one notified, which a listener before
+		//it may have changed since, the change to the new one then reported already
+		observable.addListener(this::notifyChange);
 	}
 
 	@Override
@@ -48,7 +53,8 @@ final class DefaultChangeObserver<T> extends AbstractObserver<Change<T>> impleme
 		return current;
 	}
 
-	private void notify(@Nullable T newValue) {
+	private void notifyChange() {
+		T newValue = observable.get();
 		T previousValue = value;
 		//an equal value replaces the one held without notifying, so previous() is the latest instance notified
 		value = newValue;

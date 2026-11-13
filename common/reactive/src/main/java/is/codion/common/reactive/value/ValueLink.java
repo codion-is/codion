@@ -22,7 +22,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.IdentityHashMap;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static java.util.Collections.newSetFromMap;
 
@@ -41,8 +40,10 @@ final class ValueLink<T> {
 	private final Value<T> linkedValue;
 	private final Value<T> originalValue;
 
-	private final Consumer<T> updateLinkedValue = this::updateLinkedValue;
-	private final Consumer<T> updateOriginalValue = this::updateOriginalValue;
+	//listeners rather than consumers, each pushing the current value of its source, not the one notified, which a
+	//listener before it may have changed since, a nested notification then having pushed the new one already
+	private final Runnable updateLinkedValue = this::updateLinkedValue;
+	private final Runnable updateOriginalValue = this::updateOriginalValue;
 
 	private final LinkedValidator<T> linkedValidator;
 	private final LinkedValidator<T> originalValidator;
@@ -64,15 +65,15 @@ final class ValueLink<T> {
 		this.linkedValidator.excluded = originalValidator;
 		this.originalValidator.excluded = linkedValidator;
 		linkedValue.set(originalValue.get());
-		originalValue.addConsumer(updateLinkedValue);
-		linkedValue.addConsumer(updateOriginalValue);
+		originalValue.addListener(updateLinkedValue);
+		linkedValue.addListener(updateOriginalValue);
 		originalValue.addValidator(linkedValidator);
 		linkedValue.addValidator(originalValidator);
 	}
 
 	void unlink() {
-		linkedValue.removeConsumer(updateOriginalValue);
-		originalValue.removeConsumer(updateLinkedValue);
+		linkedValue.removeListener(updateOriginalValue);
+		originalValue.removeListener(updateLinkedValue);
 		linkedValue.removeValidator(originalValidator);
 		originalValue.removeValidator(linkedValidator);
 	}
@@ -102,36 +103,36 @@ final class ValueLink<T> {
 		linkedValues.forEach(value -> preventLinkCycle(linkedValue, value, visited));
 	}
 
-	private void updateLinkedValue(T value) {
+	private void updateLinkedValue() {
 		if (!updatingOriginal) {
 			int nestedSets = nestedSets(linkedValue);
 			updatingLinked = true;
 			try {
-				linkedValue.set(value);
+				linkedValue.set(originalValue.get());
 			}
 			finally {
 				updatingLinked = false;
 			}
 			if (nestedSets(linkedValue) != nestedSets) {
 				//a listener changed the linked value while it was being updated, which the original follows
-				updateOriginalValue(linkedValue.get());
+				updateOriginalValue();
 			}
 		}
 	}
 
-	private void updateOriginalValue(T value) {
+	private void updateOriginalValue() {
 		if (!updatingLinked) {
 			int nestedSets = nestedSets(originalValue);
 			updatingOriginal = true;
 			try {
-				originalValue.set(value);
+				originalValue.set(linkedValue.get());
 			}
 			finally {
 				updatingOriginal = false;
 			}
 			if (nestedSets(originalValue) != nestedSets) {
 				//a listener changed the original value while it was being updated, which the linked value follows
-				updateLinkedValue(originalValue.get());
+				updateLinkedValue();
 			}
 		}
 	}

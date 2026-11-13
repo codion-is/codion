@@ -32,12 +32,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import static is.codion.common.reactive.observable.Change.change;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueTest {
@@ -138,6 +140,22 @@ public class ValueTest {
 		assertEquals(1, changes.size());
 		assertSame(equal, changes.get(0).previous());
 		assertSame(other, changes.get(0).current());
+	}
+
+	@Test
+	void changeAdjusted() {
+		// a listener adjusting the value, added before the change observer: the change observer then hears the
+		// value it was set to after the adjusted one, which is no change
+		Value<String> value = Value.nullable();
+		value.addConsumer(string -> {
+			if (string != null) {
+				value.set(string.toUpperCase());
+			}
+		});
+		List<Change<String>> changes = new ArrayList<>();
+		value.changed().addConsumer(changes::add);
+		value.set("a");
+		assertEquals(singletonList(change(null, "A")), changes);
 	}
 
 	@Test
@@ -501,6 +519,80 @@ public class ValueTest {
 		source.set(42);
 		assertEquals(10, target.get());
 		assertEquals(10, source.get());
+	}
+
+	@Test
+	void linkAdjustedBeforeLink() {
+		// a listener adjusting a value, added before the link, the value set directly: the listeners after it,
+		// the link among them, then hear the value it was set to, which the link must not push
+		Value<String> original = Value.nullable();
+		Value<String> linked = Value.nullable();
+		original.addConsumer(value -> {
+			if (value != null) {
+				original.set(value.toUpperCase());
+			}
+		});
+		linked.link(original);
+		original.set("a");
+		assertEquals("A", original.get());
+		assertEquals("A", linked.get());
+		// the same on the linked value
+		Value<String> original2 = Value.nullable();
+		Value<String> linked2 = Value.nullable();
+		linked2.addConsumer(value -> {
+			if (value != null) {
+				linked2.set(value.toUpperCase());
+			}
+		});
+		linked2.link(original2);
+		linked2.set("a");
+		assertEquals("A", original2.get());
+		assertEquals("A", linked2.get());
+		// a builder consumer precedes a builder link
+		Value<Integer> source = Value.nonNull(0);
+		AtomicReference<Value<Integer>> holder = new AtomicReference<>();
+		Value<Integer> clamped = Value.builder()
+						.nonNull(0)
+						.consumer(value -> {
+							if (value > 10) {
+								holder.get().set(10);
+							}
+						})
+						.link(source)
+						.build();
+		holder.set(clamped);
+		clamped.set(42);
+		assertEquals(10, clamped.get());
+		assertEquals(10, source.get());
+		// a model value reverting a change, two components linked to it, as a declined confirmation
+		Value<Boolean> model = Value.nonNull(false);
+		model.addConsumer(value -> {
+			if (value) {
+				model.set(false);
+			}
+		});
+		Value<Boolean> first = Value.nonNull(false);
+		Value<Boolean> second = Value.nonNull(false);
+		first.link(model);
+		second.link(model);
+		model.set(true);
+		assertFalse(first.get());
+		assertFalse(second.get());
+		first.set(true);
+		assertFalse(model.get());
+		assertFalse(first.get());
+		assertFalse(second.get());
+		// a value linked to an observable
+		Value<String> observed = Value.nullable();
+		observed.addConsumer(value -> {
+			if (value != null) {
+				observed.set(value.toUpperCase());
+			}
+		});
+		Value<String> follower = Value.nullable();
+		follower.link(observed.observable());
+		observed.set("a");
+		assertEquals("A", follower.get());
 	}
 
 	@Test
