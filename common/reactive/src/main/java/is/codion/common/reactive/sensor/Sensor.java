@@ -30,7 +30,10 @@ package is.codion.common.reactive.sensor;
  *   <li>Extend {@link AbstractSensor} - provides concrete implementations where {@code sensor()} returns {@code this}</li>
  *   <li>Implement {@code sensor()} to return a delegate - useful for wrapper types</li>
  * </ul>
- * <p>All implementations are thread-safe and support concurrent access.</p>
+ * <p>Listeners are notified in the order they were added. An exception thrown by one ends the notification, the
+ * listeners after it not notified, and propagates to whatever triggered it.
+ * <p><b>Thread Safety:</b> Adding and removing listeners is thread-safe in every implementation, and supports
+ * concurrent access. Whether triggering a notification is thread-safe depends on the implementation.</p>
  * @see is.codion.common.reactive.sensor.AbstractSensor
  * @see is.codion.common.reactive.observer.Observer
  * @see is.codion.common.reactive.event.Event

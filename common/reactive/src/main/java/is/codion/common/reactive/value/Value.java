@@ -57,6 +57,9 @@ import static java.util.Objects.requireNonNull;
  * value.set("hey");
  * value.set(null); // reverts to the null substitute: "none" // @end}
  * <p>A factory for {@link Value} instances.</p>
+ * <p>The value is set before its listeners and consumers are notified, so an exception thrown by one propagates
+ * from {@link #set(Object)} with the value set, and ends the notification, those after it not notified. A link is one
+ * of them, so a value linked after the one throwing keeps the value it had, until the next change.</p>
  * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
  * However, value modifications via {@link #set(Object)} are NOT thread-safe and should be
  * performed from a single thread (such as an application UI thread). Subclasses may provide thread-safety.</p>
@@ -137,8 +140,12 @@ public interface Value<T> extends Observable<T> {
 	 * so that changes in one are reflected in the other.
 	 * <p>Note that after a call to this method this value is the same as {@code originalValue}.
 	 * <p>The two behave as one logical value: either end validates against both ends' validators, before
-	 * either is written, so the pair can not diverge or come to hold a value one end rejects. This holds
-	 * for any {@link Value}, {@link #validate(Object)} being the gate.
+	 * either is written, so the pair can not come to hold a value one end rejects. This holds for any
+	 * {@link Value}, {@link #validate(Object)} being the gate.
+	 * <p>Each end updates the other from a listener, notified in turn with the others, so the pair can
+	 * diverge where that update does not happen: a listener added before it throwing, which ends the
+	 * notification, or the other end {@link #locked() locked}. A non-null value linked to a nullable one
+	 * holding null holds its null value in its place.
 	 * <p>Cycle detection reaches as far as the framework's own link bookkeeping, which means every value
 	 * extending {@link AbstractValue}. A {@link Value} implemented from scratch keeps its own links, if it
 	 * has any, so a cycle running through one is not detected - the reciprocal update guard still keeps a

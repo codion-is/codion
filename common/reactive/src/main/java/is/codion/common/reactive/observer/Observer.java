@@ -36,7 +36,10 @@ import java.util.function.Predicate;
  *   <li>Extend {@link AbstractObserver} - provides concrete implementations where {@code observer()} returns {@code this}</li>
  *   <li>Implement {@code observer()} to return a delegate - useful for wrapper types (see {@link Observable} for an example)</li>
  * </ul>
- * <p>All implementations are thread-safe and support concurrent access.</p>
+ * <p>An exception thrown by a listener or consumer ends the notification, those after it not notified, and
+ * propagates to whatever triggered it.
+ * <p><b>Thread Safety:</b> Adding and removing listeners and consumers is thread-safe in every implementation, and
+ * supports concurrent access. Whether triggering a notification is thread-safe depends on the implementation.</p>
  * @param <T> the type of data propagated to consumers
  * @see AbstractObserver
  * @see is.codion.common.reactive.signal.Signal
