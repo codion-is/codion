@@ -212,6 +212,20 @@ public class ValueCollectionTest {
 	}
 
 	@Test
+	void subtypes() {
+		List<Integer> integers = asList(1, 2);
+		ValueList<Number> numberList = ValueList.valueList(integers);
+		ValueSet<Number> numberSet = ValueSet.<Number>builder(integers).build();
+		assertTrue(numberList.containsAll(integers));
+		assertTrue(numberSet.containsOnly(integers));
+		assertTrue(numberSet.containsNone(singletonList(3)));
+		numberList.set(singletonList(3));
+		assertEquals(singletonList(3), numberList.get());
+		numberSet.set(new HashSet<>(integers));
+		assertTrue(numberSet.observable().containsOnly(integers));
+	}
+
+	@Test
 	void builderValue() {
 		//the builder's value is copied, as set() copies
 		List<String> mutableList = new ArrayList<>(singletonList("a"));

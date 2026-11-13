@@ -70,7 +70,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final synchronized void set(@Nullable Collection<T> values) {
+	public final synchronized void set(@Nullable Collection<? extends T> values) {
 		C newValues = create();
 		if (values != null) {
 			newValues.addAll(values);
@@ -139,13 +139,13 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final synchronized boolean containsAll(Collection<T> values) {
+	public final synchronized boolean containsAll(Collection<? extends T> values) {
 		requireNonNull(values);
 		return getOrThrow().containsAll(values);
 	}
 
 	@Override
-	public final synchronized boolean containsOnly(Collection<T> values) {
+	public final synchronized boolean containsOnly(Collection<? extends T> values) {
 		requireNonNull(values);
 		C collection = getOrThrow();
 
@@ -154,7 +154,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final synchronized boolean containsNone(Collection<T> values) {
+	public final synchronized boolean containsNone(Collection<? extends T> values) {
 		requireNonNull(values);
 		return disjoint(getOrThrow(), values);
 	}
@@ -326,17 +326,17 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 		}
 
 		@Override
-		public final boolean containsAll(Collection<T> values) {
+		public final boolean containsAll(Collection<? extends T> values) {
 			return super.value().containsAll(values);
 		}
 
 		@Override
-		public final boolean containsOnly(Collection<T> values) {
+		public final boolean containsOnly(Collection<? extends T> values) {
 			return super.value().containsOnly(values);
 		}
 
 		@Override
-		public final boolean containsNone(Collection<T> values) {
+		public final boolean containsNone(Collection<? extends T> values) {
 			return super.value().containsNone(values);
 		}
 

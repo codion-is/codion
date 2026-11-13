@@ -18,6 +18,7 @@ Codion Change Log
 - ValueSet.sort() bug fixed, a set notifying each time it is set now notifies once, where it notified twice, and a locked set now refuses a sort changing its order, as a locked list does, where it was sorted, the reorder being no change by set equality.
 - State.contains() bug fixed, setting the state now asks the set first, so that a change the set refuses, locked or by a validator, is refused by the state as well, where the state changed and the set did not.
 - State.Group.fallback() bug fixed, now synchronized with the group's add(), remove() and the deactivation of its members, where it read the members and set the fallback without the group's lock.
+- ObservableValueCollection.containsAll(), containsOnly() and containsNone(), ValueCollection.set(), ValueList.valueList() and builder(), and ValueSet.valueSet() and builder() now take Collection<? extends T>, as addAll() and removeAll() do, and State.Builder.when() a Predicate<? super Boolean>, as Observer.Builder.when() does.
 ### is.codion.common.utilities
 - PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.

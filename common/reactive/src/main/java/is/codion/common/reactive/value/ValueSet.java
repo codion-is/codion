@@ -59,8 +59,8 @@ public interface ValueSet<T> extends ValueCollection<T, Set<T>> {
 	 * @return a new {@link ValueSet}
 	 * @throws NullPointerException in case {@code values} is null
 	 */
-	static <T> ValueSet<T> valueSet(Collection<T> values) {
-		return builder(values).build();
+	static <T> ValueSet<T> valueSet(Collection<? extends T> values) {
+		return ValueSet.<T>builder(values).build();
 	}
 
 	/**
@@ -79,7 +79,7 @@ public interface ValueSet<T> extends ValueCollection<T, Set<T>> {
 	 * @return a new builder
 	 * @throws NullPointerException in case {@code values} is null
 	 */
-	static <T> Builder<T> builder(Collection<T> values) {
+	static <T> Builder<T> builder(Collection<? extends T> values) {
 		requireNonNull(values);
 
 		return new DefaultValueSet.DefaultBuilder<T>()

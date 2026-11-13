@@ -223,7 +223,7 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder when(Predicate<Boolean> predicate, Runnable listener) {
+		public Builder when(Predicate<? super Boolean> predicate, Runnable listener) {
 			requireNonNull(predicate);
 			requireNonNull(listener);
 			settings.add(builder -> builder.when(predicate, listener));
@@ -231,7 +231,7 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder when(Predicate<Boolean> predicate, Consumer<? super Boolean> consumer) {
+		public Builder when(Predicate<? super Boolean> predicate, Consumer<? super Boolean> consumer) {
 			requireNonNull(predicate);
 			requireNonNull(consumer);
 			settings.add(builder -> builder.when(predicate, consumer));

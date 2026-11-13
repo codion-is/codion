@@ -47,7 +47,7 @@ public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, O
 	 * Sets the values.
 	 * @param values the values to set
 	 */
-	void set(@Nullable Collection<T> values);
+	void set(@Nullable Collection<? extends T> values);
 
 	/**
 	 * Adds a value to this {@link ValueCollection} instance.

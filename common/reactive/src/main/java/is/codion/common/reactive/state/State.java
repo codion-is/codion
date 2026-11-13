@@ -414,7 +414,7 @@ public interface State extends ObservableState {
 		 * @param listener the listener
 		 * @return this builder instance
 		 */
-		Builder when(Predicate<Boolean> predicate, Runnable listener);
+		Builder when(Predicate<? super Boolean> predicate, Runnable listener);
 
 		/**
 		 * Adds a conditional consumer
@@ -422,7 +422,7 @@ public interface State extends ObservableState {
 		 * @param consumer the consumer to use
 		 * @return this builder instance
 		 */
-		Builder when(Predicate<Boolean> predicate, Consumer<? super Boolean> consumer);
+		Builder when(Predicate<? super Boolean> predicate, Consumer<? super Boolean> consumer);
 
 		/**
 		 * @return a new {@link State} instance based on this builder

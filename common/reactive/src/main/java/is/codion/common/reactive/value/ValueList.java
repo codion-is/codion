@@ -55,8 +55,8 @@ public interface ValueList<T> extends ValueCollection<T, List<T>> {
 	 * @return a new {@link ValueList}
 	 * @throws NullPointerException in case {@code values} is null
 	 */
-	static <T> ValueList<T> valueList(Collection<T> values) {
-		return builder(values).build();
+	static <T> ValueList<T> valueList(Collection<? extends T> values) {
+		return ValueList.<T>builder(values).build();
 	}
 
 	/**
@@ -75,7 +75,7 @@ public interface ValueList<T> extends ValueCollection<T, List<T>> {
 	 * @return a new builder
 	 * @throws NullPointerException in case {@code values} is null
 	 */
-	static <T> Builder<T> builder(Collection<T> values) {
+	static <T> Builder<T> builder(Collection<? extends T> values) {
 		requireNonNull(values);
 
 		return new DefaultValueList.DefaultBuilder<T>()

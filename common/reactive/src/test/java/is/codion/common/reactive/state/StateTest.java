@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -254,6 +255,18 @@ public class StateTest {
 		assertTrue(two.is());
 		assertFalse(one.is());
 		assertFalse(three.is());
+	}
+
+	@Test
+	void builderWhenPredicateSupertype() {
+		AtomicInteger notified = new AtomicInteger();
+		Predicate<Object> nonNull = Objects::nonNull;
+		State state = State.builder()
+						.when(nonNull, notified::incrementAndGet)
+						.when(nonNull, value -> notified.incrementAndGet())
+						.build();
+		state.set(true);
+		assertEquals(2, notified.get());
 	}
 
 	@Test

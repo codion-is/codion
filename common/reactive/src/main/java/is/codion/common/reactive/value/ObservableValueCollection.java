@@ -47,7 +47,7 @@ public interface ObservableValueCollection<T, C extends Collection<T>> extends O
 	 * @param values the elements to check
 	 * @return true if this collection contains all the elements of the specified collection
 	 */
-	boolean containsAll(Collection<T> values);
+	boolean containsAll(Collection<? extends T> values);
 
 	/**
 	 * Returns true if this collection contains all the elements of the specified collection and no others,
@@ -55,14 +55,14 @@ public interface ObservableValueCollection<T, C extends Collection<T>> extends O
 	 * @param values the elements to check
 	 * @return true if this collection contains all the elements of the specified collection and no others
 	 */
-	boolean containsOnly(Collection<T> values);
+	boolean containsOnly(Collection<? extends T> values);
 
 	/**
 	 * Returns true if this collection contains none of the elements of the specified collection
 	 * @param values the elements to check
 	 * @return true if this collection contains none of the elements of the specified collection
 	 */
-	boolean containsNone(Collection<T> values);
+	boolean containsNone(Collection<? extends T> values);
 
 	/**
 	 * @return true if this collection is empty
