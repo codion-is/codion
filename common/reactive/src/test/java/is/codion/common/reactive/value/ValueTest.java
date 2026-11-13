@@ -143,6 +143,25 @@ public class ValueTest {
 	}
 
 	@Test
+	void observableChanged() {
+		//the observable's change observer is the value's, rather than a new one per call, each subscribing to the value for good
+		Value<Integer> value = Value.nullable();
+		Observable<Integer> observable = value.observable();
+		assertSame(value.changed(), observable.changed());
+		assertSame(observable.changed(), observable.changed());
+		AtomicInteger changes = new AtomicInteger();
+		Runnable listener = changes::incrementAndGet;
+		observable.changed().addListener(listener);
+		value.set(1);
+		assertEquals(1, changes.get());
+		value.changed().removeListener(listener);
+		value.set(2);
+		assertEquals(1, changes.get());
+		ValueList<Integer> valueList = ValueList.valueList();
+		assertSame(valueList.changed(), valueList.observable().changed());
+	}
+
+	@Test
 	void changeAdjusted() {
 		// a listener adjusting the value, added before the change observer: the change observer then hears the
 		// value it was set to after the adjusted one, which is no change

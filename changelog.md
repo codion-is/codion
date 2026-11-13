@@ -9,6 +9,7 @@ Codion Change Log
 - State.Group bug fixed, an exception as a member is deactivated, from a listener or a locked member, no longer stops the group from deactivating its members, where it did for good, two members then active at once.
 - ValueList.Builder and ValueSet.Builder bug fixed, link() no longer throws NullPointerException, and the collection given to value() is now copied, where it became the value, changing with the caller's collection, unvalidated and unnotified.
 - State bug fixed, reading its observable on another thread while the state is set, and a when() losing its last listener on another thread while the state notifies, no longer deadlock, the observable now reading without its lock and notifying outside it.
+- Value.observable() bug fixed, its changed() now returns the value's change observer, where each call created a new one, subscribed to the value for good, and a listener added through one could not be removed through the value's.
 ### is.codion.common.utilities
 - PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.

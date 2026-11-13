@@ -364,6 +364,11 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 			return value.observer();
 		}
 
+		@Override
+		public final ChangeObserver<T> changed() {
+			return value.changed();
+		}
+
 		protected final V value() {
 			return value;
 		}
