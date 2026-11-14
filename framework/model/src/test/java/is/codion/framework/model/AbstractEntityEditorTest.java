@@ -1701,11 +1701,12 @@ public final class AbstractEntityEditorTest {
 			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(40)));
 			Entity ten = CONNECTION.selectSingle(Department.ID.equalTo(10));
 			assertThrows(IllegalStateException.class, () -> departmentEditor.entity().set(ten));
-			// the master is 10, its detail editor holding the detail of 40
+			// the master is 10, its detail editor cleared, where it held the detail of 40
 			assertEquals(10, departmentEditor.value(Department.ID).get());
-			assertEquals("forty", extraEditor.value(DepartmentExtra.DESCRIPTION).get());
+			assertFalse(extraEditor.entity().exists().is());
+			assertNull(extraEditor.value(DepartmentExtra.DESCRIPTION).get());
 
-			extraEditor.value(DepartmentExtra.DESCRIPTION).set("edited under 10");
+			extraEditor.value(DepartmentExtra.DESCRIPTION).set("entered under 10");
 			assertFalse(departmentEditor.entity().modified().is());
 			assertTrue(departmentEditor.entity().modified().attributes().get().isEmpty());
 			departmentEditor.value(Department.NAME).set("ACCOUNTS");

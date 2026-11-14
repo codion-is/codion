@@ -265,6 +265,42 @@ public final class SwingEntityEditorTest {
 	}
 
 	@Test
+	void failedDetailLoadClearsDetail() throws Exception {
+		// the detail editor kept the previous master's detail when the load failed
+		detailToLoad.set(employee("emp"));
+		CountDownLatch changed = new CountDownLatch(1);
+		master.entity().observer().addListener(changed::countDown);
+		invokeLater(() -> master.entity().set(department(1)));
+		assertTrue(changed.await(5, SECONDS));
+		onEdt(() -> assertEquals("emp", detail.value(Employee.NAME).get()));
+
+		loading.set(() -> {
+			throw new IllegalStateException("load failed");
+		});
+		AtomicReference<@Nullable Throwable> rethrown = new AtomicReference<>();
+		CountDownLatch failed = new CountDownLatch(1);
+		Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
+			rethrown.set(exception);
+			failed.countDown();
+		});
+		try {
+			invokeLater(() -> master.entity().set(department(2)));
+			// rethrown on the EDT
+			assertTrue(failed.await(5, SECONDS));
+		}
+		finally {
+			Thread.setDefaultUncaughtExceptionHandler(handler);
+		}
+		assertEquals("load failed", rethrown.get().getMessage());
+		onEdt(() -> {
+			assertEquals(2, master.entity().get().get(Department.ID));
+			assertNull(detail.value(Employee.NAME).get());
+			assertThrows(IllegalStateException.class, master.tasks()::delete);
+		});
+	}
+
+	@Test
 	void asyncDisabledIsSynchronous() throws Exception {
 		master.async().set(false);
 		detailToLoad.set(employee("emp"));

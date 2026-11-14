@@ -1282,11 +1282,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * at registration time via {@link EditorLink.Builder#present(Predicate)}. A detail that is present but
 	 * does not yet exist triggers an insert. A detail that exists but is no longer present triggers a
 	 * delete. A detail that exists, is present, and is modified triggers an update.
-	 * <p>The master persists only along with its own details. From when it is set until its details are loaded, and
-	 * after a load which fails, until it is set again or {@link EditorEntity#refresh() refreshed}, the detail editors
-	 * hold the details of the previous master, so its {@link EditorTasks#insert() insert}, {@link EditorTasks#update()
-	 * update} and {@link EditorTasks#delete() delete} tasks are refused and its {@link Modified} state does not
-	 * aggregate theirs.
+	 * <p>The master persists only along with its own details. From when it is set until its details are loaded the
+	 * detail editors hold the details of the previous master, and a load which fails clears them, until the master is
+	 * set again or {@link EditorEntity#refresh() refreshed}. Meanwhile its {@link EditorTasks#insert() insert},
+	 * {@link EditorTasks#update() update} and {@link EditorTasks#delete() delete} tasks are refused and its
+	 * {@link Modified} state does not aggregate theirs.
 	 *
 	 * <h2>Removal</h2>
 	 * <p>Registration reaches into the detail editor, so {@link #remove(ForeignKey)} and {@link #remove(String)}

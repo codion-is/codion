@@ -356,8 +356,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 * not re-applied, so an edit made there survives.
 	 * <p>Until the load lands the active entity can not be inserted, updated or deleted via {@link #tasks()}, which
 	 * would persist the outgoing master's detail along with it, and {@link EditorEntity#modified()} does not count
-	 * the detail editors. A load which fails leaves it so, until the entity is set again or
-	 * {@link EditorEntity#refresh() refreshed}.
+	 * the detail editors. A load which fails clears the detail editors and leaves it so, until the entity is set
+	 * again or {@link EditorEntity#refresh() refreshed}.
 	 * @return the {@link State} controlling whether detail editors are loaded asynchronously
 	 * @see #ASYNC
 	 */
@@ -381,6 +381,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 * {@link EditorEntity#set(Entity)}, {@link EditorEntity#replace(Entity)} and {@link EditorEntity#refresh()},
 	 * where dropping a result discards a stale load and nothing else. A persisting task superseded here would
 	 * leave the work done and nothing notified, see {@link EditorTask}.
+	 * <p>A detail load which fails clears the detail editors, so that they do not show the details of the previous
+	 * active entity, the exception rethrown, on the UI thread when executed asynchronously.
 	 * @param task the task to execute
 	 */
 	protected void execute(EditorTask<Entity> task) {
@@ -393,7 +395,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 							.execute();
 		}
 		else {
-			task.perform().handle();
+			try {
+				task.perform().handle();
+			}
+			catch (RuntimeException e) {
+				//whichever task failed
+				entity.clearPendingDetails();
+				throw e;
+			}
 		}
 	}
 
@@ -438,6 +447,17 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				currentTask = null;
 				result.handle();
 			}
+		}
+
+		@Override
+		public void onException(Exception exception) {
+			//guarded as a result is, a superseded task leaving the detail editors to the one superseding it
+			if (currentTask == task) {
+				currentTask = null;
+				//whichever task failed
+				entity.clearPendingDetails();
+			}
+			ResultTaskHandler.super.onException(exception);
 		}
 
 		@Override
@@ -835,6 +855,17 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			detailsPending = false;
 			detail.editors.values().forEach(DetailEditor::updateUpdatable);
 			modified.update();
+		}
+
+		/**
+		 * Clears the detail editors in case they do not hold the details of the entity held, a load of them pending,
+		 * so that a failed task, whichever, does not leave the details of a previous entity on display. The details
+		 * remain pending.
+		 */
+		private void clearPendingDetails() {
+			if (detailsPending) {
+				detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
+			}
 		}
 
 		private void resetDefaults() {
