@@ -54,16 +54,16 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 
 	final TableColumns<R, C> columns;
 	final List<Runnable> selectionListeners = new ArrayList<>();
-	final List<Consumer<R>> itemSelectedListeners = new ArrayList<>();
+	final List<Consumer<? super R>> itemSelectedListeners = new ArrayList<>();
 	final List<Consumer<List<R>>> itemsSelectedListeners = new ArrayList<>();
 	final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
 	final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
 
 	@Nullable Supplier<Collection<R>> supplier;
-	Predicate<R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
+	Predicate<? super R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
 	@Nullable Consumer<TableConditions.Builder<C>> filters;
 	@Nullable Consumer<Exception> onRefreshException;
-	@Nullable Predicate<R> included;
+	@Nullable Predicate<? super R> included;
 
 	private boolean refresh = false;
 
@@ -91,7 +91,7 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 	}
 
 	@Override
-	public final B validator(Predicate<R> validator) {
+	public final B validator(Predicate<? super R> validator) {
 		this.validator = requireNonNull(validator);
 		return self();
 	}
@@ -103,7 +103,7 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 	}
 
 	@Override
-	public final B included(Predicate<R> included) {
+	public final B included(Predicate<? super R> included) {
 		this.included = requireNonNull(included);
 		return self();
 	}
@@ -121,7 +121,7 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 	}
 
 	@Override
-	public final B onSelectedItem(Consumer<R> item) {
+	public final B onSelectedItem(Consumer<? super R> item) {
 		itemSelectedListeners.add(requireNonNull(item));
 		return self();
 	}

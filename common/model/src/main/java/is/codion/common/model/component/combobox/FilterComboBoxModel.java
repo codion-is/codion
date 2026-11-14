@@ -99,7 +99,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 			 * @param items the items to add to the model
 			 * @return a new {@link Builder} instance
 			 */
-			<T> Builder<T, ?> items(Collection<T> items);
+			<T> Builder<T, ?> items(Collection<? extends T> items);
 
 			/**
 			 * @param <T> the item type
@@ -122,13 +122,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @param validator the item validator
 		 * @return this builder instance
 		 */
-		B validator(Predicate<T> validator);
+		B validator(Predicate<? super T> validator);
 
 		/**
 		 * @param comparator the comparator, null for unsorted
 		 * @return this builder
 		 */
-		B comparator(@Nullable Comparator<T> comparator);
+		B comparator(@Nullable Comparator<? super T> comparator);
 
 		/**
 		 * @param nullable true if null should be selectable, via a null item shown first
@@ -155,7 +155,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @param translator the selected item translator
 		 * @return this builder
 		 */
-		B translator(Function<Object, T> translator);
+		B translator(Function<Object, ? extends T> translator);
 
 		/**
 		 * <p>Specifies whether filtering the model affects the currently selected item.
@@ -172,7 +172,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * @param item receives the selected item, note that this item may be null
 		 * @return this builder instance
 		 */
-		B onSelectedItem(Consumer<@Nullable T> item);
+		B onSelectedItem(Consumer<? super @Nullable T> item);
 
 		/**
 		 * By default, exceptions during refresh are rethrown,

@@ -51,7 +51,7 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	final Supplier<Collection<T>> roots;
 	final Function<NodePath<T>, Collection<T>> children;
 	final List<Runnable> selectionListeners = new ArrayList<>();
-	final List<Consumer<T>> itemSelectedListeners = new ArrayList<>();
+	final List<Consumer<? super T>> itemSelectedListeners = new ArrayList<>();
 	final List<Consumer<List<T>>> itemsSelectedListeners = new ArrayList<>();
 	final List<Consumer<NodePath<T>>> pathSelectedListeners = new ArrayList<>();
 	final List<Consumer<List<NodePath<T>>>> pathsSelectedListeners = new ArrayList<>();
@@ -59,10 +59,10 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
 
 	@Nullable Function<List<NodePath<T>>, Collection<NodePath<T>>> leaves;
-	@Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators;
+	@Nullable Function<NodePath<T>, ? extends @Nullable Comparator<? super T>> comparators;
 	@Nullable Predicate<NodePath<T>> included;
 	@Nullable Consumer<Exception> onLoadException;
-	@Nullable Function<T, @Nullable NodePath<T>> path;
+	@Nullable Function<? super T, @Nullable NodePath<T>> path;
 
 	private boolean refresh = false;
 
@@ -91,13 +91,13 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	}
 
 	@Override
-	public final B path(Function<T, @Nullable NodePath<T>> path) {
+	public final B path(Function<? super T, @Nullable NodePath<T>> path) {
 		this.path = requireNonNull(path);
 		return self();
 	}
 
 	@Override
-	public final B comparator(@Nullable Comparator<T> comparator) {
+	public final B comparator(@Nullable Comparator<? super T> comparator) {
 		this.comparators = comparator == null ? null : parent -> comparator;
 		return self();
 	}
@@ -133,7 +133,7 @@ public abstract class AbstractFilterTreeModelBuilder<T, B extends FilterTreeMode
 	}
 
 	@Override
-	public final B onSelectedItem(Consumer<T> item) {
+	public final B onSelectedItem(Consumer<? super T> item) {
 		itemSelectedListeners.add(requireNonNull(item));
 		return self();
 	}

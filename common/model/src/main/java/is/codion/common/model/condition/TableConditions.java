@@ -77,7 +77,7 @@ public interface TableConditions<C> {
 	 * @param <C> the condition identifier type
 	 * @return a new {@link TableConditions}
 	 */
-	static <C> TableConditions<C> tableConditions(Map<C, ConditionModel<?>> conditionModels) {
+	static <C> TableConditions<C> tableConditions(Map<? extends C, ? extends ConditionModel<?>> conditionModels) {
 		return new DefaultTableConditions<>(requireNonNull(conditionModels));
 	}
 

@@ -186,7 +186,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 	 * @param hidden true if nodes below collapsed ancestors should be included
 	 * @return the paths of nodes holding the given items
 	 */
-	private List<NodePath<T>> paths(Collection<T> items, boolean preferSelected, boolean hidden) {
+	private List<NodePath<T>> paths(Collection<? extends T> items, boolean preferSelected, boolean hidden) {
 		if (items.isEmpty()) {
 			return emptyList();
 		}
@@ -313,23 +313,23 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 
 		@Override
-		public void set(@Nullable Collection<NodePath<T>> paths) {
+		public void set(@Nullable Collection<? extends NodePath<T>> paths) {
 			//as set(List), the lock and the validators applying
 			super.set(paths == null ? null : new ArrayList<>(paths));
 		}
 
 		@Override
-		public void set(Predicate<NodePath<T>> predicate) {
+		public void set(Predicate<? super NodePath<T>> predicate) {
 			selection.items().set(predicate);
 		}
 
 		@Override
-		public void restore(Collection<NodePath<T>> paths) {
+		public void restore(Collection<? extends NodePath<T>> paths) {
 			selection.items().restore(paths);
 		}
 
 		@Override
-		public void add(Predicate<NodePath<T>> predicate) {
+		public void add(Predicate<? super NodePath<T>> predicate) {
 			selection.items().add(predicate);
 		}
 
@@ -340,8 +340,8 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 
 		@Override
-		public void add(Collection<NodePath<T>> paths) {
-			expand.accept(requireNonNull(paths));
+		public void add(Collection<? extends NodePath<T>> paths) {
+			expand.accept(unmodifiableCollection(requireNonNull(paths)));
 			selection.items().add(paths);
 		}
 
@@ -351,7 +351,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 
 		@Override
-		public void remove(Collection<NodePath<T>> paths) {
+		public void remove(Collection<? extends NodePath<T>> paths) {
 			selection.items().remove(paths);
 		}
 
@@ -432,25 +432,25 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 
 		@Override
-		public void set(@Nullable Collection<T> items) {
+		public void set(@Nullable Collection<? extends T> items) {
 			//as set(List), the lock and the validators applying
 			super.set(items == null ? null : new ArrayList<>(items));
 		}
 
 		@Override
-		public void set(Predicate<T> predicate) {
+		public void set(Predicate<? super T> predicate) {
 			requireNonNull(predicate);
 			selection.items().set(path -> predicate.test(path.item()));
 		}
 
 		@Override
-		public void restore(Collection<T> items) {
+		public void restore(Collection<? extends T> items) {
 			//not preferring the selected nodes, nor expanding, as a selection restores
 			selection.items().restore(paths(rejectNulls(items), false, false));
 		}
 
 		@Override
-		public void add(Predicate<T> predicate) {
+		public void add(Predicate<? super T> predicate) {
 			requireNonNull(predicate);
 			selection.items().add(path -> predicate.test(path.item()));
 		}
@@ -461,7 +461,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 
 		@Override
-		public void add(Collection<T> items) {
+		public void add(Collection<? extends T> items) {
 			paths.add(paths(rejectNulls(items), true, true));
 		}
 
@@ -471,7 +471,7 @@ final class DefaultTreeSelection<T> implements TreeSelection<T> {
 		}
 
 		@Override
-		public void remove(Collection<T> items) {
+		public void remove(Collection<? extends T> items) {
 			//every selected node holding an equal item
 			Set<T> toRemove = new HashSet<>(rejectNulls(items));
 			selection.items().remove(selection.items().get().stream()

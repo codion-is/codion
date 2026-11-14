@@ -41,13 +41,13 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComboBoxModel.Builder<T, B>>
 				implements FilterComboBoxModel.Builder<T, B> {
 
-	final @Nullable Collection<T> items;
+	final @Nullable Collection<? extends T> items;
 	final @Nullable Supplier<Collection<T>> supplier;
-	final Collection<Consumer<T>> onSelectedItem = new ArrayList<>(1);
+	final Collection<Consumer<? super @Nullable T>> onSelectedItem = new ArrayList<>(1);
 
-	Predicate<T> validator = new ValidPredicate<>();
-	Comparator<T> comparator = Text.comparator();
-	Function<Object, T> translator = (Function<Object, T>) DefaultFilterComboBoxModel.DEFAULT_SELECTED_ITEM_TRANSLATOR;
+	Predicate<? super T> validator = new ValidPredicate<>();
+	Comparator<? super T> comparator = Text.comparator();
+	Function<Object, ? extends T> translator = (Function<Object, T>) DefaultFilterComboBoxModel.DEFAULT_SELECTED_ITEM_TRANSLATOR;
 	@Nullable Consumer<Exception> onRefreshException;
 	boolean filterSelected;
 	boolean nullable;
@@ -58,7 +58,7 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	/**
 	 * @param items the items
 	 */
-	protected AbstractFilterComboBoxModelBuilder(Collection<T> items) {
+	protected AbstractFilterComboBoxModelBuilder(Collection<? extends T> items) {
 		this.items = requireNonNull(items);
 		this.supplier = null;
 	}
@@ -72,14 +72,14 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	}
 
 	@Override
-	public final B validator(Predicate<T> validator) {
+	public final B validator(Predicate<? super T> validator) {
 		this.validator = requireNonNull(validator);
 		return self();
 	}
 
 	@Override
-	public final B comparator(@Nullable Comparator<T> comparator) {
-		this.comparator = comparator == null ? (Comparator<T>) DefaultFilterComboBoxModel.NULL_COMPARATOR : comparator;
+	public final B comparator(@Nullable Comparator<? super T> comparator) {
+		this.comparator = comparator == null ? (Comparator<? super T>) DefaultFilterComboBoxModel.NULL_COMPARATOR : comparator;
 		return self();
 	}
 
@@ -105,7 +105,7 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	}
 
 	@Override
-	public final B translator(Function<Object, T> translator) {
+	public final B translator(Function<Object, ? extends T> translator) {
 		this.translator = requireNonNull(translator);
 		return self();
 	}
@@ -117,7 +117,7 @@ public abstract class AbstractFilterComboBoxModelBuilder<T, B extends FilterComb
 	}
 
 	@Override
-	public final B onSelectedItem(Consumer<@Nullable T> item) {
+	public final B onSelectedItem(Consumer<? super @Nullable T> item) {
 		this.onSelectedItem.add(requireNonNull(item));
 		return self();
 	}

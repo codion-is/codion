@@ -368,7 +368,7 @@ public interface ConditionModel<T> {
 		 * @param values the operands
 		 * @return true if the condition state changed
 		 */
-		boolean in(Collection<T> values);
+		boolean in(Collection<? extends T> values);
 
 		/**
 		 * <p>Sets the operator to {@link Operator#NOT_IN} and the operands to {@code values}.
@@ -384,7 +384,7 @@ public interface ConditionModel<T> {
 		 * @param values the operands
 		 * @return true if the condition state changed
 		 */
-		boolean notIn(Collection<T> values);
+		boolean notIn(Collection<? extends T> values);
 
 		/**
 		 * <p>Sets the operator to {@link Operator#BETWEEN_EXCLUSIVE} and the operands to {@code lower} and {@code upper}.

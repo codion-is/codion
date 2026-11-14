@@ -179,7 +179,7 @@ public interface EntityTreeModel extends FilterTreeModel<Entity> {
 		 * @see Children#comparator(Comparator)
 		 */
 		@Override
-		B comparator(@Nullable Comparator<Entity> comparator);
+		B comparator(@Nullable Comparator<? super Entity> comparator);
 
 		/**
 		 * <p>Replaces the ordering of siblings entirely, the roots, the foreign key comparators and order bys, and the

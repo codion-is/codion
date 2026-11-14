@@ -263,7 +263,8 @@ final class EntityTreeStructure {
 			return null;
 		}
 		if (builder.comparatorSet) {
-			return builder.comparator;
+			//a comparator only consumes entities, so one of a supertype compares them as well
+			return (Comparator<Entity>) builder.comparator;
 		}
 
 		return entities.definition(entityType).comparator();

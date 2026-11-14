@@ -143,7 +143,7 @@ public interface FilterModel<T> {
 		 * Sets the items, replacing the current ones.
 		 * @param items the items
 		 */
-		void set(Collection<T> items);
+		void set(Collection<? extends T> items);
 
 		/**
 		 * <p>Adds the given item to this model.
@@ -163,7 +163,7 @@ public interface FilterModel<T> {
 		 * be excluded right away.
 		 * @param items the items to add
 		 */
-		void add(Collection<T> items);
+		void add(Collection<? extends T> items);
 
 		/**
 		 * <p>Removes the given item from this model, every equal occurrence of it.
@@ -175,13 +175,13 @@ public interface FilterModel<T> {
 		 * <p>Removes the given items from this model, every equal occurrence of each.
 		 * @param items the items to remove from the model
 		 */
-		void remove(Collection<T> items);
+		void remove(Collection<? extends T> items);
 
 		/**
 		 * <p>Removes all the items fulfilling the given predicate from this model, equal ones included.
 		 * @param predicate the {@link Predicate} specifying the items to remove from the model
 		 */
-		void remove(Predicate<T> predicate);
+		void remove(Predicate<? super T> predicate);
 
 		/**
 		 * <p>Replaces the given item, every equal occurrence of it. If the item is not found this method has no effect.
@@ -204,7 +204,7 @@ public interface FilterModel<T> {
 		 * <p>Selected items being replaced stay selected as their replacements, see {@link #replace(Object, Object)}.
 		 * @param replacements the items to replace mapped to their replacements
 		 */
-		void replace(Map<T, T> replacements);
+		void replace(Map<? extends T, ? extends T> replacements);
 
 		/**
 		 * Clears the items
@@ -301,7 +301,7 @@ public interface FilterModel<T> {
 			 * @param validator the item validator
 			 * @return this builder
 			 */
-			Builder<T> validator(Predicate<T> validator);
+			Builder<T> validator(Predicate<? super T> validator);
 
 			/**
 			 * @param included the include predicate
@@ -408,7 +408,7 @@ public interface FilterModel<T> {
 		 * @return true if one or more of the items was added to the included items
 		 * @throws IndexOutOfBoundsException in case the index is out of bounds
 		 */
-		boolean add(int index, Collection<T> items);
+		boolean add(int index, Collection<? extends T> items);
 
 		/**
 		 * <p>Sets the item at the given index. Note that sorting is NOT performed after the item has been set.

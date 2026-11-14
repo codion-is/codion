@@ -24,11 +24,14 @@ import is.codion.common.utilities.Text;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -44,6 +47,30 @@ final class DefaultFilterListModelTest {
 	private static final String TWO = "Two";
 	private static final String THREE = "Three";
 	private static final String FOUR = "Four";
+
+	@Test
+	void subtypes() {
+		//a model of numbers given integers, and functions of objects
+		List<Integer> integers = asList(3, 1, 2);
+		Comparator<Object> byString = Comparator.comparing(Object::toString);
+		Predicate<Object> notTwo = item -> !item.equals(2);
+		List<Object> selected = new ArrayList<>();
+		Consumer<Object> onSelected = selected::add;
+		FilterListModel<Number> model = FilterListModel.builder()
+						.<Number>items(integers)
+						.comparator(byString)
+						.included(notTwo)
+						.onSelectedItem(onSelected)
+						.build();
+		assertEquals(asList(1, 3), model.items().included().get());
+		model.items().add(singletonList(4));
+		model.items().remove(singletonList(3));
+		model.selection().items().set(singletonList(4));
+		assertEquals(singletonList(4), selected);
+		model.items().remove(notTwo);
+		assertTrue(model.items().get().contains(2));
+		assertFalse(model.items().get().contains(1));
+	}
 
 	@Test
 	void test() {

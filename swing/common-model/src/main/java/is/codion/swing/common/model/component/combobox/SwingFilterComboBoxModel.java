@@ -70,7 +70,7 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 		interface ItemsStep extends FilterComboBoxModel.Builder.ItemsStep {
 
 			@Override
-			<T> Builder<T> items(Collection<T> items);
+			<T> Builder<T> items(Collection<? extends T> items);
 
 			@Override
 			<T> Builder<T> items(Supplier<Collection<T>> items);

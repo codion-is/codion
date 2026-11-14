@@ -88,7 +88,7 @@ public interface NodePath<T> {
 	 * @return a path holding the given items, the root path in case of no items
 	 * @throws NullPointerException in case {@code items} is null or contains a null item
 	 */
-	static <T> NodePath<T> nodePath(List<T> items) {
+	static <T> NodePath<T> nodePath(List<? extends T> items) {
 		return DefaultNodePath.nodePath(requireNonNull(items));
 	}
 }

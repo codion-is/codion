@@ -99,7 +99,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final class DefaultItemsStep implements Builder.ItemsStep {
 
 		@Override
-		public <T> Builder<T, ?> items(Collection<T> items) {
+		public <T> Builder<T, ?> items(Collection<? extends T> items) {
 			return new DefaultBuilder<>(items);
 		}
 
@@ -127,7 +127,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
 
-		private DefaultBuilder(Collection<T> items) {
+		private DefaultBuilder(Collection<? extends T> items) {
 			super(items);
 		}
 
@@ -145,11 +145,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private static final class DefaultComboBoxSort<T> implements Sort<T> {
 
-		private final Comparator<T> comparator;
+		private final Comparator<? super T> comparator;
 		//the comparator is immutable so the sort never changes, this signal is never fired
 		private final Signal<Boolean> signal = Signal.signal();
 
-		private DefaultComboBoxSort(Comparator<T> comparator) {
+		private DefaultComboBoxSort(Comparator<? super T> comparator) {
 			this.comparator = comparator;
 		}
 
@@ -179,7 +179,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final List<T> natural = new ArrayList<>();
 		private final DefaultIncludedItems included;
 		private final DefaultExcludedItems excluded = new DefaultExcludedItems();
-		private final Predicate<T> validator;
+		private final Predicate<? super T> validator;
 
 		private final boolean filterSelected;
 		private final boolean nullable;
@@ -239,7 +239,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public void set(Collection<T> items) {
+		public void set(Collection<? extends T> items) {
 			//null is the reserved sentinel (see nullable), it must not appear among the actual items
 			requireNonNull(items).forEach(this::validate);
 			synchronized (lock) {
@@ -298,7 +298,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public void add(Collection<T> items) {
+		public void add(Collection<? extends T> items) {
 			// All validated before any is added, so a rejected item leaves the model as it was
 			requireNonNull(items).forEach(this::validate);
 			synchronized (lock) {
@@ -325,7 +325,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public void remove(Collection<T> items) {
+		public void remove(Collection<? extends T> items) {
 			rejectNulls(items);
 			synchronized (lock) {
 				for (T item : items) {
@@ -335,7 +335,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public void remove(Predicate<T> predicate) {
+		public void remove(Predicate<? super T> predicate) {
 			requireNonNull(predicate);
 			synchronized (lock) {
 				remove(natural.stream()
@@ -399,7 +399,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public void replace(Map<T, T> items) {
+		public void replace(Map<? extends T, ? extends T> items) {
 			// Note: Similar logic exists in DefaultFilterModelItems.
 			// Both implementations handle item replacement with filtering but have different collection types
 			// and threading requirements, making extraction to a common utility non-trivial.
@@ -621,7 +621,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			@Override
-			public boolean add(int index, Collection<T> items) {
+			public boolean add(int index, Collection<? extends T> items) {
 				throw new UnsupportedOperationException();
 			}
 
@@ -718,7 +718,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final SelectedItem selected;
 
-		private DefaultComboBoxSelection(Function<Object, T> translator) {
+		private DefaultComboBoxSelection(Function<Object, ? extends T> translator) {
 			selected = new SelectedItem(translator);
 		}
 
@@ -747,11 +747,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final Signal<T> changing = Signal.signal();
 		private final State present = State.state();
-		private final Function<@Nullable Object, T> translator;
+		private final Function<@Nullable Object, ? extends T> translator;
 
 		private @Nullable T item = null;
 
-		private SelectedItem(Function<Object, T> translator) {
+		private SelectedItem(Function<Object, ? extends T> translator) {
 			this.translator = translator;
 		}
 

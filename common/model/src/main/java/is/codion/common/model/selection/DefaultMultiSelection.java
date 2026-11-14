@@ -428,7 +428,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
-		public void set(@Nullable Collection<R> itemsToSelect) {
+		public void set(@Nullable Collection<? extends R> itemsToSelect) {
 			//as set(List), the lock and the validators applying
 			super.set(itemsToSelect == null ? null : new ArrayList<>(itemsToSelect));
 		}
@@ -439,18 +439,18 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
-		public void set(Predicate<R> predicate) {
+		public void set(Predicate<? super R> predicate) {
 			selectedIndexes.set(indexesToSelect(requireNonNull(predicate)));
 		}
 
 		@Override
-		public void restore(Collection<R> itemsToRestore) {
+		public void restore(Collection<? extends R> itemsToRestore) {
 			//not preferring the selected indexes, which a view may have shifted or cleared while the items changed
 			store.restore(indexesOf(rejectNulls(itemsToRestore), false));
 		}
 
 		@Override
-		public void add(Predicate<R> predicate) {
+		public void add(Predicate<? super R> predicate) {
 			selectedIndexes.add(indexesToSelect(requireNonNull(predicate)));
 		}
 
@@ -460,7 +460,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
-		public void add(Collection<R> itemsToAdd) {
+		public void add(Collection<? extends R> itemsToAdd) {
 			addInternal(rejectNulls(itemsToAdd));
 		}
 
@@ -470,9 +470,9 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		@Override
-		public void remove(Collection<R> itemsToRemove) {
+		public void remove(Collection<? extends R> itemsToRemove) {
 			//every selected index holding an equal item, not only the first equal item's index
-			Collection<R> toRemove = rejectNulls(itemsToRemove);
+			Collection<? extends R> toRemove = rejectNulls(itemsToRemove);
 			selectedIndexes.remove(store.get().stream()
 							.filter(index -> index < items.size() && toRemove.contains(items.get(index)))
 							.collect(toList()));
@@ -493,7 +493,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			return selectedItemList.isEmpty() ? Optional.empty() : Optional.of(selectedItemList);
 		}
 
-		private void addInternal(Collection<R> itemsToAdd) {
+		private void addInternal(Collection<? extends R> itemsToAdd) {
 			selectedIndexes.add(indexesOf(itemsToAdd, true));
 		}
 
@@ -505,7 +505,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		 * @param preferSelected true if selected indexes should be preferred
 		 * @return the indexes of the given items
 		 */
-		private List<Integer> indexesOf(Collection<R> itemsToFind, boolean preferSelected) {
+		private List<Integer> indexesOf(Collection<? extends R> itemsToFind, boolean preferSelected) {
 			if (itemsToFind.isEmpty()) {
 				return emptyList();
 			}
@@ -601,7 +601,7 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 			return null;
 		}
 
-		private List<Integer> indexesToSelect(Predicate<R> predicate) {
+		private List<Integer> indexesToSelect(Predicate<? super R> predicate) {
 			List<Integer> indexes = new ArrayList<>();
 			List<R> included = items.get();
 			for (int i = 0; i < included.size(); i++) {

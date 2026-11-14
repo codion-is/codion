@@ -258,13 +258,13 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * Selects the given items, as setting them as a list does, null clearing the selection.
 		 * @param items the items to select, null for none
 		 */
-		void set(@Nullable Collection<R> items);
+		void set(@Nullable Collection<? extends R> items);
 
 		/**
 		 * Sets the items passing the predicate test as the selection
 		 * @param predicate the predicate
 		 */
-		void set(Predicate<R> predicate);
+		void set(Predicate<? super R> predicate);
 
 		/**
 		 * <p>Selects the given items without notifying {@link MultiSelection#changing()}, the ones not found among
@@ -279,13 +279,13 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * @param items the items to select
 		 * @see IndexStore#restore(Collection)
 		 */
-		void restore(Collection<R> items);
+		void restore(Collection<? extends R> items);
 
 		/**
 		 * Adds the items passing the predicate test to the selection
 		 * @param predicate the predicate
 		 */
-		void add(Predicate<R> predicate);
+		void add(Predicate<? super R> predicate);
 
 		/**
 		 * Adds the given item to the selection
@@ -297,7 +297,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * Adds the given items to the selection
 		 * @param items the items to add to the selection
 		 */
-		void add(Collection<R> items);
+		void add(Collection<? extends R> items);
 
 		/**
 		 * Removes the given item from the selection, at every selected index holding an equal item
@@ -309,7 +309,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * Removes the given items from the selection, at every selected index holding an equal item
 		 * @param items the items to remove from the selection
 		 */
-		void remove(Collection<R> items);
+		void remove(Collection<? extends R> items);
 
 		/**
 		 * @param item the item

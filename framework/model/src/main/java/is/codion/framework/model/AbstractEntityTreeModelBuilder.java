@@ -59,7 +59,7 @@ public abstract class AbstractEntityTreeModelBuilder<B extends EntityTreeModel.B
 	final List<Consumer<FilterTreeModel.Builder<Entity, ?>>> options = new ArrayList<>();
 
 	//the comparator of the tree, for the roots and children which specify neither a comparator nor an order by
-	@Nullable Comparator<Entity> comparator;
+	@Nullable Comparator<? super Entity> comparator;
 	boolean comparatorSet = false;
 	//replacing the ordering of siblings entirely
 	@Nullable Function<NodePath<Entity>, @Nullable Comparator<Entity>> comparators;
@@ -114,14 +114,14 @@ public abstract class AbstractEntityTreeModelBuilder<B extends EntityTreeModel.B
 	}
 
 	@Override
-	public final B path(Function<Entity, @Nullable NodePath<Entity>> path) {
+	public final B path(Function<? super Entity, @Nullable NodePath<Entity>> path) {
 		requireNonNull(path);
 		options.add(builder -> builder.path(path));
 		return self();
 	}
 
 	@Override
-	public final B comparator(@Nullable Comparator<Entity> comparator) {
+	public final B comparator(@Nullable Comparator<? super Entity> comparator) {
 		this.comparator = comparator;
 		this.comparatorSet = true;
 		this.comparators = null;
@@ -162,7 +162,7 @@ public abstract class AbstractEntityTreeModelBuilder<B extends EntityTreeModel.B
 	}
 
 	@Override
-	public final B onSelectedItem(Consumer<Entity> item) {
+	public final B onSelectedItem(Consumer<? super Entity> item) {
 		requireNonNull(item);
 		options.add(builder -> builder.onSelectedItem(item));
 		return self();

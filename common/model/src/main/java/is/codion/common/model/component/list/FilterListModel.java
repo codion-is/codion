@@ -76,7 +76,7 @@ public interface FilterListModel<T> extends FilterModel<T> {
 			 * @param items the items to add to the model
 			 * @return a new {@link Builder} instance
 			 */
-			<T> Builder<T, ?> items(Collection<T> items);
+			<T> Builder<T, ?> items(Collection<? extends T> items);
 
 			/**
 			 * @param <T> the item type
@@ -90,7 +90,7 @@ public interface FilterListModel<T> extends FilterModel<T> {
 		 * @param comparator the comparator to use when sorting
 		 * @return this builder instance
 		 */
-		B comparator(@Nullable Comparator<T> comparator);
+		B comparator(@Nullable Comparator<? super T> comparator);
 
 		/**
 		 * By default, exceptions during refresh are rethrown,
@@ -104,7 +104,7 @@ public interface FilterListModel<T> extends FilterModel<T> {
 		 * @param included the {@link Predicate} controlling which items should be included
 		 * @return this builder instance
 		 */
-		B included(Predicate<T> included);
+		B included(Predicate<? super T> included);
 
 		/**
 		 * @param listener the selection listener
@@ -116,7 +116,7 @@ public interface FilterListModel<T> extends FilterModel<T> {
 		 * @param item receives the selected item
 		 * @return this builder instance
 		 */
-		B onSelectedItem(Consumer<T> item);
+		B onSelectedItem(Consumer<? super T> item);
 
 		/**
 		 * @param items receives the selected items

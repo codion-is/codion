@@ -105,7 +105,7 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 	private final List<Runnable> onDone;
 	private final List<Consumer<Boolean>> onWorking;
 	private final List<Runnable> onSuccess;
-	private final List<Consumer<T>> onResult;
+	private final List<Consumer<? super T>> onResult;
 	private final List<Consumer<Integer>> onProgress;
 	private final List<Consumer<List<V>>> onPublish;
 	private final List<Consumer<Exception>> onException;
@@ -628,7 +628,7 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 		 * @param onResult the handler to add
 		 * @return this builder instance
 		 */
-		Builder<T, V> onResult(Consumer<T> onResult);
+		Builder<T, V> onResult(Consumer<? super T> onResult);
 
 		/**
 		 * Adds a handler called using the {@link Dispatcher} when progress is reported, unless the task has been cancelled.
@@ -807,7 +807,7 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 		private @Nullable List<Runnable> onDone;
 		private @Nullable List<Consumer<Boolean>> onWorking;
 		private @Nullable List<Runnable> onSuccess;
-		private @Nullable List<Consumer<T>> onResult;
+		private @Nullable List<Consumer<? super T>> onResult;
 		private @Nullable List<Consumer<Integer>> onProgress;
 		private @Nullable List<Consumer<List<V>>> onPublish;
 		private @Nullable List<Consumer<Exception>> onException;
@@ -859,7 +859,7 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 		}
 
 		@Override
-		public Builder<T, V> onResult(Consumer<T> onResult) {
+		public Builder<T, V> onResult(Consumer<? super T> onResult) {
 			this.onResult = initialize(this.onResult);
 			this.onResult.add(requireNonNull(onResult));
 			return this;
@@ -928,7 +928,7 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 			return onSuccess == null ? emptyList() : onSuccess;
 		}
 
-		private List<Consumer<T>> onResult() {
+		private List<Consumer<? super T>> onResult() {
 			return onResult == null ? emptyList() : onResult;
 		}
 
@@ -974,8 +974,8 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 			}
 		}
 
-		private <A> void accept(List<Consumer<A>> handlers, A argument) {
-			for (Consumer<A> handler : handlers) {
+		private <A> void accept(List<? extends Consumer<? super A>> handlers, A argument) {
+			for (Consumer<? super A> handler : handlers) {
 				try {
 					handler.accept(argument);
 				}

@@ -890,7 +890,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		@Override
-		public boolean in(Collection<T> values) {
+		public boolean in(Collection<? extends T> values) {
 			requireNonNull(values);
 			return mutate(() -> {
 				operands.in.set(values);
@@ -905,7 +905,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		@Override
-		public boolean notIn(Collection<T> values) {
+		public boolean notIn(Collection<? extends T> values) {
 			requireNonNull(values);
 			return mutate(() -> {
 				operands.in.set(values);

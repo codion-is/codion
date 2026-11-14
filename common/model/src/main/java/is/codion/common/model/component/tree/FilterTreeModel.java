@@ -180,7 +180,7 @@ public interface FilterTreeModel<T> {
 		 * @param items the items to add
 		 * @throws IllegalArgumentException in case an item is already a child of the parent or repeated
 		 */
-		void add(NodePath<T> parent, Collection<T> items);
+		void add(NodePath<T> parent, Collection<? extends T> items);
 
 		/**
 		 * <p>Removes the nodes identified by the given paths, along with their subtrees and expansion.
@@ -445,14 +445,14 @@ public interface FilterTreeModel<T> {
 		 * @return this builder instance
 		 * @see TreeSelection#item()
 		 */
-		B path(Function<T, @Nullable NodePath<T>> path);
+		B path(Function<? super T, @Nullable NodePath<T>> path);
 
 		/**
 		 * Specifies the comparator to use when sorting siblings, the same for all, see {@link #comparators(Function)}.
 		 * @param comparator the comparator to use when sorting siblings, null for none
 		 * @return this builder instance
 		 */
-		B comparator(@Nullable Comparator<T> comparator);
+		B comparator(@Nullable Comparator<? super T> comparator);
 
 		/**
 		 * <p>Specifies the comparator to use when sorting the children of each parent, given the path of the parent,
@@ -499,7 +499,7 @@ public interface FilterTreeModel<T> {
 		 * @return this builder instance
 		 * @see TreeSelection#item()
 		 */
-		B onSelectedItem(Consumer<T> item);
+		B onSelectedItem(Consumer<? super T> item);
 
 		/**
 		 * @param items receives the items of the selected nodes

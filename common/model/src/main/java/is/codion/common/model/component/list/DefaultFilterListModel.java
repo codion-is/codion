@@ -30,6 +30,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
@@ -56,7 +57,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 			itemsBuilder.listener(listener);
 		}
 		this.items = itemsBuilder.build();
-		this.items.included().predicate().set(builder.included);
+		this.items.included().predicate().set((Predicate<T>) builder.included);
 		this.selection = (MultiSelection<T>) items.included().selection();
 		builder.selectionListeners.forEach(selection.indexes()::addListener);
 		builder.itemSelectedListeners.forEach(selection.item()::addConsumer);
@@ -84,14 +85,14 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 
 	private final class DefaultListSort implements FilterListSort<T> {
 
-		private final @Nullable Comparator<T> comparator;
+		private final @Nullable Comparator<? super T> comparator;
 		private final Signal<Boolean> changed = Signal.signal();
 		private final Value<SortOrder> order = Value.builder()
 						.nonNull(SortOrder.ASCENDING)
 						.consumer(sortOrder -> changed.accept(sortOrder != SortOrder.UNSORTED))
 						.build();
 
-		private DefaultListSort(@Nullable Comparator<T> comparator) {
+		private DefaultListSort(@Nullable Comparator<? super T> comparator) {
 			this.comparator = comparator;
 		}
 
@@ -149,7 +150,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		}
 
 		@Override
-		public <T> Builder<T, ?> items(Collection<T> items) {
+		public <T> Builder<T, ?> items(Collection<? extends T> items) {
 			return new DefaultBuilder<>(items);
 		}
 
@@ -163,7 +164,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 
 		static final Builder.ItemsStep ITEMS = new DefaultItemsStep();
 
-		private DefaultBuilder(Collection<T> items) {
+		private DefaultBuilder(Collection<? extends T> items) {
 			super(items);
 		}
 

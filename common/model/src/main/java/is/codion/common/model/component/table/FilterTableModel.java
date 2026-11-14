@@ -174,7 +174,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		 * @param validator the item validator
 		 * @return this builder instance
 		 */
-		B validator(Predicate<R> validator);
+		B validator(Predicate<? super R> validator);
 
 		/**
 		 * By default, exceptions during refresh are rethrown,
@@ -188,7 +188,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		 * @param included the {@link Predicate} controlling which items should be included
 		 * @return this builder instance
 		 */
-		B included(Predicate<R> included);
+		B included(Predicate<? super R> included);
 
 		/**
 		 * @param refresh true if the model items should be refreshed on initialization, false by default
@@ -206,7 +206,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		 * @param item receives the selected item
 		 * @return this builder instance
 		 */
-		B onSelectedItem(Consumer<R> item);
+		B onSelectedItem(Consumer<? super R> item);
 
 		/**
 		 * @param items receives the selected items
@@ -378,7 +378,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		 * @param columns the columns to export, default all
 		 * @return this Export instance
 		 */
-		Export<C> columns(List<C> columns);
+		Export<C> columns(List<? extends C> columns);
 
 		/**
 		 * @param delimiter the column delimiter, TAB by default

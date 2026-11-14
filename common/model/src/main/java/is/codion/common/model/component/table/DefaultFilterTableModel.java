@@ -94,7 +94,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 			itemsBuilder.listener(listener);
 		}
 		this.items = itemsBuilder.build();
-		this.items.included().predicate().set(builder.included);
+		this.items.included().predicate().set((Predicate<R>) builder.included);
 		this.selection = (MultiSelection<R>) items.included().selection();
 		builder.selectionListeners.forEach(selection.indexes()::addListener);
 		builder.itemSelectedListeners.forEach(selection.item()::addConsumer);
@@ -323,14 +323,14 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 
 	private final class DefaultExport implements Export<C> {
 
-		private List<C> exportColumns = columns.identifiers();
+		private List<? extends C> exportColumns = columns.identifiers();
 		private char delimiter = '\t';
 		private boolean header = true;
 		private boolean selected = false;
 		private @Nullable String newlineReplacement = " ";
 
 		@Override
-		public Export<C> columns(List<C> columns) {
+		public Export<C> columns(List<? extends C> columns) {
 			this.exportColumns = requireNonNull(columns);
 			return this;
 		}
@@ -382,7 +382,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 							.collect(joining("\n"));
 		}
 
-		private List<String> stringValues(int row, List<C> columns) {
+		private List<String> stringValues(int row, List<? extends C> columns) {
 			return columns.stream()
 							.map(column -> columnValues.formatted(row, column))
 							.map(String::trim)

@@ -41,7 +41,7 @@ final class DefaultTableConditions<C> implements TableConditions<C> {
 	private final ObservableState enabled;
 	private final Event changed = Event.event();
 
-	DefaultTableConditions(Map<C, ConditionModel<?>> conditionModels) {
+	DefaultTableConditions(Map<? extends C, ? extends ConditionModel<?>> conditionModels) {
 		this.conditions = unmodifiableMap(new HashMap<>(requireNonNull(conditionModels)));
 		this.persist = ValueSet.<C>builder()
 						.validator(new PersistValidator())

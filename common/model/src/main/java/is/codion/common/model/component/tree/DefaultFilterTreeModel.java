@@ -71,7 +71,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 	private final Supplier<Collection<T>> roots;
 	private final Function<NodePath<T>, Collection<T>> children;
 	private final @Nullable Function<List<NodePath<T>>, Collection<NodePath<T>>> leaves;
-	private final @Nullable Function<T, @Nullable NodePath<T>> path;
+	private final @Nullable Function<? super T, @Nullable NodePath<T>> path;
 	private final @Nullable NodesListener<T> listener;
 	private final Consumer<Exception> onLoadException;
 
@@ -443,7 +443,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 				included.add(child);
 			}
 		}
-		Comparator<T> comparator = sort.comparator(node.path);
+		Comparator<? super T> comparator = sort.comparator(node.path);
 		if (comparator != null) {
 			included.sort((child, other) -> comparator.compare(child.path.item(), other.path.item()));
 		}
@@ -970,7 +970,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		}
 
 		@Override
-		public void add(NodePath<T> parent, Collection<T> items) {
+		public void add(NodePath<T> parent, Collection<? extends T> items) {
 			Node<T> node = nodeMap.get(requireNonNull(parent));
 			rejectNulls(items);
 			if (node == null || node.children == null || items.isEmpty()) {
@@ -1635,11 +1635,11 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 	private final class DefaultSort implements FilterTreeSort<T> {
 
-		private final @Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators;
+		private final @Nullable Function<NodePath<T>, ? extends @Nullable Comparator<? super T>> comparators;
 		private final Signal<Boolean> changed = Signal.signal();
 		private final Value<SortOrder> order;
 
-		private DefaultSort(@Nullable Function<NodePath<T>, @Nullable Comparator<T>> comparators) {
+		private DefaultSort(@Nullable Function<NodePath<T>, ? extends @Nullable Comparator<? super T>> comparators) {
 			this.comparators = comparators;
 			this.order = Value.builder()
 							.nonNull(comparators == null ? SortOrder.UNSORTED : SortOrder.ASCENDING)
@@ -1649,7 +1649,7 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 
 		@Override
 		public int compare(T item, T other) {
-			Comparator<T> comparator = comparator(root.path);
+			Comparator<? super T> comparator = comparator(root.path);
 
 			return comparator == null ? 0 : comparator.compare(item, other);
 		}
@@ -1659,11 +1659,11 @@ final class DefaultFilterTreeModel<T> implements FilterTreeModel<T> {
 		 * @return the comparator for the children of the given parent, in the current sort order, null in case they
 		 * are not sorted
 		 */
-		private @Nullable Comparator<T> comparator(NodePath<T> parent) {
+		private @Nullable Comparator<? super T> comparator(NodePath<T> parent) {
 			if (!sorted()) {
 				return null;
 			}
-			Comparator<T> comparator = requireNonNull(comparators).apply(parent);
+			Comparator<? super T> comparator = requireNonNull(comparators).apply(parent);
 			if (comparator == null) {
 				return null;
 			}

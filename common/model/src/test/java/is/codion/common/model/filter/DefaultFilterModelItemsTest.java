@@ -1538,20 +1538,20 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public void set(Collection<String> items) {
+			public void set(Collection<? extends String> items) {
 				selectedItems.set(new ArrayList<>(items));
 			}
 
 			@Override
-			public void set(Predicate<String> predicate) {}
+			public void set(Predicate<? super String> predicate) {}
 
 			@Override
-			public void restore(Collection<String> items) {
+			public void restore(Collection<? extends String> items) {
 				selectedItems.set(new ArrayList<>(items));
 			}
 
 			@Override
-			public void add(Predicate<String> predicate) {}
+			public void add(Predicate<? super String> predicate) {}
 
 			@Override
 			public void add(String item) {
@@ -1561,7 +1561,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public void add(Collection<String> items) {
+			public void add(Collection<? extends String> items) {
 				List<String> current = new ArrayList<>(selectedItems.get());
 				current.addAll(items);
 				selectedItems.set(current);
@@ -1575,7 +1575,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public void remove(Collection<String> items) {
+			public void remove(Collection<? extends String> items) {
 				List<String> current = new ArrayList<>(selectedItems.get());
 				current.removeAll(items);
 				selectedItems.set(current);

@@ -23,7 +23,6 @@ import is.codion.common.model.component.list.FilterListModel;
 import is.codion.common.model.component.list.FilterListSort;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 
-
 import javax.swing.AbstractListModel;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -106,7 +105,7 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 		}
 
 		@Override
-		public <T> Builder<T> items(Collection<T> items) {
+		public <T> Builder<T> items(Collection<? extends T> items) {
 			return new DefaultBuilder<>(items);
 		}
 
@@ -120,7 +119,7 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 
 		static final Builder.ItemsStep ITEMS = new DefaultItemsStep();
 
-		private DefaultBuilder(Collection<T> items) {
+		private DefaultBuilder(Collection<? extends T> items) {
 			super(items);
 		}
 

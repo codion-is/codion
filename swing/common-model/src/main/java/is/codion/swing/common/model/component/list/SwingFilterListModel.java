@@ -20,7 +20,6 @@ package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.component.list.FilterListModel;
 
-
 import javax.swing.ListModel;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -62,7 +61,7 @@ public interface SwingFilterListModel<T> extends FilterListModel<T>, ListModel<T
 			<T> Builder<T> items();
 
 			@Override
-			<T> Builder<T> items(Collection<T> items);
+			<T> Builder<T> items(Collection<? extends T> items);
 
 			@Override
 			<T> Builder<T> items(Supplier<Collection<T>> items);

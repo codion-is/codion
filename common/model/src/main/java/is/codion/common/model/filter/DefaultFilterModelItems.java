@@ -57,7 +57,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	private final Lock lock = new Lock() {};
 
-	private final Predicate<R> validator;
+	private final Predicate<? super R> validator;
 	//every item, in the order the items were set, added and inserted, which filtering and sorting leave as is,
 	//the included ones also held by the included items, sorted when sorting is enabled, otherwise in this order
 	private final List<Entry<R>> entries = new ArrayList<>();
@@ -122,7 +122,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public void set(Collection<R> items) {
+	public void set(Collection<? extends R> items) {
 		rejectNulls(items);
 		preserveSelection(() -> {
 			synchronized (lock) {
@@ -137,7 +137,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public void add(Collection<R> items) {
+	public void add(Collection<? extends R> items) {
 		synchronized (lock) {
 			addInternal(included.entries.size(), rejectNulls(items));
 		}
@@ -150,7 +150,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public void remove(Collection<R> items) {
+	public void remove(Collection<? extends R> items) {
 		rejectNulls(items);
 		Set<R> toRemove = new HashSet<>(items);
 		if (!toRemove.isEmpty()) {
@@ -159,7 +159,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public void remove(Predicate<R> predicate) {
+	public void remove(Predicate<? super R> predicate) {
 		removeIf(requireNonNull(predicate));
 	}
 
@@ -169,11 +169,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public void replace(Map<R, R> items) {
+	public void replace(Map<? extends R, ? extends R> replacements) {
+		Map<R, R> items = unmodifiableMap(requireNonNull(replacements));
 		// Note: Similar logic exists in DefaultFilterComboBoxModel.
 		// Both implementations handle item replacement with filtering but have different collection types
 		// and threading requirements, making extraction to a common utility non-trivial.
-		requireNonNull(items).values().forEach(this::validate);
+		items.values().forEach(this::validate);
 		//a selected item being replaced stays selected as its replacement, a replacement no longer included is dropped
 		preserveSelection(() -> {
 			synchronized (lock) {
@@ -231,7 +232,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	// Removes the items passing the predicate, every equal occurrence, adjacent included ones reported as one deletion,
 	// a JList measuring all its cells for each
-	private void removeIf(Predicate<R> predicate) {
+	private void removeIf(Predicate<? super R> predicate) {
 		preserveSelection(() -> {
 			synchronized (lock) {
 				int excludedSize = excluded.size();
@@ -413,11 +414,11 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private boolean addInternal(int index, Collection<R> items) {
+	private boolean addInternal(int index, Collection<? extends R> items) {
 		return addInternal(index, items, true);
 	}
 
-	private boolean addInternal(int index, Collection<R> items, boolean notifyAdded) {
+	private boolean addInternal(int index, Collection<? extends R> items, boolean notifyAdded) {
 		List<Entry<R>> addedEntries = new ArrayList<>(items.size());
 		List<Entry<R>> includedEntries = new ArrayList<>(items.size());
 		for (R item : items) {
@@ -549,7 +550,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public boolean add(int index, Collection<R> items) {
+		public boolean add(int index, Collection<? extends R> items) {
 			return TRUE.equals(preserveSelection(() -> {
 				synchronized (lock) {
 					return addInternal(index, rejectNulls(items));
@@ -820,7 +821,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		private @Nullable Supplier<Collection<T>> supplier;
 		private @Nullable Consumer<Exception> onRefreshException;
 		private IncludePredicate<T> included = new DefaultIncludePredicate<>();
-		private Predicate<T> validator = new ValidPredicate<>();
+		private Predicate<? super T> validator = new ValidPredicate<>();
 
 		private DefaultBuilder(Function<IncludedItems<T>, MultiSelection<T>> selection, Sort<T> sort) {
 			this.selection = requireNonNull(selection);
@@ -840,7 +841,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public Builder<T> validator(Predicate<T> validator) {
+		public Builder<T> validator(Predicate<? super T> validator) {
 			this.validator = requireNonNull(validator);
 			return this;
 		}

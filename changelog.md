@@ -34,6 +34,7 @@ Codion Change Log
 ### is.codion.common.model
 - FilterComboBoxModel.Builder.select() renamed selectedItem(), ItemComboBoxModelBuilder.selected(T) renamed selectedValue() and selected(Item) renamed selectedItem().
 - ItemComboBoxModelBuilder.selectedItem() now accepts null, for none, where it threw, and selectedValue(null) now selects none, where it threw without a null item, the null item representing none, if any.
+- Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 ### is.codion.common.db
 - ErrorType.DEADLOCK added, the transaction chosen as a deadlock's victim, recognized on every database but SQLite, which has none.
 - Parameters widened to wildcard types, functions taking ? extends their results, where a subtype fits.
@@ -49,6 +50,8 @@ Codion Change Log
 - EntityComboBoxModel.Builder.select() renamed selectedItem().
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
+### is.codion.swing.common.model
+- Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 ### is.codion.swing.common.ui
 - FilterTable, FilterList and FilterTree, a selection background of the look and feel too close to the rows around it to stand out, as in many themes once alternate rows are shaded, is now moved toward white or black until it is a minimum distance from them, 0.08 in OKLab, 0.05 for the inactive one, while the selection foreground keeps a contrast of 3:1, a selection background set on the component left as is.
 - ImagePane.Builder.orient() and ImagePane.ORIENT added, an image set as bytes displayed turned as its EXIF orientation says, a phone's photo for example, false by default, the bytes left as they are.

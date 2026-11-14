@@ -144,7 +144,7 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 	private static final class DefaultItemsStep implements Builder.ItemsStep {
 
 		@Override
-		public <T> Builder<T> items(Collection<T> items) {
+		public <T> Builder<T> items(Collection<? extends T> items) {
 			return new DefaultBuilder<>(items);
 		}
 
@@ -163,7 +163,7 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 
 		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
 
-		private DefaultBuilder(Collection<T> items) {
+		private DefaultBuilder(Collection<? extends T> items) {
 			super(items);
 		}
 

@@ -128,7 +128,7 @@ final class DefaultNodePath<T> implements NodePath<T> {
 		return (DefaultNodePath<T>) ROOT;
 	}
 
-	static <T> NodePath<T> nodePath(List<T> items) {
+	static <T> NodePath<T> nodePath(List<? extends T> items) {
 		if (items.isEmpty()) {
 			return rootPath();
 		}

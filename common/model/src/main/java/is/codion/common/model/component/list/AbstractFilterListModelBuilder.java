@@ -47,22 +47,22 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractFilterListModelBuilder<T, B extends FilterListModel.Builder<T, B>>
 				implements FilterListModel.Builder<T, B> {
 
-	final Collection<T> items;
+	final Collection<? extends T> items;
 	final @Nullable Supplier<Collection<T>> supplier;
 	final List<Runnable> selectionListeners = new ArrayList<>();
-	final List<Consumer<T>> itemSelectedListeners = new ArrayList<>();
+	final List<Consumer<? super T>> itemSelectedListeners = new ArrayList<>();
 	final List<Consumer<List<T>>> itemsSelectedListeners = new ArrayList<>();
 	final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
 	final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
 
-	@Nullable Comparator<T> comparator;
+	@Nullable Comparator<? super T> comparator;
 	@Nullable Consumer<Exception> onRefreshException;
-	@Nullable Predicate<T> included;
+	@Nullable Predicate<? super T> included;
 
 	/**
 	 * @param items the items
 	 */
-	protected AbstractFilterListModelBuilder(Collection<T> items) {
+	protected AbstractFilterListModelBuilder(Collection<? extends T> items) {
 		this.items = requireNonNull(items);
 		this.supplier = null;
 	}
@@ -76,7 +76,7 @@ public abstract class AbstractFilterListModelBuilder<T, B extends FilterListMode
 	}
 
 	@Override
-	public final B comparator(@Nullable Comparator<T> comparator) {
+	public final B comparator(@Nullable Comparator<? super T> comparator) {
 		this.comparator = comparator;
 		return self();
 	}
@@ -88,7 +88,7 @@ public abstract class AbstractFilterListModelBuilder<T, B extends FilterListMode
 	}
 
 	@Override
-	public final B included(Predicate<T> included) {
+	public final B included(Predicate<? super T> included) {
 		this.included = requireNonNull(included);
 		return self();
 	}
@@ -100,7 +100,7 @@ public abstract class AbstractFilterListModelBuilder<T, B extends FilterListMode
 	}
 
 	@Override
-	public final B onSelectedItem(Consumer<T> item) {
+	public final B onSelectedItem(Consumer<? super T> item) {
 		itemSelectedListeners.add(requireNonNull(item));
 		return self();
 	}
