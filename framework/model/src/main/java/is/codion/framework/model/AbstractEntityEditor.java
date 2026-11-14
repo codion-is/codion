@@ -777,7 +777,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			movedOn();
 			supersede();
 			detailsPending = false;
-			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
+			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults(false));
 			setEntity(defaultEntity());
 			changed.accept(get());
 		}
@@ -788,7 +788,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			movedOn();
 			supersede();
 			detailsPending = false;
-			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
+			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared(false));
 			setEntity(createEntity(DefaultEditorEntity::nullValue));
 			changed.accept(get());
 		}
@@ -899,17 +899,38 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 */
 		private void clearPendingDetails() {
 			if (detailsPending) {
-				detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
+				detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared(false));
 			}
 		}
 
-		private void resetDefaults() {
+		/**
+		 * Resets the entity to its defaults, as {@link #defaults()} does but without {@link #changing()}, the detail editors
+		 * reset silently, see {@link #notifyReset(boolean)}.
+		 * @param notifyChanged true to notify {@link #changed()}, false for {@link #replaced()}
+		 */
+		private void resetDefaults(boolean notifyChanged) {
 			movedOn();
 			supersede();
 			detailsPending = false;
-			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
+			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults(false));
 			setEntity(defaultEntity());
-			replaced.accept(null);
+			notifyReset(notifyChanged);
+		}
+
+		/**
+		 * A delete, which can not be cancelled, and a detail editor which a load finds empty on the set path notify
+		 * {@link #changed()}, as a detail found does, not preceded by {@link #changing()}. A detail editor reset as part of
+		 * its master's {@link #defaults()} or {@link #clear()}, or which a load finds empty on the replace path, or which a
+		 * load fails, notifies {@link #replaced()}. Either with the entity held, never null.
+		 * @param notifyChanged true to notify {@link #changed()}, false for {@link #replaced()}
+		 */
+		private void notifyReset(boolean notifyChanged) {
+			if (notifyChanged) {
+				changed.accept(get());
+			}
+			else {
+				replaced.accept(get());
+			}
 		}
 
 		/**
@@ -935,13 +956,18 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			return persist != null && persist.is();
 		}
 
-		private void resetCleared() {
+		/**
+		 * Clears the entity, as {@link #clear()} does but without {@link #changing()}, the detail editors cleared silently,
+		 * see {@link #notifyReset(boolean)}.
+		 * @param notifyChanged true to notify {@link #changed()}, false for {@link #replaced()}
+		 */
+		private void resetCleared(boolean notifyChanged) {
 			movedOn();
 			supersede();
 			detailsPending = false;
-			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
+			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared(false));
 			setEntity(createEntity(DefaultEditorEntity::nullValue));
-			replaced.accept(null);
+			notifyReset(notifyChanged);
 		}
 
 		private DefaultEditorTasks defaultTasks() {
@@ -1359,7 +1385,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				return () -> {
 					detail.forEach(Result::handle);
 					if (held.current()) {
-						AbstractEntityEditor.this.entity.resetDefaults();
+						AbstractEntityEditor.this.entity.resetDefaults(true);
 					}
 					persistEvents.afterDelete(entity);
 
@@ -1438,7 +1464,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				persistence.get().delete(entity, connection);
 				return () -> {
 					if (held.current()) {
-						AbstractEntityEditor.this.entity.resetDefaults();
+						AbstractEntityEditor.this.entity.resetDefaults(true);
 					}
 					persistEvents.afterDelete(entity);
 
@@ -2265,6 +2291,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 					persist.addValidator(preventPersistModification);
 				}
 				editor.values().changed().addListener(refreshStates);
+				editor.entity().addListener(refreshStates);
 				editor.entity().replaced().addListener(refreshStates);
 				editor.entity().modified().addListener(refreshStates);
 				entity().modified().additional().add(updatable);
@@ -2294,6 +2321,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				persist.set(previousPersist);
 			}
 			editor.values().changed().removeListener(refreshStates);
+			editor.entity().removeListener(refreshStates);
 			editor.entity().replaced().removeListener(refreshStates);
 			editor.entity().modified().removeListener(refreshStates);
 			entity().modified().additional().remove(updatable);
@@ -2319,11 +2347,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private EditorTask<Entity> populate(Entity master, @Nullable Entity detail, EntityConnection connection, boolean replace) {
 			if (detail == null) {
 				return () -> () -> {
+					//as a detail found, changed on the set path, replaced on the replace path
 					if (link.clearEmpty) {
-						editor.entity.resetCleared();
+						editor.entity.resetCleared(!replace);
 					}
 					else {
-						editor.entity.resetDefaults();
+						editor.entity.resetDefaults(!replace);
 					}
 
 					return master;

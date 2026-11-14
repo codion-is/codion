@@ -1483,6 +1483,65 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void resetNotifications() throws EntityValidationException {
+		// a delete, and a detail editor a load found empty, notified replaced() with null, a delete never notifying
+		// changed(), and an emptied detail editor notifying differently from a found one on the set path
+		CONNECTION.startTransaction();
+		try {
+			insertExtra(10, "ten");
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
+			departmentEditor.detail().add(EditorLink.builder()
+							.editor(extraEditor)
+							.foreignKey(DepartmentExtra.DEPARTMENT_FK)
+							.present(extra -> extra.present(DepartmentExtra.DESCRIPTION))
+							.build());
+			List<Entity> masterChanged = new ArrayList<>();
+			List<Entity> masterReplaced = new ArrayList<>();
+			List<Entity> detailChanged = new ArrayList<>();
+			List<Entity> detailReplaced = new ArrayList<>();
+			AtomicInteger masterChanging = new AtomicInteger();
+			departmentEditor.entity().addConsumer(masterChanged::add);
+			departmentEditor.entity().replaced().addConsumer(masterReplaced::add);
+			departmentEditor.entity().changing().addListener(masterChanging::incrementAndGet);
+			extraEditor.entity().addConsumer(detailChanged::add);
+			extraEditor.entity().replaced().addConsumer(detailReplaced::add);
+			Entity ten = CONNECTION.selectSingle(Department.ID.equalTo(10));
+			Entity forty = CONNECTION.selectSingle(Department.ID.equalTo(40));
+
+			// the set path, a detail found and then none: changed, both
+			departmentEditor.entity().set(ten);
+			assertEquals("ten", detailChanged.get(0).get(DepartmentExtra.DESCRIPTION));
+			detailChanged.clear();
+			departmentEditor.entity().set(forty);
+			assertEquals(1, detailChanged.size());
+			assertNull(detailChanged.get(0).get(DepartmentExtra.DESCRIPTION));
+			assertTrue(detailReplaced.isEmpty());
+
+			// the replace path, a detail found and then none: replaced, both, never null
+			departmentEditor.entity().replace(ten);
+			assertEquals("ten", detailReplaced.get(0).get(DepartmentExtra.DESCRIPTION));
+			detailReplaced.clear();
+			departmentEditor.entity().replace(forty);
+			assertEquals(1, detailReplaced.size());
+			assertNotNull(detailReplaced.get(0));
+
+			// a delete: changed with the defaults, not preceded by changing, the delete not being cancellable
+			masterChanged.clear();
+			masterReplaced.clear();
+			masterChanging.set(0);
+			departmentEditor.delete();
+			assertEquals(1, masterChanged.size());
+			assertFalse(masterChanged.get(0).exists());
+			assertTrue(masterReplaced.isEmpty());
+			assertEquals(0, masterChanging.get());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void detailEditorInsertWithEmptyDetail() throws EntityValidationException {
 		CONNECTION.startTransaction();
 		try {

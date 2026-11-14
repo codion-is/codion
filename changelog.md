@@ -66,6 +66,7 @@ Codion Change Log
 - EditorValue.propagate(), a propagator now also applies each time its value changes along with another value edited, as edited() is notified, a propagator on a foreign key column with the foreign key edited for example, where it applied only to its own value being set.
 - EditorValue bug fixed, valid() and error() now follow the validation of the entity as a whole, refreshed for every value on each edit, entity set and change of validator, where they were refreshed for the value edited only, stale where a rule spans attributes, created from a validation of the value alone, disagreeing with the entity for an unmodified value of an existing one, and validate() set the valid state but not the error.
 - AbstractEntityEditor bug fixed, a validator giving two validation exceptions for one attribute no longer breaks every edit, the first message kept.
+- EditorEntity, a delete now notifies changed() with the defaults the editor is reset to, not preceded by changing(), a delete not being cancellable, where it notified replaced() with null, and a detail editor which a load finds empty notifies as one finding a detail does, changed() on a set and replaced() on a replace, where it notified replaced() with null, replaced() now never notified with null.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model

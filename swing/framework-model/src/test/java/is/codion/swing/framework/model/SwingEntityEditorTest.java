@@ -360,7 +360,7 @@ public final class SwingEntityEditorTest {
 	}
 
 	@Test
-	void deleteResetsToDefaultsSilently() throws EntityValidationException {
+	void deleteResetsToDefaultsWithoutChanging() throws EntityValidationException {
 		CONNECTION.startTransaction();
 		try {
 			master.value(Department.ID).set(99);
@@ -369,8 +369,9 @@ public final class SwingEntityEditorTest {
 			assertTrue(master.entity().exists().is());
 			events.clear();
 			master.delete();
-			// The post-delete reset fires replaced, never changing — so no spurious modified-warning veto
-			assertEquals(asList("detail.replaced", "master.replaced"), events);
+			// The post-delete reset fires changed with the defaults, never changing, a delete not being cancellable, so no
+			// spurious modified-warning veto, the detail reset silently as part of the master's reset
+			assertEquals(asList("detail.replaced", "master.changed"), events);
 			assertFalse(events.contains("master.changing"));
 			assertFalse(master.entity().exists().is());
 		}

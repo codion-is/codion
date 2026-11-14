@@ -539,8 +539,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * value supplied via {@link EditorValue#defaultValue()} is resolved when the defaults are applied, and the edit
 	 * model must have had the chance to configure those first.
 	 * <p>Its consumers receive the entity the editor holds once it has changed, as {@link #get()} returns it: the one
-	 * set via {@link #set(Entity)}, or the defaulted or cleared one after {@link #defaults()} or {@link #clear()},
-	 * never null. Whether it is an existing entity or a new one is told by {@link Entity#exists()}, or by this editor's
+	 * set via {@link #set(Entity)}, or the defaulted or cleared one after {@link #defaults()} or {@link #clear()}, or the
+	 * defaulted one after the entity has been deleted, never null. Whether it is an existing entity or a new one is told by {@link Entity#exists()}, or by this editor's
 	 * {@link #exists()} where its predicate has been replaced, up to date when the consumers are notified.
 	 * <p>When the entity changes as a whole, via {@link #set(Entity)}, {@link #replace(Entity)}, {@link #defaults()}
 	 * or {@link #clear()}, the editor holds every new value before any is notified, the values which changed being
@@ -602,7 +602,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * subtree is touched. The post-change counterpart is {@link #changed()}.
 		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener cancels the
 		 * change. Note that {@link #replace(Entity)} does not notify it, nor do detail editors
-		 * when reset as part of a master operation.
+		 * when reset as part of a master operation, nor a delete, which resets the editor to its defaults notifying
+		 * {@link #changed()}, a delete not being cancellable.
 		 * @return a sensor notified each time the entity is about to change
 		 * @see #set(Entity)
 		 * @see #defaults()
@@ -611,8 +612,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		Sensor changing();
 
 		/**
-		 * <p>Returns an observer notified each time the entity is silently replaced — via
-		 * {@link #replace(Entity)}, Unlike {@link #changed()}, it is not preceded by {@link #changing()}.
+		 * <p>Returns an observer notified each time the entity is silently replaced, via {@link #replace(Entity)}. Unlike
+		 * {@link #changed()}, it is not preceded by {@link #changing()}. A detail editor reset as part of its master's
+		 * {@link #defaults()} or {@link #clear()}, which a detail load on the replace path finds empty, or whose detail load
+		 * fails, notifies it as well. It is notified with the entity held, never null.
 		 * <p>For master editors with registered detail editors, this fires <em>after</em> the detail
 		 * subtree has been replaced — by the time listeners run, every detail editor is in its
 		 * post-persist state. This makes {@link #replaced()} the "everything done" signal for the
