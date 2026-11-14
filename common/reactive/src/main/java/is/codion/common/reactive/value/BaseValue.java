@@ -56,15 +56,23 @@ import static java.util.Objects.requireNonNull;
  */
 abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Listeners.Superseding {
 
+	/**
+	 * Guards the creation of every value's lazily created parts, its observable, change observer and lock: a lock
+	 * no notification ever holds, unlike a value collection's own monitor, which its changes hold through their
+	 * notification, so that a first call on another thread does not wait for listeners. Creating a part is cheap and
+	 * happens once, so one lock serves them all.
+	 */
+	static final Lock LAZY = new Lock() {};
+
 	private final @Nullable T nullValue;
 	private final @Nullable Notify notify;
 
-	private @Nullable Locked locked;
-	private @Nullable ChangeObserver<T> changeObserver;
+	private volatile @Nullable Locked locked;
+	private volatile @Nullable ChangeObserver<T> changeObserver;
 	private @Nullable Set<Validator<? super T>> validators;
 	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
 	private @Nullable Map<Observable<T>, ObservableLink> linkedObservables;
-	private @Nullable Observable<T> observable;
+	private volatile @Nullable Observable<T> observable;
 
 	//set() calls changing this value while it notifies its listeners, a listener changing it in response to a change
 	private int notifying = 0;
@@ -136,30 +144,51 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Lis
 	}
 
 	@Override
-	public synchronized Observable<T> observable() {
-		if (observable == null) {
-			observable = createObservable();
+	public Observable<T> observable() {
+		Observable<T> result = observable;
+		if (result == null) {
+			synchronized (LAZY) {
+				result = observable;
+				if (result == null) {
+					result = createObservable();
+					observable = result;
+				}
+			}
 		}
 
-		return observable;
+		return result;
 	}
 
 	@Override
-	public final synchronized ChangeObserver<T> changed() {
-		if (changeObserver == null) {
-			changeObserver = Value.super.changed();
+	public final ChangeObserver<T> changed() {
+		ChangeObserver<T> result = changeObserver;
+		if (result == null) {
+			synchronized (LAZY) {
+				result = changeObserver;
+				if (result == null) {
+					result = Value.super.changed();
+					changeObserver = result;
+				}
+			}
 		}
 
-		return changeObserver;
+		return result;
 	}
 
 	@Override
-	public final synchronized Locked locked() {
-		if (locked == null) {
-			locked = new DefaultLocked();
+	public final Locked locked() {
+		Locked result = locked;
+		if (result == null) {
+			synchronized (LAZY) {
+				result = locked;
+				if (result == null) {
+					result = new DefaultLocked();
+					locked = result;
+				}
+			}
 		}
 
-		return locked;
+		return result;
 	}
 
 	@Override
@@ -336,7 +365,9 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Lis
 	}
 
 	private boolean isLocked() {
-		return locked != null && locked.is();
+		Locked result = locked;
+
+		return result != null && result.is();
 	}
 
 	//a listener rather than a consumer, setting the current value of the observable, not the one notified, which a
@@ -388,6 +419,8 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Lis
 			return value;
 		}
 	}
+
+	interface Lock {}
 
 	private static final class DefaultLocked implements Locked {
 

@@ -45,7 +45,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 
 	private volatile C value;
 
-	private @Nullable Value<T> singleValue;
+	private volatile @Nullable Value<T> singleValue;
 
 	AbstractValueCollection(AbstractValueCollectionBuilder<C, T, ?> builder) {
 		super(builder);
@@ -182,12 +182,19 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final synchronized Value<T> value() {
-		if (singleValue == null) {
-			singleValue = new SingleValue();
+	public final Value<T> value() {
+		Value<T> result = singleValue;
+		if (result == null) {
+			synchronized (LAZY) {
+				result = singleValue;
+				if (result == null) {
+					result = new SingleValue();
+					singleValue = result;
+				}
+			}
 		}
 
-		return singleValue;
+		return result;
 	}
 
 	@Override
@@ -251,7 +258,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public synchronized ObservableValueCollection<T, C> observable() {
+	public ObservableValueCollection<T, C> observable() {
 		return (ObservableValueCollection<T, C>) super.observable();
 	}
 

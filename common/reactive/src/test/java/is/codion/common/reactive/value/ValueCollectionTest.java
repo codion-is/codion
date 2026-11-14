@@ -239,6 +239,35 @@ public class ValueCollectionTest {
 	}
 
 	@Test
+	void lazyAccessorsWhileNotifying() throws InterruptedException {
+		//the first call to observable(), changed(), locked() or value() on another thread does not wait for the
+		//listeners of a change, each created lazily
+		ValueList<String> list = ValueList.valueList();
+		CountDownLatch notifying = new CountDownLatch(1);
+		CountDownLatch release = new CountDownLatch(1);
+		list.addListener(() -> {
+			notifying.countDown();
+			await(release);
+		});
+		Thread adder = daemon(() -> list.add("a"));
+		adder.start();
+		assertTrue(notifying.await(2, TimeUnit.SECONDS));
+		AtomicBoolean created = new AtomicBoolean();
+		Thread accessor = daemon(() -> created.set(list.observable() != null && list.changed() != null
+						&& !list.locked().is() && list.value() != null));
+		accessor.start();
+		accessor.join(2000);
+		assertFalse(accessor.isAlive());
+		assertTrue(created.get());
+		release.countDown();
+		assertFinished(adder);
+		assertSame(list.observable(), list.observable());
+		assertSame(list.changed(), list.changed());
+		assertSame(list.locked(), list.locked());
+		assertSame(list.value(), list.value());
+	}
+
+	@Test
 	void changesTakeTurns() throws InterruptedException {
 		//a change on another thread waits for the listeners of the one before it
 		ValueList<String> list = ValueList.valueList();
