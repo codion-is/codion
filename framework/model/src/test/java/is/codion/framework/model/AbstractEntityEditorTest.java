@@ -2728,8 +2728,11 @@ public final class AbstractEntityEditorTest {
 
 		List<Entity> foreignKeyValues = new ArrayList<>();
 		List<Integer> columnValues = new ArrayList<>();
-		editor.value(Employee.DEPARTMENT_FK).edited().addConsumer(foreignKeyValues::add);
-		editor.value(Employee.DEPARTMENT).edited().addConsumer(columnValues::add);
+		List<Object> edited = new ArrayList<>();
+		editor.value(Employee.DEPARTMENT_FK).addConsumer(foreignKeyValues::add);
+		editor.value(Employee.DEPARTMENT).addConsumer(columnValues::add);
+		editor.value(Employee.DEPARTMENT_FK).edited().addConsumer(edited::add);
+		editor.value(Employee.DEPARTMENT).edited().addConsumer(edited::add);
 
 		Entity updated = department.copy().mutable();
 		updated.set(Department.NAME, "Bookkeeping");
@@ -2743,6 +2746,44 @@ public final class AbstractEntityEditorTest {
 		assertEquals(1, foreignKeyValues.size());
 		assertEquals("Bookkeeping", foreignKeyValues.get(0).get(Department.NAME));
 		assertTrue(columnValues.isEmpty());
+		//not an edit
+		assertTrue(edited.isEmpty());
+	}
+
+	@Test
+	void foreignKeyReplacedOrRevertedNotEdited() {
+		// edited() fired for a foreign key replaced because the referenced entity was updated elsewhere, and for
+		// EditorEntity.revert(), so a consumer modified a record nobody had edited, or left a reverted one modified
+		CONNECTION.startTransaction();
+		try {
+			TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+			// derives the name from the department, as the unit price of an invoice line from its track
+			editor.value(Employee.DEPARTMENT_FK).edited().addConsumer(department ->
+							editor.value(Employee.NAME).set(department == null ? null : department.get(Department.NAME)));
+			Entity jones = CONNECTION.selectSingle(Employee.ID.equalTo(3));
+			editor.entity().set(jones);
+			Entity department = jones.get(Employee.DEPARTMENT_FK);
+			Entity renamed = department.copy().mutable();
+			renamed.set(Department.NAME, "RENAMED");
+			renamed.save();
+			persistenceEvents(Department.TYPE).updated().accept(singletonMap(department, renamed));
+			assertEquals("RENAMED", editor.value(Employee.DEPARTMENT_FK).get().get(Department.NAME));
+			assertEquals("JONES", editor.value(Employee.NAME).get());
+			assertFalse(editor.entity().modified().is());
+
+			// sets the manager from the salary, an attribute before it, which the entity restores first
+			TestEntityEditor reverting = new TestEntityEditor(Employee.TYPE, CONNECTION);
+			reverting.value(Employee.SALARY).edited().addConsumer(salary -> reverting.value(Employee.MANAGER_ID).set(5));
+			reverting.entity().set(jones);
+			reverting.value(Employee.SALARY).set(3000d);
+			assertEquals(5, reverting.value(Employee.MANAGER_ID).get());
+			reverting.entity().revert();
+			assertEquals(jones.get(Employee.MANAGER_ID), reverting.value(Employee.MANAGER_ID).get());
+			assertFalse(reverting.entity().modified().is());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
 	}
 
 	@Test

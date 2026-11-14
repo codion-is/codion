@@ -3016,7 +3016,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			boolean modified = entity.instance.modified(attribute);
 			if (change(entity.instance, value)) {
 				//the value the entity ends up with, which it may adjust, a trimmed string for example
-				notifyValueEdit(attribute, entity.instance.get(attribute), dependingValues);
+				notifyValues(attribute, entity.instance.get(attribute), dependingValues, true);
 				//an unchanged value is not propagated, which settles a cycle that converges
 				//one that does not is stopped by propagate() itself
 				propagate(modified);
@@ -3043,23 +3043,25 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		/**
-		 * Replaces the value without regard for editability or value equality, notifying as if it had been edited.
+		 * Replaces the value without regard for editability or value equality, notifying it and the values depending on
+		 * it as changed, not edited.
 		 * <p>Used when a referenced entity has been updated or deleted elsewhere. On update the replacement is equal
 		 * to the current value according to {@link Entity#equals(Object)} (same primary key), so {@link #setValue(Object)}
 		 * would discard the notification and leave the UI showing the stale entity.
-		 * <p>Applies no propagators, this entity not having been edited. A value derived from the previous one, or
-		 * entered over it, stands.
+		 * <p>Neither fires {@link #edited()} nor applies propagators, this entity not having been edited. A value
+		 * derived from the previous one, or entered over it, stands.
 		 * @param value the replacement value
 		 */
 		private void replace(@Nullable T value) {
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
 			entity.instance.set(attribute, value);
-			notifyValueEdit(attribute, value, dependingValues);
+			notifyValues(attribute, value, dependingValues, false);
 		}
 
 		/**
-		 * Restores the original value if modified, as part of reverting the entity as a whole. Applying the
-		 * propagators here would derive anew a value already restored, depending on the order of the attributes.
+		 * Restores the original value if modified, as part of reverting the entity as a whole, not an edit. Applying the
+		 * propagators here, or notifying the {@link #edited()} consumers, which may set values as propagators do, would
+		 * derive anew a value already restored, depending on the order of the attributes.
 		 */
 		private void restore() {
 			if (modified().is()) {
@@ -3104,21 +3106,32 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 		}
 
-		private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
-			notifyValueEdit(attribute, value, dependingValues, updateStates());
+		/**
+		 * Notifies the value and those of the depending values which changed, firing their {@link #edited()} signals
+		 * in case of an edit.
+		 * @param attribute the attribute which changed
+		 * @param value its value
+		 * @param dependingValues the depending values, as they were before the change
+		 * @param edited true in case of an edit
+		 */
+		private <T> void notifyValues(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues,
+																	boolean edited) {
+			notifyValues(attribute, value, dependingValues, edited, updateStates());
 		}
 
-		private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues,
-																		 Map<Attribute<?>, String> invalidAttributes) {
+		private <T> void notifyValues(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues,
+																	boolean edited, Map<Attribute<?>, String> invalidAttributes) {
 			notifyValueChange(attribute, invalidAttributes);
-			Signal<T> editSignal = (Signal<T>) editSignals.get(attribute);
-			if (editSignal != null) {
-				editSignal.accept(value);
+			if (edited) {
+				Signal<T> editSignal = (Signal<T>) editSignals.get(attribute);
+				if (editSignal != null) {
+					editSignal.accept(value);
+				}
 			}
 			dependingValues.forEach((dependingAttribute, previousValue) -> {
 				Object currentValue = entity.instance.get(dependingAttribute);
 				if (!Objects.deepEquals(previousValue, currentValue)) {
-					notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap(), invalidAttributes);
+					notifyValues((Attribute<Object>) dependingAttribute, currentValue, emptyMap(), edited, invalidAttributes);
 				}
 			});
 		}

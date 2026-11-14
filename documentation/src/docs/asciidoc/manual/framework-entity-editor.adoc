@@ -29,7 +29,7 @@ Each editor value also exposes the state the UI needs: *valid()* and *modified()
 Two observers notify of changes, with an important distinction:
 
 * *Value.observer()* — notified whenever the value changes, whether by the user or by the framework populating the editor.
-* {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#edited()[edited()] — notified only when the value is changed *through this EditorValue*, that is, by an actual edit, not when the entity is set or cleared.
+* {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#edited()[edited()] — notified when the value is changed by an actual edit, *through this EditorValue* or along with another value edited, a foreign key when one of its columns is edited for example. Not when the entity is set, cleared or reverted, nor when a referenced entity is updated or deleted elsewhere.
 
 Use *edited()* to react to user edits without also reacting every time an entity is selected into the editor:
 

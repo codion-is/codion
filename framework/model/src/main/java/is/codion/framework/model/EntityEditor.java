@@ -1101,7 +1101,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * is modified, a column of a modified foreign key, and so on, transitively, a value derived from a foreign key of a
 		 * modified column for example.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
-		 * via {@link EditorEntity#set(Entity)}, {@link EditorEntity#defaults()} or {@link EditorEntity#clear()}.
+		 * via {@link EditorEntity#set(Entity)}, {@link EditorEntity#defaults()} or {@link EditorEntity#clear()}, nor
+		 * when a foreign key value is replaced because the referenced entity was updated or deleted elsewhere, nor by
+		 * {@link EditorEntity#revert()}, none of these being an edit, as for {@link #propagate(Attribute, Function)}.
+		 * {@link #revert()} is an edit, a value set back to its original.
 		 * <p>Note that this event is only triggered if the value actually changes.
 		 * @return an observer notified when the given attribute value is edited
 		 */
