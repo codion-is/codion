@@ -150,7 +150,7 @@ public interface Chinook {
 
 		ForeignKey SUPPORTREP_FK = TYPE.foreignKey("supportrep_fk", SUPPORTREP_ID, Employee.ID);
 
-		ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report");
+		ReportType<Map<String, ?>, byte[]> REPORT = reportType("customer_report");
 	}
 
 	interface Preferences {
@@ -237,7 +237,7 @@ public interface Chinook {
 
 		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
 
-		ReportType<Map<String, Object>, byte[]> REPORT = reportType("invoice_report");
+		ReportType<Map<String, ?>, byte[]> REPORT = reportType("invoice_report");
 
 		// tag::updateTotals[]
 		ProcedureType<EntityConnection, Collection<Long>> UPDATE_TOTALS = procedureType("chinook.update_totals");

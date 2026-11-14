@@ -37,7 +37,7 @@ final class ExportingJRReport<R> implements JRReport<R> {
 	}
 
 	@Override
-	public R fill(Connection connection, Map<String, Object> parameters) {
+	public R fill(Connection connection, Map<String, ?> parameters) {
 		return export(report.fill(connection, parameters));
 	}
 

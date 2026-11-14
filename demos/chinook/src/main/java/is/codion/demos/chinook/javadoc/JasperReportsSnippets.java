@@ -52,19 +52,19 @@ final class JasperReportsSnippets {
     }
 
     void pdfReport() {
-      ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=export
+      ReportType<Map<String, ?>, byte[]> REPORT = reportType("customer_report"); // @start region=export
 
       add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), PDF)); // @end
     }
 
     void printReport() {
-      ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("customer_report"); // @start region=print
+      ReportType<Map<String, ?>, JasperPrint> REPORT = reportType("customer_report"); // @start region=print
 
       add(REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper")); // @end
     }
 
     void serializedReport(EntityConnection connection, Map<String, Object> parameters) throws Exception {
-      ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=serialized
+      ReportType<Map<String, ?>, byte[]> REPORT = reportType("customer_report"); // @start region=serialized
 
       add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), SERIALIZED));
 

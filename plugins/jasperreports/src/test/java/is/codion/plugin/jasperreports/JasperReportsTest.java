@@ -39,11 +39,13 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOf;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JasperReportsTest {
@@ -148,6 +150,17 @@ public class JasperReportsTest {
 		byte[] pdf = pdfReport.fill(connection.connection(), reportParameters);
 
 		//the export is what crosses the wire, a client reading it needs no reporting engine
+		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(pdf, 4));
+	}
+
+	@Test
+	void fillWithParametersOfNarrowerType() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		//immutable, copied for the report to fill in
+		Map<String, List<Integer>> reportParameters = singletonMap("DEPTNO", asList(10, 20));
+		JRReport<byte[]> pdfReport = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.PDF);
+		byte[] pdf = pdfReport.fill(CONNECTION.connection(), reportParameters);
 		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(pdf, 4));
 	}
 

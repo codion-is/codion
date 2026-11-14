@@ -49,11 +49,11 @@ public final class ReportDemo extends DomainModel {
 
 		// tag::reportTypes[]
 		// Fills to a JasperPrint, which the receiver needs JasperReports to read
-		ReportType<Map<String, Object>, JasperPrint> REPORT =
+		ReportType<Map<String, ?>, JasperPrint> REPORT =
 						reportType("customer_report");
 
 		// Fills to a PDF, which the receiver needs nothing at all to read
-		ReportType<Map<String, Object>, byte[]> PDF_REPORT =
+		ReportType<Map<String, ?>, byte[]> PDF_REPORT =
 						reportType("customer_pdf_report");
 		// end::reportTypes[]
 	}

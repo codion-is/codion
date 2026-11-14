@@ -74,7 +74,7 @@ public final class JasperReports {
 	 * <p>The export runs wherever the report is filled, on the server in case of a remote connection, so a
 	 * report exported to {@link JRExport#PDF} reaches the client as bytes, requiring no reporting engine there.
 	 * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "export":
-	 * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=export
+	 * ReportType<Map<String, ?>, byte[]> REPORT = reportType("customer_report"); // @start region=export
 	 *
 	 * add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), PDF)); // @end}
 	 * <p>The loaded report and its cache are shared with the given report, so exporting the same report to

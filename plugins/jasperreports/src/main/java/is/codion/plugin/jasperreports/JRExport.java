@@ -32,7 +32,7 @@ import java.io.ByteArrayOutputStream;
  * report exported to {@link #PDF} reaches the client as bytes, which no reporting engine is required
  * to read.
  * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "export":
- * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=export
+ * ReportType<Map<String, ?>, byte[]> REPORT = reportType("customer_report"); // @start region=export
  *
  * add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), PDF)); // @end}
  * <p>Exports beyond the ones defined here are lambdas, JasperReports exporters all following
@@ -65,7 +65,7 @@ public interface JRExport<R> {
 	 * reporting engine, one displaying reports with a {@code JRViewer}, can therefore keep filling them to
 	 * a {@link JasperPrint} over any connection, reconstructing it from the bytes:
 	 * {@snippet class = "is.codion.demos.chinook.javadoc.JasperReportsSnippets" region = "serialized":
-	 * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report"); // @start region=serialized
+	 * ReportType<Map<String, ?>, byte[]> REPORT = reportType("customer_report"); // @start region=serialized
 	 *
 	 * add(REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), SERIALIZED));
 	 *

@@ -49,7 +49,7 @@ public class CompositionDemo {
 			Column<Integer> ID = TYPE.integerColumn("id");
 			Column<String> NAME = TYPE.stringColumn("name");
 
-			ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("product_report");
+			ReportType<Map<String, ?>, JasperPrint> REPORT = reportType("product_report");
 		}
 
 		public Products() {

@@ -86,7 +86,7 @@ public final class Employees extends DomainModel {
 		// Attribute for the denormalized department location property
 		Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
-		ReportType<Map<String, Object>, JasperPrint> EMPLOYEE_REPORT = reportType("employee_report");
+		ReportType<Map<String, ?>, JasperPrint> EMPLOYEE_REPORT = reportType("employee_report");
 
 		// Constants for the allowed JOB values
 		int PRESIDENT = 1;

@@ -113,7 +113,7 @@ public final class JasperReportsWireTest {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
 
-		//PDF_REPORT is a ReportType<Map<String, Object>, byte[]>, the client names no JasperReports type.
+		//PDF_REPORT is a ReportType<Map<String, ?>, byte[]>, the client names no JasperReports type.
 		//The serial tier serializes the bytes, the JSON tier base64 encodes them
 		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(serial.report(Employee.PDF_REPORT, reportParameters), 4));
 		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(json.report(Employee.PDF_REPORT, reportParameters), 4));

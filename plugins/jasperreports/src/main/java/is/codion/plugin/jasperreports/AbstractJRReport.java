@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractJRReport extends AbstractReport<JasperReport, Map<String, Object>, JasperPrint>
+abstract class AbstractJRReport extends AbstractReport<JasperReport, Map<String, ?>, JasperPrint>
 				implements JRReport<JasperPrint> {
 
 	protected AbstractJRReport(String reportPath, boolean cacheReport) {
@@ -38,10 +38,11 @@ abstract class AbstractJRReport extends AbstractReport<JasperReport, Map<String,
 	}
 
 	@Override
-	public final JasperPrint fill(Connection connection, Map<String, Object> parameters) {
+	public final JasperPrint fill(Connection connection, Map<String, ?> parameters) {
 		requireNonNull(connection);
 		try {
-			return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : parameters, connection);
+			//copied, the copy being what the report fills in
+			return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : new HashMap<String, Object>(parameters), connection);
 		}
 		catch (Exception e) {
 			//not only the checked JRException, JasperFillManager throws JRRuntimeException for an incompatible
