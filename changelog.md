@@ -72,6 +72,7 @@ Codion Change Log
 - ComboBoxSelectionDialogBuilder.defaultSelection() and ListSelectionDialogBuilder.defaultSelection(T) now accept null, for no default selection, replacing one set before.
 - ComboBoxSelectionDialogBuilder.defaultSelection() and ListSelectionDialogBuilder.defaultSelection(T) renamed selectedItem(), ListSelectionDialogBuilder.defaultSelection(Collection) renamed selectedItems(), so null needs no cast.
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
+- ProgressWorkerDialogBuilder bug fixed, a progress dialog with an owner, being modal, now stays up for at least HIDE_DELAY once shown, where it was hidden as soon as the task finished, the time it was shown only recorded once it was hidden.
 ### is.codion.swing.framework.model
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.swing.framework.ui

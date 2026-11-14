@@ -243,8 +243,9 @@ final class DefaultProgressWorkerDialogBuilder<T extends @Nullable Object, V> ex
 
 		private void show() {
 			show = delayedAction(() -> {
-				progressDialog.setVisible(true);
+				//before, a modal dialog only returning from setVisible() once hidden
 				shownAt = currentTimeMillis();
+				progressDialog.setVisible(true);
 			}, showDelay);
 		}
 
