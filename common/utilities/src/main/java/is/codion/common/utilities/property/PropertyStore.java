@@ -281,7 +281,7 @@ public final class PropertyStore {
 	 * @return a new {@link PropertyValue} instance
 	 * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
 	 */
-	public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+	public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, ? extends T> decoder, Function<? super T, String> encoder) {
 		return value(propertyName, new ListValueDecoder<>(decoder), new ListValueEncoder<>(encoder), emptyList());
 	}
 
@@ -296,8 +296,9 @@ public final class PropertyStore {
 	 * @return a new {@link PropertyValue} instance
 	 * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
 	 */
-	public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, List<T> defaultValue) {
-		return value(propertyName, new ListValueDecoder<>(decoder), new ListValueEncoder<>(encoder), defaultValue);
+	public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, ? extends T> decoder, Function<? super T, String> encoder,
+																							List<? extends T> defaultValue) {
+		return value(propertyName, new ListValueDecoder<>(decoder), new ListValueEncoder<>(encoder), unmodifiableList(defaultValue));
 	}
 
 	/**
@@ -309,7 +310,7 @@ public final class PropertyStore {
 	 * @return the configuration value
 	 * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
 	 */
-	public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+	public <T> PropertyValue<T> value(String propertyName, Function<String, ? extends T> decoder, Function<? super T, String> encoder) {
 		return value(propertyName, decoder, encoder, null);
 	}
 
@@ -323,7 +324,8 @@ public final class PropertyStore {
 	 * @return the configuration value
 	 * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
 	 */
-	public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, @Nullable T defaultValue) {
+	public <T> PropertyValue<T> value(String propertyName, Function<String, ? extends T> decoder, Function<? super T, String> encoder,
+																		@Nullable T defaultValue) {
 		synchronized (propertyValues) {
 			if (propertyValues.containsKey(requireNonNull(propertyName))) {
 				throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
@@ -605,25 +607,25 @@ public final class PropertyStore {
 
 	private static final class ListValueDecoder<T> implements Function<String, List<T>> {
 
-		private final Function<String, T> decoder;
+		private final Function<String, ? extends T> decoder;
 
-		private ListValueDecoder(Function<String, T> decoder) {
+		private ListValueDecoder(Function<String, ? extends T> decoder) {
 			this.decoder = requireNonNull(decoder);
 		}
 
 		@Override
 		public List<T> apply(@Nullable String stringValue) {
 			return stringValue == null ? emptyList() : Arrays.stream(stringValue.split(VALUE_SEPARATOR))
-							.map(decoder)
+							.<T>map(decoder)
 							.collect(toList());
 		}
 	}
 
 	private static final class ListValueEncoder<T> implements Function<List<T>, String> {
 
-		private final Function<T, String> encoder;
+		private final Function<? super T, String> encoder;
 
-		private ListValueEncoder(Function<T, String> encoder) {
+		private ListValueEncoder(Function<? super T, String> encoder) {
 			this.encoder = requireNonNull(encoder);
 		}
 

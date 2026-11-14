@@ -38,6 +38,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import static is.codion.common.utilities.property.PropertyStore.propertyStore;
 import static java.util.Arrays.asList;
@@ -398,6 +399,26 @@ public final class PropertyStoreTest {
 		booleanValue.set(null);
 		assertNull(booleanValue.get());
 		assertFalse(store.containsProperty(booleanValue.name()));
+	}
+
+	@Test
+	void valueSubtypes() {
+		//a decoder producing a subtype, an encoder taking a supertype, a default list of a subtype
+		Properties properties = new Properties();
+		properties.setProperty("number", "1");
+		properties.setProperty("numbers", "1;2");
+		PropertyStore store = propertyStore(properties);
+		Function<String, Integer> decoder = Integer::valueOf;
+		Function<Object, String> encoder = Object::toString;
+		List<Integer> defaultNumbers = singletonList(3);
+		PropertyValue<Number> number = store.value("number", decoder, encoder);
+		PropertyValue<List<Number>> numbers = store.listValue("numbers", decoder, encoder, defaultNumbers);
+		PropertyValue<List<Number>> defaulted = store.listValue("defaulted", decoder, encoder, defaultNumbers);
+		assertEquals(1, number.get());
+		assertEquals(asList(1, 2), numbers.get());
+		assertEquals(singletonList(3), defaulted.get());
+		number.set(2.5);
+		assertEquals("2.5", store.getProperty("number"));
 	}
 
 	@Test

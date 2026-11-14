@@ -24,16 +24,19 @@ Codion Change Log
 - Value.link() bug fixed, values notifying on every set, Notify.SET, linked in a cycle, a diamond for example, no longer overflow the stack when set, a link no longer pushing a value come back round to it, which the far end already holds.
 - Observer.when() and Observable.changed() bug fixed, one whose weak listeners and consumers have all been collected now unsubscribes when next notified, where it stayed subscribed for good, nothing pruning its listeners, a notification now pruning dead weak references as an add or a remove does.
 - Value.observable(), changed() and locked(), and ValueCollection.value(), now created lazily under a lock no notification holds, where they synchronized on the value, so that a first call on another thread no longer waits for the listeners of a collection's change.
+- Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.common.utilities
 - PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.
 - PropertyStore.setProperty() bug fixed, a null value now removes the property, where it threw NullPointerException.
 - PropertyStore.setProperty() and removeAll() now set and clear the system properties, as PropertyValue does, where a property loaded kept its system property when changed or removed, and one set got none.
+- Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 ### is.codion.common.model
 - FilterComboBoxModel.Builder.select() renamed selectedItem(), ItemComboBoxModelBuilder.selected(T) renamed selectedValue() and selected(Item) renamed selectedItem().
 - ItemComboBoxModelBuilder.selectedItem() now accepts null, for none, where it threw, and selectedValue(null) now selects none, where it threw without a null item, the null item representing none, if any.
 ### is.codion.common.db
 - ErrorType.DEADLOCK added, the transaction chosen as a deadlock's victim, recognized on every database but SQLite, which has none.
+- Parameters widened to wildcard types, functions taking ? extends their results, where a subtype fits.
 ### is.codion.dbms.db2
 - Db2Database bug fixed, a deadlock, reason code 2, is now reported as ErrorType.DEADLOCK, where it was ROW_LOCKED.
 ### is.codion.dbms.derby

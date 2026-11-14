@@ -25,6 +25,7 @@ import is.codion.common.reactive.value.ValueSet;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -208,6 +209,16 @@ public class StateTest {
 		stateOne.set(true);
 		assertFalse(stateTwo.is());
 		assertFalse(stateThree.is());
+	}
+
+	@Test
+	void groupWildcardCollection() {
+		State first = State.state(true);
+		State second = State.state();
+		Collection<? extends State> states = asList(first, second);
+		State.group(states);
+		second.set(true);
+		assertFalse(first.is());
 	}
 
 	@Test

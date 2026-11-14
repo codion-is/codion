@@ -65,7 +65,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	 * @param poolFactory creates the actual connection pool based on the given data source
 	 */
 	protected AbstractConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, DataSource dataSource,
-																					Function<DataSource, T> poolFactory) {
+																					Function<DataSource, ? extends T> poolFactory) {
 		this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory");
 		this.user = requireNonNull(user, "user");
 		this.counter = new DefaultConnectionPoolCounter(this);

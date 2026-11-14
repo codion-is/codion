@@ -38,13 +38,13 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 
 	private final Properties properties;
 	private final String name;
-	private final Function<T, String> encoder;
+	private final Function<? super T, String> encoder;
 	private final @Nullable T defaultValue;
 	private final @Nullable T override;
 
 	private @Nullable T value;
 
-	PropertyValue(Properties properties, String name, Function<String, T> decoder, Function<T, String> encoder,
+	PropertyValue(Properties properties, String name, Function<String, ? extends T> decoder, Function<? super T, String> encoder,
 								@Nullable T defaultValue, @Nullable String override) {
 		super(defaultValue, Notify.CHANGED);
 		this.properties = properties;
@@ -115,7 +115,7 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 		}
 	}
 
-	private @Nullable T getInitialValue(String property, Function<String, T> decoder) {
+	private @Nullable T getInitialValue(String property, Function<String, ? extends T> decoder) {
 		String initialValue = System.getProperty(property);
 		if (initialValue == null) {
 			initialValue = properties.getProperty(property);

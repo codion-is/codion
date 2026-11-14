@@ -349,7 +349,7 @@ public interface State extends ObservableState {
 	 * @return a new {@link State.Group} instance
 	 * @see Group
 	 */
-	static Group group(Collection<State> states) {
+	static Group group(Collection<? extends State> states) {
 		return new DefaultStateGroup(states);
 	}
 

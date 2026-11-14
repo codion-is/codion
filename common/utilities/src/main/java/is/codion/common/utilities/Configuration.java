@@ -228,7 +228,7 @@ public final class Configuration {
 	 * @param <T> the value type
 	 * @return a configuration value builder
 	 */
-	public static <T> PropertyValue<List<T>> listValue(String key, Function<String, T> decoder) {
+	public static <T> PropertyValue<List<T>> listValue(String key, Function<String, ? extends T> decoder) {
 		return listValue(key, decoder, emptyList());
 	}
 
@@ -241,7 +241,7 @@ public final class Configuration {
 	 * @param <T> the value type
 	 * @return a configuration value builder
 	 */
-	public static <T> PropertyValue<List<T>> listValue(String key, Function<String, T> decoder, List<T> defaultValue) {
+	public static <T> PropertyValue<List<T>> listValue(String key, Function<String, ? extends T> decoder, List<? extends T> defaultValue) {
 		return STORE.listValue(key, decoder, Objects::toString, defaultValue);
 	}
 
@@ -253,7 +253,7 @@ public final class Configuration {
 	 * @param <T> the value type
 	 * @return a configuration value builder
 	 */
-	public static <T> PropertyValue<T> value(String key, Function<String, T> decoder) {
+	public static <T> PropertyValue<T> value(String key, Function<String, ? extends T> decoder) {
 		return STORE.value(key, decoder, Objects::toString);
 	}
 
@@ -266,7 +266,7 @@ public final class Configuration {
 	 * @param <T> the value type
 	 * @return a configuration value builder
 	 */
-	public static <T> PropertyValue<T> value(String key, Function<String, T> decoder, @Nullable T defaultValue) {
+	public static <T> PropertyValue<T> value(String key, Function<String, ? extends T> decoder, @Nullable T defaultValue) {
 		return STORE.value(key, decoder, Objects::toString, defaultValue);
 	}
 

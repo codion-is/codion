@@ -41,7 +41,7 @@ final class DefaultStateGroup implements State.Group {
 		this(Arrays.asList(states));
 	}
 
-	DefaultStateGroup(Collection<State> states) {
+	DefaultStateGroup(Collection<? extends State> states) {
 		for (State state : requireNonNull(states)) {
 			add(state);
 		}
