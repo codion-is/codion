@@ -1347,9 +1347,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>A link describes a single registration and can not be reused — build one per registration.
 		 * @param link the detail editor link
 		 * @throws IllegalArgumentException if a detail editor with the same name is already registered,
-		 * if the link is already registered with a master editor, or, for an FK-based link, if the
-		 * foreign key's referenced or owning entity types don't match the master and detail editors
-		 * respectively
+		 * if the link is already registered with a master editor, if the detail editor is this editor or one of its
+		 * master editors, a cycle, or, for an FK-based link, if the foreign key's referenced or owning entity types
+		 * don't match the master and detail editors respectively
 		 * @see EditorLink#builder()
 		 */
 		void add(EditorLink link);

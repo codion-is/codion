@@ -156,11 +156,11 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final EditorPersistence persistence;
 
 	/**
-	 * True while this editor is registered as the detail editor of a master editor. Registration borrows
+	 * The master editor while this editor is registered as its detail editor, null otherwise. Registration borrows
 	 * the editor's present predicate, validator and foreign key persistence, so it takes part in one
 	 * registration at a time — see {@link DefaultDetailEditors#add(EditorLink)}.
 	 */
-	private boolean linked;
+	private @Nullable AbstractEntityEditor<?> master;
 
 	final DefaultEditorEntity entity;
 
@@ -1786,9 +1786,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			if (editors.containsKey(key)) {
 				throw new IllegalArgumentException("Detail editor already exists for " + key);
 			}
-			if (link.editor.linked) {
+			if (link.editor.master != null) {
 				throw new IllegalArgumentException("Detail editor " + link.editor.entityDefinition.type() +
 								" is already registered with a master editor; a detail editor takes part in one registration");
+			}
+			//a cycle runs back through this editor or one of its masters, every reset and load recursing for good
+			for (AbstractEntityEditor<?> editor = AbstractEntityEditor.this; editor != null; editor = editor.master) {
+				if (editor == link.editor) {
+					throw new IllegalArgumentException("Detail editor " + link.editor.entityDefinition.type() +
+									" is this editor or one of its master editors; a detail editor can not be registered in a cycle");
+				}
 			}
 			editors.put(key, new DetailEditor(link, key));
 		}
@@ -2278,7 +2285,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				previousValidator = editor.validator().getOrThrow();
 				previousPersist = editor.value(((DefaultForeignKeyEditorLink) link).foreignKey()).persist().is();
 			}
-			link.editor.linked = true;
+			link.editor.master = AbstractEntityEditor.this;
 			try {
 				link.claimPresent();
 				if (link instanceof ForeignKeyEditorLink) {
@@ -2309,7 +2316,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 * validator and foreign key persistence in place when the detail editor was registered.
 		 */
 		private void unlink() {
-			link.editor.linked = false;
+			link.editor.master = null;
 			link.releasePresent();
 			if (link instanceof ForeignKeyEditorLink) {
 				ForeignKey foreignKey = ((DefaultForeignKeyEditorLink) link).foreignKey();

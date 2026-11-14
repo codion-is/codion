@@ -1571,6 +1571,41 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void detailEditorCycleRefused() {
+		// a detail editor registered with itself, or with an editor it is a master of, was accepted, every reset and load
+		// then overflowing the stack
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		assertThrows(IllegalArgumentException.class, () -> employeeEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.MANAGER_FK)
+						.build()));
+		employeeEditor.entity().defaults();
+
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
+		departmentEditor.detail().add(EditorLink.builder()
+						.editor(extraEditor)
+						.foreignKey(DepartmentExtra.DEPARTMENT_FK)
+						.build());
+		assertThrows(IllegalArgumentException.class, () -> extraEditor.detail().add(EditorLink.builder()
+						.editor(departmentEditor)
+						.name("cycle")
+						.entity((master, connection) -> null)
+						.build()));
+		departmentEditor.entity().defaults();
+		departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(10)));
+
+		// removed, the detail editor can be registered elsewhere, its former master included as its detail
+		departmentEditor.detail().remove(DepartmentExtra.DEPARTMENT_FK);
+		extraEditor.detail().add(EditorLink.builder()
+						.editor(departmentEditor)
+						.name("reversed")
+						.entity((master, connection) -> null)
+						.build());
+		extraEditor.entity().defaults();
+	}
+
+	@Test
 	void detailEditorInsertWithEmptyDetail() throws EntityValidationException {
 		CONNECTION.startTransaction();
 		try {
