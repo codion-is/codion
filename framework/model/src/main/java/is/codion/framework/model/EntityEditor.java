@@ -487,12 +487,14 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		interface BeforePersist {
 
 			/**
-			 * @return an observer notified before insert is performed, after validation
+			 * @return an observer notified before insert is performed, after validation, of the details inserted with
+			 * the entity as well
 			 */
 			Observer<Collection<Entity>> insert();
 
 			/**
-			 * @return an observer notified before update is performed, after validation
+			 * @return an observer notified before update is performed, after validation, of the details persisted with
+			 * the entity as well
 			 */
 			Observer<Collection<Entity>> update();
 
@@ -1278,6 +1280,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * master operation, so a present detail that may not be persisted fails the master's persist. Absent details
 	 * are not persisted and so do not gate anything. The exception names the entity type it came from, the
 	 * operation having been started on the master.
+	 * <p>The details persisted with the master are validated, and their settings checked, before the master's
+	 * {@link PersistEvents#before() before} event fires, so it does not fire for a persist which a detail refuses.
+	 * The master's {@link EditorEntity#valid()} state covers the master only, a master which is valid being refused
+	 * on account of an invalid detail.
 	 * <p>Presence is determined by the detail editor's {@link EditorEntity#present()} state, configured
 	 * at registration time via {@link EditorLink.Builder#present(Predicate)}. A detail that is present but
 	 * does not yet exist triggers an insert. A detail that exists but is no longer present triggers a

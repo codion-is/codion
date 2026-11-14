@@ -52,6 +52,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.ref.WeakReference;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -1028,6 +1029,87 @@ public final class AbstractEntityEditorTest {
 		finally {
 			CONNECTION.rollbackTransaction();
 		}
+	}
+
+	@Test
+	void detailVerifiedBeforeMasterInsertEvent() {
+		// the master's before insert event fired before its details were validated, for an insert then refused
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		List<Collection<Entity>> before = beforeEvents(departmentEditor, employeeEditor);
+		departmentEditor.value(Department.ID).set(77);
+		departmentEditor.value(Department.NAME).set("DEPT");
+		employeeEditor.value(Employee.NAME).set("EMP");
+		employeeEditor.value(Employee.SALARY).set(1990d);// present, below the range
+		assertTrue(departmentEditor.entity().valid().is());
+		assertThrows(EntityValidationException.class, departmentEditor.tasks()::insert);
+		assertTrue(before.isEmpty());
+	}
+
+	@Test
+	void detailVerifiedBeforeMasterUpdateEvent() throws EntityValidationException {
+		CONNECTION.startTransaction();
+		try {
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+			List<Collection<Entity>> before = beforeEvents(departmentEditor, employeeEditor);
+			departmentEditor.value(Department.ID).set(77);
+			departmentEditor.value(Department.NAME).set("DEPT");
+			employeeEditor.value(Employee.NAME).set("EMP");
+			employeeEditor.value(Employee.SALARY).set(2000d);
+			insert(departmentEditor);
+			assertTrue(employeeEditor.entity().exists().is());
+			before.clear();
+			departmentEditor.value(Department.NAME).set("RENAMED");
+			employeeEditor.value(Employee.SALARY).set(1990d);
+			assertThrows(EntityValidationException.class, departmentEditor.tasks()::update);
+			assertTrue(before.isEmpty());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void detailVerifiedBeforeMasterDeleteEvent() throws EntityValidationException {
+		CONNECTION.startTransaction();
+		try {
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+			List<Collection<Entity>> before = beforeEvents(departmentEditor, employeeEditor);
+			departmentEditor.value(Department.ID).set(77);
+			departmentEditor.value(Department.NAME).set("DEPT");
+			employeeEditor.value(Employee.NAME).set("EMP");
+			employeeEditor.value(Employee.SALARY).set(2000d);
+			insert(departmentEditor);
+			assertTrue(employeeEditor.entity().exists().is());
+			before.clear();
+			employeeEditor.settings().deleteEnabled().set(false);
+			assertThrows(IllegalStateException.class, departmentEditor.tasks()::delete);
+			assertTrue(before.isEmpty());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	/**
+	 * Links the employee editor to the department editor, collecting the before events of both
+	 */
+	private static List<Collection<Entity>> beforeEvents(TestEntityEditor departmentEditor, TestEntityEditor employeeEditor) {
+		departmentEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build());
+		List<Collection<Entity>> before = new ArrayList<>();
+		for (TestEntityEditor editor : asList(departmentEditor, employeeEditor)) {
+			editor.events().before().insert().addConsumer(before::add);
+			editor.events().before().update().addConsumer(before::add);
+			editor.events().before().delete().addConsumer(before::add);
+		}
+
+		return before;
 	}
 
 	@Test

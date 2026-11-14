@@ -982,9 +982,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public EditorTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException {
-			settings.verifyInsertEnabled();
-			verifyDetailsLoaded();
-			validate();
+			verifyInsert();
 			Entity entity = entity().get().copy().mutable();
 			persistEvents.beforeInsert(entity);
 
@@ -1013,12 +1011,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public EditorTask<Entity> update() throws EntityValidationException {
-			settings.verifyUpdateEnabled(1);
-			verifyDetailsLoaded();
-			validate();
-			if (!entity.modified().is()) {
-				throw new IllegalStateException(NOT_MODIFIED + entity().get());
-			}
+			verifyUpdate();
 			Entity entity = entity().get().copy().mutable();
 			persistEvents.beforeUpdate(entity);
 
@@ -1055,8 +1048,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public EditorTask<Entity> delete() {
-			settings.verifyDeleteEnabled();
-			verifyDetailsLoaded();
+			verifyDelete();
 			Entity entity = entity().get().copy().mutable();
 			entity.revert();// in case of a modified primary key
 			persistEvents.beforeDelete(entity);
@@ -1098,6 +1090,62 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private EditorTask<Entity> set(Entity entity) {
 			return new SetEntity(entity);
+		}
+
+		/**
+		 * Verifies that the entity held can be inserted, along with the details inserted with it, before anything is
+		 * notified, so that no before event fires for an insert then refused. The detail tasks verify again when created,
+		 * after the before event, which a listener may have used to change the details.
+		 */
+		private void verifyInsert() throws EntityValidationException {
+			settings.verifyInsertEnabled();
+			verifyDetailsLoaded();
+			validate();
+			for (DetailEditor detailEditor : detail.editors.values()) {
+				if (detailEditor.editor.entity().present().is()) {
+					detailTasks(detailEditor).verifyInsert();
+				}
+			}
+		}
+
+		/**
+		 * Verifies that the entity held can be updated, along with the details persisted with it, see {@link #verifyInsert()}.
+		 */
+		private void verifyUpdate() throws EntityValidationException {
+			settings.verifyUpdateEnabled(1);
+			verifyDetailsLoaded();
+			validate();
+			if (!entity.modified().is()) {
+				throw new IllegalStateException(NOT_MODIFIED + entity().get());
+			}
+			for (DetailEditor detailEditor : detail.editors.values()) {
+				if (detailEditor.updatable.insert.is()) {
+					detailTasks(detailEditor).verifyInsert();
+				}
+				else if (detailEditor.updatable.update.is()) {
+					detailTasks(detailEditor).verifyUpdate();
+				}
+				else if (detailEditor.updatable.delete.is()) {
+					detailTasks(detailEditor).verifyDelete();
+				}
+			}
+		}
+
+		/**
+		 * Verifies that the entity held can be deleted, along with the details deleted with it, see {@link #verifyInsert()}.
+		 */
+		private void verifyDelete() {
+			settings.verifyDeleteEnabled();
+			verifyDetailsLoaded();
+			for (DetailEditor detailEditor : detail.editors.values()) {
+				if (detailEditor.editor.entity().exists().is()) {
+					detailTasks(detailEditor).verifyDelete();
+				}
+			}
+		}
+
+		private DefaultEditorTasks detailTasks(DetailEditor detailEditor) {
+			return (DefaultEditorTasks) detailEditor.editor.tasks(connection);
 		}
 
 		/**
