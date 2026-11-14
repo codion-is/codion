@@ -165,8 +165,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private @Nullable EntityConnection connection;
 	private String clientType;
 	private String name;
-	private BiFunction<EntityConnection, User, M> model = new DefaultApplicationModelFactory();
-	private Function<M, P> panel = new DefaultApplicationPanelFactory();
+	private BiFunction<EntityConnection, User, ? extends M> model = new DefaultApplicationModelFactory();
+	private Function<? super M, ? extends P> panel = new DefaultApplicationPanelFactory();
 	private @Nullable Observable<String> frameTitle;
 	private boolean connectionInfoUpperCase = CONNECTION_INFO_UPPER_CASE.getOrThrow();
 
@@ -178,7 +178,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private boolean saveDefaultUsername = SAVE_DEFAULT_USERNAME.getOrThrow();
 	private Supplier<JComponent> loginPanelSouthComponentSupplier = new DefaultSouthComponentSupplier();
 	private @Nullable Runnable onStarting;
-	private @Nullable Consumer<P> onStarted;
+	private @Nullable Consumer<? super P> onStarted;
 
 	private String defaultLookAndFeelClassName = systemLookAndFeelClassName();
 	private @Nullable String lookAndFeelClassName;
@@ -308,7 +308,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	 * @return this {@link EntityApplication} instance
 	 * @see #model(BiFunction)
 	 */
-	public EntityApplication<M, P> model(Function<EntityConnection, M> model) {
+	public EntityApplication<M, P> model(Function<EntityConnection, ? extends M> model) {
 		requireNonNull(model);
 		this.model = (connection, user) -> model.apply(connection);
 		return this;
@@ -323,7 +323,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	 * @param model the application model factory, receiving the connection and the application user
 	 * @return this {@link EntityApplication} instance
 	 */
-	public EntityApplication<M, P> model(BiFunction<EntityConnection, User, M> model) {
+	public EntityApplication<M, P> model(BiFunction<EntityConnection, User, ? extends M> model) {
 		this.model = requireNonNull(model);
 		return this;
 	}
@@ -332,7 +332,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	 * @param panel the application panel factory
 	 * @return this {@link EntityApplication} instance
 	 */
-	public EntityApplication<M, P> panel(Function<M, P> panel) {
+	public EntityApplication<M, P> panel(Function<? super M, ? extends P> panel) {
 		this.panel = requireNonNull(panel);
 		return this;
 	}
@@ -541,7 +541,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	 * @param onStarted called after a successful application start
 	 * @return this {@link EntityApplication} instance
 	 */
-	public EntityApplication<M, P> onStarted(@Nullable Consumer<P> onStarted) {
+	public EntityApplication<M, P> onStarted(@Nullable Consumer<? super P> onStarted) {
 		this.onStarted = onStarted;
 		return this;
 	}

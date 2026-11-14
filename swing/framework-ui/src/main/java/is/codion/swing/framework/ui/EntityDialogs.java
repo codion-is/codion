@@ -133,7 +133,7 @@ public final class EntityDialogs {
 		 * @param defaultValue provides the default value to present in the editor component
 		 * @return this builder
 		 */
-		EditAttributeDialogBuilder<T> defaultValue(Function<Collection<Entity>, T> defaultValue);
+		EditAttributeDialogBuilder<T> defaultValue(Function<Collection<Entity>, ? extends T> defaultValue);
 
 		/**
 		 * Displays a dialog for editing a single attribute for the given entity
@@ -263,7 +263,7 @@ public final class EntityDialogs {
 		private final Attribute<T> attribute;
 
 		private EditComponent<?, T> editComponent;
-		private Function<Collection<Entity>, T> defaultValue = new DefaultValue();
+		private Function<Collection<Entity>, ? extends T> defaultValue = new DefaultValue();
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditor editor, Attribute<T> attribute) {
 			this.editor = requireNonNull(editor);
@@ -278,7 +278,7 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public EditAttributeDialogBuilder<T> defaultValue(Function<Collection<Entity>, T> defaultValue) {
+		public EditAttributeDialogBuilder<T> defaultValue(Function<Collection<Entity>, ? extends T> defaultValue) {
 			this.defaultValue = requireNonNull(defaultValue);
 			return this;
 		}

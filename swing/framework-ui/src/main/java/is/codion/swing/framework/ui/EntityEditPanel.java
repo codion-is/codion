@@ -1402,7 +1402,7 @@ public abstract class EntityEditPanel extends JPanel {
 		 * @throws IllegalArgumentException in case an attribute is not found in the underlying entity
 		 * @see #selectInputField()
 		 */
-		public Config excludeFromSelection(Collection<Attribute<?>> excludeFromSelection) {
+		public Config excludeFromSelection(Collection<? extends Attribute<?>> excludeFromSelection) {
 			requireNonNull(excludeFromSelection).forEach(attribute -> entityDefinition.attributes().definition(attribute));
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(excludeFromSelection));
 			return this;

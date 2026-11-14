@@ -23,6 +23,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EditorLink;
 import is.codion.framework.model.EntityMerge;
@@ -93,6 +94,9 @@ public final class EntityEditPanelTest {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
 		//an attribute belonging to the entity is accepted
 		new ConfigEditPanel(editModel, config -> config.excludeFromSelection(singletonList(Employee.NAME)));
+		//columns of one type
+		List<Column<String>> names = singletonList(Employee.NAME);
+		new ConfigEditPanel(editModel, config -> config.excludeFromSelection(names));
 		//an attribute from another entity is rejected, as the javadoc advertises
 		assertThrows(IllegalArgumentException.class, () ->
 						new ConfigEditPanel(editModel, config -> config.excludeFromSelection(singletonList(Department.NAME))));

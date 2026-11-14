@@ -339,7 +339,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @param entityPanels the entity panels
 	 * @param lookupPanelBuilders the support panel builders
 	 */
-	public EntityApplicationPanel(M model, List<EntityPanel> entityPanels,
+	public EntityApplicationPanel(M model, List<? extends EntityPanel> entityPanels,
 																Collection<EntityPanel.Builder> lookupPanelBuilders) {
 		this(model, entityPanels, lookupPanelBuilders, TabbedApplicationLayout::new);
 	}
@@ -352,7 +352,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @param lookupPanelBuilders the support panel builders
 	 * @param applicationLayout provides the application layout
 	 */
-	public EntityApplicationPanel(M model, List<EntityPanel> entityPanels,
+	public EntityApplicationPanel(M model, List<? extends EntityPanel> entityPanels,
 																Collection<EntityPanel.Builder> lookupPanelBuilders,
 																Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
 		this.model = requireNonNull(model);

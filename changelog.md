@@ -66,6 +66,10 @@ Codion Change Log
 - ComboBoxSelectionDialogBuilder.defaultSelection() and ListSelectionDialogBuilder.defaultSelection(T) now accept null, for no default selection, replacing one set before.
 - ComboBoxSelectionDialogBuilder.defaultSelection() and ListSelectionDialogBuilder.defaultSelection(T) renamed selectedItem(), ListSelectionDialogBuilder.defaultSelection(Collection) renamed selectedItems(), so null needs no cast.
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
+### is.codion.swing.framework.model
+- Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
+### is.codion.swing.framework.ui
+- Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes, the table selection backgrounds of the Akusan Gray, Atom One Light, Codely Light, Darcula Solid and Github Light themes reverted to the themes' own, FilterTable now keeping a selection distinct.
 - FlatLookAndFeelIntelliJThemes, the Obsidian Sunset themes now set their selection foreground, where FlatLaf derived a near black one from their translucent selection background, unreadable on it, and Espresso Light's table and list selection foreground is now its foreground, where pink on light yellow was barely readable.

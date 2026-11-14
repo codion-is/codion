@@ -23,12 +23,26 @@ import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public final class SwingEntityApplicationModelTest
 				extends AbstractEntityApplicationModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
 
 	@Override
 	protected SwingEntityModel createDepartmentModel() {
 		return new DeptModel(connection());
+	}
+
+	@Test
+	void modelsOfSubtype() {
+		List<DeptModel> models = singletonList(new DeptModel(connection()));
+		SwingEntityApplicationModel model = new SwingEntityApplicationModel(connection(), models);
+		assertEquals(1, model.models().get().size());
 	}
 
 	private static class DeptModel extends SwingEntityModel {

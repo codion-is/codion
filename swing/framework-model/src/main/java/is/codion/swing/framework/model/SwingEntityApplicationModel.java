@@ -35,7 +35,7 @@ public class SwingEntityApplicationModel
 	 * @param connection the connection
 	 * @param entityModels the entity models
 	 */
-	public SwingEntityApplicationModel(EntityConnection connection, Collection<SwingEntityModel> entityModels) {
+	public SwingEntityApplicationModel(EntityConnection connection, Collection<? extends SwingEntityModel> entityModels) {
 		super(connection, entityModels);
 	}
 
@@ -45,7 +45,7 @@ public class SwingEntityApplicationModel
 	 * @param user the application user, in case it differs from the connection user
 	 * @param entityModels the entity models
 	 */
-	public SwingEntityApplicationModel(EntityConnection connection, User user, Collection<SwingEntityModel> entityModels) {
+	public SwingEntityApplicationModel(EntityConnection connection, User user, Collection<? extends SwingEntityModel> entityModels) {
 		super(connection, user, entityModels);
 	}
 }
