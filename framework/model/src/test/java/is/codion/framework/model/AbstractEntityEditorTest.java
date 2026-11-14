@@ -41,6 +41,7 @@ import is.codion.framework.model.DetailDomain.Department;
 import is.codion.framework.model.DetailDomain.DepartmentExtra;
 import is.codion.framework.model.DetailDomain.Employee;
 import is.codion.framework.model.DetailPersistenceFactory.DepartmentPersistence;
+import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.framework.model.LocationDomain.Continent;
 import is.codion.framework.model.LocationDomain.Country;
@@ -1110,6 +1111,89 @@ public final class AbstractEntityEditorTest {
 		}
 
 		return before;
+	}
+
+	@Test
+	void persistResultLeavesMovedOnEditorAlone() throws EntityValidationException {
+		// the result of a persist task replaced, or reset, the entity of an editor set to another one since the task
+		// was created, after notifying the other
+		CONNECTION.startTransaction();
+		try {
+			TestEntityEditor editor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			List<Object> after = new ArrayList<>();
+			editor.events().after().insert().addConsumer(after::add);
+			editor.events().after().update().addConsumer(after::add);
+			editor.events().after().delete().addConsumer(after::add);
+			Entity ten = CONNECTION.selectSingle(Department.ID.equalTo(10));
+
+			// update
+			editor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(40)));
+			editor.value(Department.NAME).set("RENAMED");
+			Result<Entity> result = editor.tasks().update().perform();
+			editor.entity().set(ten);
+			result.handle();
+			assertEquals(10, editor.value(Department.ID).get());
+			assertEquals(ten.get(Department.NAME), editor.value(Department.NAME).get());
+			assertEquals(1, after.size());
+
+			// insert
+			editor.entity().defaults();
+			editor.value(Department.ID).set(77);
+			editor.value(Department.NAME).set("NEW");
+			result = editor.tasks().insert().perform();
+			editor.entity().set(ten);
+			result.handle();
+			assertEquals(10, editor.value(Department.ID).get());
+			assertEquals(2, after.size());
+
+			// delete, of the department just inserted
+			editor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(77)));
+			result = editor.tasks().delete().perform();
+			editor.entity().set(ten);
+			result.handle();
+			assertEquals(10, editor.value(Department.ID).get());
+			assertEquals(3, after.size());
+
+			// an edit is not moving on, the result applied over it
+			editor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(40)));
+			editor.value(Department.NAME).set("FIRST");
+			result = editor.tasks().update().perform();
+			editor.value(Department.NAME).set("SECOND");
+			result.handle();
+			assertEquals("FIRST", editor.value(Department.NAME).get());
+			assertFalse(editor.entity().modified().is());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void persistResultLeavesMovedOnDetailEditorAlone() throws EntityValidationException {
+		// the detail results of a master persist task replaced the details loaded for the master moved on to
+		CONNECTION.startTransaction();
+		try {
+			insertExtra(10, "ten");
+			insertExtra(40, "forty");
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
+			departmentEditor.detail().add(EditorLink.builder()
+							.editor(extraEditor)
+							.foreignKey(DepartmentExtra.DEPARTMENT_FK)
+							.present(extra -> extra.present(DepartmentExtra.DESCRIPTION))
+							.build());
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(10)));
+			extraEditor.value(DepartmentExtra.DESCRIPTION).set("ten edited");
+			Result<Entity> result = departmentEditor.tasks().update().perform();
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(40)));
+			result.handle();
+			assertEquals(40, departmentEditor.value(Department.ID).get());
+			assertEquals("forty", extraEditor.value(DepartmentExtra.DESCRIPTION).get());
+			assertEquals("ten edited", CONNECTION.selectSingle(DepartmentExtra.DEPARTMENT.equalTo(10)).get(DepartmentExtra.DESCRIPTION));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
 	}
 
 	@Test

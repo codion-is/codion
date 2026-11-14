@@ -678,6 +678,11 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 */
 		private boolean detailsPending = false;
 
+		/**
+		 * Incremented each time the editor moves on to another entity, see {@link #movedOn()}.
+		 */
+		private int generation = 0;
+
 		private DefaultEditorEntity() {
 			this.exists = new DefaultExists(entityDefinition);
 			this.modified = new DefaultModified();
@@ -697,6 +702,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public void set(Entity entity) {
 			Entity validated = validateType(entity).immutable();
 			changing.run();
+			movedOn();
 			detailsPending = !detail.editors.isEmpty();
 			setEntity(validated);
 			if (detailsPending) {
@@ -723,7 +729,11 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void replace(Entity entity) {
 			Entity validated = validateType(entity).immutable();
-			boolean loadDetails = !instance.primaryKey().equals(validated.primaryKey()) && !detail.editors.isEmpty();
+			boolean identityChanged = !instance.primaryKey().equals(validated.primaryKey());
+			if (identityChanged) {
+				movedOn();
+			}
+			boolean loadDetails = identityChanged && !detail.editors.isEmpty();
 			if (loadDetails) {
 				detailsPending = true;
 			}
@@ -750,6 +760,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void defaults() {
 			changing.run();
+			movedOn();
 			supersede();
 			detailsPending = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
@@ -760,6 +771,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void clear() {
 			changing.run();
+			movedOn();
 			supersede();
 			detailsPending = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
@@ -849,6 +861,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		/**
+		 * The editor moves on to another entity, set, replaced by one of another identity, or reset, its detail editors
+		 * along with it, so that the result of a persist task created before leaves the editor alone, see {@link Held}.
+		 */
+		private void movedOn() {
+			generation++;
+			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.movedOn());
+		}
+
+		/**
 		 * The detail load of the entity held has been handled, the detail editors now holding its details.
 		 */
 		private void detailsLoaded() {
@@ -869,6 +890,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private void resetDefaults() {
+			movedOn();
 			supersede();
 			detailsPending = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
@@ -900,6 +922,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private void resetCleared() {
+			movedOn();
 			supersede();
 			detailsPending = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
@@ -1158,12 +1181,17 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private EditorTask<Entity> replace(Entity entity) {
-			return new ReplaceEntity(entity);
+			return new ReplaceEntity(entity, null);
+		}
+
+		private EditorTask<Entity> replace(Entity entity, Held held) {
+			return new ReplaceEntity(entity, held);
 		}
 
 		private final class InsertDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
+			private final Held held = new Held();
 			private final Collection<EditorTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
 			private final Consumer<Entity> before;
 
@@ -1190,7 +1218,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				before.accept(entity);
 				inserted = persistence.get().insert(entity, connection);
 				Collection<Result<Entity>> detail = detail();
-				Result<Entity> replace = replace(inserted).perform();
+				Result<Entity> replace = replace(inserted, held).perform();
 				return () -> {
 					detail.forEach(Result::handle);
 					replace.handle();
@@ -1214,6 +1242,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final class UpdateDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
+			private final Held held = new Held();
 			private final Collection<EditorTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
 
 			private @Nullable Entity updated;
@@ -1246,7 +1275,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 					updated = persistence.get().update(entity, connection);
 				}
 				Collection<Result<Entity>> detail = detail();
-				Result<Entity> replace = replace(updated).perform();
+				Result<Entity> replace = replace(updated, held).perform();
 				return () -> {
 					detail.forEach(Result::handle);
 					replace.handle();
@@ -1270,6 +1299,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final class DeleteDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
+			private final Held held = new Held();
 			private final Collection<EditorTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
 
 			private DeleteDetail(Entity entity) {
@@ -1292,7 +1322,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				persistence.get().delete(entity, connection);
 				return () -> {
 					detail.forEach(Result::handle);
-					AbstractEntityEditor.this.entity.resetDefaults();
+					if (held.current()) {
+						AbstractEntityEditor.this.entity.resetDefaults();
+					}
 					persistEvents.afterDelete(entity);
 
 					return entity;
@@ -1309,6 +1341,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final class InsertEditor implements EditorTask<Entity> {
 
 			private final Entity entity;
+			private final Held held = new Held();
 			private final Consumer<Entity> before;
 
 			private InsertEditor(Entity entity, Consumer<Entity> before) {
@@ -1321,7 +1354,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				LOG.debug(INSERT, entity);
 				before.accept(entity);
 				Entity inserted = persistence.get().insert(entity, connection);
-				Result<Entity> replace = replace(inserted).perform();
+				Result<Entity> replace = replace(inserted, held).perform();
 				return () -> {
 					replace.handle();
 					persistEvents.afterInsert(inserted);
@@ -1334,6 +1367,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final class UpdateEditor implements EditorTask<Entity> {
 
 			private final Entity entity;
+			private final Held held = new Held();
 
 			private UpdateEditor(Entity entity) {
 				this.entity = entity;
@@ -1343,7 +1377,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			public Result<Entity> perform() {
 				LOG.debug(UPDATE, entity);
 				Entity updated = persistence.get().update(entity, connection);
-				Result<Entity> replace = replace(updated).perform();
+				Result<Entity> replace = replace(updated, held).perform();
 				return () -> {
 					replace.handle();
 					persistEvents.afterUpdate(entity, updated);
@@ -1356,6 +1390,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final class DeleteEditor implements EditorTask<Entity> {
 
 			private final Entity entity;
+			private final Held held = new Held();
 
 			private DeleteEditor(Entity entity) {
 				this.entity = entity;
@@ -1366,7 +1401,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				LOG.debug(DELETE, entity);
 				persistence.get().delete(entity, connection);
 				return () -> {
-					AbstractEntityEditor.this.entity.resetDefaults();
+					if (held.current()) {
+						AbstractEntityEditor.this.entity.resetDefaults();
+					}
 					persistEvents.afterDelete(entity);
 
 					return entity;
@@ -1580,33 +1617,59 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 		}
 
+		/**
+		 * Replaces the entity held, a persisted one or a detail being loaded.
+		 */
 		private final class ReplaceEntity implements EditorTask<Entity> {
 
 			private final Entity entityToSet;
+			private final @Nullable Held held;
 			private final boolean identityChanged;
 
-			private ReplaceEntity(Entity entityToSet) {
+			/**
+			 * @param entityToSet the entity to set
+			 * @param held what the editor held when the persist task was created, null for a detail being loaded
+			 */
+			private ReplaceEntity(Entity entityToSet, @Nullable Held held) {
 				this.entityToSet = validateType(entityToSet).immutable();
-				this.identityChanged = identityChanged(entityToSet);
+				this.held = held;
+				Entity.Key primaryKey = held == null ? entity.instance.primaryKey() : held.primaryKey;
+				this.identityChanged = !primaryKey.equals(entityToSet.primaryKey());
 			}
 
 			@Override
 			public Result<Entity> perform() {
 				List<Result<Entity>> details = identityChanged ? loadDetails(entityToSet, true) : emptyList();
 				return () -> {
-					details.forEach(Result::handle);
-					if (identityChanged) {
-						entity.detailsPending = false;
+					if (held == null || held.current()) {
+						details.forEach(Result::handle);
+						if (identityChanged) {
+							entity.detailsPending = false;
+						}
+						entity.setEntity(entityToSet);
+						entity.replaced.accept(entityToSet);
 					}
-					entity.setEntity(entityToSet);
-					entity.replaced.accept(entityToSet);
 
 					return entityToSet;
 				};
 			}
+		}
 
-			private boolean identityChanged(Entity newEntity) {
-				return !entity.instance.primaryKey().equals(newEntity.primaryKey());
+		/**
+		 * What the editor held when a persist task was created, captured on the thread creating it, as the task is
+		 * performed on another. The result of the task applies to the editor only if it has not moved on since, as it
+		 * would otherwise replace or reset the entity moved on to.
+		 */
+		private final class Held {
+
+			private final Entity.Key primaryKey = entity.instance.primaryKey();
+			private final int generation = entity.generation;
+
+			/**
+			 * @return true if the editor has not moved on to another entity since
+			 */
+			private boolean current() {
+				return entity.generation == generation;
 			}
 		}
 

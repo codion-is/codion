@@ -372,6 +372,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * <p>Each factory method validates the input, captures entity state and fires "before" events.
 	 * Must be called on the UI thread if the editor is linked to UI components.
 	 * The returned task should be executed promptly, not cached for later use.
+	 * <p>The result of a task persisting the active entity replaces it with the one persisted, or resets it after a
+	 * delete, unless the editor has moved on to another entity since the task was created, being set, replaced by one
+	 * with another primary key, or reset, which it then leaves alone, the "after" events firing all the same. An edit
+	 * made to the active entity meanwhile does not move it on, and is overwritten.
 	 */
 	interface EditorTasks {
 

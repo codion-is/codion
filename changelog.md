@@ -58,6 +58,7 @@ Codion Change Log
 - AbstractEntityEditor bug fixed, modified() no longer reads true for a moment when a master with an always present detail is set after defaults() or clear(), what persists with the master now recomputed whenever its own states are, where defaults() and clear() computed it against the previous master.
 - AbstractEntityEditor bug fixed, a detail load which fails now clears the detail editors, where they kept showing the previous master's details.
 - EditorTasks bug fixed, insert(), update() and delete() now validate the details persisted with the active entity, and check their settings, before notifying the before event, which fired for a persist then refused by a detail.
+- EditorTasks bug fixed, the result of an insert, update or delete of the active entity no longer replaces or resets the entity of an editor set to another one since the task was created, nor the details loaded for it, where the editor went back to the persisted entity, or to the defaults after a delete, having notified the other.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model
