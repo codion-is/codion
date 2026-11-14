@@ -124,6 +124,15 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 	}
 
 	/**
+	 * Removes the listeners and consumers whose weak references have been collected, for a derived observer
+	 * notified without notifying its own listeners, so that one left with none unsubscribes.
+	 * @return true if any listeners or consumers remain
+	 */
+	final boolean pruneListeners() {
+		return listeners.prune();
+	}
+
+	/**
 	 * Notifies the listeners and consumers, in the order they were added
 	 * @param data the data to propagate to consumers
 	 */

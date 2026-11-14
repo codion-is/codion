@@ -129,13 +129,39 @@ public final class Listeners {
 		}
 	}
 
-	private List<Listener<?>> listeners() {
+	/**
+	 * Removes the listeners and consumers whose weak references have been collected, calling
+	 * {@link Hooks#onLastListener()} in case none remain.
+	 * <p>A notification prunes as well as an add or a remove does, since nothing else would prune the listeners
+	 * of a derived observer held by nobody but its source, its only listeners weak, which would otherwise stay
+	 * subscribed for good.
+	 * @return true if any listeners or consumers remain
+	 */
+	public boolean prune() {
 		synchronized (this) {
 			if (listeners == null) {
+				return false;
+			}
+			if (listeners.removeIf(listener -> listener.get() == null) && listeners.isEmpty()) {
+				listeners = null;
+				if (hooks != null) {
+					hooks.onLastListener();
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+	}
+
+	private List<Listener<?>> listeners() {
+		synchronized (this) {
+			if (!prune()) {
 				return emptyList();
 			}
 
-			return new ArrayList<>(listeners);
+			return new ArrayList<>(requireNonNull(listeners));
 		}
 	}
 
@@ -229,8 +255,8 @@ public final class Listeners {
 		void onFirstListener();
 
 		/**
-		 * Called when the owner loses its last listener or consumer, by removal or by the pruning of dead weak
-		 * references a removal does, before the remove returns.
+		 * Called when the owner loses its last listener or consumer, by removal, or by the pruning of dead weak
+		 * references a removal or a notification does, before either returns.
 		 */
 		void onLastListener();
 	}

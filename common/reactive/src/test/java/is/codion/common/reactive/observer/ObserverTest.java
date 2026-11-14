@@ -20,6 +20,7 @@ package is.codion.common.reactive.observer;
 
 import is.codion.common.reactive.internal.Listeners;
 import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.signal.Signal;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -31,6 +32,7 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -215,6 +217,65 @@ public final class ObserverTest {
 			System.gc();
 		}
 		assertNull(reference.get());
+	}
+
+	@Test
+	void conditionalUnsubscribedOnceWeakListenersCollected() {
+		//a when() held by nobody, its only listener weak and collected, unsubscribed at the next notification,
+		//nothing else adding to or removing from its listeners
+		Value<Integer> value = Value.nullable();
+		AtomicInteger tested = new AtomicInteger();
+		AtomicInteger heard = new AtomicInteger();
+		Runnable listener = heard::incrementAndGet;
+		value.when(integer -> {
+			tested.incrementAndGet();
+			return integer != null && integer == 1;
+		}).addWeakListener(listener);
+		value.set(2);
+		assertEquals(1, tested.get());
+
+		WeakReference<Runnable> reference = new WeakReference<>(listener);
+		listener = null;
+		for (int i = 0; i < 20 && reference.get() != null; i++) {
+			System.gc();
+		}
+		assertNull(reference.get());
+		value.set(3);
+		value.set(4);
+		assertEquals(1, tested.get());
+	}
+
+	@Test
+	void changedUnsubscribedOnceWeakListenersCollected() {
+		//the default changed(), its current() listened to weakly and collected, unsubscribed at the next change
+		Value<Integer> value = Value.nullable(0);
+		AtomicInteger reads = new AtomicInteger();
+		Observable<Integer> observable = new Observable<>() {
+			@Override
+			public Integer get() {
+				reads.incrementAndGet();
+				return value.get();
+			}
+
+			@Override
+			public Observer<Integer> observer() {
+				return value.observer();
+			}
+		};
+		AtomicInteger heard = new AtomicInteger();
+		Consumer<Integer> consumer = heard::set;
+		observable.changed().current().addWeakConsumer(consumer);
+
+		WeakReference<Consumer<Integer>> reference = new WeakReference<>(consumer);
+		consumer = null;
+		for (int i = 0; i < 20 && reference.get() != null; i++) {
+			System.gc();
+		}
+		assertNull(reference.get());
+		value.set(1);
+		reads.set(0);
+		value.set(2);
+		assertEquals(0, reads.get());
 	}
 
 	@Test

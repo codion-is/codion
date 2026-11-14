@@ -32,7 +32,7 @@ import java.util.function.Predicate;
  * <p>It subscribes to the observer it filters only while it has listeners or consumers of its own, attaching on the
  * first and detaching on the last. Since the subscription is what keeps it reachable - the observer holds
  * {@link #consumer}, which holds this - one that is never listened to, or whose listeners and consumers are all
- * removed, is left to be collected
+ * removed, or collected, its weak ones detaching at the next notification, is left to be collected
  * rather than accumulating on an observer that may outlive it by a lot.
  * @param <T> the observed type
  */
@@ -62,7 +62,9 @@ final class Conditional<T> extends AbstractObserver<T> implements Listeners.Hook
 	}
 
 	private void notify(@Nullable T value) {
-		if (predicate.test(value)) {
+		//pruned on each notification, rather than only on those its predicate accepts, so that one whose weak
+		//listeners were collected unsubscribes, rather than testing values for good
+		if (pruneListeners() && predicate.test(value)) {
 			notifyListeners(value);
 		}
 	}

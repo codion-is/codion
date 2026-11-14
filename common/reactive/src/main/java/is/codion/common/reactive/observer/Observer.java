@@ -101,7 +101,8 @@ public interface Observer<T> extends Sensor {
 	 * <p>The conditional observer subscribes to this one only while it has listeners or consumers of its own, attaching
 	 * on the first and detaching on the last, so one that is never listened to - or whose listeners and consumers are all
 	 * removed again - leaves nothing behind on this observer. Removing the last of them is therefore how a conditional
-	 * observer is disposed of; there is nothing else to release.
+	 * observer is disposed of; there is nothing else to release. One whose weak listeners and consumers have all been
+	 * collected detaches when this observer next notifies it.
 	 * @param value the value on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
