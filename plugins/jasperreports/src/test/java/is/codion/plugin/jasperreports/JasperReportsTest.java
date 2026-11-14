@@ -43,6 +43,7 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOf;
+import static java.util.Collections.emptyMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JasperReportsTest {
@@ -109,7 +110,14 @@ public class JasperReportsTest {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
 		JRReport<JasperPrint> wrapper = JasperReports.fileReport("employees.jasper");
-		JRDataSource dataSource = new JRDataSource() {
+		JasperReports.fillReport(wrapper, oneRow());
+		//parameters of a narrower value type, immutable, copied for the report to fill in
+		Map<String, String> parameters = emptyMap();
+		JasperReports.fillReport(wrapper, oneRow(), parameters);
+	}
+
+	private static JRDataSource oneRow() {
+		return new JRDataSource() {
 			boolean done = false;
 
 			@Override
@@ -126,7 +134,6 @@ public class JasperReportsTest {
 				return null;
 			}
 		};
-		JasperReports.fillReport(wrapper, dataSource);
 	}
 
 	@Test

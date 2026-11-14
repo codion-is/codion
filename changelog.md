@@ -70,6 +70,11 @@ Codion Change Log
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.swing.framework.ui
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
+### is.codion.tools.loadtest
+- Parameters widened to wildcard types, functions taking ? super their arguments and ? extends their results, where a subtype or supertype fits.
+### is.codion.plugin.jasperreports
+- Parameters widened to wildcard types, functions taking ? super their arguments and ? extends their results, and maps ? their values, where a subtype or supertype fits.
+- JasperReports.fillReport() now copies the parameters given, which the report fills in, where it filled in the map given, which had to be modifiable.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes, the table selection backgrounds of the Akusan Gray, Atom One Light, Codely Light, Darcula Solid and Github Light themes reverted to the themes' own, FilterTable now keeping a selection distinct.
 - FlatLookAndFeelIntelliJThemes, the Obsidian Sunset themes now set their selection foreground, where FlatLaf derived a near black one from their translucent selection background, unreadable on it, and Espresso Light's table and list selection foreground is now its foreground, where pink on light yellow was barely readable.

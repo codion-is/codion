@@ -149,17 +149,17 @@ public final class JasperReports {
 	 * Fills the report using the given data.
 	 * @param report the report to fill
 	 * @param dataSource the data provider to use for the report generation
-	 * @param reportParameters the report parameters, must be modifiable
+	 * @param reportParameters the report parameters, copied, the copy being what the report fills in
 	 * @return a filled report ready for display
 	 * @throws ReportException in case of an exception
 	 */
 	public static JasperPrint fillReport(JRReport<JasperPrint> report, JRDataSource dataSource,
-																			 Map<String, Object> reportParameters) {
+																			 Map<String, ?> reportParameters) {
 		requireNonNull(report);
 		requireNonNull(dataSource);
 		requireNonNull(reportParameters);
 		try {
-			return JasperFillManager.fillReport(report.load(), reportParameters, dataSource);
+			return JasperFillManager.fillReport(report.load(), new HashMap<String, Object>(reportParameters), dataSource);
 		}
 		catch (Exception e) {
 			throw reportException(e);

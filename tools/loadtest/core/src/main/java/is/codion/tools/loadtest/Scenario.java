@@ -107,13 +107,13 @@ public interface Scenario<T> {
 		 * @param beforeRun called before each run
 		 * @return this builder
 		 */
-		Builder<T> beforeRun(Consumer<T> beforeRun);
+		Builder<T> beforeRun(Consumer<? super T> beforeRun);
 
 		/**
 		 * @param afterRun called after each run
 		 * @return this builder
 		 */
-		Builder<T> afterRun(Consumer<T> afterRun);
+		Builder<T> afterRun(Consumer<? super T> afterRun);
 
 		/**
 		 * By default, all exceptions cause a test to be paused.

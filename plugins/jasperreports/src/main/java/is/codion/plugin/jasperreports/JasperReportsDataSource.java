@@ -34,9 +34,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class JasperReportsDataSource<T> implements JRDataSource {
 
-	private final Iterator<T> reportIterator;
-	private final BiFunction<T, JRField, Object> valueProvider;
-	private final Consumer<T> onNext;
+	private final Iterator<? extends T> reportIterator;
+	private final BiFunction<? super T, JRField, ?> valueProvider;
+	private final Consumer<? super T> onNext;
 
 	private T currentItem = null;
 
@@ -45,7 +45,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
 	 * @param reportIterator the iterator providing the report data
 	 * @param valueProvider a Function returning the value for a given field from the given item
 	 */
-	public JasperReportsDataSource(Iterator<T> reportIterator, BiFunction<T, JRField, Object> valueProvider) {
+	public JasperReportsDataSource(Iterator<? extends T> reportIterator, BiFunction<? super T, JRField, ?> valueProvider) {
 		this(reportIterator, valueProvider, null);
 	}
 
@@ -55,8 +55,8 @@ public class JasperReportsDataSource<T> implements JRDataSource {
 	 * @param valueProvider a Function returning the value for a given field from the given item
 	 * @param onNext called each time next has been called
 	 */
-	public JasperReportsDataSource(Iterator<T> reportIterator, BiFunction<T, JRField, Object> valueProvider,
-																 Consumer<T> onNext) {
+	public JasperReportsDataSource(Iterator<? extends T> reportIterator, BiFunction<? super T, JRField, ?> valueProvider,
+																 Consumer<? super T> onNext) {
 		this.reportIterator = requireNonNull(reportIterator);
 		this.valueProvider = requireNonNull(valueProvider);
 		this.onNext = onNext == null ? next -> {} : onNext;

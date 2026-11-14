@@ -188,7 +188,7 @@ public interface LoadTest<T> {
 			 * @param <T> the application type
 			 * @return a {@link CloseApplicationStep}
 			 */
-			<T> CloseApplicationStep<T> createApplication(Function<User, T> createApplication);
+			<T> CloseApplicationStep<T> createApplication(Function<User, ? extends T> createApplication);
 		}
 
 		/**
@@ -200,7 +200,7 @@ public interface LoadTest<T> {
 			 * @param closeApplication closes the application
 			 * @return a builder instance
 			 */
-			Builder<T> closeApplication(Consumer<T> closeApplication);
+			Builder<T> closeApplication(Consumer<? super T> closeApplication);
 		}
 
 		/**

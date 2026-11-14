@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -113,5 +115,24 @@ public final class DefaultLoadTestTest {
 						.user(User.user("test"))
 						.build();
 		assertThrows(IllegalArgumentException.class, () -> model.applications().loginDelayFactor().set(-1));
+	}
+
+	@Test
+	void functionsOfSubtypesAndSupertypes() {
+		Function<User, String> createApplication = user -> "application";
+		Consumer<Object> closeApplication = application -> {};
+		LoadTest<CharSequence> model = LoadTest.builder()
+						.<CharSequence>createApplication(createApplication)
+						.closeApplication(closeApplication)
+						.user(User.user("test"))
+						.build();
+		assertNotNull(model);
+		Consumer<Object> run = application -> {};
+		Scenario<CharSequence> scenario = Scenario.builder()
+						.performer((CharSequence application) -> {})
+						.beforeRun(run)
+						.afterRun(run)
+						.build();
+		assertNotNull(scenario);
 	}
 }

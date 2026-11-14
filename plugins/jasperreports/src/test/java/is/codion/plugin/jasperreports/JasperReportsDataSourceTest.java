@@ -29,9 +29,14 @@ import net.sf.jasperreports.engine.JRPropertiesMap;
 import net.sf.jasperreports.engine.JRPropertyExpression;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JasperReportsDataSourceTest {
 
@@ -53,6 +58,21 @@ public class JasperReportsDataSourceTest {
 			JRField field = new TestField(Department.NAME.name());
 			source.getFieldValue(field);
 		}
+	}
+
+	@Test
+	void functionsOfSupertypes() throws Exception {
+		Entity department = ENTITIES.entity(Department.TYPE)
+						.with(Department.ID, 10)
+						.build();
+		BiFunction<Object, JRField, String> valueProvider = (item, field) -> field.getName();
+		List<Object> nexts = new ArrayList<>();
+		Consumer<Object> onNext = nexts::add;
+		JasperReportsDataSource<Entity> source =
+						new JasperReportsDataSource<>(singletonList(department).iterator(), valueProvider, onNext);
+		assertTrue(source.next());
+		assertEquals("name", source.getFieldValue(new TestField("name")));
+		assertEquals(singletonList(department), nexts);
 	}
 
 	private static class TestField implements JRField {

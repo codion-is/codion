@@ -33,8 +33,8 @@ final class DefaultScenario<T> implements Scenario<T> {
 	private final String name;
 	private final int defaultWeight;
 	private final Performer<T> performer;
-	private final Consumer<T> beforeRun;
-	private final Consumer<T> afterRun;
+	private final Consumer<? super T> beforeRun;
+	private final Consumer<? super T> afterRun;
 	private final Predicate<Exception> pause;
 
 	private DefaultScenario(DefaultBuilder<T> builder) {
@@ -99,8 +99,8 @@ final class DefaultScenario<T> implements Scenario<T> {
 
 		private String name;
 		private int defaultWeight = 1;
-		private Consumer<T> beforeRun = (Consumer<T>) EMPTY_CONSUMER;
-		private Consumer<T> afterRun = (Consumer<T>) EMPTY_CONSUMER;
+		private Consumer<? super T> beforeRun = (Consumer<T>) EMPTY_CONSUMER;
+		private Consumer<? super T> afterRun = (Consumer<T>) EMPTY_CONSUMER;
 		private Predicate<Exception> pause = PAUSE_ON_ALL_EXCPTIONS;
 
 		private DefaultBuilder(Performer<T> performer) {
@@ -124,13 +124,13 @@ final class DefaultScenario<T> implements Scenario<T> {
 		}
 
 		@Override
-		public Builder<T> beforeRun(Consumer<T> beforeRun) {
+		public Builder<T> beforeRun(Consumer<? super T> beforeRun) {
 			this.beforeRun = requireNonNull(beforeRun);
 			return this;
 		}
 
 		@Override
-		public Builder<T> afterRun(Consumer<T> afterRun) {
+		public Builder<T> afterRun(Consumer<? super T> afterRun) {
 			this.afterRun = requireNonNull(afterRun);
 			return this;
 		}
