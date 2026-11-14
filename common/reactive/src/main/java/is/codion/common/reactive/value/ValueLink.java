@@ -24,6 +24,7 @@ import java.util.IdentityHashMap;
 import java.util.Set;
 
 import static java.util.Collections.newSetFromMap;
+import static java.util.Objects.deepEquals;
 
 /**
  * A class for linking two values.
@@ -109,7 +110,7 @@ final class ValueLink<T> {
 	}
 
 	private void updateLinkedValue() {
-		if (!updatingOriginal) {
+		if (!updatingOriginal && !returned(updatingLinked, linkedValue, originalValue)) {
 			int nestedSets = nestedSets(linkedValue);
 			updatingLinked = true;
 			try {
@@ -126,7 +127,7 @@ final class ValueLink<T> {
 	}
 
 	private void updateOriginalValue() {
-		if (!updatingLinked) {
+		if (!updatingLinked && !returned(updatingOriginal, originalValue, linkedValue)) {
 			int nestedSets = nestedSets(originalValue);
 			updatingOriginal = true;
 			try {
@@ -140,6 +141,19 @@ final class ValueLink<T> {
 				updateLinkedValue();
 			}
 		}
+	}
+
+	/**
+	 * A value coming back round to this link while it is pushing it, through a cycle of links, a diamond for example,
+	 * which the far end already holds. Equality ends that round for values notifying on change, not for those
+	 * notifying on every set, which would go round for good. A different value is pushed, as a listener may set one.
+	 * @param updating true if this link is pushing to the target already
+	 * @param target the value being pushed to
+	 * @param source the value pushed from
+	 * @return true if the target already holds the value of the source, while being pushed to
+	 */
+	private static <T> boolean returned(boolean updating, Value<T> target, Value<T> source) {
+		return updating && deepEquals(target.get(), source.get());
 	}
 
 	//A Value implemented outside the framework replaces null as it sees fit, so it is validated as given

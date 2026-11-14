@@ -777,6 +777,31 @@ public class ValueTest {
 	}
 
 	@Test
+	void linkDiamondNotifyingOnSet() {
+		//the diamond of values notifying on every set, which equality does not settle, a value coming back round to a
+		//link still pushing it, which the far end already holds
+		Value<Integer> a = Value.builder().<Integer>nullable().notify(Notify.SET).build();
+		Value<Integer> b = Value.builder().<Integer>nullable().notify(Notify.SET).build();
+		Value<Integer> c = Value.builder().<Integer>nullable().notify(Notify.SET).build();
+		Value<Integer> d = Value.builder().<Integer>nullable().notify(Notify.SET).build();
+		b.link(a);
+		c.link(a);
+		d.link(b);
+		assertDoesNotThrow(() -> d.link(c));
+		AtomicInteger notified = new AtomicInteger();
+		d.addListener(notified::incrementAndGet);
+		assertDoesNotThrow(() -> a.set(1));
+		assertEquals(1, b.get());
+		assertEquals(1, c.get());
+		assertEquals(1, d.get());
+		assertTrue(notified.get() > 0);
+		assertDoesNotThrow(() -> d.set(2));
+		assertEquals(2, a.get());
+		assertEquals(2, b.get());
+		assertEquals(2, c.get());
+	}
+
+	@Test
 	void linkDiamond() {
 		//a diamond: d mirrors both b and c, which both mirror a. Two shapes meet here that a chain does not
 		//reach - the cycle walk arrives at a by two paths, and so does the validator bridge, which used to
