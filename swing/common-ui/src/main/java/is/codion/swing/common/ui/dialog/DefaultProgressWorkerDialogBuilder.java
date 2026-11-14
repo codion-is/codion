@@ -30,8 +30,16 @@ import is.codion.swing.common.ui.control.Control;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
+import javax.swing.JLayeredPane;
+import javax.swing.RootPaneContainer;
 import javax.swing.border.Border;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.Window;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -214,7 +222,7 @@ final class DefaultProgressWorkerDialogBuilder<T extends @Nullable Object, V> ex
 						.icon(icon)
 						.build();
 
-		DisplayDialog dialog = new DisplayDialog(progressDialog);
+		DisplayDialog dialog = new DisplayDialog(progressDialog, owner == null ? null : new InputBlocker(owner));
 
 		return progressWorkerBuilder
 						.onStarted(dialog::show)
@@ -229,20 +237,28 @@ final class DefaultProgressWorkerDialogBuilder<T extends @Nullable Object, V> ex
 	 * shows one, and keeps it up for {@link #HIDE_DELAY} once it has, so one that appears does not
 	 * flash past. Both run on the dispatch thread, {@link ProgressWorker} calling this from
 	 * {@code onStarted} and {@code onDone}.
+	 * <p>A dialog with an owner, being modal, blocks input from the start, see {@link InputBlocker}.
 	 */
 	private final class DisplayDialog {
 
 		private final ProgressDialog progressDialog;
+		private final @Nullable InputBlocker inputBlocker;
 
 		private @Nullable DelayedAction show;
 		private long shownAt;//when the dialog went up, zero until it does, which is what tells hide() it never did
 
-		private DisplayDialog(ProgressDialog progressDialog) {
+		private DisplayDialog(ProgressDialog progressDialog, @Nullable InputBlocker inputBlocker) {
 			this.progressDialog = progressDialog;
+			this.inputBlocker = inputBlocker;
 		}
 
 		private void show() {
+			if (inputBlocker != null) {
+				inputBlocker.block();
+			}
 			show = delayedAction(() -> {
+				//the modality takes over, setVisible() blocking the windows before any further event is dispatched
+				unblock();
 				//before, a modal dialog only returning from setVisible() once hidden
 				shownAt = currentTimeMillis();
 				progressDialog.setVisible(true);
@@ -251,6 +267,8 @@ final class DefaultProgressWorkerDialogBuilder<T extends @Nullable Object, V> ex
 
 		private void hide() {
 			cancel();
+			//onDone, called before onResult and onException, so a dialog they show receives input
+			unblock();
 			//measured from when it went up rather than from when it was asked for, so the dialog is shown the full hideDelay
 			long remaining = shownAt == 0 ? 0 : hideDelay - (currentTimeMillis() - shownAt);
 			delayedAction(() -> {
@@ -263,6 +281,80 @@ final class DefaultProgressWorkerDialogBuilder<T extends @Nullable Object, V> ex
 			if (show != null) {
 				show.cancel();
 				show = null;
+			}
+		}
+
+		private void unblock() {
+			if (inputBlocker != null) {
+				inputBlocker.unblock();
+			}
+		}
+	}
+
+	/**
+	 * Blocks input from when the task starts until its dialog shows, the modality of the dialog then taking over, or
+	 * until the task finishes, so that a modal dialog is modal from the start, the delay governing only when it shows.
+	 * Input before then would otherwise reach the owner, a key typed into a form whose content the task then replaces,
+	 * or a click moving it on to another row. Keys are discarded application wide, as the modality of the dialog does.
+	 * The mouse is blocked within the owner, by a transparent component covering its layered pane, menu bar included,
+	 * a component of its own rather than the glass pane, which two blockers overlapping would restore out of order.
+	 */
+	static final class InputBlocker implements KeyEventDispatcher {
+
+		private static final Integer BLOCKING_LAYER = JLayeredPane.DRAG_LAYER + 1;
+
+		private final Window owner;
+		private final JComponent mouseBlocker = new MouseBlocker();
+
+		private boolean blocking = false;
+
+		InputBlocker(Window owner) {
+			this.owner = owner;
+		}
+
+		void block() {
+			if (!blocking) {
+				blocking = true;
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
+				if (owner instanceof RootPaneContainer) {
+					JLayeredPane layeredPane = ((RootPaneContainer) owner).getLayeredPane();
+					mouseBlocker.setBounds(0, 0, layeredPane.getWidth(), layeredPane.getHeight());
+					layeredPane.add(mouseBlocker, BLOCKING_LAYER);
+				}
+			}
+		}
+
+		void unblock() {
+			if (blocking) {
+				blocking = false;
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
+				Container parent = mouseBlocker.getParent();
+				if (parent != null) {
+					parent.remove(mouseBlocker);
+				}
+			}
+		}
+
+		boolean blocking() {
+			return blocking;
+		}
+
+		@Override
+		public boolean dispatchKeyEvent(KeyEvent event) {
+			//discarded
+			return true;
+		}
+
+		/**
+		 * Receives the mouse events within its bounds, having listeners, and does nothing with them
+		 */
+		private static final class MouseBlocker extends JComponent {
+
+			private MouseBlocker() {
+				MouseAdapter discard = new MouseAdapter() {};
+				addMouseListener(discard);
+				addMouseMotionListener(discard);
+				addMouseWheelListener(discard);
 			}
 		}
 	}

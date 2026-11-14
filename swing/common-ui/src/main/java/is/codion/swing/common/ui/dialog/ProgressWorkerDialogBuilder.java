@@ -52,6 +52,8 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * <li>The dialog is only shown if the operation takes longer than {@link ProgressWorkerDialogBuilder#SHOW_DELAY} milliseconds (default: 350ms)
  * <li>If shown, the dialog remains visible for at least {@link ProgressWorkerDialogBuilder#HIDE_DELAY} milliseconds (default: 800ms)
  * </ul>
+ * <p>A dialog with an {@link #owner(java.awt.Window) owner} is modal, and blocks input from when the operation
+ * starts, before it shows: keys application wide, as its modality does, and the mouse within the owner.
  * These delays can be customized via {@link #delay(int, int)} or the system properties.
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result this {@link ProgressWorker} produces.
