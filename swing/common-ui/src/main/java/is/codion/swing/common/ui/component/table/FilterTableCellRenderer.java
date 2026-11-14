@@ -256,7 +256,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 		 * @param toolTip provides the tooltip for the cell, given the cell data
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> toolTip(Function<T, String> toolTip);
+		Builder<R, C, T> toolTip(Function<? super T, String> toolTip);
 
 		/**
 		 * @param filterIndicator true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
@@ -293,7 +293,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 		 * @param formatter provides a String to display for a given cell value, formatted or otherwise
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> formatter(Function<T, String> formatter);
+		Builder<R, C, T> formatter(Function<? super T, String> formatter);
 
 		/**
 		 * @param background provides the background color, blended with the selection background for selected cells

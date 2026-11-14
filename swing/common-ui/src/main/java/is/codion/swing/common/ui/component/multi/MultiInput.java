@@ -134,7 +134,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 
 	private final ComponentValue<C, T> componentValue;
 	private final SwingFilterListModel<T> members;
-	private final @Nullable Function<T, String> formatter;
+	private final @Nullable Function<? super T, String> formatter;
 	private final @Nullable Supplier<Collection<T>> selector;
 	private final @Nullable String caption;
 	private final State enabled = State.state(true);
@@ -266,7 +266,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		 * @param formatter formats a value for the dialogs and the button's tool tip, null for {@link Object#toString()}
 		 * @return this builder instance
 		 */
-		Builder<C, T> formatter(@Nullable Function<T, String> formatter);
+		Builder<C, T> formatter(@Nullable Function<? super T, String> formatter);
 
 		/**
 		 * Specifies the values to select from when adding several at a time, for a wrapped component with a known set of
@@ -289,7 +289,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		 * @param comparator the comparator to use when sorting member items, null for insertion order
 		 * @return this builder instance
 		 */
-		Builder<C, T> comparator(@Nullable Comparator<T> comparator);
+		Builder<C, T> comparator(@Nullable Comparator<? super T> comparator);
 
 		/**
 		 * Whether {@link KeyEvent#VK_ENTER} adds the wrapped component's value while it holds one, leaving the key
@@ -751,8 +751,8 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 
 		private final ComponentValue<C, T> componentValue;
 
-		private @Nullable Comparator<T> comparator = Text.comparator();
-		private @Nullable Function<T, String> formatter;
+		private @Nullable Comparator<? super T> comparator = Text.comparator();
+		private @Nullable Function<? super T, String> formatter;
 		private @Nullable Supplier<Collection<T>> selector;
 		private @Nullable String caption;
 		private boolean addOnEnter = true;
@@ -763,7 +763,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 
 		@Override
-		public Builder<C, T> formatter(@Nullable Function<T, String> formatter) {
+		public Builder<C, T> formatter(@Nullable Function<? super T, String> formatter) {
 			this.formatter = formatter;
 			return this;
 		}
@@ -781,7 +781,7 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 		}
 
 		@Override
-		public Builder<C, T> comparator(@Nullable Comparator<T> comparator) {
+		public Builder<C, T> comparator(@Nullable Comparator<? super T> comparator) {
 			this.comparator = comparator;
 			return this;
 		}

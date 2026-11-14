@@ -89,7 +89,7 @@ public final class FilterList<T> extends JList<T> {
 	public static final PropertyValue<Boolean> ROWS_FILL_VIEWPORT =
 					booleanValue(FilterList.class.getName() + ".rowsFillViewport", false);
 
-	private final @Nullable Function<T, String> formatter;
+	private final @Nullable Function<? super T, String> formatter;
 	private final boolean rowsFillViewport;
 	private final State scrollToSelected;
 	private final ScrollTo scrollTo = new ScrollTo();
@@ -253,10 +253,10 @@ public final class FilterList<T> extends JList<T> {
 	private static final class DefaultCellRenderer<T> extends DefaultListCellRenderer {
 
 		private final RowColors rowColors;
-		private final @Nullable Function<T, String> formatter;
-		private final @Nullable Function<T, @Nullable Color> background;
-		private final @Nullable Function<T, @Nullable Color> foreground;
-		private final @Nullable Function<T, @Nullable String> toolTip;
+		private final @Nullable Function<? super T, String> formatter;
+		private final @Nullable Function<? super T, @Nullable Color> background;
+		private final @Nullable Function<? super T, @Nullable Color> foreground;
+		private final @Nullable Function<? super T, @Nullable String> toolTip;
 
 		private DefaultCellRenderer(AbstractFilterListBuilder<?, T, ?> builder) {
 			this.rowColors = new RowColors("List", builder.alternateRowColoring, INACTIVE_SELECTION.getOrThrow());
@@ -349,7 +349,7 @@ public final class FilterList<T> extends JList<T> {
 		 * @return this builder instance
 		 * @see FilterList#getNextMatch(String, int, Position.Bias)
 		 */
-		B formatter(@Nullable Function<T, String> formatter);
+		B formatter(@Nullable Function<? super T, String> formatter);
 
 		/**
 		 * Ignored in case a cell renderer is specified, see {@link #cellRenderer(ListCellRenderer)}.
@@ -357,7 +357,7 @@ public final class FilterList<T> extends JList<T> {
 		 * and blended with the selection background when selected
 		 * @return this builder instance
 		 */
-		B background(Function<T, @Nullable Color> background);
+		B background(Function<? super T, @Nullable Color> background);
 
 		/**
 		 * Ignored in case a cell renderer is specified, see {@link #cellRenderer(ListCellRenderer)}.
@@ -365,14 +365,14 @@ public final class FilterList<T> extends JList<T> {
 		 * selection foreground
 		 * @return this builder instance
 		 */
-		B foreground(Function<T, @Nullable Color> foreground);
+		B foreground(Function<? super T, @Nullable Color> foreground);
 
 		/**
 		 * Ignored in case a cell renderer is specified, see {@link #cellRenderer(ListCellRenderer)}.
 		 * @param toolTip provides the tool tip of each item, null for none
 		 * @return this builder instance
 		 */
-		B toolTip(Function<T, @Nullable String> toolTip);
+		B toolTip(Function<? super T, @Nullable String> toolTip);
 
 		/**
 		 * Ignored in case a cell renderer is specified, see {@link #cellRenderer(ListCellRenderer)}.

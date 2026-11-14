@@ -361,7 +361,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		}
 
 		@Override
-		public void set(List<C> identifiers) {
+		public void set(List<? extends C> identifiers) {
 			requireNonNull(identifiers);
 			identifiers.forEach(DefaultFilterTableColumnModel.this::validateColumn);
 			int columnIndex = 0;

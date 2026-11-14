@@ -403,7 +403,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final Copy copy = new Copy();
 	private final ScrollTo scrollTo = new ScrollTo();
 	private final Value<Action> doubleClick;
-	private final BiPredicate<R, C> cellEditable;
+	private final BiPredicate<? super R, ? super C> cellEditable;
 	private final State sortable;
 	private final State scrollToSelected;
 	private final Value<CenterOnScroll> centerOnScroll;
@@ -1625,7 +1625,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @return this builder instance
 		 * @see JTable#isCellEditable(int, int)
 		 */
-		Builder<R, C> cellEditable(BiPredicate<R, C> cellEditable);
+		Builder<R, C> cellEditable(BiPredicate<? super R, ? super C> cellEditable);
 
 		/**
 		 * Associates the given keyStroke with the action associated with the 'startEditing' key in the table action map.
@@ -1961,7 +1961,7 @@ public final class FilterTable<R, C> extends JTable {
 		private FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory;
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.Factory<R, C> cellEditorFactory;
-		private BiPredicate<R, C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
+		private BiPredicate<? super R, ? super C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
 		private @Nullable Boolean autoStartsEdit;
 		private @Nullable Boolean surrendersFocusOnKeystroke;
 		private boolean stopEditOnFocusLost = STOP_EDIT_ON_FOCUS_LOST.getOrThrow();
@@ -2061,7 +2061,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellEditable(BiPredicate<R, C> cellEditable) {
+		public Builder<R, C> cellEditable(BiPredicate<? super R, ? super C> cellEditable) {
 			this.cellEditable = requireNonNull(cellEditable);
 			return this;
 		}

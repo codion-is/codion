@@ -27,11 +27,13 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_A;
 import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,6 +52,18 @@ public class KeyEventsTest {
 		assertSame(control, textField.getActionMap().get(actionMapKey));
 		builder.disable(textField);
 		assertNull(textField.getActionMap().get(actionMapKey));
+	}
+
+	@Test
+	void componentsOfSubtype() {
+		List<JTextField> fields = asList(new JTextField(), new JTextField());
+		Control control = Control.builder().command(() -> {}).build();
+		KeyEvents.Builder builder = KeyEvents.builder()
+						.keyCode(VK_ENTER)
+						.action(control);
+		builder.enable(fields);
+		fields.forEach(field -> assertNotNull(field.getInputMap().get(KeyStroke.getKeyStroke(VK_ENTER, 0))));
+		builder.disable(fields);
 	}
 
 	@Test

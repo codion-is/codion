@@ -66,7 +66,7 @@ abstract class ControlHandler implements Consumer<Action> {
 	 * @param actions the actions
 	 * @return the cleaned action list
 	 */
-	protected static List<Action> cleanupSeparators(List<Action> actions) {
+	protected static List<Action> cleanupSeparators(List<? extends Action> actions) {
 		return cleanupSeparators(actions, action -> action == Controls.SEPARATOR);
 	}
 
@@ -77,7 +77,7 @@ abstract class ControlHandler implements Consumer<Action> {
 	 * @param <T> the item type
 	 * @return a new list containing the cleaned items
 	 */
-	static <T> List<T> cleanupSeparators(List<T> items, Predicate<T> separator) {
+	static <T> List<T> cleanupSeparators(List<? extends T> items, Predicate<? super T> separator) {
 		List<T> cleaned = new ArrayList<>(items.size());
 		for (T item : items) {
 			// skips leading and adjacent duplicate separators

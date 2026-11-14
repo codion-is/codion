@@ -45,7 +45,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 				extends AbstractComponentValueBuilder<C, T, B> implements TextComponentBuilder<C, T, B> {
 
 	private final List<CaretListener> caretListeners = new ArrayList<>();
-	private final List<Function<C, DocumentListener>> documentListeners = new ArrayList<>();
+	private final List<Function<? super C, DocumentListener>> documentListeners = new ArrayList<>();
 
 	private UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
 	private @Nullable Boolean editable;
@@ -167,7 +167,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	}
 
 	@Override
-	public final B documentListener(Function<C, DocumentListener> documentListener) {
+	public final B documentListener(Function<? super C, DocumentListener> documentListener) {
 		documentListeners.add(requireNonNull(documentListener));
 		return self();
 	}
@@ -293,7 +293,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 		}
 	}
 
-	private static final class AddDocumentListener<C extends JTextComponent> implements Consumer<Function<C, DocumentListener>> {
+	private static final class AddDocumentListener<C extends JTextComponent> implements Consumer<Function<? super C, DocumentListener>> {
 
 		private final C textComponent;
 
@@ -302,7 +302,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 		}
 
 		@Override
-		public void accept(Function<C, DocumentListener> listener) {
+		public void accept(Function<? super C, DocumentListener> listener) {
 			textComponent.getDocument().addDocumentListener(listener.apply(textComponent));
 		}
 	}

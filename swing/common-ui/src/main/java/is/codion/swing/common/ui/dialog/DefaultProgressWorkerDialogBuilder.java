@@ -168,7 +168,7 @@ final class DefaultProgressWorkerDialogBuilder<T extends @Nullable Object, V> ex
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult) {
+	public ProgressWorkerDialogBuilder<T, V> onResult(Consumer<? super T> onResult) {
 		this.progressWorkerBuilder.onResult(onResult);
 		return this;
 	}

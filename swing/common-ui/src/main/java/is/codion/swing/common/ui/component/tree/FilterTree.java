@@ -170,10 +170,10 @@ public final class FilterTree<T> extends JTree {
 	}
 
 	private final SwingFilterTreeModel<T> treeModel;
-	private final Function<T, String> formatter;
+	private final Function<? super T, String> formatter;
 	private final RowColors rowColors;
-	private final @Nullable Function<T, @Nullable Color> background;
-	private final @Nullable Function<T, @Nullable Color> foreground;
+	private final @Nullable Function<? super T, @Nullable Color> background;
+	private final @Nullable Function<? super T, @Nullable Color> foreground;
 	private final boolean rowsFillViewport;
 	private final Value<Action> doubleClick;
 	private final Signal<MouseEvent> doubleClicked = Signal.signal();
@@ -805,7 +805,7 @@ public final class FilterTree<T> extends JTree {
 		 * @return this builder instance
 		 * @see FilterTree#convertValueToText(Object, boolean, boolean, boolean, int, boolean)
 		 */
-		Builder<T> formatter(@Nullable Function<T, String> formatter);
+		Builder<T> formatter(@Nullable Function<? super T, String> formatter);
 
 		/**
 		 * Provides the icon of each node, the look and feel icons used when the function returns null.
@@ -813,7 +813,7 @@ public final class FilterTree<T> extends JTree {
 		 * @param icon provides the icon for a given item
 		 * @return this builder instance
 		 */
-		Builder<T> icon(Function<T, @Nullable Icon> icon);
+		Builder<T> icon(Function<? super T, @Nullable Icon> icon);
 
 		/**
 		 * The tree paints the row backgrounds whatever its cell renderer, which shows them unless it paints its own.
@@ -821,7 +821,7 @@ public final class FilterTree<T> extends JTree {
 		 * alternate rows and blended with the selection background when selected
 		 * @return this builder instance
 		 */
-		Builder<T> background(Function<T, @Nullable Color> background);
+		Builder<T> background(Function<? super T, @Nullable Color> background);
 
 		/**
 		 * Ignored in case a {@link #cellRenderer(TreeCellRenderer)} is specified.
@@ -829,14 +829,14 @@ public final class FilterTree<T> extends JTree {
 		 * nodes using the selection foreground
 		 * @return this builder instance
 		 */
-		Builder<T> foreground(Function<T, @Nullable Color> foreground);
+		Builder<T> foreground(Function<? super T, @Nullable Color> foreground);
 
 		/**
 		 * Ignored in case a {@link #cellRenderer(TreeCellRenderer)} is specified.
 		 * @param toolTip provides the tool tip of each node, given its item, null for none
 		 * @return this builder instance
 		 */
-		Builder<T> toolTip(Function<T, @Nullable String> toolTip);
+		Builder<T> toolTip(Function<? super T, @Nullable String> toolTip);
 
 		/**
 		 * @param alternateRowColoring true if alternate row coloring should be enabled
@@ -977,8 +977,8 @@ public final class FilterTree<T> extends JTree {
 	 */
 	private static final class DefaultCellRenderer<T> extends DefaultTreeCellRenderer {
 
-		private final @Nullable Function<T, @Nullable Icon> icon;
-		private final @Nullable Function<T, @Nullable String> toolTip;
+		private final @Nullable Function<? super T, @Nullable Icon> icon;
+		private final @Nullable Function<? super T, @Nullable String> toolTip;
 
 		private DefaultCellRenderer(DefaultBuilder<T> builder) {
 			this.icon = builder.icon;
@@ -1039,11 +1039,11 @@ public final class FilterTree<T> extends JTree {
 		private final List<TreeWillExpandListener> treeWillExpandListeners = new ArrayList<>();
 		private final List<TreeSelectionListener> treeSelectionListeners = new ArrayList<>();
 
-		private Function<T, String> formatter = String::valueOf;
-		private @Nullable Function<T, @Nullable Icon> icon;
-		private @Nullable Function<T, @Nullable Color> background;
-		private @Nullable Function<T, @Nullable Color> foreground;
-		private @Nullable Function<T, @Nullable String> toolTip;
+		private Function<? super T, String> formatter = String::valueOf;
+		private @Nullable Function<? super T, @Nullable Icon> icon;
+		private @Nullable Function<? super T, @Nullable Color> background;
+		private @Nullable Function<? super T, @Nullable Color> foreground;
+		private @Nullable Function<? super T, @Nullable String> toolTip;
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
 		private boolean rowsFillViewport = ROWS_FILL_VIEWPORT.getOrThrow();
 		private @Nullable TreeCellRenderer cellRenderer;
@@ -1064,31 +1064,31 @@ public final class FilterTree<T> extends JTree {
 		}
 
 		@Override
-		public Builder<T> formatter(@Nullable Function<T, String> formatter) {
+		public Builder<T> formatter(@Nullable Function<? super T, String> formatter) {
 			this.formatter = formatter == null ? String::valueOf : formatter;
 			return this;
 		}
 
 		@Override
-		public Builder<T> icon(Function<T, @Nullable Icon> icon) {
+		public Builder<T> icon(Function<? super T, @Nullable Icon> icon) {
 			this.icon = requireNonNull(icon);
 			return this;
 		}
 
 		@Override
-		public Builder<T> background(Function<T, @Nullable Color> background) {
+		public Builder<T> background(Function<? super T, @Nullable Color> background) {
 			this.background = requireNonNull(background);
 			return this;
 		}
 
 		@Override
-		public Builder<T> foreground(Function<T, @Nullable Color> foreground) {
+		public Builder<T> foreground(Function<? super T, @Nullable Color> foreground) {
 			this.foreground = requireNonNull(foreground);
 			return this;
 		}
 
 		@Override
-		public Builder<T> toolTip(Function<T, @Nullable String> toolTip) {
+		public Builder<T> toolTip(Function<? super T, @Nullable String> toolTip) {
 			this.toolTip = requireNonNull(toolTip);
 			return this;
 		}

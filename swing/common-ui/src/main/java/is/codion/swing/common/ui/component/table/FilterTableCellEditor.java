@@ -131,7 +131,7 @@ public interface FilterTableCellEditor<C extends JComponent, T> extends TableCel
 		 * @return this builder
 		 * @see TableCellEditor#stopCellEditing()
 		 */
-		Builder<C, T> stopCellEditing(Function<@Nullable T, Boolean> stopCellEditing);
+		Builder<C, T> stopCellEditing(Function<? super @Nullable T, Boolean> stopCellEditing);
 
 		/**
 		 * Default specified by {@link #CLICK_COUNT_TO_START}.

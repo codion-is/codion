@@ -36,7 +36,7 @@ public interface SelectionDialogBuilderFactory {
 	 * @return a new {@link javax.swing.JList} based selection dialog builder
 	 * @throws IllegalArgumentException in case values is empty
 	 */
-	<T> ListSelectionDialogBuilder<T> list(Collection<T> values);
+	<T> ListSelectionDialogBuilder<T> list(Collection<? extends T> values);
 
 	/**
 	 * @param values the values to select from
@@ -44,7 +44,7 @@ public interface SelectionDialogBuilderFactory {
 	 * @return a new {@link javax.swing.JComboBox} based selection dialog builder
 	 * @throws IllegalArgumentException in case values is empty
 	 */
-	<T> ComboBoxSelectionDialogBuilder<T> comboBox(Collection<T> values);
+	<T> ComboBoxSelectionDialogBuilder<T> comboBox(Collection<? extends T> values);
 
 	/**
 	 * @return a builder for a dialog for selecting a look and feel

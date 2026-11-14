@@ -497,7 +497,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public ControlsBuilder actions(Collection<Action> actions) {
+		public ControlsBuilder actions(Collection<? extends Action> actions) {
 			requireNonNull(actions).forEach(this::action);
 			return this;
 		}

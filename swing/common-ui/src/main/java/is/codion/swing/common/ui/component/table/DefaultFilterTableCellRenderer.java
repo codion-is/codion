@@ -244,8 +244,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final CellColor<R, C, T> foregroundColor;
 		private final List<Customizer<R, C>> customizers;
 		private final int horizontalAlignment;
-		private final @Nullable Function<T, String> toolTip;
-		private final Function<T, String> formatter;
+		private final @Nullable Function<? super T, String> toolTip;
+		private final Function<? super T, String> formatter;
 
 		private UISettings<C> uiSettings;
 
@@ -383,8 +383,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private boolean inactiveSelection = INACTIVE_SELECTION.getOrThrow();
 		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
-		private @Nullable Function<T, String> toolTip;
-		private Function<T, String> formatter;
+		private @Nullable Function<? super T, String> toolTip;
+		private Function<? super T, String> formatter;
 		private int horizontalAlignment;
 
 		private SettingsBuilder(Class<T> type) {
@@ -442,12 +442,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> toolTip(Function<T, String> toolTip) {
+		SettingsBuilder<R, C, T> toolTip(Function<? super T, String> toolTip) {
 			this.toolTip = toolTip;
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> formatter(Function<T, String> formatter) {
+		SettingsBuilder<R, C, T> formatter(Function<? super T, String> formatter) {
 			this.formatter = requireNonNull(formatter);
 			return this;
 		}
@@ -581,7 +581,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Builder<R, C, T> toolTip(Function<T, String> toolTip) {
+		public Builder<R, C, T> toolTip(Function<? super T, String> toolTip) {
 			this.settings.toolTip(toolTip);
 			return this;
 		}
@@ -617,7 +617,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Builder<R, C, T> formatter(Function<T, String> formatter) {
+		public Builder<R, C, T> formatter(Function<? super T, String> formatter) {
 			this.settings.formatter(formatter);
 			return this;
 		}

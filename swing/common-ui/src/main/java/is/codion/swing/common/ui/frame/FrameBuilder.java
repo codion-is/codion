@@ -84,7 +84,7 @@ public interface FrameBuilder {
 	 * @return ths builder instance
 	 * @see JFrame#setIconImages(List)
 	 */
-	FrameBuilder iconImages(List<Image> iconImages);
+	FrameBuilder iconImages(List<? extends Image> iconImages);
 
 	/**
 	 * @param size the size

@@ -44,7 +44,7 @@ public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T,
 	 * @return this builder instance
 	 * @throws IllegalArgumentException in case the selection values do not contain the items
 	 */
-	ListSelectionDialogBuilder<T> selectedItems(Collection<T> items);
+	ListSelectionDialogBuilder<T> selectedItems(Collection<? extends T> items);
 
 	/**
 	 * @param size the preferred dialog size
@@ -56,14 +56,14 @@ public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T,
 	 * @param comparator the comparator to use to sort the items
 	 * @return this builder instance
 	 */
-	ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<T> comparator);
+	ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<? super T> comparator);
 
 	/**
 	 * Ignored in case a renderer is specified, see {@link #renderer(javax.swing.ListCellRenderer)}.
 	 * @param formatter formats the items to select from, null for {@link Object#toString()}
 	 * @return this builder instance
 	 */
-	ListSelectionDialogBuilder<T> formatter(@Nullable Function<T, String> formatter);
+	ListSelectionDialogBuilder<T> formatter(@Nullable Function<? super T, String> formatter);
 
 	/**
 	 * @return a {@link SelectionStep}

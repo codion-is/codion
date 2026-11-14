@@ -32,12 +32,12 @@ final class DefaultSelectionDialogBuilderFactory implements SelectionDialogBuild
 	}
 
 	@Override
-	public <T> ListSelectionDialogBuilder<T> list(Collection<T> values) {
+	public <T> ListSelectionDialogBuilder<T> list(Collection<? extends T> values) {
 		return new DefaultListSelectionDialogBuilder<>(values);
 	}
 
 	@Override
-	public <T> ComboBoxSelectionDialogBuilder<T> comboBox(Collection<T> values) {
+	public <T> ComboBoxSelectionDialogBuilder<T> comboBox(Collection<? extends T> values) {
 		return new DefaultComboBoxSelectionDialogBuilder<>(values);
 	}
 

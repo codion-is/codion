@@ -48,10 +48,10 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	private boolean initialized;
 
 	private FilterTableConditionPanel(TableConditions<C> conditions,
-																		Map<C, ConditionPanel<?>> conditionPanels,
+																		Map<? extends C, ? extends ConditionPanel<?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel) {
 		super(conditions, identifier -> Objects.toString(columnModel.get(identifier).getHeaderValue()));
-		this.conditionPanels = unmodifiableMap(new HashMap<>(requireNonNull(conditionPanels)));
+		this.conditionPanels = unmodifiableMap(new HashMap<C, ConditionPanel<?>>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
 	}
 
@@ -81,7 +81,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
 	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditions<C> conditions,
-																																					 Map<C, ConditionPanel<?>> conditionPanels,
+																																					 Map<? extends C, ? extends ConditionPanel<?>> conditionPanels,
 																																					 FilterTableColumnModel<C> columnModel) {
 		return new FilterTableConditionPanel<>(conditions, conditionPanels, columnModel);
 	}

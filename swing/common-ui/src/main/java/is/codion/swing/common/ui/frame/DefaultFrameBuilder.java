@@ -105,7 +105,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
-	public FrameBuilder iconImages(List<Image> iconImages) {
+	public FrameBuilder iconImages(List<? extends Image> iconImages) {
 		requireNonNull(iconImages);
 		this.iconImages.clear();
 		this.iconImages.addAll(iconImages);

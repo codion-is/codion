@@ -235,14 +235,14 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	 * @param popupMenuControl a function, receiving the component being built, providing a control to add to the popup menu
 	 * @return this builder instance
 	 */
-	B popupControl(Function<C, Control> popupMenuControl);
+	B popupControl(Function<? super C, Control> popupMenuControl);
 
 	/**
 	 * Overridden by {@link #popupMenu(Function)}.
 	 * @param popupMenuControls a function, receiving the component being built, providing controls to add to the popup menu
 	 * @return this builder instance
 	 */
-	B popupControls(Function<C, Controls> popupMenuControls);
+	B popupControls(Function<? super C, Controls> popupMenuControls);
 
 	/**
 	 * Use {@link ControlsBuilder#removeAll()} in order to clear any previously added controls.
@@ -252,7 +252,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	 * @see #popupControl(Function)
 	 * @see #popupControls(Function)
 	 */
-	B popupControls(BiConsumer<C, ControlsBuilder> popupMenuControl);
+	B popupControls(BiConsumer<? super C, ControlsBuilder> popupMenuControl);
 
 	/**
 	 * Overrides {@link #popupControls(Function)}, {@link #popupControls(BiConsumer)} and {@link #popupControl(Function)}.
@@ -260,7 +260,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	 * @return this builder instance
 	 * @see JComponent#setComponentPopupMenu(JPopupMenu)
 	 */
-	B popupMenu(@Nullable Function<C, JPopupMenu> popupMenu);
+	B popupMenu(@Nullable Function<? super C, JPopupMenu> popupMenu);
 
 	/**
 	 * Overrides {@link #font(UnaryOperator)}.
@@ -434,7 +434,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	 * @param onSetVisible called when the component is made visible for the first time
 	 * @return this builder instance
 	 */
-	B onSetVisible(Consumer<C> onSetVisible);
+	B onSetVisible(Consumer<? super C> onSetVisible);
 
 	/**
 	 * @return a {@link ScrollPaneBuilder} using this component as the view
@@ -445,7 +445,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	 * @param onBuild called when the component has been built.
 	 * @return this builder instance
 	 */
-	B onBuild(Consumer<C> onBuild);
+	B onBuild(Consumer<? super C> onBuild);
 
 	/**
 	 * Builds a new component instance.
@@ -458,7 +458,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	 * @param onBuild called after the component is built.
 	 * @return the component
 	 */
-	C build(@Nullable Consumer<C> onBuild);
+	C build(@Nullable Consumer<? super C> onBuild);
 
 	@Override
 	default C get() {

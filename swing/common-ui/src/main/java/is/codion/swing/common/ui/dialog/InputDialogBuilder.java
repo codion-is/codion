@@ -71,7 +71,7 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 	 * @param validator the valididator predicate
 	 * @return this builder instance
 	 */
-	InputDialogBuilder<T> validator(Predicate<@Nullable T> validator);
+	InputDialogBuilder<T> validator(Predicate<? super @Nullable T> validator);
 
 	/**
 	 * Specify a {@link Predicate} used to determine if the dialog should be closed when a input value has been accepted.
@@ -79,7 +79,7 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 	 * @param close called with the current input to determine if the dialog should be closed when accepting input
 	 * @return this builder instance
 	 */
-	InputDialogBuilder<T> close(Predicate<@Nullable T> close);
+	InputDialogBuilder<T> close(Predicate<? super @Nullable T> close);
 
 	/**
 	 * Shows the input dialog and returns the value if the user presses OK

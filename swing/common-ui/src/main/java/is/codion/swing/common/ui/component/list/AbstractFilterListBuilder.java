@@ -41,10 +41,10 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	final SwingFilterListModel<T> listModel;
 
 	@Nullable ListCellRenderer<? super T> cellRenderer;
-	@Nullable Function<T, String> formatter;
-	@Nullable Function<T, @Nullable Color> background;
-	@Nullable Function<T, @Nullable Color> foreground;
-	@Nullable Function<T, @Nullable String> toolTip;
+	@Nullable Function<? super T, String> formatter;
+	@Nullable Function<? super T, @Nullable Color> background;
+	@Nullable Function<? super T, @Nullable Color> foreground;
+	@Nullable Function<? super T, @Nullable String> toolTip;
 	boolean alternateRowColoring = FilterList.ALTERNATE_ROW_COLORING.getOrThrow();
 	boolean rowsFillViewport = FilterList.ROWS_FILL_VIEWPORT.getOrThrow();
 	boolean scrollToSelected = true;
@@ -87,25 +87,25 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	}
 
 	@Override
-	public final B formatter(@Nullable Function<T, String> formatter) {
+	public final B formatter(@Nullable Function<? super T, String> formatter) {
 		this.formatter = formatter;
 		return self();
 	}
 
 	@Override
-	public final B background(Function<T, @Nullable Color> background) {
+	public final B background(Function<? super T, @Nullable Color> background) {
 		this.background = requireNonNull(background);
 		return self();
 	}
 
 	@Override
-	public final B foreground(Function<T, @Nullable Color> foreground) {
+	public final B foreground(Function<? super T, @Nullable Color> foreground) {
 		this.foreground = requireNonNull(foreground);
 		return self();
 	}
 
 	@Override
-	public final B toolTip(Function<T, @Nullable String> toolTip) {
+	public final B toolTip(Function<? super T, @Nullable String> toolTip) {
 		this.toolTip = requireNonNull(toolTip);
 		return self();
 	}

@@ -111,7 +111,7 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * @see #validationIndicator(ValidationIndicator)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidationIndicator
 	 */
-	B valid(@Nullable Predicate<T> valid);
+	B valid(@Nullable Predicate<? super T> valid);
 
 	/**
 	 * @param modifiedIndicator the {@link ModifiedIndicator} to use, null for none

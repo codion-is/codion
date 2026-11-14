@@ -54,11 +54,11 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 
 	private final Collection<T> selectedItems = new ArrayList<>();
 
-	private @Nullable Comparator<T> comparator;
-	private @Nullable Function<T, String> formatter;
+	private @Nullable Comparator<? super T> comparator;
+	private @Nullable Function<? super T, String> formatter;
 	private @Nullable Dimension size;
 
-	DefaultListSelectionDialogBuilder(Collection<T> values) {
+	DefaultListSelectionDialogBuilder(Collection<? extends T> values) {
 		super(values);
 	}
 
@@ -68,7 +68,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> selectedItems(Collection<T> items) {
+	public ListSelectionDialogBuilder<T> selectedItems(Collection<? extends T> items) {
 		if (!values.containsAll(requireNonNull(items))) {
 			throw new IllegalArgumentException("The items were not all found in the selection values: " + items);
 		}
@@ -84,13 +84,13 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<T> comparator) {
+	public ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<? super T> comparator) {
 		this.comparator = comparator;
 		return this;
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> formatter(@Nullable Function<T, String> formatter) {
+	public ListSelectionDialogBuilder<T> formatter(@Nullable Function<? super T, String> formatter) {
 		this.formatter = formatter;
 		return this;
 	}

@@ -151,7 +151,7 @@ public interface TextComponentBuilder<C extends JTextComponent, T, B extends Tex
 	 * @return this builder instance
 	 * @see javax.swing.text.Document#addDocumentListener(DocumentListener)
 	 */
-	B documentListener(Function<C, DocumentListener> documentListener);
+	B documentListener(Function<? super C, DocumentListener> documentListener);
 
 	/**
 	 * @param dragEnabled true if automatic drag handling should be enabled

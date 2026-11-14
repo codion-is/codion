@@ -71,7 +71,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 	private final Supplier<ComponentValue<C, T>> inputComponent;
 	private final Function<EventObject, Boolean> cellEditable;
 	private final Function<EventObject, Boolean> shouldSelectCell;
-	private final @Nullable Function<@Nullable T, Boolean> stopCellEditing;
+	private final @Nullable Function<? super @Nullable T, Boolean> stopCellEditing;
 	private final @Nullable Boolean resizeRow;
 	private final Consumer<FilterTableCellEditor<C, T>> configuration;
 
@@ -224,7 +224,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 		private @Nullable Function<EventObject, Boolean> cellEditable;
 		private @Nullable Function<EventObject, Boolean> shouldSelectCell;
-		private @Nullable Function<@Nullable T, Boolean> stopCellEditing;
+		private @Nullable Function<? super @Nullable T, Boolean> stopCellEditing;
 		private int clickCountToStart = CLICK_COUNT_TO_START.getOrThrow();
 		private @Nullable Boolean resizeRow;
 		private @Nullable Consumer<FilterTableCellEditor<C, T>> configuration;
@@ -246,7 +246,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		}
 
 		@Override
-		public Builder<C, T> stopCellEditing(Function<@Nullable T, Boolean> stopCellEditing) {
+		public Builder<C, T> stopCellEditing(Function<? super @Nullable T, Boolean> stopCellEditing) {
 			this.stopCellEditing = requireNonNull(stopCellEditing);
 			return this;
 		}

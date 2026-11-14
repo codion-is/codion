@@ -158,7 +158,7 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 		 * @param identifiers the column identifiers
 		 * @throws IllegalArgumentException in case a column is not found
 		 */
-		void set(List<C> identifiers);
+		void set(List<? extends C> identifiers);
 
 		/**
 		 * @return an unmodifiable view of the currently visible columns

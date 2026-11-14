@@ -67,9 +67,9 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractComponentBuilder<C extends JComponent, B extends ComponentBuilder<C, B>>
 				implements ComponentBuilder<C, B> {
 
-	private final List<Consumer<C>> buildConsumers = new ArrayList<>(1);
+	private final List<Consumer<? super C>> buildConsumers = new ArrayList<>(1);
 	private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
-	private final List<BiConsumer<C, ControlsBuilder>> popupControls = new ArrayList<>();
+	private final List<BiConsumer<? super C, ControlsBuilder>> popupControls = new ArrayList<>();
 	private final Map<Object, @Nullable Object> clientProperties = new HashMap<>();
 	private final List<FocusListener> focusListeners = new ArrayList<>();
 	private final List<MouseListener> mouseListeners = new ArrayList<>();
@@ -107,8 +107,8 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	private @Nullable ObservableState focusableObservable;
 	private @Nullable ObservableState visibleObservable;
 	private @Nullable Boolean enabled;
-	private @Nullable Function<C, JPopupMenu> popupMenu;
-	private @Nullable Consumer<C> onSetVisible;
+	private @Nullable Function<? super C, JPopupMenu> popupMenu;
+	private @Nullable Consumer<? super C> onSetVisible;
 	private @Nullable TransferHandler transferHandler;
 	private boolean focusCycleRoot = false;
 
@@ -250,23 +250,23 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	@Override
-	public final B popupControls(BiConsumer<C, ControlsBuilder> popupControls) {
+	public final B popupControls(BiConsumer<? super C, ControlsBuilder> popupControls) {
 		this.popupControls.add(requireNonNull(popupControls));
 		return self();
 	}
 
 	@Override
-	public final B popupControl(Function<C, Control> popupMenuControl) {
+	public final B popupControl(Function<? super C, Control> popupMenuControl) {
 		return popupControls(new ProcessPopupMenuControl(requireNonNull(popupMenuControl)));
 	}
 
 	@Override
-	public final B popupControls(Function<C, Controls> popupMenuControls) {
+	public final B popupControls(Function<? super C, Controls> popupMenuControls) {
 		return popupControls(new ProcessPopupMenuControls(requireNonNull(popupMenuControls)));
 	}
 
 	@Override
-	public final B popupMenu(@Nullable Function<C, JPopupMenu> popupMenu) {
+	public final B popupMenu(@Nullable Function<? super C, JPopupMenu> popupMenu) {
 		this.popupMenu = popupMenu;
 		return self();
 	}
@@ -418,7 +418,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	@Override
-	public final B onSetVisible(Consumer<C> onSetVisible) {
+	public final B onSetVisible(Consumer<? super C> onSetVisible) {
 		this.onSetVisible = requireNonNull(onSetVisible);
 		return self();
 	}
@@ -429,7 +429,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	@Override
-	public final B onBuild(Consumer<C> onBuild) {
+	public final B onBuild(Consumer<? super C> onBuild) {
 		buildConsumers.add(requireNonNull(onBuild));
 		return self();
 	}
@@ -440,7 +440,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	@Override
-	public final C build(@Nullable Consumer<C> onBuild) {
+	public final C build(@Nullable Consumer<? super C> onBuild) {
 		C component = configureComponent(createComponent());
 		if (onBuild != null) {
 			onBuild.accept(component);
@@ -638,9 +638,9 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	private final class ProcessPopupMenuControl implements BiConsumer<C, ControlsBuilder> {
 
-		private final Function<C, Control> controlFactory;
+		private final Function<? super C, Control> controlFactory;
 
-		private ProcessPopupMenuControl(Function<C, Control> controlFactory) {
+		private ProcessPopupMenuControl(Function<? super C, Control> controlFactory) {
 			this.controlFactory = controlFactory;
 		}
 
@@ -652,9 +652,9 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	private final class ProcessPopupMenuControls implements BiConsumer<C, ControlsBuilder> {
 
-		private final Function<C, Controls> controlsFactory;
+		private final Function<? super C, Controls> controlsFactory;
 
-		private ProcessPopupMenuControls(Function<C, Controls> controlsFactory) {
+		private ProcessPopupMenuControls(Function<? super C, Controls> controlsFactory) {
 			this.controlsFactory = controlsFactory;
 		}
 
@@ -687,9 +687,9 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	private static final class OnSetVisible<C extends JComponent> implements AncestorListener {
 
 		private final C component;
-		private final Consumer<C> consumer;
+		private final Consumer<? super C> consumer;
 
-		private OnSetVisible(C component, Consumer<C> consumer) {
+		private OnSetVisible(C component, Consumer<? super C> consumer) {
 			this.component = component;
 			this.consumer = consumer;
 			this.component.addAncestorListener(this);

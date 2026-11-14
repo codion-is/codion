@@ -186,7 +186,7 @@ public final class KeyEvents {
 		 * @throws IllegalStateException in case no action has been set or in case the key stroke is already bound
 		 * to a different action on a component, under the same condition
 		 */
-		Builder enable(Collection<JComponent> components);
+		Builder enable(Collection<? extends JComponent> components);
 
 		/**
 		 * Builds the key event and enables it on the given components, replacing any existing binding
@@ -204,7 +204,7 @@ public final class KeyEvents {
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no action has been set
 		 */
-		Builder replace(Collection<JComponent> components);
+		Builder replace(Collection<? extends JComponent> components);
 
 		/**
 		 * Disables this key event on the given components
@@ -220,7 +220,7 @@ public final class KeyEvents {
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no action has been set
 		 */
-		Builder disable(Collection<JComponent> components);
+		Builder disable(Collection<? extends JComponent> components);
 	}
 
 	private static final class DefaultBuilder implements Builder {
@@ -281,7 +281,7 @@ public final class KeyEvents {
 		}
 
 		@Override
-		public Builder enable(Collection<JComponent> components) {
+		public Builder enable(Collection<? extends JComponent> components) {
 			for (JComponent component : requireNonNull(components)) {
 				enable(requireNonNull(component), actionMapKey(component), false);
 			}
@@ -294,7 +294,7 @@ public final class KeyEvents {
 		}
 
 		@Override
-		public Builder replace(Collection<JComponent> components) {
+		public Builder replace(Collection<? extends JComponent> components) {
 			for (JComponent component : requireNonNull(components)) {
 				enable(requireNonNull(component), actionMapKey(component), true);
 			}
@@ -307,7 +307,7 @@ public final class KeyEvents {
 		}
 
 		@Override
-		public Builder disable(Collection<JComponent> components) {
+		public Builder disable(Collection<? extends JComponent> components) {
 			for (JComponent component : requireNonNull(components)) {
 				disable(requireNonNull(component), actionMapKey(component));
 			}

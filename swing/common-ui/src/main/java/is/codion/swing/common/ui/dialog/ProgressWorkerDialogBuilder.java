@@ -235,7 +235,7 @@ public interface ProgressWorkerDialogBuilder<T extends @Nullable Object, V> exte
 	 * @param onResult the handler to add
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult);
+	ProgressWorkerDialogBuilder<T, V> onResult(Consumer<? super T> onResult);
 
 	/**
 	 * Adds a handler that displays a message dialog after a successful run,

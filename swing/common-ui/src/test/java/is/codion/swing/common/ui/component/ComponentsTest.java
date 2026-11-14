@@ -65,6 +65,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
@@ -101,6 +102,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static is.codion.common.utilities.item.Item.item;
 import static java.util.Arrays.asList;
@@ -1115,6 +1118,28 @@ public final class ComponentsTest {
 						.build();
 		assertNotSame(given, replacedInTurn.getClientProperty("labeledBy"));
 		assertEquals("Title", ((JLabel) replacedInTurn.getClientProperty("labeledBy")).getText());
+	}
+
+	@Test
+	void functionsOfSupertypes() {
+		Function<JComponent, JPopupMenu> popupMenu = component -> new JPopupMenu();
+		Consumer<JComponent> onBuild = component -> component.setName("built");
+		JTextField field = Components.stringField()
+						.popupMenu(popupMenu)
+						.onBuild(onBuild)
+						.build();
+		assertEquals("built", field.getName());
+		Function<Object, String> formatter = Object::toString;
+		Function<Object, Color> background = item -> Color.RED;
+		FilterList<String> list = FilterList.builder()
+						.model(SwingFilterListModel.builder()
+										.items(asList("one", "two"))
+										.build())
+						.selectedItems()
+						.formatter(formatter)
+						.background(background)
+						.build();
+		assertEquals(2, list.getModel().getSize());
 	}
 
 	@Test

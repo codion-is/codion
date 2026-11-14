@@ -51,7 +51,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	private @Nullable ObservableState modifiedObservable;
 	private @Nullable ObservableState validObservable;
 	private @Nullable ObservableState warnedObservable;
-	private @Nullable Predicate<T> validPredicate;
+	private @Nullable Predicate<? super T> validPredicate;
 	private @Nullable T value;
 	private boolean valueSet = false;
 
@@ -76,7 +76,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	@Override
-	public final B valid(@Nullable Predicate<T> valid) {
+	public final B valid(@Nullable Predicate<? super T> valid) {
 		this.validPredicate = valid;
 		return self();
 	}
@@ -302,7 +302,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	private static <C extends JComponent, T> ObservableState createInvalidState(ComponentValue<C, T> componentValue,
-																																						Predicate<T> validator) {
+																																						Predicate<? super T> validator) {
 		InvalidConsumer<T> invalidConsumer = new InvalidConsumer<>(componentValue.get(), validator);
 		componentValue.addConsumer(invalidConsumer);
 
@@ -311,10 +311,10 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 
 	private static final class InvalidConsumer<T> implements Consumer<T> {
 
-		private final Predicate<@Nullable T> validator;
+		private final Predicate<? super @Nullable T> validator;
 		private final State invalid;
 
-		private InvalidConsumer(@Nullable T initialValue, Predicate<T> validator) {
+		private InvalidConsumer(@Nullable T initialValue, Predicate<? super T> validator) {
 			this.validator = validator;
 			this.invalid = State.state();
 			accept(initialValue);

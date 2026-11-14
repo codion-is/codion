@@ -42,7 +42,7 @@ abstract class AbstractSelectionDialogBuilder<T, B extends SelectionDialogBuilde
 	protected boolean allowEmptySelection = false;
 	protected @Nullable ListCellRenderer<? super T> renderer;
 
-	AbstractSelectionDialogBuilder(Collection<T> values) {
+	AbstractSelectionDialogBuilder(Collection<? extends T> values) {
 		if (requireNonNull(values).isEmpty()) {
 			throw new IllegalArgumentException("One or more items to select from must be provided");
 		}

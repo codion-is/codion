@@ -94,7 +94,7 @@ public interface ControlsBuilder extends ControlBuilder<Controls, ControlsBuilde
 	 * @param actions the Actions to add to this controls instance
 	 * @return this Builder instance
 	 */
-	ControlsBuilder actions(Collection<Action> actions);
+	ControlsBuilder actions(Collection<? extends Action> actions);
 
 	/**
 	 * Adds a separator to the Controls

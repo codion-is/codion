@@ -54,7 +54,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 					messageBundle(TableConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
 
 	private final TableConditions<C> conditions;
-	private final Function<C, String> captions;
+	private final Function<? super C, String> captions;
 	private final Value<ConditionView> view = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onViewChanged)
@@ -69,7 +69,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 * @param captions provides captions based on the column identifiers used when presenting conditions for selection
 	 * @see #select(JComponent)
 	 */
-	protected TableConditionPanel(TableConditions<C> conditions, Function<C, String> captions) {
+	protected TableConditionPanel(TableConditions<C> conditions, Function<? super C, String> captions) {
 		this.conditions = requireNonNull(conditions);
 		this.captions = requireNonNull(captions);
 		configureStates();

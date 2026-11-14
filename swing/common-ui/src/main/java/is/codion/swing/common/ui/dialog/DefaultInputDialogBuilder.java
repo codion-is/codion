@@ -60,7 +60,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
 	private @Nullable String caption;
 	private @Nullable ObservableState valid;
-	private @Nullable Predicate<@Nullable T> close;
+	private @Nullable Predicate<? super @Nullable T> close;
 
 	DefaultInputDialogBuilder(ComponentValue<?, T> componentValue) {
 		this.componentValue = requireNonNull(componentValue);
@@ -124,12 +124,12 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public InputDialogBuilder<T> validator(Predicate<@Nullable T> validator) {
+	public InputDialogBuilder<T> validator(Predicate<? super @Nullable T> validator) {
 		return valid(createInputValidObserver(requireNonNull(validator)));
 	}
 
 	@Override
-	public InputDialogBuilder<T> close(Predicate<T> close) {
+	public InputDialogBuilder<T> close(Predicate<? super @Nullable T> close) {
 		this.close = requireNonNull(close);
 		return this;
 	}
@@ -184,7 +184,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		throw new CancelException();
 	}
 
-	private ObservableState createInputValidObserver(Predicate<@Nullable T> inputValidator) {
+	private ObservableState createInputValidObserver(Predicate<? super @Nullable T> inputValidator) {
 		return new InputValidStateListener<>(inputValidator, componentValue).validInputState.observable();
 	}
 
@@ -204,10 +204,10 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	private static final class InputValidStateListener<T> implements Runnable {
 
 		private final State validInputState;
-		private final Predicate<@Nullable T> validInputPredicate;
+		private final Predicate<? super @Nullable T> validInputPredicate;
 		private final Value<T> componentValue;
 
-		private InputValidStateListener(Predicate<@Nullable T> validInputPredicate, Value<T> componentValue) {
+		private InputValidStateListener(Predicate<? super @Nullable T> validInputPredicate, Value<T> componentValue) {
 			this.validInputState = State.state(validInputPredicate.test(componentValue.get()));
 			this.validInputPredicate = validInputPredicate;
 			this.componentValue = componentValue;

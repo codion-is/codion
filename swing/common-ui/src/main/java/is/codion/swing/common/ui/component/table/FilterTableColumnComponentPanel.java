@@ -61,7 +61,7 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 	private final Map<C, JComponent> components;
 	private final Map<C, JPanel> nullComponents = new HashMap<>(0);
 
-	private FilterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel, Map<C, ? extends JComponent> components) {
+	private FilterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel, Map<? extends C, ? extends JComponent> components) {
 		this.columnModel = requireNonNull(columnModel);
 		this.columns = columnModel.all();
 		requireNonNull(components).forEach((identifier, component) -> {
@@ -108,7 +108,7 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 	 * @return a new {@link FilterTableColumnComponentPanel}
 	 */
 	public static <C> FilterTableColumnComponentPanel<C> filterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel,
-																																											 Map<C, ? extends JComponent> columnComponents) {
+																																											 Map<? extends C, ? extends JComponent> columnComponents) {
 		return new FilterTableColumnComponentPanel<>(columnModel, columnComponents);
 	}
 

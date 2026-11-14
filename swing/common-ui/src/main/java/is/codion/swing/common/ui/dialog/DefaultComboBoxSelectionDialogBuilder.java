@@ -40,7 +40,7 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 
 	private @Nullable T selectedItem;
 
-	DefaultComboBoxSelectionDialogBuilder(Collection<T> values) {
+	DefaultComboBoxSelectionDialogBuilder(Collection<? extends T> values) {
 		super(values);
 	}
 
