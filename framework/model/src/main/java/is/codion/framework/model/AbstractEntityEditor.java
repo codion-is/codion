@@ -354,6 +354,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 * outgoing master's detail, and whatever they hold is replaced when it does — an edit made in a detail
 	 * editor while its master's load is in flight is overwritten, not merged. The master's own values are
 	 * not re-applied, so an edit made there survives.
+	 * <p>Until the load lands the active entity can not be inserted, updated or deleted via {@link #tasks()}, which
+	 * would persist the outgoing master's detail along with it, and {@link EditorEntity#modified()} does not count
+	 * the detail editors. A load which fails leaves it so, until the entity is set again or
+	 * {@link EditorEntity#refresh() refreshed}.
 	 * @return the {@link State} controlling whether detail editors are loaded asynchronously
 	 * @see #ASYNC
 	 */
@@ -472,6 +476,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		Entity instance = entity.get();
 		entity.exists.update(instance);
 		entity.present.update(instance);
+		//what persists with the master depends on whether it exists, so before modified, which reads it
+		detail.editors.values().forEach(DetailEditor::updateUpdatable);
 		entity.modified.update();
 		entity.primaryKeyPresent.set(entity.instance.primaryKey().present());
 		updateWarnings();
@@ -644,6 +650,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 */
 		private boolean notifying = false;
 
+		/**
+		 * True while the detail editors do not hold the details of the entity held, from when its detail load is handed
+		 * to {@link #execute(EditorTask)} until the load is handled, and for good if it fails, until the entity is set
+		 * again, replaced by another, refreshed or reset. Nothing then persists with the entity, see
+		 * {@link DetailEditor#updateUpdatable()}.
+		 */
+		private boolean detailsPending = false;
+
 		private DefaultEditorEntity() {
 			this.exists = new DefaultExists(entityDefinition);
 			this.modified = new DefaultModified();
@@ -663,8 +677,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public void set(Entity entity) {
 			Entity validated = validateType(entity).immutable();
 			changing.run();
+			detailsPending = !detail.editors.isEmpty();
 			setEntity(validated);
-			if (!detail.editors.isEmpty()) {
+			if (detailsPending) {
 				// the detail editors must be loaded for the new entity, on a background thread
 				execute(defaultTasks().setDetails(validated));
 			}
@@ -688,15 +703,21 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void replace(Entity entity) {
 			Entity validated = validateType(entity).immutable();
-			boolean identityChanged = !instance.primaryKey().equals(validated.primaryKey());
+			boolean loadDetails = !instance.primaryKey().equals(validated.primaryKey()) && !detail.editors.isEmpty();
+			if (loadDetails) {
+				detailsPending = true;
+			}
 			setEntity(validated);
-			if (identityChanged && !detail.editors.isEmpty()) {
+			if (loadDetails) {
 				// the detail editors must be reloaded for the new identity, on a background thread
 				execute(defaultTasks().replaceDetails(validated));
 			}
 			else {
-				// nothing to reload; supersede any in-flight load and fire replaced
-				supersede();
+				// nothing to reload; supersede any in-flight refresh and fire replaced, but leave a detail load pending
+				// for this very entity, the same row, to land, superseding it would leave the previous one's details
+				if (!detailsPending) {
+					supersede();
+				}
 				replaced.accept(validated);
 			}
 		}
@@ -710,6 +731,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public void defaults() {
 			changing.run();
 			supersede();
+			detailsPending = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
 			setEntity(defaultEntity());
 			changed.accept(get());
@@ -719,6 +741,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public void clear() {
 			changing.run();
 			supersede();
+			detailsPending = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
 			setEntity(createEntity(DefaultEditorEntity::nullValue));
 			changed.accept(get());
@@ -805,8 +828,18 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			return value(attributeDefinition.attribute()).defaultValue().getOrThrow().get();
 		}
 
+		/**
+		 * The detail load of the entity held has been handled, the detail editors now holding its details.
+		 */
+		private void detailsLoaded() {
+			detailsPending = false;
+			detail.editors.values().forEach(DetailEditor::updateUpdatable);
+			modified.update();
+		}
+
 		private void resetDefaults() {
 			supersede();
+			detailsPending = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
 			setEntity(defaultEntity());
 			replaced.accept(null);
@@ -837,6 +870,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private void resetCleared() {
 			supersede();
+			detailsPending = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
 			setEntity(createEntity(DefaultEditorEntity::nullValue));
 			replaced.accept(null);
@@ -897,6 +931,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final class DefaultEditorTasks implements EditorTasks {
 
 		private static final String NOT_MODIFIED = "Entity is not modified: ";
+		private static final String DETAILS_PENDING = "The detail editors do not hold the details of the entity, " +
+						"their load in progress or having failed, set or refresh it to load them: ";
 		private static final String REFRESH = "refresh {}";
 		private static final String INSERT = "insert {}";
 		private static final String UPDATE = "update {}";
@@ -916,6 +952,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public EditorTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException {
 			settings.verifyInsertEnabled();
+			verifyDetailsLoaded();
 			validate();
 			Entity entity = entity().get().copy().mutable();
 			persistEvents.beforeInsert(entity);
@@ -946,6 +983,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public EditorTask<Entity> update() throws EntityValidationException {
 			settings.verifyUpdateEnabled(1);
+			verifyDetailsLoaded();
 			validate();
 			if (!entity.modified().is()) {
 				throw new IllegalStateException(NOT_MODIFIED + entity().get());
@@ -987,6 +1025,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public EditorTask<Entity> delete() {
 			settings.verifyDeleteEnabled();
+			verifyDetailsLoaded();
 			Entity entity = entity().get().copy().mutable();
 			entity.revert();// in case of a modified primary key
 			persistEvents.beforeDelete(entity);
@@ -1028,6 +1067,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private EditorTask<Entity> set(Entity entity) {
 			return new SetEntity(entity);
+		}
+
+		/**
+		 * A task persisting the entity held persists its detail editors along with it, so they must hold its details.
+		 */
+		private void verifyDetailsLoaded() {
+			if (entity.detailsPending && !detail.editors.isEmpty()) {
+				throw new IllegalStateException(DETAILS_PENDING + entity().get());
+			}
 		}
 
 		private EditorTask<Entity> replace(Entity entity) {
@@ -1444,6 +1492,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				List<Result<Entity>> details = loadDetails(entityToSet, false);
 				return () -> {
 					details.forEach(Result::handle);
+					entity.detailsPending = false;
 					entity.setEntity(entityToSet);
 					entity.changed.accept(entityToSet);
 
@@ -1467,6 +1516,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				List<Result<Entity>> details = identityChanged ? loadDetails(entityToSet, true) : emptyList();
 				return () -> {
 					details.forEach(Result::handle);
+					if (identityChanged) {
+						entity.detailsPending = false;
+					}
 					entity.setEntity(entityToSet);
 					entity.replaced.accept(entityToSet);
 
@@ -1484,6 +1536,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				List<Result<Entity>> details = loadDetails(entityToSet, false);
 				return () -> {
 					details.forEach(Result::handle);
+					entity.detailsLoaded();
 					entity.changed.accept(entityToSet);
 
 					return entityToSet;
@@ -1496,6 +1549,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				List<Result<Entity>> details = loadDetails(entityToSet, true);
 				return () -> {
 					details.forEach(Result::handle);
+					entity.detailsLoaded();
 					entity.replaced.accept(entityToSet);
 
 					return entityToSet;
@@ -2068,13 +2122,20 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private void refreshStates() {
-			boolean masterExists = entity().exists().is();
+			updateUpdatable();
+			AbstractEntityEditor.this.entity.modified.update();
+		}
+
+		/**
+		 * Updates what persists with the master, nothing while this detail editor holds the details of a previous master.
+		 */
+		private void updateUpdatable() {
+			boolean masterExists = entity().exists().is() && !AbstractEntityEditor.this.entity.detailsPending;
 			boolean exists = editor.entity().exists().is();
 			boolean modified = editor.entity().modified().is();
 			updatable.insert.set(masterExists && editor.entity().present().is() && !exists);
 			updatable.update.set(masterExists && editor.entity().present().is() && exists && modified);
 			updatable.delete.set(masterExists && !editor.entity().present().is() && exists);
-			AbstractEntityEditor.this.entity.modified.update();
 		}
 
 		private EditorTask<Entity> populate(Entity master, @Nullable Entity detail, EntityConnection connection, boolean replace) {
@@ -2569,9 +2630,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 							.map(ForeignKey.Reference::column)
 							.collect(toList())
 							.forEach(modifiedAttributes::remove);
-			detail.editors.values().stream()
-							.map(editor -> editor.editor.entity().modified().attributes().get())
-							.forEach(modifiedAttributes::addAll);
+			if (!entity.detailsPending) {
+				//not those of a previous master's details
+				detail.editors.values().stream()
+								.map(editor -> editor.editor.entity().modified().attributes().get())
+								.forEach(modifiedAttributes::addAll);
+			}
 
 			return modifiedAttributes;
 		}

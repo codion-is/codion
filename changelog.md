@@ -54,6 +54,8 @@ Codion Change Log
 - AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
 - EntityComboBoxModel.Builder.select() renamed selectedItem().
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
+- AbstractEntityEditor bug fixed, a master whose detail editors still hold the previous master's details, during an asynchronous detail load or after one which failed, can no longer be inserted, updated or deleted, where the previous master's details were persisted with it, and modified() no longer counts them, a replace() of the same entity during the load now leaving it to land, where it was dropped, the detail editors holding the previous master's details for good.
+- AbstractEntityEditor bug fixed, modified() no longer reads true for a moment when a master with an always present detail is set after defaults() or clear(), what persists with the master now recomputed whenever its own states are, where defaults() and clear() computed it against the previous master.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model

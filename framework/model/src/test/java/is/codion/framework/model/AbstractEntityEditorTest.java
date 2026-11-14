@@ -1683,6 +1683,162 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void detailLoadFailedRefusesPersist() throws EntityValidationException {
+		// a detail load which fails leaves the detail editors holding the previous master's details, so nothing
+		// persists with the master until a load succeeds, where the previous master's details were persisted with it
+		CONNECTION.startTransaction();
+		try {
+			insertExtra(40, "forty");
+			insertExtra(10, "ten");
+			Entity tenAgain = insertExtra(10, "ten again");// two rows where the link expects one at most
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
+			departmentEditor.detail().add(EditorLink.builder()
+							.editor(extraEditor)
+							.foreignKey(DepartmentExtra.DEPARTMENT_FK)
+							.present(extra -> extra.present(DepartmentExtra.DESCRIPTION))
+							.build());
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(40)));
+			Entity ten = CONNECTION.selectSingle(Department.ID.equalTo(10));
+			assertThrows(IllegalStateException.class, () -> departmentEditor.entity().set(ten));
+			// the master is 10, its detail editor holding the detail of 40
+			assertEquals(10, departmentEditor.value(Department.ID).get());
+			assertEquals("forty", extraEditor.value(DepartmentExtra.DESCRIPTION).get());
+
+			extraEditor.value(DepartmentExtra.DESCRIPTION).set("edited under 10");
+			assertFalse(departmentEditor.entity().modified().is());
+			assertTrue(departmentEditor.entity().modified().attributes().get().isEmpty());
+			departmentEditor.value(Department.NAME).set("ACCOUNTS");
+			assertTrue(departmentEditor.entity().modified().is());
+			assertThrows(IllegalStateException.class, departmentEditor.tasks()::insert);
+			assertThrows(IllegalStateException.class, departmentEditor.tasks()::update);
+			assertThrows(IllegalStateException.class, departmentEditor.tasks()::delete);
+
+			// a load which succeeds puts it right
+			CONNECTION.delete(tenAgain.primaryKey());
+			departmentEditor.entity().refresh();
+			assertEquals("ten", extraEditor.value(DepartmentExtra.DESCRIPTION).get());
+			extraEditor.value(DepartmentExtra.DESCRIPTION).set("edited under 10");
+			assertTrue(departmentEditor.entity().modified().is());
+			departmentEditor.update();
+			assertEquals("edited under 10", CONNECTION.selectSingle(DepartmentExtra.DEPARTMENT.equalTo(10)).get(DepartmentExtra.DESCRIPTION));
+			assertEquals("forty", CONNECTION.selectSingle(DepartmentExtra.DEPARTMENT.equalTo(40)).get(DepartmentExtra.DESCRIPTION));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void detailLoadPendingRefusesPersist() throws EntityValidationException {
+		// until the detail load lands, asynchronous with a UI, the detail editors hold the previous master's details,
+		// which were persisted with the new master, and counted as its modifications
+		CONNECTION.startTransaction();
+		try {
+			insertExtra(10, "ten");
+			HoldingEditor departmentEditor = new HoldingEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
+			departmentEditor.detail().add(EditorLink.builder()
+							.editor(extraEditor)
+							.foreignKey(DepartmentExtra.DEPARTMENT_FK)
+							.present(extra -> extra.present(DepartmentExtra.DESCRIPTION))
+							.build());
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(10)));
+			extraEditor.value(DepartmentExtra.DESCRIPTION).set("discarded edit");
+			assertTrue(departmentEditor.entity().modified().is());
+
+			// moving on, discarding the edit, the detail load held in flight
+			departmentEditor.hold();
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(40)));
+			assertEquals(40, departmentEditor.value(Department.ID).get());
+			assertEquals("discarded edit", extraEditor.value(DepartmentExtra.DESCRIPTION).get());
+			assertFalse(departmentEditor.entity().modified().is());
+			assertTrue(departmentEditor.entity().modified().attributes().get().isEmpty());
+			assertThrows(IllegalStateException.class, departmentEditor.tasks()::insert);
+			assertThrows(IllegalStateException.class, departmentEditor.tasks()::update);
+			assertThrows(IllegalStateException.class, departmentEditor.tasks()::delete);
+
+			departmentEditor.release();
+			// department 40 has no extra
+			assertFalse(extraEditor.entity().exists().is());
+			assertNull(extraEditor.value(DepartmentExtra.DESCRIPTION).get());
+			assertFalse(departmentEditor.entity().modified().is());
+			departmentEditor.value(Department.NAME).set("OPS");
+			departmentEditor.update();
+			assertEquals("ten", CONNECTION.selectSingle(DepartmentExtra.DEPARTMENT.equalTo(10)).get(DepartmentExtra.DESCRIPTION));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void detailLoadPendingSurvivesReplace() {
+		// replacing the entity with another instance of itself, as a table refresh does, while its detail load is in
+		// flight, superseded the load, leaving the detail editors holding the previous master's details for good
+		CONNECTION.startTransaction();
+		try {
+			insertExtra(10, "ten");
+			HoldingEditor departmentEditor = new HoldingEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
+			departmentEditor.detail().add(EditorLink.builder()
+							.editor(extraEditor)
+							.foreignKey(DepartmentExtra.DEPARTMENT_FK)
+							.present(extra -> extra.present(DepartmentExtra.DESCRIPTION))
+							.build());
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(10)));
+
+			departmentEditor.hold();
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(40)));
+			departmentEditor.entity().replace(CONNECTION.selectSingle(Department.ID.equalTo(40)));
+			assertEquals("ten", extraEditor.value(DepartmentExtra.DESCRIPTION).get());
+			departmentEditor.release();
+			assertFalse(extraEditor.entity().exists().is());
+			assertNull(extraEditor.value(DepartmentExtra.DESCRIPTION).get());
+			// no longer refused
+			departmentEditor.tasks().delete();
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void detailStatesFollowMasterExistence() {
+		// defaults() reset the detail editors before the master, computing what persists with it against the previous
+		// master's existence, so the next master set read as modified until its details were loaded
+		CONNECTION.startTransaction();
+		try {
+			insertExtra(10, "ten");
+			insertExtra(20, "twenty");
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
+			// the default present predicate, the detail always present
+			departmentEditor.detail().add(EditorLink.builder()
+							.editor(extraEditor)
+							.foreignKey(DepartmentExtra.DEPARTMENT_FK)
+							.build());
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(10)));
+			departmentEditor.entity().defaults();
+			assertFalse(departmentEditor.entity().modified().is());
+			List<Boolean> modified = new ArrayList<>();
+			departmentEditor.entity().modified().addConsumer(modified::add);
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(20)));
+			assertTrue(modified.isEmpty());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	private static Entity insertExtra(int department, String description) {
+		return CONNECTION.insertSelect(CONNECTION.entities().entity(DepartmentExtra.TYPE)
+						.with(DepartmentExtra.DEPARTMENT, department)
+						.with(DepartmentExtra.DESCRIPTION, description)
+						.build());
+	}
+
+	@Test
 	void detailEditorGatesMasterPersist() throws EntityValidationException {
 		CONNECTION.startTransaction();
 		try {
@@ -2616,7 +2772,7 @@ public final class AbstractEntityEditorTest {
 		assertInstanceOf(DepartmentPersistence.class, departmentEditor.persistence().get());
 	}
 
-	private static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
+	private static class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
 
 		private TestEntityEditor(EntityType entityType, EntityConnection connection) {
 			this(entityType, connection, new TestComponentModels());
@@ -2634,6 +2790,49 @@ public final class AbstractEntityEditorTest {
 		@Override
 		public TestEntityEditor create(EntityType entityType, ComponentModels componentModels) {
 			return new TestEntityEditor(entityType, connection(), (TestComponentModels) componentModels);
+		}
+	}
+
+	/**
+	 * Holds a detail load back, as the background thread does, the window in which the master holds the new entity and
+	 * its detail editors the previous master's details, and drops it when superseded, as its result would be.
+	 */
+	private static final class HoldingEditor extends TestEntityEditor {
+
+		private boolean hold;
+		private EditorTask<Entity> held;
+
+		private HoldingEditor(EntityType entityType, EntityConnection connection) {
+			super(entityType, connection);
+		}
+
+		private void hold() {
+			hold = true;
+		}
+
+		private void release() {
+			hold = false;
+			EditorTask<Entity> task = held;
+			held = null;
+			if (task != null) {
+				super.execute(task);
+			}
+		}
+
+		@Override
+		protected void execute(EditorTask<Entity> task) {
+			if (hold) {
+				held = task;
+			}
+			else {
+				super.execute(task);
+			}
+		}
+
+		@Override
+		protected void supersede() {
+			held = null;
+			super.supersede();
 		}
 	}
 

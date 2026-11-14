@@ -378,7 +378,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * @return a task for inserting the active entity
 		 * @throws EntityValidationException in case of validation failure
-		 * @throws IllegalStateException in case inserting is not enabled
+		 * @throws IllegalStateException in case inserting is not enabled, or the detail editors do not hold the
+		 * details of the active entity, see {@link DetailEditors}
 		 */
 		EditorTask<Entity> insert() throws EntityValidationException;
 
@@ -386,7 +387,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @param before called on the entity before it is inserted
 		 * @return a task for inserting the active entity
 		 * @throws EntityValidationException in case of validation failure
-		 * @throws IllegalStateException in case inserting is not enabled
+		 * @throws IllegalStateException in case inserting is not enabled, or the detail editors do not hold the
+		 * details of the active entity, see {@link DetailEditors}
 		 */
 		EditorTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException;
 
@@ -409,7 +411,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * @return a task for updating the active entity
 		 * @throws EntityValidationException in case of validation failure
-		 * @throws IllegalStateException in case updating is not enabled
+		 * @throws IllegalStateException in case updating is not enabled, the active entity is not modified, or the
+		 * detail editors do not hold its details, see {@link DetailEditors}
 		 */
 		EditorTask<Entity> update() throws EntityValidationException;
 
@@ -431,7 +434,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * @return a task for deleting the active entity
-		 * @throws IllegalStateException in case deleting is not enabled
+		 * @throws IllegalStateException in case deleting is not enabled, or the detail editors do not hold the
+		 * details of the active entity, see {@link DetailEditors}
 		 */
 		EditorTask<Entity> delete();
 
@@ -618,7 +622,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>If the new entity has the same primary key as the current one (the typical post-persist
 		 * refresh case), detail editors are <em>not</em> touched — their state is owned by their own
 		 * persist tasks — and the replacement is fully synchronous, as it is when no detail editors are
-		 * registered. If the primary key changes, registered detail editors are reloaded via their link's
+		 * registered. A detail load still in flight for the entity, which has the same primary key, is left to
+		 * land. If the primary key changes, registered detail editors are reloaded via their link's
 		 * load action, since the master's identity has changed; the entity values are applied
 		 * synchronously, while as with {@link #set(Entity)} that detail reload may be performed
 		 * asynchronously when the editor is bound to UI components, with {@link #replaced()} firing once
@@ -1277,6 +1282,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * at registration time via {@link EditorLink.Builder#present(Predicate)}. A detail that is present but
 	 * does not yet exist triggers an insert. A detail that exists but is no longer present triggers a
 	 * delete. A detail that exists, is present, and is modified triggers an update.
+	 * <p>The master persists only along with its own details. From when it is set until its details are loaded, and
+	 * after a load which fails, until it is set again or {@link EditorEntity#refresh() refreshed}, the detail editors
+	 * hold the details of the previous master, so its {@link EditorTasks#insert() insert}, {@link EditorTasks#update()
+	 * update} and {@link EditorTasks#delete() delete} tasks are refused and its {@link Modified} state does not
+	 * aggregate theirs.
 	 *
 	 * <h2>Removal</h2>
 	 * <p>Registration reaches into the detail editor, so {@link #remove(ForeignKey)} and {@link #remove(String)}
