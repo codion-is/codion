@@ -19,6 +19,7 @@
 /**
  * Framework EntityServer monitor.
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.monitor.ui {
 	requires org.slf4j;
 	requires org.jfree.jfreechart;

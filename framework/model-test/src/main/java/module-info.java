@@ -24,6 +24,7 @@
  * <li>{@link is.codion.framework.model.test.AbstractEntityApplicationModelTest}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.model.test {
 	requires org.junit.jupiter.api;
 	requires is.codion.framework.db.local;

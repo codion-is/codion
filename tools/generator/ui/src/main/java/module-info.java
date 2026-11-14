@@ -22,6 +22,7 @@
  * <li>{@link is.codion.tools.generator.ui.DomainGeneratorPanel}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.generator.ui {
 	requires is.codion.plugin.flatlaf.themes;
 	requires is.codion.swing.common.ui;

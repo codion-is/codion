@@ -74,7 +74,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		return createLimitOffsetClause(limit, offset);
 	}
 
@@ -118,7 +118,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		String sqlState = exception.getSQLState();
 		if (sqlState == null) {
 			return super.errorType(exception);
@@ -144,7 +144,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;

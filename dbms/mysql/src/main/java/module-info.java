@@ -22,6 +22,7 @@
  * {@link is.codion.dbms.mysql.MySQLDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.dbms.mysql {
 	requires transitive is.codion.common.db;
 

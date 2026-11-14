@@ -22,6 +22,7 @@
  * {@link is.codion.dbms.mariadb.MariaDBDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.dbms.mariadb {
 	requires transitive is.codion.common.db;
 

@@ -24,6 +24,7 @@
  * </ul>
  * @provides is.codion.framework.db.EntityConnection
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.domain.test {
 	requires org.slf4j;
 	requires org.junit.jupiter.api;

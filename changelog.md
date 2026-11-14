@@ -47,6 +47,7 @@ Codion Change Log
 - H2Database bug fixed, an embedded file database is now created without DB_CLOSE_DELAY=-1, which H2 keeps as the database's own setting, so it stayed open once its last connection closed, in every later process too, until shut down; an in-memory one keeps it.
 ### is.codion.framework.domain
 - Parameters widened to wildcard types, collections and maps taking ? extends their elements and keys, and comparators ? super their arguments, where a subtype or supertype fits.
+- ReportException, the message constructor parameters now @Nullable, a wrapped exception's message possibly null.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model
@@ -76,9 +77,11 @@ Codion Change Log
 - Parameters widened to wildcard types, functions taking ? super their arguments and ? extends their results, and maps ? their values, where a subtype or supertype fits.
 - JasperReports.fillReport() now copies the parameters given, which the report fills in, where it filled in the map given, which had to be modifiable.
 - JRReport now takes Map<String, ?> parameters, where it took Map<String, Object>, its report types declared ReportType<Map<String, ?>, R>, and fill() copies the parameters given, which the report fills in, as JasperReports.fillReport() does.
+- JasperReportsDataSource, the onNext constructor parameter now @Nullable, null meaning none, as handled.
 ### is.codion.plugin.flatlaf.intellij.themes
 - FlatLookAndFeelIntelliJThemes, the table selection backgrounds of the Akusan Gray, Atom One Light, Codely Light, Darcula Solid and Github Light themes reverted to the themes' own, FilterTable now keeping a selection distinct.
 - FlatLookAndFeelIntelliJThemes, the Obsidian Sunset themes now set their selection foreground, where FlatLaf derived a near black one from their translucent selection background, unreadable on it, and Espresso Light's table and list selection foreground is now its foreground, where pink on light yellow was barely readable.
+- JSpecify annotations added.
 
 ## 0.18.93
 ### is.codion.common.reactive

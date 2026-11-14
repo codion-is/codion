@@ -23,6 +23,8 @@ import is.codion.common.db.database.ClientInfo;
 import is.codion.common.db.database.GetValue;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -98,7 +100,7 @@ final class Db2Database extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		return createOffsetFetchNextClause(limit, offset);
 	}
 
@@ -134,7 +136,7 @@ final class Db2Database extends AbstractDatabase {
 	 * a lock timeout otherwise.
 	 */
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		if (deadlock(exception)) {
 			return ErrorType.DEADLOCK;
 		}
@@ -150,7 +152,7 @@ final class Db2Database extends AbstractDatabase {
 	 * {@code SQLCODE=-407, SQLSTATE=23502, SQLERRMC=TBSPACEID=2, TABLEID=4, COLNO=1}, for which no detail is provided.
 	 */
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;
@@ -179,7 +181,7 @@ final class Db2Database extends AbstractDatabase {
 	private static final class GetLocalDate implements GetValue<LocalDate> {
 
 		@Override
-		public LocalDate get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalDate get(ResultSet resultSet, int index) throws SQLException {
 			Date date = resultSet.getDate(index);
 
 			return date == null ? null : date.toLocalDate();
@@ -189,7 +191,7 @@ final class Db2Database extends AbstractDatabase {
 	private static final class GetLocalTime implements GetValue<LocalTime> {
 
 		@Override
-		public LocalTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalTime get(ResultSet resultSet, int index) throws SQLException {
 			Time time = resultSet.getTime(index);
 
 			return time == null ? null : time.toLocalTime();
@@ -199,7 +201,7 @@ final class Db2Database extends AbstractDatabase {
 	private static final class GetLocalDateTime implements GetValue<LocalDateTime> {
 
 		@Override
-		public LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
 			Timestamp timestamp = resultSet.getTimestamp(index);
 
 			return timestamp == null ? null : timestamp.toLocalDateTime();

@@ -19,6 +19,7 @@
 /**
  * Log4J implementation of {@link is.codion.common.utilities.logging.LoggerProxy}.
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.plugin.log4j.proxy {
 	requires org.apache.logging.log4j.core;
 	requires org.apache.logging.log4j;

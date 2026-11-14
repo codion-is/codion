@@ -22,6 +22,7 @@
  * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.generator.model {
 	requires transitive is.codion.common.db;
 	requires transitive is.codion.swing.common.model;

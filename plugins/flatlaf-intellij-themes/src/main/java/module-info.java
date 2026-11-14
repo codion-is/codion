@@ -19,6 +19,7 @@
 /**
  * Flat Look and Feel IntelliJ themes
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.plugin.flatlaf.intellij.themes {
 	requires java.logging;
 	requires transitive is.codion.plugin.flatlaf;

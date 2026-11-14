@@ -23,6 +23,8 @@ import is.codion.common.db.database.GetValue;
 import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -91,7 +93,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		return createOffsetFetchNextClause(limit, offset);
 	}
 
@@ -126,7 +128,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	 * The error code is a severity, the sql state identifying the error, most being covered by the defaults
 	 */
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		String sqlState = exception.getSQLState();
 		if (sqlState == null) {
 			return super.errorType(exception);
@@ -148,7 +150,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;
@@ -188,7 +190,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	private static final class GetLocalDate implements GetValue<LocalDate> {
 
 		@Override
-		public LocalDate get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalDate get(ResultSet resultSet, int index) throws SQLException {
 			Date date = resultSet.getDate(index);
 
 			return date == null ? null : date.toLocalDate();
@@ -198,7 +200,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	private static final class GetLocalTime implements GetValue<LocalTime> {
 
 		@Override
-		public LocalTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalTime get(ResultSet resultSet, int index) throws SQLException {
 			Time time = resultSet.getTime(index);
 
 			return time == null ? null : time.toLocalTime();
@@ -208,7 +210,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	private static final class GetLocalDateTime implements GetValue<LocalDateTime> {
 
 		@Override
-		public LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
 			Timestamp timestamp = resultSet.getTimestamp(index);
 
 			return timestamp == null ? null : timestamp.toLocalDateTime();
@@ -218,7 +220,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	private static final class SetLocalDate implements SetValue<LocalDate> {
 
 		@Override
-		public void set(PreparedStatement statement, int index, LocalDate value) throws SQLException {
+		public void set(PreparedStatement statement, int index, @Nullable LocalDate value) throws SQLException {
 			statement.setDate(index, value == null ? null : Date.valueOf(value));
 		}
 	}
@@ -226,7 +228,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	private static final class SetLocalTime implements SetValue<LocalTime> {
 
 		@Override
-		public void set(PreparedStatement statement, int index, LocalTime value) throws SQLException {
+		public void set(PreparedStatement statement, int index, @Nullable LocalTime value) throws SQLException {
 			statement.setTime(index, value == null ? null : Time.valueOf(value));
 		}
 	}
@@ -234,7 +236,7 @@ final class DerbyDatabase extends AbstractDatabase {
 	private static final class SetLocalDateTime implements SetValue<LocalDateTime> {
 
 		@Override
-		public void set(PreparedStatement statement, int index, LocalDateTime value) throws SQLException {
+		public void set(PreparedStatement statement, int index, @Nullable LocalDateTime value) throws SQLException {
 			statement.setTimestamp(index, value == null ? null : Timestamp.valueOf(value));
 		}
 	}

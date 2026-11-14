@@ -22,6 +22,7 @@
  * {@link is.codion.dbms.postgresql.PostgreSQLDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.dbms.postgresql {
 	requires transitive is.codion.common.db;
 

@@ -19,6 +19,7 @@
 /**
  * Java Util Logging implementation of {@link is.codion.common.utilities.logging.LoggerProxy}.
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.plugin.jul.proxy {
 	requires java.logging;
 	requires is.codion.common.utilities;

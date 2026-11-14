@@ -25,6 +25,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
@@ -187,7 +188,7 @@ public final class JasperReports {
 		return reportException;
 	}
 
-	private static String message(Throwable exception) {
+	private static @Nullable String message(Throwable exception) {
 		String message = exception.getMessage();
 		Throwable cause = exception.getCause();
 		if (cause == null || cause.getMessage() == null) {

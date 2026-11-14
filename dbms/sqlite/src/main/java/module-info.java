@@ -22,6 +22,7 @@
  * {@link is.codion.dbms.sqlite.SQLiteDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.dbms.sqlite {
 	requires transitive is.codion.common.db;
 

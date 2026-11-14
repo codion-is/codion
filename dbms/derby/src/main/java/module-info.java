@@ -22,6 +22,7 @@
  * {@link is.codion.dbms.derby.DerbyDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.dbms.derby {
 	requires transitive is.codion.common.db;
 

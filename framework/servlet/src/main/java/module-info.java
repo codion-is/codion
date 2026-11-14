@@ -24,6 +24,7 @@
  * </ul>
  * @provides is.codion.common.rmi.server.AuxiliaryServerFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.servlet {
 	requires org.slf4j;
 	requires io.javalin;

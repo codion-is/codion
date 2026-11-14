@@ -21,6 +21,8 @@ package is.codion.dbms.mysql;
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,19 +93,19 @@ final class MySQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		return createLimitOffsetClause(limit, offset, NO_LIMIT);
 	}
 
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
 
 		return errorType == null ? super.errorType(exception) : errorType;
 	}
 
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;

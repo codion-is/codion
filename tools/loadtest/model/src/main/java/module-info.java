@@ -22,6 +22,7 @@
  * <li>{@link is.codion.tools.loadtest.model.LoadTestModel}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.loadtest.model {
 	requires org.jfree.jfreechart;
 	requires jdk.management;

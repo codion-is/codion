@@ -19,6 +19,7 @@
 /**
  * Flat Look and Feels
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.plugin.flatlaf.themes {
 	requires transitive is.codion.plugin.flatlaf;
 

@@ -19,6 +19,7 @@
 /**
  * Flat Look and Feel service utilities, validation indicator and scaler
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.plugin.flatlaf {
 	requires transitive is.codion.swing.common.ui;
 	requires transitive com.formdev.flatlaf;

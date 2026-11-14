@@ -24,6 +24,7 @@
  * <li>{@link is.codion.framework.server.EntityServerConfiguration}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.server {
 	requires java.management;
 	requires org.slf4j;

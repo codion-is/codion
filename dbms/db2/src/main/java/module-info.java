@@ -22,6 +22,7 @@
  * {@link is.codion.dbms.db2.Db2DatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.dbms.db2 {
 	requires transitive is.codion.common.db;
 

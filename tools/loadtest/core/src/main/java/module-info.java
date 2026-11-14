@@ -22,6 +22,7 @@
  * <li>{@link is.codion.tools.loadtest.randomizer.ItemRandomizer}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.loadtest {
 	requires org.slf4j;
 	requires transitive is.codion.common.utilities;

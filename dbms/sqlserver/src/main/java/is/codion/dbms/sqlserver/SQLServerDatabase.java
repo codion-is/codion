@@ -21,6 +21,8 @@ package is.codion.dbms.sqlserver;
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +116,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 	/**
 	 * @return the value of the given url property, the names being case-insensitive, null if not specified
 	 */
-	private String property(String property) {
+	private @Nullable String property(String property) {
 		String[] properties = url().split(";");
 		for (int i = 1; i < properties.length; i++) {
 			int valueIndex = properties[i].indexOf('=');
@@ -148,7 +150,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		if (limit == null && offset == null) {
 			return "";
 		}
@@ -180,7 +182,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		if (exception.getErrorCode() == CONSTRAINT_CONFLICT) {
 			return constraintConflict(exception);
 		}
@@ -190,7 +192,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;
@@ -219,7 +221,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 	/**
 	 * The statement conflicted with the FOREIGN KEY, REFERENCE or CHECK constraint "name", the type preceding the quoted name
 	 */
-	private static ErrorType constraintConflict(SQLException exception) {
+	private static @Nullable ErrorType constraintConflict(SQLException exception) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;
@@ -242,7 +244,7 @@ final class SQLServerDatabase extends AbstractDatabase {
 	/**
 	 * @param suffixIncluded the number of suffix characters to include
 	 */
-	private static String between(String message, String prefix, String suffix, int suffixIncluded) {
+	private static @Nullable String between(String message, String prefix, String suffix, int suffixIncluded) {
 		int prefixIndex = message.indexOf(prefix);
 		if (prefixIndex == -1) {
 			return null;

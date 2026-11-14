@@ -22,6 +22,7 @@
  * <li>{@link is.codion.tools.loadtest.ui.LoadTestPanel}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.loadtest.ui {
 	requires org.jfree.jfreechart;
 	requires is.codion.plugin.flatlaf.themes;

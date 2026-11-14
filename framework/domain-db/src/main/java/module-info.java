@@ -22,6 +22,7 @@
  * <li>{@link is.codion.framework.domain.db.SchemaDomain}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.domain.db {
 	requires transitive is.codion.framework.domain;
 

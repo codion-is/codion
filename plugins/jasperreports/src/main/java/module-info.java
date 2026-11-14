@@ -24,6 +24,7 @@
  * <li>{@link is.codion.plugin.jasperreports.JRExport}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.plugin.jasperreports {
 	requires net.sf.jasperreports.core;
 	requires is.codion.framework.domain;

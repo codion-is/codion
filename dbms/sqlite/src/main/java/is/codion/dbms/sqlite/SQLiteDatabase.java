@@ -22,6 +22,8 @@ import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.GetValue;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -76,7 +78,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		return createLimitOffsetClause(limit, offset, NO_LIMIT);
 	}
 
@@ -98,7 +100,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return super.errorType(exception);
@@ -127,7 +129,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (errorType == ErrorType.NULL_VALUE && message != null) {
 			// [SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: table.column)
@@ -150,7 +152,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final class GetOffsetDateTime implements GetValue<OffsetDateTime> {
 
 		@Override
-		public OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
 			String value = resultSet.getString(index);
 
 			return value == null ? null : OffsetDateTime.parse(value.replace(' ', 'T'));
@@ -160,7 +162,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final class GetOffsetTime implements GetValue<OffsetTime> {
 
 		@Override
-		public OffsetTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable OffsetTime get(ResultSet resultSet, int index) throws SQLException {
 			String value = resultSet.getString(index);
 
 			return value == null ? null : OffsetTime.parse(value);

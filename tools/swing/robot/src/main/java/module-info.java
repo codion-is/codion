@@ -19,6 +19,7 @@
 /**
  * Swing Robot
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.swing.robot {
 	requires is.codion.swing.common.ui;
 	requires org.slf4j;

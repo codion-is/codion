@@ -22,6 +22,7 @@
  * <li>{@link is.codion.framework.i18n.FrameworkMessages}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.i18n {
 	requires transitive is.codion.common.utilities;
 

@@ -22,6 +22,7 @@
  * <li>{@link is.codion.tools.generator.domain.DomainSource}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.generator.domain {
 	requires java.compiler;
 	requires com.palantir.javapoet;

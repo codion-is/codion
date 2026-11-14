@@ -24,6 +24,7 @@
  * </ul>
  * @uses is.codion.framework.json.domain.EntityObjectMapper.Factory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.json.domain {
 	requires org.slf4j;
 	requires transitive com.fasterxml.jackson.databind;

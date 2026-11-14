@@ -19,6 +19,7 @@
 /**
  * Tomcat implementation of {@link is.codion.common.db.pool.ConnectionPoolFactory}.
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.plugin.tomcat.pool {
 	requires java.management;
 	requires org.slf4j;

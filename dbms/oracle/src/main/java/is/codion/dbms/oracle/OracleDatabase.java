@@ -23,6 +23,8 @@ import is.codion.common.db.database.ClientInfo;
 import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -110,7 +112,7 @@ final class OracleDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		return createOffsetFetchNextClause(limit, offset);
 	}
 
@@ -142,14 +144,14 @@ final class OracleDatabase extends AbstractDatabase {
 	 * which is not mapped, the driver throwing a {@link java.sql.SQLTimeoutException} for a timeout only.
 	 */
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
 
 		return errorType == null ? super.errorType(exception) : errorType;
 	}
 
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;
@@ -180,7 +182,7 @@ final class OracleDatabase extends AbstractDatabase {
 	 * The driver appends a link to the documentation of the error in question
 	 */
 	@Override
-	protected String message(SQLException exception) {
+	protected @Nullable String message(SQLException exception) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;
@@ -206,9 +208,9 @@ final class OracleDatabase extends AbstractDatabase {
 	}
 
 	/**
-	 * @return the quoted text ending at the given suffix, which starts with the closing quote, null if not found
+	 * @return the name of the constraint in parentheses, without its schema, null if not found
 	 */
-	private static String constraint(String message) {
+	private static @Nullable String constraint(String message) {
 		String constraint = between(message, "constraint (", ")");
 
 		return constraint == null ? null : constraint.substring(constraint.lastIndexOf('.') + 1);
@@ -217,7 +219,7 @@ final class OracleDatabase extends AbstractDatabase {
 	private static final class SetBoolean implements SetValue<Boolean> {
 
 		@Override
-		public void set(PreparedStatement statement, int index, Boolean value) throws SQLException {
+		public void set(PreparedStatement statement, int index, @Nullable Boolean value) throws SQLException {
 			if (value == null) {
 				statement.setNull(index, Types.BIT);
 			}
@@ -227,7 +229,10 @@ final class OracleDatabase extends AbstractDatabase {
 		}
 	}
 
-	private static String lastQuoted(String message, String suffix) {
+	/**
+	 * @return the quoted text ending at the given suffix, which starts with the closing quote, null if not found
+	 */
+	private static @Nullable String lastQuoted(String message, String suffix) {
 		int endIndex = message.indexOf(suffix);
 		if (endIndex == -1) {
 			return null;

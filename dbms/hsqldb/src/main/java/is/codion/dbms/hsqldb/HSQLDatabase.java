@@ -21,6 +21,8 @@ package is.codion.dbms.hsqldb;
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -66,7 +68,7 @@ final class HSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		return createLimitOffsetClause(limit, offset);
 	}
 
@@ -84,7 +86,7 @@ final class HSQLDatabase extends AbstractDatabase {
 	 * The sql state defaults cover all but which way a foreign key is violated, an unknown user and a deadlock
 	 */
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		switch (exception.getErrorCode()) {
 			case FOREIGN_KEY_NO_PARENT:
 				return ErrorType.PARENT_MISSING;
@@ -99,7 +101,7 @@ final class HSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;

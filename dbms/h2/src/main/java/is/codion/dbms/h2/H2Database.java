@@ -22,6 +22,8 @@ import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ErrorType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -145,7 +147,7 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	@Override
-	public String limitOffsetClause(Integer limit, Integer offset, boolean ordered) {
+	public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset, boolean ordered) {
 		return createLimitOffsetClause(limit, offset);
 	}
 
@@ -161,14 +163,14 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	@Override
-	protected ErrorType errorType(SQLException exception) {
+	protected @Nullable ErrorType errorType(SQLException exception) {
 		ErrorType errorType = ERROR_TYPES.get(exception.getErrorCode());
 
 		return errorType == null ? super.errorType(exception) : errorType;
 	}
 
 	@Override
-	protected String errorDetail(SQLException exception, ErrorType errorType) {
+	protected @Nullable String errorDetail(SQLException exception, ErrorType errorType) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;
@@ -197,7 +199,7 @@ final class H2Database extends AbstractDatabase {
 	 * The statement is appended to each message
 	 */
 	@Override
-	protected String message(SQLException exception) {
+	protected @Nullable String message(SQLException exception) {
 		String message = exception.getMessage();
 		if (message == null) {
 			return null;

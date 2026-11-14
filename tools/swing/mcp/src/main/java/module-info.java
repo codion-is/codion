@@ -19,6 +19,7 @@
 /**
  * MCP
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.tools.swing.mcp {
 	requires is.codion.common.reactive;
 	requires is.codion.swing.common.ui;

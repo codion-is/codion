@@ -18,6 +18,8 @@
  */
 package is.codion.framework.domain.report;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 
 /**
@@ -32,7 +34,7 @@ public class ReportException extends RuntimeException {
 	 * Instantiates a new ReportException
 	 * @param message the exception message
 	 */
-	public ReportException(String message) {
+	public ReportException(@Nullable String message) {
 		super(message);
 	}
 
@@ -41,7 +43,7 @@ public class ReportException extends RuntimeException {
 	 * @param message the exception message
 	 * @param cause the root cause
 	 */
-	public ReportException(String message, Throwable cause) {
+	public ReportException(@Nullable String message, Throwable cause) {
 		super(message, cause);
 	}
 

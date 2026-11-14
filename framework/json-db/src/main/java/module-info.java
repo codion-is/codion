@@ -22,6 +22,7 @@
  * <li>{@link is.codion.framework.json.db.DatabaseObjectMapper}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.json.db {
 	requires transitive com.fasterxml.jackson.databind;
 	requires transitive com.fasterxml.jackson.datatype.jsr310;

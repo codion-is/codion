@@ -21,6 +21,7 @@ package is.codion.plugin.jasperreports;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.function.BiFunction;
@@ -38,7 +39,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
 	private final BiFunction<? super T, JRField, ?> valueProvider;
 	private final Consumer<? super T> onNext;
 
-	private T currentItem = null;
+	private @Nullable T currentItem = null;
 
 	/**
 	 * Instantiates a new JasperReportsDataSource.
@@ -53,10 +54,10 @@ public class JasperReportsDataSource<T> implements JRDataSource {
 	 * Instantiates a new JasperReportsDataSource.
 	 * @param reportIterator the iterator providing the report data
 	 * @param valueProvider a Function returning the value for a given field from the given item
-	 * @param onNext called each time next has been called
+	 * @param onNext called each time next has been called, null for none
 	 */
 	public JasperReportsDataSource(Iterator<? extends T> reportIterator, BiFunction<? super T, JRField, ?> valueProvider,
-																 Consumer<? super T> onNext) {
+																 @Nullable Consumer<? super T> onNext) {
 		this.reportIterator = requireNonNull(reportIterator);
 		this.valueProvider = requireNonNull(valueProvider);
 		this.onNext = onNext == null ? next -> {} : onNext;

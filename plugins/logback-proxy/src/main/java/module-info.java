@@ -19,6 +19,7 @@
 /**
  * Logback implementation of {@link is.codion.common.utilities.logging.LoggerProxy}.
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.plugin.logback.proxy {
 	requires org.slf4j;
 	requires ch.qos.logback.core;
