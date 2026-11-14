@@ -2284,7 +2284,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				if (link instanceof ForeignKeyEditorLink) {
 					ForeignKey foreignKey = ((DefaultForeignKeyEditorLink) link).foreignKey();
 					editor.validator().set(new DetailForeignKeyValidator(editor.validator().getOrThrow(),
-									foreignKey, editor.entity().present()));
+									foreignKey, link.present));
 					editor.validator().addValidator(preventValidatorModification);
 					State persist = editor.value(foreignKey).persist();
 					persist.set(false);
@@ -2417,7 +2417,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 * <li>A detail that is not {@link EditorEntity#present() present} will not be created, so it is neither validated nor
 	 * warned about — an absent detail's empty required fields are not errors (its {@code present()} predicate typically
 	 * keys on exactly such a field), and there is nothing to say about the values of a row that is not going to exist.
-	 * Both resume as normal once it becomes present.
+	 * Both resume as normal once it becomes present. Presence is the link's predicate tested on the entity validated,
+	 * not the detail editor's present state, so validating another entity, a row of a table model the editor serves
+	 * for example, judges that entity.
 	 * <li>While present, a {@link NullValueException} on the master {@link ForeignKey} (and its reference columns) is still
 	 * exempt — it is null during editing and populated from the master at insert.
 	 * </ul>
@@ -2429,9 +2431,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private final EntityValidator validator;
 		private final ForeignKey foreignKey;
-		private final ObservableState present;
+		private final Predicate<Entity> present;
 
-		private DetailForeignKeyValidator(EntityValidator validator, ForeignKey foreignKey, ObservableState present) {
+		private DetailForeignKeyValidator(EntityValidator validator, ForeignKey foreignKey, Predicate<Entity> present) {
 			this.validator = validator;
 			this.foreignKey = foreignKey;
 			this.present = present;
@@ -2444,7 +2446,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void validate(Entity entity, Attribute<?> attribute) throws AttributeValidationException {
-			if (!present.is()) {
+			if (!present.test(entity)) {
 				return;
 			}
 			try {
@@ -2459,7 +2461,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void validate(Entity entity) throws EntityValidationException {
-			if (!present.is()) {
+			if (!present.test(entity)) {
 				return;
 			}
 			try {
@@ -2480,7 +2482,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public Optional<String> warning(Entity entity, Attribute<?> attribute) {
-			if (!present.is()) {
+			if (!present.test(entity)) {
 				return Optional.empty();
 			}
 

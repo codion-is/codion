@@ -1542,6 +1542,35 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void detailValidatorJudgesEntityGiven() throws EntityValidationException {
+		// a detail editor's validator read the detail editor's own present state, whatever the entity it was given, as a
+		// table model's row, so another entity went unvalidated while the editor's detail was absent, and the other way
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		departmentEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(employee -> employee.present(Employee.NAME))
+						.build());
+		Entity present = CONNECTION.selectSingle(Employee.ID.equalTo(3)).copy().mutable();
+		present.set(Employee.SALARY, 1d);// below the range
+		Entity absent = present.copy().mutable();
+		absent.set(Employee.NAME, null);
+
+		// the detail editor's own detail absent
+		employeeEditor.entity().defaults();
+		assertFalse(employeeEditor.entity().present().is());
+		assertThrows(EntityValidationException.class, () -> employeeEditor.validate(present));
+		employeeEditor.validate(absent);
+
+		// and present
+		employeeEditor.value(Employee.NAME).set("Name");
+		assertTrue(employeeEditor.entity().present().is());
+		assertThrows(EntityValidationException.class, () -> employeeEditor.validate(present));
+		employeeEditor.validate(absent);
+	}
+
+	@Test
 	void detailEditorInsertWithEmptyDetail() throws EntityValidationException {
 		CONNECTION.startTransaction();
 		try {
