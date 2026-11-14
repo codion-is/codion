@@ -655,6 +655,13 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>A persisted value which isn't null applies its propagators, as if it had just been set, in the order of
 		 * the attributes, so the values derived from it are derived rather than given their defaults, a persisted
 		 * one included. A persisted null propagates nothing. The derived values are defaults, not edits.
+		 * <p>A column whose default the database provides,
+		 * {@link is.codion.framework.domain.entity.attribute.ColumnDefinition#withDefault() withDefault()}, and which has
+		 * no default value of its own, is left out of the entity, so the database fills it in on insert. So is a foreign
+		 * key column whose default the database provides, where its foreign key gets no value, the other columns of
+		 * such a foreign key being null. A default value of a foreign key column does not apply, as the foreign key
+		 * would then reference an entity which is not loaded, which nothing shows. A foreign key is given a default
+		 * value via its {@link EditorValue#defaultValue()}.
 		 * <p>Fires {@link #changing()} and then {@link #changed()} on this editor; throwing a
 		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels the
 		 * operation. Detail editors are reset silently, firing only {@link #replaced()}. This is an

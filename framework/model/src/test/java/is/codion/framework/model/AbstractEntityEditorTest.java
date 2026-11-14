@@ -37,6 +37,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.AbstractEntityEditor.DefaultDetailEditors;
 import is.codion.framework.model.AbstractEntityEditor.DetailForeignKeyValidator;
+import is.codion.framework.model.DetailDomain.Assignment;
 import is.codion.framework.model.DetailDomain.Department;
 import is.codion.framework.model.DetailDomain.DepartmentExtra;
 import is.codion.framework.model.DetailDomain.Employee;
@@ -1190,6 +1191,45 @@ public final class AbstractEntityEditorTest {
 			assertEquals(40, departmentEditor.value(Department.ID).get());
 			assertEquals("forty", extraEditor.value(DepartmentExtra.DESCRIPTION).get());
 			assertEquals("ten edited", CONNECTION.selectSingle(DepartmentExtra.DEPARTMENT.equalTo(10)).get(DepartmentExtra.DESCRIPTION));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void foreignKeyColumnDefaults() throws EntityValidationException {
+		// a foreign key column whose default the database provides was overridden with null, as the foreign keys were
+		// all set, null where they had no value, their columns along with them
+		CONNECTION.startTransaction();
+		try {
+			TestEntityEditor editor = new TestEntityEditor(Assignment.TYPE, CONNECTION);
+			editor.entity().defaults();
+			Entity defaults = editor.entity().get();
+			// the database provides it
+			assertFalse(defaults.contains(Assignment.DEPARTMENT));
+			// a default value of a foreign key column does not apply, a department not loaded, which nothing would show
+			assertTrue(defaults.contains(Assignment.BACKUP_DEPARTMENT));
+			assertNull(defaults.get(Assignment.BACKUP_DEPARTMENT));
+
+			Entity inserted = editor.insert();
+			assertEquals(20, inserted.get(Assignment.DEPARTMENT));
+			assertNull(inserted.get(Assignment.BACKUP_DEPARTMENT));
+
+			// a value given overrides both
+			editor.entity().defaults();
+			Entity department = CONNECTION.selectSingle(Department.ID.equalTo(30));
+			editor.value(Assignment.DEPARTMENT_FK).set(department);
+			editor.value(Assignment.BACKUP_DEPARTMENT_FK).set(department);
+			inserted = editor.insert();
+			assertEquals(30, inserted.get(Assignment.DEPARTMENT));
+			assertEquals(30, inserted.get(Assignment.BACKUP_DEPARTMENT));
+
+			// cleared, the column the database provides left out, the other null
+			editor.entity().clear();
+			assertFalse(editor.entity().get().contains(Assignment.DEPARTMENT));
+			assertTrue(editor.entity().get().contains(Assignment.BACKUP_DEPARTMENT));
+			assertNull(editor.entity().get().get(Assignment.BACKUP_DEPARTMENT));
 		}
 		finally {
 			CONNECTION.rollbackTransaction();

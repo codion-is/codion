@@ -943,6 +943,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 * Values are populated for {@link ValueAttributeDefinition} and its descendants.
 		 * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
 		 * skipped unless the attribute itself has a default value, which then overrides the columns default value.
+		 * The columns of a foreign key given no value differ, see {@link #addForeignKeyValues(ValueSupplier, Entity)}.
 		 * @return an entity instance populated with default values
 		 * @see ValueAttributeDefinition.Builder#withDefault(boolean)
 		 * @see ValueAttributeDefinition.Builder#defaultValue(Object)
@@ -976,9 +977,30 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 							.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
 		}
 
+		/**
+		 * Sets each foreign key given a value, along with its columns. The columns of a foreign key given none are set to
+		 * null, except a column whose default the database provides, which is left out, so the database fills it in, and a
+		 * column set by another foreign key, which is left as is. The supplier is not asked for the columns, as a value,
+		 * a default value or a persisted one, would reference an entity which is not loaded, which nothing shows.
+		 */
 		private void addForeignKeyValues(ValueSupplier valueSupplier, Entity newEntity) {
-			entityDefinition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
-							newEntity.set(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
+			List<ForeignKey> withoutValue = new ArrayList<>();
+			entityDefinition.foreignKeys().definitions().forEach(foreignKeyDefinition -> {
+				Entity value = valueSupplier.get(foreignKeyDefinition);
+				if (value == null) {
+					withoutValue.add(foreignKeyDefinition.attribute());
+				}
+				else {
+					newEntity.set(foreignKeyDefinition.attribute(), value);
+				}
+			});
+			withoutValue.stream()
+							.flatMap(foreignKey -> foreignKey.references().stream())
+							.map(ForeignKey.Reference::column)
+							.distinct()
+							.filter(column -> !newEntity.contains(column))
+							.filter(column -> !entityDefinition.columns().definition(column).withDefault())
+							.forEach(column -> newEntity.set(column, null));
 		}
 	}
 

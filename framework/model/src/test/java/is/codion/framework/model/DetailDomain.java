@@ -35,7 +35,7 @@ public final class DetailDomain extends DomainModel {
 
 	public DetailDomain() {
 		super(DOMAIN);
-		add(department(), employee(), departmentExtra());
+		add(department(), employee(), departmentExtra(), assignment());
 	}
 
 	public interface Department {
@@ -79,6 +79,38 @@ public final class DetailDomain extends DomainModel {
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_extra_dept_fk", DEPARTMENT, Department.ID);
+	}
+
+	/**
+	 * Foreign key columns with defaults, one provided by the database, the other by the domain
+	 */
+	public interface Assignment {
+		EntityType TYPE = DOMAIN.entityType("employees.assignment");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+		Column<Integer> BACKUP_DEPARTMENT = TYPE.integerColumn("backup_deptno");
+		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("assignment_dept_fk", DEPARTMENT, Department.ID);
+		ForeignKey BACKUP_DEPARTMENT_FK = TYPE.foreignKey("assignment_backup_dept_fk", BACKUP_DEPARTMENT, Department.ID);
+	}
+
+	EntityDefinition assignment() {
+		return Assignment.TYPE.as()
+						.attributes(
+										Assignment.ID.as()
+														.primaryKey()
+														.generator(identity()),
+										Assignment.DEPARTMENT.as()
+														.column()
+														.withDefault(true),
+										Assignment.DEPARTMENT_FK.as()
+														.foreignKey(),
+										Assignment.BACKUP_DEPARTMENT.as()
+														.column()
+														.defaultValue(10),
+										Assignment.BACKUP_DEPARTMENT_FK.as()
+														.foreignKey())
+						.build();
 	}
 
 	EntityDefinition departmentExtra() {
