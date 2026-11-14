@@ -247,6 +247,10 @@ public interface State extends ObservableState {
 	 * Setting the state asks the set first, so a change the set refuses, being {@link ValueSet#locked() locked} or
 	 * by a validator, is refused by the state as well, with the same exception, neither changing.
 	 * <p>
+	 * The state is set on whichever thread changes the set, so change the set and the state on the same thread:
+	 * the set changed on one thread while the state is set on another can deadlock, each holding its own lock
+	 * through its notification while waiting for the other's.
+	 * <p>
 	 * The synchronization is maintained via a weak listener on the {@link ValueSet}, meaning:
 	 * <ul>
 	 *   <li>As long as the returned {@link State} is reachable, the synchronization remains active</li>

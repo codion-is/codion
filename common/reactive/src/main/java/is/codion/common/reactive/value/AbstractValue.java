@@ -80,6 +80,10 @@ public abstract class AbstractValue<T> extends BaseValue<T> {
 	}
 
 	/**
+	 * <p>Sets the builder's initial value, and applies its validators and links, from this constructor, so
+	 * {@link #getValue()} and {@link #setValue(Object)} are called before the subclass's own constructor body runs.
+	 * A field holding the value must therefore have no initializer, which would overwrite the value once this
+	 * constructor returns, and neither method may rely on another field of the subclass, not yet assigned.
 	 * @param builder the builder
 	 */
 	protected AbstractValue(AbstractBuilder<T, ?> builder) {
