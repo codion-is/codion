@@ -1237,6 +1237,65 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void linkedComponentFollowsValueSetAgain() {
+		// a component linked to an editor value kept what was typed when the edit came back changed, set again within
+		// the edit by an edited() consumer, a propagator or a values().changed() consumer, the editor holding another value
+		// an edited() consumer
+		TestEntityEditor editor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		EditorValue<String> name = editor.value(Department.NAME);
+		Value<String> component = linkedComponent(editor, name);
+		name.edited().addConsumer(value -> {
+			if (value != null) {
+				name.set(value.toUpperCase());
+			}
+		});
+		component.set("abc");
+		assertEquals("ABC", name.get());
+		assertEquals("ABC", component.get());
+
+		// a propagator onto itself
+		TestEntityEditor propagating = new TestEntityEditor(Department.TYPE, CONNECTION);
+		EditorValue<String> propagatingName = propagating.value(Department.NAME);
+		Value<String> propagatingComponent = linkedComponent(propagating, propagatingName);
+		propagatingName.propagate(Department.NAME, value -> value == null ? null : value.toUpperCase());
+		propagatingComponent.set("def");
+		assertEquals("DEF", propagatingName.get());
+		assertEquals("DEF", propagatingComponent.get());
+
+		// a values().changed() consumer
+		TestEntityEditor changed = new TestEntityEditor(Department.TYPE, CONNECTION);
+		EditorValue<String> changedName = changed.value(Department.NAME);
+		Value<String> changedComponent = linkedComponent(changed, changedName);
+		changed.values().changed().addConsumer(attribute -> {
+			String value = changedName.get();
+			if (attribute.equals(Department.NAME) && value != null) {
+				changedName.set(value.toUpperCase());
+			}
+		});
+		changedComponent.set("ghi");
+		assertEquals("GHI", changedName.get());
+		assertEquals("GHI", changedComponent.get());
+
+		// a pair deriving from each other, rounding, as net and gross would
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		EditorValue<Double> salary = employeeEditor.value(Employee.SALARY);
+		Value<Double> salaryComponent = linkedComponent(employeeEditor, salary);
+		salary.propagate(Employee.MANAGER_ID, value -> value == null ? null : (int) Math.round(value / 100));
+		employeeEditor.value(Employee.MANAGER_ID).propagate(Employee.SALARY, value -> value == null ? null : value * 100d);
+		salaryComponent.set(2549d);
+		assertEquals(2500d, salary.get());
+		assertEquals(2500d, salaryComponent.get());
+	}
+
+	private static <T> Value<T> linkedComponent(TestEntityEditor editor, EditorValue<T> editorValue) {
+		editor.entity().defaults();
+		Value<T> component = Value.nullable();
+		component.link(editorValue);
+
+		return component;
+	}
+
+	@Test
 	void detailEditorInsertWithEmptyDetail() throws EntityValidationException {
 		CONNECTION.startTransaction();
 		try {

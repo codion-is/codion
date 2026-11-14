@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -708,6 +709,28 @@ public class ValueTest {
 	}
 
 	@Test
+	void linkSetAgainWhileSetting() {
+		// a value set again while its set() is still running, after its own notification, as an editor value is by an
+		// edited() consumer or a propagator: the link did not follow, a set counting as nested only while the value
+		// notified, so the linked value kept the value replaced
+		EditingValue original = new EditingValue();
+		Value<String> linked = Value.nullable();
+		linked.link(original);
+		original.afterNotify = value -> {
+			if (value != null) {
+				original.set(value.toUpperCase());
+			}
+		};
+		linked.set("abc");
+		assertEquals("ABC", original.get());
+		assertEquals("ABC", linked.get());
+		// the same, set directly
+		original.set("def");
+		assertEquals("DEF", original.get());
+		assertEquals("DEF", linked.get());
+	}
+
+	@Test
 	void linkNotifyingTwicePerSet() {
 		// a value notifying twice for a single set, as a text component does, its document removing the text and then
 		// inserting the new one, linked to a value trimming what it is set to, as an entity editor value does, the latter
@@ -1229,6 +1252,31 @@ public class ValueTest {
 			notifyObserver();
 			this.value = value;
 			notifyObserver();
+		}
+	}
+
+	/**
+	 * Notifies from setValue() and then calls a consumer, which may set it again, as an editor value notifies itself and
+	 * then its edited() consumers and propagators, all within its set()
+	 */
+	private static final class EditingValue extends AbstractValue<String> {
+
+		private @Nullable String value;
+		private Consumer<@Nullable String> afterNotify = value -> {};
+
+		@Override
+		protected @Nullable String getValue() {
+			return value;
+		}
+
+		@Override
+		protected void setValue(@Nullable String value) {
+			//as an editor value, which notifies and propagates a change only
+			if (!Objects.equals(this.value, value)) {
+				this.value = value;
+				notifyObserver();
+				afterNotify.accept(value);
+			}
 		}
 	}
 

@@ -74,8 +74,10 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Lis
 	private @Nullable Map<Observable<T>, ObservableLink> linkedObservables;
 	private volatile @Nullable Observable<T> observable;
 
-	//set() calls changing this value while it notifies its listeners, a listener changing it in response to a change
+	//set() calls changing this value while it notifies its listeners, a listener changing it in response to a change,
+	//or while an outer set() of it is still running, as one setting it again from setValue() does, after notifying
 	private int notifying = 0;
+	private int setting = 0;
 	private int nestedSets = 0;
 
 	BaseValue() {
@@ -121,7 +123,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Lis
 	public void set(@Nullable T value) {
 		T newValue = replaceNull(value);
 		boolean changing = !deepEquals(get(), newValue);
-		if (changing && notifying > 0) {
+		if (changing && (notifying > 0 || setting > 0)) {
 			nestedSets++;
 		}
 		//reject a locked change before running validators, so their side effects don't execute for a refused mutation
@@ -129,12 +131,18 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Lis
 			throw new IllegalStateException("Value is locked and can not be changed");
 		}
 		validate(newValue, null);
-		setValue(newValue);
-		if (notify == Notify.CHANGED && changing) {
-			notifyObserver();
+		setting++;
+		try {
+			setValue(newValue);
+			if (notify == Notify.CHANGED && changing) {
+				notifyObserver();
+			}
+			if (notify == Notify.SET) {
+				notifyObserver();
+			}
 		}
-		if (notify == Notify.SET) {
-			notifyObserver();
+		finally {
+			setting--;
 		}
 	}
 
@@ -319,7 +327,8 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T>, Lis
 	}
 
 	/**
-	 * @return the number of times {@link #set(Object)} has changed this value while it was notifying its listeners
+	 * @return the number of times {@link #set(Object)} has changed this value while it was notifying its listeners, or
+	 * while an outer {@link #set(Object)} of it was still running
 	 */
 	final int nestedSets() {
 		return nestedSets;

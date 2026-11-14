@@ -25,6 +25,7 @@ Codion Change Log
 - Observer.when() and Observable.changed() bug fixed, one whose weak listeners and consumers have all been collected now unsubscribes when next notified, where it stayed subscribed for good, nothing pruning its listeners, a notification now pruning dead weak references as an add or a remove does.
 - Value.observable(), changed() and locked(), and ValueCollection.value(), now created lazily under a lock no notification holds, where they synchronized on the value, so that a first call on another thread no longer waits for the listeners of a collection's change.
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
+- Value.link() bug fixed, a value set again while its own set() is still running, after its notification, an editor value by an edited() consumer or a propagator for example, is now followed by the other end, which kept the value replaced, a component showing what was typed while the editor held the value it came back as.
 ### is.codion.common.utilities
 - PropertyStore.writeToFile() now leaves out the values equal to their defaults, so that a default changed later applies, where every value was written, fixing a default in the file once written.
 - PropertyStore.writeToFile() now leaves out the values given as system properties, on the command line for example, unless changed since, writing the values loaded in their place, where a value given once was written to the file, kept from then on.
