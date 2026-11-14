@@ -311,7 +311,7 @@ public interface EntitySearchModel {
 		 * @return this builder
 		 * @throws IllegalArgumentException in case an attribute is not associated with the underlying entity
 		 */
-		Builder attributes(Collection<Attribute<?>> attributes);
+		Builder attributes(Collection<? extends Attribute<?>> attributes);
 
 		/**
 		 * Links the given combo box model representing foreign key entities to this search model

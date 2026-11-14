@@ -579,9 +579,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public Builder attributes(Collection<Attribute<?>> attributes) {
+		public Builder attributes(Collection<? extends Attribute<?>> attributes) {
 			validateAttributes(requireNonNull(attributes));
-			this.attributes = attributes;
+			this.attributes = new ArrayList<>(attributes);
 			return this;
 		}
 

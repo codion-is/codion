@@ -185,7 +185,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param attributes the attributes to select, an empty Collection for all
 		 * @return this builder instance
 		 */
-		B attributes(Collection<Attribute<?>> attributes);
+		B attributes(Collection<? extends Attribute<?>> attributes);
 
 		/**
 		 * @param nullable if true then the null item is enabled using the default null item caption ({@link FilterComboBoxModel#NULL_CAPTION})

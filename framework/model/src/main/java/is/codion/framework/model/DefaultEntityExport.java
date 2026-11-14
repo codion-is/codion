@@ -464,7 +464,7 @@ final class DefaultEntityExport implements EntityExport {
 		}
 
 		@Override
-		public Attributes add(List<Attribute<?>> path) {
+		public Attributes add(List<? extends Attribute<?>> path) {
 			paths.add(new Path(validate(new ArrayList<>(requireNonNull(path))), null));
 			return this;
 		}

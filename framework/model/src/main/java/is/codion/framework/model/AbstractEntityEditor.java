@@ -2730,12 +2730,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
-		public <V> void propagate(Attribute<V> attribute, Function<@Nullable T, @Nullable V> deriver) {
+		public <V> void propagate(Attribute<V> attribute, Function<? super @Nullable T, ? extends @Nullable V> deriver) {
 			propagate(attribute, value -> true, deriver);
 		}
 
 		@Override
-		public <V> void propagate(Attribute<V> attribute, Predicate<@Nullable T> condition, Function<@Nullable T, @Nullable V> deriver) {
+		public <V> void propagate(Attribute<V> attribute, Predicate<? super @Nullable T> condition,
+															Function<? super @Nullable T, ? extends @Nullable V> deriver) {
 			entityDefinition.attributes().definition(attribute);
 			propagators.put(attribute, new Propagator<>(attribute, requireNonNull(condition), requireNonNull(deriver)));
 		}
@@ -2967,10 +2968,11 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final class Propagator<V> {
 
 			private final Attribute<V> target;
-			private final Predicate<@Nullable T> condition;
-			private final Function<@Nullable T, @Nullable V> deriver;
+			private final Predicate<? super @Nullable T> condition;
+			private final Function<? super @Nullable T, ? extends @Nullable V> deriver;
 
-			private Propagator(Attribute<V> target, Predicate<@Nullable T> condition, Function<@Nullable T, @Nullable V> deriver) {
+			private Propagator(Attribute<V> target, Predicate<? super @Nullable T> condition,
+												 Function<? super @Nullable T, ? extends @Nullable V> deriver) {
 				this.target = target;
 				this.condition = condition;
 				this.deriver = deriver;

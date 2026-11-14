@@ -105,7 +105,7 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 	}
 
 	@Override
-	public final B attributes(Collection<Attribute<?>> attributes) {
+	public final B attributes(Collection<? extends Attribute<?>> attributes) {
 		for (Attribute<?> attribute : requireNonNull(attributes)) {
 			if (!attribute.entityType().equals(items.entityDefinition.type())) {
 				throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + items.entityDefinition.type());

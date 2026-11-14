@@ -162,7 +162,7 @@ public interface EntityExport {
 		 * foreign key, or an attribute does not belong to the entity the preceding foreign key references, the first one
 		 * to the entity being exported
 		 */
-		Attributes add(List<Attribute<?>> path);
+		Attributes add(List<? extends Attribute<?>> path);
 
 		/**
 		 * Adds an attribute to export, with the given column header.

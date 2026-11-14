@@ -57,6 +57,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -1741,6 +1742,17 @@ public final class AbstractEntityEditorTest {
 		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 
 		return new WeakReference<>(editor.comboBoxModels().get(Employee.NAME));
+	}
+
+	@Test
+	void propagateFunctionsOfSupertypes() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		EditorValue<Double> salary = editor.value(Employee.SALARY);
+		Predicate<Object> present = Objects::nonNull;
+		Function<Number, Integer> toInteger = value -> value == null ? null : value.intValue();
+		salary.propagate(Employee.MANAGER_ID, present, toInteger);
+		salary.set(10d);
+		assertEquals(10, editor.value(Employee.MANAGER_ID).get());
 	}
 
 	@Test

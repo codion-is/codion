@@ -1137,7 +1137,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @param deriver the function deriving the target value from the source attribute's value
 		 * @param <V> the target attribute value type
 		 */
-		<V> void propagate(Attribute<V> attribute, Function<@Nullable T, @Nullable V> deriver);
+		<V> void propagate(Attribute<V> attribute, Function<? super @Nullable T, ? extends @Nullable V> deriver);
 
 		/**
 		 * <p>Adds a conditional propagation mapping from this attribute to the given attribute. It behaves as
@@ -1153,7 +1153,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @param deriver the function deriving the target value from the source attribute's value
 		 * @param <V> the target attribute value type
 		 */
-		<V> void propagate(Attribute<V> attribute, Predicate<@Nullable T> condition, Function<@Nullable T, @Nullable V> deriver);
+		<V> void propagate(Attribute<V> attribute, Predicate<? super @Nullable T> condition,
+											 Function<? super @Nullable T, ? extends @Nullable V> deriver);
 
 		/**
 		 * <p>Sets the given value for the underlying attribute in the given entity,

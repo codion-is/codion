@@ -431,6 +431,8 @@ public final class DefaultEntitySearchModelTest {
 	void attributes() {
 		DefaultBuilder builder = new DefaultBuilder(Employee.TYPE, CONNECTION);
 		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singleton(Department.NAME)));
+		List<Column<String>> names = singletonList(Employee.NAME);
+		assertDoesNotThrow(() -> new DefaultBuilder(Employee.TYPE, CONNECTION).attributes(names));
 
 		EntitySearchModel model = builder
 						.search(searchable)
