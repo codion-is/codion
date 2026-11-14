@@ -1131,12 +1131,16 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Adds a propagation mapping from this attribute to the given attribute.
 		 * Each time this attribute is changed via {@link #set(Object)} or in an entity
-		 * via {@link #set(Entity, Object)}, the function is applied to derive the target attribute value.
+		 * via {@link #set(Entity, Object)}, the function is applied to derive the target attribute value, as it is each
+		 * time this attribute changes along with another attribute so changed, as for {@link #edited()}: a value derived
+		 * from it, a foreign key one of whose columns is changed, a column of a changed foreign key, and so on,
+		 * transitively. A foreign key changing along with one of its columns, one it may share with another foreign key,
+		 * holds null until its entity is loaded, its key set, so the function is given null.
 		 * Setting the value it already has does not propagate. Setting it back to its original value gives the
 		 * target attribute its original value back, rather than a derived one, which may differ from what the
 		 * entity held, so an edit undone, by hand or via {@link #revert()}, leaves the entity as it was.
 		 * A value {@link #persist() persisted} when {@link EditorEntity#defaults()} resets the editor, unless null,
-		 * propagates as if it had just been set.
+		 * propagates as if it had just been set, along with the values depending on it which are not null.
 		 * A foreign key value replaced because the referenced entity was updated or deleted elsewhere
 		 * is not an edit and does not propagate, nor does {@link EditorEntity#revert()}.
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}

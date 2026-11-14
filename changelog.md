@@ -63,6 +63,7 @@ Codion Change Log
 - AbstractEntityEditor bug fixed, a foreign key column whose default the database provides, withDefault(), is now left out of the entity by defaults() and clear() where its foreign key gets no value, as other such columns are, where the foreign key was set to null, its columns along with it, so that the insert wrote null over the database default.
 - AbstractEntityEditor bug fixed, an edit now notifies every value it changes, transitively, where a value derived from a foreign key of an edited column, one derived from a column of an edited foreign key, and another foreign key sharing a column with an edited one changed unnotified, a component showing them stale.
 - EditorValue.edited() bug fixed, it no longer fires for a foreign key value replaced because the referenced entity was updated or deleted elsewhere, nor for EditorEntity.revert(), neither being an edit, as propagators already treated them, where an edited() consumer modified a record nobody had edited, or left a reverted one modified.
+- EditorValue.propagate(), a propagator now also applies each time its value changes along with another value edited, as edited() is notified, a propagator on a foreign key column with the foreign key edited for example, where it applied only to its own value being set.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model

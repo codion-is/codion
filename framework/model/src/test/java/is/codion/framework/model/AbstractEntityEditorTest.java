@@ -40,6 +40,7 @@ import is.codion.framework.model.AbstractEntityEditor.DetailForeignKeyValidator;
 import is.codion.framework.model.DetailDomain.Assignment;
 import is.codion.framework.model.DetailDomain.Department;
 import is.codion.framework.model.DetailDomain.DepartmentExtra;
+import is.codion.framework.model.DetailDomain.DepartmentView;
 import is.codion.framework.model.DetailDomain.Employee;
 import is.codion.framework.model.DetailDomain.SharedEmployee;
 import is.codion.framework.model.DetailPersistenceFactory.DepartmentPersistence;
@@ -1333,6 +1334,58 @@ public final class AbstractEntityEditorTest {
 		assertNull(viewComponent.get());
 		// each notified once, the edited value not among the depending ones
 		assertEquals(new HashSet<>(notified).size(), notified.size());
+	}
+
+	@Test
+	void propagatorsFollowValuesChangedAlongWithEdit() {
+		// a propagator ran only for its own value being set, not for it changing along with another edit, as an edited()
+		// consumer does, so a propagator on a foreign key's column never ran with the foreign key edited, as a combo box
+		// edits it
+		Entity jones = CONNECTION.selectSingle(SharedEmployee.ID.equalTo(3));
+		Entity accounting = CONNECTION.selectSingle(Department.ID.equalTo(10));
+		Entity research = CONNECTION.selectSingle(Department.ID.equalTo(20));
+
+		// a foreign key's column, the foreign key edited
+		TestEntityEditor columnEditor = new TestEntityEditor(SharedEmployee.TYPE, CONNECTION);
+		columnEditor.value(SharedEmployee.DEPARTMENT).propagate(SharedEmployee.NAME, deptno -> "DEPTNO " + deptno);
+		columnEditor.entity().set(jones);
+		columnEditor.value(SharedEmployee.DEPARTMENT_FK).set(accounting);
+		assertEquals("DEPTNO 10", columnEditor.value(SharedEmployee.NAME).get());
+		// set in an entity, as the table model does, the editor's own left alone
+		Entity copy = jones.copy().mutable();
+		columnEditor.value(SharedEmployee.DEPARTMENT_FK).set(copy, accounting);
+		assertEquals("DEPTNO 10", copy.get(SharedEmployee.NAME));
+
+		// a derived value, its source edited
+		TestEntityEditor derivedEditor = new TestEntityEditor(SharedEmployee.TYPE, CONNECTION);
+		derivedEditor.value(SharedEmployee.DEPARTMENT_CODE).propagate(SharedEmployee.NAME, code -> "CODE " + code);
+		derivedEditor.entity().set(jones);
+		derivedEditor.value(SharedEmployee.DEPARTMENT).set(30);
+		assertEquals("CODE D30", derivedEditor.value(SharedEmployee.NAME).get());
+
+		// a foreign key, its column edited, its entity not loaded, so the deriver gets null
+		TestEntityEditor foreignKeyEditor = new TestEntityEditor(SharedEmployee.TYPE, CONNECTION);
+		foreignKeyEditor.value(SharedEmployee.DEPARTMENT_FK).propagate(SharedEmployee.NAME,
+						department -> department == null ? "NONE" : department.get(Department.NAME));
+		foreignKeyEditor.entity().set(jones);
+		foreignKeyEditor.value(SharedEmployee.DEPARTMENT).set(30);
+		assertEquals("NONE", foreignKeyEditor.value(SharedEmployee.NAME).get());
+
+		// a second foreign key on a shared column, the first edited, the same
+		TestEntityEditor sharedEditor = new TestEntityEditor(SharedEmployee.TYPE, CONNECTION);
+		sharedEditor.value(SharedEmployee.DEPARTMENT_VIEW_FK).propagate(SharedEmployee.NAME,
+						department -> department == null ? "NONE" : department.get(DepartmentView.NAME));
+		sharedEditor.entity().set(jones);
+		sharedEditor.value(SharedEmployee.DEPARTMENT_FK).set(accounting);
+		assertEquals("NONE", sharedEditor.value(SharedEmployee.NAME).get());
+
+		// a value changed along with an edit propagating back to the value edited, which goes no further
+		TestEntityEditor cycleEditor = new TestEntityEditor(SharedEmployee.TYPE, CONNECTION);
+		cycleEditor.value(SharedEmployee.DEPARTMENT).propagate(SharedEmployee.DEPARTMENT_FK, deptno -> research);
+		cycleEditor.entity().set(jones);
+		cycleEditor.value(SharedEmployee.DEPARTMENT_FK).set(accounting);
+		assertEquals(research, cycleEditor.value(SharedEmployee.DEPARTMENT_FK).get());
+		assertEquals(20, cycleEditor.value(SharedEmployee.DEPARTMENT).get());
 	}
 
 	@Test

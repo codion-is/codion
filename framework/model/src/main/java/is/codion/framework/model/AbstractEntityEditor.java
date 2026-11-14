@@ -2977,25 +2977,55 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		/**
-		 * Propagates as {@link #setValue(Object)} and {@link #propagate(boolean)} do, an unchanged value not propagating
-		 * and an attribute already propagating further up the cascade given its value, going no further.
+		 * Propagates as {@link #setValue(Object)} and {@link #propagate(boolean, Collection, Set)} do, the values which
+		 * changed along with this one included, an unchanged value not propagating and an attribute already propagating
+		 * further up the cascade given its value, going no further.
 		 */
 		private void set(Entity entity, @Nullable T value, Set<Attribute<?>> propagating) {
+			Map<Attribute<?>, Object> dependingValues = dependingValues(entity);
+			Set<Attribute<?>> dependingModified = modifiedAttributes(entity, dependingValues.keySet());
 			boolean modified = entity.modified(attribute);
 			if (change(entity, value) && propagating.add(attribute)) {
-				propagators.values().forEach(propagator -> propagator.propagate(entity, modified, propagating));
+				List<Attribute<?>> changed = changedAttributes(entity, dependingValues);
+				propagate(entity, modified, propagating);
+				changed.forEach(depending -> propagate(entity, depending, dependingModified.contains(depending), propagating));
 				propagating.remove(attribute);
 			}
 		}
 
 		/**
-		 * Applies the propagators to the given entity, as if this value had just been set in it.
+		 * Applies the propagators to the given entity, as if this value had just been set in it, along with the values
+		 * depending on it which are not null.
 		 * @param entity the entity
 		 */
 		private void propagate(Entity entity) {
 			Set<Attribute<?>> propagating = new HashSet<>();
 			propagating.add(attribute);
-			propagators.values().forEach(propagator -> propagator.propagate(entity, false, propagating));
+			propagate(entity, false, propagating);
+			dependingValues(entity).forEach((depending, value) -> {
+				if (value != null) {
+					propagate(entity, depending, false, propagating);
+				}
+			});
+		}
+
+		/**
+		 * Applies this value's propagators to the given entity.
+		 */
+		private void propagate(Entity entity, boolean modified, Set<Attribute<?>> propagating) {
+			propagators.values().forEach(propagator -> propagator.propagate(entity, modified, propagating));
+		}
+
+		/**
+		 * Applies the propagators of a value which changed along with this one to the given entity, unless it is already
+		 * propagating further up the cascade.
+		 */
+		private void propagate(Entity entity, Attribute<?> depending, boolean modified, Set<Attribute<?>> propagating) {
+			DefaultEditorValue<?> dependingValue = (DefaultEditorValue<?>) editorValues.get(depending);
+			if (dependingValue != null && propagating.add(depending)) {
+				dependingValue.propagate(entity, modified, propagating);
+				propagating.remove(depending);
+			}
 		}
 
 		@Override
@@ -3012,14 +3042,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			if (!deriving && !editable().is()) {
 				throw new IllegalStateException("Attribute is not editable");
 			}
-			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
+			Map<Attribute<?>, Object> dependingValues = dependingValues(entity.instance);
+			Set<Attribute<?>> dependingModified = modifiedAttributes(entity.instance, dependingValues.keySet());
 			boolean modified = entity.instance.modified(attribute);
 			if (change(entity.instance, value)) {
+				List<Attribute<?>> changed = changedAttributes(entity.instance, dependingValues);
 				//the value the entity ends up with, which it may adjust, a trimmed string for example
 				notifyValues(attribute, entity.instance.get(attribute), dependingValues, true);
 				//an unchanged value is not propagated, which settles a cycle that converges
 				//one that does not is stopped by propagate() itself
-				propagate(modified);
+				propagate(modified, changed, dependingModified);
 			}
 		}
 
@@ -3053,7 +3085,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 * @param value the replacement value
 		 */
 		private void replace(@Nullable T value) {
-			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
+			Map<Attribute<?>, Object> dependingValues = dependingValues(entity.instance);
 			entity.instance.set(attribute, value);
 			notifyValues(attribute, value, dependingValues, false);
 		}
@@ -3069,21 +3101,35 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 		}
 
+		private void propagate(boolean modified) {
+			propagate(modified, emptyList(), emptySet());
+		}
+
 		/**
-		 * Applies this value's propagators, transitively, guarding against a cycle that never reaches a fixpoint.
+		 * Applies this value's propagators, and those of the values which changed along with it, transitively,
+		 * guarding against a cycle that never reaches a fixpoint.
 		 * <p>Re-entering an attribute already propagating further up the cascade returns without propagating
 		 * again. The derived value it was just given stands - it is a real value, derived by a real propagator -
 		 * it simply goes no further. A pair deriving from each other therefore settles after one lap rather than
-		 * recursing until the stack gives out.
+		 * recursing until the stack gives out. The values which changed along with this one propagate within its
+		 * cascade, so one coming back round to it goes no further either.
 		 * @param modified true if this value was modified before the change being propagated
+		 * @param changed the values which changed along with this one
+		 * @param changedModified those of them which were modified before the change
 		 */
-		private void propagate(boolean modified) {
+		private void propagate(boolean modified, Collection<Attribute<?>> changed, Set<Attribute<?>> changedModified) {
 			if (propagating) {
 				return;
 			}
 			propagating = true;
 			try {
 				propagators.values().forEach(propagator -> propagator.propagate(modified));
+				changed.forEach(depending -> {
+					DefaultEditorValue<?> dependingValue = (DefaultEditorValue<?>) editorValues.get(depending);
+					if (dependingValue != null) {
+						dependingValue.propagate(changedModified.contains(depending));
+					}
+				});
 			}
 			finally {
 				propagating = false;
@@ -3137,26 +3183,45 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		/**
-		 * The values which change along with the given attribute, transitively, with their present values: those derived
-		 * from it, a column's foreign keys and a foreign key's columns, and those depending on these in turn, the given
-		 * attribute excluded. A whole entity being set gets its changed values from the entity, see
+		 * The values which change along with this one, transitively, with their present values in the given entity:
+		 * those derived from it, a column's foreign keys and a foreign key's columns, and those depending on these in
+		 * turn, this one excluded. A whole entity being set gets its changed values from the entity, see
 		 * {@link DefaultEditorEntity#setEntity(Entity)}, a single edit from here.
-		 * @param attribute the attribute being edited
+		 * @param entity the entity holding the values
 		 * @return the depending values, in the order found
 		 */
-		private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
+		private Map<Attribute<?>, Object> dependingValues(Entity entity) {
 			Map<Attribute<?>, @Nullable Object> dependingValues = new LinkedHashMap<>();
 			Deque<Attribute<?>> pending = new ArrayDeque<>(singleton(attribute));
 			while (!pending.isEmpty()) {
 				for (Attribute<?> depending : depending(pending.remove())) {
 					if (!depending.equals(attribute) && !dependingValues.containsKey(depending)) {
-						dependingValues.put(depending, entity.instance.get(depending));
+						dependingValues.put(depending, entity.get(depending));
 						pending.add(depending);
 					}
 				}
 			}
 
 			return dependingValues;
+		}
+
+		/**
+		 * @return those of the given attributes which are modified in the given entity
+		 */
+		private Set<Attribute<?>> modifiedAttributes(Entity entity, Collection<Attribute<?>> attributes) {
+			return attributes.stream()
+							.filter(entity::modified)
+							.collect(toSet());
+		}
+
+		/**
+		 * @return the attributes whose values in the given entity differ from the given previous ones
+		 */
+		private List<Attribute<?>> changedAttributes(Entity entity, Map<Attribute<?>, Object> previousValues) {
+			return previousValues.entrySet().stream()
+							.filter(entry -> !Objects.deepEquals(entry.getValue(), entity.get(entry.getKey())))
+							.map(Map.Entry::getKey)
+							.collect(toList());
 		}
 
 		/**
