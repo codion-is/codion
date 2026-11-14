@@ -108,7 +108,7 @@ The `.delay()` method accepts two parameters: the delay before showing the dialo
 +
 {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/dialog/ProgressWorkerDialogBuilder.html#SHOW_DELAY[ProgressWorkerDialogBuilder.SHOW_DELAY]
 
-* **Hide delay (800ms default)**: When an operation completes just after the dialog appears, hiding it immediately would create a jarring flash. The hide delay smooths this transition and reduces the perceived duration of short operations by avoiding the visual disruption of rapidly appearing and disappearing dialogs.
+* **Hide delay (350ms default)**: When an operation completes just after the dialog appears, hiding it immediately would create a jarring flash. The hide delay smooths this transition and reduces the perceived duration of short operations by avoiding the visual disruption of rapidly appearing and disappearing dialogs.
 +
 {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/dialog/ProgressWorkerDialogBuilder.html#HIDE_DELAY[ProgressWorkerDialogBuilder.HIDE_DELAY]
 

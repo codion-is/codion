@@ -81,12 +81,12 @@ public interface ProgressWorkerDialogBuilder<T extends @Nullable Object, V> exte
 	 * even if the operation completes faster, preventing dialog flicker.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 800
+	 * <li>Default value: 350
 	 * </ul>
 	 * @see #SHOW_DELAY
 	 */
 	PropertyValue<Integer> HIDE_DELAY =
-					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".hideDelay", 800);
+					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".hideDelay", 350);
 
 	/**
 	 * <p>Provides builders for a given task type.

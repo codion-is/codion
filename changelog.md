@@ -74,6 +74,7 @@ Codion Change Log
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 - ProgressWorkerDialogBuilder bug fixed, a progress dialog with an owner, being modal, now stays up for at least HIDE_DELAY once shown, where it was hidden as soon as the task finished, the time it was shown only recorded once it was hidden.
 - ProgressWorkerDialogBuilder bug fixed, a progress dialog with an owner, being modal, now blocks input from when its task starts, keys application wide and the mouse within the owner, where the owner took input until the dialog showed, after SHOW_DELAY, a key typed into a form then overwritten by the result of the task.
+- ProgressWorkerDialogBuilder.HIDE_DELAY changed to 350.
 ### is.codion.swing.framework.model
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.swing.framework.ui
