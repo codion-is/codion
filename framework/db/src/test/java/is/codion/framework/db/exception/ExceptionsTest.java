@@ -22,6 +22,7 @@ import is.codion.framework.db.TestDomain;
 import is.codion.framework.db.TestDomain.Department;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -91,6 +94,9 @@ public final class ExceptionsTest {
 		EntityModifiedException modified = new EntityModifiedException(department, current, singletonList(Department.NAME));
 		assertEquals(recordModified + ": " + Department.TYPE + "\n" + Department.NAME + ": Sales -> Accounting", modified.message(ENGLISH));
 		assertTrue(modified.message(ICELANDIC).startsWith(message(EntityModifiedException.class, "record_modified", ICELANDIC)));
+		// the modified columns of one type
+		List<Column<String>> columns = singletonList(Department.NAME);
+		assertEquals(singletonList(Department.NAME), new ArrayList<>(new EntityModifiedException(department, current, columns).columns()));
 
 		// deleted, described by its original state
 		Entity original = department.copy().mutable();

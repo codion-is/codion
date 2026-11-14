@@ -117,7 +117,7 @@ public interface DerivedValue<T> extends Serializable {
 	 * @param values the values
 	 * @return a new {@link SourceValues} instance
 	 */
-	static SourceValues sourceValues(Attribute<?> derivedAttribute, Map<Attribute<?>, Object> values) {
+	static SourceValues sourceValues(Attribute<?> derivedAttribute, Map<? extends Attribute<?>, ?> values) {
 		return new DefaultSourceValues(requireNonNull(derivedAttribute), requireNonNull(values));
 	}
 }

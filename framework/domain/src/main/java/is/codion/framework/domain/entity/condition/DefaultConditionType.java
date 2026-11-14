@@ -70,12 +70,12 @@ final class DefaultConditionType implements ConditionType, Serializable {
 	}
 
 	@Override
-	public <T> CustomCondition get(Column<T> column, List<T> values) {
+	public <T> CustomCondition get(Column<T> column, List<? extends T> values) {
 		return get(nCopies(requireNonNull(values).size(), requireNonNull(column)), values);
 	}
 
 	@Override
-	public CustomCondition get(List<Column<?>> columns, List<?> values) {
+	public CustomCondition get(List<? extends Column<?>> columns, List<?> values) {
 		return new DefaultCustomCondition(this, columns, values);
 	}
 

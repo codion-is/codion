@@ -26,9 +26,9 @@ import java.util.Optional;
 final class DefaultSourceValues implements DerivedValue.SourceValues {
 
 	private final Attribute<?> derivedAttribute;
-	private final Map<Attribute<?>, Object> values;
+	private final Map<? extends Attribute<?>, ?> values;
 
-	DefaultSourceValues(Attribute<?> derivedAttribute, Map<Attribute<?>, Object> values) {
+	DefaultSourceValues(Attribute<?> derivedAttribute, Map<? extends Attribute<?>, ?> values) {
 		this.derivedAttribute = derivedAttribute;
 		this.values = values;
 	}

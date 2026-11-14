@@ -45,6 +45,10 @@ Codion Change Log
 ### is.codion.dbms.h2
 - H2Database bug fixed, a table qualified by a schema that doesn't exist is now reported as ErrorType.TABLE_NOT_FOUND, as on PostgreSQL, where it had no error type.
 - H2Database bug fixed, an embedded file database is now created without DB_CLOSE_DELAY=-1, which H2 keeps as the database's own setting, so it stayed open once its last connection closed, in every later process too, until shut down; an in-memory one keeps it.
+### is.codion.framework.domain
+- Parameters widened to wildcard types, collections and maps taking ? extends their elements and keys, and comparators ? super their arguments, where a subtype or supertype fits.
+### is.codion.framework.db
+- Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model
 - AbstractEntityTableModel now logs a warning, once, when a selected entity's primary key is missing, a primary key column not declared nullable holding null, as a view's outer join may leave it, the entity equal to no other and taken for a new one by the editor, the selection cleared as soon as made.
 - EntityComboBoxModel.Builder.select() renamed selectedItem().

@@ -52,7 +52,7 @@ public final class EntityModifiedException extends UpdateEntityException {
 	 * @param modified the current (modified) version of the entity, null if it has been deleted
 	 * @param columns the modified columns, an empty collection in case the entity has been deleted
 	 */
-	public EntityModifiedException(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns) {
+	public EntityModifiedException(Entity entity, @Nullable Entity modified, Collection<? extends Column<?>> columns) {
 		// the message in the language of the one throwing, for a reader not putting the message together itself
 		super(message(requireNonNull(entity), modified, requireNonNull(columns), Locale.getDefault()));
 		this.entity = entity;
@@ -92,7 +92,7 @@ public final class EntityModifiedException extends UpdateEntityException {
 		}
 	}
 
-	private static String message(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns, Locale locale) {
+	private static String message(Entity entity, @Nullable Entity modified, Collection<? extends Column<?>> columns, Locale locale) {
 		String recordModified = Messages.message(EntityModifiedException.class, "record_modified", locale);
 		if (modified == null) {
 			Entity original = entity.copy().mutable();

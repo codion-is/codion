@@ -152,7 +152,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		}
 
 		@Override
-		public ForeignKeyDefinition.Builder comparator(Comparator<Entity> comparator) {
+		public ForeignKeyDefinition.Builder comparator(Comparator<? super Entity> comparator) {
 			throw new UnsupportedOperationException("Foreign key values are compared using the comparator of the underlying entity");
 		}
 

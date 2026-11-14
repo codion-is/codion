@@ -542,8 +542,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		@Override
-		public B comparator(Comparator<T> comparator) {
-			this.comparator = requireNonNull(comparator);
+		public B comparator(Comparator<? super T> comparator) {
+			//a comparator only consumes values, so one of a supertype compares them as well
+			this.comparator = (Comparator<T>) requireNonNull(comparator);
 			return self();
 		}
 

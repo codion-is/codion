@@ -218,7 +218,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * @return a new conditions combination
 	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
-	static Combination and(Collection<Condition> conditions) {
+	static Combination and(Collection<? extends Condition> conditions) {
 		return combination(Conjunction.AND, conditions);
 	}
 
@@ -238,7 +238,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * @return a new conditions combination
 	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
-	static Combination or(Collection<Condition> conditions) {
+	static Combination or(Collection<? extends Condition> conditions) {
 		return combination(Conjunction.OR, conditions);
 	}
 
@@ -260,7 +260,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * @return a new {@link Combination} instance
 	 * @throws IllegalArgumentException in case {@code conditions} is empty or the conditions are based on different entity types
 	 */
-	static Combination combination(Conjunction conjunction, Collection<Condition> conditions) {
+	static Combination combination(Conjunction conjunction, Collection<? extends Condition> conditions) {
 		return new DefaultConditionCombination(conjunction, new ArrayList<>(requireNonNull(conditions)));
 	}
 }

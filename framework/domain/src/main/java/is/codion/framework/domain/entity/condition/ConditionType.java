@@ -183,7 +183,7 @@ public sealed interface ConditionType permits DefaultConditionType {
 	 * @return a {@link CustomCondition} instance
 	 * @see EntityDefinition#condition(ConditionType)
 	 */
-	<T> CustomCondition get(Column<T> column, List<T> values);
+	<T> CustomCondition get(Column<T> column, List<? extends T> values);
 
 	/**
 	 * Returns a {@link CustomCondition} based on the {@link ConditionString} associated with this {@link ConditionType}
@@ -193,7 +193,7 @@ public sealed interface ConditionType permits DefaultConditionType {
 	 * @throws IllegalArgumentException in case the number of columns does not match the number of values
 	 * @see EntityDefinition#condition(ConditionType)
 	 */
-	CustomCondition get(List<Column<?>> columns, List<?> values);
+	CustomCondition get(List<? extends Column<?>> columns, List<?> values);
 
 	/**
 	 * Instantiates a new {@link ConditionType} for the given entity type

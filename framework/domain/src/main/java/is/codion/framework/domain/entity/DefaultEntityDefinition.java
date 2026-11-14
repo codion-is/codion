@@ -271,12 +271,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public Entity entity(Map<Attribute<?>, Object> values) {
+	public Entity entity(Map<? extends Attribute<?>, ?> values) {
 		return entity(values, EMPTY_MAP);
 	}
 
 	@Override
-	public Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues) {
+	public Entity entity(Map<? extends Attribute<?>, ?> values, Map<? extends Attribute<?>, ?> originalValues) {
 		return new DefaultEntity(this, values, originalValues);
 	}
 

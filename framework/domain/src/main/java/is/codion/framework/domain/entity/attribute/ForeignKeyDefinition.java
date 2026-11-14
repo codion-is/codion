@@ -150,7 +150,7 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 		 * @throws UnsupportedOperationException Foreign key values are compared using the comparator of the underlying entity
 		 */
 		@Override
-		Builder comparator(Comparator<Entity> comparator);
+		Builder comparator(Comparator<? super Entity> comparator);
 
 		/**
 		 * Marks this foreign key as being soft, that is, not based on a physical (table) foreign key and should not prevent deletion

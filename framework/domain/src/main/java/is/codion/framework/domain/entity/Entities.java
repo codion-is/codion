@@ -206,7 +206,7 @@ public sealed interface Entities permits DefaultEntities {
 	 * @throws IllegalArgumentException in case any of the values is not of the correct type
 	 * @throws NullPointerException in case entityType or values is null
 	 */
-	<T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<T> values);
+	<T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<? extends T> values);
 
 	/**
 	 * Creates a new {@link Entities.Configurable} instance for the given domain type.

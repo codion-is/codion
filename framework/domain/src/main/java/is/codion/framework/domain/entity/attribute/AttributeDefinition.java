@@ -490,7 +490,7 @@ public sealed interface AttributeDefinition<T>
 		 * @param comparator the Comparator to use when comparing values for this attribute
 		 * @return this builder instance
 		 */
-		B comparator(Comparator<T> comparator);
+		B comparator(Comparator<? super T> comparator);
 
 		/**
 		 * Builds a new attribute definition instance

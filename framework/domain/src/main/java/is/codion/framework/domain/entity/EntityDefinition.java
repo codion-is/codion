@@ -259,7 +259,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	 * @return a new {@link Entity} instance
 	 * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
 	 */
-	Entity entity(Map<Attribute<?>, Object> values);
+	Entity entity(Map<? extends Attribute<?>, ?> values);
 
 	/**
 	 * Creates a new {@link Entity} instance based on this definition
@@ -268,7 +268,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	 * @return a new {@link Entity} instance
 	 * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
 	 */
-	Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues);
+	Entity entity(Map<? extends Attribute<?>, ?> values, Map<? extends Attribute<?>, ?> originalValues);
 
 	/**
 	 * Creates a new {@link Entity.Key} instance based on this definition, initialised with the given value

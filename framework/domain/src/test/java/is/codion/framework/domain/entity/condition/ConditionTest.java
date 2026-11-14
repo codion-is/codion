@@ -24,6 +24,7 @@ import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static is.codion.framework.domain.TestDomain.*;
 import static is.codion.framework.domain.entity.condition.Condition.Combination;
@@ -49,6 +53,20 @@ public final class ConditionTest {
 	@BeforeEach
 	void setUp() {
 		entities = new TestDomain().entities();
+	}
+
+	@Test
+	void subtypes() {
+		//collections of subtypes: column conditions among conditions, columns among columns of any type
+		List<ColumnCondition<String>> conditions = asList(Department.NAME.equalTo("a"), Department.LOCATION.equalTo("b"));
+		assertEquals(2, Condition.and(conditions).conditions().size());
+		assertEquals(2, Condition.or(conditions).conditions().size());
+		List<Column<String>> columns = asList(Department.NAME, Department.LOCATION);
+		assertEquals(columns, Department.CONDITION.get(columns, asList("a", "b")).columns());
+		Map<Column<String>, String> values = new HashMap<>();
+		values.put(Department.NAME, "Sales");
+		Entity department = entities.definition(Department.TYPE).entity(values);
+		assertEquals("Sales", department.get(Department.NAME));
 	}
 
 	@Nested

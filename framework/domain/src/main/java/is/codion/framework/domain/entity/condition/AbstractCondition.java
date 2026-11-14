@@ -46,7 +46,7 @@ abstract sealed class AbstractCondition implements Condition, Serializable
 	 * @param values the values matching their columns in the columns list
 	 * @throws IllegalArgumentException in case the number of columns does not match the number of values
 	 */
-	protected AbstractCondition(EntityType entityType, List<Column<?>> columns, Collection<?> values) {
+	protected AbstractCondition(EntityType entityType, List<? extends Column<?>> columns, Collection<?> values) {
 		this.entityType = requireNonNull(entityType);
 		this.columns = unmodifiableList(new ArrayList<>(columns));
 		this.values = unmodifiableList(new ArrayList<>(values));
