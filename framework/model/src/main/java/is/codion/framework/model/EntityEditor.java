@@ -1096,7 +1096,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		ObservableState modified();
 
 		/**
-		 * <p>Returns an observer notified each time this value is modified via {@link EditorValue#set(Object)}.
+		 * <p>Returns an observer notified each time this value is modified via {@link EditorValue#set(Object)}, and each
+		 * time it changes along with another value so modified: a value derived from it, a foreign key one of whose columns
+		 * is modified, a column of a modified foreign key, and so on, transitively, a value derived from a foreign key of a
+		 * modified column for example.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
 		 * via {@link EditorEntity#set(Entity)}, {@link EditorEntity#defaults()} or {@link EditorEntity#clear()}.
 		 * <p>Note that this event is only triggered if the value actually changes.

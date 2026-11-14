@@ -66,8 +66,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -3121,37 +3123,45 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			});
 		}
 
+		/**
+		 * The values which change along with the given attribute, transitively, with their present values: those derived
+		 * from it, a column's foreign keys and a foreign key's columns, and those depending on these in turn, the given
+		 * attribute excluded. A whole entity being set gets its changed values from the entity, see
+		 * {@link DefaultEditorEntity#setEntity(Entity)}, a single edit from here.
+		 * @param attribute the attribute being edited
+		 * @return the depending values, in the order found
+		 */
 		private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
-			return dependingValues(attribute, new LinkedHashMap<>());
-		}
-
-		private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
-			addDependingDerivedAttributes(attribute, dependingValues);
-			if (attribute instanceof Column) {
-				addDependingForeignKeys((Column<?>) attribute, dependingValues);
-			}
-			else if (attribute instanceof ForeignKey) {
-				addDependingReferencedColumns((ForeignKey) attribute, dependingValues);
+			Map<Attribute<?>, @Nullable Object> dependingValues = new LinkedHashMap<>();
+			Deque<Attribute<?>> pending = new ArrayDeque<>(singleton(attribute));
+			while (!pending.isEmpty()) {
+				for (Attribute<?> depending : depending(pending.remove())) {
+					if (!depending.equals(attribute) && !dependingValues.containsKey(depending)) {
+						dependingValues.put(depending, entity.instance.get(depending));
+						pending.add(depending);
+					}
+				}
 			}
 
 			return dependingValues;
 		}
 
-		private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, @Nullable Object> dependingValues) {
-			entityDefinition.attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
-				dependingValues.put(derivedAttribute, entity.instance.get(derivedAttribute));
-				addDependingDerivedAttributes(derivedAttribute, dependingValues);
-			});
-		}
+		/**
+		 * @param attribute the attribute
+		 * @return the attributes depending directly on the given one, derived from it, a column's foreign keys and a
+		 * foreign key's columns
+		 */
+		private List<Attribute<?>> depending(Attribute<?> attribute) {
+			List<Attribute<?>> depending = new ArrayList<>(entityDefinition.attributes().derivedFrom(attribute));
+			if (attribute instanceof Column) {
+				entityDefinition.foreignKeys().definitions((Column<?>) attribute).forEach(foreignKeyDefinition ->
+								depending.add(foreignKeyDefinition.attribute()));
+			}
+			else if (attribute instanceof ForeignKey) {
+				((ForeignKey) attribute).references().forEach(reference -> depending.add(reference.column()));
+			}
 
-		private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, @Nullable Object> dependingValues) {
-			entityDefinition.foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
-							dependingValues.put(foreignKeyDefinition.attribute(), entity.instance.get(foreignKeyDefinition.attribute())));
-		}
-
-		private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, @Nullable Object> dependingValues) {
-			foreignKey.references().forEach(reference ->
-							dependingValues.put(reference.column(), entity.instance.get(reference.column())));
+			return depending;
 		}
 
 		private boolean isValid(Attribute<?> attribute) {

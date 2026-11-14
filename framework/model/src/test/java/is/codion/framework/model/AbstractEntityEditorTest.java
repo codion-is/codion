@@ -41,6 +41,7 @@ import is.codion.framework.model.DetailDomain.Assignment;
 import is.codion.framework.model.DetailDomain.Department;
 import is.codion.framework.model.DetailDomain.DepartmentExtra;
 import is.codion.framework.model.DetailDomain.Employee;
+import is.codion.framework.model.DetailDomain.SharedEmployee;
 import is.codion.framework.model.DetailPersistenceFactory.DepartmentPersistence;
 import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.framework.model.EntityEditor.EditorValue;
@@ -55,6 +56,7 @@ import java.lang.ref.WeakReference;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -1293,6 +1295,44 @@ public final class AbstractEntityEditorTest {
 		component.link(editorValue);
 
 		return component;
+	}
+
+	@Test
+	void editNotifiesEveryValueChanged() {
+		// an edit worked out the values depending on it one step only, so a value derived from a foreign key of an edited
+		// column, a value derived from a column of an edited foreign key, and another foreign key sharing a column with an
+		// edited one, all changed unnotified, a component showing them stale
+		TestEntityEditor editor = new TestEntityEditor(SharedEmployee.TYPE, CONNECTION);
+		List<Attribute<?>> notified = new ArrayList<>();
+		editor.values().changed().addConsumer(notified::add);
+		Value<Entity> viewComponent = Value.nullable();
+		viewComponent.link(editor.value(SharedEmployee.DEPARTMENT_VIEW_FK));
+		Value<String> nameComponent = Value.nullable();
+		nameComponent.link(editor.value(SharedEmployee.DEPARTMENT_NAME));
+		Value<String> codeComponent = Value.nullable();
+		codeComponent.link(editor.value(SharedEmployee.DEPARTMENT_CODE));
+		Entity jones = CONNECTION.selectSingle(SharedEmployee.ID.equalTo(3));
+		assertEquals("RESEARCH", jones.get(SharedEmployee.DEPARTMENT_NAME));
+
+		// the column edited, the name derived from its foreign key changing
+		editor.entity().set(jones);
+		notified.clear();
+		editor.value(SharedEmployee.DEPARTMENT).set(30);
+		assertNull(editor.value(SharedEmployee.DEPARTMENT_NAME).get());
+		assertTrue(notified.contains(SharedEmployee.DEPARTMENT_NAME));
+		assertNull(nameComponent.get());
+
+		// the foreign key edited, the code derived from its column changing, and the other foreign key on the column
+		editor.entity().set(jones);
+		notified.clear();
+		editor.value(SharedEmployee.DEPARTMENT_FK).set(CONNECTION.selectSingle(Department.ID.equalTo(10)));
+		assertEquals("D10", editor.value(SharedEmployee.DEPARTMENT_CODE).get());
+		assertNull(editor.value(SharedEmployee.DEPARTMENT_VIEW_FK).get());
+		assertTrue(notified.containsAll(asList(SharedEmployee.DEPARTMENT_CODE, SharedEmployee.DEPARTMENT_VIEW_FK)));
+		assertEquals("D10", codeComponent.get());
+		assertNull(viewComponent.get());
+		// each notified once, the edited value not among the depending ones
+		assertEquals(new HashSet<>(notified).size(), notified.size());
 	}
 
 	@Test

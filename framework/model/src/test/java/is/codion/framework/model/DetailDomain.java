@@ -20,8 +20,10 @@ package is.codion.framework.model;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -35,7 +37,7 @@ public final class DetailDomain extends DomainModel {
 
 	public DetailDomain() {
 		super(DOMAIN);
-		add(department(), employee(), departmentExtra(), assignment());
+		add(department(), employee(), departmentExtra(), assignment(), departmentView(), sharedEmployee());
 	}
 
 	public interface Department {
@@ -110,6 +112,74 @@ public final class DetailDomain extends DomainModel {
 														.defaultValue(10),
 										Assignment.BACKUP_DEPARTMENT_FK.as()
 														.foreignKey())
+						.build();
+	}
+
+	/**
+	 * The department table, read only, for a second foreign key on the department column of {@link SharedEmployee}
+	 */
+	public interface DepartmentView {
+		EntityType TYPE = DOMAIN.entityType("employees.department_view");
+
+		Column<Integer> ID = TYPE.integerColumn("deptno");
+		Column<String> NAME = TYPE.stringColumn("dname");
+	}
+
+	EntityDefinition departmentView() {
+		return DepartmentView.TYPE.as()
+						.attributes(
+										DepartmentView.ID.as()
+														.primaryKey(),
+										DepartmentView.NAME.as()
+														.column())
+						.table("employees.department")
+						.readOnly(true)
+						.build();
+	}
+
+	/**
+	 * The employee table, with two foreign keys sharing the department column, the second read only on it, and a value
+	 * derived from the first foreign key and one from the column
+	 */
+	public interface SharedEmployee {
+		EntityType TYPE = DOMAIN.entityType("employees.shared_employee");
+
+		Column<Integer> ID = TYPE.integerColumn("empno");
+		Column<String> NAME = TYPE.stringColumn("ename");
+		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
+		ForeignKey DEPARTMENT_VIEW_FK = TYPE.foreignKey("dept_view_fk", DEPARTMENT, DepartmentView.ID);
+		Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("dept_name");
+		Attribute<String> DEPARTMENT_CODE = TYPE.stringAttribute("dept_code");
+	}
+
+	EntityDefinition sharedEmployee() {
+		return SharedEmployee.TYPE.as()
+						.attributes(
+										SharedEmployee.ID.as()
+														.primaryKey(),
+										SharedEmployee.NAME.as()
+														.column(),
+										SharedEmployee.DEPARTMENT.as()
+														.column(),
+										SharedEmployee.DEPARTMENT_FK.as()
+														.foreignKey(),
+										SharedEmployee.DEPARTMENT_VIEW_FK.as()
+														.foreignKey()
+														.readOnly(SharedEmployee.DEPARTMENT),
+										SharedEmployee.DEPARTMENT_NAME.as()
+														.derived()
+														.from(SharedEmployee.DEPARTMENT_FK)
+														.with(values -> {
+															Entity department = values.get(SharedEmployee.DEPARTMENT_FK);
+
+															return department == null ? null : department.get(Department.NAME);
+														}),
+										SharedEmployee.DEPARTMENT_CODE.as()
+														.derived()
+														.from(SharedEmployee.DEPARTMENT)
+														.with(values -> values.get(SharedEmployee.DEPARTMENT) == null ? null : "D" + values.get(SharedEmployee.DEPARTMENT)))
+						.table("employees.employee")
 						.build();
 	}
 

@@ -61,6 +61,7 @@ Codion Change Log
 - EditorTasks bug fixed, insert(), update() and delete() now validate the details persisted with the active entity, and check their settings, before notifying the before event, which fired for a persist then refused by a detail.
 - EditorTasks bug fixed, the result of an insert, update or delete of the active entity no longer replaces or resets the entity of an editor set to another one since the task was created, nor the details loaded for it, where the editor went back to the persisted entity, or to the defaults after a delete, having notified the other.
 - AbstractEntityEditor bug fixed, a foreign key column whose default the database provides, withDefault(), is now left out of the entity by defaults() and clear() where its foreign key gets no value, as other such columns are, where the foreign key was set to null, its columns along with it, so that the insert wrote null over the database default.
+- AbstractEntityEditor bug fixed, an edit now notifies every value it changes, transitively, where a value derived from a foreign key of an edited column, one derived from a column of an edited foreign key, and another foreign key sharing a column with an edited one changed unnotified, a component showing them stale.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model
