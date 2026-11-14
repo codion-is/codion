@@ -1034,8 +1034,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		void revert();
 
 		/**
-		 * Updates the valid state of this value according to the underlying validator
+		 * Validates the entity anew, updating the valid state and error of this value, and of every other, according to
+		 * the underlying validator, for a rule depending on something outside the entity which has changed. The entity is
+		 * validated on each edit, each entity set and each change of validator without this.
 		 * @see #valid()
+		 * @see #error()
 		 */
 		void validate();
 
@@ -1051,6 +1054,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		State persist();
 
 		/**
+		 * <p>The valid state of every value, as its {@link #error()}, follows the last validation of the entity as a whole,
+		 * so a rule spanning attributes is reflected by each value it involves, and an unmodified value of an existing
+		 * entity is valid unless the validator validates it, see
+		 * {@link EntityValidator#validated(Entity, is.codion.framework.domain.entity.attribute.AttributeDefinition)}.
 		 * @return an {@link ObservableState} indicating the valid status of this attribute value.
 		 */
 		ObservableState valid();

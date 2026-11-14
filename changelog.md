@@ -64,6 +64,8 @@ Codion Change Log
 - AbstractEntityEditor bug fixed, an edit now notifies every value it changes, transitively, where a value derived from a foreign key of an edited column, one derived from a column of an edited foreign key, and another foreign key sharing a column with an edited one changed unnotified, a component showing them stale.
 - EditorValue.edited() bug fixed, it no longer fires for a foreign key value replaced because the referenced entity was updated or deleted elsewhere, nor for EditorEntity.revert(), neither being an edit, as propagators already treated them, where an edited() consumer modified a record nobody had edited, or left a reverted one modified.
 - EditorValue.propagate(), a propagator now also applies each time its value changes along with another value edited, as edited() is notified, a propagator on a foreign key column with the foreign key edited for example, where it applied only to its own value being set.
+- EditorValue bug fixed, valid() and error() now follow the validation of the entity as a whole, refreshed for every value on each edit, entity set and change of validator, where they were refreshed for the value edited only, stale where a rule spans attributes, created from a validation of the value alone, disagreeing with the entity for an unmodified value of an existing one, and validate() set the valid state but not the error.
+- AbstractEntityEditor bug fixed, a validator giving two validation exceptions for one attribute no longer breaks every edit, the first message kept.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model

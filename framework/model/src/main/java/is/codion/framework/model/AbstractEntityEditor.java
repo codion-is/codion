@@ -138,6 +138,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final Map<Attribute<?>, Value<String>> warnings = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeWarned = new HashMap<>();
 
+	//the attributes the entity was found invalid in by its last validation, with their messages, see updateValidity()
+	private Map<Attribute<?>, String> invalidAttributes = emptyMap();
+
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
@@ -190,7 +193,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		this.entity = new DefaultEditorEntity();
 		this.validator = Value.builder()
 						.nonNull(entityDefinition.validator())
-						.listener(this::updateValidStates)
+						.listener(this::revalidate)
 						.build();
 		configurePersistentForeignKeys();
 		addEditListeners();
@@ -485,8 +488,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		editorValue(foreignKey).replace(value);
 	}
 
-	private void notifyValueChange(Attribute<?> attribute, Map<Attribute<?>, String> invalidAttributes) {
-		updateAttributeStates(attribute, invalidAttributes);
+	private void notifyValueChange(Attribute<?> attribute) {
+		updateAttributeStates(attribute);
 		DefaultEditorValue<?> editorValue = (DefaultEditorValue<?>) editorValues.get(attribute);
 		if (editorValue != null) {
 			editorValue.valueChanged();
@@ -494,7 +497,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		values.changed.accept(attribute);
 	}
 
-	private Map<Attribute<?>, String> updateStates() {
+	private void updateStates() {
 		Entity instance = entity.get();
 		entity.exists.update(instance);
 		entity.present.update(instance);
@@ -502,35 +505,51 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		detail.editors.values().forEach(DetailEditor::updateUpdatable);
 		entity.modified.update();
 		entity.primaryKeyPresent.set(entity.instance.primaryKey().present());
-		updateWarnings();
-
-		return updateEntityValidState(instance);
+		updateValidity(instance);
 	}
 
-	private void updateAttributeStates(Attribute<?> attribute, Map<Attribute<?>, String> invalid) {
+	/**
+	 * The present and modified states of a value, the valid state and error being refreshed for every value at once,
+	 * see {@link #updateValidity(Entity)}.
+	 */
+	private void updateAttributeStates(Attribute<?> attribute) {
 		State presentState = attributePresent.get(attribute);
 		if (presentState != null) {
 			presentState.set(entity.instance.present(attribute));
-		}
-		State validState = attributeValid.get(attribute);
-		if (validState != null) {
-			validState.set(!invalid.containsKey(attribute));
 		}
 		State modifiedState = attributeModified.get(attribute);
 		if (modifiedState != null) {
 			modifiedState.set(entity.instance.modified(attribute));
 		}
-		Value<String> error = errors.get(attribute);
-		if (error != null) {
-			error.set(invalid.get(attribute));
-		}
 	}
 
-	private Map<Attribute<?>, String> updateEntityValidState() {
-		return updateEntityValidState(entity.get());
+	/**
+	 * Validates the entity anew, as for a validator depending on something outside the entity
+	 */
+	private void revalidate() {
+		updateValidity(entity.get());
 	}
 
-	private Map<Attribute<?>, String> updateEntityValidState(Entity instance) {
+	/**
+	 * Validates the entity, setting its valid state, and refreshes every warning, valid state and error held from that
+	 * one validation. A rule frequently spans attributes, a value required above a threshold of another for example, so
+	 * refreshing only the attribute which changed would leave the others stale, and validating an attribute on its own
+	 * would disagree with the entity, which validates an unmodified value of an existing entity only where its validator
+	 * says so, see {@link EntityValidator#validated(Entity, AttributeDefinition)}.
+	 */
+	private void updateValidity(Entity instance) {
+		updateWarnings();
+		invalidAttributes = invalidAttributes(instance);
+		attributeValid.forEach((attribute, state) -> state.set(!invalidAttributes.containsKey(attribute)));
+		errors.forEach((attribute, value) -> value.set(invalidAttributes.get(attribute)));
+	}
+
+	/**
+	 * Validates the given entity, setting the entity's valid state.
+	 * @return the attributes the entity is invalid in, with their messages, the first one kept for an attribute given
+	 * more than one
+	 */
+	private Map<Attribute<?>, String> invalidAttributes(Entity instance) {
 		try {
 			validate(instance);
 			entity.valid.set(true);
@@ -541,23 +560,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			entity.valid.set(false);
 
 			return e.attributes().stream()
-							.collect(toMap(AttributeValidationException::attribute, Throwable::getMessage));
+							.collect(toMap(AttributeValidationException::attribute, Throwable::getMessage, (first, second) -> first));
 		}
 	}
 
-	private void updateValidStates() {
-		updateWarnings();
-		Map<Attribute<?>, String> invalid = updateEntityValidState();
-		attributeValid.forEach((attribute, state) -> state.set(!invalid.containsKey(attribute)));
-		errors.forEach((attribute, value) -> value.set(invalid.get(attribute)));
-	}
-
 	/**
-	 * Recomputes every warning anyone has asked for. Unlike the error states, which the caller refreshes per changed
-	 * attribute, warnings are refreshed wholesale on each revalidation — a warning frequently depends on more than the
-	 * value carrying it (a weight is odd <em>for this species</em>), so refreshing only the attribute that moved would
-	 * leave the others stale. Only attributes some caller holds a warning for are visited, and the entity is being
-	 * validated in full alongside this anyway, so the added cost is of the same order.
+	 * Recomputes every warning anyone has asked for. Warnings are refreshed wholesale on each revalidation, as the valid
+	 * states and errors are — a warning frequently depends on more than the value carrying it (a weight is odd <em>for
+	 * this species</em>), so refreshing only the attribute that moved would leave the others stale. Only attributes some
+	 * caller holds a warning for are visited, and the entity is being validated in full alongside this anyway, so the
+	 * added cost is of the same order.
 	 */
 	private void updateWarnings() {
 		if (!warnings.isEmpty()) {
@@ -836,13 +848,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 */
 		private void setEntity(Entity entity) {
 			Map<Attribute<?>, Object> affectedAttributes = instance.set(entity);
-			Map<Attribute<?>, String> invalidAttributes = updateStates();
+			updateStates();
 			boolean wasNotifying = notifying;
 			notifying = true;
 			try {
 				entityDefinition.attributes().get().stream()
 								.filter(affectedAttributes::containsKey)
-								.forEach(attribute -> notifyValueChange(attribute, invalidAttributes));
+								.forEach(AbstractEntityEditor.this::notifyValueChange);
 			}
 			finally {
 				notifying = wasNotifying;
@@ -2885,10 +2897,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void validate() {
-			State validState = attributeValid.get(attribute);
-			if (validState != null) {
-				validState.set(isValid(attribute));
-			}
+			revalidate();
 		}
 
 		@Override
@@ -2899,7 +2908,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public ObservableState valid() {
 			return attributeValid.computeIfAbsent(attribute,
-							k -> State.state(isValid(attribute))).observable();
+							k -> State.state(!invalidAttributes.containsKey(attribute))).observable();
 		}
 
 		@Override
@@ -2911,7 +2920,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public Observable<String> error() {
 			return errors.computeIfAbsent(attribute,
-							k -> Value.nullable(validationString())).observable();
+							k -> Value.nullable(invalidAttributes.get(attribute))).observable();
 		}
 
 		@Override
@@ -3162,24 +3171,24 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 */
 		private <T> void notifyValues(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues,
 																	boolean edited) {
-			notifyValues(attribute, value, dependingValues, edited, updateStates());
+			updateStates();
+			notifyValue(attribute, value, edited);
+			dependingValues.forEach((dependingAttribute, previousValue) -> {
+				Object currentValue = entity.instance.get(dependingAttribute);
+				if (!Objects.deepEquals(previousValue, currentValue)) {
+					notifyValue((Attribute<Object>) dependingAttribute, currentValue, edited);
+				}
+			});
 		}
 
-		private <T> void notifyValues(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues,
-																	boolean edited, Map<Attribute<?>, String> invalidAttributes) {
-			notifyValueChange(attribute, invalidAttributes);
+		private <T> void notifyValue(Attribute<T> attribute, @Nullable T value, boolean edited) {
+			notifyValueChange(attribute);
 			if (edited) {
 				Signal<T> editSignal = (Signal<T>) editSignals.get(attribute);
 				if (editSignal != null) {
 					editSignal.accept(value);
 				}
 			}
-			dependingValues.forEach((dependingAttribute, previousValue) -> {
-				Object currentValue = entity.instance.get(dependingAttribute);
-				if (!Objects.deepEquals(previousValue, currentValue)) {
-					notifyValues((Attribute<Object>) dependingAttribute, currentValue, emptyMap(), edited, invalidAttributes);
-				}
-			});
 		}
 
 		/**
@@ -3240,27 +3249,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 
 			return depending;
-		}
-
-		private boolean isValid(Attribute<?> attribute) {
-			try {
-				validator.getOrThrow().validate(entity.get(), attribute);
-				return true;
-			}
-			catch (AttributeValidationException e) {
-				return false;
-			}
-		}
-
-		private @Nullable String validationString() {
-			try {
-				AbstractEntityEditor.this.validate(attribute);
-
-				return null;
-			}
-			catch (AttributeValidationException e) {
-				return e.getMessage();
-			}
 		}
 
 		private final class DefaultValue implements Supplier<T> {

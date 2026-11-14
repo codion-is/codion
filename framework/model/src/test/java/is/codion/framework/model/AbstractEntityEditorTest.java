@@ -20,6 +20,8 @@ package is.codion.framework.model;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.reactive.observable.Change;
+import is.codion.common.reactive.observable.Observable;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
@@ -34,6 +36,7 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.AbstractEntityEditor.DefaultDetailEditors;
 import is.codion.framework.model.AbstractEntityEditor.DetailForeignKeyValidator;
@@ -61,6 +64,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -1386,6 +1390,96 @@ public final class AbstractEntityEditorTest {
 		cycleEditor.value(SharedEmployee.DEPARTMENT_FK).set(accounting);
 		assertEquals(research, cycleEditor.value(SharedEmployee.DEPARTMENT_FK).get());
 		assertEquals(20, cycleEditor.value(SharedEmployee.DEPARTMENT).get());
+	}
+
+	@Test
+	void validStatesFollowEntityValidation() {
+		// a value's valid state and error were refreshed for the edited value only, stale when a rule spans attributes,
+		// created from a validation of the value alone, disagreeing with the entity for an unmodified value of an existing
+		// one, and validate() set the state but not the error
+		AtomicBoolean required = new AtomicBoolean();
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.validator().set(new ManagerRequiredValidator(required));
+		editor.entity().defaults();
+		ObservableState managerValid = editor.value(Employee.MANAGER_ID).valid();
+		Observable<String> managerError = editor.value(Employee.MANAGER_ID).error();
+		assertTrue(managerValid.is());
+		assertNull(managerError.get());
+
+		// another value edited, requiring the manager
+		editor.value(Employee.SALARY).set(6000d);
+		assertFalse(editor.entity().valid().is());
+		assertFalse(managerValid.is());
+		assertEquals(ManagerRequiredValidator.MESSAGE, managerError.get());
+		editor.value(Employee.SALARY).set(3000d);
+		assertTrue(managerValid.is());
+		assertNull(managerError.get());
+
+		// a rule depending on something outside the entity, validated on request
+		required.set(true);
+		editor.value(Employee.MANAGER_ID).validate();
+		assertFalse(managerValid.is());
+		assertEquals(ManagerRequiredValidator.MESSAGE, managerError.get());
+		required.set(false);
+		editor.value(Employee.MANAGER_ID).validate();
+		assertTrue(managerValid.is());
+
+		// an existing row, the president, his null manager unmodified and so not validated, the entity valid
+		Entity king = CONNECTION.selectSingle(Employee.ID.equalTo(8));
+		editor.entity().set(king);
+		assertTrue(editor.entity().valid().is());
+		assertTrue(managerValid.is());
+		assertNull(managerError.get());
+		// as states created after the row was set
+		TestEntityEditor after = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		after.validator().set(new ManagerRequiredValidator(required));
+		after.entity().set(king);
+		assertTrue(after.entity().valid().is());
+		assertTrue(after.value(Employee.MANAGER_ID).valid().is());
+		assertNull(after.value(Employee.MANAGER_ID).error().get());
+	}
+
+	@Test
+	void twoValidationExceptionsForOneAttribute() {
+		// a validator giving two validation exceptions for one attribute broke every edit, collecting them into a map
+		// throwing on the duplicate
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		editor.validator().set(new EntityValidator() {
+			@Override
+			public void validate(Entity entity) throws EntityValidationException {
+				throw new EntityValidationException(asList(
+								new AttributeValidationException(Employee.NAME, null, "first"),
+								new AttributeValidationException(Employee.NAME, null, "second")));
+			}
+		});
+		Observable<String> nameError = editor.value(Employee.NAME).error();
+		editor.value(Employee.NAME).set("name");
+		assertEquals("first", nameError.get());
+		assertFalse(editor.entity().valid().is());
+	}
+
+	/**
+	 * Requires a manager for a salary of 5000 or more, or while required is set
+	 */
+	private static final class ManagerRequiredValidator implements EntityValidator {
+
+		private static final String MESSAGE = "A manager is required";
+
+		private final AtomicBoolean required;
+
+		private ManagerRequiredValidator(AtomicBoolean required) {
+			this.required = required;
+		}
+
+		@Override
+		public void validate(Entity entity, Attribute<?> attribute) throws AttributeValidationException {
+			EntityValidator.super.validate(entity, attribute);
+			Double salary = entity.get(Employee.SALARY);
+			if (attribute.equals(Employee.MANAGER_ID) && entity.get(Employee.MANAGER_ID) == null
+							&& (required.get() || salary != null && salary >= 5000)) {
+				throw new AttributeValidationException(Employee.MANAGER_ID, null, MESSAGE);
+			}
+		}
 	}
 
 	@Test
