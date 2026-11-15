@@ -173,7 +173,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 		}
 
 		@Override
-		public Builder descendingIgnoreCase(Column<?>... columns) {
+		public Builder descendingIgnoreCase(Column<String>... columns) {
 			add(false, NullOrder.DEFAULT, true, requireNonNull(columns));
 			return this;
 		}
@@ -201,6 +201,9 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 				throw new IllegalArgumentException("One or more columns required for order by");
 			}
 			for (Column<?> column : columns) {
+				if (ignoreCase && !requireNonNull(column).type().isString()) {
+					throw new IllegalArgumentException("Ignoring case only applies to String based columns: " + column);
+				}
 				for (OrderByColumn orderByColumn : orderByColumns) {
 					if (requireNonNull(column).equals(orderByColumn.column())) {
 						throw new IllegalArgumentException("Order by already contains column: " + column);

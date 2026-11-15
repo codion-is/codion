@@ -19,6 +19,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.TestDomain.Department;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,23 @@ public final class DefaultOrderByTest {
 	@Test
 	void noAttributes() {
 		assertThrows(IllegalArgumentException.class, OrderBy::ascending);
+	}
+
+	@Test
+	void ignoreCaseStringColumnsOnly() {
+		// A column of another type passed as a string column, as when deserializing a select
+		Column<String> id = (Column<String>) (Column<?>) Department.ID;
+		assertThrows(IllegalArgumentException.class, () -> OrderBy.builder().ascendingIgnoreCase(id));
+		assertThrows(IllegalArgumentException.class, () -> OrderBy.builder().ascendingIgnoreCase(NULLS_FIRST, id));
+		assertThrows(IllegalArgumentException.class, () -> OrderBy.builder().descendingIgnoreCase(id));
+		assertThrows(IllegalArgumentException.class, () -> OrderBy.builder().descendingIgnoreCase(NULLS_LAST, id));
+		OrderBy orderBy = OrderBy.builder()
+						.descendingIgnoreCase(Department.NAME)
+						.ascendingIgnoreCase(Department.LOCATION)
+						.build();
+		assertTrue(orderBy.orderByColumns().get(0).ignoreCase());
+		assertFalse(orderBy.orderByColumns().get(0).ascending());
+		assertTrue(orderBy.orderByColumns().get(1).ignoreCase());
 	}
 
 	@Test

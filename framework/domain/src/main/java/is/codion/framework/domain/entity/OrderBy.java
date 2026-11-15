@@ -165,7 +165,7 @@ public sealed interface OrderBy permits DefaultOrderBy {
 		 * Adds an 'ascending' order by ignoring case for the given columns
 		 * @param columns the columns
 		 * @return this builder instance
-		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 * @throws IllegalArgumentException in case {@code columns} is empty or contains a column which is not String based
 		 */
 		Builder ascendingIgnoreCase(Column<String>... columns);
 
@@ -183,7 +183,7 @@ public sealed interface OrderBy permits DefaultOrderBy {
 		 * @param nullOrder the null order
 		 * @param columns the columns
 		 * @return this builder instance
-		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 * @throws IllegalArgumentException in case {@code columns} is empty or contains a column which is not String based
 		 */
 		Builder ascendingIgnoreCase(NullOrder nullOrder, Column<String>... columns);
 
@@ -199,9 +199,9 @@ public sealed interface OrderBy permits DefaultOrderBy {
 		 * Adds a 'descending' order by ignoring case for the given columns
 		 * @param columns the columns
 		 * @return this builder instance
-		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 * @throws IllegalArgumentException in case {@code columns} is empty or contains a column which is not String based
 		 */
-		Builder descendingIgnoreCase(Column<?>... columns);
+		Builder descendingIgnoreCase(Column<String>... columns);
 
 		/**
 		 * Adds a 'descending' order by for the given columns
@@ -217,7 +217,7 @@ public sealed interface OrderBy permits DefaultOrderBy {
 		 * @param nullOrder the null order
 		 * @param columns the columns
 		 * @return this builder instance
-		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 * @throws IllegalArgumentException in case {@code columns} is empty or contains a column which is not String based
 		 */
 		Builder descendingIgnoreCase(NullOrder nullOrder, Column<String>... columns);
 
