@@ -36,6 +36,7 @@ Codion Change Log
 - FilterComboBoxModel.Builder.select() renamed selectedItem(), ItemComboBoxModelBuilder.selected(T) renamed selectedValue() and selected(Item) renamed selectedItem().
 - ItemComboBoxModelBuilder.selectedItem() now accepts null, for none, where it threw, and selectedValue(null) now selects none, where it threw without a null item, the null item representing none, if any.
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
+- FilePreferences.backup() removed, the preferences migrator having been its only caller.
 ### is.codion.common.db
 - ErrorType.DEADLOCK added, the transaction chosen as a deadlock's victim, recognized on every database but SQLite, which has none.
 - Parameters widened to wildcard types, functions taking ? extends their results, where a subtype fits.
