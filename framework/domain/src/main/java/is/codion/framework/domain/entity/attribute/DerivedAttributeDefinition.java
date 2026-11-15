@@ -20,7 +20,11 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedFromStep;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedUsingStep;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedFromStep;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedWithStep;
 
 import java.util.List;
 
@@ -142,7 +146,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		interface DerivedFromStep<T, B extends DerivedBuilder<T, B>> {
+		sealed interface DerivedFromStep<T, B extends DerivedBuilder<T, B>> permits DefaultDerivedFromStep {
 
 			/**
 			 * @param attributes the attributes to derive the value from
@@ -156,7 +160,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		interface DerivedWithStep<T, B extends DerivedBuilder<T, B>> {
+		sealed interface DerivedWithStep<T, B extends DerivedBuilder<T, B>> permits DefaultDerivedWithStep {
 
 			/**
 			 * @param value a {@link DerivedValue} instance responsible for providing the derived value
@@ -179,7 +183,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		interface DenormalizedFromStep<T, B extends DenormalizedBuilder<T, B>> {
+		sealed interface DenormalizedFromStep<T, B extends DenormalizedBuilder<T, B>> permits DefaultDenormalizedFromStep {
 
 			/**
 			 * @param source the source attribute to denormalize from
@@ -193,7 +197,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		interface DenormalizedUsingStep<T, B extends DenormalizedBuilder<T, B>> {
+		sealed interface DenormalizedUsingStep<T, B extends DenormalizedBuilder<T, B>> permits DefaultDenormalizedUsingStep {
 
 			/**
 			 * @param denormalized the denormalized attribute

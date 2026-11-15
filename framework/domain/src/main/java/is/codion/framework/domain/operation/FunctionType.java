@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  * @param <P> the function parameter type, nullable where the function may be executed without one
  * @param <R> the function result type, nullable where the function may return null
  */
-public interface FunctionType<C, P extends @Nullable Object, R extends @Nullable Object> {
+public sealed interface FunctionType<C, P extends @Nullable Object, R extends @Nullable Object> permits DefaultFunctionType {
 
 	/**
 	 * @return the function name

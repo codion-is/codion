@@ -28,7 +28,7 @@ import org.jspecify.annotations.Nullable;
  * parameter receives one, {@code @Nullable} marking it where null is allowed.
  * @param <P> the procedure parameter type, nullable where the procedure may be executed without one
  */
-public interface ProcedureType<C, P extends @Nullable Object> {
+public sealed interface ProcedureType<C, P extends @Nullable Object> permits DefaultProcedureType {
 
 	/**
 	 * @return the procedure name

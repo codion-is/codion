@@ -220,7 +220,7 @@ public sealed interface Entities permits DefaultEntities {
 	/**
 	 * Provides a {@link Configurable} {@link Entities} instance
 	 */
-	interface Configurable {
+	sealed interface Configurable permits ConfigurableEntities {
 
 		/**
 		 * @return the {@link Entities} instance being configured

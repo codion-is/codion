@@ -32,7 +32,7 @@ import org.jspecify.annotations.Nullable;
  * @param <P> the report parameters type, nullable where the report may be filled without parameters
  * @param <R> the report result type
  */
-public interface ReportType<P extends @Nullable Object, R> {
+public sealed interface ReportType<P extends @Nullable Object, R> permits DefaultReportType {
 
 	/**
 	 * @return the report name
