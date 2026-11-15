@@ -32,6 +32,8 @@ import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -68,6 +70,7 @@ final class JsonPreferencesStore {
 
 	private static final long LOCK_TIMEOUT_MS = 5000; // 5 seconds
 	private static final long LOCK_RETRY_DELAY_MS = 50; // 50ms between retries
+	private static final String TEMP_FILE_SUFFIX = ".tmp";
 
 	private final Path filePath;
 	private final Path lockFilePath;
@@ -173,8 +176,10 @@ final class JsonPreferencesStore {
 		LOG.debug("Saving preferences to {}", filePath);
 		long startTime = currentTimeMillis();
 		Files.createDirectories(filePath.getParent());
-		// Write to temp file first
-		Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
+		// Write to temp file first, named after the file, so that one left behind can be told from those of other files
+		String tempFilePrefix = filePath.getFileName() + ".";
+		removeTempFiles(tempFilePrefix);
+		Path tempFile = Files.createTempFile(filePath.getParent(), tempFilePrefix, TEMP_FILE_SUFFIX);
 		try {
 			Files.write(tempFile.toAbsolutePath(), content.getBytes(StandardCharsets.UTF_8));
 			// Force sync to disk before atomic move (helps on Windows/VirtualBox)
@@ -190,6 +195,39 @@ final class JsonPreferencesStore {
 		finally {
 			Files.deleteIfExists(tempFile);
 		}
+	}
+
+	/**
+	 * Removes the temporary files of this file left behind by a JVM that ended between creating one and moving it.
+	 * The caller holds the file lock, so none of them belongs to a save in progress. Best effort.
+	 */
+	private void removeTempFiles(String prefix) {
+		try (DirectoryStream<Path> tempFiles = Files.newDirectoryStream(filePath.getParent(), file -> tempFile(file, prefix))) {
+			for (Path tempFile : tempFiles) {
+				Files.deleteIfExists(tempFile);
+				LOG.debug("Removed temporary file left behind: {}", tempFile);
+			}
+		}
+		catch (IOException | DirectoryIteratorException e) {
+			LOG.debug("Unable to remove temporary files left behind for {}", filePath, e);
+		}
+	}
+
+	/**
+	 * @return true if the file is named as a temporary file of this file is: the prefix, digits and the suffix
+	 */
+	private static boolean tempFile(Path file, String prefix) {
+		String name = file.getFileName().toString();
+		if (name.length() <= prefix.length() + TEMP_FILE_SUFFIX.length() || !name.startsWith(prefix) || !name.endsWith(TEMP_FILE_SUFFIX)) {
+			return false;
+		}
+		for (int i = prefix.length(); i < name.length() - TEMP_FILE_SUFFIX.length(); i++) {
+			if (!Character.isDigit(name.charAt(i))) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**

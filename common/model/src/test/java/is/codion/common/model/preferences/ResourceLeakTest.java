@@ -26,6 +26,7 @@ import java.io.InterruptedIOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
@@ -35,6 +36,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,6 +47,34 @@ public final class ResourceLeakTest {
 
 	@TempDir
 	Path tempDir;
+
+	@Test
+	void temporaryFileOfAnEarlierSaveRemoved() throws Exception {
+		// a JVM ending between creating its temporary file and moving it left the file behind for good,
+		// named at random, nothing able to tell whose it was
+		Path prefsFile = tempDir.resolve("leftover.json");
+		Path leftover = tempDir.resolve("leftover.json.1234567890.tmp");
+		Path emptyLeftover = tempDir.resolve("leftover.json.987.tmp");
+		Path ofAnotherFile = tempDir.resolve("another.json.1234567890.tmp");
+		Path notTemporary = tempDir.resolve("leftover.json.backup.tmp");
+		Files.write(leftover, "{\"key\":\"value\"}".getBytes(StandardCharsets.UTF_8));
+		Files.createFile(emptyLeftover);
+		Files.createFile(ofAnotherFile);
+		Files.createFile(notTemporary);
+
+		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
+		store.put("", "key", "value");
+		store.sync();
+
+		assertTrue(Files.exists(prefsFile));
+		assertFalse(Files.exists(leftover));
+		assertFalse(Files.exists(emptyLeftover));
+		assertTrue(Files.exists(ofAnotherFile));
+		assertTrue(Files.exists(notTemporary));
+		try (Stream<Path> files = Files.list(tempDir)) {
+			assertEquals(0, files.filter(file -> file.getFileName().toString().matches("leftover\\.json\\.\\d+\\.tmp")).count());
+		}
+	}
 
 	@Test
 	void testInterruptedExceptionType() throws Exception {
