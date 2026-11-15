@@ -1069,6 +1069,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public EditorTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException {
 			verifyInsert();
 			Entity entity = entity().get().copy().mutable();
+			removeDatabaseDefaultNulls(entity);
 			persistEvents.beforeInsert(entity);
 
 			return detail.editors.isEmpty() ? new InsertEditor(entity, before) : new InsertDetail(entity, before);
@@ -1240,6 +1241,22 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			if (entity.detailsPending && !detail.editors.isEmpty()) {
 				throw new IllegalStateException(DETAILS_PENDING + entity().get());
 			}
+		}
+
+		/**
+		 * Removes each null held for a column whose default the database provides from the entity about to be inserted,
+		 * so that the database fills it in, as it does for one the entity never held. A value given and then cleared, or
+		 * reverted, is a null the entity holds, which would otherwise be inserted as null, failing the insert where the
+		 * column is not nullable, validation exempting such a column for a new entity.
+		 * @param entity the entity about to be inserted
+		 */
+		private void removeDatabaseDefaultNulls(Entity entity) {
+			entityDefinition.columns().definitions().stream()
+							.filter(ColumnDefinition::withDefault)
+							.map(ColumnDefinition::attribute)
+							.filter(column -> entity.contains(column) && entity.get(column) == null)
+							.collect(toList())
+							.forEach(entity::remove);
 		}
 
 		private EditorTask<Entity> replace(Entity entity) {

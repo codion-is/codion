@@ -1205,6 +1205,55 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void insertLeavesOutNullOfDatabaseDefault() throws EntityValidationException {
+		// a value of a column whose default the database provides, given and then cleared, was inserted as null, where
+		// one never given got the default, and the insert failed where the column is not nullable
+		CONNECTION.startTransaction();
+		try {
+			TestEntityEditor editor = new TestEntityEditor(Assignment.TYPE, CONNECTION);
+			editor.entity().defaults();
+			Entity department = CONNECTION.selectSingle(Department.ID.equalTo(30));
+			editor.value(Assignment.PRIORITY).set(1);
+			editor.value(Assignment.PRIORITY).clear();
+			editor.value(Assignment.STATUS).set(1);
+			editor.value(Assignment.STATUS).clear();
+			editor.value(Assignment.DEPARTMENT_FK).set(department);
+			editor.value(Assignment.DEPARTMENT_FK).clear();
+			// the editor holds the nulls
+			assertTrue(editor.entity().get().contains(Assignment.PRIORITY));
+			List<Entity> beforeInsert = new ArrayList<>();
+			editor.events().before().insert().addConsumer(beforeInsert::addAll);
+
+			Entity inserted = editor.insert();
+			assertEquals(5, inserted.get(Assignment.PRIORITY));
+			assertEquals(7, inserted.get(Assignment.STATUS));
+			assertEquals(20, inserted.get(Assignment.DEPARTMENT));
+			// the entity inserted is without them, as one in which they were never given
+			assertFalse(beforeInsert.get(0).contains(Assignment.PRIORITY));
+			assertFalse(beforeInsert.get(0).contains(Assignment.STATUS));
+			assertFalse(beforeInsert.get(0).contains(Assignment.DEPARTMENT));
+
+			// a value given is inserted
+			editor.entity().defaults();
+			editor.value(Assignment.PRIORITY).set(1);
+			editor.value(Assignment.STATUS).set(2);
+			inserted = editor.insert();
+			assertEquals(1, inserted.get(Assignment.PRIORITY));
+			assertEquals(2, inserted.get(Assignment.STATUS));
+
+			// an entity given to insert is inserted as given, its null included
+			inserted = editor.insert(singleton(CONNECTION.entities().entity(Assignment.TYPE)
+							.with(Assignment.PRIORITY, null)
+							.build())).iterator().next();
+			assertNull(inserted.get(Assignment.PRIORITY));
+			assertEquals(7, inserted.get(Assignment.STATUS));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void foreignKeyColumnDefaults() throws EntityValidationException {
 		// a foreign key column whose default the database provides was overridden with null, as the foreign keys were
 		// all set, null where they had no value, their columns along with them

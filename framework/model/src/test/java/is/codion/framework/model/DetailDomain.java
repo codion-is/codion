@@ -84,7 +84,8 @@ public final class DetailDomain extends DomainModel {
 	}
 
 	/**
-	 * Foreign key columns with defaults, one provided by the database, the other by the domain
+	 * Foreign key columns with defaults, one provided by the database, the other by the domain,
+	 * and two columns whose defaults the database provides, one of them not nullable
 	 */
 	public interface Assignment {
 		EntityType TYPE = DOMAIN.entityType("employees.assignment");
@@ -92,6 +93,8 @@ public final class DetailDomain extends DomainModel {
 		Column<Integer> ID = TYPE.integerColumn("id");
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 		Column<Integer> BACKUP_DEPARTMENT = TYPE.integerColumn("backup_deptno");
+		Column<Integer> PRIORITY = TYPE.integerColumn("priority");
+		Column<Integer> STATUS = TYPE.integerColumn("status");
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("assignment_dept_fk", DEPARTMENT, Department.ID);
 		ForeignKey BACKUP_DEPARTMENT_FK = TYPE.foreignKey("assignment_backup_dept_fk", BACKUP_DEPARTMENT, Department.ID);
 	}
@@ -111,7 +114,14 @@ public final class DetailDomain extends DomainModel {
 														.column()
 														.defaultValue(10),
 										Assignment.BACKUP_DEPARTMENT_FK.as()
-														.foreignKey())
+														.foreignKey(),
+										Assignment.PRIORITY.as()
+														.column()
+														.withDefault(true),
+										Assignment.STATUS.as()
+														.column()
+														.nullable(false)
+														.withDefault(true))
 						.build();
 	}
 

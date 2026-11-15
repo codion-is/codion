@@ -204,6 +204,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * Note: This method must be called on the UI thread in case a panel has been based on this editor.
 	 * Performs an insert on the active entity, sets the primary key values of the active entity
 	 * according to the primary key of the inserted entity
+	 * <p>A null in a column whose default the database provides is left out of the insert, see {@link EditorTasks#insert()}.
 	 * @return the inserted entity
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityValidationException in case validation fails
@@ -380,6 +381,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	interface EditorTasks {
 
 		/**
+		 * <p>A null the active entity holds in a column whose default the database provides,
+		 * {@link is.codion.framework.domain.entity.attribute.ColumnDefinition#withDefault() withDefault()}, is left out of
+		 * the entity inserted, so the database fills it in, whether the value was never given, given and then cleared,
+		 * or reverted. Such a column can therefore not be inserted as null via the active entity, the entities given to
+		 * {@link #insert(Entity)} and {@link #insert(Collection)} being inserted as they are.
 		 * @return a task for inserting the active entity
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled, or the detail editors do not hold the
@@ -388,6 +394,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		EditorTask<Entity> insert() throws EntityValidationException;
 
 		/**
+		 * As {@link #insert()}, with the given consumer called on the entity inserted, on the thread performing the task.
 		 * @param before called on the entity before it is inserted
 		 * @return a task for inserting the active entity
 		 * @throws EntityValidationException in case of validation failure
@@ -664,7 +671,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * key column whose default the database provides, where its foreign key gets no value, the other columns of
 		 * such a foreign key being null. A default value of a foreign key column does not apply, as the foreign key
 		 * would then reference an entity which is not loaded, which nothing shows. A foreign key is given a default
-		 * value via its {@link EditorValue#defaultValue()}.
+		 * value via its {@link EditorValue#defaultValue()}. A value given for such a column and then cleared leaves a
+		 * null in the entity, which the insert leaves out as well, see {@link EditorTasks#insert()}.
 		 * <p>Fires {@link #changing()} and then {@link #changed()} on this editor; throwing a
 		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels the
 		 * operation. Detail editors are reset silently, firing only {@link #replaced()}. This is an

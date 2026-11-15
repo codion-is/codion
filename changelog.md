@@ -71,6 +71,7 @@ Codion Change Log
 - DetailEditors bug fixed, a detail editor's validator now tests the link's present predicate on the entity it validates, where it read the detail editor's own present state, so another entity, a table model row for example, went unvalidated while the editor's detail was absent, and was validated while present though absent itself.
 - DetailEditors bug fixed, add() now refuses a detail editor which is the master editor itself or one of its master editors, where the registration was accepted, every reset and load of the editors then overflowing the stack.
 - EntityEditor.Modified.attributes() no longer includes a transient attribute which does not make the entity modified.
+- EditorTasks.insert() bug fixed, a null the active entity holds in a column whose default the database provides, withDefault(), is now left out of the entity inserted, the database filling it in, where a value given and then cleared was inserted as null, one never given getting the default, the insert failing where the column is not nullable.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model
