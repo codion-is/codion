@@ -1025,6 +1025,12 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * Sets this value, an edit. Ignored while the values of an entity being set are notified, setting an entity
 		 * never modifying it, see {@link EditorEntity}.
+		 * <p>The entity may not hold the value, a column whose default the database provides being left out of a new
+		 * entity, see {@link EditorEntity#defaults()}, and a column not selected out of an existing one. A new entity
+		 * has no value which is not in it, so the first one set is a change from null, as any other edit:
+		 * {@link #modified()}, its {@link #original()} null, and {@link #revert() reverted} to null. For an existing
+		 * entity the first one set is taken as the value loaded, not as a change, so it does not modify the entity,
+		 * and it is what a later edit is compared with, by the editor and by the optimistic lock of an update.
 		 * @throws IllegalStateException in case the value is not editable
 		 * @param value the value
 		 * @see #editable()

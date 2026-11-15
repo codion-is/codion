@@ -3133,15 +3133,30 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 * Sets the value in the given entity.
 		 * <p>A foreign key may change without its value changing, since its value is null when the referenced
 		 * entity isn't loaded, even though it references one. So what it references is compared as well.
+		 * <p>An entity takes the first value of an attribute it does not hold for its initial value, recording no
+		 * original, which is right for an existing entity, where it is the value loaded. A new entity has no value
+		 * which is not in it, a column whose default the database provides being left out of it for example, so it is
+		 * given null first, the value then being a change from null: modified, its original null, and reverted to null.
+		 * A foreign key holding a key but not its entity references something, and is left as it is.
 		 * @param entity the entity
 		 * @param value the value
 		 * @return true if the given value changed the entity
 		 */
 		private boolean change(Entity entity, @Nullable T value) {
+			if (!exists(entity) && !entity.contains(attribute) && referencedKey(entity) == null) {
+				entity.set(attribute, null);
+			}
 			Entity.Key previousKey = referencedKey(entity);
 			T previousValue = entity.set(attribute, value);
 
 			return !Objects.deepEquals(entity.get(attribute), previousValue) || !Objects.equals(referencedKey(entity), previousKey);
+		}
+
+		/**
+		 * @return true if the given entity exists, according to this editor for the one it holds
+		 */
+		private boolean exists(Entity entity) {
+			return entity == AbstractEntityEditor.this.entity.instance ? AbstractEntityEditor.this.entity.exists.is() : entity.exists();
 		}
 
 		private Entity.@Nullable Key referencedKey(Entity entity) {

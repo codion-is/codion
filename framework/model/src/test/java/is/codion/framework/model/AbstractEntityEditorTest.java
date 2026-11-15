@@ -1205,6 +1205,91 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void firstEditOfValueNotHeldByNewEntity() throws EntityValidationException {
+		// the first value of one a new entity does not hold was taken for its initial value, not a change: unmodified,
+		// its own original, not reverted, and a propagator gave its target null when the value returned to it
+		CONNECTION.startTransaction();
+		try {
+			// a foreign key given no value, over a column whose default the database provides, both left out by defaults()
+			TestEntityEditor editor = new TestEntityEditor(Assignment.TYPE, CONNECTION);
+			EditorValue<Entity> departmentValue = editor.value(Assignment.DEPARTMENT_FK);
+			EditorValue<Integer> priority = editor.value(Assignment.PRIORITY);
+			departmentValue.propagate(Assignment.PRIORITY, department -> department == null ? null : department.get(Department.ID));
+			editor.entity().defaults();
+			assertFalse(editor.entity().get().contains(Assignment.DEPARTMENT_FK));
+			assertFalse(editor.entity().get().contains(Assignment.PRIORITY));
+			Entity accounting = CONNECTION.selectSingle(Department.ID.equalTo(10));
+			Entity research = CONNECTION.selectSingle(Department.ID.equalTo(20));
+
+			departmentValue.set(accounting);
+			assertTrue(departmentValue.modified().is());
+			assertNull(departmentValue.original());
+			assertEquals(10, priority.get());
+			assertTrue(priority.modified().is());
+			assertNull(priority.original());
+			assertTrue(editor.entity().modified().attributes().get().contains(Assignment.DEPARTMENT_FK));
+
+			// back to the first value given is not back to the original, the value derived, not the target's original
+			departmentValue.set(research);
+			assertEquals(20, priority.get());
+			departmentValue.set(accounting);
+			assertEquals(10, priority.get());
+			assertNull(departmentValue.original());
+
+			// cleared, back where it started
+			departmentValue.clear();
+			assertFalse(departmentValue.modified().is());
+			assertNull(priority.get());
+			assertFalse(priority.modified().is());
+
+			// a value reverts to null
+			priority.set(1);
+			assertTrue(priority.modified().is());
+			priority.revert();
+			assertNull(priority.get());
+			assertFalse(priority.modified().is());
+
+			// as it does with the entity, which then inserts as one never edited, the database providing the defaults
+			departmentValue.set(research);
+			editor.entity().revert();
+			assertNull(departmentValue.get());
+			assertNull(priority.get());
+			Entity inserted = editor.insert();
+			assertEquals(20, inserted.get(Assignment.DEPARTMENT));
+			assertEquals(5, inserted.get(Assignment.PRIORITY));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+
+		// a new entity built with a few values, set as the entity to edit
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		employeeEditor.entity().set(CONNECTION.entities().entity(Employee.TYPE)
+						.with(Employee.NAME, "New")
+						.build());
+		EditorValue<Double> salary = employeeEditor.value(Employee.SALARY);
+		assertFalse(employeeEditor.entity().get().contains(Employee.SALARY));
+		salary.set(2500d);
+		assertTrue(salary.modified().is());
+		assertNull(salary.original());
+		employeeEditor.entity().revert();
+		assertNull(salary.get());
+
+		// an existing entity is another matter, the first value of one it does not hold is the value loaded,
+		// with which a later edit is compared, by the editor and by the optimistic lock
+		employeeEditor.entity().set(CONNECTION.selectSingle(Select.where(Employee.ID.equalTo(3))
+						.attributes(Employee.ID, Employee.NAME)
+						.build()));
+		assertFalse(employeeEditor.entity().get().contains(Employee.SALARY));
+		salary.set(2975d);
+		assertFalse(salary.modified().is());
+		assertFalse(employeeEditor.entity().modified().is());
+		salary.set(3000d);
+		assertTrue(salary.modified().is());
+		assertEquals(2975d, salary.original());
+	}
+
+	@Test
 	void insertLeavesOutNullOfDatabaseDefault() throws EntityValidationException {
 		// a value of a column whose default the database provides, given and then cleared, was inserted as null, where
 		// one never given got the default, and the insert failed where the column is not nullable
