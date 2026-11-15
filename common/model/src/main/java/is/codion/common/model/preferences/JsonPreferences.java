@@ -39,8 +39,11 @@ import static java.util.stream.Collectors.toSet;
 
 /**
  * In-memory hierarchical JSON storage for preferences — the storage half of {@link JsonPreferencesStore}, without any
- * file handling. Path-addressed ({@code "a/b/c"}) get/put/remove of string values (a value that is itself valid JSON is
- * stored nested), plus child-node listing. Thread-safe.
+ * file handling. Path-addressed ({@code "a/b/c"}) get/put/remove of string values, plus child-node listing. Thread-safe.
+ * <p>
+ * A value is returned as it was put. One that is JSON in the form this class writes it, {@code {"w":100,"i":0}},
+ * is stored nested, for a readable file, and may come back with its members in another order once the file has
+ * been read again; any other value is stored as the string it is, text that merely starts with a bracket included.
  * <p>
  * {@link #jsonPreferences()} wraps a fresh instance as a free-floating, file-less {@link Preferences} node — useful for
  * capturing or transferring preference state in memory (dependency panels) and for hermetic tests that must
@@ -104,7 +107,9 @@ public final class JsonPreferences {
 
 			// Try to parse the value as JSON
 			Object valueToStore = tryParseJson(value);
-			if (valueToStore != null) {
+			// nested only when it reads back as the very text given, the parser being lenient and get() returning
+			// the parsed value written out again, and never when it carries the member marking a node
+			if (valueToStore != null && valueToStore.toString().equals(value) && !marksNode(valueToStore)) {
 				// Valid JSON - store as nested object/array
 				node.put(key, valueToStore);
 				LOG.trace("Stored value as JSON object/array for key '{}'", key);
@@ -233,6 +238,7 @@ public final class JsonPreferences {
 	/**
 	 * <p>Nodes holding no actual values are left out, a node exists in the file only for the values it holds.
 	 * A node created but never written to therefore does not survive a restart, which nothing here relies on.
+	 * A value that is an empty JSON object, {@code {}}, is left out as well, read back as missing.
 	 * @param prettyPrint true if the JSON should be pretty-printed
 	 * @return the whole tree serialized as JSON, null if it holds no actual values (only node markers / empty nodes),
 	 * along with the number of journaled changes it contains, to hand back to {@link #saved(int)} once it has been saved
@@ -420,6 +426,14 @@ public final class JsonPreferences {
 		return obj.optBoolean(NODE, false);
 	}
 
+	private static boolean marksNode(Object value) {
+		return value instanceof JSONObject && ((JSONObject) value).has(NODE);
+	}
+
+	private static boolean emptyObject(Object value) {
+		return value instanceof JSONObject && ((JSONObject) value).length() == 0;
+	}
+
 	// Android's built-in org.json.JSONObject has neither keySet() nor clear(); iterate keys() (an Iterator) instead.
 	private static Set<String> keys(JSONObject object) {
 		Set<String> keys = new LinkedHashSet<>();
@@ -436,38 +450,40 @@ public final class JsonPreferences {
 	}
 
 	/**
-	 * Removes every child holding no actual preference values, depth first, so that a node
-	 * emptied by the removal of its last value-bearing child is removed along with it.
+	 * Removes every child node holding no actual preference values, depth first, so that a node
+	 * emptied by the removal of its last value-bearing child is removed along with it, and every value
+	 * that is an empty object. A value is otherwise left as it is, what it contains being its own.
 	 */
 	private static void prune(JSONObject node) {
 		for (String key : keys(node)) {
-			Object value = node.get(key);
-			if (value instanceof JSONObject) {
-				JSONObject child = (JSONObject) value;
+			if (isChildNode(node, key)) {
+				JSONObject child = node.getJSONObject(key);
 				prune(child);
 				if (isEmpty(child)) {
 					node.remove(key);
 				}
+			}
+			else if (emptyObject(node.get(key))) {
+				node.remove(key);
 			}
 		}
 	}
 
 	/**
 	 * Recursively checks if a node is empty (contains no actual preference values,
-	 * only node markers or empty child nodes).
+	 * only node markers, empty child nodes or values that are empty objects).
 	 */
 	private static boolean isEmpty(JSONObject node) {
 		for (String key : keys(node)) {
 			if (NODE.equals(key)) {
 				continue;
 			}
-			Object value = node.get(key);
-			if (value instanceof JSONObject) {
-				if (!isEmpty((JSONObject) value)) {
+			if (isChildNode(node, key)) {
+				if (!isEmpty(node.getJSONObject(key))) {
 					return false; // Found a non-empty child
 				}
 			}
-			else {
+			else if (!emptyObject(node.get(key))) {
 				return false; // Found an actual value
 			}
 		}

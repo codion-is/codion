@@ -38,6 +38,7 @@ Codion Change Log
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 - FilePreferences.backup() removed, the preferences migrator having been its only caller.
 - FilePreferences.flush() and sync() bug fixed, the file lock is now held from the reload to the write, where it was held for the write only, so that of two instances of an application flushing at the same moment one replaced what the other had just saved.
+- FilePreferences and JsonPreferences bug fixed, a value is now returned as it was put, one starting with a bracket no longer parsed leniently and returned as the JSON it was taken for, (a, b) coming back as ("a","b"), and an empty object within a JSON value no longer removed when the file is saved, a value now stored nested only when it is JSON as written by JSONObject.toString(), as a string otherwise.
 ### is.codion.common.db
 - ErrorType.DEADLOCK added, the transaction chosen as a deadlock's victim, recognized on every database but SQLite, which has none.
 - Parameters widened to wildcard types, functions taking ? extends their results, where a subtype fits.

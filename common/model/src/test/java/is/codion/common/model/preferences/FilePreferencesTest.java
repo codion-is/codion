@@ -130,6 +130,37 @@ public final class FilePreferencesTest {
 	}
 
 	@Test
+	void valuesReadBackAsPut() throws Exception {
+		// a value starting with a bracket was parsed leniently and stored as JSON, what came back being
+		// that JSON written out again, and one holding an empty object lost it when saved
+		String[] values = {
+						"[a, b, c]", "[1, 2, 3]", "[x]", "{'a':'b'}", "{a=1, b=2}", "[abc",
+						"{\"b\":1,\"a\":2}", "[1.10, 1e3, 007]", "  [1]  ", "{\"a\":1} trailing", "[1] [2]",
+						"{\"a\":{},\"b\":1}", "{\"a\":{}}", "{\"a\":[]}", "[]", "[{}]", "{\"k\":null}",
+						"{\".node\":true,\"a\":1}", "{\"w\":100,\"i\":0}", "[\"björn\"]"
+		};
+		Path testFile = tempDir.resolve("values-" + System.nanoTime() + ".json");
+		Preferences prefs = new FilePreferences(new JsonPreferencesStore(testFile));
+		Preferences node = prefs.node("node");
+		for (int i = 0; i < values.length; i++) {
+			node.put("key" + i, values[i]);
+		}
+		for (int i = 0; i < values.length; i++) {
+			assertEquals(values[i], node.get("key" + i, null));
+		}
+		assertEquals(values.length, node.keys().length);
+		assertEquals(0, node.childrenNames().length);
+		prefs.flush();
+
+		Preferences restarted = new FilePreferences(new JsonPreferencesStore(testFile)).node("node");
+		for (int i = 0; i < values.length; i++) {
+			assertEquals(values[i], restarted.get("key" + i, null));
+		}
+		assertEquals(values.length, restarted.keys().length);
+		assertEquals(0, restarted.childrenNames().length);
+	}
+
+	@Test
 	void testEmptyPreferencesNotWritten() throws Exception {
 		Path testFile = tempDir.resolve("empty-test-" + System.nanoTime() + ".json");
 		JsonPreferencesStore store = new JsonPreferencesStore(testFile);

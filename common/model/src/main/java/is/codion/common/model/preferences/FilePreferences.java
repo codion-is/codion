@@ -41,6 +41,9 @@ import static java.util.Objects.requireNonNull;
  * <p>A file-based preferences implementation without length restrictions.
  * <p>Supports hierarchical preferences through nested JSON structure.
  * <p>Clearing the preferences instance and flushing deletes the underlying file.
+ * <p>A value is returned as it was put, with one exception: a value that is an empty JSON object, {@code {}},
+ * is not written to the file, nor is a node holding no values, so that neither is there once the file is read again.
+ * A JSON value is stored nested in the file and may come back with its members in another order.
  * <p>A key and a child node can not share a name, both being stored in the same JSON object. Putting a value
  * for a key naming a child node throws {@link IllegalStateException}, as does putting a value into a child node
  * named after a key, while {@link #get(String, String)} and {@link #remove(String)} ignore child nodes.
