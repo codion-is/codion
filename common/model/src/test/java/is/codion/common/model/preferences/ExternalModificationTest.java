@@ -163,6 +163,70 @@ public final class ExternalModificationTest {
 		assertEquals("2", reloaded.get("second", null));
 	}
 
+	@Test
+	void nameUsedDifferentlyByTheOther() throws Exception {
+		// an unsaved key re-applied on a file in which the other instance has saved a node of that name
+		// replaced the node, its subtree included
+		Path file = tempDir.resolve("key-node.json");
+		Preferences first = new FilePreferences(new JsonPreferencesStore(file));
+		Preferences second = new FilePreferences(new JsonPreferencesStore(file));
+		first.put("name", "a key");
+		first.put("other", "1");
+		second.node("name").put("inner", "kept");
+		second.node("name").node("deeper").put("inner", "kept");
+		second.flush();
+		touch(file);
+		first.flush();
+		Preferences reloaded = new FilePreferences(new JsonPreferencesStore(file));
+		assertEquals("kept", reloaded.node("name").get("inner", null));
+		assertEquals("kept", reloaded.node("name").node("deeper").get("inner", null));
+		assertNull(reloaded.get("name", null));
+		assertEquals("1", reloaded.get("other", null));
+
+		// the other way round, an unsaved value in a node, the other having saved a key of that name,
+		// threw IllegalStateException from flush(), then and each time after, the changes following it lost
+		file = tempDir.resolve("node-key.json");
+		first = new FilePreferences(new JsonPreferencesStore(file));
+		second = new FilePreferences(new JsonPreferencesStore(file));
+		first.put("before", "1");
+		first.node("name").put("inner", "in a node");
+		first.put("after", "2");
+		second.put("name", "a key");
+		second.flush();
+		touch(file);
+		first.flush();
+		assertEquals("2", first.get("after", null));
+		reloaded = new FilePreferences(new JsonPreferencesStore(file));
+		assertEquals("a key", reloaded.get("name", null));
+		assertEquals("1", reloaded.get("before", null));
+		assertEquals("2", reloaded.get("after", null));
+		touch(file);
+		first.put("later", "3");
+		first.flush();
+		assertEquals("3", new FilePreferences(new JsonPreferencesStore(file)).get("later", null));
+	}
+
+	@Test
+	void nodeRemovedWhereTheOtherHasAKey() throws Exception {
+		// an unsaved removal of a node removed a key the other instance had saved under its name
+		Path file = tempDir.resolve("remove-node.json");
+		JsonPreferencesStore firstStore = new JsonPreferencesStore(file);
+		firstStore.put("name", "inner", "1");
+		firstStore.sync();
+		touch(file);
+		JsonPreferencesStore secondStore = new JsonPreferencesStore(file);
+		firstStore.preferences().removeNode("name");
+		secondStore.preferences().removeNode("name");
+		secondStore.put("", "name", "a key");
+		secondStore.sync();
+		touch(file);
+		firstStore.put("", "other", "1");
+		firstStore.sync();
+		JsonPreferencesStore reloaded = new JsonPreferencesStore(file);
+		assertEquals("a key", reloaded.get("", "name"));
+		assertEquals("1", reloaded.get("", "other"));
+	}
+
 	/**
 	 * The modification time is coarse grained, a save following another one within the same clock tick would go unnoticed,
 	 * so each save is stamped with a strictly increasing time.

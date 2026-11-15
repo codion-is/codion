@@ -89,12 +89,6 @@ public final class JsonPreferences {
 		requireNonNull(value);
 
 		synchronized (lock) {
-			// a key and a child node share the namespace of a node, a value would replace the node, its subtree included
-			JSONObject node = getNode(path);
-			if (node != null && node.has(key) && isChildNode(node, key)) {
-				throw new IllegalStateException("Cannot put a value for key '" + key + "' at path '" + path +
-								"' because a child node with the same name exists");
-			}
 			doPut(path, key, value);
 			record(preferences -> preferences.doPut(path, key, value));
 		}
@@ -103,6 +97,12 @@ public final class JsonPreferences {
 	private void doPut(String path, String key, String value) {
 		synchronized (lock) {
 			LOG.trace("Putting value at path '{}', key '{}'", path, key);
+			// a key and a child node share the namespace of a node, a value would replace the node, its subtree included
+			JSONObject existing = getNode(path);
+			if (existing != null && existing.has(key) && isChildNode(existing, key)) {
+				throw new IllegalStateException("Cannot put a value for key '" + key + "' at path '" + path +
+								"' because a child node with the same name exists");
+			}
 			JSONObject node = getOrCreateNode(path);
 
 			// Try to parse the value as JSON
@@ -223,11 +223,12 @@ public final class JsonPreferences {
 					String parentPath = path.substring(0, lastSeparator);
 					String nodeName = path.substring(lastSeparator + 1);
 					JSONObject parent = getNode(parentPath);
-					if (parent != null) {
+					// a value is not a node, one of that name is left alone
+					if (parent != null && parent.has(nodeName) && isChildNode(parent, nodeName)) {
 						parent.remove(nodeName);
 					}
 				}
-				else {
+				else if (data.has(path) && isChildNode(data, path)) {
 					// Direct child of root
 					data.remove(path);
 				}
@@ -274,6 +275,8 @@ public final class JsonPreferences {
 	/**
 	 * Replaces the entire contents with the given JSON and re-applies the changes journaled since the last
 	 * load or save on top of it, so that an external modification does not discard them.
+	 * <p>A change that no longer fits, the JSON holding a node where it puts a key or a key where it needs
+	 * a node, is left out and logged, the JSON, what has been saved, taking precedence over it.
 	 * @param json the JSON to load
 	 * @throws JSONException in case the JSON is invalid
 	 */
@@ -281,7 +284,14 @@ public final class JsonPreferences {
 		synchronized (lock) {
 			replace(json);
 			if (journal != null) {
-				journal.forEach(change -> change.accept(this));
+				for (Consumer<JsonPreferences> change : journal) {
+					try {
+						change.accept(this);
+					}
+					catch (IllegalStateException e) {
+						LOG.warn("A change made since the preferences were last read no longer fits them, left out: {}", e.getMessage());
+					}
+				}
 			}
 		}
 	}
