@@ -21,11 +21,13 @@ package is.codion.common.model.preferences;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -184,7 +186,68 @@ public final class CorruptedFileTest {
 
 		assertEquals(1, backupFiles.size(), "Should create backup on reload corruption");
 
-		// Data should be cleared
-		assertNull(store.get("", "key"));
+		// what the store holds is kept, it being the last good copy
+		assertEquals("value", store.get("", "key"));
+	}
+
+	@Test
+	void corruptAtReloadKeepsContents() throws Exception {
+		// a file found corrupt at a reload replaced what the store held, the last good copy,
+		// so that the next save wrote only the changes made since
+		Path prefsFile = tempDir.resolve("keep.json");
+		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
+		store.put("", "one", "1");
+		store.put("node", "two", "2");
+		store.sync();
+		Thread.sleep(10);
+		Files.write(prefsFile.toAbsolutePath(), "{\"one\":\"1\",\"no".getBytes(StandardCharsets.UTF_8));
+
+		store.put("", "three", "3");
+		store.sync();
+
+		assertEquals("1", store.get("", "one"));
+		JsonPreferencesStore restarted = new JsonPreferencesStore(prefsFile);
+		assertEquals("1", restarted.get("", "one"));
+		assertEquals("2", restarted.get("node", "two"));
+		assertEquals("3", restarted.get("", "three"));
+		assertEquals(1, backups("keep.json"));
+	}
+
+	@Test
+	void corruptFileBackedUpOnce() throws Exception {
+		// a corrupt file was backed up again at every flush, and left corrupt as long as there was nothing to save
+		Path prefsFile = tempDir.resolve("once.json");
+		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
+		store.put("", "one", "1");
+		store.sync();
+		Thread.sleep(10);
+		Files.write(prefsFile.toAbsolutePath(), "{\"one\":\"1\",\"no".getBytes(StandardCharsets.UTF_8));
+
+		for (int i = 0; i < 5; i++) {
+			store.sync();
+			Thread.sleep(2);
+		}
+
+		assertEquals(1, backups("once.json"));
+		assertEquals("1", new JsonPreferencesStore(prefsFile).get("", "one"));
+		assertEquals(1, backups("once.json"));
+
+		// found corrupt at start, backed up then and not again at the first flush
+		Path startFile = tempDir.resolve("start.json");
+		Files.write(startFile.toAbsolutePath(), "{\"one\":\"1\",\"no".getBytes(StandardCharsets.UTF_8));
+		JsonPreferencesStore started = new JsonPreferencesStore(startFile);
+		assertNull(started.get("", "one"));
+		assertEquals(1, backups("start.json"));
+		Thread.sleep(2);
+		started.put("", "two", "2");
+		started.sync();
+		assertEquals(1, backups("start.json"));
+		assertEquals("2", new JsonPreferencesStore(startFile).get("", "two"));
+	}
+
+	private long backups(String filename) throws IOException {
+		try (Stream<Path> files = Files.list(tempDir)) {
+			return files.filter(path -> path.getFileName().toString().startsWith(filename + ".corrupt.")).count();
+		}
 	}
 }

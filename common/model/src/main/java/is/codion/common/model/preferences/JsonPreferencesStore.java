@@ -54,7 +54,9 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * If the preferences file becomes corrupted (invalid JSON), this implementation
  * will automatically create a backup of the corrupted file with a ".corrupt.{timestamp}"
- * suffix and start with empty preferences. The corruption is logged to System.err.
+ * suffix and start with empty preferences. A file found corrupt when reloaded, having been read
+ * before, is backed up likewise and what the store holds is kept, being the last good copy.
+ * Either way the corrupt file is replaced at the next save or sync. The corruption is logged.
  * <p>
  * This implementation prevents data loss by throwing an {@link IllegalStateException}
  * when attempting to create a node at a path where a value already exists. For example,
@@ -91,6 +93,8 @@ final class JsonPreferencesStore {
 	//each save creates a new file, so the file key, the inode where available, changes with every save,
 	//where the modification time, coarse grained, might not
 	private volatile @Nullable Object fileKey;
+	//the file has been found corrupt and backed up, to be replaced by what the store holds at the next save or sync
+	private boolean corrupt = false;
 
 	JsonPreferencesStore(Path filePath) {
 		this(filePath, false);
@@ -179,6 +183,7 @@ final class JsonPreferencesStore {
 			}
 			atomicMove(tempFile, filePath);
 			stamp();
+			corrupt = false;
 			preferences.saved(snapshot.changes);
 			LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
 		}
@@ -189,7 +194,8 @@ final class JsonPreferencesStore {
 
 	/**
 	 * Reloads the file if it has been modified since it was last read or written, re-applying the changes made
-	 * since on top of it, and saves those changes, the file is left untouched when there are none. This is what
+	 * since on top of it, and saves those changes, the file is left untouched when there are none, unless it
+	 * has been found corrupt, what the store holds then replacing it. This is what
 	 * the JDK's own file backed implementation does for both {@code flush()} and {@code sync()}.
 	 * <p>The file lock is held from the reload to the write, so that another JVM can not save in between,
 	 * its changes then replaced by a file that never contained them.
@@ -198,14 +204,18 @@ final class JsonPreferencesStore {
 	void sync() throws IOException {
 		lock.lock();
 		try {
-			if (preferences.modified()) {
+			if (!preferences.modified()) {
+				reload(false);
+			}
+			// a file found corrupt is replaced by what the store holds, changes or none
+			if (preferences.modified() || corrupt) {
 				try (FileLock fileLock = acquireExclusiveLock()) {
 					reload(true);
-					write();
+					// unless another JVM has replaced the corrupt file in the meantime, with nothing to add to it
+					if (preferences.modified() || corrupt) {
+						write();
+					}
 				}
-			}
-			else {
-				reload(false);
 			}
 		}
 		finally {
@@ -313,6 +323,7 @@ final class JsonPreferencesStore {
 				preferences.load(content);
 			}
 			stamp();
+			corrupt = false;
 			LOG.trace("Loaded preferences from file");
 		}
 		catch (NoSuchFileException e) {
@@ -344,6 +355,7 @@ final class JsonPreferencesStore {
 	private void fileGone() {
 		lastModified = 0;
 		fileKey = null;
+		corrupt = false;
 	}
 
 	private void missing(boolean merge) {
@@ -361,11 +373,22 @@ final class JsonPreferencesStore {
 		Path backupPath = filePath.resolveSibling(filePath.getFileName() + ".corrupt." + currentTimeMillis());
 		Files.copy(filePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
 
-		// Initialize with empty data
-		missing(merge);
+		if (!merge) {
+			// nothing has been read, starting with empty data
+			preferences.clear();
+		}
+		// when merging what the store holds is kept, the last good copy of the file along with the changes made since
+		try {
+			// stamped, so that the same file is not taken for modified and backed up again
+			stamp();
+			corrupt = true;
+		}
+		catch (NoSuchFileException e) {
+			fileGone();
+		}
 
-		LOG.warn("Corrupted preferences file detected at {}, reason: {}, backup saved to: {}, starting with empty preferences",
-						filePath, reason, backupPath, cause);
+		LOG.warn("Corrupted preferences file detected at {}, reason: {}, backup saved to: {}, {}",
+						filePath, reason, backupPath, merge ? "keeping the preferences held" : "starting with empty preferences", cause);
 	}
 
 	private FileLock acquireSharedLock() throws IOException {
