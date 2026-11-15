@@ -45,6 +45,7 @@ import is.codion.framework.model.DetailDomain.Department;
 import is.codion.framework.model.DetailDomain.DepartmentExtra;
 import is.codion.framework.model.DetailDomain.DepartmentView;
 import is.codion.framework.model.DetailDomain.Employee;
+import is.codion.framework.model.DetailDomain.LazyEmployee;
 import is.codion.framework.model.DetailDomain.SharedEmployee;
 import is.codion.framework.model.DetailPersistenceFactory.DepartmentPersistence;
 import is.codion.framework.model.EntityEditor.EditorTask.Result;
@@ -3539,6 +3540,241 @@ public final class AbstractEntityEditorTest {
 		// null restores the factory's
 		departmentEditor.persistence().set(null);
 		assertInstanceOf(DepartmentPersistence.class, departmentEditor.persistence().get());
+	}
+
+	@Test
+	void populate() throws EntityValidationException {
+		// a value an existing entity is set without, a column not selected, could not be edited and saved,
+		// the editor having nothing to compare the edit with
+		CONNECTION.startTransaction();
+		try {
+			Entity jones = CONNECTION.selectSingle(LazyEmployee.ID.equalTo(3));
+			assertFalse(jones.contains(LazyEmployee.DATA));
+			byte[] jonesData = CONNECTION.select(LazyEmployee.DATA, LazyEmployee.ID.equalTo(3)).get(0);
+
+			// not populated unless asked for
+			TestEntityEditor editor = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+			editor.entity().set(jones);
+			assertFalse(editor.entity().get().contains(LazyEmployee.DATA));
+
+			editor = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+			EditorValue<byte[]> data = editor.value(LazyEmployee.DATA);
+			data.populate().set(true);
+			List<Entity> changed = new ArrayList<>();
+			editor.entity().addConsumer(changed::add);
+			editor.entity().set(jones);
+			// loaded, as the value the entity holds, not a change
+			assertArrayEquals(jonesData, data.get());
+			assertFalse(data.modified().is());
+			assertFalse(editor.entity().modified().is());
+			// the entity notified is the one set, with the value loaded
+			assertEquals(1, changed.size());
+			assertArrayEquals(jonesData, changed.get(0).get(LazyEmployee.DATA));
+
+			// so an edit is one, and is saved
+			data.set(new byte[] {1, 2});
+			assertTrue(data.modified().is());
+			assertTrue(editor.entity().modified().is());
+			editor.update();
+			assertArrayEquals(new byte[] {1, 2}, CONNECTION.select(LazyEmployee.DATA, LazyEmployee.ID.equalTo(3)).get(0));
+			assertArrayEquals(new byte[] {1, 2}, data.get());
+			assertFalse(editor.entity().modified().is());
+
+			// refreshed, the value held being selected
+			editor.entity().refresh();
+			assertArrayEquals(new byte[] {1, 2}, data.get());
+
+			// an entity holding the value is left as it is
+			editor.entity().set(CONNECTION.selectSingle(Select.where(LazyEmployee.ID.equalTo(7))
+							.include(LazyEmployee.DATA)
+							.build()));
+			assertNotNull(data.get());
+			assertFalse(editor.entity().modified().is());
+
+			// the key of no row, nothing to load and nothing failing
+			editor.entity().set(CONNECTION.entities().entity(LazyEmployee.TYPE)
+							.with(LazyEmployee.ID, -42)
+							.with(LazyEmployee.NAME, "nobody")
+							.build());
+			assertFalse(editor.entity().get().contains(LazyEmployee.DATA));
+			assertEquals(4, changed.size());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void populateNewEntity() throws EntityValidationException {
+		// a new entity holds a value populated, as null, so the entity inserted does as well
+		CONNECTION.startTransaction();
+		try {
+			TestEntityEditor editor = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+			editor.entity().defaults();
+			assertFalse(editor.entity().get().contains(LazyEmployee.DATA));
+
+			EditorValue<byte[]> data = editor.value(LazyEmployee.DATA);
+			data.populate().set(true);
+			editor.entity().defaults();
+			assertTrue(editor.entity().get().contains(LazyEmployee.DATA));
+			assertNull(data.get());
+			editor.entity().clear();
+			assertTrue(editor.entity().get().contains(LazyEmployee.DATA));
+
+			editor.value(LazyEmployee.NAME).set("New");
+			editor.value(LazyEmployee.SALARY).set(2500d);
+			editor.value(LazyEmployee.DEPARTMENT_FK).set(CONNECTION.selectSingle(Department.ID.equalTo(10)));
+			Entity inserted = editor.insert();
+			assertTrue(inserted.contains(LazyEmployee.DATA));
+			assertTrue(editor.entity().get().contains(LazyEmployee.DATA));
+
+			// and can be edited
+			data.set(new byte[] {5});
+			assertTrue(editor.entity().modified().is());
+			editor.update();
+			assertArrayEquals(new byte[] {5}, CONNECTION.select(LazyEmployee.DATA, LazyEmployee.ID.equalTo(inserted.get(LazyEmployee.ID))).get(0));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void populateForeignKey() {
+		// a foreign key populated covers its columns, the entity referenced loaded along with them
+		Entity partial = CONNECTION.selectSingle(Select.where(LazyEmployee.ID.equalTo(3))
+						.attributes(LazyEmployee.ID, LazyEmployee.NAME)
+						.build());
+		assertFalse(partial.contains(LazyEmployee.DEPARTMENT));
+
+		TestEntityEditor editor = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+		editor.value(LazyEmployee.DEPARTMENT_FK).populate().set(true);
+		editor.entity().set(partial);
+		assertEquals(20, editor.value(LazyEmployee.DEPARTMENT).get());
+		assertEquals("RESEARCH", editor.value(LazyEmployee.DEPARTMENT_FK).get().get(Department.NAME));
+		assertFalse(editor.entity().modified().is());
+		// only what was asked for
+		assertFalse(editor.entity().get().contains(LazyEmployee.SALARY));
+		assertFalse(editor.entity().get().contains(LazyEmployee.DATA));
+
+		// an attribute which is neither a column nor a foreign key has nothing to load
+		assertThrows(IllegalArgumentException.class, () -> editor.value(LazyEmployee.NOTES).populate().set(true));
+	}
+
+	@Test
+	void populateFresherInstance() throws EntityValidationException {
+		// a fresher instance of the row, a table refresh, does not bring the value, which is loaded anew: kept as it
+		// was loaded, it was as old as its load, an update refused as modified by someone else once it had changed
+		CONNECTION.startTransaction();
+		try {
+			Entity jones = CONNECTION.selectSingle(LazyEmployee.ID.equalTo(3));
+			byte[] jonesData = CONNECTION.select(LazyEmployee.DATA, LazyEmployee.ID.equalTo(3)).get(0);
+			TestEntityEditor editor = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+			EditorValue<byte[]> data = editor.value(LazyEmployee.DATA);
+			data.populate().set(true);
+			editor.entity().set(jones);
+			List<byte[]> dataNotified = new ArrayList<>();
+			data.addConsumer(dataNotified::add);
+
+			Entity fresher = jones.copy().mutable();
+			fresher.set(LazyEmployee.NAME, "FRESHER");
+			fresher.save();
+			List<Entity> replaced = new ArrayList<>();
+			editor.entity().replaced().addConsumer(replaced::add);
+			editor.entity().replace(fresher);
+			assertEquals("FRESHER", editor.value(LazyEmployee.NAME).get());
+			assertArrayEquals(jonesData, data.get());
+			assertFalse(editor.entity().modified().is());
+			// the value is held throughout, unchanged it is not notified
+			assertTrue(dataNotified.isEmpty());
+			// the entity notified holds it as well
+			assertEquals(1, replaced.size());
+			assertArrayEquals(jonesData, replaced.get(0).get(LazyEmployee.DATA));
+
+			// an edit of it is discarded, as every edit is by a replace
+			data.set(new byte[] {9});
+			editor.entity().replace(fresher);
+			assertArrayEquals(jonesData, data.get());
+			assertFalse(editor.entity().modified().is());
+
+			// changed elsewhere, the fresher instance brings it up to date
+			Entity elsewhere = CONNECTION.selectSingle(Select.where(LazyEmployee.ID.equalTo(3))
+							.include(LazyEmployee.DATA)
+							.build()).copy().mutable();
+			elsewhere.set(LazyEmployee.DATA, new byte[] {7});
+			CONNECTION.update(elsewhere);
+			dataNotified.clear();
+			editor.entity().replace(CONNECTION.selectSingle(LazyEmployee.ID.equalTo(3)));
+			assertArrayEquals(new byte[] {7}, data.get());
+			assertEquals(1, dataNotified.size());
+			assertFalse(editor.entity().modified().is());
+			// so the entity can be updated
+			editor.value(LazyEmployee.NAME).set("EDITED");
+			editor.update();
+			assertEquals("EDITED", CONNECTION.selectSingle(LazyEmployee.ID.equalTo(3)).get(LazyEmployee.NAME));
+
+			// another row is loaded for
+			editor.entity().replace(CONNECTION.selectSingle(LazyEmployee.ID.equalTo(7)));
+			assertArrayEquals(CONNECTION.select(LazyEmployee.DATA, LazyEmployee.ID.equalTo(7)).get(0), data.get());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void populateWhileLoading() {
+		// asynchronous with a UI, the value arrives after the entity is set
+		Entity jones = CONNECTION.selectSingle(LazyEmployee.ID.equalTo(3));
+		byte[] jonesData = CONNECTION.select(LazyEmployee.DATA, LazyEmployee.ID.equalTo(3)).get(0);
+		HoldingEditor editor = new HoldingEditor(LazyEmployee.TYPE, CONNECTION);
+		EditorValue<byte[]> data = editor.value(LazyEmployee.DATA);
+		data.populate().set(true);
+		List<Entity> changed = new ArrayList<>();
+		editor.entity().addConsumer(changed::add);
+		List<byte[]> edited = new ArrayList<>();
+		data.edited().addConsumer(edited::add);
+
+		editor.hold();
+		editor.entity().set(jones);
+		assertFalse(editor.entity().get().contains(LazyEmployee.DATA));
+		assertTrue(changed.isEmpty());
+		// edits meanwhile, of a value held and of the one being loaded
+		editor.value(LazyEmployee.NAME).set("EDITED");
+		data.set(new byte[] {9});
+		// and a fresher instance of the row, which leaves the load to land
+		editor.entity().replace(CONNECTION.selectSingle(LazyEmployee.ID.equalTo(3)));
+		editor.value(LazyEmployee.NAME).set("EDITED");
+
+		editor.release();
+		// the one loaded is overwritten, not an edit, the other survives
+		assertArrayEquals(jonesData, data.get());
+		assertFalse(data.modified().is());
+		assertEquals(1, edited.size());
+		assertEquals("EDITED", editor.value(LazyEmployee.NAME).get());
+		assertEquals(1, changed.size());
+		assertArrayEquals(jonesData, changed.get(0).get(LazyEmployee.DATA));
+	}
+
+	@Test
+	void populateDetailEditor() {
+		// a detail editor's values are populated when its detail is loaded
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+		employeeEditor.value(LazyEmployee.DATA).populate().set(true);
+		departmentEditor.detail().add(EditorLink.builder()
+						.editor(employeeEditor)
+						.name("first")
+						.entity((master, connection) -> connection.select(Select.where(LazyEmployee.DEPARTMENT_FK.equalTo(master))
+										.orderBy(ascending(LazyEmployee.ID))
+										.limit(1)
+										.build()).stream().findFirst().orElse(null))
+						.build());
+		departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(20)));
+		assertEquals(3, employeeEditor.value(LazyEmployee.ID).get());
+		assertNotNull(employeeEditor.value(LazyEmployee.DATA).get());
+		assertFalse(employeeEditor.entity().modified().is());
+		assertFalse(departmentEditor.entity().modified().is());
 	}
 
 	private static class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {

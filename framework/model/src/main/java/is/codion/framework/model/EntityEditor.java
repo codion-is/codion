@@ -556,6 +556,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * previous entity, a combo box filtered by an earlier value clearing its selection for example, or from a consumer
 	 * of one value setting another. Such a consumer reacts to edits via {@link EditorValue#edited()}, and to the
 	 * entity having been set via this editor entity's consumers, notified once every value has been.
+	 * <p>The consumers are notified once the entity is complete. With detail editors registered, or values to
+	 * {@link EditorValue#populate() populate} which the entity came without, that is once those have been loaded,
+	 * which with a UI bound is on a background thread, the consumers then being notified after {@link #set(Entity)}
+	 * has returned, not before, see {@link #set(Entity)}. The values populated are notified when they arrive, as
+	 * when an entity is set, an edit made meanwhile likewise ignored.
 	 * @see #defaults()
 	 */
 	interface EditorEntity extends Observable<Entity> {
@@ -576,15 +581,17 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * with {@link #changed()} firing once the full detail subtree is in place.
 		 * Use {@link #replace(Entity)} for silent post-persist refreshes that should not re-fire change events.
 		 * <p>The active entity is applied synchronously, so {@link #get()} reflects the new values as soon
-		 * as this method returns. Without registered detail editors there is nothing to load and the
+		 * as this method returns. Without registered detail editors, and with no value to
+		 * {@link EditorValue#populate() populate} which the entity does not hold, there is nothing to load and the
 		 * operation is fully synchronous, {@link #changed()} having fired by the time this method returns.
-		 * <p>With registered detail editors, and the editor bound to UI components, the detail editors are
+		 * <p>With registered detail editors, or values to populate, and the editor bound to UI components, these are
 		 * loaded asynchronously, on a background thread; the method then returns before the detail subtree
-		 * is in place and before {@link #changed()} fires. Note that consecutive calls supersede one
+		 * and the values populated are in place and before {@link #changed()} fires. Note that consecutive calls supersede one
 		 * another in that case, an in-flight load is abandoned when a new one begins and only the last
 		 * fires {@link #changed()}, so it does not necessarily fire once per call. Otherwise the operation
 		 * is fully synchronous.
-		 * <p>The entity the event carries is the one that was set, captured before the load began. It is not
+		 * <p>The entity the event carries is the one that was set, captured before the load began, along with
+		 * the values populated which were loaded for it. It is not
 		 * re-read when the event fires, so it does not reflect an edit made while the load was in flight;
 		 * {@link #get()} does. The values of a detail editor edited in that window do not survive the load,
 		 * see {@link AbstractEntityEditor#async()}.
@@ -626,7 +633,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>For master editors with registered detail editors, this fires <em>after</em> the detail
 		 * subtree has been replaced — by the time listeners run, every detail editor is in its
 		 * post-persist state. This makes {@link #replaced()} the "everything done" signal for the
-		 * full master/detail tree.
+		 * full master/detail tree. Likewise it fires after the values to {@link EditorValue#populate() populate}
+		 * which the replacement came without have been loaded.
 		 * @return an observer notified each time the entity is silently replaced
 		 * @see #replace(Entity)
 		 */
@@ -638,12 +646,16 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>If the new entity has the same primary key as the current one (the typical post-persist
 		 * refresh case), detail editors are <em>not</em> touched — their state is owned by their own
 		 * persist tasks — and the replacement is fully synchronous, as it is when no detail editors are
-		 * registered. A detail load still in flight for the entity, which has the same primary key, is left to
-		 * land. If the primary key changes, registered detail editors are reloaded via their link's
+		 * registered, unless the replacement comes without values to {@link EditorValue#populate() populate}. Those
+		 * are loaded anew, as for {@link #set(Entity)}, the editor holding the ones it had until they arrive, with
+		 * {@link #replaced()} firing once they have. A load still in flight for the entity, which has the same
+		 * primary key, is left to land. If the primary key changes, registered detail editors are reloaded via their link's
 		 * load action, since the master's identity has changed; the entity values are applied
 		 * synchronously, while as with {@link #set(Entity)} that detail reload may be performed
 		 * asynchronously when the editor is bound to UI components, with {@link #replaced()} firing once
-		 * the full detail subtree is in place.
+		 * the full detail subtree is in place. The same goes for the values to {@link EditorValue#populate() populate}
+		 * which an entity with another primary key comes without: they are loaded as the detail editors are, and
+		 * {@link #replaced()} fires once they have arrived.
 		 * @param entity the replacement entity
 		 * @throws NullPointerException in case the entity is null
 		 * @throws IllegalArgumentException in case the entity is not of the correct type
@@ -1060,6 +1072,43 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see #error()
 		 */
 		void validate();
+
+		/**
+		 * <p>Returns a {@link State} controlling whether the editor populates this value, false by default, so that it
+		 * can be edited where the entity being edited comes without it: a column which is not selected by default,
+		 * {@link is.codion.framework.domain.entity.attribute.ColumnDefinition#selected() selected(false)}, a large one
+		 * typically, or one the table query leaves out. An existing entity which does not hold a value can not have it
+		 * saved, see {@link #set(Object)}.
+		 * <p>A value populated is one the editor holds:
+		 * <ul>
+		 * <li>A new entity holds it, as null, {@link EditorEntity#defaults()} and {@link EditorEntity#clear()} including
+		 * it, where a column not selected is otherwise left out, so the entity inserted holds it as well.
+		 * <li>An existing entity which is set or replaced without it gets it loaded, by its primary key, along with the
+		 * detail editors if any: on a background thread when {@link AbstractEntityEditor#async()} is enabled and a UI is
+		 * bound, the events firing once it has arrived, otherwise before the call returns. It arrives as a value the
+		 * entity holds, not as a change, and is notified as when an entity is set. An edit of it made before it arrives
+		 * is overwritten. Nothing is loaded for an entity without a row.
+		 * <li>A fresher instance of the same entity which does not bring it, {@link EditorEntity#replace(Entity)}, as
+		 * when a table is refreshed, gets it loaded anew, so that the value is as fresh as the rest. The editor holds
+		 * the value it had until the new one arrives, which is notified only if it differs.
+		 * </ul>
+		 * <p>For a foreign key it covers the foreign key's columns, the entity referenced loaded along with them.
+		 * <p><b>Populating a value makes setting an entity asynchronous</b>, as registering a detail editor does. With a
+		 * UI bound, {@link EditorEntity#set(Entity)} and {@link EditorEntity#replace(Entity)} of an
+		 * existing entity which comes without the value return before it has arrived and before
+		 * {@link EditorEntity#changed()} or {@link EditorEntity#replaced()} fires, where without it the event has fired
+		 * by the time the call returns. The entity's other values are in place when the call returns, the value
+		 * populated is not, so whatever needs the entity complete reacts to the event, not to the call returning.
+		 * Consecutive calls supersede one another, only the last one's event firing. An entity which holds the value
+		 * already, a new one included, is set synchronously as before. Disabling {@link AbstractEntityEditor#async()}
+		 * loads the value before the call returns.
+		 * <p>A change of this state applies from the next entity set, it loads nothing for the one held.
+		 * <p>Note that a value the editor holds travels with the entity, to the database and back on each update, and to
+		 * whatever is notified of the entity persisted.
+		 * @return a {@link State} controlling whether the editor populates this value
+		 * @throws IllegalArgumentException when enabled for an attribute which is neither a column nor a foreign key
+		 */
+		State populate();
 
 		/**
 		 * <p>Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.

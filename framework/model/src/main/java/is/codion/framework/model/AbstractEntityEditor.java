@@ -73,6 +73,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -130,6 +131,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	private final Map<Attribute<?>, EditorValue<?>> editorValues = new HashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new HashMap<>();
+	private final Map<Attribute<?>, State> populateValues = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
 	private final Map<Attribute<?>, State> attributePresent = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
@@ -137,6 +139,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final Map<Attribute<?>, Value<String>> errors = new HashMap<>();
 	private final Map<Attribute<?>, Value<String>> warnings = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeWarned = new HashMap<>();
+
+	//the columns populated, their own value or that of a foreign key they belong to being so, replaced when a
+	//populate state changes, as the tasks read it on the thread performing them, see EditorValue.populate()
+	private volatile Set<Column<?>> populatedColumns = emptySet();
 
 	//the attributes the entity was found invalid in by its last validation, with their messages, see updateValidity()
 	private Map<Attribute<?>, String> invalidAttributes = emptyMap();
@@ -348,7 +354,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	}
 
 	/**
-	 * <p>Controls whether registered detail editors are loaded on a background thread when the active
+	 * <p>Controls whether registered detail editors, and the values to {@link EditorValue#populate() populate},
+	 * are loaded on a background thread when the active
 	 * entity is set, replaced or refreshed on the user interface thread. The active entity's own values
 	 * are always applied synchronously; this governs only the loading of detail editors. When enabled
 	 * (the default), setting or replacing the active entity returns before the detail subtree is in place.
@@ -405,7 +412,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 			catch (RuntimeException e) {
 				//whichever task failed
-				entity.clearPendingDetails();
+				entity.loadFailed();
 				throw e;
 			}
 		}
@@ -460,7 +467,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			if (currentTask == task) {
 				currentTask = null;
 				//whichever task failed
-				entity.clearPendingDetails();
+				entity.loadFailed();
 			}
 			ResultTaskHandler.super.onException(exception);
 		}
@@ -486,6 +493,49 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 */
 	private void replaceValue(ForeignKey foreignKey, @Nullable Entity value) {
 		editorValue(foreignKey).replace(value);
+	}
+
+	private void updatePopulatedColumns() {
+		populatedColumns = unmodifiableSet(entityDefinition.columns().definitions().stream()
+						.map(ColumnDefinition::attribute)
+						.filter(column -> populated(column) || entityDefinition.foreignKeys().definitions(column).stream()
+										.anyMatch(foreignKeyDefinition -> populated(foreignKeyDefinition.attribute())))
+						.collect(toSet()));
+	}
+
+	/**
+	 * @return the foreign keys the given columns belong to
+	 */
+	private Collection<ForeignKey> foreignKeys(Collection<Column<?>> columns) {
+		return columns.stream()
+						.flatMap(column -> entityDefinition.foreignKeys().definitions(column).stream())
+						.map(ForeignKeyDefinition::attribute)
+						.collect(toCollection(LinkedHashSet::new));
+	}
+
+	private boolean populated(Attribute<?> attribute) {
+		State populate = populateValues.get(attribute);
+
+		return populate != null && populate.is();
+	}
+
+	/**
+	 * @param entity the entity
+	 * @param exists true if the entity exists
+	 * @return the columns populated which the given entity does not hold, none unless it exists and has a key to load them by
+	 * @see EditorValue#populate()
+	 */
+	private List<Column<?>> lacking(Entity entity, boolean exists) {
+		Set<Column<?>> populated = populatedColumns;
+		if (populated.isEmpty() || !exists || !entity.originalPrimaryKey().present()) {
+			return emptyList();
+		}
+
+		return entityDefinition.columns().definitions().stream()
+						.map(ColumnDefinition::attribute)
+						.filter(populated::contains)
+						.filter(column -> !entity.contains(column))
+						.collect(toList());
 	}
 
 	private void notifyValueChange(Attribute<?> attribute) {
@@ -693,6 +743,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private boolean detailsPending = false;
 
 		/**
+		 * True while a load of the values populated which the entity held lacks is in progress, from when it is handed
+		 * to {@link #execute(EditorTask)} until it is handled or fails, so that a fresher instance of the same row
+		 * arriving meanwhile leaves it to land, see {@link #replace(Entity)}.
+		 */
+		private boolean populating = false;
+
+		/**
 		 * Incremented each time the editor moves on to another entity, see {@link #movedOn()}.
 		 */
 		private int generation = 0;
@@ -719,9 +776,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			movedOn();
 			detailsPending = !detail.editors.isEmpty();
 			setEntity(validated);
-			if (detailsPending) {
-				// the detail editors must be loaded for the new entity, on a background thread
-				execute(defaultTasks().setDetails(validated));
+			List<Column<?>> lacking = lacking(validated, exists.is());
+			populating = !lacking.isEmpty();
+			if (detailsPending || populating) {
+				// the detail editors must be loaded for the new entity, and the values populated which it does not hold,
+				// on a background thread
+				execute(defaultTasks().setDetails(validated, lacking));
 			}
 			else {
 				// nothing to load; supersede any in-flight load and fire changed
@@ -742,8 +802,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void replace(Entity entity) {
-			Entity validated = validateType(entity).immutable();
-			boolean identityChanged = !instance.primaryKey().equals(validated.primaryKey());
+			boolean identityChanged = !instance.primaryKey().equals(validateType(entity).primaryKey());
+			// the same row keeps the values populated which the fresher instance does not bring, while they are loaded anew
+			Entity validated = identityChanged ? entity.immutable() : keepPopulated(entity).immutable();
+			// a load in progress for this very entity, the same row, is left to land, superseding it would leave the
+			// previous one's details, and the values being loaded not arriving
+			boolean loading = !identityChanged && (detailsPending || populating);
 			if (identityChanged) {
 				movedOn();
 			}
@@ -752,14 +816,20 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				detailsPending = true;
 			}
 			setEntity(validated);
-			if (loadDetails) {
-				// the detail editors must be reloaded for the new identity, on a background thread
-				execute(defaultTasks().replaceDetails(validated));
+			// what the entity given came without is loaded, anew for the same row: a value kept is as old as its load, and
+			// an update is refused, as modified by someone else, once it has changed since
+			List<Column<?>> lacking = loading ? emptyList() : lacking(identityChanged ? validated : entity, exists.is());
+			if (!loading) {
+				populating = !lacking.isEmpty();
+			}
+			if (loadDetails || !lacking.isEmpty()) {
+				// the detail editors must be reloaded for the new identity, and the values populated which the entity does
+				// not hold loaded, on a background thread
+				execute(defaultTasks().replaceDetails(validated, lacking, loadDetails));
 			}
 			else {
-				// nothing to reload; supersede any in-flight refresh and fire replaced, but leave a detail load pending
-				// for this very entity, the same row, to land, superseding it would leave the previous one's details
-				if (!detailsPending) {
+				// nothing to load; supersede any in-flight refresh and fire replaced
+				if (!loading) {
 					supersede();
 				}
 				replaced.accept(validated);
@@ -777,6 +847,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			movedOn();
 			supersede();
 			detailsPending = false;
+			populating = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults(false));
 			setEntity(defaultEntity());
 			changed.accept(get());
@@ -788,6 +859,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			movedOn();
 			supersede();
 			detailsPending = false;
+			populating = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared(false));
 			setEntity(createEntity(DefaultEditorEntity::nullValue));
 			changed.accept(get());
@@ -848,18 +920,96 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 */
 		private void setEntity(Entity entity) {
 			Map<Attribute<?>, Object> affectedAttributes = instance.set(entity);
+			notifyValues(affectedAttributes::containsKey);
+		}
+
+		/**
+		 * Notifies the values affected, one at a time, in the order of the attributes, an edit made meanwhile ignored,
+		 * see {@link #setEntity(Entity)}.
+		 * @param affected the attributes whose values changed
+		 */
+		private void notifyValues(Predicate<Attribute<?>> affected) {
 			updateStates();
 			boolean wasNotifying = notifying;
 			notifying = true;
 			try {
 				entityDefinition.attributes().get().stream()
-								.filter(affectedAttributes::containsKey)
+								.filter(affected)
 								.forEach(AbstractEntityEditor.this::notifyValueChange);
 			}
 			finally {
 				notifying = wasNotifying;
 			}
 			attributeModified.forEach((attribute, modifiedState) -> modifiedState.set(instance.modified(attribute)));
+		}
+
+		/**
+		 * Gives the entity held the values loaded for it, those of the given columns and the entities their foreign
+		 * keys reference, as values it holds, not as changes, notifying them as when an entity is set. A value edited
+		 * since the load began is overwritten. A referenced entity is taken only if its key is the one this entity
+		 * holds, the row possibly having changed since this one was read.
+		 * @param completed the entity set, with the values loaded, or without them in case there was no row
+		 * @param lacking the columns the entity lacked when it was set
+		 * @see EditorValue#populate()
+		 */
+		private void populate(Entity completed, List<Column<?>> lacking) {
+			populating = false;
+			List<Column<?>> loaded = lacking.stream()
+							.filter(completed::contains)
+							.collect(toList());
+			if (loaded.isEmpty()) {
+				return;
+			}
+			Map<Attribute<?>, @Nullable Object> before = new HashMap<>();
+			entityDefinition.attributes().get().forEach(attribute -> before.put(attribute, instance.get(attribute)));
+			loaded.forEach(column -> {
+				if (instance.contains(column)) {
+					//edited since, removed so that the value loaded goes in as the one held
+					instance.remove(column);
+				}
+				instance.set((Column<Object>) column, completed.get(column));
+			});
+			foreignKeys(loaded).forEach(foreignKey -> {
+				Entity referenced = completed.get(foreignKey);
+				if (referenced != null && !instance.contains(foreignKey) && referenced.primaryKey().equals(instance.key(foreignKey))) {
+					instance.set(foreignKey, referenced);
+				}
+			});
+			notifyValues(attribute -> !Objects.deepEquals(before.get(attribute), instance.get(attribute)));
+		}
+
+		/**
+		 * @param entity a fresher instance of the row held
+		 * @return the given entity, along with the values populated which it does not hold and this one does, as this
+		 * one loaded them, an edit of one discarded, as a replace discards every edit. They are kept until loaded anew,
+		 * so that what shows them does not lose them meanwhile, and is notified only of one which changed
+		 */
+		private Entity keepPopulated(Entity entity) {
+			List<Column<?>> kept = populatedColumns.stream()
+							.filter(column -> !entity.contains(column) && instance.contains(column))
+							.collect(toList());
+			if (kept.isEmpty()) {
+				return entity;
+			}
+			Entity merged = entity.copy().mutable();
+			kept.forEach(column -> merged.set((Column<Object>) column, instance.original(column)));
+			foreignKeys(kept).forEach(foreignKey -> {
+				Entity referenced = instance.original(foreignKey);
+				if (referenced != null && !merged.contains(foreignKey) && referenced.primaryKey().equals(merged.key(foreignKey))) {
+					merged.set(foreignKey, referenced);
+				}
+			});
+
+			return merged;
+		}
+
+		/**
+		 * A load failed, whichever, the values being loaded not arriving, and the detail editors cleared in case they
+		 * do not hold the details of the entity held.
+		 */
+		private void loadFailed() {
+			populating = false;
+			clearPendingDetails();
 		}
 
 		private <T> @Nullable T defaultValue(AttributeDefinition<T> attributeDefinition) {
@@ -888,6 +1038,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		 */
 		private void detailsLoaded() {
 			detailsPending = false;
+			populating = false;
 			detail.editors.values().forEach(DetailEditor::updateUpdatable);
 			modified.update();
 		}
@@ -912,6 +1063,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			movedOn();
 			supersede();
 			detailsPending = false;
+			populating = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults(false));
 			setEntity(defaultEntity());
 			notifyReset(notifyChanged);
@@ -965,6 +1117,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			movedOn();
 			supersede();
 			detailsPending = false;
+			populating = false;
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared(false));
 			setEntity(createEntity(DefaultEditorEntity::nullValue));
 			notifyReset(notifyChanged);
@@ -1004,7 +1157,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 							//these are set via their respective parent foreign key
 							.filter(columnDefinition -> !entityDefinition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
 							.filter(columnDefinition -> !columnDefinition.withDefault() || columnDefinition.hasDefaultValue())
-							.filter(ColumnDefinition::selected) // don't populate lazy loaded values
+							// lazy loaded values are left out, unless populated, a new entity then holding them
+							.filter(columnDefinition -> columnDefinition.selected() || populatedColumns.contains(columnDefinition.attribute()))
 							.map(columnDefinition -> (ColumnDefinition<Object>) columnDefinition)
 							.forEach(columnDefinition -> newEntity.set(columnDefinition.attribute(), valueSupplier.get(columnDefinition)));
 		}
@@ -1674,6 +1828,49 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 							.collect(toList());
 		}
 
+		/**
+		 * Loads the values of the given columns, populated ones the given entity does not hold, and the entities their
+		 * foreign keys reference, by the entity's original primary key.
+		 * @param entity an existing entity
+		 * @param lacking the columns to load, see {@link #lacking(Entity, boolean)}
+		 * @return the given entity along with the values loaded, as values it holds, or the entity itself in case
+		 * there is nothing to load or no such row
+		 * @see EditorValue#populate()
+		 */
+		private Entity complete(Entity entity, List<Column<?>> lacking) {
+			if (lacking.isEmpty()) {
+				return entity;
+			}
+			Collection<ForeignKey> foreignKeys = foreignKeys(lacking);
+			//the foreign keys along with their columns, or the entities they reference are not loaded
+			List<Attribute<?>> attributes = new ArrayList<>(lacking);
+			attributes.addAll(foreignKeys);
+			List<Entity> rows = connection.select(where(key(entity.originalPrimaryKey()))
+							.attributes(attributes)
+							.build());
+			if (rows.isEmpty()) {
+				return entity;
+			}
+			Entity loaded = rows.get(0);
+			Entity completed = entity.copy().mutable();
+			lacking.forEach(column -> completed.set((Column<Object>) column, loaded.get(column)));
+			foreignKeys.forEach(foreignKey -> {
+				Entity referenced = loaded.get(foreignKey);
+				if (referenced != null && !completed.contains(foreignKey) && referenced.primaryKey().equals(completed.key(foreignKey))) {
+					completed.set(foreignKey, referenced);
+				}
+			});
+
+			return completed.immutable();
+		}
+
+		/**
+		 * @return the given entity, completed in case it exists and lacks values populated, see {@link #complete(Entity, List)}
+		 */
+		private Entity complete(Entity entity) {
+			return complete(entity, lacking(entity, AbstractEntityEditor.this.entity.exists.predicate.getOrThrow().test(entity)));
+		}
+
 		private final class SetEntity implements EditorTask<Entity> {
 
 			private final Entity entityToSet;
@@ -1684,14 +1881,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 			@Override
 			public Result<Entity> perform() {
-				List<Result<Entity>> details = loadDetails(entityToSet, false);
+				Entity completed = complete(entityToSet);
+				List<Result<Entity>> details = loadDetails(completed, false);
 				return () -> {
 					details.forEach(Result::handle);
 					entity.detailsPending = false;
-					entity.setEntity(entityToSet);
-					entity.changed.accept(entityToSet);
+					entity.populating = false;
+					entity.setEntity(completed);
+					entity.changed.accept(completed);
 
-					return entityToSet;
+					return completed;
 				};
 			}
 		}
@@ -1718,18 +1917,20 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 			@Override
 			public Result<Entity> perform() {
-				List<Result<Entity>> details = identityChanged ? loadDetails(entityToSet, true) : emptyList();
+				Entity completed = complete(entityToSet);
+				List<Result<Entity>> details = identityChanged ? loadDetails(completed, true) : emptyList();
 				return () -> {
 					if (held == null || held.current()) {
 						details.forEach(Result::handle);
 						if (identityChanged) {
 							entity.detailsPending = false;
+							entity.populating = false;
 						}
-						entity.setEntity(entityToSet);
-						entity.replaced.accept(entityToSet);
+						entity.setEntity(completed);
+						entity.replaced.accept(completed);
 					}
 
-					return entityToSet;
+					return completed;
 				};
 			}
 		}
@@ -1752,28 +1953,44 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 		}
 
-		private EditorTask<Entity> setDetails(Entity entityToSet) {
+		/**
+		 * Loads what the entity just set is without, its details and the values populated which it does not hold, the
+		 * entity itself having been applied already.
+		 * @param entityToSet the entity set
+		 * @param lacking the columns populated which it does not hold
+		 */
+		private EditorTask<Entity> setDetails(Entity entityToSet, List<Column<?>> lacking) {
 			return () -> {
-				List<Result<Entity>> details = loadDetails(entityToSet, false);
+				Entity completed = complete(entityToSet, lacking);
+				List<Result<Entity>> details = loadDetails(completed, false);
 				return () -> {
 					details.forEach(Result::handle);
+					entity.populate(completed, lacking);
 					entity.detailsLoaded();
-					entity.changed.accept(entityToSet);
+					entity.changed.accept(completed);
 
-					return entityToSet;
+					return completed;
 				};
 			};
 		}
 
-		private EditorTask<Entity> replaceDetails(Entity entityToSet) {
+		/**
+		 * As {@link #setDetails(Entity, List)}, for an entity replaced.
+		 * @param loadDetails true if the details are to be loaded, the entity being another row
+		 */
+		private EditorTask<Entity> replaceDetails(Entity entityToSet, List<Column<?>> lacking, boolean loadDetails) {
 			return () -> {
-				List<Result<Entity>> details = loadDetails(entityToSet, true);
+				Entity completed = complete(entityToSet, lacking);
+				List<Result<Entity>> details = loadDetails ? loadDetails(completed, true) : emptyList();
 				return () -> {
 					details.forEach(Result::handle);
-					entity.detailsLoaded();
-					entity.replaced.accept(entityToSet);
+					entity.populate(completed, lacking);
+					if (loadDetails) {
+						entity.detailsLoaded();
+					}
+					entity.replaced.accept(completed);
 
-					return entityToSet;
+					return completed;
 				};
 			};
 		}
@@ -2413,6 +2630,22 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
+	private static final class PopulateValidator implements Validator<Boolean> {
+
+		private final Attribute<?> attribute;
+
+		private PopulateValidator(Attribute<?> attribute) {
+			this.attribute = attribute;
+		}
+
+		@Override
+		public void validate(@Nullable Boolean populate) {
+			if (Boolean.TRUE.equals(populate) && !(attribute instanceof Column) && !(attribute instanceof ForeignKey)) {
+				throw new IllegalArgumentException("Only a column or a foreign key can be populated, there being nothing to load for: " + attribute);
+			}
+		}
+	}
+
 	private static final class PreventPersistModification implements Validator<Boolean> {
 
 		@Override
@@ -2963,6 +3196,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void validate() {
 			revalidate();
+		}
+
+		@Override
+		public State populate() {
+			return populateValues.computeIfAbsent(attribute, k -> State.builder()
+							.validator(new PopulateValidator(attribute))
+							.listener(AbstractEntityEditor.this::updatePopulatedColumns)
+							.build());
 		}
 
 		@Override

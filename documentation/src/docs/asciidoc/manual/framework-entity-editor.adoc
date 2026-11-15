@@ -2,6 +2,7 @@
 = EntityEditor
 :dir-source: ../../../../../demos/manual/src/main/java
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:dir-world-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
 The {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html[EntityEditor] is the framework's write path: it manages a single entity instance being edited — its values, their validity, dirty state and default values — and performs the insert, update and delete operations.
@@ -60,6 +61,24 @@ An overload of *propagate()* takes a condition on the new value and leaves the t
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceEditModel.java[tags=invoiceEditModel]
 ----
+
+== Values the entity comes without: populate
+
+An entity does not always reach the editor with all its values: a column which is not selected by default, a large one typically, is missing from the row selected in a table, as is a column the table query leaves out.
+The editor can not save an edit of a value the entity does not hold, having nothing to compare the edit with, and neither has the optimistic locking of an update.
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#populate()[populate()] state, disabled by default, has the editor hold the value: a new entity holds it as null, and an existing entity set without it gets it loaded, in the background when the editor is bound to a UI.
+For a foreign key it covers the foreign key's columns.
+
+NOTE: Populating a value makes setting an entity asynchronous, as registering a detail editor does: when the editor is bound to a UI, *entity().set()* returns before the value has arrived, and the entity's consumers are notified once it has, not by the time the call returns.
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/demos/world/model/CountryEditModel.java[tags=populate]
+----
+
+Leaving a value out of what is selected is a decision with consequences, and the editor not being able to edit it is one of them: populate the values the edit panel presents.
+A value the editor holds travels with the entity on each update, so one which is never edited is best left unpopulated.
 
 == Inserting, updating and deleting
 

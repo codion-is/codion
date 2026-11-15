@@ -37,7 +37,7 @@ public final class DetailDomain extends DomainModel {
 
 	public DetailDomain() {
 		super(DOMAIN);
-		add(department(), employee(), departmentExtra(), assignment(), departmentView(), sharedEmployee());
+		add(department(), employee(), departmentExtra(), assignment(), departmentView(), sharedEmployee(), lazyEmployee());
 	}
 
 	public interface Department {
@@ -239,6 +239,44 @@ public final class DetailDomain extends DomainModel {
 														.column()
 														.nullable(false)
 														.range(2000d, 10_000d))
+						.build();
+	}
+
+	/**
+	 * The employee table, with its data column not selected by default
+	 */
+	public interface LazyEmployee {
+		EntityType TYPE = DOMAIN.entityType("employees.lazy_employee");
+
+		Column<Integer> ID = TYPE.integerColumn("empno");
+		Column<String> NAME = TYPE.stringColumn("ename");
+		Column<Double> SALARY = TYPE.doubleColumn("sal");
+		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+		Column<byte[]> DATA = TYPE.byteArrayColumn("data");
+		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
+		Attribute<String> NOTES = TYPE.stringAttribute("notes");
+	}
+
+	EntityDefinition lazyEmployee() {
+		return LazyEmployee.TYPE.as()
+						.attributes(
+										LazyEmployee.ID.as()
+														.primaryKey()
+														.generator(sequence("employees.employee_seq")),
+										LazyEmployee.NAME.as()
+														.column(),
+										LazyEmployee.SALARY.as()
+														.column(),
+										LazyEmployee.DEPARTMENT.as()
+														.column(),
+										LazyEmployee.DEPARTMENT_FK.as()
+														.foreignKey(),
+										LazyEmployee.DATA.as()
+														.column()
+														.selected(false),
+										LazyEmployee.NOTES.as()
+														.attribute())
+						.table("employees.employee")
 						.build();
 	}
 }
