@@ -105,6 +105,7 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * @return a {@link Condition}
 	 * @throws NullPointerException in case {@code values} is null or an entity provides no value for a
 	 * non-nullable referenced column, as one which has not been inserted does not
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	Condition in(Entity... values);
 
@@ -114,6 +115,7 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * @return a {@link Condition}
 	 * @throws NullPointerException in case {@code values} is null or an entity provides no value for a
 	 * non-nullable referenced column, as one which has not been inserted does not
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	Condition notIn(Entity... values);
 
@@ -123,6 +125,7 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * @return a {@link Condition}
 	 * @throws NullPointerException in case {@code values} is null or an entity provides no value for a
 	 * non-nullable referenced column, as one which has not been inserted does not
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	Condition in(Collection<Entity> values);
 
@@ -132,6 +135,7 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * @return a {@link Condition}
 	 * @throws NullPointerException in case {@code values} is null or an entity provides no value for a
 	 * non-nullable referenced column, as one which has not been inserted does not
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	Condition notIn(Collection<Entity> values);
 

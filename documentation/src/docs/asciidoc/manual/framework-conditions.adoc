@@ -33,6 +33,8 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=foreignKeyCondition]
 ----
 
+NOTE: An *in* or *notIn* condition requires at least one value, an empty collection is refused with an *IllegalArgumentException*, there being no SQL for an empty list. Where the values may be empty, check before creating the condition and decide what none means, typically no rows for *in*, without a query, and no condition for *notIn*. The condition models behind the table condition panels have a rule of their own: a condition enabled without an operand means null, so *in* without operands selects the rows where the value is null.
+
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/CustomCondition.html[CustomCondition]*::
 A CustomCondition can be used when your logic can't be expressed through column-based or foreign-key-based conditions — for example, when writing native SQL fragments or using DB-specific syntax.
 

@@ -26,6 +26,9 @@ import java.util.Collection;
 
 /**
  * Creates {@link ColumnCondition}s.
+ * <p>An 'in' or 'notIn' condition requires at least one value, an empty collection is refused with an
+ * {@link IllegalArgumentException}. Where the values may be empty the caller decides what none means,
+ * typically no rows for 'in', without a query, and no condition for 'notIn'.
  * @param <T> the attribute value type
  */
 public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Column {
@@ -104,7 +107,8 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	 * Returns an 'in' {@link ColumnCondition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link ColumnCondition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or contains a null value
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	ColumnCondition<T> in(T... values);
 
@@ -112,7 +116,8 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	 * Returns a 'notIn' {@link ColumnCondition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link ColumnCondition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or contains a null value
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	ColumnCondition<T> notIn(T... values);
 
@@ -120,7 +125,8 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	 * Returns an 'in' {@link ColumnCondition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link ColumnCondition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or contains a null value
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	ColumnCondition<T> in(Collection<? extends T> values);
 
@@ -128,7 +134,8 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	 * Returns a 'notIn' {@link ColumnCondition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link ColumnCondition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or contains a null value
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	ColumnCondition<T> notIn(Collection<? extends T> values);
 
@@ -136,7 +143,8 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	 * Returns a case-insensitive 'in' {@link ColumnCondition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link ColumnCondition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or contains a null value
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	ColumnCondition<String> inIgnoreCase(String... values);
 
@@ -144,7 +152,8 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	 * Returns a case-insensitive 'notIn' {@link ColumnCondition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link ColumnCondition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or contains a null value
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	ColumnCondition<String> notInIgnoreCase(String... values);
 
@@ -152,7 +161,8 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	 * Returns a case-insensitive 'in' {@link ColumnCondition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link ColumnCondition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or contains a null value
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	ColumnCondition<String> inIgnoreCase(Collection<String> values);
 
@@ -160,7 +170,8 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	 * Returns a case-insensitive 'notIn' {@link ColumnCondition}.
 	 * @param values the values to use in the condition
 	 * @return a {@link ColumnCondition}
-	 * @throws NullPointerException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null or contains a null value
+	 * @throws IllegalArgumentException in case {@code values} is empty
 	 */
 	ColumnCondition<String> notInIgnoreCase(Collection<String> values);
 

@@ -73,6 +73,10 @@ public interface EntityConditions extends TableConditions<Attribute<?>> {
 	/**
 	 * Returns a WHERE condition based on enabled condition models which are based on non-aggregate function columns.
 	 * Uses the conjunction managed by {@link #conjunction()}
+	 * <p>A missing operand in an enabled condition model, a null equal operand or no in operands, means null,
+	 * as in {@link ConditionModel#accepts(Comparable)}: equal and in become 'is null', not equal and not in 'is not null'.
+	 * This is the rule of the condition models only, {@link Column#in(java.util.Collection)} and {@link ForeignKey#in(java.util.Collection)}
+	 * refuse an empty collection.
 	 * @return the current WHERE condition based on the state of the underlying condition models
 	 */
 	Condition where();
