@@ -76,6 +76,7 @@ Codion Change Log
 - EditorValue.set() bug fixed, the first value of one a new entity does not hold, a column whose default the database provides or a foreign key given no value for example, is now a change from null, where the entity took it for its initial value, the value then unmodified, its own original and not reverted, and a propagator giving its target null when the value returned to it.
 - EditorValue.populate() added, a State, disabled by default, having the editor hold the value so that it can be edited where the entity comes without it, a column not selected by default for example: a new entity holds it as null, an existing entity set or replaced without it gets it loaded by its primary key, in the background with a UI, the entity's changed() and replaced() then firing once it has arrived, after the call has returned, as with detail editors, and a fresher instance of the same entity, a table refresh, gets it loaded anew, the editor holding the one it had meanwhile.
 - AbstractEntityEditor, an entity inserted or updated is now published to PersistenceEvents without the values the editor populates which are not selected by default, so that a large value does not reach the foreign key references to the entity, the editor's own events carrying it as it is.
+- EntityApplicationModel and EntityModel store() and restore() bug fixed, an exception thrown by a model, by its table or edit model or by a detail model, an override failing or a preferences key no node can be named by, is now logged and the others still stored or restored, where it ended the walk.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model
@@ -97,6 +98,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 - PreferencesMigrator removed, preferences stored in the layout used before 0.18.81 are no longer converted when an application starts, what a file still holds in that layout is left in place and no longer read.
+- EntityApplicationPanel bug fixed, an exception thrown when the model or the panels store or restore their preferences no longer costs the other its preferences, where nothing at all was stored on exit and the application failed to start.
 ### is.codion.tools.loadtest
 - Parameters widened to wildcard types, functions taking ? super their arguments and ? extends their results, where a subtype or supertype fits.
 ### is.codion.plugin.jasperreports

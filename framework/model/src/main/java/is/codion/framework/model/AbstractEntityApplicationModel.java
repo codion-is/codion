@@ -101,11 +101,16 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 		requireNonNull(preferences);
 		Set<String> keys = new HashSet<>();
 		for (M entityModel : models.get()) {
-			if (!keys.add(entityModel.preferencesKey())) {
-				// Last writer wins - override preferencesKey() to disambiguate
-				LOG.warn("Duplicate entity model preferences key: {}", entityModel.preferencesKey());
+			try {
+				if (!keys.add(entityModel.preferencesKey())) {
+					// Last writer wins - override preferencesKey() to disambiguate
+					LOG.warn("Duplicate entity model preferences key: {}", entityModel.preferencesKey());
+				}
+				entityModel.store(preferences);
 			}
-			entityModel.store(preferences);
+			catch (Exception e) {
+				LOG.error("Error storing preferences for entity model: {}", entityModel.entityType(), e);
+			}
 		}
 	}
 
@@ -113,7 +118,12 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 	public void restore(Preferences preferences) {
 		requireNonNull(preferences);
 		for (M entityModel : models.get()) {
-			entityModel.restore(preferences);
+			try {
+				entityModel.restore(preferences);
+			}
+			catch (Exception e) {
+				LOG.error("Error restoring preferences for entity model: {}", entityModel.entityType(), e);
+			}
 		}
 	}
 

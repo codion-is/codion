@@ -156,22 +156,32 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 	public void store(Preferences preferences) {
 		Preferences entityNode = requireNonNull(preferences).node(preferencesKey());
 		Preferences modelNode = entityNode.node(MODEL);
-		if (tableModel != null) {
-			tableModel.store(modelNode);
+		try {
+			if (tableModel != null) {
+				tableModel.store(modelNode);
+			}
+			else {
+				editModel.store(modelNode.node(EDIT));
+			}
 		}
-		else {
-			editModel.store(modelNode.node(EDIT));
+		catch (Exception e) {
+			LOG.error("Error storing preferences for entity model: {}", entityType(), e);
 		}
 		Map<M, ModelLink> details = detailModels.get();
 		if (!details.isEmpty()) {
 			Preferences detailNode = entityNode.node(DETAILS);
 			Set<String> keys = new HashSet<>();
 			for (M detailModel : details.keySet()) {
-				if (!keys.add(detailModel.preferencesKey())) {
-					// Last writer wins - override preferencesKey() to disambiguate
-					LOG.warn("Duplicate detail model preferences key '{}' under '{}'", detailModel.preferencesKey(), preferencesKey());
+				try {
+					if (!keys.add(detailModel.preferencesKey())) {
+						// Last writer wins - override preferencesKey() to disambiguate
+						LOG.warn("Duplicate detail model preferences key '{}' under '{}'", detailModel.preferencesKey(), preferencesKey());
+					}
+					detailModel.store(detailNode);
 				}
-				detailModel.store(detailNode);
+				catch (Exception e) {
+					LOG.error("Error storing preferences for detail model: {}", detailModel.entityType(), e);
+				}
 			}
 		}
 	}
@@ -180,17 +190,27 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 	public void restore(Preferences preferences) {
 		Preferences entityNode = requireNonNull(preferences).node(preferencesKey());
 		Preferences modelNode = entityNode.node(MODEL);
-		if (tableModel != null) {
-			tableModel.restore(modelNode);
+		try {
+			if (tableModel != null) {
+				tableModel.restore(modelNode);
+			}
+			else {
+				editModel.restore(modelNode.node(EDIT));
+			}
 		}
-		else {
-			editModel.restore(modelNode.node(EDIT));
+		catch (Exception e) {
+			LOG.error("Error restoring preferences for entity model: {}", entityType(), e);
 		}
 		Map<M, ModelLink> details = detailModels.get();
 		if (!details.isEmpty()) {
 			Preferences detailNode = entityNode.node(DETAILS);
 			for (M detailModel : details.keySet()) {
-				detailModel.restore(detailNode);
+				try {
+					detailModel.restore(detailNode);
+				}
+				catch (Exception e) {
+					LOG.error("Error restoring preferences for detail model: {}", detailModel.entityType(), e);
+				}
 			}
 		}
 	}

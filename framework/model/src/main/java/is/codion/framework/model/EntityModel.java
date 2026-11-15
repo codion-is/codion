@@ -101,6 +101,7 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	 * be called in order to retain the default state.
 	 * <p>This model's node contains the child nodes {@code model} and {@code details}, along with {@code view}
 	 * for the UI, so custom state belongs in a child node of its own under it, with another name.
+	 * <p>An exception thrown by the table or edit model, or by a detail model, is logged, the others still stored.
 	 * @param preferences the preferences node representing the entity models
 	 * @see #restore(Preferences)
 	 */
@@ -109,6 +110,7 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	/**
 	 * Restores the model-owned persistent state of this model and its detail models from the given preferences
 	 * node. Each model restores its state from a child node named by its {@link #preferencesKey()}.
+	 * <p>An exception thrown by the table or edit model, or by a detail model, is logged, the others still restored.
 	 * @param preferences the preferences node representing the entity models
 	 * @see #store(Preferences)
 	 */

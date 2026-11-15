@@ -783,10 +783,21 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void restorePreferences() {
 		if (userPreferences) {
-			Preferences preferences = preferences();
-			// The model walk restores the model-owned state (conditions, filters, sort), the UI walk the view state
-			model.restore(preferences.node(ENTITIES));
-			restore(preferences);
+			try {
+				Preferences preferences = preferences();
+				// The model walk restores the model-owned state (conditions, filters, sort), the UI walk the view state,
+				// one failing does not cost the other, nor the application its start
+				try {
+					model.restore(preferences.node(ENTITIES));
+				}
+				catch (Exception e) {
+					LOG.error("Exception while restoring model preferences", e);
+				}
+				restore(preferences);
+			}
+			catch (Exception e) {
+				LOG.error("Exception while restoring preferences", e);
+			}
 		}
 		else {
 			LOG.debug("User preferences are disabled");
@@ -798,8 +809,19 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			if (userPreferences) {
 				LOG.debug("Writing user preferences");
 				Preferences preferences = preferences();
-				model.store(preferences.node(ENTITIES));
-				store(preferences);
+				// what one walk stores is flushed even if the other fails
+				try {
+					model.store(preferences.node(ENTITIES));
+				}
+				catch (Exception e) {
+					LOG.error("Exception while storing model preferences", e);
+				}
+				try {
+					store(preferences);
+				}
+				catch (Exception e) {
+					LOG.error("Exception while storing view preferences", e);
+				}
 				preferences.put(VERSION, VERSION_VALUE);
 				preferences.flush();
 			}

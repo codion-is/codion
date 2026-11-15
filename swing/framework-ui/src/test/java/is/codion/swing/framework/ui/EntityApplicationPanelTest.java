@@ -153,6 +153,89 @@ public class EntityApplicationPanelTest {
 		panel.notified.forEach(notified -> assertSame(panel, notified));
 	}
 
+	@Test
+	void preferencesFailing() {
+		// the application model throwing from store() or restore(), an override of the application's,
+		// cost the view its preferences and the application its start
+		Preferences preferences = jsonPreferences();
+		FailingApplicationModel model = new FailingApplicationModel(LocalEntityConnection.builder()
+						.domain(new TestDomain())
+						.user(UNIT_TEST_USER)
+						.build());
+		FailingApplicationPanel panel = new FailingApplicationPanel(model);
+		panel.preferences(preferences);
+		model.fail = true;
+		assertDoesNotThrow(panel::initialize);
+		panel.exit();
+		assertEquals("2", preferences.get("version", null));
+		assertNotNull(preferences.node("entities").node(Employee.TYPE.name()).node("view").node("table").get("columns", null));
+
+		// and the panel throwing cost the model its preferences
+		preferences = jsonPreferences();
+		model = new FailingApplicationModel(LocalEntityConnection.builder()
+						.domain(new TestDomain())
+						.user(UNIT_TEST_USER)
+						.build());
+		model.models().get(Employee.TYPE).tableModel().query().conditions().get(Employee.NAME).caseSensitive().set(true);
+		panel = new FailingApplicationPanel(model);
+		panel.preferences(preferences);
+		panel.fail = true;
+		assertDoesNotThrow(panel::initialize);
+		panel.exit();
+		assertEquals("2", preferences.get("version", null));
+		assertNotNull(preferences.node("entities").node(Employee.TYPE.name()).node("model").get("conditions", null));
+	}
+
+	private static final class FailingApplicationModel extends SwingEntityApplicationModel {
+
+		private boolean fail;
+
+		private FailingApplicationModel(EntityConnection connection) {
+			super(connection, singletonList(new SwingEntityModel(Employee.TYPE, connection)));
+		}
+
+		@Override
+		public void store(Preferences preferences) {
+			if (fail) {
+				throw new IllegalStateException("store");
+			}
+			super.store(preferences);
+		}
+
+		@Override
+		public void restore(Preferences preferences) {
+			if (fail) {
+				throw new IllegalStateException("restore");
+			}
+			super.restore(preferences);
+		}
+	}
+
+	private static final class FailingApplicationPanel extends EntityApplicationPanel<FailingApplicationModel> {
+
+		private boolean fail;
+
+		private FailingApplicationPanel(FailingApplicationModel applicationModel) {
+			super(applicationModel, singletonList(new EntityPanel(applicationModel.models().get(Employee.TYPE))), emptyList());
+		}
+
+		@Override
+		public void store(Preferences preferences) {
+			if (fail) {
+				throw new IllegalStateException("store");
+			}
+			super.store(preferences);
+		}
+
+		@Override
+		public void restore(Preferences preferences) {
+			if (fail) {
+				throw new IllegalStateException("restore");
+			}
+			super.restore(preferences);
+		}
+	}
+
 	// Telling when it is stored and closed
 	private static final class ExitingApplicationModel extends SwingEntityApplicationModel {
 
