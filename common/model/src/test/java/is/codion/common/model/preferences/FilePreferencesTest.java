@@ -24,6 +24,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -179,6 +181,38 @@ public final class FilePreferencesTest {
 		prefs.remove("key");
 		prefs.flush();
 		assertFalse(testFile.toFile().exists(), "Empty preferences should delete existing file");
+	}
+
+	@Test
+	void writtenInUtf8() throws Exception {
+		// the file was written in the default charset and read as UTF-8, so that a JVM
+		// with another default, -Dfile.encoding=COMPAT on Windows for example, read back what it had not written
+		Path testFile = tempDir.resolve("charset-" + System.nanoTime() + ".json");
+		Process process = new ProcessBuilder(
+						Paths.get(System.getProperty("java.home"), "bin", "java").toString(),
+						"-Dfile.encoding=ISO-8859-1",
+						"-cp", System.getProperty("java.class.path"),
+						Latin1Writer.class.getName(), testFile.toString())
+						.inheritIO()
+						.start();
+		assertTrue(process.waitFor(60, TimeUnit.SECONDS));
+		assertEquals(0, process.exitValue());
+
+		assertEquals(Latin1Writer.VALUE, new FilePreferences(new JsonPreferencesStore(testFile)).get("key", null));
+	}
+
+	/**
+	 * Run in a JVM of its own, with a default charset other than UTF-8
+	 */
+	public static final class Latin1Writer {
+
+		private static final String VALUE = "björn þór";
+
+		public static void main(String[] arguments) throws Exception {
+			Preferences prefs = new FilePreferences(new JsonPreferencesStore(Paths.get(arguments[0])));
+			prefs.put("key", VALUE);
+			prefs.flush();
+		}
 	}
 
 	private static boolean containsKey(String[] keys, String key) {

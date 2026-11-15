@@ -30,7 +30,6 @@ import java.io.UncheckedIOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
-import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
@@ -173,7 +172,7 @@ final class JsonPreferencesStore {
 		// Write to temp file first
 		Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
 		try {
-			Files.write(tempFile.toAbsolutePath(), content.getBytes());
+			Files.write(tempFile.toAbsolutePath(), content.getBytes(StandardCharsets.UTF_8));
 			// Force sync to disk before atomic move (helps on Windows/VirtualBox)
 			try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
 				channel.force(true);
@@ -303,12 +302,6 @@ final class JsonPreferencesStore {
 			// as in reload(): no exists() check, the file may be deleted concurrently
 			LOG.trace("Preferences file does not exist, starting with empty preferences");
 			missing(merge);
-			return;
-		}
-		catch (MalformedInputException e) {
-			// File contains binary data or invalid encoding
-			LOG.error("Preferences file contains invalid character encoding: {}", filePath, e);
-			handleCorruptedFile("File contains invalid character encoding", e, merge);
 			return;
 		}
 
