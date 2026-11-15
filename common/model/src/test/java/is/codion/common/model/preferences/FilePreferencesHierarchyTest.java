@@ -64,6 +64,72 @@ public final class FilePreferencesHierarchyTest {
 	}
 
 	@Test
+	void longNodeNames() throws Exception {
+		// a node name of more than 80 characters was refused, Preferences.MAX_NAME_LENGTH, keys and values having no limit
+		Path testFile = tempDir.resolve("long-names-" + System.nanoTime() + ".json");
+		Preferences root = new FilePreferences(new JsonPreferencesStore(testFile));
+		String longName = name('n', 200);
+		String otherLongName = name('m', 81);
+
+		Preferences longNode = root.node(longName);
+		assertSame(longNode, root.node(longName));
+		assertSame(longNode, root.node("/" + longName));
+		assertEquals(longName, longNode.name());
+		assertEquals("/" + longName, longNode.absolutePath());
+		assertSame(root, longNode.parent());
+		longNode.put("key", "value");
+		assertEquals("value", longNode.get("key", null));
+		assertTrue(root.nodeExists(longName));
+		assertTrue(Arrays.asList(root.childrenNames()).contains(longName));
+
+		// in a path, short names and long ones mixed
+		Preferences nested = root.node("short/" + longName + "/inner/" + otherLongName);
+		assertSame(nested, root.node("short").node(longName).node("inner").node(otherLongName));
+		assertSame(nested, nested.node("/short/" + longName + "/inner/" + otherLongName));
+		assertEquals("/short/" + longName + "/inner/" + otherLongName, nested.absolutePath());
+		nested.put("nested", "value");
+		assertTrue(root.nodeExists("short/" + longName + "/inner/" + otherLongName));
+		assertFalse(root.nodeExists("short/" + otherLongName));
+		assertThrows(IllegalArgumentException.class, () -> root.node(longName + "//inner"));
+		assertThrows(IllegalArgumentException.class, () -> root.node(longName + "/"));
+
+		// across a restart
+		root.flush();
+		Preferences restarted = new FilePreferences(new JsonPreferencesStore(testFile));
+		assertTrue(restarted.nodeExists(longName));
+		assertTrue(Arrays.asList(restarted.childrenNames()).contains(longName));
+		assertEquals("value", restarted.node(longName).get("key", null));
+		assertEquals("value", restarted.node("short/" + longName + "/inner/" + otherLongName).get("nested", null));
+
+		// removed, the node itself
+		longNode.removeNode();
+		assertFalse(root.nodeExists(longName));
+		assertFalse(Arrays.asList(root.childrenNames()).contains(longName));
+		assertThrows(IllegalStateException.class, () -> longNode.put("key", "value"));
+		assertThrows(IllegalStateException.class, () -> longNode.get("key", null));
+		// and a new one in its place
+		assertNotSame(longNode, root.node(longName));
+		assertNull(root.node(longName).get("key", null));
+
+		// removed with an ancestor, however far up
+		Preferences inner = root.node("short/" + longName + "/inner");
+		root.node("short").removeNode();
+		assertThrows(IllegalStateException.class, () -> nested.put("nested", "value"));
+		assertThrows(IllegalStateException.class, () -> inner.put("key", "value"));
+		assertFalse(root.nodeExists("short"));
+		root.flush();
+		restarted = new FilePreferences(new JsonPreferencesStore(testFile));
+		assertFalse(restarted.nodeExists("short"));
+	}
+
+	private static String name(char character, int length) {
+		char[] characters = new char[length];
+		Arrays.fill(characters, character);
+
+		return new String(characters);
+	}
+
+	@Test
 	void testBasicHierarchy() throws Exception {
 		Preferences root = createTestPreferences();
 

@@ -34,7 +34,6 @@ import java.util.prefs.Preferences;
 
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Arrays.asList;
-import static java.util.Arrays.fill;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -111,10 +110,8 @@ public final class EntityModelPreferencesTest {
 
 	@Test
 	void invalidPreferencesKey() {
-		// a key no preferences node can be named by, more than 80 characters
-		char[] characters = new char[81];
-		fill(characters, 'k');
-		TestModel invalid = new TestModel(Department.TYPE, new String(characters));
+		// a key no preferences node can be named by, the path it makes holding an empty name
+		TestModel invalid = new TestModel(Department.TYPE, "invalid//key");
 		TestModel healthy = new TestModel(Employee.TYPE, "healthy");
 		TestApplicationModel applicationModel = new TestApplicationModel(asList(invalid, healthy));
 		Preferences preferences = jsonPreferences();

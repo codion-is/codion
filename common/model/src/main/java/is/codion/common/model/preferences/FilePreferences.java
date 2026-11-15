@@ -26,7 +26,13 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
@@ -38,7 +44,7 @@ import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**
- * <p>A file-based preferences implementation without length restrictions.
+ * <p>A file-based preferences implementation without length restrictions, on keys, values or node names.
  * <p>Supports hierarchical preferences through nested JSON structure.
  * <p>Clearing the preferences instance and flushing deletes the underlying file.
  * <p>A value is returned as it was put, with one exception: a value that is an empty JSON object, {@code {}},
@@ -87,7 +93,11 @@ public final class FilePreferences extends AbstractPreferences {
 
 	private final JsonPreferences preferences;
 	private final @Nullable JsonPreferencesStore store;
+	private final @Nullable FilePreferences parentNode;
 	private final String path;
+	//the children named by more than MAX_NAME_LENGTH characters, which AbstractPreferences refuses
+	//to create and does not know of, cached and removed here instead, guarded by the lock
+	private final Map<String, FilePreferences> longNamedChildren = new HashMap<>();
 
 	private FilePreferences(Path path) {
 		this(new JsonPreferencesStore(path, PRETTY_PRINT.getOrThrow()));
@@ -109,6 +119,7 @@ public final class FilePreferences extends AbstractPreferences {
 		super(parent, name);
 		this.preferences = preferences;
 		this.store = store;
+		this.parentNode = parent;
 		this.path = parent == null ? "" : (parent.path.isEmpty() ? name : parent.path + PATH_SEPARATOR + name);
 	}
 
@@ -130,6 +141,69 @@ public final class FilePreferences extends AbstractPreferences {
 	 */
 	public static Preferences filePreferences(String filename) {
 		return FILE_PREFERENCES.computeIfAbsent(userPreferencesPath(filename), FilePreferences::new);
+	}
+
+	/**
+	 * As {@link AbstractPreferences#node(String)}, without the limit on the length of a node name.
+	 */
+	@Override
+	public Preferences node(String path) {
+		requireNonNull(path);
+		if (!containsLongName(path)) {
+			return super.node(path);
+		}
+		boolean absolute = path.startsWith(PATH_SEPARATOR);
+		String relative = absolute ? path.substring(1) : path;
+		if (relative.endsWith(PATH_SEPARATOR)) {
+			throw new IllegalArgumentException("Path ends with slash");
+		}
+		FilePreferences node = absolute ? root() : this;
+		for (String name : relative.split(PATH_SEPARATOR, -1)) {
+			if (name.isEmpty()) {
+				throw new IllegalArgumentException("Consecutive slashes in path");
+			}
+			node = node.child(name);
+		}
+
+		return node;
+	}
+
+	@Override
+	public String[] childrenNames() throws BackingStoreException {
+		synchronized (lock) {
+			String[] names = super.childrenNames();
+			if (longNamedChildren.isEmpty()) {
+				return names;
+			}
+			Set<String> childrenNames = new TreeSet<>(Arrays.asList(names));
+			childrenNames.addAll(longNamedChildren.keySet());
+
+			return childrenNames.toArray(EMPTY_STRING_ARRAY);
+		}
+	}
+
+	/**
+	 * As {@link AbstractPreferences#removeNode()}, removing the long named nodes below this one as well.
+	 */
+	@Override
+	public void removeNode() throws BackingStoreException {
+		if (parentNode == null) {
+			throw new UnsupportedOperationException("Can't remove the root!");
+		}
+		removeLongNamedDescendants();
+		super.removeNode();
+		synchronized (parentNode.lock) {
+			parentNode.longNamedChildren.remove(name(), this);
+		}
+	}
+
+	@Override
+	protected @Nullable AbstractPreferences getChild(String nodeName) throws BackingStoreException {
+		synchronized (lock) {
+			FilePreferences longNamedChild = longNamedChildren.get(nodeName);
+
+			return longNamedChild == null ? super.getChild(nodeName) : longNamedChild;
+		}
 	}
 
 	@Override
@@ -223,6 +297,65 @@ public final class FilePreferences extends AbstractPreferences {
 	protected AbstractPreferences childSpi(String name) {
 		LOG.trace("Creating child preference node '{}' under path '{}'", name, path);
 		return new FilePreferences(this, name, preferences, store);
+	}
+
+	private FilePreferences child(String name) {
+		if (name.length() <= MAX_NAME_LENGTH) {
+			return (FilePreferences) super.node(name);
+		}
+		synchronized (lock) {
+			if (isRemoved()) {
+				throw new IllegalStateException("Node has been removed.");
+			}
+
+			return longNamedChildren.computeIfAbsent(name, childName -> new FilePreferences(this, childName, preferences, store));
+		}
+	}
+
+	private FilePreferences root() {
+		FilePreferences node = this;
+		while (node.parentNode != null) {
+			node = node.parentNode;
+		}
+
+		return node;
+	}
+
+	/**
+	 * AbstractPreferences removes the children it has cached along with a node, the long named ones it does not know of
+	 */
+	private void removeLongNamedDescendants() throws BackingStoreException {
+		List<FilePreferences> longNamed;
+		AbstractPreferences[] cached;
+		synchronized (lock) {
+			longNamed = new ArrayList<>(longNamedChildren.values());
+			cached = cachedChildren();
+		}
+		for (FilePreferences child : longNamed) {
+			child.removeNode();
+		}
+		for (AbstractPreferences child : cached) {
+			((FilePreferences) child).removeLongNamedDescendants();
+		}
+	}
+
+	private static boolean containsLongName(String path) {
+		if (path.length() <= MAX_NAME_LENGTH) {
+			return false;
+		}
+		int start = 0;
+		while (start <= path.length()) {
+			int end = path.indexOf(PATH_SEPARATOR, start);
+			if (end < 0) {
+				end = path.length();
+			}
+			if (end - start > MAX_NAME_LENGTH) {
+				return true;
+			}
+			start = end + 1;
+		}
+
+		return false;
 	}
 
 	@Override
