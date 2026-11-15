@@ -18,6 +18,7 @@
  */
 package is.codion.common.model.preferences;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -265,6 +267,41 @@ public final class ConcurrentPreferencesTest {
 			// Try to save - should timeout
 			store.put("", "key", "value");
 			assertThrows(IOException.class, () -> store.save());
+		}
+	}
+
+	@Test
+	void flushingAtOnce() throws Exception {
+		// two instances holding a change each and flushing at the same moment, two stores standing in for two JVMs:
+		// each saved the file as it had read it, the second replacing what the first had just written
+		ExecutorService executor = Executors.newFixedThreadPool(2);
+		try {
+			for (int round = 0; round < 20; round++) {
+				Path prefsPath = tempDir.resolve("at-once-" + round + ".json");
+				JsonPreferencesStore first = new JsonPreferencesStore(prefsPath);
+				JsonPreferencesStore second = new JsonPreferencesStore(prefsPath);
+				first.put("", "first", "value");
+				second.put("", "second", "value");
+				CyclicBarrier barrier = new CyclicBarrier(2);
+				Future<?> firstSync = executor.submit(() -> {
+					barrier.await();
+					first.sync();
+					return null;
+				});
+				Future<?> secondSync = executor.submit(() -> {
+					barrier.await();
+					second.sync();
+					return null;
+				});
+				firstSync.get(30, TimeUnit.SECONDS);
+				secondSync.get(30, TimeUnit.SECONDS);
+				JSONObject json = new JSONObject(new String(Files.readAllBytes(prefsPath), StandardCharsets.UTF_8));
+				assertTrue(json.has("first"), "round " + round + ": " + json);
+				assertTrue(json.has("second"), "round " + round + ": " + json);
+			}
+		}
+		finally {
+			executor.shutdownNow();
 		}
 	}
 

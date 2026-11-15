@@ -37,6 +37,7 @@ Codion Change Log
 - ItemComboBoxModelBuilder.selectedItem() now accepts null, for none, where it threw, and selectedValue(null) now selects none, where it threw without a null item, the null item representing none, if any.
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 - FilePreferences.backup() removed, the preferences migrator having been its only caller.
+- FilePreferences.flush() and sync() bug fixed, the file lock is now held from the reload to the write, where it was held for the write only, so that of two instances of an application flushing at the same moment one replaced what the other had just saved.
 ### is.codion.common.db
 - ErrorType.DEADLOCK added, the transaction chosen as a deadlock's victim, recognized on every database but SQLite, which has none.
 - Parameters widened to wildcard types, functions taking ? extends their results, where a subtype fits.

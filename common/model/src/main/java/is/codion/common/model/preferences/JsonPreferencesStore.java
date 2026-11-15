@@ -103,7 +103,7 @@ final class JsonPreferencesStore {
 		this.prettyPrint = prettyPrint;
 		LOG.debug("Initializing preferences store at {}", filePath);
 		try {
-			loadData(false);
+			loadData(false, false);
 		}
 		catch (IOException e) {
 			throw new UncheckedIOException(e);
@@ -141,39 +141,8 @@ final class JsonPreferencesStore {
 	 */
 	void save() throws IOException {
 		lock.lock();
-		try {
-			saves++;
-			// A point-in-time snapshot of the store, taken atomically; the file write below need not hold the in-memory lock.
-			JsonPreferences.Snapshot snapshot = preferences.snapshot(prettyPrint);
-			String content = snapshot.content;
-			if (content == null) {
-				LOG.debug("Preferences empty, deleting file if exists: {}", filePath);
-				delete();
-				preferences.saved(snapshot.changes);
-				return;
-			}
-			LOG.debug("Saving preferences to {}", filePath);
-			long startTime = currentTimeMillis();
-			Files.createDirectories(filePath.getParent());
-			// Write to temp file first
-			Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
-			try {
-				Files.write(tempFile.toAbsolutePath(), content.getBytes());
-				// Force sync to disk before atomic move (helps on Windows/VirtualBox)
-				try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
-					channel.force(true);
-				}
-				// Atomic move with lock
-				try (FileLock fileLock = acquireExclusiveLock()) {
-					atomicMove(tempFile, filePath);
-					stamp();
-					preferences.saved(snapshot.changes);
-					LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
-				}
-			}
-			finally {
-				Files.deleteIfExists(tempFile);
-			}
+		try (FileLock fileLock = acquireExclusiveLock()) {
+			write();
 		}
 		finally {
 			lock.unlock();
@@ -181,17 +150,63 @@ final class JsonPreferencesStore {
 	}
 
 	/**
+	 * Writes the preferences, or deletes the file if they are empty, the caller holding the file lock.
+	 * The lock file is deliberately left in place when the file is deleted: deleting it while another
+	 * thread or process holds a {@link FileLock} on it unlinks the inode they locked, so the next
+	 * {@code acquireLock()} creates and locks a different file and mutual exclusion silently fails.
+	 */
+	private void write() throws IOException {
+		saves++;
+		// taken under the file lock, after the reload, so that it holds what any other JVM has saved
+		JsonPreferences.Snapshot snapshot = preferences.snapshot(prettyPrint);
+		String content = snapshot.content;
+		if (content == null) {
+			LOG.debug("Preferences empty, deleting file if exists: {}", filePath);
+			Files.deleteIfExists(filePath);
+			fileGone();
+			preferences.saved(snapshot.changes);
+			return;
+		}
+		LOG.debug("Saving preferences to {}", filePath);
+		long startTime = currentTimeMillis();
+		Files.createDirectories(filePath.getParent());
+		// Write to temp file first
+		Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
+		try {
+			Files.write(tempFile.toAbsolutePath(), content.getBytes());
+			// Force sync to disk before atomic move (helps on Windows/VirtualBox)
+			try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
+				channel.force(true);
+			}
+			atomicMove(tempFile, filePath);
+			stamp();
+			preferences.saved(snapshot.changes);
+			LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
+		}
+		finally {
+			Files.deleteIfExists(tempFile);
+		}
+	}
+
+	/**
 	 * Reloads the file if it has been modified since it was last read or written, re-applying the changes made
 	 * since on top of it, and saves those changes, the file is left untouched when there are none. This is what
 	 * the JDK's own file backed implementation does for both {@code flush()} and {@code sync()}.
+	 * <p>The file lock is held from the reload to the write, so that another JVM can not save in between,
+	 * its changes then replaced by a file that never contained them.
 	 * @throws IOException in case of an I/O error
 	 */
 	void sync() throws IOException {
 		lock.lock();
 		try {
-			reload();
 			if (preferences.modified()) {
-				save();
+				try (FileLock fileLock = acquireExclusiveLock()) {
+					reload(true);
+					write();
+				}
+			}
+			else {
+				reload(false);
 			}
 		}
 		finally {
@@ -213,6 +228,13 @@ final class JsonPreferencesStore {
 	}
 
 	void reload() throws IOException {
+		reload(false);
+	}
+
+	/**
+	 * @param fileLocked true if the caller holds the file lock
+	 */
+	private void reload(boolean fileLocked) throws IOException {
 		// held across the check and the load, so two threads seeing the same modification time do not both reload
 		lock.lock();
 		try {
@@ -222,7 +244,7 @@ final class JsonPreferencesStore {
 			try {
 				if (modifiedExternally()) {
 					LOG.debug("File has been modified externally, reloading from {}", filePath);
-					loadData(true);
+					loadData(true, fileLocked);
 				}
 				else {
 					LOG.trace("File has not been modified, skipping reload");
@@ -244,80 +266,70 @@ final class JsonPreferencesStore {
 		}
 	}
 
-	/**
-	 * Deletes the preferences file. The lock file is deliberately left in place: deleting it while
-	 * another thread or process holds a {@link FileLock} on it unlinks the inode they locked, so the
-	 * next {@code acquireLock()} creates and locks a different file and mutual exclusion silently fails.
-	 * @throws IOException in case of an exception
-	 */
-	void delete() throws IOException {
-		lock.lock();
-		try (FileLock fileLock = acquireExclusiveLock()) {
-			Files.deleteIfExists(filePath);
-			fileGone();
-		}
-		finally {
-			lock.unlock();
-		}
-	}
-
-	private void loadData(boolean merge) throws IOException {
+	private void loadData(boolean merge, boolean fileLocked) throws IOException {
 		lock.lock();
 		try {
-			doLoadData(merge);
+			if (!Files.exists(filePath)) {
+				// fast path only, so the common "no preferences yet" case costs no lock; this is not the
+				// authoritative check, the file may be deleted at any point after it returns true, which is
+				// what the NoSuchFileException in read() is for
+				LOG.trace("Preferences file does not exist, starting with empty preferences");
+				missing(merge);
+			}
+			else if (fileLocked) {
+				read(merge);
+			}
+			else {
+				try (FileLock fileLock = acquireSharedLock()) {
+					read(merge);
+				}
+			}
 		}
 		finally {
 			lock.unlock();
 		}
 	}
 
-	private void doLoadData(boolean merge) throws IOException {
-		if (!Files.exists(filePath)) {
-			// fast path only, so the common "no preferences yet" case costs no lock; this is not the
-			// authoritative check, the file may be deleted at any point after it returns true, which is
-			// what the NoSuchFileException below is for
+	/**
+	 * Reads the file, the caller holding the file lock.
+	 */
+	private void read(boolean merge) throws IOException {
+		LOG.trace("Loading preferences from {}", filePath);
+		String content;
+		try {
+			content = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
+		}
+		catch (NoSuchFileException e) {
+			// as in reload(): no exists() check, the file may be deleted concurrently
 			LOG.trace("Preferences file does not exist, starting with empty preferences");
 			missing(merge);
 			return;
 		}
-		LOG.trace("Loading preferences from {}", filePath);
-		try (FileLock lock = acquireSharedLock()) {
-			String content;
-			try {
-				content = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
-			}
-			catch (NoSuchFileException e) {
-				// as in reload(): no exists() check, the file may be deleted concurrently
-				LOG.trace("Preferences file does not exist, starting with empty preferences");
-				missing(merge);
-				return;
-			}
-			catch (MalformedInputException e) {
-				// File contains binary data or invalid encoding
-				LOG.error("Preferences file contains invalid character encoding: {}", filePath, e);
-				handleCorruptedFile("File contains invalid character encoding", e, merge);
-				return;
-			}
+		catch (MalformedInputException e) {
+			// File contains binary data or invalid encoding
+			LOG.error("Preferences file contains invalid character encoding: {}", filePath, e);
+			handleCorruptedFile("File contains invalid character encoding", e, merge);
+			return;
+		}
 
-			try {
-				if (merge) {
-					preferences.merge(content);
-				}
-				else {
-					preferences.load(content);
-				}
-				stamp();
-				LOG.trace("Loaded preferences from file");
+		try {
+			if (merge) {
+				preferences.merge(content);
 			}
-			catch (NoSuchFileException e) {
-				// deleted between the read and the timestamp; the content read above is still valid
-				fileGone();
+			else {
+				preferences.load(content);
 			}
-			catch (JSONException e) {
-				// Invalid JSON format
-				LOG.error("Preferences file contains invalid JSON: {}", filePath, e);
-				handleCorruptedFile("Invalid JSON format", e, merge);
-			}
+			stamp();
+			LOG.trace("Loaded preferences from file");
+		}
+		catch (NoSuchFileException e) {
+			// deleted between the read and the timestamp; the content read above is still valid
+			fileGone();
+		}
+		catch (JSONException e) {
+			// Invalid JSON format
+			LOG.error("Preferences file contains invalid JSON: {}", filePath, e);
+			handleCorruptedFile("Invalid JSON format", e, merge);
 		}
 	}
 
