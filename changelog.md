@@ -59,6 +59,7 @@ Codion Change Log
 - ReportException, the message constructor parameters now @Nullable, a wrapped exception's message possibly null.
 - TransientAttributeDefinition.Builder.modifies() now false by default, a transient value not making the entity modified unless configured to, for one a custom persistence stores by other means, where it did by default, an update of an entity with only transient values modified then throwing.
 - OrderBy.Builder.descendingIgnoreCase(Column...) bug fixed, now takes String columns only, as the other three ignoring case, where it took any column, one of another type then ordered as text, 950 before 5000, and all four now refuse a column which is not String based with IllegalArgumentException, one of a deserialized select for example.
+- EntityDefinition.Builder.captionResourceKey() and descriptionResourceKey() renamed captionResource() and descriptionResource(), as the attribute builder's.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

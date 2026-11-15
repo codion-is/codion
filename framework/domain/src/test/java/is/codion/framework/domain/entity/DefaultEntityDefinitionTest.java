@@ -556,8 +556,8 @@ public class DefaultEntityDefinitionTest {
 				super(DOMAIN_TYPE);
 				add(entityType.as()
 								.attributes(entityType.integerColumn("attribute").as().primaryKey())
-								.captionResourceKey("test")
-								.descriptionResourceKey("test.description")
+								.captionResource("test")
+								.descriptionResource("test.description")
 								.build());
 			}
 		}
@@ -595,14 +595,14 @@ public class DefaultEntityDefinitionTest {
 						.build();
 		assertEquals("Test", bundleCaption.caption());
 
-		// caption and captionResourceKey are mutually exclusive, in both directions
+		// caption and captionResource are mutually exclusive, in both directions
 		assertThrows(IllegalStateException.class, () -> entityType.as()
 						.attributes(entityType.integerColumn("attribute").as().primaryKey())
 						.caption("Explicit")
-						.captionResourceKey("test"));
+						.captionResource("test"));
 		assertThrows(IllegalStateException.class, () -> entityType.as()
 						.attributes(entityType.integerColumn("attribute").as().primaryKey())
-						.captionResourceKey("test")
+						.captionResource("test")
 						.caption("Explicit"));
 	}
 

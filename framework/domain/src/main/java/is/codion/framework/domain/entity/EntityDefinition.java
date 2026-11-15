@@ -142,7 +142,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	 * </ol>
 	 * @return the caption to use when presenting entities of this type
 	 * @see Builder#caption(String)
-	 * @see Builder#captionResourceKey(String)
+	 * @see Builder#captionResource(String)
 	 */
 	String caption();
 
@@ -383,33 +383,33 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		/**
 		 * Sets the caption for this entity type. A caption specified via this method takes precedence
 		 * over any caption available from the entity resource bundle, and is mutually exclusive with
-		 * {@link #captionResourceKey(String)}.
+		 * {@link #captionResource(String)}.
 		 * @param caption the caption
 		 * @return this {@link Builder} instance
-		 * @throws IllegalStateException in case a caption resource key has already been specified via {@link #captionResourceKey(String)}
-		 * @see #captionResourceKey(String)
+		 * @throws IllegalStateException in case a caption resource key has already been specified via {@link #captionResource(String)}
+		 * @see #captionResource(String)
 		 */
 		Builder caption(String caption);
 
 		/**
 		 * Specifies the resource bundle key associated with the caption.
 		 * Defaults to {@code entityType.name()}. Mutually exclusive with {@link #caption(String)}.
-		 * @param captionResourceKey the name of the resource bundle key associated with the caption for this entity
+		 * @param captionResource the name of the resource bundle key associated with the caption for this entity
 		 * @return this {@link Builder} instance
 		 * @throws IllegalStateException in case the caption has already been set via {@link #caption(String)}
 		 * @see EntityType#resourceBundleName()
 		 * @see #caption(String)
 		 */
-		Builder captionResourceKey(String captionResourceKey);
+		Builder captionResource(String captionResource);
 
 		/**
 		 * Specifies the resource bundle key associated with the description.
 		 * Defaults to {@code entityType.name() + ".description"}
-		 * @param descriptionResourceKey the name of the resource bundle key associated with the description for this entity
+		 * @param descriptionResource the name of the resource bundle key associated with the description for this entity
 		 * @return this {@link Builder} instance
 		 * @see EntityType#resourceBundleName()
 		 */
-		Builder descriptionResourceKey(String descriptionResourceKey);
+		Builder descriptionResource(String descriptionResource);
 
 		/**
 		 * Specifies a description for this entity.
