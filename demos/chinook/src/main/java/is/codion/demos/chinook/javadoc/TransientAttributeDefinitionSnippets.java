@@ -60,16 +60,16 @@ final class TransientAttributeDefinitionSnippets {
                             .column()
                             .caption("Last name"),
 
-                    // UI state attribute that doesn't modify entity
+                    // UI state, not marking the entity modified
                     Customer.SELECTED.as()
                             .attribute()
-                            .modifies(false) // Doesn't mark entity as modified
                             .defaultValue(false)
                             .caption("Selected"),
 
-                    // Temporary notes (modifies entity by default)
+                    // Notes a custom persistence stores elsewhere
                     Customer.NOTES.as()
                             .attribute()
+                            .modifies(true) // Marks the entity as modified
                             .caption("Notes"))
             .build();
   }
@@ -84,7 +84,7 @@ final class TransientAttributeDefinitionSnippets {
     customer.set(Customer.NOTES, "Important customer");
     customer.modified(); // true, NOTES modifies the entity
 
-    // Transient attributes are ignored during database operations,
-    // updating an entity with only transient values modified results in an error
+    // Transient attributes are ignored by the default persistence, which
+    // throws when updating an entity with only transient values modified
   } // @end
 }

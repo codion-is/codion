@@ -617,7 +617,8 @@ public final class TestDomain extends DomainModel {
 										TransModifies.ID.as()
 														.primaryKey(),
 										TransModifies.TRANS.as()
-														.attribute())
+														.attribute()
+														.modifies(true))
 						.build());
 	}
 
@@ -634,8 +635,7 @@ public final class TestDomain extends DomainModel {
 										TransModifiesNot.ID.as()
 														.primaryKey(),
 										TransModifiesNot.TRANS.as()
-														.attribute()
-														.modifies(false))
+														.attribute())
 						.build());
 	}
 

@@ -971,7 +971,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>Only attributes with an associated {@link EditorValue} are reported, that is, attributes which have
 		 * been accessed via {@link #value(Attribute)}, typically by binding them to a component, so any attribute
 		 * the editor never touched is absent. A column underlying a foreign key reported as modified is absent as well,
-		 * the foreign key standing for it, even when the column has an {@link EditorValue} of its own.
+		 * the foreign key standing for it, even when the column has an {@link EditorValue} of its own, as is a transient
+		 * attribute which does not make the entity modified, see
+		 * {@link is.codion.framework.domain.entity.attribute.TransientAttributeDefinition#modifies()}.
 		 * <p>Note that modified attributes are included, regardless of whether the entity exists, and that this
 		 * set may be empty while {@link #is()} is true, since the modified state also reflects
 		 * {@link #additional()} states.

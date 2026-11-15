@@ -1606,6 +1606,24 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
+	void transientValueModifiesOnlyWhenConfigured() throws EntityValidationException {
+		// a transient value made the entity modified by default, enabling an update which then threw, no modified values
+		// found, and was listed among the modified attributes either way
+		TestEntityEditor editor = new TestEntityEditor(SharedEmployee.TYPE, CONNECTION);
+		editor.entity().set(CONNECTION.selectSingle(SharedEmployee.ID.equalTo(3)));
+		editor.value(SharedEmployee.NOTES).set("notes");
+		assertTrue(editor.value(SharedEmployee.NOTES).modified().is());
+		assertFalse(editor.entity().modified().is());
+		assertTrue(editor.entity().modified().attributes().get().isEmpty());
+		assertThrows(IllegalStateException.class, editor.tasks()::update);
+		// one configured to modify the entity, stored by a custom persistence
+		editor.value(SharedEmployee.PASSWORD).set("secret");
+		assertTrue(editor.entity().modified().is());
+		assertEquals(singleton(SharedEmployee.PASSWORD), editor.entity().modified().attributes().get());
+		editor.tasks().update();
+	}
+
+	@Test
 	void detailEditorInsertWithEmptyDetail() throws EntityValidationException {
 		CONNECTION.startTransaction();
 		try {

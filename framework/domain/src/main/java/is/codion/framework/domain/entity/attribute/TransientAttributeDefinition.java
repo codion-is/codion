@@ -29,9 +29,10 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  * loaded and ignored during DML operations.
  * <p>
  * The value of transient attributes can be set and retrieved like normal attributes
- * but are ignored during insert, update, and delete operations. By default, setting
- * a transient value marks the entity as modified, but trying to update an entity
- * with only transient values modified will result in an error.
+ * but are ignored during insert, update, and delete operations. Setting a transient
+ * value therefore does not mark the entity as modified, unless the attribute is configured
+ * to, for one standing for something a custom persistence stores by other means, see
+ * {@link Builder#modifies(boolean)}.
  * <p>
  * Transient attributes are useful for UI state, temporary calculations and values the record carries without
  * storing. They are editable fields wherever the framework builds components from attribute definitions, which is
@@ -63,16 +64,16 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *                           .column()
  *                           .caption("Last name"),
  *
- *                   // UI state attribute that doesn't modify entity
+ *                   // UI state, not marking the entity modified
  *                   Customer.SELECTED.as()
  *                           .attribute()
- *                           .modifies(false) // Doesn't mark entity as modified
  *                           .defaultValue(false)
  *                           .caption("Selected"),
  *
- *                   // Temporary notes (modifies entity by default)
+ *                   // Notes a custom persistence stores elsewhere
  *                   Customer.NOTES.as()
  *                           .attribute()
+ *                           .modifies(true) // Marks the entity as modified
  *                           .caption("Notes"))
  *           .build();
  * }
@@ -87,8 +88,8 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *   customer.set(Customer.NOTES, "Important customer");
  *   customer.modified(); // true, NOTES modifies the entity
  *
- *   // Transient attributes are ignored during database operations,
- *   // updating an entity with only transient values modified results in an error
+ *   // Transient attributes are ignored by the default persistence, which
+ *   // throws when updating an entity with only transient values modified
  * } // @end}
  * @param <T> the attribute value type
  * @see #modifies()
@@ -96,7 +97,8 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
 public sealed interface TransientAttributeDefinition<T> extends ValueAttributeDefinition<T> permits DefaultTransientAttributeDefinition {
 
 	/**
-	 * @return true if the value of this attribute being modified should result in a modified entity
+	 * @return true if the value of this attribute being modified results in a modified entity, false by default
+	 * @see Builder#modifies(boolean)
 	 */
 	boolean modifies();
 
@@ -108,8 +110,14 @@ public sealed interface TransientAttributeDefinition<T> extends ValueAttributeDe
 					permits DefaultTransientAttributeDefinitionBuilder {
 
 		/**
-		 * Default true.
-		 * @param modifies if false then modifications to the value will not result in the owning entity becoming modified
+		 * <p>Specifies whether the value being modified makes the owning entity modified, for a transient attribute
+		 * standing for something a custom persistence stores by other means, a password set through a procedure for
+		 * example. The entity then reads as modified, enabling an update, as an edit panel does.
+		 * <p>The default persistence updates columns only, throwing for an entity with no column modified, so an update
+		 * of an entity with only such values modified must be handled by the custom persistence: storing the value,
+		 * saving it, and updating the entity only if a column is modified as well.
+		 * <p>Default false.
+		 * @param modifies true if modifying the value makes the owning entity modified
 		 * @return this builder instance
 		 */
 		Builder<T, B> modifies(boolean modifies);

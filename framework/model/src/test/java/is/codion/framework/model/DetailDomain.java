@@ -151,6 +151,8 @@ public final class DetailDomain extends DomainModel {
 		ForeignKey DEPARTMENT_VIEW_FK = TYPE.foreignKey("dept_view_fk", DEPARTMENT, DepartmentView.ID);
 		Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("dept_name");
 		Attribute<String> DEPARTMENT_CODE = TYPE.stringAttribute("dept_code");
+		Attribute<String> NOTES = TYPE.stringAttribute("notes");
+		Attribute<String> PASSWORD = TYPE.stringAttribute("password");
 	}
 
 	EntityDefinition sharedEmployee() {
@@ -178,7 +180,13 @@ public final class DetailDomain extends DomainModel {
 										SharedEmployee.DEPARTMENT_CODE.as()
 														.derived()
 														.from(SharedEmployee.DEPARTMENT)
-														.with(values -> values.get(SharedEmployee.DEPARTMENT) == null ? null : "D" + values.get(SharedEmployee.DEPARTMENT)))
+														.with(values -> values.get(SharedEmployee.DEPARTMENT) == null ? null : "D" + values.get(SharedEmployee.DEPARTMENT)),
+										SharedEmployee.NOTES.as()
+														.attribute(),
+										// stored by a custom persistence, by other means
+										SharedEmployee.PASSWORD.as()
+														.attribute()
+														.modifies(true))
 						.table("employees.employee")
 						.build();
 	}

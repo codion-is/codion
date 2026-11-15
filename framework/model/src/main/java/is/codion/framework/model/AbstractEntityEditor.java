@@ -2838,6 +2838,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			//editorValues, not the entity definition, only attributes with an EditorValue are reportable
 			Set<Attribute<?>> modifiedAttributes = new HashSet<>(editorValues.keySet().stream()
 							.filter(entity.instance::modified)
+							.filter(this::modifiesEntity)
 							.collect(toSet()));
 			//the instance also reports the columns underlying a modified foreign key, the foreign key standing for them
 			modifiedAttributes.stream()
@@ -2854,6 +2855,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 
 			return modifiedAttributes;
+		}
+
+		/**
+		 * @return false for a transient attribute which does not make the entity modified
+		 */
+		private boolean modifiesEntity(Attribute<?> attribute) {
+			AttributeDefinition<?> definition = entityDefinition.attributes().definition(attribute);
+
+			return !(definition instanceof TransientAttributeDefinition) || ((TransientAttributeDefinition<?>) definition).modifies();
 		}
 
 		private void additionalChanged(Change<Set<ObservableState>> change) {

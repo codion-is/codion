@@ -40,7 +40,7 @@ final class DefaultTransientAttributeDefinition<T> extends AbstractValueAttribut
 	static final class DefaultTransientAttributeDefinitionBuilder<T, B extends TransientAttributeDefinition.Builder<T, B>>
 					extends AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder<T, B> implements TransientAttributeDefinition.Builder<T, B> {
 
-		private boolean modifies = true;
+		private boolean modifies = false;
 
 		DefaultTransientAttributeDefinitionBuilder(Attribute<T> attribute) {
 			super(attribute, true);
