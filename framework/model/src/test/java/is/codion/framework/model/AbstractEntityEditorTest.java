@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -3775,6 +3776,79 @@ public final class AbstractEntityEditorTest {
 		assertNotNull(employeeEditor.value(LazyEmployee.DATA).get());
 		assertFalse(employeeEditor.entity().modified().is());
 		assertFalse(departmentEditor.entity().modified().is());
+	}
+
+	@Test
+	void populatedValueNotPublished() throws EntityValidationException {
+		// a value populated which is not selected by default, a large one typically, was published with the entity
+		// persisted, reaching whatever holds the entity as a foreign key reference, which is selected without it
+		List<Entity> published = new ArrayList<>();
+		Consumer<Map<Entity, Entity>> onUpdated = updated -> published.addAll(updated.values());
+		Consumer<Collection<Entity>> onInserted = published::addAll;
+		persistenceEvents(LazyEmployee.TYPE).updated().addConsumer(onUpdated);
+		persistenceEvents(LazyEmployee.TYPE).inserted().addConsumer(onInserted);
+		CONNECTION.startTransaction();
+		try {
+			// an editor holding SCOTT, whose manager is JONES
+			TestEntityEditor referring = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+			referring.entity().set(CONNECTION.selectSingle(LazyEmployee.ID.equalTo(7)));
+			assertFalse(referring.value(LazyEmployee.MANAGER_FK).get().contains(LazyEmployee.DATA));
+
+			// the editor of JONES, populating his data
+			TestEntityEditor editor = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+			editor.value(LazyEmployee.DATA).populate().set(true);
+			List<Entity> afterUpdate = new ArrayList<>();
+			editor.events().after().update().addConsumer(updated -> afterUpdate.addAll(updated.values()));
+			List<Entity> afterInsert = new ArrayList<>();
+			editor.events().after().insert().addConsumer(afterInsert::addAll);
+			editor.entity().set(CONNECTION.selectSingle(LazyEmployee.ID.equalTo(3)));
+			editor.value(LazyEmployee.NAME).set("RENAMED");
+			editor.update();
+
+			// the editor holds it, as does its own event, which its table model takes the row from
+			assertTrue(editor.entity().get().contains(LazyEmployee.DATA));
+			assertTrue(afterUpdate.get(0).contains(LazyEmployee.DATA));
+			// the entity published is without it, and so is the reference to it
+			assertEquals("RENAMED", published.get(0).get(LazyEmployee.NAME));
+			assertFalse(published.get(0).contains(LazyEmployee.DATA));
+			Entity manager = referring.value(LazyEmployee.MANAGER_FK).get();
+			assertEquals("RENAMED", manager.get(LazyEmployee.NAME));
+			assertFalse(manager.contains(LazyEmployee.DATA));
+
+			// an inserted entity likewise
+			published.clear();
+			editor.entity().defaults();
+			editor.value(LazyEmployee.NAME).set("New");
+			editor.value(LazyEmployee.SALARY).set(2500d);
+			editor.value(LazyEmployee.DEPARTMENT_FK).set(CONNECTION.selectSingle(Department.ID.equalTo(10)));
+			editor.value(LazyEmployee.DATA).set(new byte[] {1});
+			editor.insert();
+			assertTrue(afterInsert.get(0).contains(LazyEmployee.DATA));
+			assertEquals("New", published.get(0).get(LazyEmployee.NAME));
+			assertFalse(published.get(0).contains(LazyEmployee.DATA));
+
+			// a value populated which is selected by default is one a reference holds, and is published
+			published.clear();
+			editor.value(LazyEmployee.DEPARTMENT_FK).populate().set(true);
+			editor.value(LazyEmployee.NAME).set("Newer");
+			editor.update();
+			assertTrue(published.get(0).contains(LazyEmployee.DEPARTMENT));
+
+			// an editor which does not populate the value publishes an entity holding it as it is
+			published.clear();
+			TestEntityEditor unpopulated = new TestEntityEditor(LazyEmployee.TYPE, CONNECTION);
+			unpopulated.entity().set(CONNECTION.selectSingle(Select.where(LazyEmployee.ID.equalTo(7))
+							.include(LazyEmployee.DATA)
+							.build()));
+			unpopulated.value(LazyEmployee.NAME).set("Scott");
+			unpopulated.update();
+			assertTrue(published.get(0).contains(LazyEmployee.DATA));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+			persistenceEvents(LazyEmployee.TYPE).updated().removeConsumer(onUpdated);
+			persistenceEvents(LazyEmployee.TYPE).inserted().removeConsumer(onInserted);
+		}
 	}
 
 	private static class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {

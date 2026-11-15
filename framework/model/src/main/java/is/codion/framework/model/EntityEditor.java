@@ -1103,8 +1103,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * already, a new one included, is set synchronously as before. Disabling {@link AbstractEntityEditor#async()}
 		 * loads the value before the call returns.
 		 * <p>A change of this state applies from the next entity set, it loads nothing for the one held.
-		 * <p>Note that a value the editor holds travels with the entity, to the database and back on each update, and to
-		 * whatever is notified of the entity persisted.
+		 * <p>Note that a value the editor holds travels with the entity, to the database and back on each update, and
+		 * to the consumers of this editor's own {@link PersistEvents}, a table model based on it taking the row persisted
+		 * from there. The entity published to {@link PersistenceEvents} is without the values populated which are not
+		 * selected by default, so that such a value does not reach whatever holds the entity as a foreign key reference,
+		 * a row of another table model, a combo box item or another editor's value, which are selected without it.
 		 * @return a {@link State} controlling whether the editor populates this value
 		 * @throws IllegalArgumentException when enabled for an attribute which is neither a column nor a foreign key
 		 */
@@ -1315,6 +1318,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		State deleteEnabled();
 
 		/**
+		 * An entity inserted or updated is published without the values this editor
+		 * {@link EditorValue#populate() populates} which are not selected by default.
 		 * @return a state controlling whether this editor publishes insert, update and delete events
 		 * on the {@link PersistenceEvents} event bus.
 		 * @see #PUBLISH_PERSISTENCE_EVENTS

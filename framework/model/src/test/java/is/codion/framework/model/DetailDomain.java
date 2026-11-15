@@ -243,7 +243,7 @@ public final class DetailDomain extends DomainModel {
 	}
 
 	/**
-	 * The employee table, with its data column not selected by default
+	 * The employee table, with its data column not selected by default, and its manager, an employee
 	 */
 	public interface LazyEmployee {
 		EntityType TYPE = DOMAIN.entityType("employees.lazy_employee");
@@ -252,8 +252,10 @@ public final class DetailDomain extends DomainModel {
 		Column<String> NAME = TYPE.stringColumn("ename");
 		Column<Double> SALARY = TYPE.doubleColumn("sal");
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+		Column<Integer> MANAGER_ID = TYPE.integerColumn("mgr");
 		Column<byte[]> DATA = TYPE.byteArrayColumn("data");
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
+		ForeignKey MANAGER_FK = TYPE.foreignKey("manager_fk", MANAGER_ID, LazyEmployee.ID);
 		Attribute<String> NOTES = TYPE.stringAttribute("notes");
 	}
 
@@ -270,6 +272,10 @@ public final class DetailDomain extends DomainModel {
 										LazyEmployee.DEPARTMENT.as()
 														.column(),
 										LazyEmployee.DEPARTMENT_FK.as()
+														.foreignKey(),
+										LazyEmployee.MANAGER_ID.as()
+														.column(),
+										LazyEmployee.MANAGER_FK.as()
 														.foreignKey(),
 										LazyEmployee.DATA.as()
 														.column()

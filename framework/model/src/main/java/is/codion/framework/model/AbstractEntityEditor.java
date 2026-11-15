@@ -3729,17 +3729,45 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 		}
 
-		private static void notifyInserted(Collection<Entity> inserted) {
-			groupByType(inserted).forEach((entityType, entities) ->
+		private void notifyInserted(Collection<Entity> inserted) {
+			groupByType(inserted.stream()
+							.map(this::published)
+							.collect(toList())).forEach((entityType, entities) ->
 							persistenceEvents(entityType).inserted().accept(entities));
 		}
 
-		private static void notifyUpdated(Map<Entity, Entity> updated) {
+		private void notifyUpdated(Map<Entity, Entity> updated) {
 			updated.entrySet().stream()
 							.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
-											toMap(Map.Entry::getKey, Map.Entry::getValue)))
+											toMap(Map.Entry::getKey, entry -> published(entry.getValue()))))
 							.forEach((entityType, entities) ->
 											persistenceEvents(entityType).updated().accept(entities));
+		}
+
+		/**
+		 * The entity as published to {@link PersistenceEvents}: without the values this editor populates which are
+		 * not selected by default, so that such a value, a large one typically, does not travel into whatever holds the
+		 * entity as a foreign key reference, which is selected without it. This editor's own events carry the entity
+		 * as it is.
+		 * @param entity the entity persisted
+		 * @return the entity to publish, the given one unless it holds such a value
+		 * @see EditorValue#populate()
+		 */
+		private Entity published(Entity entity) {
+			Set<Column<?>> populated = populatedColumns;
+			if (populated.isEmpty() || !entity.type().equals(entityDefinition.type())) {
+				return entity;
+			}
+			List<Column<?>> held = populated.stream()
+							.filter(column -> !entityDefinition.columns().definition(column).selected() && entity.contains(column))
+							.collect(toList());
+			if (held.isEmpty()) {
+				return entity;
+			}
+			Entity published = entity.copy().mutable();
+			held.forEach(published::remove);
+
+			return entity.mutable() ? published : published.immutable();
 		}
 
 		private static void notifyDeleted(Collection<Entity> deleted) {
