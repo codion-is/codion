@@ -20,10 +20,7 @@ These limits can be problematic when storing configuration data such as serializ
 
 [source,java]
 ----
-// Then use preferences normally
-Preferences prefs = UserPreferences.file("my.config.file");
-prefs.put("my.very.long.key.name.that.exceeds.80.chars", "my huge value...");
-prefs.flush(); // Writes to ~/.codion/my.config.file.json
+include::{dir-source}/is/codion/manual/common/model/preferences/FilePreferencesDemo.java[tags=usage]
 ----
 
 === File Storage
@@ -37,28 +34,38 @@ Preferences are stored in a JSON file at a platform-specific location:
 
 NOTE: The global preferences file location can also be specified via {url-javadoc}{common-model}/is/codion/common/model/preferences/FilePreferences.html#PREFERENCES_LOCATION[FilePreferences.PREFERENCES_LOCATION] if these default locations do not fit your use-case.
 
-The file uses the following JSON format:
+The file is written in UTF-8, in the following JSON format:
 
 [source,json]
 ----
 {
   "normal.key": "normal value",
-  "very.long.key.that.exceeds.eighty.characters": "value",
-  "key.with.large.value": "... 100KB of text ...",
-  "key.with.newlines": "Line 1\nLine 2\nLine 3"
+  "a.key.far.longer.than.the.eighty.characters.the.standard.implementation.allows.for.a.key": "a value of any length",
+  "key.with.newlines": "Line 1\nLine 2\nLine 3",
+  "columns": {
+    "name": {
+      "w": 120,
+      "i": 0
+    },
+    "email": {
+      "w": 200,
+      "i": 1
+    }
+  },
+  "not.json": "[a, b]"
 }
 ----
 
-NOTE: When storing JSON data as a preference value (such as serialized column preferences), it becomes a nested JSON structure.
+A value is read back as it was put. One that is JSON as a JSON library writes it, such as serialized column preferences, is stored as a nested JSON structure, keeping the file readable, any other text as a string. There is one exception: a value that is an empty JSON object, `{}`, is not written to the file, nor is a node holding no values.
 
 === Features
 
-* **No length restrictions** - Keys and values can be of any length
+* **No length restrictions** - Keys, values and node names can be of any length
 * **JSON format** - Human-readable and easily editable
 * **Thread-safe** - Safe for concurrent access within a single JVM
 * **Multi-JVM safe** - File locking ensures safe concurrent access from multiple JVMs
 * **Atomic writes** - Changes are written atomically to prevent corruption
-* **Drop-in replacement** - Uses the standard Java Preferences API
+* **Standard API** - Uses the standard Java Preferences API, see <<_differences_from_the_standard_implementation, the differences>> below
 * **Full hierarchy support** - Create nested preference nodes with paths
 
 === Hierarchy Support
@@ -67,42 +74,23 @@ The file preferences implementation supports the full Java Preferences node hier
 
 [source,java]
 ----
-Preferences root = UserPreferences.file("my.config.file");
-
-// Create nested preference nodes
-Preferences appNode = root.node("myapp");
-Preferences uiNode = appNode.node("ui");
-Preferences dbNode = appNode.node("database");
-
-// Store preferences at different levels
-uiNode.put("theme", "dark");
-uiNode.put("font.size", "14");
-dbNode.put("connection.url", "jdbc:postgresql://localhost/mydb");
-dbNode.put("connection.pool.size", "10");
-
-// Navigate to nodes using paths
-Preferences ui = root.node("myapp/ui");
-String theme = ui.get("theme", "light"); // "dark"
-
-// List child nodes
-String[] appChildren = appNode.childrenNames(); // ["ui", "database"]
-
-// Remove entire node and its children
-dbNode.removeNode();
-root.flush();
+include::{dir-source}/is/codion/manual/common/model/preferences/FilePreferencesDemo.java[tags=hierarchy]
 ----
 
-The hierarchical structure is stored as nested JSON objects:
+The hierarchical structure is stored as nested JSON objects, each node marked with `.node`, which tells it from a JSON value. This is the file before the `database` node is removed:
 
 [source,json]
 ----
 {
   "myapp": {
+    ".node": true,
     "ui": {
+      ".node": true,
       "theme": "dark",
       "font.size": "14"
     },
     "database": {
+      ".node": true,
       "connection.url": "jdbc:postgresql://localhost/mydb",
       "connection.pool.size": "10"
     }
@@ -110,26 +98,28 @@ The hierarchical structure is stored as nested JSON objects:
 }
 ----
 
+=== Differences from the standard implementation
+
+* A key and a child node can not share a name, both being members of the same JSON object. Putting a value for a key naming a child node throws `IllegalStateException`, as does putting a value into a child node named after a key.
+* A `PreferenceChangeListener` is not notified when a value is put.
+* `flush()` and `sync()` do the same: reload the file if it has been modified, re-apply the changes not yet saved and save them, once for the whole tree, leaving the file untouched when there are no changes.
+
 === Concurrency and Multi-JVM Access
 
 The file preferences implementation is designed to be safe for concurrent access:
 
 * **Within a single JVM**: All operations are synchronized using internal locks
-* **Across multiple JVMs**: File locking ensures only one JVM can write at a time
-* **Atomic writes**: Changes are written to a temporary file and atomically moved
-* **External changes**: The `sync()` method reloads the file if modified externally
+* **Across multiple JVMs**: A file lock is held from the reload to the write, so that two instances saving at the same moment both keep their changes
+* **Atomic writes**: Changes are written to a temporary file and atomically moved, a process ending while saving leaves the file as it was
+* **External changes**: `flush()` and `sync()` reload the file if another instance has modified it and re-apply the changes not yet saved on top of it. Where the two disagree on a name, one using it for a key and the other for a node, what is saved in the file stays and the change is left out
 
 [source,java]
 ----
-// JVM 1
-Preferences prefs1 = UserPreferences.file("my.config.file");
-prefs1.put("shared.value", "from JVM 1");
-prefs1.flush();
-
-// JVM 2
-Preferences prefs1 = UserPreferences.file("my.config.file");
-prefs2.sync(); // Reload to see changes from JVM 1
-String value = prefs2.get("shared.value", null); // "from JVM 1"
+include::{dir-source}/is/codion/manual/common/model/preferences/FilePreferencesDemo.java[tags=sharing]
 ----
 
-The implementation uses a 5-second timeout for acquiring file locks to prevent deadlocks.
+The implementation uses a 5-second timeout for acquiring file locks to prevent deadlocks, `flush()` and `sync()` throwing `BackingStoreException` when it runs out.
+
+=== Corrupted files
+
+A file that is not valid JSON is copied to `{filename}.json.corrupt.{timestamp}` and replaced the next time the preferences are saved. Found at startup the preferences start out empty, found later, the file having been read before, the preferences held are kept and written back.

@@ -93,8 +93,9 @@ final class JsonPreferencesStore {
 	private int saves = 0;
 
 	private volatile long lastModified;
-	//each save creates a new file, so the file key, the inode where available, changes with every save,
-	//where the modification time, coarse grained, might not
+	//each save creates a new file, so the file key, the inode where available, usually changes with a save; not always,
+	//a file system may hand a freed inode out again, ext4 giving every second save the same one, so the modification
+	//time is compared as well, a change being seen when either differs
 	private volatile @Nullable Object fileKey;
 	//the file has been found corrupt and backed up, to be replaced by what the store holds at the next save or sync
 	private boolean corrupt = false;
@@ -375,9 +376,6 @@ final class JsonPreferencesStore {
 		}
 	}
 
-	/**
-	 * The file is missing or unreadable, when merging the changes made since it was last read or written apply to an empty file.
-	 */
 	private boolean modifiedExternally() throws IOException {
 		BasicFileAttributes attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
 
@@ -396,6 +394,9 @@ final class JsonPreferencesStore {
 		corrupt = false;
 	}
 
+	/**
+	 * The file is missing, when merging the changes made since it was last read or written apply to an empty file.
+	 */
 	private void missing(boolean merge) {
 		fileGone();
 		if (merge) {
