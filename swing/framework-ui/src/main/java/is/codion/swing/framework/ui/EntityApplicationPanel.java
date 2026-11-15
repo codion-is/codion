@@ -761,7 +761,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.buildMenuBar());
 	}
 
-	// Provided by EntityApplication at startup (already migrated); package private
+	// Provided by EntityApplication at startup; package private
 	void preferences(Preferences preferences) {
 		this.preferences = requireNonNull(preferences);
 	}
@@ -771,12 +771,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		this.version = version;
 	}
 
-	// The application-provided root, or a lazily resolved (and migrated) default for a stand-alone panel
+	// The application-provided root, or a lazily resolved default for a stand-alone panel
 	private Preferences preferences() {
 		if (preferences == null) {
 			preferences = filePreferences(EntityApplicationModel.PREFERENCES_KEY.optional()
 							.orElse(model.entities().domainType().name()));
-			PreferencesMigrator.migrate(preferences);
 		}
 
 		return preferences;

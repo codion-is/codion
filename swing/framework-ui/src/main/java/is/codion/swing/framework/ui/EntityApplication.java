@@ -190,7 +190,6 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private @Nullable Dimension defaultFrameSize;
 	private @Nullable User defaultUser;
 	private @Nullable Preferences preferences;
-	private boolean preferencesResolved;
 	private @Nullable User user = USER.optional()
 					.map(User::parse)
 					.orElse(null);
@@ -659,17 +658,12 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	// Resolves the preferences root once: the injected node, else the default file based root, else an empty in-memory
-	// root when user preferences are disabled. Migrates a v1 layout to v2 before it is read (by the application level
-	// preferences below and, later, by the application panel's model and view walks).
+	// root when user preferences are disabled.
 	private Preferences preferences() {
-		if (!preferencesResolved) {
-			if (preferences == null) {
-				preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow()
-								? filePreferences(EntityApplicationModel.PREFERENCES_KEY.optional().orElse(domain.name()))
-								: jsonPreferences();
-			}
-			PreferencesMigrator.migrate(preferences);
-			preferencesResolved = true;
+		if (preferences == null) {
+			preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow()
+							? filePreferences(EntityApplicationModel.PREFERENCES_KEY.optional().orElse(domain.name()))
+							: jsonPreferences();
 		}
 
 		return preferences;

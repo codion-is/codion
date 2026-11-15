@@ -43,7 +43,7 @@ import static java.util.stream.Collectors.toSet;
  * stored nested), plus child-node listing. Thread-safe.
  * <p>
  * {@link #jsonPreferences()} wraps a fresh instance as a free-floating, file-less {@link Preferences} node — useful for
- * capturing or transferring preference state in memory (dependency panels, migration) and for hermetic tests that must
+ * capturing or transferring preference state in memory (dependency panels) and for hermetic tests that must
  * not touch the real user preferences store.
  * @see #jsonPreferences()
  * @see JsonPreferencesStore
