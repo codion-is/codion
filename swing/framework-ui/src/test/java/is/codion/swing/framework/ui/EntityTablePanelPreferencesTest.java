@@ -34,6 +34,9 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import java.awt.Dimension;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -252,6 +255,35 @@ public class EntityTablePanelPreferencesTest {
 		assertEquals(0, columns.indexOf(Detail.DOUBLE));
 		assertEquals(155, columns.get(Detail.INT).getPreferredWidth());
 		assertEquals(JTable.AUTO_RESIZE_OFF, tablePanel.table().getAutoResizeMode());
+	}
+
+	@Test
+	void exportConfigurationFilesCleared() throws IOException {
+		// the export preferences were left as they were when there were none to store,
+		// a list of configuration files the user had cleared coming back at the next start
+		SwingEntityTableModel tableModel = SwingEntityTableModel.of(testEntities, CONNECTION);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
+		EntityTableExportModel exportModel = tablePanel.exportModel();
+		Path file = Files.createTempFile("export", ".json");
+		try {
+			exportModel.writeConfig(file.toFile());
+			tablePanel.store(preferences);
+
+			tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
+			tablePanel.restore(preferences);
+			exportModel = tablePanel.exportModel();
+			assertEquals(file.toFile(), exportModel.configurationFiles().selection().item().getOrThrow().file());
+
+			exportModel.clearConfigurationFiles();
+			tablePanel.store(preferences);
+
+			tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
+			tablePanel.restore(preferences);
+			assertTrue(tablePanel.exportModel().configurationFiles().selection().item().isNull());
+		}
+		finally {
+			Files.deleteIfExists(file);
+		}
 	}
 
 	private static List<Entity> initTestEntities(Entities entities) {

@@ -105,6 +105,7 @@ Codion Change Log
 - PreferencesMigrator removed, preferences stored in the layout used before 0.18.81 are no longer converted when an application starts, what a file still holds in that layout is left in place and no longer read.
 - EntityApplicationPanel bug fixed, an exception thrown when the model or the panels store or restore their preferences no longer costs the other its preferences, where nothing at all was stored on exit and the application failed to start.
 - EntityTablePanel.preferencesKey() removed, read by nothing since 0.18.81, the preferences of a table panel being stored under the key of its entity panel, EntityPanel.preferencesKey(), so that overriding it had no effect.
+- EntityTablePanel bug fixed, the export preferences are now removed when there are none to store, where the ones stored before were left in place, so that a list of export configuration files the user had cleared came back the next time the application was started.
 ### is.codion.tools.loadtest
 - Parameters widened to wildcard types, functions taking ? super their arguments and ? extends their results, where a subtype or supertype fits.
 ### is.codion.plugin.jasperreports

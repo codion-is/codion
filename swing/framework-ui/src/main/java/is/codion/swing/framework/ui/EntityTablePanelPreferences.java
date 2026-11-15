@@ -79,7 +79,11 @@ final class EntityTablePanelPreferences {
 		if (exportModel != null) {
 			try {
 				String exportPreferences = new ExportPreferences(exportModel).preferences().toString();
-				if (!EMPTY_JSON_OBJECT.equals(exportPreferences)) {
+				if (EMPTY_JSON_OBJECT.equals(exportPreferences)) {
+					// none to store, the ones stored before no longer apply
+					preferences.remove(EXPORT_KEY);
+				}
+				else {
 					preferences.put(EXPORT_KEY, exportPreferences);
 				}
 			}
