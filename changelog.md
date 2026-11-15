@@ -104,6 +104,7 @@ Codion Change Log
 - Parameters widened to wildcard types, collections taking ? extends their elements and functions ? super their arguments and ? extends their results, where a subtype or supertype fits.
 - PreferencesMigrator removed, preferences stored in the layout used before 0.18.81 are no longer converted when an application starts, what a file still holds in that layout is left in place and no longer read.
 - EntityApplicationPanel bug fixed, an exception thrown when the model or the panels store or restore their preferences no longer costs the other its preferences, where nothing at all was stored on exit and the application failed to start.
+- EntityTablePanel.preferencesKey() removed, read by nothing since 0.18.81, the preferences of a table panel being stored under the key of its entity panel, EntityPanel.preferencesKey(), so that overriding it had no effect.
 ### is.codion.tools.loadtest
 - Parameters widened to wildcard types, functions taking ? super their arguments and ? extends their results, where a subtype or supertype fits.
 ### is.codion.plugin.jasperreports

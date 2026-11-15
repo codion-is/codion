@@ -951,19 +951,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Returns the key used to identify user preferences for this table panel, that is column positions, widths and such.
-	 * The default implementation is:
-	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityTablePanelSnippets" region = "preferencesKey":
-	 * // @start region=preferencesKey
-	 * return model().getClass().getSimpleName() + "-" + model().entityType(); // @end}
-	 * Override in case this key is not unique within the application.
-	 * @return the key used to identify user preferences for this table panel
-	 */
-	protected String preferencesKey() {
-		return model.getClass().getSimpleName() + "-" + model.entityType();
-	}
-
-	/**
 	 * @return true if confirmed
 	 * @see Config#deleteConfirmer(Confirmer)
 	 */

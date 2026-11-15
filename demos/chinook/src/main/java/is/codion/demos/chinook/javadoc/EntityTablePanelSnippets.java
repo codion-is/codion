@@ -48,12 +48,6 @@ final class EntityTablePanelSnippets {
               .remove(ControlKeys.VIEW_DEPENDENCIES)); // @end
     }
 
-    @Override
-    protected String preferencesKey() {
-      // @start region=preferencesKey
-      return model().getClass().getSimpleName() + "-" + model().entityType(); // @end
-    }
-
     private Control createCustomControl() {
       return Control.command(() -> {});
     }
