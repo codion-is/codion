@@ -79,6 +79,8 @@ import static java.util.Objects.requireNonNull;
  *                         .nullable(false))
  *         .validator(new CustomerValidator())
  *         .build(); // @end}
+ * <p>The validator of an entity definition must be serializable where clients fetch the entity definitions
+ * from a server, see {@link EntityDefinition.Builder}.
  * @see EntityDefinition.Builder#validator(EntityValidator)
  * @see EntityValidationException
  */

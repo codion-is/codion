@@ -487,6 +487,8 @@ public sealed interface AttributeDefinition<T>
 		B descriptionResource(String resourceBundleName, String descriptionResourceKey);
 
 		/**
+		 * <p>Must be serializable where clients fetch the entity definitions from a server,
+		 * see {@link is.codion.framework.domain.entity.EntityDefinition.Builder}.
 		 * @param comparator the Comparator to use when comparing values for this attribute
 		 * @return this builder instance
 		 */

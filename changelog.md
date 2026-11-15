@@ -85,6 +85,8 @@ Codion Change Log
 - EditorValue.populate() added, a State, disabled by default, having the editor hold the value so that it can be edited where the entity comes without it, a column not selected by default for example: a new entity holds it as null, an existing entity set or replaced without it gets it loaded by its primary key, in the background with a UI, the entity's changed() and replaced() then firing once it has arrived, after the call has returned, as with detail editors, and a fresher instance of the same entity, a table refresh, gets it loaded anew, the editor holding the one it had meanwhile.
 - AbstractEntityEditor, an entity inserted or updated is now published to PersistenceEvents without the values the editor populates which are not selected by default, so that a large value does not reach the foreign key references to the entity, the editor's own events carrying it as it is.
 - EntityApplicationModel and EntityModel store() and restore() bug fixed, an exception thrown by a model, by its table or edit model or by a detail model, an override failing or a preferences key no node can be named by, is now logged and the others still stored or restored, where it ended the walk.
+### is.codion.framework.server
+- EntityServer now logs a warning when it starts for a domain whose entities can not be serialized, naming the validator, comparator, exists predicate or formatter preventing it, such a domain failing a client which fetches the entities when it connects, as an RMI client does.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS renamed VIRTUAL_THREADS.
 ### is.codion.swing.common.model

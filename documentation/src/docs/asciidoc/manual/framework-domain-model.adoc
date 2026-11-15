@@ -677,7 +677,7 @@ This value is used wherever entities are displayed, for example in a ComboBox or
 include::{dir-source}/is/codion/manual/app/store/domain/Store.java[tags=address]
 ----
 
-For more complex toString() implementations you can implement a custom *Function<Entity, String>*.
+For more complex toString() implementations you can implement a custom *Function<Entity, String>*, serializable when clients fetch the domain from a server, see <<_validation, Validation>>.
 
 [source,java,indent=0]
 ----
@@ -696,6 +696,8 @@ Custom validation of Entities is performed by implementing a {url-javadoc}{frame
 The *EntityValidator* interface provides range, string length and null validation and can be extended to provide further validations.
 
 WARNING: EntityValidator logic runs frequently — avoid expensive operations like database queries. Use edit model listeners (such as `beforeInsert` or `beforeUpdate`) for validations that require cross-entity or remote checks.
+
+NOTE: A validator given to an entity definition must be serializable when clients fetch the domain from a server, as an RMI client does when it connects, and an HTTP client unless given its domain. The same goes for a custom formatter, comparator or exists predicate, and for an attribute's comparator. A class implements *Serializable*, a lambda expression is cast, *(Comparator<Entity> & Serializable) (entity1, entity2) -> ...*. The server logs a warning when it starts for a domain which can not be serialized, naming what prevents it.
 
 [source,java,indent=0]
 ----

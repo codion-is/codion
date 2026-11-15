@@ -37,6 +37,9 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.rmi.ServerEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.report.Report;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
@@ -46,6 +49,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
@@ -63,6 +70,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -100,6 +108,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 			this.database = requireNonNull(configuration.database());
 			this.methodTracing = configuration.methodTracing();
 			this.domainModels = loadDomainModels(configuration.domainClasses());
+			logNotSerializable(domainModels.values());
 			configureDatabase(domainModels.values(), database);
 			//loaded here so that a context which can not be loaded fails the server start, not the first connect
 			SessionContexts.contexts();
@@ -448,6 +457,70 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 		}
 	}
 
+	private static void logNotSerializable(Collection<Domain> domainModels) {
+		for (Domain domain : domainModels) {
+			List<String> notSerializable = notSerializable(domain);
+			if (!notSerializable.isEmpty()) {
+				LOG.warn("Domain model '{}' can not be serialized, so a client fetching its entities when connecting, " +
+												"as an RMI client does, can not connect. Not serializable: {}",
+								domain.type(), String.join(", ", notSerializable));
+			}
+		}
+	}
+
+	/**
+	 * The entities of a domain are serialized to a client fetching them when it connects, as an RMI client does,
+	 * along with the validators, comparators, exists predicates and formatters the entity definitions were given.
+	 * @param domain the domain
+	 * @return what prevents the entities of the given domain from being serialized, an empty list if nothing does
+	 */
+	static List<String> notSerializable(Domain domain) {
+		Entities entities = domain.entities();
+		String cause = notSerializable(entities);
+		if (cause == null) {
+			return emptyList();
+		}
+		List<String> notSerializable = new ArrayList<>();
+		for (EntityDefinition definition : entities.definitions()) {
+			String entity = definition.type().name();
+			addNotSerializable(entity + " validator", definition.validator(), notSerializable);
+			addNotSerializable(entity + " comparator", definition.comparator(), notSerializable);
+			addNotSerializable(entity + " exists", definition.exists(), notSerializable);
+			addNotSerializable(entity + " formatter", definition.formatter(), notSerializable);
+			for (AttributeDefinition<?> attribute : definition.attributes().definitions()) {
+				addNotSerializable(attribute.attribute() + " comparator", attribute.comparator(), notSerializable);
+			}
+		}
+		if (notSerializable.isEmpty()) {
+			//something other than the functions above
+			notSerializable.add(cause);
+		}
+
+		return notSerializable;
+	}
+
+	private static void addNotSerializable(String description, Object object, List<String> notSerializable) {
+		String cause = notSerializable(object);
+		if (cause != null) {
+			notSerializable.add(description + " (" + cause + ")");
+		}
+	}
+
+	private static @Nullable String notSerializable(Object object) {
+		try (ObjectOutputStream stream = new ObjectOutputStream(new NullOutputStream())) {
+			stream.writeObject(object);
+
+			return null;
+		}
+		catch (NotSerializableException e) {
+			//the name of the class
+			return e.getMessage();
+		}
+		catch (IOException e) {
+			return e.toString();
+		}
+	}
+
 	private static void createConnectionPools(Database database, String connectionPoolFactory,
 																						Collection<User> connectionPoolUsers) {
 		if (!connectionPoolUsers.isEmpty()) {
@@ -688,5 +761,14 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 		public String className() {
 			return className;
 		}
+	}
+
+	private static final class NullOutputStream extends OutputStream {
+
+		@Override
+		public void write(int b) {/*Discarded*/}
+
+		@Override
+		public void write(byte[] b, int off, int len) {/*Discarded*/}
 	}
 }

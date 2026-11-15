@@ -291,6 +291,14 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * Builds a EntityDefinition
+	 * <p>A client connecting to a server fetches the entity definitions from it, serialized, an RMI client always
+	 * and an HTTP client unless given its domain. What a definition is given must therefore be serializable
+	 * in a domain served that way: its {@link #validator(EntityValidator) validator}, {@link #comparator(Comparator) comparator},
+	 * {@link #exists(Predicate) exists predicate} and {@link #formatter(Function) formatter}, and the
+	 * {@link AttributeDefinition.Builder#comparator(Comparator) comparators} of its attributes. A class implements
+	 * {@link java.io.Serializable} and a lambda expression is cast to a serializable type,
+	 * {@code (Comparator<Entity> & Serializable) (entity1, entity2) -> ...}. Otherwise no client can connect,
+	 * the server logging a warning for such a domain when it starts. A domain no client fetches needs none of this.
 	 * @see EntityType#as()
 	 */
 	sealed interface Builder permits DefaultBuilder {
@@ -356,6 +364,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		Builder table(String table);
 
 		/**
+		 * <p>Must be serializable where clients fetch the entity definitions from a server, see {@link Builder}.
 		 * @param validator the validator for this entity type
 		 * @return this {@link Builder} instance
 		 */
@@ -470,6 +479,8 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		 * Sets the formatter, that is, the function responsible for creating toString() values for this entity type.
 		 * Note that if for some reason this formatter returns null, the default formatter is used as fallback,
 		 * which simply returns the entity type name and primary key value.
+		 * <p>Must be serializable where clients fetch the entity definitions from a server, see {@link Builder}.
+		 * A lambda expression given in place is, being taken as an {@link EntityFormatter}.
 		 * @param formatter the formatter
 		 * @return this {@link Builder} instance
 		 * @see #cacheToString(boolean)
@@ -495,6 +506,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 		/**
 		 * Sets the comparator to use when comparing entities of this type
+		 * <p>Must be serializable where clients fetch the entity definitions from a server, see {@link Builder}.
 		 * @param comparator the comparator
 		 * @return this {@link Builder} instance
 		 */
@@ -504,6 +516,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		 * Sets the predicate to use when checking if an entity of this type exists in the database.
 		 * The default predicate returns true if the entity has a non-null original primary key,
 		 * which is a best-guess about an entity existing in a database.
+		 * <p>Must be serializable where clients fetch the entity definitions from a server, see {@link Builder}.
 		 * @param exists the entity exists predicate
 		 * @return this {@link Builder} instance
 		 */
