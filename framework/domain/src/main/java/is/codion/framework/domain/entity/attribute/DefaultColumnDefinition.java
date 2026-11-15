@@ -70,6 +70,9 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	private final boolean selected;
 	private final boolean generated;
 
+	// Transient, and thereby false in a definition a client receives from a server,
+	// the transient fields below staying on the server, null in such a definition
+	private final transient boolean local;
 	private final transient String name;
 	private final transient String label;// The name a result set knows the column by, the name unquoted
 	private final transient String expression;
@@ -88,6 +91,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		this.insertable = builder.insertable;
 		this.updatable = builder.updatable;
 		this.searchable = builder.searchable;
+		this.local = true;
 		this.name = builder.name;
 		this.label = unquote(builder.name);
 		this.expression = builder.expression == null ? builder.name : builder.expression;
@@ -109,11 +113,15 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public String name() {
+		requireLocal("column name");
+
 		return name;
 	}
 
 	@Override
 	public String expression() {
+		requireLocal("column expression");
+
 		return expression;
 	}
 
@@ -129,6 +137,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public Generator<T> generator() {
+		requireLocal("generator");
 		if (generator == null) {
 			throw new IllegalStateException("Generator is not available");
 		}
@@ -138,6 +147,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public <C> Converter<T, C> converter() {
+		requireLocal("converter");
+
 		return (Converter<T, C>) converter;
 	}
 
@@ -193,6 +204,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public @Nullable T get(ResultSet resultSet, int index, Database database) throws SQLException {
+		requireLocal("result set getter");
 		if (getValue == null) {
 			getValue = (GetValue<Object>) (objectType == null ? database.getter(sqlType) : database.getter(objectType));
 		}
@@ -206,15 +218,25 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public @Nullable T get(ResultSet resultSet, Database database) throws SQLException {
+		requireLocal("result set getter");
+
 		return get(resultSet, resultSet.findColumn(label), database);
 	}
 
 	@Override
 	public void set(PreparedStatement statement, int index, @Nullable T value, Database database) throws SQLException {
+		requireLocal("statement parameter setter");
 		if (setValue == null) {
 			setValue = (SetValue<Object>) database.setter(sqlType);
 		}
 		setValue.set(statement, index, columnValue(value, statement));
+	}
+
+	private void requireLocal(String description) {
+		if (!local) {
+			throw new IllegalStateException("The " + description + " of " + attribute() +
+							" is not available in a column definition received from a server");
+		}
 	}
 
 	private @Nullable Object columnValue(@Nullable T value, PreparedStatement statement) throws SQLException {

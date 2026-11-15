@@ -61,6 +61,7 @@ Codion Change Log
 - OrderBy.Builder.descendingIgnoreCase(Column...) bug fixed, now takes String columns only, as the other three ignoring case, where it took any column, one of another type then ordered as text, 950 before 5000, and all four now refuse a column which is not String based with IllegalArgumentException, one of a deserialized select for example.
 - EntityDefinition.Builder.captionResourceKey() and descriptionResourceKey() renamed captionResource() and descriptionResource(), as the attribute builder's.
 - FunctionType, ProcedureType, ReportType, Entities.Configurable and the derived and denormalized attribute builder steps now sealed, as DomainType, EntityType, ConditionType and the other builders and steps are.
+- EntityDefinition and ColumnDefinition, what a definition a client receives from a server comes without now throws IllegalStateException when asked for, table(), selectTable(), selectQuery(), optimisticLocking() and condition(), and a column's name(), expression(), converter(), generator(), get() and set(), where these returned null, false or an empty Optional, or threw NullPointerException.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

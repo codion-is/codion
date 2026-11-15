@@ -99,14 +99,14 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 	Column<T> attribute();
 
 	/**
-	 * Note: returns null when used in a remote connection context.
 	 * @return the column name
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	String name();
 
 	/**
-	 * Note: returns null when used in a remote connection context.
 	 * @return the column expression to use when selecting or the column name if no expression has been set
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	String expression();
 
@@ -123,15 +123,15 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 
 	/**
 	 * @return the {@link Generator} used to populate the value of this column
-	 * @throws IllegalStateException in case a generator is not available
+	 * @throws IllegalStateException in case a generator is not available or this definition was received from a server
 	 * @see #generated()
 	 */
 	Generator<T> generator();
 
 	/**
-	 * Note: returns null when used in a remote connection context.
 	 * @param <C> the column value type
 	 * @return the {@link Converter} for this column.
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	<C> Converter<T, C> converter();
 
@@ -194,6 +194,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 	 * @param database the {@link Database} providing the default value getters
 	 * @return a single value fetched from the given {@link ResultSet}
 	 * @throws SQLException in case of an exception
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	@Nullable T get(ResultSet resultSet, int index, Database database) throws SQLException;
 
@@ -203,6 +204,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 	 * @param database the {@link Database} providing the default value getters
 	 * @return a single value fetched from the given {@link ResultSet}
 	 * @throws SQLException in case of an exception
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	@Nullable T get(ResultSet resultSet, Database database) throws SQLException;
 
@@ -213,6 +215,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 	 * @param value the value to set, may be null
 	 * @param database the {@link Database} providing the default parameter setters
 	 * @throws SQLException in case of an exception
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	void set(PreparedStatement statement, int index, @Nullable T value, Database database) throws SQLException;
 

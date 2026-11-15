@@ -86,6 +86,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final boolean cacheToString;
 	private final EntityValidator validator;
 	private final Predicate<Entity> exists;
+	// Transient, and thereby false in a definition a client receives from a server,
+	// the transient fields below staying on the server, null or false in such a definition
+	private final transient boolean local;
 	private final transient String table;
 	private final transient @Nullable String selectTable;
 	private final transient boolean optimisticLocking;
@@ -114,6 +117,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.comparator = builder.comparator;
 		this.validator = builder.validator;
 		this.exists = builder.exists;
+		this.local = true;
 		this.table = builder.table;
 		this.selectTable = builder.selectTable;
 		this.selectQuery = builder.selectQuery;
@@ -128,12 +132,15 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public String table() {
+		requireLocal("table");
+
 		return table;
 	}
 
 	@Override
 	public ConditionString condition(ConditionType conditionType) {
 		requireNonNull(conditionType);
+		requireLocal("condition string");
 		if (conditionStrings != null) {
 			ConditionString conditionString = conditionStrings.get(conditionType);
 			if (conditionString != null) {
@@ -193,6 +200,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public boolean optimisticLocking() {
+		requireLocal("optimistic locking setting");
+
 		return optimisticLocking;
 	}
 
@@ -203,12 +212,23 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public String selectTable() {
+		requireLocal("select table");
+
 		return selectTable == null ? table : selectTable;
 	}
 
 	@Override
 	public Optional<EntitySelectQuery> selectQuery() {
+		requireLocal("select query");
+
 		return Optional.ofNullable(selectQuery);
+	}
+
+	private void requireLocal(String description) {
+		if (!local) {
+			throw new IllegalStateException("The " + description + " of " + entityType +
+							" is not available in an entity definition received from a server");
+		}
 	}
 
 	@Override

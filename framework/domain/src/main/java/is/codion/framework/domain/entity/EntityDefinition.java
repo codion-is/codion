@@ -86,6 +86,11 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  *           .smallDataset(true)
  *           .build();
  * } // @end}
+ * <p>
+ * A definition a client receives from a server comes without what the server alone uses: the table names,
+ * the select query, the condition strings and the optimistic locking setting, and for its columns the names,
+ * expressions, converters and generators. The methods providing these throw {@link IllegalStateException}
+ * in such a definition.
  * @see EntityType#as()
  * @see Builder
  */
@@ -109,6 +114,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * @return the name of the underlying table, with schema prefix if applicable
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	String table();
 
@@ -117,6 +123,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	 * @param conditionType the condition type
 	 * @return the {@link ConditionString} associated with the given {@link ConditionType}
 	 * @throws IllegalArgumentException in case no {@link ConditionString} is associated with the given {@link ConditionType}
+	 * @throws IllegalStateException in case this definition was received from a server
 	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionString)
 	 */
 	ConditionString condition(ConditionType conditionType);
@@ -163,6 +170,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * @return true if optimistic locking should be used during updates
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	boolean optimisticLocking();
 
@@ -173,11 +181,13 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * @return the name of the table to use when selecting entities of this type
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	String selectTable();
 
 	/**
 	 * @return the select query to use when selecting entities of this type, an empty Optional if none is available
+	 * @throws IllegalStateException in case this definition was received from a server
 	 */
 	Optional<EntitySelectQuery> selectQuery();
 

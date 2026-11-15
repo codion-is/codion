@@ -755,22 +755,32 @@ public final class EntitiesTest {
 			ColumnDefinition<String> nameDefinition = definition.columns().definition(Employee.NAME);
 			assertNotNull(nameDefinition.name());
 			assertNotNull(nameDefinition.expression());
+			assertNotNull(nameDefinition.converter());
 
 			// Deserialize
 			EntityDefinition deserialized = Serializer.deserialize(Serializer.serialize(definition));
 
-			// Transient fields are null/default after deserialization
-			assertNull(deserialized.table());
-			assertNull(deserialized.selectTable());
-			assertThrows(IllegalStateException.class, () -> deserialized.columns().definition(Employee.ID).generator());
-			assertFalse(deserialized.optimisticLocking());
-			assertFalse(deserialized.selectQuery().isPresent());
-			assertThrows(IllegalArgumentException.class,
-							() -> deserialized.condition(Employee.CONDITION));
+			// What a client uses is there after deserialization
+			assertEquals(Employee.TYPE, deserialized.type());
+			assertTrue(deserialized.columns().definition(Employee.ID).generated());
 
-			nameDefinition = deserialized.columns().definition(Employee.NAME);
-			assertNull(nameDefinition.name());
-			assertNull(nameDefinition.expression());
+			// The transient fields are not, the methods providing them throwing, where they returned null or false
+			assertThrows(IllegalStateException.class, deserialized::table);
+			assertThrows(IllegalStateException.class, deserialized::selectTable);
+			assertThrows(IllegalStateException.class, () -> deserialized.columns().definition(Employee.ID).generator());
+			assertThrows(IllegalStateException.class, deserialized::optimisticLocking);
+			assertThrows(IllegalStateException.class, deserialized::selectQuery);
+			assertThrows(IllegalStateException.class, () -> deserialized.condition(Employee.CONDITION));
+
+			ColumnDefinition<String> deserializedName = deserialized.columns().definition(Employee.NAME);
+			assertThrows(IllegalStateException.class, deserializedName::name);
+			assertThrows(IllegalStateException.class, deserializedName::expression);
+			assertThrows(IllegalStateException.class, deserializedName::converter);
+			assertThrows(IllegalStateException.class, () -> deserializedName.get(null, 1, null));
+			assertThrows(IllegalStateException.class, () -> deserializedName.get(null, null));
+			assertThrows(IllegalStateException.class, () -> deserializedName.set(null, 1, "name", null));
+			// A condition string is built from the column expression
+			assertThrows(IllegalStateException.class, () -> Employee.NAME.equalTo("name").string(deserialized));
 		}
 	}
 
