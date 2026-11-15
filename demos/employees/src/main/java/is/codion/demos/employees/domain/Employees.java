@@ -33,6 +33,8 @@ import is.codion.framework.domain.report.ReportType;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -198,7 +200,11 @@ public final class Employees extends DomainModel {
 						.build();
 	}
 
-	private static class EmployeeValidator implements EntityValidator {
+	// Serializable, since the entity definition holding it is sent to RMI clients
+	private static class EmployeeValidator implements EntityValidator, Serializable {
+
+		@Serial
+		private static final long serialVersionUID = 1;
 
 		@Override
 		public Optional<String> warning(Entity entity, Attribute<?> attribute) {

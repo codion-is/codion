@@ -25,7 +25,11 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.utilities.user.User;
+import is.codion.demos.employees.domain.Employees;
+import is.codion.demos.employees.domain.Employees.Employee;
+import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 
 import org.junit.jupiter.api.Test;
@@ -33,8 +37,10 @@ import org.junit.jupiter.api.Test;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
+import static is.codion.framework.domain.entity.condition.Condition.all;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class EmployeeServerTest {
@@ -83,5 +89,35 @@ public final class EmployeeServerTest {
 		employeeServer.disconnect(connectionId);
 
 		employeeServer.shutdown();
+	}
+
+	@Test
+	void remoteEntityConnection() throws RemoteException {
+		ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
+		EntityServer server = EntityServer.startServer(EntityServerConfiguration.builder()
+						.port(SERVER_PORT + 10)
+						.registryPort(REGISTRY_PORT + 10)
+						.adminPort(SERVER_ADMIN_PORT + 10)
+						.database(Database.instance())
+						.adminUser(User.parse("scott:tiger"))
+						.domainClasses(List.of(Employees.class.getName()))
+						.sslEnabled(false)
+						.objectInputFilterFactoryRequired(false)
+						.build());
+		// The domain entities are serialized to a remote client when it connects
+		try (RemoteEntityConnection connection = RemoteEntityConnection.builder()
+						.hostname("localhost")
+						.registryPort(REGISTRY_PORT + 10)
+						.port(SERVER_PORT + 10)
+						.domain(Employees.DOMAIN)
+						.clientType("EmployeeServerTest")
+						.user(User.parse("scott:tiger"))
+						.build()) {
+			assertEquals(2, connection.entities().definitions().size());
+			assertEquals(16, connection.select(all(Employee.TYPE)).size());
+		}
+		finally {
+			server.shutdown();
+		}
 	}
 }
