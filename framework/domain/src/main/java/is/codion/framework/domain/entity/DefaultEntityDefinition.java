@@ -904,7 +904,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 				this.conditionStrings = new HashMap<>();
 			}
 			if (this.conditionStrings.containsKey(conditionType)) {
-				throw new IllegalStateException("ConditionString for condition  " + conditionType + " has already been added");
+				throw new IllegalStateException("ConditionString for condition " + conditionType + " has already been added");
 			}
 			this.conditionStrings.put(conditionType, conditionString);
 			return this;

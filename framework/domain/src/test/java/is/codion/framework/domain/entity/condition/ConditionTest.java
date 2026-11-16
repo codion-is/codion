@@ -56,6 +56,16 @@ public final class ConditionTest {
 	}
 
 	@Test
+	void conditionTypeToString() {
+		assertEquals("domain.employees.department.condition", Department.CONDITION.toString());
+		// The condition type is named in the message when no condition string is found
+		ConditionType undefined = Department.TYPE.conditionType("undefined");
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+						() -> entities.definition(Department.TYPE).condition(undefined));
+		assertEquals("ConditionString for condition domain.employees.department.undefined not found", exception.getMessage());
+	}
+
+	@Test
 	void subtypes() {
 		//collections of subtypes: column conditions among conditions, columns among columns of any type
 		List<ColumnCondition<String>> conditions = asList(Department.NAME.equalTo("a"), Department.LOCATION.equalTo("b"));

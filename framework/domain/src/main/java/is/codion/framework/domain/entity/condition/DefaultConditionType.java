@@ -95,4 +95,9 @@ final class DefaultConditionType implements ConditionType, Serializable {
 	public int hashCode() {
 		return Objects.hash(entityType, name);
 	}
+
+	@Override
+	public String toString() {
+		return entityType.name() + "." + name;
+	}
 }

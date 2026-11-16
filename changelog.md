@@ -76,6 +76,7 @@ Codion Change Log
 - EntityDefinition.ForeignKeys.foreignKeyColumn() renamed contains().
 - ValueAttributeDefinition.Builder.validator() now takes AttributeValidator<? super T>, defaultValue() DefaultValue<? extends T> and DerivedAttributeDefinition's with() DerivedValue<? extends T>, a validator of a supertype and a supplier of a subtype now accepted, a validator of numbers by an integer column for example.
 - Entities.primaryKey() and primaryKeys(), EntityDefinition.primaryKey(), Entity.formatted(), EntityDefinition.Attributes.derivedFrom() and ForeignKeys.definitions(), type parameter removed, each one appearing once and checking nothing, the key values now Object and the attributes and columns wildcards.
+- ConditionType bug fixed, toString() now returns the entity type and name, where it was not implemented, so that the message of a condition string not found named the instance by its identity hash.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model
