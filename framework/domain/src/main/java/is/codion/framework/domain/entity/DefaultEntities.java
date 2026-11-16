@@ -201,7 +201,7 @@ final class DefaultEntities implements Entities, Serializable {
 			}
 			if (referencedEntity != null) {
 				foreignKey.references().stream()
-								.map(ForeignKey.Reference::foreign)
+								.map(ForeignKey.Reference::referenced)
 								.forEach(referencedAttribute -> validateReference(foreignKey, referencedAttribute, referencedEntity));
 			}
 		}

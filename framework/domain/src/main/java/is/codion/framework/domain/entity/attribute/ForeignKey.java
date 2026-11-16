@@ -133,18 +133,18 @@ public sealed interface ForeignKey extends Attribute<Entity>, ForeignKeyConditio
 		/**
 		 * @return the referenced foreign column in the parent entity
 		 */
-		Column<T> foreign();
+		Column<T> referenced();
 	}
 
 	/**
 	 * Returns a new {@link Reference} based on the given columns.
 	 * @param column the local column
-	 * @param foreign the referenced foreign column
+	 * @param referenced the referenced foreign column
 	 * @param <T> the column type
 	 * @return a new {@link Reference} based on the given columns
 	 */
-	static <T> Reference<T> reference(Column<T> column, Column<T> foreign) {
-		return new DefaultReference<>(column, foreign);
+	static <T> Reference<T> reference(Column<T> column, Column<T> referenced) {
+		return new DefaultReference<>(column, referenced);
 	}
 
 	/**

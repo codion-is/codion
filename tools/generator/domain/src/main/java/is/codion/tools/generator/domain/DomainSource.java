@@ -795,8 +795,8 @@ public final class DomainSource {
 		return foreignKey.references().stream()
 						.map(reference -> new StringBuilder()
 										.append(constantName(reference.column().name())).append(", ")
-										.append(interfaceName(reference.foreign().entityType().name(), true))
-										.append(".").append(constantName(reference.foreign().name()))
+										.append(interfaceName(reference.referenced().entityType().name(), true))
+										.append(".").append(constantName(reference.referenced().name()))
 										.toString())
 						.collect(joining(", "));
 	}

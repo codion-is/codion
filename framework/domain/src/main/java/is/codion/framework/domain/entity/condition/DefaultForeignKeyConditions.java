@@ -59,12 +59,12 @@ final class DefaultForeignKeyConditions implements ForeignKeyConditions {
 		if (references.size() == 1) {
 			Reference<Object> reference = (Reference<Object>) references.get(0);
 
-			return new DefaultColumnConditions<>(reference.column()).equalTo(value.get(reference.foreign()));
+			return new DefaultColumnConditions<>(reference.column()).equalTo(value.get(reference.referenced()));
 		}
 
 		List<Condition> conditions = references.stream()
 						.map(reference -> (Reference<Object>) reference)
-						.map(reference -> new DefaultColumnConditions<>(reference.column()).equalTo(value.get(reference.foreign())))
+						.map(reference -> new DefaultColumnConditions<>(reference.column()).equalTo(value.get(reference.referenced())))
 						.collect(toList());
 
 		return new DefaultConditionCombination(AND, conditions);
@@ -80,12 +80,12 @@ final class DefaultForeignKeyConditions implements ForeignKeyConditions {
 		if (references.size() == 1) {
 			Reference<Object> reference = (Reference<Object>) references.get(0);
 
-			return new DefaultColumnConditions<>(reference.column()).notEqualTo(value.get(reference.foreign()));
+			return new DefaultColumnConditions<>(reference.column()).notEqualTo(value.get(reference.referenced()));
 		}
 
 		List<Condition> conditions = references.stream()
 						.map(reference -> (Reference<Object>) reference)
-						.map(reference -> new DefaultColumnConditions<>(reference.column()).notEqualTo(value.get(reference.foreign())))
+						.map(reference -> new DefaultColumnConditions<>(reference.column()).notEqualTo(value.get(reference.referenced())))
 						.collect(toList());
 
 		return new DefaultConditionCombination(AND, conditions);
@@ -151,7 +151,7 @@ final class DefaultForeignKeyConditions implements ForeignKeyConditions {
 
 	private List<Map<Column<?>, ?>> createValueMaps(Collection<Entity> values) {
 		List<Column<?>> referencedColumns = foreignKey.references().stream()
-						.map(Reference::foreign)
+						.map(Reference::referenced)
 						.collect(toList());
 
 		return values.stream()
@@ -200,7 +200,7 @@ final class DefaultForeignKeyConditions implements ForeignKeyConditions {
 		}
 
 		List<Object> values = valueMaps.stream()
-						.map(map -> map.get(foreignKey.references().get(0).foreign()))
+						.map(map -> map.get(foreignKey.references().get(0).referenced()))
 						.collect(toList());
 
 		return inCondition(foreignKey.references().get(0), operator, values);
@@ -208,7 +208,7 @@ final class DefaultForeignKeyConditions implements ForeignKeyConditions {
 
 	private static Map<Column<?>, Column<?>> columnReferenceMap(List<Reference<?>> references) {
 		return references.stream()
-						.collect(toMap(Reference::column, Reference::foreign, (column, column2) -> column, LinkedHashMap::new));
+						.collect(toMap(Reference::column, Reference::referenced, (column, column2) -> column, LinkedHashMap::new));
 	}
 
 	private static Map<Column<?>, @Nullable Object> valueMap(Entity entity, List<Column<?>> columns) {

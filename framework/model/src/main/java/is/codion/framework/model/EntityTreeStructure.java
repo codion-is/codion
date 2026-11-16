@@ -236,7 +236,7 @@ final class EntityTreeStructure {
 
 	private static List<Object> foreignValues(Entity entity, ForeignKey foreignKey) {
 		return foreignKey.references().stream()
-						.map(reference -> (Object) entity.get(reference.foreign()))
+						.map(reference -> (Object) entity.get(reference.referenced()))
 						.collect(toList());
 	}
 

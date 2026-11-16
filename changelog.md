@@ -63,6 +63,7 @@ Codion Change Log
 - FunctionType, ProcedureType, ReportType, Entities.Configurable and the derived and denormalized attribute builder steps now sealed, as DomainType, EntityType, ConditionType and the other builders and steps are.
 - EntityDefinition and ColumnDefinition, what a definition a client receives from a server comes without now throws IllegalStateException when asked for, table(), selectTable(), selectQuery(), optimisticLocking() and condition(), and a column's name(), expression(), converter(), generator(), get() and set(), where these returned null, false or an empty Optional, or threw NullPointerException.
 - OrderBy.orderByColumns() renamed columns.
+- ForeignKey.Reference.foreign() renamed referenced().
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

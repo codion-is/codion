@@ -513,7 +513,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		EntityDefinition referencedEntity = definition.foreignKeys().referencedBy(foreignKey);
 		for (int i = 0; i < references.size(); i++) {
 			ForeignKey.Reference<?> reference = references.get(i);
-			ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.foreign());
+			ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.referenced());
 			if (!referencedColumn.nullable() && !present(reference.column())) {
 				return true;
 			}
@@ -569,7 +569,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 			boolean containsValue = contains(reference.column());
 			if (containsValue) {
 				Object currentReferenceValue = get(reference.column());
-				Object newReferenceValue = foreignKeyValue.get(reference.foreign());
+				Object newReferenceValue = foreignKeyValue.get(reference.referenced());
 				// deepEquals not necessary, since we're comparing reference column values
 				if (!Objects.equals(currentReferenceValue, newReferenceValue)) {
 					throw new IllegalArgumentException("Foreign key " + foreignKeyDefinition + " is not allowed to modify read-only reference: " +
@@ -596,7 +596,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 							//if the value isn't equal to the value in the foreign key,
 							//that foreign key reference is invalid and is removed
 							// deepEquals not necessary, since we're comparing reference column values
-							!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).foreign()))) {
+							!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).referenced()))) {
 				remove(foreignKey);
 			}
 			//the cached key is derived from the reference column values, so it is stale once the column changes,
@@ -623,7 +623,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 			ForeignKey.Reference<?> reference = references.get(i);
 			if (!foreignKeyDefinition.readOnly(reference.column()) && !(referencesNothing && get(reference.column()) != null)) {
 				AttributeDefinition<Object> columnDefinition = definition.columns().definition((Column<Object>) reference.column());
-				set(columnDefinition, referencedEntity == null ? null : referencedEntity.get(reference.foreign()));
+				set(columnDefinition, referencedEntity == null ? null : referencedEntity.get(reference.referenced()));
 			}
 		}
 	}
@@ -649,12 +649,12 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		Map<Column<?>, @Nullable Object> keyValues = new HashMap<>(references.size());
 		for (int i = 0; i < references.size(); i++) {
 			ForeignKey.Reference<?> reference = references.get(i);
-			ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.foreign());
+			ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.referenced());
 			Object value = values.get(reference.column());
 			if (value == null && !referencedColumn.nullable()) {
 				return null;
 			}
-			keyValues.put(reference.foreign(), value);
+			keyValues.put(reference.referenced(), value);
 		}
 		Set<Column<?>> referencedColumns = keyValues.keySet();
 		List<Column<?>> primaryKeyColumns = referencedEntity.primaryKey().columns();
@@ -672,10 +672,10 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		}
 
 		List<Column<?>> primaryKeyColumns = referencedEntityDefinition.primaryKey().columns();
-		boolean isPrimaryKey = primaryKeyColumns.size() == 1 && reference.foreign().equals(primaryKeyColumns.get(0));
+		boolean isPrimaryKey = primaryKeyColumns.size() == 1 && reference.referenced().equals(primaryKeyColumns.get(0));
 
 		return cacheKey(foreignKey, new SingleColumnKey(definition.foreignKeys()
-						.referencedBy(foreignKey), reference.foreign(), value, isPrimaryKey));
+						.referencedBy(foreignKey), reference.referenced(), value, isPrimaryKey));
 	}
 
 	private Key cacheKey(ForeignKey foreignKey, Key key) {
