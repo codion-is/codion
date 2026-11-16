@@ -773,7 +773,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private boolean sourcesPresent(DerivedAttributeDefinition<?> derivedDefinition) {
-		for (Attribute<?> source : derivedDefinition.attributes()) {
+		for (Attribute<?> source : derivedDefinition.sources()) {
 			if (!contains(source)) {
 				return false;
 			}
@@ -784,15 +784,15 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 	private DerivedValue.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,
 																								 boolean originalValue) {
-		List<Attribute<?>> attributes = derivedDefinition.attributes();
-		if (attributes.isEmpty()) {
+		List<Attribute<?>> sources = derivedDefinition.sources();
+		if (sources.isEmpty()) {
 			return DerivedValue.sourceValues(derivedDefinition.attribute(), EMPTY_MAP);
 		}
-		else if (attributes.size() == 1) {
-			return DerivedValue.sourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(attributes.get(0), originalValue));
+		else if (sources.size() == 1) {
+			return DerivedValue.sourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sources.get(0), originalValue));
 		}
 
-		return DerivedValue.sourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(attributes, originalValue));
+		return DerivedValue.sourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(sources, originalValue));
 	}
 
 	private Map<Attribute<?>, @Nullable Object> createSingleAttributeSourceValueMap(Attribute<?> source, boolean originalValue) {

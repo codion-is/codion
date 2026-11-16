@@ -268,7 +268,7 @@ final class DefaultEntityExport implements EntityExport {
 							.map(attribute -> entityDefinition.attributes().definition(attribute))
 							.filter(AttributeDefinition::derived)
 							.map(DerivedAttributeDefinition.class::cast)
-							.forEach(definition -> sourceAttributes.addAll(definition.attributes()));
+							.forEach(definition -> sourceAttributes.addAll(definition.sources()));
 			if (!sourceAttributes.isEmpty() && !included.containsAll(sourceAttributes)) {
 				sourceAttributes.addAll(sourceAttributes(entityDefinition, sourceAttributes));
 			}

@@ -673,11 +673,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			attributeDefinitions.stream()
 							.filter(DerivedAttributeDefinition.class::isInstance)
 							.map(DerivedAttributeDefinition.class::cast)
-							.forEach(derivedAttribute -> {
-								List<Attribute<?>> sourceAttributes = derivedAttribute.attributes();
-								validateSourceAttributes(sourceAttributes);
-								for (Attribute<?> sourceAttribute : sourceAttributes) {
-									derivedAttributeMap.computeIfAbsent(sourceAttribute, attribute -> new HashSet<>()).add(derivedAttribute.attribute());
+							.forEach(derived -> {
+								List<Attribute<?>> sources = derived.sources();
+								validateSourceAttributes(sources);
+								for (Attribute<?> source : sources) {
+									derivedAttributeMap.computeIfAbsent(source, attribute -> new HashSet<>()).add(derived.attribute());
 								}
 							});
 
@@ -731,7 +731,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			if (!path.add(attribute)) {
 				throw new IllegalStateException("Derived attribute cycle detected: " + path);
 			}
-			derivedDefinition.attributes().stream()
+			derivedDefinition.sources().stream()
 							.map(attributes::get)
 							.filter(DerivedAttributeDefinition.class::isInstance)
 							.map(DerivedAttributeDefinition.class::cast)
