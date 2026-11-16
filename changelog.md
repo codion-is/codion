@@ -70,6 +70,7 @@ Codion Change Log
 - AttributeDefinition.format(value) renamed formatted().
 - AbstractReport.reportPath now private, reportPath() accessor added.
 - NullValueException, redundant value parameter removed.
+- DomainType.domainTypeByName() renamed getOrThrow().
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

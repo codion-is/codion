@@ -87,9 +87,9 @@ public sealed interface DomainType permits DefaultDomainType {
 	 * Returns the domain type with the given name.
 	 * @param domainName the domain name
 	 * @return the domain type with the given name
-	 * @throws IllegalArgumentException in case the domain has not been defined
+	 * @throws IllegalArgumentException in case a domain by that name has not been defined
 	 */
-	static DomainType domainTypeByName(String domainName) {
+	static DomainType getOrThrow(String domainName) {
 		return DefaultDomainType.getDomainType(domainName);
 	}
 }

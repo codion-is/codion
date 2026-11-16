@@ -416,7 +416,7 @@ public class EntityServer extends AbstractServer<AbstractServerEntityConnection,
 		if (domainTypeName == null) {
 			throw new IllegalArgumentException("'" + ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
 		}
-		Domain domain = domainModels.get(DomainType.domainTypeByName(domainTypeName));
+		Domain domain = domainModels.get(DomainType.getOrThrow(domainTypeName));
 		if (domain == null) {
 			// the domains hosted here logged rather than told, the client not yet authenticated
 			LOG.debug("Domain not found: {}, hosted domains: {}", domainTypeName, domainModels.keySet());
