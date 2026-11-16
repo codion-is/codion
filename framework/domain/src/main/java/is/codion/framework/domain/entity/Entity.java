@@ -628,19 +628,6 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	}
 
 	/**
-	 * Returns an unmodifiable collection containing the values of the given keys, assuming they are single column keys.
-	 * @param <T> the value type
-	 * @param keys the keys
-	 * @return the attribute values of the given keys
-	 * @throws IllegalStateException in case of a composite key
-	 */
-	static <T> Collection<@Nullable T> values(Collection<Key> keys) {
-		return unmodifiableList(requireNonNull(keys).stream()
-						.map(key -> (T) key.value())
-						.collect(toList()));
-	}
-
-	/**
 	 * Returns an unmodifiable collection containing the non-null values associated with {@code attribute} from the given entities.
 	 * @param <T> the value type
 	 * @param attribute the attribute which values to retrieve

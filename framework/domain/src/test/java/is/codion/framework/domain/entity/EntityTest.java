@@ -244,36 +244,6 @@ public final class EntityTest {
 	}
 
 	@Test
-	void referencedKeys() {
-		Entity dept1 = entities.entity(Department.TYPE)
-						.with(Department.ID, 1)
-						.build();
-		Entity dept2 = entities.entity(Department.TYPE)
-						.with(Department.ID, 2)
-						.build();
-
-		Entity emp1 = entities.entity(Employee.TYPE)
-						.with(Employee.DEPARTMENT_FK, dept1)
-						.build();
-		Entity emp2 = entities.entity(Employee.TYPE)
-						.with(Employee.DEPARTMENT_FK, dept1)
-						.build();
-		Entity emp3 = entities.entity(Employee.TYPE)
-						.with(Employee.DEPARTMENT_FK, dept2)
-						.build();
-		Entity emp4 = entities.entity(Employee.TYPE)
-						.build();
-
-		Collection<Key> referencedKeys = Entity.keys(Employee.DEPARTMENT_FK, asList(emp1, emp2, emp3, emp4));
-		assertEquals(2, referencedKeys.size());
-		referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.type()));
-		Collection<Integer> values = Entity.values(new ArrayList<>(referencedKeys));
-		assertTrue(values.contains(1));
-		assertTrue(values.contains(2));
-		assertFalse(values.contains(3));
-	}
-
-	@Test
 	void noPkEntity() {
 		Entity noPk = entities.entity(NoPk.TYPE)
 						.with(NoPk.COL1, 1)

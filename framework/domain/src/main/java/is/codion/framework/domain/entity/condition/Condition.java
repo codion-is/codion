@@ -39,6 +39,7 @@ import static is.codion.common.utilities.Operator.EQUAL;
 import static is.codion.framework.domain.entity.condition.DefaultForeignKeyConditions.compositeEqualCondition;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -199,7 +200,9 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 			return compositeEqualCondition(firstKey, keys);
 		}
 
-		return firstKey.column().in(Entity.values(keys));
+		return firstKey.column().in(keys.stream()
+						.map(Entity.Key::value)
+						.collect(toList()));
 	}
 
 	/**
