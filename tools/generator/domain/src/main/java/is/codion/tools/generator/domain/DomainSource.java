@@ -685,7 +685,7 @@ public final class DomainSource {
 
 	private static boolean noneForeignKeyColumn(Attribute<?> attribute, EntityDefinition entityDefinition) {
 		if (attribute instanceof Column) {
-			return !entityDefinition.foreignKeys().foreignKeyColumn(((Column<?>) attribute));
+			return !entityDefinition.foreignKeys().contains(((Column<?>) attribute));
 		}
 
 		return true;
@@ -982,7 +982,7 @@ public final class DomainSource {
 
 	private static boolean foreignKeyColumn(EntityDefinition definition, AttributeDefinition<?> attribute) {
 		return attribute instanceof ColumnDefinition<?> &&
-						definition.foreignKeys().foreignKeyColumn((Column<?>) attribute.attribute());
+						definition.foreignKeys().contains((Column<?>) attribute.attribute());
 	}
 
 	private static Collection<Attribute<?>> collectInvalidNames(List<EntityDefinition> definitions) {
@@ -1116,7 +1116,7 @@ public final class DomainSource {
 
 		private static ColumnContext of(EntityDefinition definition, ColumnDefinition<?> column) {
 			return new ColumnContext(
-							definition.foreignKeys().foreignKeyColumn(column.attribute()),
+							definition.foreignKeys().contains(column.attribute()),
 							definition.primaryKey().columns().size() > 1,
 							definition.readOnly());
 		}

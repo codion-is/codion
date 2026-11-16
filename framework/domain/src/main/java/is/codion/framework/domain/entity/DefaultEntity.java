@@ -583,7 +583,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		if (columnDefinition.primaryKey()) {
 			primaryKey = null;
 		}
-		if (definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute())) {
+		if (definition.foreignKeys().contains(columnDefinition.attribute())) {
 			removeInvalidForeignKeyValues(columnDefinition.attribute(), newValue);
 		}
 	}

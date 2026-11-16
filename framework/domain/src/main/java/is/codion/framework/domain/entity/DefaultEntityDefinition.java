@@ -484,7 +484,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public boolean foreignKeyColumn(Column<?> column) {
+		public boolean contains(Column<?> column) {
 			attributes.definition(column);
 			return entityAttributes.foreignKeyColumns.contains(column);
 		}

@@ -311,7 +311,7 @@ final class DefaultEntityMerge implements EntityMerge {
 				if (attributeDefinition instanceof ColumnDefinition) {
 					ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
 					if (columnDefinition.updatable() && !columnDefinition.primaryKey()
-									&& !definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute())) {
+									&& !definition.foreignKeys().contains(columnDefinition.attribute())) {
 						defaults.add(columnDefinition.attribute());
 					}
 				}

@@ -674,7 +674,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		 * @param column the column
 		 * @return true if the given column is part of a foreign key
 		 */
-		boolean foreignKeyColumn(Column<?> column);
+		boolean contains(Column<?> column);
 
 		/**
 		 * Returns the foreign keys referencing entities of the given type

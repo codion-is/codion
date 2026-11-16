@@ -128,7 +128,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	@Override
 	public final void validate(Entity entity, boolean nullable) throws AttributeValidationException {
 		requireNonNull(entity);
-		if (!(attribute() instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute())) {
+		if (!(attribute() instanceof Column) || !entity.definition().foreignKeys().contains((Column<?>) attribute())) {
 			validateNull(entity, nullable);
 		}
 		T value = entity.get(attribute());

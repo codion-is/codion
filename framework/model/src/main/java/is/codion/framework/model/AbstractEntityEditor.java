@@ -1155,7 +1155,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private void addColumnValues(ValueSupplier valueSupplier, Entity newEntity) {
 			entityDefinition.columns().definitions().stream()
 							//these are set via their respective parent foreign key
-							.filter(columnDefinition -> !entityDefinition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
+							.filter(columnDefinition -> !entityDefinition.foreignKeys().contains(columnDefinition.attribute()))
 							.filter(columnDefinition -> !columnDefinition.withDefault() || columnDefinition.hasDefaultValue())
 							// lazy loaded values are left out, unless populated, a new entity then holding them
 							.filter(columnDefinition -> columnDefinition.selected() || populatedColumns.contains(columnDefinition.attribute()))

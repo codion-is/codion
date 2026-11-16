@@ -213,7 +213,7 @@ public abstract class AbstractEntityFactory implements EntityFactory {
 	private void populate(Entity entity, Collection<Column<?>> columns) {
 		EntityDefinition definition = entity.definition();
 		for (Column<?> column : columns) {
-			if (!definition.foreignKeys().foreignKeyColumn(column)) {
+			if (!definition.foreignKeys().contains(column)) {
 				entity.set((Attribute<Object>) column, value(column));
 			}
 		}

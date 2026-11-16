@@ -2779,7 +2779,7 @@ public class EntityTablePanel extends JPanel {
 							.map(ColumnDefinition::attribute)
 							.collect(toList());
 			EntityDefinition.ForeignKeys foreignKeys = entityDefinition.foreignKeys();
-			updatableColumns.removeIf(foreignKeys::foreignKeyColumn);
+			updatableColumns.removeIf(foreignKeys::contains);
 			List<Attribute<?>> updatable = new ArrayList<>(updatableColumns);
 			for (ForeignKey foreignKey : entityDefinition.foreignKeys().get()) {
 				if (foreignKeys.updatable(foreignKey)) {
