@@ -1619,7 +1619,7 @@ public final class AbstractEntityEditorTest {
 	}
 
 	@Test
-	void resetNotifications() throws EntityValidationException {
+	void resetNotifications() {
 		// a delete, and a detail editor a load found empty, notified replaced() with null, a delete never notifying
 		// changed(), and an emptied detail editor notifying differently from a found one on the set path
 		CONNECTION.startTransaction();

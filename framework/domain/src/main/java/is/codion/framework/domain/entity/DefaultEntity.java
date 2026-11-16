@@ -82,8 +82,8 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 	DefaultEntity(EntityDefinition definition, Map<? extends Attribute<?>, ?> values, Map<? extends Attribute<?>, ?> originalValues) {
 		this(definition);
-		this.values = validate(new HashMap<Attribute<?>, Object>(requireNonNull(values)));
-		this.originalValues = requireNonNull(originalValues).isEmpty() ? null : validate(new HashMap<Attribute<?>, Object>(originalValues));
+		this.values = validate(new HashMap<>(requireNonNull(values)));
+		this.originalValues = requireNonNull(originalValues).isEmpty() ? null : validate(new HashMap<>(originalValues));
 	}
 
 	@Override

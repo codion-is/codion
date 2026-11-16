@@ -90,6 +90,7 @@ public final class FilePreferences extends AbstractPreferences {
 
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final String PATH_SEPARATOR = "/";
+	private static final String NODE_HAS_BEEN_REMOVED = "Node has been removed.";
 
 	private final JsonPreferences preferences;
 	private final @Nullable JsonPreferencesStore store;
@@ -129,7 +130,7 @@ public final class FilePreferences extends AbstractPreferences {
 		requireNonNull(value, "value cannot be null");
 		synchronized (lock) {
 			if (isRemoved()) {
-				throw new IllegalStateException("Node has been removed.");
+				throw new IllegalStateException(NODE_HAS_BEEN_REMOVED);
 			}
 			putSpi(key, value);
 		}
@@ -252,7 +253,7 @@ public final class FilePreferences extends AbstractPreferences {
 	public void sync() throws BackingStoreException {
 		synchronized (lock) {
 			if (isRemoved()) {
-				throw new IllegalStateException("Node has been removed.");
+				throw new IllegalStateException(NODE_HAS_BEEN_REMOVED);
 			}
 			syncSpi();
 		}
@@ -305,7 +306,7 @@ public final class FilePreferences extends AbstractPreferences {
 		}
 		synchronized (lock) {
 			if (isRemoved()) {
-				throw new IllegalStateException("Node has been removed.");
+				throw new IllegalStateException(NODE_HAS_BEEN_REMOVED);
 			}
 
 			return longNamedChildren.computeIfAbsent(name, childName -> new FilePreferences(this, childName, preferences, store));

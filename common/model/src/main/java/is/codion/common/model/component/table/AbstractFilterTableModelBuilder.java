@@ -60,7 +60,7 @@ public abstract class AbstractFilterTableModelBuilder<R, C, B extends FilterTabl
 	final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
 
 	@Nullable Supplier<Collection<R>> supplier;
-	Predicate<? super R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
+	Predicate<? super R> validator = DEFAULT_VALID_PREDICATE;
 	@Nullable Consumer<TableConditions.Builder<C>> filters;
 	@Nullable Consumer<Exception> onRefreshException;
 	@Nullable Predicate<? super R> included;

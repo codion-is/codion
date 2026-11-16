@@ -50,7 +50,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * for fast operations:
  * <ul>
  * <li>The dialog is only shown if the operation takes longer than {@link ProgressWorkerDialogBuilder#SHOW_DELAY} milliseconds (default: 350ms)
- * <li>If shown, the dialog remains visible for at least {@link ProgressWorkerDialogBuilder#HIDE_DELAY} milliseconds (default: 800ms)
+ * <li>If shown, the dialog remains visible for at least {@link ProgressWorkerDialogBuilder#HIDE_DELAY} milliseconds (default: 350ms)
  * </ul>
  * <p>A dialog with an {@link #owner(java.awt.Window) owner} is modal, and blocks input from when the operation
  * starts, before it shows: keys application wide, as its modality does, and the mouse within the owner.

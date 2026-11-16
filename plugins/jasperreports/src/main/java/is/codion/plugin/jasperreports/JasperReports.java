@@ -160,7 +160,7 @@ public final class JasperReports {
 		requireNonNull(dataSource);
 		requireNonNull(reportParameters);
 		try {
-			return JasperFillManager.fillReport(report.load(), new HashMap<String, Object>(reportParameters), dataSource);
+			return JasperFillManager.fillReport(report.load(), new HashMap<>(reportParameters), dataSource);
 		}
 		catch (Exception e) {
 			throw reportException(e);

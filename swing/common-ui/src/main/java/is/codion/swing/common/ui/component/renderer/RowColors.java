@@ -190,7 +190,7 @@ public final class RowColors {
 		double textContrast = foreground == null ? 0 : Math.min(contrast(foreground, opaque), SELECTION_TEXT_CONTRAST);
 		double lightness = oklab(opaque)[0];
 		double backgroundLightness = oklab(background)[0];
-		boolean lighter = lightness == backgroundLightness ? dark(background) : lightness > backgroundLightness;
+		boolean lighter = Double.compare(lightness, backgroundLightness) == 0 ? dark(background) : lightness > backgroundLightness;
 		Color best = opaque;
 		double bestSeparation = separation;
 		for (boolean towardWhite : new boolean[] {lighter, !lighter}) {

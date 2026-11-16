@@ -355,7 +355,7 @@ public final class ImagePaneTest {
 	}
 
 	@Test
-	void syncFailure() throws IOException {
+	void syncFailure() {
 		ImagePane pane = ImagePane.builder()
 						.image(image(Color.RED, 5, 5))
 						.build();

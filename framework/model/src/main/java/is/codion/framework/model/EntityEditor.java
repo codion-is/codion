@@ -1128,7 +1128,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>The valid state of every value, as its {@link #error()}, follows the last validation of the entity as a whole,
 		 * so a rule spanning attributes is reflected by each value it involves, and an unmodified value of an existing
 		 * entity is valid unless the validator validates it, see
-		 * {@link EntityValidator#validated(Entity, is.codion.framework.domain.entity.attribute.AttributeDefinition)}.
+		 * {@link EntityValidator#validated(Entity, is.codion.framework.domain.entity.attribute.Attribute)}.
 		 * @return an {@link ObservableState} indicating the valid status of this attribute value.
 		 */
 		ObservableState valid();

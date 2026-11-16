@@ -20,6 +20,7 @@ is/codion/common/db/exception/DatabaseException_is_IS.properties
 |authentication|Invalid username or password|Rangt notendanafn eða lykilorð
 |check_constraint|The value or values attempted to be entered in a field or fields violate a defined check constraint|Óleyfilegt gildi
 |child_exists|This record is referenced by records in other tables, delete those first|Vísað er í þessa færslu úr öðrum töflum, eyddu þeim færslum fyrst
+|deadlock|This operation and another user's were deadlocked, try again|Þessi aðgerð og aðgerð annars notanda lentu í sjálfheldu, reyndu aftur
 |missing_privileges|You are not authorized to perform this action|Þig vantar réttindi til að framkvæma umbeðna aðgerð
 |null_value|Value missing|Gildi vantar
 |parent_missing|A foreign key value has no matching primary key value|Reynt var að vísa í færslu sem ekki er til
