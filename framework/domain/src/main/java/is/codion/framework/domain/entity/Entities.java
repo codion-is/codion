@@ -207,6 +207,7 @@ public sealed interface Entities permits DefaultEntities {
 
 	/**
 	 * Creates a new {@link Entities.Configurable} instance for the given domain type.
+	 * <p>Used by {@link is.codion.framework.domain.DomainModel}, which applications extend to define a domain.
 	 * @param domainType the domain type
 	 * @return a new {@link Configurable} {@link Entities} instance
 	 */

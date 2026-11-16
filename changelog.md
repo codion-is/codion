@@ -80,6 +80,7 @@ Codion Change Log
 - Conditions and the validation exceptions, serialVersionUID added to AbstractCondition, AttributeValidationException, EntityValidationException, InvalidItemException and NullValueException.
 - DomainModel, the exception messages for a report already defined and a report not found now worded as the ones for procedures and functions.
 - DerivedAttributeDefinition.DerivedBuilder.cached() and TransientAttributeDefinition.Builder.modifies() now return the builder type parameter, as the other builder methods do.
+- Attribute.attribute(EntityType, String, TypeReference) and Column.column(EntityType, String, TypeReference) removed, used by the framework alone, EntityType.attribute() and column() being the ones to use.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

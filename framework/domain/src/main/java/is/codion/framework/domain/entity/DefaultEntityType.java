@@ -96,7 +96,7 @@ final class DefaultEntityType implements EntityType, Serializable {
 
 	@Override
 	public <T> Attribute<T> attribute(String name, TypeReference<T> typeReference) {
-		return Attribute.attribute(this, name, typeReference);
+		return Attribute.attribute(this, name, requireNonNull(typeReference).rawType());
 	}
 
 	@Override
@@ -181,7 +181,7 @@ final class DefaultEntityType implements EntityType, Serializable {
 
 	@Override
 	public <T> Column<T> column(String name, TypeReference<T> typeReference) {
-		return Column.column(this, name, typeReference);
+		return Column.column(this, name, requireNonNull(typeReference).rawType());
 	}
 
 	@Override

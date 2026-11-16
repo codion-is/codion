@@ -149,6 +149,7 @@ public sealed interface ForeignKey extends Attribute<Entity>, ForeignKeyConditio
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given entityType and references.
+	 * <p>Used by {@link EntityType}, applications use {@link EntityType#foreignKey(String, List)}.
 	 * @param entityType the entityType owning this foreign key
 	 * @param name the attribute name
 	 * @param references the references

@@ -113,8 +113,10 @@ public interface DerivedValue<T> extends Serializable {
 	}
 
 	/**
+	 * Creates the source values for the given derived attribute.
+	 * <p>Used by the framework when deriving a value, and of use when testing a {@link DerivedValue}.
 	 * @param derivedAttribute the derived attribute
-	 * @param values the values
+	 * @param values the source values, mapped to their respective attributes
 	 * @return a new {@link SourceValues} instance
 	 */
 	static SourceValues sourceValues(Attribute<?> derivedAttribute, Map<? extends Attribute<?>, ?> values) {

@@ -444,6 +444,8 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new EntityType instance.
+	 * <p>Used by {@link DomainType}, applications use {@link DomainType#entityType(String)},
+	 * which keeps the entity types it creates, returning the same instance for a given name.
 	 * @param name the entity type name
 	 * @param domainType the domainType to associate this entity type with
 	 * @return a {@link EntityType} instance with the given name
@@ -454,6 +456,8 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new EntityType instance.
+	 * <p>Used by {@link DomainType}, applications use {@link DomainType#entityType(String, String)},
+	 * which keeps the entity types it creates, returning the same instance for a given name.
 	 * @param name the entity type name
 	 * @param domainType the domainType to associate this entity type with
 	 * @param resourceBundleName the name of a resource bundle to use for captions

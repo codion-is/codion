@@ -19,7 +19,6 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.utilities.TypeReference;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
@@ -31,7 +30,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static java.util.Objects.requireNonNull;
 
 /**
  * An {@link Attribute} representing a table column.
@@ -133,18 +131,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 	/**
 	 * Creates a new {@link Column}, associated with the given entityType.
-	 * @param entityType the entityType owning this column
-	 * @param name the column name
-	 * @param typeReference the {@link TypeReference} representing the column value type
-	 * @param <T> the column type
-	 * @return a new {@link Column}
-	 */
-	static <T> Column<T> column(EntityType entityType, String name, TypeReference<T> typeReference) {
-		return new DefaultColumn<>(name, requireNonNull(typeReference).rawType(), entityType);
-	}
-
-	/**
-	 * Creates a new {@link Column}, associated with the given entityType.
+	 * <p>Used by {@link EntityType}, applications use {@link EntityType#column(String, Class)}.
 	 * @param entityType the entityType owning this column
 	 * @param name the column name
 	 * @param type the class representing the column value type

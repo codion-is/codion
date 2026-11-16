@@ -257,6 +257,7 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 
 	/**
 	 * Instantiates a new {@link ColumnConditions} instance
+	 * <p>Used by {@link Column}, which provides these conditions itself, applications create them from the column.
 	 * @param column the column
 	 * @param <T> the column type
 	 * @return a new {@link ColumnConditions} instance

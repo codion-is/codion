@@ -197,6 +197,7 @@ public sealed interface ConditionType permits DefaultConditionType {
 
 	/**
 	 * Instantiates a new {@link ConditionType} for the given entity type
+	 * <p>Used by {@link EntityType}, applications use {@link EntityType#conditionType(String)}.
 	 * @param entityType the entityType
 	 * @param name the name
 	 * @return a new condition type

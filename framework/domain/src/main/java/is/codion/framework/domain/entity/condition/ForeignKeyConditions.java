@@ -153,6 +153,7 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 
 	/**
 	 * Instantiates a new {@link ForeignKeyConditions} instance
+	 * <p>Used by {@link ForeignKey}, which provides these conditions itself, applications create them from the foreign key.
 	 * @param foreignKey the foreign key
 	 * @return a new {@link ForeignKeyConditions} instance
 	 */

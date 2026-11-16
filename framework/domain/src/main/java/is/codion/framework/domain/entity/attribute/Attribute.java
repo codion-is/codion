@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.utilities.TypeReference;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column.ColumnDefiner;
@@ -30,7 +29,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKey.ForeignKeyDefiner;
 
 import org.jspecify.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
 
 /**
  * Typed {@link Attribute} representing a named, typed property of an entity.
@@ -135,18 +133,7 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 
 	/**
 	 * Creates a new {@link Attribute}, associated with the given entityType.
-	 * @param entityType the entityType owning this attribute
-	 * @param name the attribute name
-	 * @param typeReference the {@link TypeReference} representing the attribute value type
-	 * @param <T> the attribute type
-	 * @return a new {@link Attribute}
-	 */
-	static <T> Attribute<T> attribute(EntityType entityType, String name, TypeReference<T> typeReference) {
-		return attribute(entityType, name, requireNonNull(typeReference).rawType());
-	}
-
-	/**
-	 * Creates a new {@link Attribute}, associated with the given entityType.
+	 * <p>Used by {@link EntityType}, applications use {@link EntityType#attribute(String, Class)}.
 	 * @param entityType the entityType owning this attribute
 	 * @param name the attribute name
 	 * @param type the class representing the attribute value type
