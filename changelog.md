@@ -68,6 +68,7 @@ Codion Change Log
 - EntityValidator.validated() parameter now Attribute instead of AttributeDefinition.
 - EntityValidationException.attributes() renamed exceptions().
 - AttributeDefinition.format(value) renamed formatted().
+- AbstractReport.reportPath now private, reportPath() accessor added.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

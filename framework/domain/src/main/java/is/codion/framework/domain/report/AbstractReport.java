@@ -33,7 +33,7 @@ public abstract class AbstractReport<T, P extends @Nullable Object, R> implement
 	/**
 	 * The path of this report, relative to any defined #{@link Report#REPORT_PATH}.
 	 */
-	protected final String reportPath;
+	private final String reportPath;
 
 	private final boolean cacheReport;
 
@@ -81,6 +81,13 @@ public abstract class AbstractReport<T, P extends @Nullable Object, R> implement
 	 */
 	protected String fullReportPath() {
 		return Report.fullReportPath(reportPath);
+	}
+
+	/**
+	 * @return the report path
+	 */
+	protected final String reportPath() {
+		return reportPath;
 	}
 
 	/**

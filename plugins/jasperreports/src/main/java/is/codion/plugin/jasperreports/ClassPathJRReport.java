@@ -39,9 +39,9 @@ final class ClassPathJRReport extends AbstractJRReport {
 	@Override
 	public JasperReport load() {
 		try {
-			URL resource = resourceClass.getResource(reportPath);
+			URL resource = resourceClass.getResource(reportPath());
 			if (resource == null) {
-				throw new ReportException("Unable to load resource: " + reportPath);
+				throw new ReportException("Unable to load resource: " + reportPath());
 			}
 			return (JasperReport) JRLoader.loadObject(resource);
 		}
@@ -49,12 +49,12 @@ final class ClassPathJRReport extends AbstractJRReport {
 			throw e;
 		}
 		catch (Exception e) {
-			throw new ReportException("Unable to load report '" + reportPath + "' from classpath", e);
+			throw new ReportException("Unable to load report '" + reportPath() + "' from classpath", e);
 		}
 	}
 
 	@Override
 	protected String fullReportPath() {
-		return resourceClass.getName() + " " + reportPath;
+		return resourceClass.getName() + " " + reportPath();
 	}
 }
