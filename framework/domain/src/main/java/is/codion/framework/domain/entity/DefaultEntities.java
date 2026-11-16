@@ -101,7 +101,7 @@ final class DefaultEntities implements Entities, Serializable {
 
 	@Override
 	public Entity.Key primaryKey(EntityType entityType, @Nullable Object value) {
-		return definition(entityType).primaryKey(value);
+		return definitionInternal(requireNonNull(entityType).name()).primaryKey(value);
 	}
 
 	@Override
@@ -111,7 +111,7 @@ final class DefaultEntities implements Entities, Serializable {
 
 	@Override
 	public List<Entity.Key> primaryKeys(EntityType entityType, Collection<?> values) {
-		EntityDefinition definition = definition(entityType);
+		DefaultEntityDefinition definition = definitionInternal(requireNonNull(entityType).name());
 
 		return requireNonNull(values).stream()
 						.map(definition::primaryKey)
@@ -181,8 +181,8 @@ final class DefaultEntities implements Entities, Serializable {
 						});
 	}
 
-	private EntityDefinition definitionInternal(String entityTypeName) {
-		EntityDefinition definition = entityDefinitions.get(entityTypeName);
+	private DefaultEntityDefinition definitionInternal(String entityTypeName) {
+		DefaultEntityDefinition definition = entityDefinitions.get(entityTypeName);
 		if (definition == null) {
 			throw new IllegalArgumentException("Undefined entity: " + entityTypeName);
 		}

@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
@@ -47,13 +48,6 @@ public final class EntityValidationException extends Exception {
 	public EntityValidationException(String message) {
 		super(requireNonNull(message));
 		this.exceptions = emptyList();
-	}
-
-	/**
-	 * @param exception the attribute validation exception
-	 */
-	public EntityValidationException(AttributeValidationException exception) {
-		this(singleton(requireNonNull(exception)));
 	}
 
 	/**

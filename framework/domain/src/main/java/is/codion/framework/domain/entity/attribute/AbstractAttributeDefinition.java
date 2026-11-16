@@ -341,6 +341,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private static final String NO_RESOURCE_BUNDLE_SPECIFIED_FOR_ENTITY = "No resource bundle specified for entity: ";
 		private static final String RESOURCE = "Resource ";
 		private static final String NOT_FOUND_IN_BUNDLE = " not found in bundle: ";
+		private static final String MNEMONIC_RESOURCE_SUFFIX = ".mnemonic";
+		private static final String DESCRIPTION_RESOURCE_SUFFIX = ".description";
 
 		private final Attribute<T> attribute;
 

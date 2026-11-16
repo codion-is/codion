@@ -76,11 +76,20 @@ public abstract class AbstractReport<T, P extends @Nullable Object, R> implement
 	}
 
 	/**
-	 * This default implementation uses {@link Report#fullReportPath(String)}.
+	 * This default implementation combines the report location specified by {@link Report#REPORT_PATH}
+	 * and the path of this report.
 	 * @return a unique path for this report
+	 * @throws java.util.NoSuchElementException in case {@link Report#REPORT_PATH} is not specified
 	 */
 	protected String fullReportPath() {
-		return Report.fullReportPath(reportPath);
+		String slash = "/";
+		String reportLocation = Report.reportPath();
+		StringBuilder builder = new StringBuilder(reportLocation);
+		if (!reportLocation.endsWith(slash) && !reportPath.startsWith(slash)) {
+			builder.append(slash);
+		}
+
+		return builder.append(reportPath).toString();
 	}
 
 	/**

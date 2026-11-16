@@ -760,29 +760,12 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 		@Nullable <T> T value();
 
 		/**
-		 * Returns the value of this key, wrapped in an {@link Optional}. Note that this method throws an exception if this key is a composite key.
-		 * @param <T> the value type
-		 * @return the first value contained in this key, wrapped in an {@link Optional}, useful for single attribute keys
-		 * @throws IllegalStateException in case this is a composite key
-		 * @throws NoSuchElementException in case this key contains no values
-		 */
-		<T> Optional<T> optional();
-
-		/**
 		 * @param column the column
 		 * @param <T> the value type
 		 * @return the value associated with the given column
 		 * @throws IllegalArgumentException in case this column is not part of this key
 		 */
 		@Nullable <T> T get(Column<T> column);
-
-		/**
-		 * @param column the column
-		 * @param <T> the value type
-		 * @return the value associated with the given column, wrapped in an {@link Optional}
-		 * @throws IllegalArgumentException in case this column is not part of this key
-		 */
-		<T> Optional<T> optional(Column<T> column);
 
 		/**
 		 * Creates a new {@link Builder} instance, initialized with the values in this key.

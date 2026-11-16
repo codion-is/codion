@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 
 import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 import static java.util.Collections.unmodifiableList;
@@ -101,22 +100,12 @@ final class CompositeColumnKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public <T> Optional<T> optional() {
-		return Optional.ofNullable(value());
-	}
-
-	@Override
 	public @Nullable <T> T get(Column<T> column) {
 		if (!values.containsKey(requireNonNull(column))) {
 			throw new IllegalArgumentException("Column " + column + " is not part of key: " + definition.type());
 		}
 
 		return (T) values.get(column);
-	}
-
-	@Override
-	public <T> Optional<T> optional(Column<T> column) {
-		return Optional.ofNullable(get(column));
 	}
 
 	@Override

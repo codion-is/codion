@@ -22,7 +22,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.io.Serializable;
-import java.text.Format;
 import java.util.function.Function;
 
 /**
@@ -61,14 +60,6 @@ public interface EntityFormatter extends Function<Entity, String>, Serializable 
 		 * @return this {@link Builder} instance
 		 */
 		Builder value(Attribute<?> attribute);
-
-		/**
-		 * Adds the value of the given attribute to this {@link Builder}, formatted with the given format
-		 * @param attribute the attribute which value should be added to the string representation
-		 * @param format the Format to use when appending the value
-		 * @return this {@link Builder} instance
-		 */
-		Builder value(Attribute<?> attribute, Format format);
 
 		/**
 		 * Adds the value mapped to the given attribute in the {@link Entity} instance mapped to the given foreign key

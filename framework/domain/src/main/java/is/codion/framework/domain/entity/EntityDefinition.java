@@ -281,15 +281,6 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	Entity entity(Map<? extends Attribute<?>, ?> values, Map<? extends Attribute<?>, ?> originalValues);
 
 	/**
-	 * Creates a new {@link Entity.Key} instance based on this definition, initialised with the given value
-	 * @param value the key value, assuming a single value key
-	 * @return a new {@link Entity.Key} instance
-	 * @throws IllegalStateException in case the given primary key is a composite key
-	 * @throws IllegalArgumentException in case the value is not of the correct type
-	 */
-	Entity.Key primaryKey(@Nullable Object value);
-
-	/**
 	 * Creates an empty, immutable entity with a custom string representation.
 	 * This is useful for placeholder entities such as null items in combo boxes.
 	 * <p>The returned entity has no attribute values set and cannot be modified.

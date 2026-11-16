@@ -180,24 +180,6 @@ public sealed interface AttributeDefinition<T>
 	PropertyValue<Boolean> LEXICAL_STRING_COMPARATOR = booleanValue("codion.domain.lexicalStringComparator", true);
 
 	/**
-	 * The suffix used for the mnemonic resource key.
-	 * <ul>
-	 * <li>name=Name
-	 * <li>name.mnemonic=N
-	 * </ul>
-	 */
-	String MNEMONIC_RESOURCE_SUFFIX = ".mnemonic";
-
-	/**
-	 * The suffix used for the description resource key.
-	 * <ul>
-	 * <li>name=Name
-	 * <li>name.description=The customer name
-	 * </ul>
-	 */
-	String DESCRIPTION_RESOURCE_SUFFIX = ".description";
-
-	/**
 	 * The {@link Attribute} this definition is based on, should be unique within an Entity.
 	 * By default, the {@link Attribute#name()} serves as column name for database columns.
 	 * @return the attribute this definition is based on
@@ -360,7 +342,8 @@ public sealed interface AttributeDefinition<T>
 
 		/**
 		 * Specifies the key to use when retrieving the mnemonic for this attribute from the entity resource bundle,
-		 * in case it differs from {@link Attribute#name()} + {@link #MNEMONIC_RESOURCE_SUFFIX}, which is the default value.
+		 * in case it differs from {@link Attribute#name()} + {@code .mnemonic}, which is the default value,
+		 * {@code name.mnemonic=N} for an attribute named {@code name}.
 		 * @param mnemonicResourceKey the mnemonic resource bundle key
 		 * @return this builder instance
 		 * @throws IllegalStateException in case the mnemonic has already been set
@@ -465,7 +448,8 @@ public sealed interface AttributeDefinition<T>
 
 		/**
 		 * Specifies the key to use when retrieving the description for this attribute from the entity resource bundle,
-		 * in case it differs from {@link Attribute#name()} + {@link #DESCRIPTION_RESOURCE_SUFFIX}, which is the default value.
+		 * in case it differs from {@link Attribute#name()} + {@code .description}, which is the default value,
+		 * {@code name.description=The customer name} for an attribute named {@code name}.
 		 * @param descriptionResourceKey the description resource bundle key
 		 * @return this builder instance
 		 * @throws IllegalStateException in case the description has already been set
@@ -477,7 +461,8 @@ public sealed interface AttributeDefinition<T>
 
 		/**
 		 * Specifies the key to use when retrieving the description for this attribute from the given resource bundle,
-		 * in case it differs from {@link Attribute#name()} + {@link #DESCRIPTION_RESOURCE_SUFFIX}, which is the default value.
+		 * in case it differs from {@link Attribute#name()} + {@code .description}, which is the default value,
+		 * {@code name.description=The customer name} for an attribute named {@code name}.
 		 * @param resourceBundleName the resource bundle name
 		 * @param descriptionResourceKey the description resource bundle key
 		 * @return this builder instance

@@ -81,6 +81,7 @@ Codion Change Log
 - DomainModel, the exception messages for a report already defined and a report not found now worded as the ones for procedures and functions.
 - DerivedAttributeDefinition.DerivedBuilder.cached() and TransientAttributeDefinition.Builder.modifies() now return the builder type parameter, as the other builder methods do.
 - Attribute.attribute(EntityType, String, TypeReference) and Column.column(EntityType, String, TypeReference) removed, used by the framework alone, EntityType.attribute() and column() being the ones to use.
+- Entity.Key.optional() and optional(Column), EntityDefinition.primaryKey(value), EntityFormatter.Builder.value(Attribute, Format), EntityValidationException(AttributeValidationException), AttributeDefinition.MNEMONIC_RESOURCE_SUFFIX and DESCRIPTION_RESOURCE_SUFFIX and Report.fullReportPath(String) removed, used by nothing outside their packages.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

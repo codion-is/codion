@@ -26,7 +26,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -45,13 +44,6 @@ final class DefaultEntityFormatterBuilder implements Builder {
 	public Builder value(Attribute<?> attribute) {
 		validateEntityType(attribute);
 		valueProviders.add(new StringValueProvider(attribute));
-		return this;
-	}
-
-	@Override
-	public Builder value(Attribute<?> attribute, Format format) {
-		validateEntityType(attribute);
-		valueProviders.add(new FormattedValueProvider(attribute, format));
 		return this;
 	}
 
@@ -79,29 +71,6 @@ final class DefaultEntityFormatterBuilder implements Builder {
 		}
 		else if (!attribute.entityType().equals(entityType)) {
 			throw new IllegalArgumentException("entityType " + entityType + " expected, got: " + attribute.entityType());
-		}
-	}
-
-	private static final class FormattedValueProvider implements Function<Entity, String>, Serializable {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private final Attribute<?> attribute;
-		private final Format format;
-
-		private FormattedValueProvider(Attribute<?> attribute, Format format) {
-			this.attribute = requireNonNull(attribute);
-			this.format = requireNonNull(format);
-		}
-
-		@Override
-		public String apply(Entity entity) {
-			if (!entity.present(attribute)) {
-				return "";
-			}
-
-			return format.format(entity.get(attribute));
 		}
 	}
 

@@ -539,13 +539,13 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void compositeKeySingleValueConstructor() {
 		assertThrows(IllegalStateException.class, () -> new TestDomain().entities()
-						.definition(CompositeMaster.TYPE).primaryKey(1L));
+						.primaryKey(CompositeMaster.TYPE, 1L));
 	}
 
 	@Test
 	void singleValueConstructorWrongType() {
 		assertThrows(IllegalArgumentException.class, () -> new TestDomain().entities()
-						.definition(Department.TYPE).primaryKey(1L));
+						.primaryKey(Department.TYPE, 1L));
 	}
 
 	@Test

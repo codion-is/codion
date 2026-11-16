@@ -26,7 +26,6 @@ import java.sql.Connection;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
-import static java.util.Objects.requireNonNull;
 
 /**
  * A wrapper for a report
@@ -93,24 +92,5 @@ public interface Report<T, P extends @Nullable Object, R> {
 	 */
 	static String reportPath() {
 		return REPORT_PATH.getOrThrow("codion.report.path is not specified");
-	}
-
-	/**
-	 * Returns a full report path, combined from the report location specified by {@link #REPORT_PATH}
-	 * and the given report path.
-	 * @param reportPath the report path relative to {@link Report#REPORT_PATH}.
-	 * @return a full report path
-	 * @throws java.util.NoSuchElementException in case {@link Report#REPORT_PATH} is not specified
-	 */
-	static String fullReportPath(String reportPath) {
-		requireNonNull(reportPath);
-		String slash = "/";
-		String reportLocation = reportPath();
-		StringBuilder builder = new StringBuilder(reportLocation);
-		if (!reportLocation.endsWith(slash) && !reportPath.startsWith(slash)) {
-			builder.append(slash);
-		}
-
-		return builder.append(reportPath).toString();
 	}
 }

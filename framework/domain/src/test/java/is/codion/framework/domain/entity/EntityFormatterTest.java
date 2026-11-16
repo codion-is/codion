@@ -25,7 +25,6 @@ import is.codion.framework.domain.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,8 +50,6 @@ public class EntityFormatterTest {
 						.with(Employee.HIREDATE, hiredate)
 						.build();
 
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
-
 		Function<Entity, String> employeeToString = EntityFormatter.builder()
 						.value(Employee.NAME)
 						.text(" (department: ")
@@ -60,11 +57,11 @@ public class EntityFormatterTest {
 						.text(", location: ")
 						.value(Employee.DEPARTMENT_FK, Department.LOCATION)
 						.text(", hiredate: ")
-						.value(Employee.HIREDATE, dateFormat.toFormat())
+						.value(Employee.HIREDATE)
 						.text(")")
 						.build();
 
-		assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.apply(employee));
+		assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + employee.formatted(Employee.HIREDATE) + ")", employeeToString.apply(employee));
 
 		department.set(Department.LOCATION, null);
 		department.set(Department.NAME, null);
@@ -80,7 +77,7 @@ public class EntityFormatterTest {
 						.text(", location: ")
 						.value(Employee.DEPARTMENT_FK, Department.LOCATION)
 						.text(", hiredate: ")
-						.value(Employee.HIREDATE, dateFormat.toFormat())
+						.value(Employee.HIREDATE)
 						.text(")")
 						.build();
 

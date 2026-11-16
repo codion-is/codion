@@ -29,7 +29,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 
 import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 import static java.util.Collections.singletonList;
@@ -96,22 +95,10 @@ final class SingleColumnKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public <T> Optional<T> optional() {
-		return Optional.ofNullable((T) value);
-	}
-
-	@Override
 	public <T> @Nullable T get(Column<T> column) {
 		validate(column);
 
 		return (T) value;
-	}
-
-	@Override
-	public <T> Optional<T> optional(Column<T> column) {
-		validate(column);
-
-		return optional();
 	}
 
 	@Override

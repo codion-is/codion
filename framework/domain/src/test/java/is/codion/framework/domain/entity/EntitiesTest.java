@@ -269,7 +269,6 @@ public final class EntitiesTest {
 							() -> entities.primaryKey(KeyTest.TYPE, 1),
 							"Should not create primary key for composite key entity");
 			assertThrows(NoSuchElementException.class, key::value);
-			assertThrows(NoSuchElementException.class, key::optional);
 			assertThrows(NoSuchElementException.class, key::column);
 		}
 
@@ -285,7 +284,7 @@ public final class EntitiesTest {
 
 			assertTrue(key.present());
 			assertEquals(6, key.hashCode());
-			assertTrue(key.optional(KeyTest.ID1).isPresent());
+			assertTrue(key.present(KeyTest.ID1));
 
 			// Update one value
 			key = key.copy().with(KeyTest.ID2, 3).build();
@@ -299,12 +298,12 @@ public final class EntitiesTest {
 			// Set another value to null making key null
 			key = key.copy().with(KeyTest.ID2, null).build();
 			assertFalse(key.present());
-			assertFalse(key.optional(KeyTest.ID2).isPresent());
+			assertFalse(key.present(KeyTest.ID2));
 			assertEquals(0, key.hashCode());
 
 			// Add value back
 			key = key.copy().with(KeyTest.ID2, 4).build();
-			assertTrue(key.optional(KeyTest.ID2).isPresent());
+			assertTrue(key.present(KeyTest.ID2));
 			assertTrue(key.present());
 			assertEquals(5, key.hashCode());
 
