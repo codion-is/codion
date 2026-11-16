@@ -83,7 +83,7 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 		this(requireNonNull(foreignKey).referencedType(), connection);
 		ForeignKeys foreignKeys = connection.entities().definition(foreignKey.entityType()).foreignKeys();
 		nullable(foreignKeys.nullable(foreignKey));
-		attributes(foreignKeys.definition(foreignKey).attributes());
+		attributes(foreignKeys.definition(foreignKey).include());
 	}
 
 	@Override

@@ -2146,11 +2146,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 
 	private static Collection<Attribute<?>> attributesToSelect(ForeignKeyDefinition foreignKeyDefinition,
 																														 Collection<? extends Attribute<?>> referencedAttributes) {
-		if (foreignKeyDefinition.attributes().isEmpty()) {
+		if (foreignKeyDefinition.include().isEmpty()) {
 			return emptyList();
 		}
 
-		Set<Attribute<?>> selectAttributes = new HashSet<>(foreignKeyDefinition.attributes());
+		Set<Attribute<?>> selectAttributes = new HashSet<>(foreignKeyDefinition.include());
 		selectAttributes.addAll(referencedAttributes);
 
 		return selectAttributes;

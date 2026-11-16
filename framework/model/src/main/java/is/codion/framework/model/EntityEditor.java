@@ -855,7 +855,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see EntityComboBoxModel.Builder#nullable(boolean)
 		 * @see ValueAttributeDefinition#nullable()
 		 * @see EntityComboBoxModel.Builder#attributes(Collection)
-		 * @see ForeignKeyDefinition#attributes()
+		 * @see ForeignKeyDefinition#include()
 		 */
 		EntityComboBoxModel create(ForeignKey foreignKey);
 
@@ -912,7 +912,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see EntityComboBoxModel.Builder#nullable(boolean)
 		 * @see ValueAttributeDefinition#nullable()
 		 * @see EntityComboBoxModel.Builder#attributes(Collection)
-		 * @see ForeignKeyDefinition#attributes()
+		 * @see ForeignKeyDefinition#include()
 		 */
 		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnection connection) {
 			return EntityComboBoxModel.builder()

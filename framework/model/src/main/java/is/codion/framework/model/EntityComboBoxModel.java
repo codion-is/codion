@@ -133,7 +133,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 			 * columns always included, see {@link EntityComboBoxModel.Builder#attributes(Collection)}.
 			 * @param foreignKey the foreign key which referenced entity type this combo box model should represent
 			 * @return a new {@link ConnectionStep} instance
-			 * @see ForeignKeyDefinition#attributes()
+			 * @see ForeignKeyDefinition#include()
 			 * @see EntityDefinition.ForeignKeys#nullable(ForeignKey)
 			 * @see EntityComboBoxModel.Builder#nullable(boolean)
 			 * @see EntityComboBoxModel.Builder#attributes(Collection)

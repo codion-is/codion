@@ -78,7 +78,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * // in the data, causes infinite recursion, since no cycle detection is performed // @end}
  * @see #referenceDepth()
  * @see #soft()
- * @see #attributes()
+ * @see #include()
  * @see Entities#VALIDATE_FOREIGN_KEYS
  */
 public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity> permits DefaultForeignKeyDefinition {
@@ -128,9 +128,9 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	List<ForeignKey.Reference<?>> references();
 
 	/**
-	 * @return the attributes to select when fetching entities referenced via this foreign key, an empty list in case of all attributes
+	 * @return the attributes to include when fetching entities referenced via this foreign key, an empty list in case of all attributes
 	 */
-	List<Attribute<?>> attributes();
+	List<Attribute<?>> include();
 
 	/**
 	 * Validates the value of this attribute as found in the given entity.

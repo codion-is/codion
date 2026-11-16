@@ -44,14 +44,14 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 	private static final long serialVersionUID = 1;
 
 	private final Set<Column<?>> readOnlyColumns;
-	private final List<Attribute<?>> attributes;
+	private final List<Attribute<?>> include;
 	private final @Nullable Integer referenceDepth;
 	private final boolean soft;
 
 	private DefaultForeignKeyDefinition(DefaultForeignKeyDefinitionBuilder builder) {
 		super(builder);
 		this.readOnlyColumns = builder.readOnlyColumns;
-		this.attributes = builder.attributes;
+		this.include = builder.include;
 		this.referenceDepth = builder.referenceDepth;
 		this.soft = builder.soft;
 	}
@@ -87,8 +87,8 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 	}
 
 	@Override
-	public List<Attribute<?>> attributes() {
-		return attributes;
+	public List<Attribute<?>> include() {
+		return include;
 	}
 
 	@Override
@@ -104,7 +104,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
 		private final EntityType referencedType;
 
-		private List<Attribute<?>> attributes = emptyList();
+		private List<Attribute<?>> include = emptyList();
 		private boolean soft = false;
 		private @Nullable Integer referenceDepth;
 
@@ -137,7 +137,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 				}
 				attributeSet.add(attribute);
 			}
-			this.attributes = unmodifiableList(new ArrayList<>(attributeSet));
+			this.include = unmodifiableList(new ArrayList<>(attributeSet));
 
 			return this;
 		}
