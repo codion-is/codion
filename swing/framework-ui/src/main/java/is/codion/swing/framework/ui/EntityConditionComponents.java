@@ -142,7 +142,7 @@ public class EntityConditionComponents implements ConditionComponents {
 						.selector(selector(column))
 						.link(conditionModel.operands().in())
 						// the captions of a column based on items and the date and time pattern as well
-						.formatter(entityDefinition.columns().definition(column)::format)
+						.formatter(entityDefinition.columns().definition(column)::formatted)
 						.comparator(comparator(column))
 						.caption(conditionModel.caption().orElse(null))
 						.build();
@@ -152,7 +152,7 @@ public class EntityConditionComponents implements ConditionComponents {
 	private <T> Comparator<T> comparator(Column<T> column) {
 		ColumnDefinition<T> definition = entityDefinition.columns().definition(column);
 
-		return definition.items().isEmpty() ? Text.comparator() : comparing(definition::format, Text.collator());
+		return definition.items().isEmpty() ? Text.comparator() : comparing(definition::formatted, Text.collator());
 	}
 
 	// the values of a column displayed in a combo box, see component()

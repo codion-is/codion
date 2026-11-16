@@ -151,7 +151,7 @@ final class EntityViewer {
 			}
 
 			private static String createValueString(@Nullable Object value, AttributeDefinition<Object> attributeDefinition, boolean trim) {
-				String formatted = value == null ? "<null>" : attributeDefinition.format(value);
+				String formatted = value == null ? "<null>" : attributeDefinition.formatted(value);
 				if (trim && formatted.length() > MAXIMUM_VALUE_LENGTH) {
 					formatted = formatted.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
 				}

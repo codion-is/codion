@@ -147,7 +147,7 @@ public final class EntityConditionComponentsTest {
 			MultiInput<?, ?> hiredates = (MultiInput<?, ?>) components.in(hiredate);
 			LocalDate date = LocalDate.of(2026, 11, 4);
 			hiredate.operands().in().set(Set.of(date));
-			String formatted = CONNECTION.entities().definition(Employee.TYPE).columns().definition(Employee.HIREDATE).format(date);
+			String formatted = CONNECTION.entities().definition(Employee.TYPE).columns().definition(Employee.HIREDATE).formatted(date);
 			assertNotEquals(date.toString(), formatted);
 			assertEquals("<html>" + formatted + "</html>", ((JToggleButton) hiredates.getComponent(1)).getToolTipText());
 		});

@@ -74,7 +74,7 @@ public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory
 
 	static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> configure(AttributeDefinition<T> attributeDefinition,
 																																								FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> renderer) {
-		renderer.formatter(attributeDefinition::format)
+		renderer.formatter(attributeDefinition::formatted)
 						.customizer(new ConditionIndicator());
 		if (itemBased(attributeDefinition)) {
 			// Otherwise the horizontal aligment is based on the Item value type

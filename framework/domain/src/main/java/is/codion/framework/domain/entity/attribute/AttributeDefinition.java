@@ -234,7 +234,7 @@ public sealed interface AttributeDefinition<T>
 	 * @param value the value to format.
 	 * @return the value formatted as a string
 	 */
-	String format(@Nullable T value);
+	String formatted(@Nullable T value);
 
 	/**
 	 * @return true if this attribute should be hidden in table views

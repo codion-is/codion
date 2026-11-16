@@ -143,14 +143,14 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	@Override
-	public final String format(T value) {
+	public final String formatted(T value) {
 		if (itemMap != null) {
 			Item<T> item = itemMap.get(value);
 
 			return item == null ? invalidItemString(value) : item.caption();
 		}
 
-		return super.format(value);
+		return super.formatted(value);
 	}
 
 	@Override

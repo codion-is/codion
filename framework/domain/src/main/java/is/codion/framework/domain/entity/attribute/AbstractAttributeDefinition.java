@@ -148,7 +148,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public String format(T value) {
+	public String formatted(T value) {
 		if (value == null) {
 			return "";
 		}

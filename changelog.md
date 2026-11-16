@@ -67,6 +67,7 @@ Codion Change Log
 - ForeignKeyDefinition.attributes() renamed include().
 - EntityValidator.validated() parameter now Attribute instead of AttributeDefinition.
 - EntityValidationException.attributes() renamed exceptions().
+- AttributeDefinition.format(value) renamed formatted().
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

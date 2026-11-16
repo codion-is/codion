@@ -718,7 +718,7 @@ public final class EntityComponents {
 
 		@Override
 		public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-			toAppendTo.append(attributeDefinition.format(obj));
+			toAppendTo.append(attributeDefinition.formatted(obj));
 
 			return toAppendTo;
 		}
