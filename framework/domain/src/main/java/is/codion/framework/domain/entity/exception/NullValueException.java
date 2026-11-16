@@ -20,10 +20,15 @@ package is.codion.framework.domain.entity.exception;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 
+import java.io.Serial;
+
 /**
  * Indicates that a non-null attribute has a null value.
  */
 public final class NullValueException extends AttributeValidationException {
+
+	@Serial
+	private static final long serialVersionUID = 1;
 
 	/**
 	 * @param attribute the attribute

@@ -20,6 +20,7 @@ package is.codion.framework.domain.entity.exception;
 
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -34,6 +35,9 @@ import static java.util.stream.Collectors.toSet;
  * accessible via {@link #exceptions()} or a general validation failure.
  */
 public final class EntityValidationException extends Exception {
+
+	@Serial
+	private static final long serialVersionUID = 1;
 
 	private final Collection<AttributeValidationException> exceptions;
 

@@ -22,12 +22,17 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 
 import org.jspecify.annotations.Nullable;
 
+import java.io.Serial;
+
 import static java.util.Objects.requireNonNull;
 
 /**
  * Indicates that an attribute value is invalid.
  */
 public class AttributeValidationException extends Exception {
+
+	@Serial
+	private static final long serialVersionUID = 1;
 
 	private final Attribute<?> attribute;
 	private final @Nullable Object value;

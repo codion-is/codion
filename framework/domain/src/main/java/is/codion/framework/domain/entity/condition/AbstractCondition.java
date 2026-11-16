@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +36,9 @@ import static java.util.Objects.requireNonNull;
  */
 abstract sealed class AbstractCondition implements Condition, Serializable
 				permits AbstractColumnCondition, DefaultAllCondition, DefaultConditionCombination, DefaultCustomCondition {
+
+	@Serial
+	private static final long serialVersionUID = 1;
 
 	private final EntityType entityType;
 	private final List<Column<?>> columns;

@@ -22,11 +22,16 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 
 import org.jspecify.annotations.Nullable;
 
+import java.io.Serial;
+
 /**
  * Indicates an invalid item.
  * @see is.codion.common.utilities.item.Item
  */
 public final class InvalidItemException extends AttributeValidationException {
+
+	@Serial
+	private static final long serialVersionUID = 1;
 
 	/**
 	 * @param attribute the attribute
