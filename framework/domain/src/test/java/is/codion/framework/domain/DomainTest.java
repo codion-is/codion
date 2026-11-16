@@ -27,6 +27,9 @@ import is.codion.framework.domain.operation.DatabaseFunction;
 import is.codion.framework.domain.operation.DatabaseProcedure;
 import is.codion.framework.domain.operation.FunctionType;
 import is.codion.framework.domain.operation.ProcedureType;
+import is.codion.framework.domain.report.AbstractReport;
+import is.codion.framework.domain.report.Report;
+import is.codion.framework.domain.report.ReportType;
 
 import org.junit.jupiter.api.Test;
 
@@ -160,9 +163,51 @@ public class DomainTest {
 	}
 
 	@Test
-	void frocedureNonExisting() {
+	void procedureNonExisting() {
 		ProcedureType<?, ?> procedureType = ProcedureType.procedureType("nonexisting");
 		assertThrows(IllegalArgumentException.class, () -> domain.procedure(procedureType));
+	}
+
+	@Test
+	void reportNonExisting() {
+		ReportType<?, ?> reportType = ReportType.reportType("nonexisting");
+		assertThrows(IllegalArgumentException.class, () -> domain.report(reportType));
+	}
+
+	@Test
+	void operationAndReportMessages() {
+		// The same two errors, worded the same way for the three kinds
+		ProcedureType<Connection, Object> procedureType = ProcedureType.procedureType("procedure");
+		FunctionType<Connection, Object, Object> functionType = FunctionType.functionType("function");
+		ReportType<Object, Object> reportType = ReportType.reportType("report");
+		assertEquals("Procedure not found: procedure",
+						assertThrows(IllegalArgumentException.class, () -> domain.procedure(procedureType)).getMessage());
+		assertEquals("Function not found: function",
+						assertThrows(IllegalArgumentException.class, () -> domain.function(functionType)).getMessage());
+		assertEquals("Report not found: report",
+						assertThrows(IllegalArgumentException.class, () -> domain.report(reportType)).getMessage());
+		DatabaseProcedure<Connection, Object> procedure = (connection, parameter) -> {};
+		DatabaseFunction<Connection, Object, Object> function = (connection, parameter) -> null;
+		Report<Object, Object, Object> report = new AbstractReport<Object, Object, Object>("report", false) {
+			@Override
+			public Object fill(Connection connection, Object parameters) {
+				return "filled";
+			}
+
+			@Override
+			public Object load() {
+				return "loaded";
+			}
+		};
+		domain.add(procedureType, procedure);
+		domain.add(functionType, function);
+		domain.add(reportType, report);
+		assertEquals("Procedure already defined: procedure",
+						assertThrows(IllegalArgumentException.class, () -> domain.add(procedureType, procedure)).getMessage());
+		assertEquals("Function already defined: function",
+						assertThrows(IllegalArgumentException.class, () -> domain.add(functionType, function)).getMessage());
+		assertEquals("Report already defined: report",
+						assertThrows(IllegalArgumentException.class, () -> domain.add(reportType, report)).getMessage());
 	}
 
 	@Test

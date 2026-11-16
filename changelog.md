@@ -78,6 +78,7 @@ Codion Change Log
 - Entities.primaryKey() and primaryKeys(), EntityDefinition.primaryKey(), Entity.formatted(), EntityDefinition.Attributes.derivedFrom() and ForeignKeys.definitions(), type parameter removed, each one appearing once and checking nothing, the key values now Object and the attributes and columns wildcards.
 - ConditionType bug fixed, toString() now returns the entity type and name, where it was not implemented, so that the message of a condition string not found named the instance by its identity hash.
 - Conditions and the validation exceptions, serialVersionUID added to AbstractCondition, AttributeValidationException, EntityValidationException, InvalidItemException and NullValueException.
+- DomainModel, the exception messages for a report already defined and a report not found now worded as the ones for procedures and functions.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

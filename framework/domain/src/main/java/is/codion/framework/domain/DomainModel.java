@@ -94,12 +94,7 @@ public abstract class DomainModel implements Domain {
 
 	@Override
 	public final <P extends @Nullable Object, R> Report<?, P, R> report(ReportType<P, R> reportType) {
-		Report<?, P, R> report = domainReports.report(reportType);
-		if (report == null) {
-			throw new IllegalArgumentException("Undefined report: " + reportType);
-		}
-
-		return report;
+		return domainReports.report(reportType);
 	}
 
 	@Override
@@ -306,14 +301,19 @@ public abstract class DomainModel implements Domain {
 
 		private <T, P extends @Nullable Object, R> void addReport(ReportType<P, R> reportType, Report<T, P, R> report) {
 			if (reports.containsKey(requireNonNull(reportType))) {
-				throw new IllegalArgumentException("Report has already been defined: " + reportType);
+				throw new IllegalArgumentException("Report already defined: " + reportType);
 			}
 			requireNonNull(report).load();
 			reports.put(reportType, report);
 		}
 
 		private <P extends @Nullable Object, R> Report<?, P, R> report(ReportType<P, R> reportType) {
-			return (Report<?, P, R>) reports.get(requireNonNull(reportType));
+			Report<?, P, R> report = (Report<?, P, R>) reports.get(requireNonNull(reportType));
+			if (report == null) {
+				throw new IllegalArgumentException("Report not found: " + reportType);
+			}
+
+			return report;
 		}
 	}
 }
