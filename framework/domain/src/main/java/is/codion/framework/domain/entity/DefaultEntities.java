@@ -22,6 +22,8 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serial;
@@ -98,17 +100,17 @@ final class DefaultEntities implements Entities, Serializable {
 	}
 
 	@Override
-	public <T> Entity.Key primaryKey(EntityType entityType, T value) {
+	public Entity.Key primaryKey(EntityType entityType, @Nullable Object value) {
 		return definition(entityType).primaryKey(value);
 	}
 
 	@Override
-	public <T> List<Entity.Key> primaryKeys(EntityType entityType, T... values) {
+	public List<Entity.Key> primaryKeys(EntityType entityType, Object... values) {
 		return primaryKeys(entityType, asList(values));
 	}
 
 	@Override
-	public <T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<? extends T> values) {
+	public List<Entity.Key> primaryKeys(EntityType entityType, Collection<?> values) {
 		EntityDefinition definition = definition(entityType);
 
 		return requireNonNull(values).stream()

@@ -159,10 +159,9 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 * This method returns a String representation of the value associated with the given attribute,
 	 * if the associated attribute has a format it is used.
 	 * @param attribute the attribute which value to retrieve
-	 * @param <T> the value type
 	 * @return a String representation of the value associated with {@code attribute}
 	 */
-	<T> String formatted(Attribute<T> attribute);
+	String formatted(Attribute<?> attribute);
 
 	/**
 	 * Reverts the value associated with the given attribute to its original value.

@@ -167,13 +167,12 @@ public sealed interface Entities permits DefaultEntities {
 	 * Entity.Key nullKey = entities.primaryKey(Customer.TYPE, null); // @end}
 	 * @param entityType the entityType
 	 * @param value the key value, assumes a single value key
-	 * @param <T> the key value type
 	 * @return a new {@link Entity.Key} instance
 	 * @throws IllegalStateException in case the given primary key is a composite key
 	 * @throws IllegalArgumentException in case the value is not of the correct type
 	 * @throws NullPointerException in case entityType is null
 	 */
-	<T> Entity.Key primaryKey(EntityType entityType, @Nullable T value);
+	Entity.Key primaryKey(EntityType entityType, @Nullable Object value);
 
 	/**
 	 * Creates new {@link Entity.Key} instances of the given entityType, initialised with the given values
@@ -185,13 +184,12 @@ public sealed interface Entities permits DefaultEntities {
 	 * Collection<Entity> customers = connection.select(customerKeys); // @end}
 	 * @param entityType the entityType
 	 * @param values the key values, assumes a single value key
-	 * @param <T> the key value type
 	 * @return new {@link Entity.Key} instances
 	 * @throws IllegalStateException in case the given primary key is a composite key
 	 * @throws IllegalArgumentException in case any of the values is not of the correct type
 	 * @throws NullPointerException in case entityType or values is null
 	 */
-	<T> List<Entity.Key> primaryKeys(EntityType entityType, T... values);
+	List<Entity.Key> primaryKeys(EntityType entityType, Object... values);
 
 	/**
 	 * Creates new {@link Entity.Key} instances of the given entityType, initialised with the given values
@@ -200,13 +198,12 @@ public sealed interface Entities permits DefaultEntities {
 	 * List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, List.of(1L, 2L, 3L, 4L, 5L)); // @end}
 	 * @param entityType the entityType
 	 * @param values the key values, assumes a single value key
-	 * @param <T> the key value type
 	 * @return new {@link Entity.Key} instances
 	 * @throws IllegalStateException in case the given primary key is a composite key
 	 * @throws IllegalArgumentException in case any of the values is not of the correct type
 	 * @throws NullPointerException in case entityType or values is null
 	 */
-	<T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<? extends T> values);
+	List<Entity.Key> primaryKeys(EntityType entityType, Collection<?> values);
 
 	/**
 	 * Creates a new {@link Entities.Configurable} instance for the given domain type.

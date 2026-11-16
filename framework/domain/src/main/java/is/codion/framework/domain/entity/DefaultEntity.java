@@ -174,16 +174,8 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	@Override
-	public final <T> String formatted(Attribute<T> attribute) {
-		AttributeDefinition<T> attributeDefinition = definition.attributes().definition(attribute);
-		if (attribute instanceof ForeignKey && values.get(attribute) == null) {
-			Key key = key((ForeignKey) attribute);
-			if (key != null) {
-				return key.toString();
-			}
-		}
-
-		return attributeDefinition.formatted(cached(attributeDefinition));
+	public final String formatted(Attribute<?> attribute) {
+		return formatted(definition.attributes().definition(attribute));
 	}
 
 	@Override
@@ -378,6 +370,18 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		}
 
 		return unmodifiableSet(originalValues.entrySet());
+	}
+
+	private <T> String formatted(AttributeDefinition<T> attributeDefinition) {
+		Attribute<T> attribute = attributeDefinition.attribute();
+		if (attribute instanceof ForeignKey && values.get(attribute) == null) {
+			Key key = key((ForeignKey) attribute);
+			if (key != null) {
+				return key.toString();
+			}
+		}
+
+		return attributeDefinition.formatted(cached(attributeDefinition));
 	}
 
 	private String createToString() {

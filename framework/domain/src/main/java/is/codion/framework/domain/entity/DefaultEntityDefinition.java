@@ -306,14 +306,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public <T> Entity.Key primaryKey(T value) {
+	public Entity.Key primaryKey(@Nullable Object value) {
 		if (primaryKey.columns().isEmpty()) {
 			throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key");
 		}
 		if (primaryKey.columns().size() > 1) {
 			throw new IllegalStateException(entityType + " has a composite primary key");
 		}
-		Column<T> column = (Column<T>) primaryKey.columns().get(0);
+		Column<Object> column = (Column<Object>) primaryKey.columns().get(0);
 		column.type().validate(value);
 
 		return new SingleColumnKey(this, column, value, true);
@@ -364,7 +364,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public <T> Collection<Attribute<?>> derivedFrom(Attribute<T> attribute) {
+		public Collection<Attribute<?>> derivedFrom(Attribute<?> attribute) {
 			return entityAttributes.derivedAttributes.getOrDefault(requireNonNull(attribute, ATTRIBUTE), emptySet());
 		}
 
@@ -508,7 +508,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public <T> Collection<ForeignKeyDefinition> definitions(Column<T> column) {
+		public Collection<ForeignKeyDefinition> definitions(Column<?> column) {
 			return entityAttributes.columnForeignKeyDefinitions
 							.getOrDefault(requireNonNull(column, COLUMN), emptyList());
 		}

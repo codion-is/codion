@@ -283,12 +283,11 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	/**
 	 * Creates a new {@link Entity.Key} instance based on this definition, initialised with the given value
 	 * @param value the key value, assuming a single value key
-	 * @param <T> the key value type
 	 * @return a new {@link Entity.Key} instance
 	 * @throws IllegalStateException in case the given primary key is a composite key
 	 * @throws IllegalArgumentException in case the value is not of the correct type
 	 */
-	<T> Entity.Key primaryKey(T value);
+	Entity.Key primaryKey(@Nullable Object value);
 
 	/**
 	 * Creates an empty, immutable entity with a custom string representation.
@@ -557,10 +556,9 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		 * Returns the attributes which values are derived from the value of the given attribute,
 		 * an empty collection if no such derived attributes exist
 		 * @param attribute the attribute
-		 * @param <T> the attribute type
 		 * @return a collection containing the attributes which are derived from the given attribute
 		 */
-		<T> Collection<Attribute<?>> derivedFrom(Attribute<T> attribute);
+		Collection<Attribute<?>> derivedFrom(Attribute<?> attribute);
 
 		/**
 		 * @param attribute the attribute
@@ -692,10 +690,9 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 		/**
 		 * @param column the column
-		 * @param <T> the attribute type
 		 * @return the ForeignKeyDefinitions associated with the given column, an empty collection in case none are found
 		 */
-		<T> Collection<ForeignKeyDefinition> definitions(Column<T> column);
+		Collection<ForeignKeyDefinition> definitions(Column<?> column);
 	}
 
 	/**
