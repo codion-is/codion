@@ -587,7 +587,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public Builder orderBy(OrderBy orderBy) {
-			validateAttributes(requireNonNull(orderBy).orderByColumns().stream()
+			validateAttributes(requireNonNull(orderBy).columns().stream()
 							.map(OrderByColumn::column)
 							.collect(toList()));
 			this.orderBy = orderBy;

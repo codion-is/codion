@@ -53,9 +53,9 @@ public final class DefaultOrderByTest {
 						.descendingIgnoreCase(Department.NAME)
 						.ascendingIgnoreCase(Department.LOCATION)
 						.build();
-		assertTrue(orderBy.orderByColumns().get(0).ignoreCase());
-		assertFalse(orderBy.orderByColumns().get(0).ascending());
-		assertTrue(orderBy.orderByColumns().get(1).ignoreCase());
+		assertTrue(orderBy.columns().get(0).ignoreCase());
+		assertFalse(orderBy.columns().get(0).ascending());
+		assertTrue(orderBy.columns().get(1).ignoreCase());
 	}
 
 	@Test

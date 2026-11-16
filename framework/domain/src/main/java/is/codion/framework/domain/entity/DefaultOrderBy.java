@@ -34,15 +34,15 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final List<OrderByColumn> orderByColumns;
+	private final List<OrderByColumn> columns;
 
 	private DefaultOrderBy(DefaultOrderByBuilder builder) {
-		this.orderByColumns = unmodifiableList(builder.orderByColumns);
+		this.columns = unmodifiableList(builder.orderByColumns);
 	}
 
 	@Override
-	public List<OrderByColumn> orderByColumns() {
-		return orderByColumns;
+	public List<OrderByColumn> columns() {
+		return columns;
 	}
 
 	@Override
@@ -54,18 +54,18 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 			return false;
 		}
 		DefaultOrderBy that = (DefaultOrderBy) object;
-		return orderByColumns.equals(that.orderByColumns);
+		return columns.equals(that.columns);
 	}
 
 	@Override
 	public int hashCode() {
-		return orderByColumns.hashCode();
+		return columns.hashCode();
 	}
 
 	@Override
 	public String toString() {
 		return "OrderBy{" +
-						"orderByColumns=" + orderByColumns +
+						"orderByColumns=" + columns +
 						'}';
 	}
 

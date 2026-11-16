@@ -73,7 +73,7 @@ public final class DatabaseObjectMapperTest {
 
 		assertEquals(select.where(), readCondition.where());
 		assertEquals(select.having(), readCondition.having());
-		assertEquals(select.orderBy().orElse(null).orderByColumns(), readCondition.orderBy().get().orderByColumns());
+		assertEquals(select.orderBy().orElse(null).columns(), readCondition.orderBy().get().columns());
 		assertEquals(select.limit(), readCondition.limit());
 		assertEquals(select.offset(), readCondition.offset());
 		assertEquals(select.referenceDepth(), readCondition.referenceDepth());

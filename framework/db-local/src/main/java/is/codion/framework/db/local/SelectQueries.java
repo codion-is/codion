@@ -419,7 +419,7 @@ final class SelectQueries {
 
 		private String createOrderByClause(OrderBy orderBy) {
 			// Convert structured OrderBy object to SQL ORDER BY clause
-			List<OrderBy.OrderByColumn> orderByColumns = orderBy.orderByColumns();
+			List<OrderBy.OrderByColumn> orderByColumns = orderBy.columns();
 			if (orderByColumns.size() == 1) {
 				return columnOrderByClause(definition, orderByColumns.get(0));
 			}

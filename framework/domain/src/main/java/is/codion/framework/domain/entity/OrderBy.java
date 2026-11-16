@@ -75,7 +75,7 @@ public sealed interface OrderBy permits DefaultOrderBy {
 	/**
 	 * @return the order by columns comprising this order by clause
 	 */
-	List<OrderByColumn> orderByColumns();
+	List<OrderByColumn> columns();
 
 	/**
 	 * Specifies an order by column and whether it's ascending or descending
