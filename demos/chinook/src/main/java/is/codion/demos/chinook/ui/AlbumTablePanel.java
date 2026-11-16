@@ -26,12 +26,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-import javax.imageio.ImageIO;
 import javax.swing.JDialog;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 
 import static is.codion.demos.chinook.ui.TrackTablePanel.RATINGS;
 import static is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice.MOUSE_WHEEL;
@@ -73,7 +68,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	}
 
 	private void displayCover(String title, byte[] coverBytes) {
-		coverPane.image().set(readImage(coverBytes));
+		coverPane.image().set(coverBytes);
 		if (coverPane.isShowing()) {
 			Ancestor.ofType(JDialog.class).of(coverPane).optional().ifPresent(dialog -> {
 				dialog.setTitle(title);
@@ -88,15 +83,6 @@ public final class AlbumTablePanel extends EntityTablePanel {
 							.modal(false)
 							.onClosed(dialog -> coverPane.image().clear())
 							.show();
-		}
-	}
-
-	private static BufferedImage readImage(byte[] bytes) {
-		try {
-			return ImageIO.read(new ByteArrayInputStream(bytes));
-		}
-		catch (IOException e) {
-			throw new UncheckedIOException(e);
 		}
 	}
 }
