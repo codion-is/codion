@@ -108,7 +108,7 @@ public abstract class AbstractReport<T, P extends @Nullable Object, R> implement
 	 * @throws ReportException in case of an exception
 	 * @see Report#CACHE_REPORTS
 	 */
-	protected final T loadAndCacheReport() {
+	protected final T report() {
 		if (cacheReport) {
 			return cachedReport();
 		}

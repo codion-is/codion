@@ -42,7 +42,7 @@ abstract class AbstractJRReport extends AbstractReport<JasperReport, Map<String,
 		requireNonNull(connection);
 		try {
 			//copied, the copy being what the report fills in
-			return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : new HashMap<String, Object>(parameters), connection);
+			return JasperFillManager.fillReport(report(), parameters == null ? new HashMap<>() : new HashMap<String, Object>(parameters), connection);
 		}
 		catch (Exception e) {
 			//not only the checked JRException, JasperFillManager throws JRRuntimeException for an incompatible

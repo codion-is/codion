@@ -72,6 +72,7 @@ Codion Change Log
 - NullValueException, redundant value parameter removed.
 - DomainType.domainTypeByName() renamed getOrThrow().
 - Entity.values(keys) removed.
+- AbstractReport.loadAndCacheReport() renamed report().
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model
