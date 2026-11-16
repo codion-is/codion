@@ -3,7 +3,7 @@ import com.vanniktech.maven.publish.*
 import org.gradle.kotlin.dsl.support.serviceOf
 
 plugins {
-    id("org.sonarqube") version "7.5.0.8588"
+    id("org.sonarqube") version "7.6.0.18749"
     id("com.vanniktech.dependency.graph.generator") version "0.8.0"
     id("com.diffplug.spotless") version "8.11.0"
     id("org.gradlex.extra-java-module-info") version "1.14.2"
