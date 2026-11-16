@@ -211,7 +211,7 @@ public final class Employees extends DomainModel {
 			if (attribute.equals(Employee.SALARY) && entity.present(Employee.SALARY)) {
 				BigDecimal salary = entity.get(Employee.SALARY);
 				if (salary.doubleValue() < 900 || salary.doubleValue() > 99999) {
-					return Optional.of("Salary is outside of range [900-9999]");
+					return Optional.of("Salary is outside of range [900-99999]");
 				}
 			}
 

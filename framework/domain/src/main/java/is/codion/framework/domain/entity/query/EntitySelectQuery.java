@@ -99,11 +99,10 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 		 *         .columns("track_id, revenue")
 		 *         .build(); // @end}
 		 * Generates:
-		 * <pre>{@code
+		 * {@snippet lang = "sql":
 		 * WITH track_revenue AS (SELECT track_id, SUM(unitprice * quantity) AS revenue FROM chinook.invoiceline GROUP BY track_id)
 		 * SELECT track_id, revenue
-		 * FROM track_revenue
-		 * }</pre>
+		 * FROM track_revenue}
 		 */
 		sealed interface WithAsStep permits DefaultWithAsStep {
 

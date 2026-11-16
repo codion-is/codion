@@ -217,7 +217,7 @@ public interface EntityValidator {
 	}
 
 	/**
-	 * Checks if the value associated with the give attribute is valid, throws a ValidationException if not
+	 * Checks if the value associated with the given attribute is valid, throws an {@link AttributeValidationException} if not
 	 * @param entity the entity to validate
 	 * @param attribute the attribute the value is associated with
 	 * @throws AttributeValidationException if the given value is not valid for the given attribute
@@ -233,14 +233,11 @@ public interface EntityValidator {
 	}
 
 	/**
-	 * <p>Returns a warning for the value associated with the given attribute — a soft constraint.
+	 * <p>Returns a warning for the value associated with the given attribute, a soft constraint.
 	 * <p>Where {@link #validate(Entity, Attribute)} rejects a value the entity may not carry, this reports one it may
-	 * carry but probably should not: implausible, out of the ordinary, worth a second look. A warning blocks nothing.
-	 * Insert and update proceed, {@link #valid(Entity)} stays true, and the only thing that happens is that whoever is
-	 * looking at the value gets told.
-	 * <p>This is the tier for a value that is frequently odd <em>and</em> correct — the unusually large measurement, the
-	 * out-of-season record, the count that reads like a typo and is not. Rejecting those either blocks a true record or
-	 * teaches the user to enter a plausible lie; warning captures the doubt at the one moment the evidence is at hand.
+	 * carry but probably should not, an unusually large measurement or an out-of-season record for example.
+	 * A warning blocks nothing: insert and update proceed and {@link #valid(Entity)} stays true, the warning
+	 * only shown to whoever is looking at the value.
 	 * <p>Called whenever the entity is revalidated, which is on every value change, so keep implementations cheap.
 	 * {@snippet class = "is.codion.demos.chinook.javadoc.EntityValidatorSnippets" region = "warning":
 	 * class TrackValidator implements EntityValidator { // @start region=warning

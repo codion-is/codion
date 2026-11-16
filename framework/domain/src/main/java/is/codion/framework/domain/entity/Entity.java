@@ -603,10 +603,10 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	}
 
 	/**
-	 * Returns an unmodifiable collection containing the non-null keys referenced by the given {@link ForeignKey}
+	 * Returns an unmodifiable collection containing the distinct non-null keys referenced by the given {@link ForeignKey}
 	 * @param foreignKey the foreign key
 	 * @param entities the entities
-	 * @return a {@link Collection} containing the non-null keys referenced by the given {@link ForeignKey}
+	 * @return a {@link Collection} containing the distinct non-null keys referenced by the given {@link ForeignKey}
 	 */
 	static Collection<Key> keys(ForeignKey foreignKey, Collection<Entity> entities) {
 		return unmodifiableSet(requireNonNull(entities).stream()

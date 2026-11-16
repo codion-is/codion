@@ -22,11 +22,11 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Identifies a database function.
- * @param <C> the connection type
  * <p>
  * The parameter and result types carry their nullness through, to the {@link DatabaseFunction} and the caller
  * executing it: a function declared with a non-null parameter receives one, and one declared with a non-null result
  * returns one, {@code @Nullable} marking either where null is allowed.
+ * @param <C> the connection type
  * @param <P> the function parameter type, nullable where the function may be executed without one
  * @param <R> the function result type, nullable where the function may return null
  */

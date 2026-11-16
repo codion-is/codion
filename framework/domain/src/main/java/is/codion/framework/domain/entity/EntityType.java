@@ -394,7 +394,7 @@ public sealed interface EntityType permits DefaultEntityType {
 	 *           SCHEMA, Table.SCHEMA,
 	 *           TABLE_NAME, Table.NAME);
 	 * } // @end}
-	 * @param name the column name
+	 * @param name the attribute name
 	 * @param firstColumn the first column
 	 * @param firstReferencedColumn the first referenced column
 	 * @param secondColumn the second column
@@ -409,7 +409,7 @@ public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given columns.
-	 * @param name the column name
+	 * @param name the attribute name
 	 * @param firstColumn the first column
 	 * @param firstReferencedColumn the first referenced column
 	 * @param secondColumn the second column

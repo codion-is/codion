@@ -274,7 +274,7 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 
 	/**
 	 * Provides {@link AttributeDefinition.Builder} instances.
-	 * @param <T> the column type
+	 * @param <T> the attribute type
 	 */
 	sealed interface AttributeDefiner<T> permits ColumnDefiner, DefaultAttributeDefiner, ForeignKeyDefiner {
 

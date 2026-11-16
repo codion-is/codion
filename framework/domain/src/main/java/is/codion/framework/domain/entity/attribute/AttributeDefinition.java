@@ -491,6 +491,8 @@ public sealed interface AttributeDefinition<T>
 		 * see {@link is.codion.framework.domain.entity.EntityDefinition.Builder}.
 		 * @param comparator the Comparator to use when comparing values for this attribute
 		 * @return this builder instance
+		 * @throws UnsupportedOperationException in case of a foreign key, its values being compared
+		 * using the comparator of the referenced entity
 		 */
 		B comparator(Comparator<? super T> comparator);
 

@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * A definition for attributes which value is derived from the values of one or more attributes.
  * <p>
- * DerivedAttributeDefinition extends {@link ValueAttributeDefinition} and configures attributes
+ * DerivedAttributeDefinition extends {@link AttributeDefinition} and configures attributes
  * that compute their values from other attributes within the same entity or from related entities.
  * These attributes provide calculated fields, formatting, aggregation, and other computed values.
  * <p>
@@ -127,6 +127,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 	/**
 	 * Builds a derived AttributeDefinition instance
 	 * @param <T> the attribute value type
+	 * @param <B> the builder type
 	 */
 	sealed interface DerivedBuilder<T, B extends DerivedBuilder<T, B>>
 					extends AttributeDefinition.Builder<T, B>
@@ -171,8 +172,9 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 	}
 
 	/**
-	 * Builds a derived AttributeDefinition instance
+	 * Builds a denormalized AttributeDefinition instance
 	 * @param <T> the attribute value type
+	 * @param <B> the builder type
 	 */
 	sealed interface DenormalizedBuilder<T, B extends DenormalizedBuilder<T, B>>
 					extends AttributeDefinition.Builder<T, B>

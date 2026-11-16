@@ -199,7 +199,7 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 		B trim(boolean trim);
 
 		/**
-		 * Note that by default items are sorted by to their caption, not their value.
+		 * Note that by default items are sorted by their caption, not their value.
 		 * Use {@link #comparator(java.util.Comparator)} to set a custom comparator.
 		 * @param items the {@link Item}s representing all the valid values for this attribute
 		 * @return this builder instance

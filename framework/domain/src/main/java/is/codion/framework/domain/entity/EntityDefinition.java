@@ -628,6 +628,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		 * @param column the column
 		 * @param <T> the column type
 		 * @return the column definition associated with the column
+		 * @throws IllegalArgumentException in case no such column exists
 		 * @throws NullPointerException in case {@code column} is null
 		 */
 		<T> ColumnDefinition<T> definition(Column<T> column);
@@ -639,7 +640,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	sealed interface ForeignKeys permits DefaultForeignKeys {
 
 		/**
-		 * @return a list containing the foreign key definitions for this entity type
+		 * @return the foreign key definitions for this entity type
 		 */
 		Collection<ForeignKeyDefinition> definitions();
 

@@ -34,7 +34,7 @@ import java.util.Collection;
 public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Column {
 
 	/**
-	 * Returns a 'equalTo' {@link ColumnCondition} or 'isNull' in case {@code value} is null.
+	 * Returns an 'equalTo' {@link ColumnCondition} or 'isNull' in case {@code value} is null.
 	 * @param value the value to use in the condition
 	 * @return a {@link ColumnCondition}
 	 */
@@ -208,7 +208,7 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	ColumnCondition<T> greaterThanOrEqualTo(T lower);
 
 	/**
-	 * Returns a 'betweenExclusive' {@link ColumnCondition} if both bound values are non-null, 'greaterThan' if the upper bound is null and 'lessThan' if the lower bound is null.
+	 * Returns a 'betweenExclusive' {@link ColumnCondition}.
 	 * @param lower the lower bound
 	 * @param upper the upper bound
 	 * @return a {@link ColumnCondition}
@@ -244,13 +244,13 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	ColumnCondition<T> notBetween(T lower, T upper);
 
 	/**
-	 * Returns a 'isNull' {@link ColumnCondition}.
+	 * Returns an 'isNull' {@link ColumnCondition}.
 	 * @return a {@link ColumnCondition}
 	 */
 	ColumnCondition<T> isNull();
 
 	/**
-	 * Returns a 'isNotNull' {@link ColumnCondition}.
+	 * Returns an 'isNotNull' {@link ColumnCondition}.
 	 * @return a {@link ColumnCondition}
 	 */
 	ColumnCondition<T> isNotNull();

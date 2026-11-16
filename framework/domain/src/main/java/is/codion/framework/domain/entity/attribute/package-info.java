@@ -18,6 +18,17 @@
  */
 /**
  * <p>Attribute related classes.
+ * <p>Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#FRACTION_DIGITS}
+ * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#ROUNDING_MODE}
+ * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#NUMBER_GROUPING}
+ * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#GROUPING_SEPARATOR}
+ * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DECIMAL_SEPARATOR}
+ * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#LEXICAL_STRING_COMPARATOR}
+ * <li>{@link is.codion.framework.domain.entity.attribute.ValueAttributeDefinition#TRIM_STRINGS}
+ * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition#REFERENCE_DEPTH}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.framework.domain.entity.attribute;

@@ -22,7 +22,6 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Identifies a report.
- * A factory for {@link ReportType} instances.
  * <p>Note that a report type identifies a report by name alone, it says nothing of the reporting
  * engine backing it. The type of the loaded report object, {@link Report}'s {@code T}, is an
  * implementation detail of the {@link Report} the report type is registered with, so a client

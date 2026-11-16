@@ -42,7 +42,7 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link Domain} implementation. Extend to define a domain model.
+ * A base {@link Domain} implementation. Extend to define a domain model.
  * @see #add(EntityDefinition...)
  * @see #add(ReportType, Report)
  * @see #add(ProcedureType, DatabaseProcedure)

@@ -74,7 +74,7 @@ public sealed interface Entities permits DefaultEntities {
 					booleanValue("codion.domain.validateForeignKeys", true);
 
 	/**
-	 * Specifies whether strict deserialization should be used. This means that when an unknown attribute<br>
+	 * Specifies whether strict deserialization should be used. This means that when an unknown attribute
 	 * is encountered during deserialization, an exception is thrown, instead of silently dropping the associated value.
 	 * <ul>
 	 * <li>Value type: Boolean

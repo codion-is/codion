@@ -40,11 +40,6 @@ import java.util.function.Function;
  *         .build();
  *
  * System.out.println(formatter.apply(track)); // Name=Come As You Are, Album='Nevermind' // @end}
- * Outputs the following String:
- * <p>
- * {@code Name=John, Department='Accounting'}<br><br>
- * given the entities above.
- * </p>
  */
 public interface EntityFormatter extends Function<Entity, String>, Serializable {
 
@@ -61,14 +56,14 @@ public interface EntityFormatter extends Function<Entity, String>, Serializable 
 	sealed interface Builder permits DefaultEntityFormatterBuilder {
 
 		/**
-		 * Adds the value mapped to the given key to this {@link Builder}
+		 * Adds the value of the given attribute to this {@link Builder}
 		 * @param attribute the attribute which value should be added to the string representation
 		 * @return this {@link Builder} instance
 		 */
 		Builder value(Attribute<?> attribute);
 
 		/**
-		 * Adds the value mapped to the given key to this StringProvider
+		 * Adds the value of the given attribute to this {@link Builder}, formatted with the given format
 		 * @param attribute the attribute which value should be added to the string representation
 		 * @param format the Format to use when appending the value
 		 * @return this {@link Builder} instance

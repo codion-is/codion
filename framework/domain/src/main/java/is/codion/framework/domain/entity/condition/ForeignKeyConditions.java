@@ -86,7 +86,7 @@ import java.util.Collection;
 public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignKeyConditions {
 
 	/**
-	 * Returns a 'equalTo' {@link Condition} or 'isNull' in case {@code value} is null.
+	 * Returns an 'equalTo' {@link Condition} or 'isNull' in case {@code value} is null.
 	 * @param value the value to use in the condition
 	 * @return a {@link Condition}
 	 */
@@ -140,13 +140,13 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	Condition notIn(Collection<Entity> values);
 
 	/**
-	 * Returns a 'isNull' {@link Condition}.
+	 * Returns an 'isNull' {@link Condition}.
 	 * @return a {@link Condition}
 	 */
 	Condition isNull();
 
 	/**
-	 * Returns a 'isNotNull' {@link Condition}.
+	 * Returns an 'isNotNull' {@link Condition}.
 	 * @return a {@link Condition}
 	 */
 	Condition isNotNull();
