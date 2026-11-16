@@ -2747,8 +2747,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
-		public boolean validated(Entity entity, AttributeDefinition<?> definition) {
-			return validator.validated(entity, definition);
+		public boolean validated(Entity entity, Attribute<?> attribute) {
+			return validator.validated(entity, attribute);
 		}
 
 		@Override

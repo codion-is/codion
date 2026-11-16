@@ -199,9 +199,8 @@ public interface EntityValidator {
 	 * @see #strict()
 	 */
 	default void validate(Entity entity) throws EntityValidationException {
-		List<Attribute<?>> attributes = requireNonNull(entity).definition().attributes().definitions().stream()
-						.filter(definition -> validated(entity, definition))
-						.map(AttributeDefinition::attribute)
+		List<Attribute<?>> attributes = requireNonNull(entity).definition().attributes().get().stream()
+						.filter(attribute -> validated(entity, attribute))
 						.collect(Collectors.toList());
 		Collection<AttributeValidationException> invalid = new ArrayList<>();
 		for (Attribute<?> attribute : attributes) {
@@ -274,11 +273,12 @@ public interface EntityValidator {
 	/**
 	 * Specifies whether the given attribute should be validated
 	 * @param entity the entity
-	 * @param definition the attribute definition
+	 * @param attribute the attribute
 	 * @return true if the value of the given attribute should be validated
 	 * @see #strict()
 	 */
-	default boolean validated(Entity entity, AttributeDefinition<?> definition) {
+	default boolean validated(Entity entity, Attribute<?> attribute) {
+		AttributeDefinition<?> definition = requireNonNull(entity).definition().attributes().definition(attribute);
 		if (definition.derived()) {
 			return false;
 		}
