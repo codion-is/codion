@@ -453,7 +453,7 @@ public final class EntitiesTest {
 			// Missing required foreign key
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(emp));
-			assertEquals(Employee.DEPARTMENT_FK, exception.attributes().iterator().next().attribute());
+			assertEquals(Employee.DEPARTMENT_FK, exception.exceptions().iterator().next().attribute());
 
 			// Fix foreign key
 			emp.set(Employee.DEPARTMENT_NO, 1);
@@ -463,7 +463,7 @@ public final class EntitiesTest {
 			emp.set(Employee.SALARY, null);
 			exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(emp));
-			assertEquals(Employee.SALARY, exception.attributes().iterator().next().attribute());
+			assertEquals(Employee.SALARY, exception.exceptions().iterator().next().attribute());
 		}
 
 		@Test
@@ -483,7 +483,7 @@ public final class EntitiesTest {
 			emp.set(Employee.NAME, "LooooongName");
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(emp));
-			assertEquals(Employee.NAME, exception.attributes().iterator().next().attribute());
+			assertEquals(Employee.NAME, exception.exceptions().iterator().next().attribute());
 		}
 
 		@Test

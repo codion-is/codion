@@ -630,15 +630,15 @@ public abstract class EntityEditPanel extends JPanel {
 	 */
 	protected void onValidationException(EntityValidationException exception) {
 		requireNonNull(exception);
-		Collection<AttributeValidationException> attributes = exception.attributes();
-		if (attributes.isEmpty()) {
+		Collection<AttributeValidationException> exceptions = exception.exceptions();
+		if (exceptions.isEmpty()) {
 			showMessageDialog(this, exception.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
 		}
 		else {
-			Optional<ComponentEntry> firstInvalid = firstInvalid(attributes);
+			Optional<ComponentEntry> firstInvalid = firstInvalid(exceptions);
 			Attribute<?> chosenAttribute = firstInvalid.map(ComponentEntry::attribute)
-							.orElseGet(() -> attributes.iterator().next().attribute());
-			AttributeValidationException invalidAttribute = attributes.stream()
+							.orElseGet(() -> exceptions.iterator().next().attribute());
+			AttributeValidationException invalidAttribute = exceptions.stream()
 							.filter(invalid -> invalid.attribute().equals(chosenAttribute))
 							.findFirst()
 							.orElseThrow(IllegalStateException::new);

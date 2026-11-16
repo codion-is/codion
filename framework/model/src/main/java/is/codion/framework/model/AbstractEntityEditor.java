@@ -609,7 +609,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		catch (EntityValidationException e) {
 			entity.valid.set(false);
 
-			return e.attributes().stream()
+			return e.exceptions().stream()
 							.collect(toMap(AttributeValidationException::attribute, Throwable::getMessage, (first, second) -> first));
 		}
 	}
@@ -2725,10 +2725,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				validator.validate(entity);
 			}
 			catch (EntityValidationException e) {
-				if (e.attributes().isEmpty()) {
+				if (e.exceptions().isEmpty()) {
 					throw e;
 				}
-				List<AttributeValidationException> filtered = e.attributes().stream()
+				List<AttributeValidationException> filtered = e.exceptions().stream()
 								.filter(this::notExcluded)
 								.collect(toList());
 				if (!filtered.isEmpty()) {

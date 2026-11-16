@@ -30,19 +30,19 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * Indicates an invalid entity, either due to one or more invalid
- * attribute values, accessible via {@link #attributes()} or a general validation failure.
+ * Indicates an invalid entity, either due to one or more invalid attribute exceptions,
+ * accessible via {@link #exceptions()} or a general validation failure.
  */
 public final class EntityValidationException extends Exception {
 
-	private final Collection<AttributeValidationException> attributes;
+	private final Collection<AttributeValidationException> exceptions;
 
 	/**
 	 * @param message the message
 	 */
 	public EntityValidationException(String message) {
 		super(requireNonNull(message));
-		this.attributes = emptyList();
+		this.exceptions = emptyList();
 	}
 
 	/**
@@ -64,14 +64,14 @@ public final class EntityValidationException extends Exception {
 		if (entityTypes.size() > 1) {
 			throw new IllegalArgumentException("All invalid attributes must be from the same entity: " + entityTypes);
 		}
-		this.attributes = unmodifiableList(new ArrayList<>(requireNonNull(exceptions)));
+		this.exceptions = unmodifiableList(new ArrayList<>(requireNonNull(exceptions)));
 	}
 
 	/**
-	 * @return the invalid attributes, may be empty in case of a general validation exception
+	 * @return the attribute validation exceptions, may be empty in case of a general validation exception
 	 */
-	public Collection<AttributeValidationException> attributes() {
-		return attributes;
+	public Collection<AttributeValidationException> exceptions() {
+		return exceptions;
 	}
 
 	private static String createMessage(Collection<AttributeValidationException> exceptions) {

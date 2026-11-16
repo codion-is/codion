@@ -480,7 +480,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.NAME, null);
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.NAME, exception.attributes().iterator().next().attribute());
+			assertEquals(Customer.NAME, exception.exceptions().iterator().next().attribute());
 		}
 
 		@Test
@@ -503,7 +503,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.NAME, Text.leftPad("", 101, 'A')); // Exceeds 100 char limit
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.NAME, exception.attributes().iterator().next().attribute());
+			assertEquals(Customer.NAME, exception.exceptions().iterator().next().attribute());
 		}
 
 		@Test
@@ -526,7 +526,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.CREDIT_LIMIT, new BigDecimal("2000000")); // Exceeds max
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.CREDIT_LIMIT, exception.attributes().iterator().next().attribute());
+			assertEquals(Customer.CREDIT_LIMIT, exception.exceptions().iterator().next().attribute());
 		}
 
 		@Test
@@ -573,7 +573,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.EMAIL, "invalid-email"); // Invalid format
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.EMAIL, exception.attributes().iterator().next().attribute());
+			assertEquals(Customer.EMAIL, exception.exceptions().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("Invalid email format"));
 		}
 
@@ -617,7 +617,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.PHONE, phone);
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.PHONE, exception.attributes().iterator().next().attribute());
+			assertEquals(Customer.PHONE, exception.exceptions().iterator().next().attribute());
 		}
 
 		@Test
@@ -641,7 +641,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.BIRTH_DATE, LocalDate.now().plusDays(1));
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.BIRTH_DATE, exception.attributes().iterator().next().attribute());
+			assertEquals(Customer.BIRTH_DATE, exception.exceptions().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("future"));
 		}
 
@@ -665,7 +665,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.COUNTRY_CODE, "usa"); // Should be uppercase
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.COUNTRY_CODE, exception.attributes().iterator().next().attribute());
+			assertEquals(Customer.COUNTRY_CODE, exception.exceptions().iterator().next().attribute());
 		}
 	}
 
@@ -847,7 +847,7 @@ public final class EntityValidationEnhancementTest {
 			TestDomain.OrderValidator validator = new TestDomain.OrderValidator();
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(order));
-			assertEquals(Order.STATUS, exception.attributes().iterator().next().attribute());
+			assertEquals(Order.STATUS, exception.exceptions().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("Delivered orders can only be cancelled"));
 		}
 
@@ -871,7 +871,7 @@ public final class EntityValidationEnhancementTest {
 			TestDomain.OrderValidator validator = new TestDomain.OrderValidator();
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(order));
-			assertEquals(Order.STATUS, exception.attributes().iterator().next().attribute());
+			assertEquals(Order.STATUS, exception.exceptions().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("Cancelled orders cannot be modified"));
 		}
 
@@ -1028,8 +1028,8 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.NAME, null); // Required field
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.NAME, exception.attributes().iterator().next().attribute());
-			assertEquals(NullValueException.class, exception.attributes().iterator().next().getClass());
+			assertEquals(Customer.NAME, exception.exceptions().iterator().next().attribute());
+			assertEquals(NullValueException.class, exception.exceptions().iterator().next().getClass());
 		}
 
 		@Test
@@ -1044,9 +1044,9 @@ public final class EntityValidationEnhancementTest {
 			ticket.set(Ticket.NAME, null);
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(ticket));
-			assertEquals(1, exception.attributes().size());
-			assertEquals(Ticket.NAME, exception.attributes().iterator().next().attribute());
-			assertEquals(NullValueException.class, exception.attributes().iterator().next().getClass());
+			assertEquals(1, exception.exceptions().size());
+			assertEquals(Ticket.NAME, exception.exceptions().iterator().next().attribute());
+			assertEquals(NullValueException.class, exception.exceptions().iterator().next().getClass());
 
 			// required as any other once the row exists
 			ticket.set(Ticket.ID, 1);
@@ -1083,10 +1083,10 @@ public final class EntityValidationEnhancementTest {
 				fail();
 			}
 			catch (EntityValidationException e) {
-				assertEquals(7, e.attributes().size());
-				assertTrue(e.attributes().stream()
+				assertEquals(7, e.exceptions().size());
+				assertTrue(e.exceptions().stream()
 								.anyMatch(InvalidItemException.class::isInstance));
-				assertTrue(e.attributes().stream()
+				assertTrue(e.exceptions().stream()
 								.anyMatch(NullValueException.class::isInstance));
 			}
 		}
