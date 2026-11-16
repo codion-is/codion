@@ -697,7 +697,7 @@ The *EntityValidator* interface provides range, string length and null validatio
 
 WARNING: EntityValidator logic runs frequently — avoid expensive operations like database queries. Use edit model listeners (such as `beforeInsert` or `beforeUpdate`) for validations that require cross-entity or remote checks.
 
-NOTE: A validator given to an entity definition must be serializable when clients fetch the domain from a server, as an RMI client does when it connects, and an HTTP client unless given its domain. The same goes for a custom formatter, comparator or exists predicate, and for an attribute's comparator. A class implements *Serializable*, a lambda expression is cast, *(Comparator<Entity> & Serializable) (entity1, entity2) -> ...*. The server logs a warning when it starts for a domain which can not be serialized, naming what prevents it.
+NOTE: A validator given to an entity definition must be serializable when clients fetch the domain from a server, as an RMI client does when it connects, and an HTTP client unless given its domain. The same goes for a custom formatter, comparator or exists predicate, and for an attribute's comparator. A class implements *Serializable*, as the validators below do, and a lambda expression is cast to a serializable type, see {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder]. The server logs a warning when it starts for a domain which can not be serialized, naming what prevents it.
 
 [source,java,indent=0]
 ----
