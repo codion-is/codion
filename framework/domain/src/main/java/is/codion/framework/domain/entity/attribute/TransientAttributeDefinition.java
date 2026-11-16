@@ -120,6 +120,6 @@ public sealed interface TransientAttributeDefinition<T> extends ValueAttributeDe
 		 * @param modifies true if modifying the value makes the owning entity modified
 		 * @return this builder instance
 		 */
-		Builder<T, B> modifies(boolean modifies);
+		B modifies(boolean modifies);
 	}
 }

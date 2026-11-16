@@ -52,9 +52,9 @@ final class DefaultTransientAttributeDefinition<T> extends AbstractValueAttribut
 		}
 
 		@Override
-		public TransientAttributeDefinition.Builder<T, B> modifies(boolean modifies) {
+		public B modifies(boolean modifies) {
 			this.modifies = modifies;
-			return this;
+			return self();
 		}
 	}
 }

@@ -140,7 +140,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case this is a denormalized attribute
 		 */
-		DerivedBuilder<T, B> cached(boolean cached);
+		B cached(boolean cached);
 
 		/**
 		 * The first step in building a {@link DerivedAttributeDefinition}

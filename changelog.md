@@ -79,6 +79,7 @@ Codion Change Log
 - ConditionType bug fixed, toString() now returns the entity type and name, where it was not implemented, so that the message of a condition string not found named the instance by its identity hash.
 - Conditions and the validation exceptions, serialVersionUID added to AbstractCondition, AttributeValidationException, EntityValidationException, InvalidItemException and NullValueException.
 - DomainModel, the exception messages for a report already defined and a report not found now worded as the ones for procedures and functions.
+- DerivedAttributeDefinition.DerivedBuilder.cached() and TransientAttributeDefinition.Builder.modifies() now return the builder type parameter, as the other builder methods do.
 ### is.codion.framework.db
 - Parameters widened to wildcard types, collections taking ? extends their elements, where a subtype fits.
 ### is.codion.framework.model

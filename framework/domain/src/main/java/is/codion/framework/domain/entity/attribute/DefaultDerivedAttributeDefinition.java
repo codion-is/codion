@@ -133,7 +133,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		}
 
 		@Override
-		public DerivedBuilder<T, B> cached(boolean cached) {
+		public B cached(boolean cached) {
 			this.cached = cached;
 			return self();
 		}
