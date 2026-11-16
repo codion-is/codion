@@ -186,7 +186,7 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 		 * @param validator a {@link AttributeValidator} to use for this attribute
 		 * @return this builder instance
 		 */
-		B validator(AttributeValidator<T> validator);
+		B validator(AttributeValidator<? super T> validator);
 
 		/**
 		 * Specifies whether string values should be trimmed, this applies to String (varchar) based attributes.
@@ -219,7 +219,7 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 		 * @param defaultValue the default value supplier
 		 * @return this builder instance
 		 */
-		B defaultValue(DefaultValue<T> defaultValue);
+		B defaultValue(DefaultValue<? extends T> defaultValue);
 
 		@Override
 		ValueAttributeDefinition<T> build();

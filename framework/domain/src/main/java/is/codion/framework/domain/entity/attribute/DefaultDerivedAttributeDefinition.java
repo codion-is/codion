@@ -101,8 +101,9 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		}
 
 		@Override
-		public DerivedBuilder<T, B> with(DerivedValue<T> value) {
-			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, sources, value);
+		public DerivedBuilder<T, B> with(DerivedValue<? extends T> value) {
+			//a derived value only supplies values, so one of a subtype supplies them as well
+			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, sources, (DerivedValue<T>) requireNonNull(value));
 		}
 	}
 

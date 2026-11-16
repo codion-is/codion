@@ -166,7 +166,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 			 * @param value a {@link DerivedValue} instance responsible for providing the derived value
 			 * @return a {@link DerivedBuilder} instance
 			 */
-			DerivedBuilder<T, B> with(DerivedValue<T> value);
+			DerivedBuilder<T, B> with(DerivedValue<? extends T> value);
 		}
 	}
 

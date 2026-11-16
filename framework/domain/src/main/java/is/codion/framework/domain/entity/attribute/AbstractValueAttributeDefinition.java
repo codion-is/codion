@@ -388,8 +388,9 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 
 		@Override
-		public final B validator(AttributeValidator<T> validator) {
-			validators.add(requireNonNull(validator));
+		public final B validator(AttributeValidator<? super T> validator) {
+			//a validator only consumes values, so one of a supertype validates them as well
+			validators.add((AttributeValidator<T>) requireNonNull(validator));
 			return self();
 		}
 
@@ -405,11 +406,12 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 
 		@Override
-		public final B defaultValue(DefaultValue<T> defaultValue) {
+		public final B defaultValue(DefaultValue<? extends T> defaultValue) {
 			if (defaultValue != null) {
 				attribute().type().validate(defaultValue.get());
 			}
-			this.defaultValue = defaultValue == null ? (DefaultValue<T>) NULL : defaultValue;
+			//a default value only supplies values, so one of a subtype supplies them as well
+			this.defaultValue = defaultValue == null ? (DefaultValue<T>) NULL : (DefaultValue<T>) defaultValue;
 			return self();
 		}
 

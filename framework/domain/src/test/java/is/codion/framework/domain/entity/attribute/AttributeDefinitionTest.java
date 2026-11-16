@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import static java.util.Collections.emptyMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class AttributeDefinitionTest {
@@ -41,6 +42,39 @@ public final class AttributeDefinitionTest {
 	private static final DomainType DOMAIN_TYPE = DomainType.domainType("domainType");
 	private static final EntityType ENTITY_TYPE = DOMAIN_TYPE.entityType("entityType", AttributeDefinitionTest.class.getName());
 	private static final EntityType ENTITY_TYPE2 = DOMAIN_TYPE.entityType("entityType2");
+
+	@Test
+	void functionVariance() {
+		// A validator of a supertype validates the values of a subtype
+		AttributeValidator<Number> notNegative = value -> {
+			if (value.doubleValue() < 0) {
+				throw new IllegalArgumentException("Negative");
+			}
+		};
+		ENTITY_TYPE.integerColumn("count").as()
+						.column()
+						.validator(notNegative)
+						.build();
+		ENTITY_TYPE.doubleColumn("amount").as()
+						.column()
+						.validator(notNegative)
+						.build();
+		// A default value and a derived value of a subtype supply a value of the supertype
+		AttributeDefinition.DefaultValue<Integer> one = () -> 1;
+		ValueAttributeDefinition<Number> number = ENTITY_TYPE.column("number", Number.class).as()
+						.column()
+						.defaultValue(one)
+						.build();
+		assertEquals(1, number.defaultValue());
+		DerivedValue<Integer> two = values -> 2;
+		Attribute<Number> derived = ENTITY_TYPE.attribute("derived", Number.class);
+		DerivedAttributeDefinition<Number> definition = (DerivedAttributeDefinition<Number>) derived.as()
+						.derived()
+						.from()
+						.with(two)
+						.build();
+		assertEquals(2, definition.value().from(DerivedValue.sourceValues(derived, emptyMap())));
+	}
 
 	@Test
 	void foreignKeyNonUniqueReferencedAttribute() {
