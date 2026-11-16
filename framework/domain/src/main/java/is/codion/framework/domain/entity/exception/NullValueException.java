@@ -20,8 +20,6 @@ package is.codion.framework.domain.entity.exception;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 
-import org.jspecify.annotations.Nullable;
-
 /**
  * Indicates that a non-null attribute has a null value.
  */
@@ -29,10 +27,9 @@ public final class NullValueException extends AttributeValidationException {
 
 	/**
 	 * @param attribute the attribute
-	 * @param value the value
 	 * @param message the message
 	 */
-	public NullValueException(Attribute<?> attribute, @Nullable Object value, String message) {
-		super(attribute, value, message);
+	public NullValueException(Attribute<?> attribute, String message) {
+		super(attribute, null, message);
 	}
 }

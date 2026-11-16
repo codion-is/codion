@@ -202,7 +202,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	static AttributeValidationException createNullValidationException(Attribute<?> attribute, String caption) {
-		return new NullValueException(attribute, null, MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
+		return new NullValueException(attribute, MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
 	}
 
 	private boolean isNonGeneratedPrimaryKeyColumn() {
