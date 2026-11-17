@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
+import javax.swing.CellRendererPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -375,6 +377,38 @@ public final class ImagePaneTest {
 		handling.image().set(new byte[] {1, 2, 3});
 		assertNull(handling.image().get());
 		assertEquals(1, handled.size());
+	}
+
+	@Test
+	void renderer() throws Exception {
+		List<Color> colors = asList(Color.RED, Color.GREEN, Color.BLUE);
+		List<byte[]> cells = new ArrayList<>();
+		for (Color color : colors) {
+			cells.add(png(color, 10, 10));
+		}
+		// async, as by default, the component value set on the event dispatch thread
+		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder()
+						.async(true)
+						.buildValue();
+		ImagePane pane = bytesValue.component();
+		CellRendererPane rendererPane = new CellRendererPane();
+		BufferedImage canvas = new BufferedImage(20 * colors.size(), 20, BufferedImage.TYPE_INT_RGB);
+		JPanel table = new JPanel();
+		for (int pass = 0; pass < 2; pass++) {
+			// painted as a table paints its cells, all in one event, each right after its bytes are set, the first
+			// pass setting the first bytes before the pane is added to the renderer pane
+			SwingUtilities.invokeAndWait(() -> {
+				Graphics2D graphics = canvas.createGraphics();
+				for (int cell = 0; cell < cells.size(); cell++) {
+					bytesValue.set(cells.get(cell));
+					rendererPane.paintComponent(graphics, pane, table, cell * 20, 0, 20, 20);
+				}
+				graphics.dispose();
+			});
+			for (int cell = 0; cell < colors.size(); cell++) {
+				assertEquals(colors.get(cell), new Color(canvas.getRGB(cell * 20 + 10, 10)), "pass " + pass + ", cell " + cell);
+			}
+		}
 	}
 
 	@Test
@@ -770,8 +804,12 @@ public final class ImagePaneTest {
 	}
 
 	private static byte[] png(int width, int height) throws IOException {
+		return png(Color.BLUE, width, height);
+	}
+
+	private static byte[] png(Color color, int width, int height) throws IOException {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		ImageIO.write(image(Color.BLUE, width, height), "png", output);
+		ImageIO.write(image(color, width, height), "png", output);
 
 		return output.toByteArray();
 	}

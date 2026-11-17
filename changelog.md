@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.95
+### is.codion.swing.common.ui
+- ImagePane bug fixed, a pane used as a cell renderer, its parent a CellRendererPane, now decodes image bytes on the calling thread, where it painted no image, the image decoded in the background after the cell was painted.
 ### is.codion.framework.domain
 - Column.Generator.preserving() and Column.Generator.Preserving added, a generator inserting a value the entity holds as it is, the given generator making one where it holds none, a row copied from another database keeping its key.
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.

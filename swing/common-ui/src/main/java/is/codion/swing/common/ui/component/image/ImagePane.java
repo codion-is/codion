@@ -38,6 +38,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import org.jspecify.annotations.Nullable;
 
 import javax.imageio.ImageIO;
+import javax.swing.CellRendererPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
@@ -162,7 +163,9 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * bytes set via an editor bound to an image column, or via the builder, are decoded in the background. The bytes are
  * the component value at once, while the image is cleared until decoded, the latest bytes winning. So code needing the
  * image does not belong after the bytes are set, where there is no image yet to zoom or translate coordinates on, but in
- * a callback, see {@link ImageValue#set(byte[], Consumer)}, or a listener on {@link #image()}. See also
+ * a callback, see {@link ImageValue#set(byte[], Consumer)}, or a listener on {@link #image()}. A pane used as a cell
+ * renderer, its parent a {@link CellRendererPane}, decodes them on the calling thread, a renderer being painted only
+ * right after its bytes are set. See also
  * {@link ImageValue#set(byte[])}, {@link #async()}, {@link #decoding()} and {@link #exception()}. Loading the bytes, from a database or over the network, remains the application's to do in
  * the background.
  * <b>Coordinate Conversion</b>
@@ -341,7 +344,7 @@ public final class ImagePane extends JPanel {
 	/**
 	 * <p>Controls whether image bytes set on the event dispatch thread are decoded in the background, see
 	 * {@link ImageValue#set(byte[])}, the {@code byte[]} {@link ComponentValue} always setting them there. Elsewhere they
-	 * are decoded on the calling thread, as they are when this is disabled.
+	 * are decoded on the calling thread, as they are when this is disabled, or the pane is used as a cell renderer.
 	 * <p>Disable it where code following a bytes set needs the image at once, rather than listening to {@link #image()}
 	 * or {@link #decoding()}.
 	 * @return the {@link State} controlling whether image bytes are decoded asynchronously
@@ -499,7 +502,8 @@ public final class ImagePane extends JPanel {
 		 * translating coordinates, finds no image: it belongs in a callback, see {@link #set(byte[], Consumer)}, or a
 		 * listener on this value. Bytes set while a decode is under way supersede it, as does an image set directly, the
 		 * latest winning, a superseded decode aborted and its image discarded.
-		 * <p>Set elsewhere, or with {@link ImagePane#async()} disabled, the bytes are decoded on the calling thread. The
+		 * <p>Set elsewhere, with {@link ImagePane#async()} disabled, or on a pane used as a cell renderer, its parent a
+		 * {@link javax.swing.CellRendererPane}, the bytes are decoded on the calling thread. The
 		 * pane's {@code byte[]} {@link ComponentValue} sets them on the event dispatch thread, whichever thread it is set
 		 * from, so they are decoded in the background whenever set via the component value, or the builder.
 		 * <p>Null or empty bytes clear the image, one set directly included. Bytes no image reader can read result in no
@@ -990,6 +994,10 @@ public final class ImagePane extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		if (renderer()) {
+			// its first bytes set before it was added to the renderer pane, so decoding in the background
+			image.decodeNow();
+		}
 		if (!viewInitialized()) {
 			return;
 		}
@@ -1003,6 +1011,11 @@ public final class ImagePane extends JPanel {
 		if (navigable.is()) {
 			paintNavigationImage(g);
 		}
+	}
+
+	// A cell renderer is painted only right after its bytes are set, never again to show an image decoded later
+	private boolean renderer() {
+		return getParent() instanceof CellRendererPane;
 	}
 
 	private void paintImage(Graphics g) {
@@ -1289,12 +1302,21 @@ public final class ImagePane extends JPanel {
 					decoding.set(false);
 					setFromBytes(null);
 				}
-				else if (async.is() && Dispatcher.instance().bound()) {
+				else if (async.is() && Dispatcher.instance().bound() && !renderer()) {
 					decodeAsync(imageBytes, onImage);
 				}
 				else {
 					decodeSync(imageBytes, onImage);
 				}
+			}
+		}
+
+		// Decodes the bytes of the decode under way, if any, on the calling thread, superseding it
+		private void decodeNow() {
+			Decode current = decode;
+			if (current != null) {
+				supersede();
+				decodeSync(current.bytes, current.onImage);
 			}
 		}
 
