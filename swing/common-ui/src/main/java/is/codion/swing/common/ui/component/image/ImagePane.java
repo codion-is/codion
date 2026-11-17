@@ -163,11 +163,15 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * bytes set via an editor bound to an image column, or via the builder, are decoded in the background. The bytes are
  * the component value at once, while the image is cleared until decoded, the latest bytes winning. So code needing the
  * image does not belong after the bytes are set, where there is no image yet to zoom or translate coordinates on, but in
- * a callback, see {@link ImageValue#set(byte[], Consumer)}, or a listener on {@link #image()}. A pane used as a cell
- * renderer, its parent a {@link CellRendererPane}, decodes them on the calling thread, a renderer being painted only
- * right after its bytes are set. See also
+ * a callback, see {@link ImageValue#set(byte[], Consumer)}, or a listener on {@link #image()}. See also
  * {@link ImageValue#set(byte[])}, {@link #async()}, {@link #decoding()} and {@link #exception()}. Loading the bytes, from a database or over the network, remains the application's to do in
  * the background.
+ * <b>Cell Renderers</b>
+ * An {@link ImagePane} is made for viewing an image, zooming and panning, and makes a heavy cell renderer: each cell
+ * painted copies its bytes and decodes them whole, the image then drawn scaled down without smoothing. For displaying
+ * images in table, list or tree cells use {@link ImageView}, an {@link ImagePane} only where its features are what the
+ * cells need, with the cost in mind. A pane used as a cell renderer, its parent a {@link CellRendererPane}, decodes the
+ * bytes on the calling thread, a renderer being painted only right after its bytes are set.
  * <b>Coordinate Conversion</b>
  * The pane provides coordinate translation between pane and image coordinate spaces via {@link #coordinates()}.
  * Use this for overlay drawing or when working with mouse events on the image.
@@ -817,9 +821,8 @@ public final class ImagePane extends JPanel {
 	}
 
 	private void initializeParams() {
-		double xScale = (double) getWidth() / image.getOrThrow().getWidth();
-		double yScale = (double) getHeight() / image.getOrThrow().getHeight();
-		initialScale = Math.min(xScale, yScale);
+		BufferedImage bufferedImage = image.getOrThrow();
+		initialScale = ImageFit.scale(bufferedImage.getWidth(), bufferedImage.getHeight(), getWidth(), getHeight(), true);
 		scale = initialScale;
 		//An image is initially centered
 		centerImage();
