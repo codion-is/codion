@@ -38,7 +38,6 @@ import is.codion.framework.domain.report.Report;
 import is.codion.framework.domain.report.ReportType;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
@@ -69,6 +68,9 @@ public final class TestDomain extends DomainModel {
 		employeeFk();
 		employeeNoDepartment();
 		uuidTestDefaultValue();
+		preservingUuidTestDefaultValue();
+		columnDefaultValue();
+		preservingColumnDefaultValue();
 		uuidTestNoDefaultValue();
 		operations();
 		empnoDeptno();
@@ -376,30 +378,81 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void uuidTestDefaultValue() {
-		Generator<UUID> uuidGenerator = new Generator<UUID>() {
-			@Override
-			public void afterInsert(Entity entity, Column<UUID> column, Database database, Statement statement) throws SQLException {
-				try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-					if (generatedKeys.next()) {
-						entity.set(column, (UUID) generatedKeys.getObject(1));
-					}
-				}
-			}
-
-			@Override
-			public boolean generatedKeys() {
-				return true;
-			}
-		};
 		add(UUIDTestDefault.TYPE.as()
 						.attributes(
 										UUIDTestDefault.ID.as()
 														.primaryKey()
 														.caption("Id")
-														.generator(uuidGenerator),
+														.generator(columnDefault()),
 										UUIDTestDefault.DATA.as()
 														.column()
 														.caption("Data"))
+						.build());
+	}
+
+	// the same table, a key given inserted as it is
+	public interface PreservingUUIDTestDefault {
+		EntityType TYPE = DOMAIN.entityType("employees.preserving_uuid_test_default");
+
+		Column<UUID> ID = TYPE.column("id", UUID.class);
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	private void preservingUuidTestDefaultValue() {
+		add(PreservingUUIDTestDefault.TYPE.as()
+						.attributes(
+										PreservingUUIDTestDefault.ID.as()
+														.primaryKey()
+														.generator(preserving(columnDefault())),
+										PreservingUUIDTestDefault.DATA.as()
+														.column())
+						.table("employees.uuid_test_default")
+						.build());
+	}
+
+	public interface ColumnDefaultValue {
+		EntityType TYPE = DOMAIN.entityType("employees.column_default_value");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<UUID> UUID = TYPE.column("uuid", java.util.UUID.class);
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	private void columnDefaultValue() {
+		add(ColumnDefaultValue.TYPE.as()
+						.attributes(
+										ColumnDefaultValue.ID.as()
+														.primaryKey()
+														.generator(identity()),
+										ColumnDefaultValue.UUID.as()
+														.column()
+														.generator(columnDefault()),
+										ColumnDefaultValue.DATA.as()
+														.column())
+						.build());
+	}
+
+	// the same table, a value given inserted as it is
+	public interface PreservingColumnDefaultValue {
+		EntityType TYPE = DOMAIN.entityType("employees.preserving_column_default_value");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<UUID> UUID = TYPE.column("uuid", java.util.UUID.class);
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	private void preservingColumnDefaultValue() {
+		add(PreservingColumnDefaultValue.TYPE.as()
+						.attributes(
+										PreservingColumnDefaultValue.ID.as()
+														.primaryKey()
+														.generator(identity()),
+										PreservingColumnDefaultValue.UUID.as()
+														.column()
+														.generator(preserving(columnDefault())),
+										PreservingColumnDefaultValue.DATA.as()
+														.column())
+						.table("employees.column_default_value")
 						.build());
 	}
 

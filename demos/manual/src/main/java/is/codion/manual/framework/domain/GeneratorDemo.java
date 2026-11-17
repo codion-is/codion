@@ -21,12 +21,21 @@ package is.codion.manual.framework.domain;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.manual.app.store.domain.Store.Address;
+import is.codion.manual.app.store.domain.Store.Customer;
 
-import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
-import static is.codion.framework.domain.entity.attribute.Column.Generator.preserving;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.*;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 
 final class GeneratorDemo {
+
+	void columnDefaultKey() {
+		// tag::columnDefault[]
+		// The key made by the column's default, random_uuid() for example, rather than the application
+		Customer.ID.as()
+						.primaryKey()
+						.generator(columnDefault());
+		// end::columnDefault[]
+	}
 
 	void preservingKey() {
 		// tag::preserving[]

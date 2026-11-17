@@ -27,6 +27,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import java.util.UUID;
+
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.*;
 
@@ -202,7 +204,8 @@ public final class DetailDomain extends DomainModel {
 	}
 
 	/**
-	 * A detail of a department keyed by a generator preserving a key given, with a generated column which is not the key
+	 * A detail of a department keyed by a generator preserving a key given, with generated
+	 * columns which are not the key, one made by the column's default, unique
 	 */
 	public interface DepartmentNote {
 		EntityType TYPE = DOMAIN.entityType("employees.department_note");
@@ -211,6 +214,7 @@ public final class DetailDomain extends DomainModel {
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 		Column<String> NOTE = TYPE.stringColumn("note");
 		Column<Integer> SEQ_NO = TYPE.integerColumn("seq_no");
+		Column<UUID> UUID = TYPE.column("uuid", UUID.class);
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_note_dept_fk", DEPARTMENT, Department.ID);
 	}
 
@@ -229,7 +233,11 @@ public final class DetailDomain extends DomainModel {
 														.column(),
 										DepartmentNote.SEQ_NO.as()
 														.column()
-														.generator(preserving(sequence("employees.department_note_seq"))))
+														.generator(preserving(sequence("employees.department_note_seq"))),
+										// made by the database, a value given kept, as the sync's UUID
+										DepartmentNote.UUID.as()
+														.column()
+														.generator(preserving(columnDefault())))
 						.build();
 	}
 

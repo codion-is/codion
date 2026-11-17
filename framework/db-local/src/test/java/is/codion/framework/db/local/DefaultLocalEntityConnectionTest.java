@@ -76,6 +76,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -2866,6 +2867,54 @@ public class DefaultLocalEntityConnectionTest {
 			assertNotEquals(sequenced, sequencedForNull);
 			assertNotEquals(1000, sequenced);
 			assertNotEquals(1000, sequencedForNull);
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void columnDefaultGenerator() {
+		connection.startTransaction();
+		try {
+			// a key made by the column's default, read back from the generated keys
+			Entity.Key key = connection.insert(ENTITIES.entity(UUIDTestDefault.TYPE)
+							.with(UUIDTestDefault.DATA, "made")
+							.build());
+			assertNotNull(key.get(UUIDTestDefault.ID));
+			assertEquals("made", connection.select(key).get(UUIDTestDefault.DATA));
+			// a key given is not inserted, the default making it all the same
+			UUID given = UUID.randomUUID();
+			Entity notInserted = connection.insertSelect(ENTITIES.entity(UUIDTestDefault.TYPE)
+							.with(UUIDTestDefault.ID, given)
+							.with(UUIDTestDefault.DATA, "given")
+							.build());
+			assertNotEquals(given, notInserted.get(UUIDTestDefault.ID));
+			assertEquals("given", notInserted.get(UUIDTestDefault.DATA));
+			// preserving, a key given is inserted as it is, made by the default otherwise
+			assertEquals(given, connection.insertSelect(ENTITIES.entity(PreservingUUIDTestDefault.TYPE)
+							.with(PreservingUUIDTestDefault.ID, given)
+							.with(PreservingUUIDTestDefault.DATA, "kept")
+							.build()).get(PreservingUUIDTestDefault.ID));
+			assertNotNull(connection.insertSelect(ENTITIES.entity(PreservingUUIDTestDefault.TYPE)
+							.with(PreservingUUIDTestDefault.DATA, "made")
+							.build()).get(PreservingUUIDTestDefault.ID));
+
+			// a value beside the key comes back with the row selected, a value given not inserted
+			Entity made = connection.insertSelect(ENTITIES.entity(ColumnDefaultValue.TYPE)
+							.with(ColumnDefaultValue.DATA, "made")
+							.build());
+			assertNotNull(made.get(ColumnDefaultValue.UUID));
+			assertNotEquals(given, connection.insertSelect(ENTITIES.entity(ColumnDefaultValue.TYPE)
+							.with(ColumnDefaultValue.UUID, given)
+							.build()).get(ColumnDefaultValue.UUID));
+			// preserving, a value given is inserted as it is, made by the default otherwise, null included
+			assertEquals(given, connection.insertSelect(ENTITIES.entity(PreservingColumnDefaultValue.TYPE)
+							.with(PreservingColumnDefaultValue.UUID, given)
+							.build()).get(PreservingColumnDefaultValue.UUID));
+			assertNotNull(connection.insertSelect(ENTITIES.entity(PreservingColumnDefaultValue.TYPE)
+							.with(PreservingColumnDefaultValue.UUID, null)
+							.build()).get(PreservingColumnDefaultValue.UUID));
 		}
 		finally {
 			connection.rollbackTransaction();

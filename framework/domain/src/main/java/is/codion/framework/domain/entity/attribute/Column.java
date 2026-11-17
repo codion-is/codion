@@ -276,6 +276,8 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 * @see #identity()
 	 * @see #queried(String)
 	 * @see #automatic(String)
+	 * @see #columnDefault()
+	 * @see #preserving(Generator)
 	 */
 	interface Generator<T> {
 
@@ -453,6 +455,24 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 */
 		static <T> Preserving<T> preserving(Generator<T> generator) {
 			return new PreservingGenerator<>(generator);
+		}
+
+		/**
+		 * Returns a generator leaving the column out of the insert, so that its default makes the value, a UUID made by
+		 * {@code default random_uuid()} or a time by {@code default current_timestamp} for example, rather than the
+		 * application. A value the entity holds is not inserted, the column's default making it all the same, and
+		 * {@link #preserving(Generator) preserving(columnDefault())} inserts a value given, as a row copied from
+		 * another database keeping its UUID.
+		 * <p>
+		 * A value which is not part of the primary key comes back with the row where the insert selects it, as
+		 * {@code insertSelect()} and an editor's insert do. A key, by which the row is selected, is read back from the
+		 * generated keys the JDBC driver returns, so the driver must return a column made by its default there, as H2's
+		 * does. Some return identity or auto-increment columns only.
+		 * @param <T> the generated column type
+		 * @return a generator leaving the value to the column's default
+		 */
+		static <T> Generator<T> columnDefault() {
+			return new ColumnDefaultGenerator<>();
 		}
 	}
 }

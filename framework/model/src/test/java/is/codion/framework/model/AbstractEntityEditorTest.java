@@ -960,6 +960,9 @@ public final class AbstractEntityEditorTest {
 			Entity second = editor.tasks(CONNECTION).insert().perform().handle();
 			assertNotEquals(first.get(DepartmentNote.ID), second.get(DepartmentNote.ID));
 			assertNotEquals(first.get(DepartmentNote.SEQ_NO), second.get(DepartmentNote.SEQ_NO));
+			// made by the database, as the sync's UUID, unique, so copied it would be refused
+			assertNotNull(first.get(DepartmentNote.UUID));
+			assertNotEquals(first.get(DepartmentNote.UUID), second.get(DepartmentNote.UUID));
 			assertEquals("second", second.get(DepartmentNote.NOTE));
 			assertEquals(second.get(DepartmentNote.ID), editor.value(DepartmentNote.ID).get());
 			// the one copied left as it was
@@ -972,6 +975,7 @@ public final class AbstractEntityEditorTest {
 			Entity typedKey = editor.tasks(CONNECTION).insert().perform().handle();
 			assertEquals(5000, typedKey.get(DepartmentNote.ID));
 			assertNotEquals(first.get(DepartmentNote.SEQ_NO), typedKey.get(DepartmentNote.SEQ_NO));
+			assertNotEquals(first.get(DepartmentNote.UUID), typedKey.get(DepartmentNote.UUID));
 
 			editor.entity().set(first);
 			editor.value(DepartmentNote.SEQ_NO).set(777);
@@ -1027,6 +1031,7 @@ public final class AbstractEntityEditorTest {
 			assertNotEquals(note.get(DepartmentNote.ID), sixty.get(DepartmentNote.ID));
 			assertNotEquals(note.get(DepartmentNote.SEQ_NO), sixty.get(DepartmentNote.SEQ_NO));
 			assertEquals("fifty", sixty.get(DepartmentNote.NOTE));
+			assertNotEquals(note.get(DepartmentNote.UUID), sixty.get(DepartmentNote.UUID));
 			Entity fifty = CONNECTION.selectSingle(DepartmentNote.ID.equalTo(note.get(DepartmentNote.ID)));
 			assertEquals(50, fifty.get(DepartmentNote.DEPARTMENT));
 		}

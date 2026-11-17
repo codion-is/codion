@@ -48,6 +48,8 @@ CREATE TABLE employees.department_note (
   deptno INT NOT NULL,
   note VARCHAR(100),
   seq_no INT NOT NULL,
+  uuid UUID DEFAULT random_uuid() NOT NULL,
+  constraint department_note_uuid_uk unique (uuid),
   constraint department_note_dept_fk foreign key (deptno) references employees.department(deptno)
 );
 

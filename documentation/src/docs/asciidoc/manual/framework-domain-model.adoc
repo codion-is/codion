@@ -656,10 +656,24 @@ The framework can select new primary key values from a query.
         where table_name = 'store.customer'"""))
 ----
 
+=== Column default
+
+Leaves the column out of the insert, so that its default makes the value, a UUID made by `default random_uuid()` for example, rather than the application.
+A value the entity holds is not inserted, the default making it all the same.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/framework/domain/GeneratorDemo.java[tags=columnDefault]
+----
+
+A value which is not part of the primary key comes back with the row where the insert selects it, as an editor's insert does.
+A key is read back from the generated keys the JDBC driver returns, so the driver must return a column made by its default there, as H2's does, some returning identity or auto-increment columns only.
+
 === Preserving
 
 Wraps another generator, inserting a value the entity holds as it is, the wrapped generator making one where the entity holds none.
 A row copied from another database keeps its key, an embedded copy for example, while a row inserted without one gets a key generated.
+Wrapping a column default, `preserving(columnDefault())`, a value given is inserted as it is, the column's default making it otherwise.
 
 [source,java,indent=0]
 ----
