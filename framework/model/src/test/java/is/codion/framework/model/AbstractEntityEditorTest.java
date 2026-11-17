@@ -43,6 +43,7 @@ import is.codion.framework.model.AbstractEntityEditor.DetailForeignKeyValidator;
 import is.codion.framework.model.DetailDomain.Assignment;
 import is.codion.framework.model.DetailDomain.Department;
 import is.codion.framework.model.DetailDomain.DepartmentExtra;
+import is.codion.framework.model.DetailDomain.DepartmentNote;
 import is.codion.framework.model.DetailDomain.DepartmentView;
 import is.codion.framework.model.DetailDomain.Employee;
 import is.codion.framework.model.DetailDomain.LazyEmployee;
@@ -937,6 +938,97 @@ public final class AbstractEntityEditorTest {
 			// Set master entity to null -> detail is cleared
 			departmentEditor.entity().defaults();
 			assertFalse(employeeEditor.entity().exists().is());
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void existingEntityInsertedAsNewRow() throws EntityValidationException {
+		// A generator preserving a value given inserted the existing entity's key and generated values, the key refused
+		// as a duplicate, or the row recreated where deleted since, so the editor leaves them out where unmodified
+		CONNECTION.startTransaction();
+		try {
+			Entity first = CONNECTION.insertSelect(CONNECTION.entities().entity(DepartmentNote.TYPE)
+							.with(DepartmentNote.DEPARTMENT, 10)
+							.with(DepartmentNote.NOTE, "first")
+							.build());
+			TestEntityEditor editor = new TestEntityEditor(DepartmentNote.TYPE, CONNECTION);
+			editor.entity().set(first);
+			editor.value(DepartmentNote.NOTE).set("second");
+			Entity second = editor.tasks(CONNECTION).insert().perform().handle();
+			assertNotEquals(first.get(DepartmentNote.ID), second.get(DepartmentNote.ID));
+			assertNotEquals(first.get(DepartmentNote.SEQ_NO), second.get(DepartmentNote.SEQ_NO));
+			assertEquals("second", second.get(DepartmentNote.NOTE));
+			assertEquals(second.get(DepartmentNote.ID), editor.value(DepartmentNote.ID).get());
+			// the one copied left as it was
+			assertEquals("first", CONNECTION.selectSingle(DepartmentNote.ID.equalTo(first.get(DepartmentNote.ID)))
+							.get(DepartmentNote.NOTE));
+
+			// a value changed is inserted as it is, a key typed in, the other generated value made anew
+			editor.entity().set(first);
+			editor.value(DepartmentNote.ID).set(5000);
+			Entity typedKey = editor.tasks(CONNECTION).insert().perform().handle();
+			assertEquals(5000, typedKey.get(DepartmentNote.ID));
+			assertNotEquals(first.get(DepartmentNote.SEQ_NO), typedKey.get(DepartmentNote.SEQ_NO));
+
+			editor.entity().set(first);
+			editor.value(DepartmentNote.SEQ_NO).set(777);
+			Entity typedSeqNo = editor.tasks(CONNECTION).insert().perform().handle();
+			assertEquals(777, typedSeqNo.get(DepartmentNote.SEQ_NO));
+			assertNotEquals(first.get(DepartmentNote.ID), typedSeqNo.get(DepartmentNote.ID));
+
+			// a row deleted since is not recreated under its key
+			CONNECTION.delete(first.primaryKey());
+			editor.entity().set(first);
+			Entity third = editor.tasks(CONNECTION).insert().perform().handle();
+			assertNotEquals(first.get(DepartmentNote.ID), third.get(DepartmentNote.ID));
+			assertTrue(CONNECTION.select(singletonList(first.primaryKey())).isEmpty());
+
+			// a new entity's key given is inserted as it is
+			editor.entity().defaults();
+			editor.value(DepartmentNote.ID).set(6000);
+			editor.value(DepartmentNote.DEPARTMENT).set(10);
+			assertEquals(6000, editor.tasks(CONNECTION).insert().perform().handle().get(DepartmentNote.ID));
+		}
+		finally {
+			CONNECTION.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void existingDetailInsertedAsNewRow() throws EntityValidationException {
+		CONNECTION.startTransaction();
+		try {
+			CONNECTION.insert(CONNECTION.entities().entity(Department.TYPE)
+							.with(Department.ID, 50)
+							.with(Department.NAME, "Fifty")
+							.build());
+			Entity note = CONNECTION.insertSelect(CONNECTION.entities().entity(DepartmentNote.TYPE)
+							.with(DepartmentNote.DEPARTMENT, 50)
+							.with(DepartmentNote.NOTE, "fifty")
+							.build());
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor noteEditor = new TestEntityEditor(DepartmentNote.TYPE, CONNECTION);
+			departmentEditor.detail().add(EditorLink.builder()
+							.editor(noteEditor)
+							.foreignKey(DepartmentNote.DEPARTMENT_FK)
+							.present(detail -> detail.present(DepartmentNote.NOTE))
+							.build());
+			departmentEditor.entity().set(CONNECTION.selectSingle(Department.ID.equalTo(50)));
+			assertEquals(note.get(DepartmentNote.ID), noteEditor.value(DepartmentNote.ID).get());
+
+			// the department inserted as a new one, its note with it, a new row as well
+			departmentEditor.value(Department.ID).set(60);
+			departmentEditor.value(Department.NAME).set("Sixty");
+			insert(departmentEditor);
+			Entity sixty = CONNECTION.selectSingle(DepartmentNote.DEPARTMENT.equalTo(60));
+			assertNotEquals(note.get(DepartmentNote.ID), sixty.get(DepartmentNote.ID));
+			assertNotEquals(note.get(DepartmentNote.SEQ_NO), sixty.get(DepartmentNote.SEQ_NO));
+			assertEquals("fifty", sixty.get(DepartmentNote.NOTE));
+			Entity fifty = CONNECTION.selectSingle(DepartmentNote.ID.equalTo(note.get(DepartmentNote.ID)));
+			assertEquals(50, fifty.get(DepartmentNote.DEPARTMENT));
 		}
 		finally {
 			CONNECTION.rollbackTransaction();

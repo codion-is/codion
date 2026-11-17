@@ -2,6 +2,10 @@ Codion Change Log
 =================
 
 ## 0.18.95
+### is.codion.framework.domain
+- Column.Generator.preserving() and Column.Generator.Preserving added, a generator inserting a value the entity holds as it is, the given generator making one where it holds none, a row copied from another database keeping its key.
+### is.codion.framework.model
+- EntityEditor.EditorTasks.insert(), an existing active entity is now inserted as a new row whatever its generators, its generated values left out where unmodified so that the generators make them, a value changed, a key typed in for example, inserted as it is.
 
 ## 0.18.94
 ### is.codion.common.reactive

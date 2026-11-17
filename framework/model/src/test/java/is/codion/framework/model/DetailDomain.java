@@ -28,8 +28,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
-import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.*;
 
 public final class DetailDomain extends DomainModel {
 
@@ -37,7 +36,8 @@ public final class DetailDomain extends DomainModel {
 
 	public DetailDomain() {
 		super(DOMAIN);
-		add(department(), employee(), departmentExtra(), assignment(), departmentView(), sharedEmployee(), lazyEmployee());
+		add(department(), employee(), departmentExtra(), assignment(), departmentView(), sharedEmployee(), lazyEmployee(),
+						departmentNote());
 	}
 
 	public interface Department {
@@ -198,6 +198,38 @@ public final class DetailDomain extends DomainModel {
 														.attribute()
 														.modifies(true))
 						.table("employees.employee")
+						.build();
+	}
+
+	/**
+	 * A detail of a department keyed by a generator preserving a key given, with a generated column which is not the key
+	 */
+	public interface DepartmentNote {
+		EntityType TYPE = DOMAIN.entityType("employees.department_note");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+		Column<String> NOTE = TYPE.stringColumn("note");
+		Column<Integer> SEQ_NO = TYPE.integerColumn("seq_no");
+		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_note_dept_fk", DEPARTMENT, Department.ID);
+	}
+
+	EntityDefinition departmentNote() {
+		return DepartmentNote.TYPE.as()
+						.attributes(
+										DepartmentNote.ID.as()
+														.primaryKey()
+														.generator(preserving(identity())),
+										DepartmentNote.DEPARTMENT.as()
+														.column()
+														.nullable(false),
+										DepartmentNote.DEPARTMENT_FK.as()
+														.foreignKey(),
+										DepartmentNote.NOTE.as()
+														.column(),
+										DepartmentNote.SEQ_NO.as()
+														.column()
+														.generator(preserving(sequence("employees.department_note_seq"))))
 						.build();
 	}
 

@@ -2815,6 +2815,64 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void preservingGenerator() {
+		connection.startTransaction();
+		try {
+			// a key given is inserted as it is, an identity generating one where none is given, or null
+			assertEquals(1000, connection.insertSelect(ENTITIES.entity(PreservingIdentity.TYPE)
+							.with(PreservingIdentity.ID, 1000)
+							.with(PreservingIdentity.DATA, "given")
+							.build()).get(PreservingIdentity.ID));
+			Integer generated = connection.insertSelect(ENTITIES.entity(PreservingIdentity.TYPE)
+							.with(PreservingIdentity.DATA, "none")
+							.build()).get(PreservingIdentity.ID);
+			Integer generatedForNull = connection.insertSelect(ENTITIES.entity(PreservingIdentity.TYPE)
+							.with(PreservingIdentity.ID, null)
+							.with(PreservingIdentity.DATA, "null")
+							.build()).get(PreservingIdentity.ID);
+			assertNotNull(generated);
+			assertNotNull(generatedForNull);
+			assertNotEquals(generated, generatedForNull);
+			assertNotEquals(1000, generated);
+			assertNotEquals(1000, generatedForNull);
+			// given and not given in one insert, each decided for its own entity
+			List<Entity.Key> keys = new ArrayList<>(connection.insert(asList(
+							ENTITIES.entity(PreservingIdentity.TYPE)
+											.with(PreservingIdentity.ID, 2000)
+											.with(PreservingIdentity.DATA, "given")
+											.build(),
+							ENTITIES.entity(PreservingIdentity.TYPE)
+											.with(PreservingIdentity.DATA, "none")
+											.build())));
+			assertEquals(2000, keys.get(0).get(PreservingIdentity.ID));
+			assertNotNull(keys.get(1).get(PreservingIdentity.ID));
+			assertNotEquals(2000, keys.get(1).get(PreservingIdentity.ID));
+			assertEquals(5, connection.count(Count.all(PreservingIdentity.TYPE)));
+
+			// a sequence likewise
+			assertEquals(1000, connection.insertSelect(ENTITIES.entity(PreservingSequence.TYPE)
+							.with(PreservingSequence.ID, 1000)
+							.with(PreservingSequence.DATA, "given")
+							.build()).get(PreservingSequence.ID));
+			Integer sequenced = connection.insertSelect(ENTITIES.entity(PreservingSequence.TYPE)
+							.with(PreservingSequence.DATA, "none")
+							.build()).get(PreservingSequence.ID);
+			Integer sequencedForNull = connection.insertSelect(ENTITIES.entity(PreservingSequence.TYPE)
+							.with(PreservingSequence.ID, null)
+							.with(PreservingSequence.DATA, "null")
+							.build()).get(PreservingSequence.ID);
+			assertNotNull(sequenced);
+			assertNotNull(sequencedForNull);
+			assertNotEquals(sequenced, sequencedForNull);
+			assertNotEquals(1000, sequenced);
+			assertNotEquals(1000, sequencedForNull);
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void selectIncludeExclude() {
 		// Test 1: Default selection (no include/exclude)
 		List<Entity> defaultSelect = connection.select(Select.all(Employee.TYPE)

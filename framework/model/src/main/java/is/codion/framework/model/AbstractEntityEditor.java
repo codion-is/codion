@@ -1223,6 +1223,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public EditorTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException {
 			verifyInsert();
 			Entity entity = entity().get().copy().mutable();
+			removeGeneratedValues(entity);
 			removeDatabaseDefaultNulls(entity);
 			persistEvents.beforeInsert(entity);
 
@@ -1394,6 +1395,26 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private void verifyDetailsLoaded() {
 			if (entity.detailsPending && !detail.editors.isEmpty()) {
 				throw new IllegalStateException(DETAILS_PENDING + entity().get());
+			}
+		}
+
+		/**
+		 * Removes the generated values an existing active entity holds unmodified from the entity about to be inserted,
+		 * so that the insert is a new row, its generators making them as for a new entity, whatever the generator: one
+		 * preserving a value given, {@link Column.Generator#preserving(Column.Generator)}, would otherwise insert the
+		 * existing entity's key, refused as a duplicate, or recreating the row where it has been deleted since. A value
+		 * changed, a key typed in, is kept. Reads {@link ColumnDefinition#generated()} only, the generator being unknown
+		 * to a client of a server.
+		 * @param entity the entity about to be inserted
+		 */
+		private void removeGeneratedValues(Entity entity) {
+			if (entity().exists().is()) {
+				entityDefinition.columns().definitions().stream()
+								.filter(ColumnDefinition::generated)
+								.map(ColumnDefinition::attribute)
+								.filter(column -> entity.contains(column) && !entity.modified(column))
+								.collect(toList())
+								.forEach(entity::remove);
 			}
 		}
 

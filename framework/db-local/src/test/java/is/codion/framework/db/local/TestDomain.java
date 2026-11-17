@@ -48,8 +48,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.common.utilities.item.Item.item;
-import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
-import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DomainModel {
@@ -106,6 +105,8 @@ public final class TestDomain extends DomainModel {
 		mixedGenerated();
 		partialGeneratedPk();
 		partialReference();
+		preservingIdentity();
+		preservingSequence();
 		queryWithCte();
 		queryWithRecursiveCte();
 		queryWithMultipleCtes();
@@ -1030,6 +1031,44 @@ public final class TestDomain extends DomainModel {
 										PartialReference.MASTER_FK.as()
 														.foreignKey(),
 										PartialReference.DATA.as()
+														.column()
+														.maximumLength(10))
+						.build());
+	}
+
+	public interface PreservingIdentity {
+		EntityType TYPE = DOMAIN.entityType("employees.preserving_identity");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	void preservingIdentity() {
+		add(PreservingIdentity.TYPE.as()
+						.attributes(
+										PreservingIdentity.ID.as()
+														.primaryKey()
+														.generator(preserving(identity())),
+										PreservingIdentity.DATA.as()
+														.column()
+														.maximumLength(10))
+						.build());
+	}
+
+	public interface PreservingSequence {
+		EntityType TYPE = DOMAIN.entityType("employees.preserving_sequence");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	void preservingSequence() {
+		add(PreservingSequence.TYPE.as()
+						.attributes(
+										PreservingSequence.ID.as()
+														.primaryKey()
+														.generator(preserving(sequence("employees.preserving_seq"))),
+										PreservingSequence.DATA.as()
 														.column()
 														.maximumLength(10))
 						.build());

@@ -386,6 +386,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * the entity inserted, so the database fills it in, whether the value was never given, given and then cleared,
 		 * or reverted. Such a column can therefore not be inserted as null via the active entity, the entities given to
 		 * {@link #insert(Entity)} and {@link #insert(Collection)} being inserted as they are.
+		 * <p>An existing active entity is inserted as a new row, its generated values, a generated primary key included,
+		 * left out of the entity inserted where unmodified, so that the generators make them, as for a new entity, whatever
+		 * the generator, one preserving a value given included, {@link Column.Generator#preserving(Column.Generator) preserving()}.
+		 * A value changed, a key typed in for example, is inserted as it is.
 		 * @return a task for inserting the active entity
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled, or the detail editors do not hold the
