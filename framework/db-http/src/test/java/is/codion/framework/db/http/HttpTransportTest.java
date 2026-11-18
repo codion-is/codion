@@ -18,17 +18,27 @@
  */
 package is.codion.framework.db.http;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.zip.GZIPOutputStream;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class HttpTransportTest {
 
 	private static final int TIMEOUT = 200;
+	private static final int SERVER_TIMEOUT = 10_000;
 	private static final String[] HEADERS = {"Content-Type", "text/plain"};
 
 	@Test
@@ -41,11 +51,82 @@ public final class HttpTransportTest {
 		timeout(new UrlConnectionTransport(TIMEOUT, TIMEOUT));
 	}
 
+	@Test
+	void gzip_jdk() throws IOException {
+		// a response compressed when asked for, as the EntityService compresses one
+		byte[] body = body();
+		AtomicReference<String> acceptEncoding = new AtomicReference<>();
+		HttpServer server = server(exchange -> {
+			acceptEncoding.set(exchange.getRequestHeaders().getFirst("Accept-Encoding"));
+			exchange.getResponseHeaders().add("Content-Encoding", "gzip");
+			respond(exchange, gzip(body));
+		});
+		try {
+			HttpTransport.Response response = new JdkHttpTransport(SERVER_TIMEOUT, SERVER_TIMEOUT)
+							.post("http://localhost:" + server.getAddress().getPort() + "/", HEADERS, null);
+			assertEquals("gzip", acceptEncoding.get());
+			assertEquals(200, response.statusCode());
+			assertArrayEquals(body, response.body());
+		}
+		finally {
+			server.stop(0);
+		}
+	}
+
+	@Test
+	void uncompressed_jdk() throws IOException {
+		// a response left uncompressed, though asked for, returned as it is
+		byte[] body = body();
+		HttpServer server = server(exchange -> respond(exchange, body));
+		try {
+			HttpTransport.Response response = new JdkHttpTransport(SERVER_TIMEOUT, SERVER_TIMEOUT)
+							.post("http://localhost:" + server.getAddress().getPort() + "/", HEADERS, null);
+			assertArrayEquals(body, response.body());
+		}
+		finally {
+			server.stop(0);
+		}
+	}
+
 	// A server never answering, the connection accepted by the system's backlog alone, each transport reporting it alike
 	private static void timeout(HttpTransport transport) throws IOException {
 		try (ServerSocket silent = new ServerSocket(0)) {
 			assertThrows(SocketTimeoutException.class, () ->
 							transport.post("http://localhost:" + silent.getLocalPort() + "/", HEADERS, null));
 		}
+	}
+
+	private static HttpServer server(HttpHandler handler) throws IOException {
+		HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
+		server.createContext("/", handler);
+		server.start();
+
+		return server;
+	}
+
+	private static void respond(HttpExchange exchange, byte[] body) throws IOException {
+		exchange.getRequestBody().readAllBytes();
+		exchange.sendResponseHeaders(200, body.length);
+		try (OutputStream output = exchange.getResponseBody()) {
+			output.write(body);
+		}
+	}
+
+	private static byte[] body() {
+		StringBuilder body = new StringBuilder();
+		for (int i = 0; i < 1000; i++) {
+			body.append("{\"entityType\":\"employees.employee\",\"values\":{\"empno\":").append(i).append("}}");
+		}
+
+		return body.toString().getBytes(UTF_8);
+	}
+
+	private static byte[] gzip(byte[] bytes) throws IOException {
+		ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+		try (GZIPOutputStream output = new GZIPOutputStream(compressed)) {
+			output.write(bytes);
+		}
+
+		return compressed.toByteArray();
 	}
 }

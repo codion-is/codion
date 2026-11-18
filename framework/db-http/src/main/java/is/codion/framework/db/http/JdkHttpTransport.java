@@ -20,7 +20,9 @@ package is.codion.framework.db.http;
 
 import org.jspecify.annotations.Nullable;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.CookieManager;
 import java.net.SocketTimeoutException;
 import java.net.URI;
@@ -32,13 +34,21 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.Executor;
+import java.util.zip.GZIPInputStream;
 
 /**
  * The default {@link HttpTransport} implementation, based on {@link java.net.http.HttpClient}.
  * This is the only place {@code java.net.http} is referenced, isolating it from platforms where
  * the module is unavailable.
+ * <p>{@link java.net.http.HttpClient} neither asks for a compressed response nor decompresses one, so this transport
+ * does both: it asks for gzip, which the EntityService compresses a response with when asked, entities in JSON
+ * shrinking to about a tenth, and decompresses a gzip response.
  */
 final class JdkHttpTransport implements HttpTransport {
+
+	private static final String ACCEPT_ENCODING = "Accept-Encoding";
+	private static final String CONTENT_ENCODING = "Content-Encoding";
+	private static final String GZIP = "gzip";
 
 	private final HttpClient httpClient;
 	private final @Nullable Duration socketTimeout;
@@ -61,7 +71,8 @@ final class JdkHttpTransport implements HttpTransport {
 		HttpRequest.Builder builder = HttpRequest.newBuilder()
 						.uri(URI.create(url))
 						.POST(body == null ? BodyPublishers.noBody() : BodyPublishers.ofByteArray(body))
-						.headers(headers);
+						.headers(headers)
+						.header(ACCEPT_ENCODING, GZIP);
 		if (socketTimeout != null) {
 			builder.timeout(socketTimeout);
 		}
@@ -69,7 +80,7 @@ final class JdkHttpTransport implements HttpTransport {
 		try {
 			HttpResponse<byte[]> response = httpClient.send(request, BodyHandlers.ofByteArray());
 
-			return new Response(response.statusCode(), response.body());
+			return new Response(response.statusCode(), body(response));
 		}
 		catch (HttpTimeoutException e) {
 			// As HttpURLConnection reports it, callers not having to know of java.net.http
@@ -81,6 +92,19 @@ final class JdkHttpTransport implements HttpTransport {
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw new IOException(e);
+		}
+	}
+
+	private static byte[] body(HttpResponse<byte[]> response) throws IOException {
+		byte[] body = response.body();
+		boolean gzip = response.headers().firstValue(CONTENT_ENCODING)
+						.map(GZIP::equalsIgnoreCase)
+						.orElse(false);
+		if (!gzip || body.length == 0) {
+			return body;
+		}
+		try (InputStream input = new GZIPInputStream(new ByteArrayInputStream(body))) {
+			return input.readAllBytes();
 		}
 	}
 

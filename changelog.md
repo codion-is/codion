@@ -8,6 +8,8 @@ Codion Change Log
 ### is.codion.framework.domain
 - Column.Generator.preserving() and Column.Generator.Preserving added, a generator inserting a value the entity holds as it is, the given generator making one where it holds none, a row copied from another database keeping its key.
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.
+### is.codion.framework.db.http
+- JdkHttpTransport now asks for a gzip compressed response, which the EntityService provides when asked, and decompresses it, where java.net.http does neither, a response of entities in JSON a tenth the size.
 ### is.codion.framework.model
 - EntityEditor.EditorTasks.insert(), an existing active entity is now inserted as a new row whatever its generators, its generated values left out where unmodified so that the generators make them, a value changed, a key typed in for example, inserted as it is.
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() bug fixed, the columns the foreign key references now selected along with those it includes, where a referenced column other than the primary key was left out, the entity selected setting the foreign key column to null.
