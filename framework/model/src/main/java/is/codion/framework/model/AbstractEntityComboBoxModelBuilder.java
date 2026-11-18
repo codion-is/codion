@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.framework.model.DefaultEntityComboBoxModel.includedAttributes;
 import static is.codion.framework.model.EntityComboBoxModel.PERSISTENCE_AWARE;
 import static java.util.Objects.requireNonNull;
 
@@ -83,7 +84,7 @@ public abstract class AbstractEntityComboBoxModelBuilder<B extends EntityComboBo
 		this(requireNonNull(foreignKey).referencedType(), connection);
 		ForeignKeys foreignKeys = connection.entities().definition(foreignKey.entityType()).foreignKeys();
 		nullable(foreignKeys.nullable(foreignKey));
-		attributes(foreignKeys.definition(foreignKey).include());
+		attributes(includedAttributes(foreignKeys.definition(foreignKey)));
 	}
 
 	@Override

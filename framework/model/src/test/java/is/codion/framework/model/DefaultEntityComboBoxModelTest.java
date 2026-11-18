@@ -355,6 +355,30 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
+	void buildFromForeignKeyReferencingNonKeyColumn() {
+		EntityConnection connection = LocalEntityConnection.builder()
+						.domain(new NonKeyReferenceDomain())
+						.user(UNIT_TEST_USER)
+						.build();
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
+						.foreignKey(NonKeyReferenceDomain.Employee.DEPARTMENT_FK)
+						.connection(connection)
+						.build();
+		comboBoxModel.items().refresh();
+		Entity department = comboBoxModel.items().get().stream()
+						.filter(Objects::nonNull)
+						.findFirst()
+						.orElseThrow(IllegalStateException::new);
+		// the location included, the referenced number selected along with it
+		assertTrue(department.contains(NonKeyReferenceDomain.Department.LOCATION));
+		assertTrue(department.contains(NonKeyReferenceDomain.Department.NUMBER));
+		Entity employee = connection.entities().entity(NonKeyReferenceDomain.Employee.TYPE).build();
+		employee.set(NonKeyReferenceDomain.Employee.DEPARTMENT_FK, department);
+		assertEquals(department.get(NonKeyReferenceDomain.Department.NUMBER), employee.get(NonKeyReferenceDomain.Employee.DEPARTMENT));
+		assertNotNull(employee.get(NonKeyReferenceDomain.Employee.DEPARTMENT));
+	}
+
+	@Test
 	void foreignKeyFilterWithIncludedAttributes() {
 		// the manager foreign key includes the name, job and manager, not the department
 		EntityComboBoxModel managers = EntityComboBoxModel.builder()

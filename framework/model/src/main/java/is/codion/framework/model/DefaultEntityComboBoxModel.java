@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
@@ -516,6 +517,25 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						foreignKey.references().forEach(reference -> selectAttributes.add(reference.column())));
 
 		return unmodifiableList(new ArrayList<>(selectAttributes));
+	}
+
+	/**
+	 * Returns the attributes to select for the entities referenced via the given foreign key: those it includes, along
+	 * with the columns it references, as the connection selects them, so that an entity selected sets the foreign key's
+	 * columns, a referenced column other than the primary key included.
+	 * @param foreignKeyDefinition the foreign key definition
+	 * @return the attributes to select, empty in case the foreign key includes all attributes
+	 * @see ForeignKeyDefinition#include()
+	 */
+	static Collection<Attribute<?>> includedAttributes(ForeignKeyDefinition foreignKeyDefinition) {
+		List<Attribute<?>> include = foreignKeyDefinition.include();
+		if (include.isEmpty()) {
+			return include;
+		}
+		Set<Attribute<?>> attributes = new LinkedHashSet<>(include);
+		foreignKeyDefinition.references().forEach(reference -> attributes.add(reference.referenced()));
+
+		return unmodifiableList(new ArrayList<>(attributes));
 	}
 
 	/**

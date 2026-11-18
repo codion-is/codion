@@ -129,8 +129,9 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 			/**
 			 * <p>This method configures the resulting {@link EntityComboBoxModel} according to the given foreign key,
 			 * including null if it is nullable and specifying the attributes to include if defined.
-			 * <p>If the foreign key has select attributes defined, those are set in the combo box model, the foreign key
-			 * columns always included, see {@link EntityComboBoxModel.Builder#attributes(Collection)}.
+			 * <p>If the foreign key has select attributes defined, those are set in the combo box model, along with the
+			 * columns the foreign key references, so that the entity selected sets them, the foreign key columns always
+			 * included, see {@link EntityComboBoxModel.Builder#attributes(Collection)}.
 			 * @param foreignKey the foreign key which referenced entity type this combo box model should represent
 			 * @return a new {@link ConnectionStep} instance
 			 * @see ForeignKeyDefinition#include()

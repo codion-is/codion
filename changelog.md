@@ -10,6 +10,7 @@ Codion Change Log
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.
 ### is.codion.framework.model
 - EntityEditor.EditorTasks.insert(), an existing active entity is now inserted as a new row whatever its generators, its generated values left out where unmodified so that the generators make them, a value changed, a key typed in for example, inserted as it is.
+- EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() bug fixed, the columns the foreign key references now selected along with those it includes, where a referenced column other than the primary key was left out, the entity selected setting the foreign key column to null.
 
 ## 0.18.94
 ### is.codion.common.reactive
