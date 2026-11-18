@@ -213,7 +213,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				customers = multiInput()
 								.component(EntitySearchField.builder()
 												.model(EntitySearchModel.builder()
-																.entityType(conditionModel.attribute().referencedType())
+																.foreignKey(conditionModel.attribute())
 																.connection(tableModel.connection())
 																.build())
 												.columns(25)

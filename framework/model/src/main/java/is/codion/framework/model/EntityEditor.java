@@ -897,7 +897,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 			}
 
 			return EntitySearchModel.builder()
-							.entityType(foreignKey.referencedType())
+							.foreignKey(foreignKey)
 							.connection(connection)
 							.build();
 		}

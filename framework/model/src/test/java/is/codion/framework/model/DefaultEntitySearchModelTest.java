@@ -24,9 +24,11 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.DefaultEntitySearchModel.DefaultBuilder;
 import is.codion.framework.model.test.TestDomain;
@@ -68,7 +70,8 @@ public final class DefaultEntitySearchModelTest {
 	@Test
 	void builderValidation() {
 		// Null checks
-		assertThrows(NullPointerException.class, () -> new DefaultBuilder(null, CONNECTION));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder((ForeignKey) null, CONNECTION));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder((EntityType) null, CONNECTION));
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, null));
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION).search((Column<String>[]) null));
 		// Invalid arguments
@@ -86,6 +89,46 @@ public final class DefaultEntitySearchModelTest {
 	@Test
 	void wrongEntityType() {
 		assertThrows(IllegalArgumentException.class, () -> searchModel.selection().entity().set(ENTITIES.entity(Department.TYPE).build()));
+	}
+
+	@Test
+	void buildFromForeignKey() {
+		EntitySearchModel managers = EntitySearchModel.builder()
+						.foreignKey(Employee.MGR_FK)
+						.connection(CONNECTION)
+						.build();
+		managers.search().string().set("joh");
+		List<Entity> result = managers.search().perform();
+		assertFalse(result.isEmpty());
+		// the foreign key includes the name, job and manager
+		for (Entity manager : result) {
+			assertTrue(manager.contains(Employee.NAME));
+			assertTrue(manager.contains(Employee.JOB));
+			assertFalse(manager.contains(Employee.HIREDATE));
+			assertFalse(manager.contains(Employee.SALARY));
+		}
+	}
+
+	@Test
+	void buildFromForeignKeyReferencingNonKeyColumn() {
+		EntityConnection connection = LocalEntityConnection.builder()
+						.domain(new NonKeyReferenceDomain())
+						.user(UNIT_TEST_USER)
+						.build();
+		EntitySearchModel departments = EntitySearchModel.builder()
+						.foreignKey(NonKeyReferenceDomain.Employee.DEPARTMENT_FK)
+						.connection(connection)
+						.build();
+		departments.search().string().set("acc");
+		List<Entity> result = departments.search().perform();
+		assertEquals(1, result.size());
+		Entity department = result.get(0);
+		// the location included, the referenced number selected along with it
+		assertTrue(department.contains(NonKeyReferenceDomain.Department.LOCATION));
+		assertTrue(department.contains(NonKeyReferenceDomain.Department.NUMBER));
+		Entity employee = connection.entities().entity(NonKeyReferenceDomain.Employee.TYPE).build();
+		employee.set(NonKeyReferenceDomain.Employee.DEPARTMENT_FK, department);
+		assertEquals(10, employee.get(NonKeyReferenceDomain.Employee.DEPARTMENT));
 	}
 
 	@Test

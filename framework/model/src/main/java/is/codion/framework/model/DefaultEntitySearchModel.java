@@ -26,6 +26,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityDefinition.ForeignKeys;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.OrderBy.OrderByColumn;
@@ -53,8 +54,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
-import static is.codion.framework.model.DefaultEntityComboBoxModel.selectAttributes;
-import static is.codion.framework.model.DefaultEntityComboBoxModel.selectReferenced;
+import static is.codion.framework.model.DefaultEntityComboBoxModel.*;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
@@ -502,21 +502,28 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public Builder.ConnectionStep entityType(EntityType entityType) {
-			return new DefaultConnectionStep(requireNonNull(entityType));
+			return new DefaultConnectionStep(requireNonNull(entityType), null);
+		}
+
+		@Override
+		public Builder.ConnectionStep foreignKey(ForeignKey foreignKey) {
+			return new DefaultConnectionStep(requireNonNull(foreignKey).referencedType(), foreignKey);
 		}
 	}
 
 	private static class DefaultConnectionStep implements Builder.ConnectionStep {
 
 		private final EntityType entityType;
+		private final @Nullable ForeignKey foreignKey;
 
-		private DefaultConnectionStep(EntityType entityType) {
+		private DefaultConnectionStep(EntityType entityType, @Nullable ForeignKey foreignKey) {
 			this.entityType = entityType;
+			this.foreignKey = foreignKey;
 		}
 
 		@Override
 		public Builder connection(EntityConnection connection) {
-			return new DefaultBuilder(this.entityType, connection);
+			return foreignKey == null ? new DefaultBuilder(entityType, connection) : new DefaultBuilder(foreignKey, connection);
 		}
 	}
 
@@ -533,6 +540,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private boolean persistenceAware = PERSISTENCE_AWARE.getOrThrow();
 		private @Nullable OrderBy orderBy;
 		private final Map<ForeignKey, Consumer<ForeignKeyFilter>> filterLinks = new LinkedHashMap<>();
+
+		DefaultBuilder(ForeignKey foreignKey, EntityConnection connection) {
+			this(requireNonNull(foreignKey).referencedType(), connection);
+			ForeignKeys foreignKeys = connection.entities().definition(foreignKey.entityType()).foreignKeys();
+			attributes(includedAttributes(foreignKeys.definition(foreignKey)));
+		}
 
 		DefaultBuilder(EntityType entityType, EntityConnection connection) {
 			this.connection = requireNonNull(connection);

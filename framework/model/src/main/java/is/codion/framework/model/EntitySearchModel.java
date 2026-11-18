@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
@@ -260,6 +261,7 @@ public interface EntitySearchModel {
 	interface Builder {
 
 		/**
+		 * Specifies the entity type, either directly or derived from a {@link ForeignKey}.
 		 * Provides a {@link ConnectionStep}
 		 */
 		interface EntityTypeStep {
@@ -269,6 +271,18 @@ public interface EntitySearchModel {
 			 * @return a new {@link ConnectionStep} instance
 			 */
 			ConnectionStep entityType(EntityType entityType);
+
+			/**
+			 * <p>This method configures the resulting {@link EntitySearchModel} according to the given foreign key.
+			 * <p>If the foreign key has select attributes defined, those are set in the search model, along with the
+			 * columns the foreign key references, so that the entity selected sets them, the primary key and foreign key
+			 * columns always included, see {@link EntitySearchModel.Builder#attributes(Collection)}.
+			 * @param foreignKey the foreign key which referenced entity type this search model should represent
+			 * @return a new {@link ConnectionStep} instance
+			 * @see ForeignKeyDefinition#include()
+			 * @see EntitySearchModel.Builder#attributes(Collection)
+			 */
+			ConnectionStep foreignKey(ForeignKey foreignKey);
 		}
 
 		/**

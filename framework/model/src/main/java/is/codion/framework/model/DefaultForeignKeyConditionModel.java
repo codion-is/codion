@@ -128,7 +128,7 @@ final class DefaultForeignKeyConditionModel extends AbstractAttributeConditionMo
 	 */
 	static EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnection connection) {
 		return EntityComboBoxModel.builder()
-						.entityType(requireNonNull(foreignKey).referencedType())
+						.foreignKey(foreignKey)
 						.connection(requireNonNull(connection))
 						.nullable(true)
 						.build();
@@ -141,7 +141,7 @@ final class DefaultForeignKeyConditionModel extends AbstractAttributeConditionMo
 	 */
 	static EntitySearchModel searchModel(ForeignKey foreignKey, EntityConnection connection) {
 		return EntitySearchModel.builder()
-						.entityType(requireNonNull(foreignKey).referencedType())
+						.foreignKey(foreignKey)
 						.connection(requireNonNull(connection))
 						.build();
 	}
