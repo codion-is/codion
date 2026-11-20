@@ -15,6 +15,8 @@ Codion Change Log
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() bug fixed, the columns the foreign key references now selected along with those it includes, where a referenced column other than the primary key was left out, the entity selected setting the foreign key column to null.
 - EntitySearchModel.Builder.EntityTypeStep.foreignKey() added.
 - EntityEditor.ComponentModels.searchModel() and ForeignKeyConditionModel, the search and combo box models for a foreign key now built via foreignKey(), selecting the attributes the foreign key includes rather than all.
+### is.codion.swing.framework.ui
+- EntityEditPanel bug fixed, the focus no longer returns to the Update or Delete button after an update or delete, where clicking it or using its mnemonic left the focus on the now disabled button, out of reach of the keyboard, a push button no longer counted as the last focused component, the initial focus component requested in case the last focused one can no longer receive the focus.
 
 ## 0.18.94
 ### is.codion.common.reactive

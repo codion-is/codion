@@ -65,6 +65,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -1808,13 +1809,31 @@ public abstract class EntityEditPanel extends JPanel {
 			return afterInsert;
 		}
 
+		/**
+		 * Returns the focus to the component focused before an update or delete, in case it can still receive it,
+		 * otherwise requests the initial focus.
+		 * @param component the component focused before the operation
+		 */
+		private void restore(@Nullable JComponent component) {
+			SwingUtilities.invokeLater(() -> {
+				if (component != null && component.isShowing() && component.isEnabled() && component.isFocusable()) {
+					focus(component);
+				}
+				else {
+					initial.request();
+				}
+			});
+		}
+
 		private static void requestFocus(@Nullable JComponent component) {
 			if (component != null && component.isFocusable()) {
-				SwingUtilities.invokeLater(() -> {
-					Ancestor.window().of(component).toFront();
-					focusableComponent(component).requestFocusInWindow();
-				});
+				SwingUtilities.invokeLater(() -> focus(component));
 			}
+		}
+
+		private static void focus(JComponent component) {
+			Ancestor.window().of(component).toFront();
+			focusableComponent(component).requestFocusInWindow();
 		}
 
 		private static JComponent focusableComponent(JComponent component) {
@@ -2138,7 +2157,7 @@ public abstract class EntityEditPanel extends JPanel {
 			Entity updated = result.handle();
 			onUpdate.forEach(consumer -> consumer.accept(updated));
 			if (requestFocus) {
-				InputFocus.requestFocus(lastFocusedComponent);
+				editPanel.inputFocus.restore(lastFocusedComponent);
 			}
 		}
 
@@ -2222,7 +2241,7 @@ public abstract class EntityEditPanel extends JPanel {
 			Entity deleted = result.handle();
 			onDelete.forEach(consumer -> consumer.accept(deleted));
 			if (requestFocus) {
-				InputFocus.requestFocus(lastFocusedComponent);
+				editPanel.inputFocus.restore(lastFocusedComponent);
 			}
 		}
 
@@ -2333,7 +2352,11 @@ public abstract class EntityEditPanel extends JPanel {
 		public void propertyChange(PropertyChangeEvent changeEvent) {
 			Component focusedComponent = (Component) changeEvent.getNewValue();
 			if (focusedComponent instanceof JComponent) {
-				setLastFocusedComponent((JComponent) focusedComponent);
+				// A push button triggers an action, Update or Delete for one, receiving the focus when clicked
+				// or via its mnemonic, and is no place to return the focus to after the action
+				if (!(focusedComponent instanceof JButton)) {
+					setLastFocusedComponent((JComponent) focusedComponent);
+				}
 				EntityEditPanel editPanel = null;
 				EntityPanel entityPanel = entityPanel(focusedComponent);
 				if (entityPanel != null) {
