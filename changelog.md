@@ -18,6 +18,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityEditPanel bug fixed, the focus no longer returns to the Update or Delete button after an update or delete, where clicking it or using its mnemonic left the focus on the now disabled button, out of reach of the keyboard, a push button no longer counted as the last focused component, the initial focus component requested in case the last focused one can no longer receive the focus.
 - EntityEditPanel.InputFocus bug fixed, a disabled component no longer receives the focus, where requesting the focus for one, a field disabled while the entity exists for example, by request() or on a validation error or modified warning, left the focus on it, out of reach of the keyboard, the initial focus now falling back to the default component of the focus traversal policy, and the focus after insert to the initial focus, in case the component specified is disabled, where the focus stayed where it was.
+- EntityEditPanel, the last focused component is now held weakly, no longer keeping a removed component, or a closed window, from being garbage collected until the focus moves on.
 
 ## 0.18.94
 ### is.codion.common.reactive

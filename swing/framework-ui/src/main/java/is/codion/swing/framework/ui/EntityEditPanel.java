@@ -206,7 +206,8 @@ public abstract class EntityEditPanel extends JPanel {
 		private ControlKeys() {}
 	}
 
-	private static @Nullable JComponent lastFocusedComponent;
+	// Held weakly, so that it does not keep a removed component, or a closed window, from being collected
+	private static WeakReference<JComponent> lastFocusedComponent = new WeakReference<>(null);
 
 	static {
 		getCurrentKeyboardFocusManager().addPropertyChangeListener(FOCUS_OWNER, new EditFocusListener());
@@ -2167,7 +2168,7 @@ public abstract class EntityEditPanel extends JPanel {
 			Entity updated = result.handle();
 			onUpdate.forEach(consumer -> consumer.accept(updated));
 			if (requestFocus) {
-				editPanel.inputFocus.restore(lastFocusedComponent);
+				editPanel.inputFocus.restore(lastFocusedComponent.get());
 			}
 		}
 
@@ -2251,7 +2252,7 @@ public abstract class EntityEditPanel extends JPanel {
 			Entity deleted = result.handle();
 			onDelete.forEach(consumer -> consumer.accept(deleted));
 			if (requestFocus) {
-				editPanel.inputFocus.restore(lastFocusedComponent);
+				editPanel.inputFocus.restore(lastFocusedComponent.get());
 			}
 		}
 
@@ -2383,9 +2384,9 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 		}
 
-		private static void setLastFocusedComponent(@Nullable JComponent focusedComponent) {
+		private static void setLastFocusedComponent(JComponent focusedComponent) {
 			//only ever accessed on the EDT
-			lastFocusedComponent = focusedComponent;
+			lastFocusedComponent = new WeakReference<>(focusedComponent);
 		}
 
 		private static @Nullable EntityPanel entityPanel(Component focusedComponent) {
