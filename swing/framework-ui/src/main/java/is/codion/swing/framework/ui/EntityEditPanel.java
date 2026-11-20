@@ -1758,6 +1758,8 @@ public abstract class EntityEditPanel extends JPanel {
 	 * <p>Manages the components that should receive the input focus.
 	 * <p>Both master and detail editor components can be referenced by attribute,
 	 * allowing focus to be directed to any component in the edit panel.
+	 * <p>A disabled component does not receive the focus, since a disabled focus owner receives no key events,
+	 * leaving the focus out of reach of the keyboard.
 	 * @see EditorComponents#detail()
 	 */
 	public final class InputFocus {
@@ -1769,7 +1771,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 		/**
 		 * Request focus for the component associated with the given attribute.
-		 * If no component is associated with the attribute calling this method has no effect.
+		 * If no component is associated with the attribute, or it is disabled, calling this method has no effect.
 		 * If the attribute appears in multiple detail editor slots (multi-slot configurations),
 		 * the slot focused is unspecified — use {@link #request(JComponent)} with a slot-resolved
 		 * component for deterministic targeting.
@@ -1788,6 +1790,7 @@ public abstract class EntityEditPanel extends JPanel {
 		 * Request focus for the given component, bypassing attribute resolution.
 		 * Useful for multi-slot detail editor configurations where a specific slot's component
 		 * has been resolved by the caller and should receive focus deterministically.
+		 * If the component is disabled, calling this method has no effect.
 		 * Uses {@link JComponent#requestFocusInWindow()}.
 		 * @param component the component to focus
 		 */
@@ -1826,8 +1829,12 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 
 		private static void requestFocus(@Nullable JComponent component) {
-			if (component != null && component.isFocusable()) {
-				SwingUtilities.invokeLater(() -> focus(component));
+			if (component != null) {
+				SwingUtilities.invokeLater(() -> {
+					if (component.isFocusable() && component.isEnabled()) {
+						focus(component);
+					}
+				});
 			}
 		}
 
@@ -1856,13 +1863,14 @@ public abstract class EntityEditPanel extends JPanel {
 			/**
 			 * Returns the component which should receive the initial focus, which by default is
 			 * the one specified via {@link #set(Supplier)} or {@link #set(JComponent)}.
-			 * The fallback is the default component as defined by the focus traversal policy,
-			 * or if this panel contains no fousable components, the panel itself.
+			 * The fallback, in case none is specified or the one specified is disabled, is the default
+			 * component as defined by the focus traversal policy, or if this panel contains no focusable
+			 * components, the panel itself.
 			 * @return the initial focus component
 			 */
 			public JComponent get() {
 				JComponent initial = component.get();
-				if (initial == null) {
+				if (initial == null || !initial.isEnabled()) {
 					Component defaultComponent = LAYOUT_FOCUS_TRAVERSAL_POLICY.getDefaultComponent(EntityEditPanel.this);
 					if (defaultComponent instanceof JComponent) {
 						return (JComponent) defaultComponent;
@@ -1950,7 +1958,9 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 
 			/**
-			 * Request focus after an insert operation
+			 * Request focus after an insert operation, falling back to the initial focus component,
+			 * in case none is specified or the one specified is disabled.
+			 * @see Initial#get()
 			 */
 			public void request() {
 				requestFocus(get());
@@ -1959,7 +1969,7 @@ public abstract class EntityEditPanel extends JPanel {
 			private JComponent get() {
 				JComponent afterInsert = component.get();
 
-				return afterInsert == null ? initial.get() : afterInsert;
+				return afterInsert == null || !afterInsert.isEnabled() ? initial.get() : afterInsert;
 			}
 		}
 	}
