@@ -178,10 +178,28 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		Builder<T> buttonFocusable(boolean buttonFocusable);
 
 		/**
+		 * @param focusLostBehaviour the focus lost behaviour, JFormattedTextField.COMMIT by default
+		 * @return this builder instance
+		 * @see JFormattedTextField#COMMIT
+		 * @see JFormattedTextField#COMMIT_OR_REVERT
+		 * @see JFormattedTextField#REVERT
+		 * @see JFormattedTextField#PERSIST
+		 */
+		Builder<T> focusLostBehaviour(int focusLostBehaviour);
+
+		/**
 		 * @param calendarIcon the calendar icon, null for none
 		 * @return this builder instance
 		 */
 		Builder<T> calendarIcon(@Nullable ImageIcon calendarIcon);
+
+		/**
+		 * @param adjustable whether the date can be adjusted using the keyboard
+		 * (UP/DOWN arrows by default) to increment/decrement the date component under cursor
+		 * @return this builder instance
+		 * @see TemporalField#ADJUSTABLE
+		 */
+		Builder<T> adjustable(boolean adjustable);
 	}
 
 	private void initializeUI() {
@@ -274,8 +292,20 @@ public final class TemporalInput<T extends Temporal> extends JPanel {
 		}
 
 		@Override
+		public Builder<T> focusLostBehaviour(int focusLostBehaviour) {
+			temporalFieldBuilder.focusLostBehaviour(focusLostBehaviour);
+			return this;
+		}
+
+		@Override
 		public Builder<T> calendarIcon(@Nullable ImageIcon calendarIcon) {
 			temporalFieldBuilder.calendarIcon(calendarIcon);
+			return this;
+		}
+
+		@Override
+		public Builder<T> adjustable(boolean adjustable) {
+			temporalFieldBuilder.adjustable(adjustable);
 			return this;
 		}
 
