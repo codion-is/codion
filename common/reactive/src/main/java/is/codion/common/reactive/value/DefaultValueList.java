@@ -18,55 +18,16 @@
  */
 package is.codion.common.reactive.value;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
 
-final class DefaultValueList<T> extends AbstractValueCollection<T, List<T>> implements ValueList<T> {
+final class DefaultValueList<T> extends AbstractValueList<T> {
 
 	private DefaultValueList(DefaultBuilder<T> builder) {
 		super(builder);
-	}
-
-	/**
-	 * <p>{@link Value#set(Object)}, typed to the list itself, which overload resolution prefers whenever a caller
-	 * passes the declared type - {@code valueList.set(aList)} lands here rather than on
-	 * {@link ValueCollection#set(Collection)}.
-	 * <p>It must therefore take the same snapshot. Storing the caller's collection would leave the value's
-	 * contents mutable from the outside and able to change behind its back, with no validation and no
-	 * notification, and hand observers a snapshot that is not one.
-	 * <p>Declared here rather than on {@link AbstractValueCollection}, where it would erase to the same
-	 * signature as {@link ValueCollection#set(Collection)}.
-	 */
-	@Override
-	public synchronized void set(@Nullable List<T> values) {
-		set((Collection<T>) values);
-	}
-
-	@Override
-	public ObservableValueList<T> observable() {
-		return (ObservableValueList<T>) super.observable();
-	}
-
-	@Override
-	List<T> create() {
-		return new ArrayList<>();
-	}
-
-	@Override
-	List<T> unmodifiable(List<T> values) {
-		return unmodifiableList(values);
-	}
-
-	@Override
-	protected ObservableValueList<T> createObservable() {
-		return new DefaultObservableValueList<>(this);
 	}
 
 	static final class DefaultBuilder<T>
@@ -80,15 +41,6 @@ final class DefaultValueList<T> extends AbstractValueCollection<T, List<T>> impl
 		@Override
 		public ValueList<T> build() {
 			return new DefaultValueList<>(this);
-		}
-	}
-
-	private static final class DefaultObservableValueList<T>
-					extends AbstractObservableValueCollection<T, List<T>>
-					implements ObservableValueList<T> {
-
-		private DefaultObservableValueList(ValueList<T> valueList) {
-			super(valueList);
 		}
 	}
 }

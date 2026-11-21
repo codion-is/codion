@@ -224,6 +224,75 @@ public class ValueListTest {
 		assertEquals(4, counter.get());
 	}
 
+	@Test
+	void abstractValueList() {
+		Numbers numbers = new Numbers(Value.Notify.CHANGED);
+		ObservableValueList<Integer> observable = numbers.observable();
+		assertTrue(observable.isEmpty());
+		assertFalse(observable.isNullable());
+		AtomicInteger notified = new AtomicInteger();
+		numbers.addListener(notified::incrementAndGet);
+		//an operation of its own, on the inherited mutators, duplicates kept
+		numbers.addRange(1, 2);
+		numbers.addRange(1, 2);
+		assertEquals(asList(1, 2, 1, 2), numbers.get());
+		assertEquals(4, notified.get());
+		assertUnmodifiable(observable);
+		//notifying on a change only
+		numbers.set(asList(1, 2, 1, 2));
+		assertEquals(4, notified.get());
+		//the validator added in the constructor
+		assertThrows(IllegalArgumentException.class, () -> numbers.add(-1));
+		assertEquals(4, numbers.size());
+		//the list overload takes a snapshot
+		List<Integer> values = new ArrayList<>(asList(3));
+		numbers.set(values);
+		values.add(4);
+		assertEquals(Collections.singletonList(3), numbers.get());
+		//locked
+		numbers.locked().set(true);
+		assertThrows(IllegalStateException.class, () -> numbers.add(5));
+		numbers.locked().set(false);
+		//sorted
+		numbers.set(asList(2, 1));
+		numbers.sort(Comparator.naturalOrder());
+		assertEquals(asList(1, 2), numbers.get());
+		//linked
+		ValueList<Integer> linked = ValueList.valueList();
+		numbers.link(linked);
+		linked.add(6);
+		assertTrue(numbers.contains(6));
+		//the first item
+		assertEquals(6, numbers.value().get());
+	}
+
+	@Test
+	void abstractValueListNotifyingOnSet() {
+		AtomicInteger notified = new AtomicInteger();
+		Numbers numbers = new Numbers(Value.Notify.SET);
+		numbers.addListener(notified::incrementAndGet);
+		numbers.set(Collections.emptyList());
+		assertEquals(1, notified.get());
+	}
+
+	private static final class Numbers extends AbstractValueList<Integer> {
+
+		private Numbers(Notify notify) {
+			super(notify);
+			addValidator(values -> values.forEach(value -> {
+				if (value < 0) {
+					throw new IllegalArgumentException("Negative: " + value);
+				}
+			}));
+		}
+
+		private void addRange(int from, int to) {
+			for (int i = from; i <= to; i++) {
+				add(i);
+			}
+		}
+	}
+
 	private static void assertUnmodifiable(ObservableValueCollection<Integer, ? extends Collection<Integer>> observer) {
 		assertThrows(UnsupportedOperationException.class, () -> observer.get().remove(1));
 	}

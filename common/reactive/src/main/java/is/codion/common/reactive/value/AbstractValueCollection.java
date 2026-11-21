@@ -51,6 +51,15 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 		super(builder);
 	}
 
+	/**
+	 * @param empty the empty, unmodifiable collection, the initial value and the one null is replaced with
+	 * @param notify specifies when to notify listeners
+	 */
+	AbstractValueCollection(C empty, Notify notify) {
+		super(requireNonNull(empty), notify);
+		setValue(empty);
+	}
+
 	@Override
 	public final C get() {
 		return super.get();
@@ -245,6 +254,16 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 		}
 
 		return !previousItems.hasNext() && !currentItems.hasNext();
+	}
+
+	/**
+	 * Always true, a collection value notifying each change, or each set, by its notify policy.
+	 * @param value the value the consumers are to receive
+	 * @return true
+	 */
+	@Override
+	protected final boolean shouldNotify(@Nullable C value) {
+		return true;
 	}
 
 	@Override

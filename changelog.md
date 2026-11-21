@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.95
+### is.codion.common.reactive
+- AbstractValueSet and AbstractValueList added, public extension bases holding the set or list themselves, every method final, so a set or list value with operations of its own needs to implement nothing.
 ### is.codion.swing.common.ui
 - ImagePane bug fixed, a pane used as a cell renderer, its parent a CellRendererPane, now decodes image bytes on the calling thread, where it painted no image, the image decoded in the background after the cell was painted.
 - ImageView added, a display only component fitting image bytes to its size, for cell renderers and thumbnails, the bytes decoded when painted and scaled smoothly, the scaled images kept by their byte array, held weakly, ImageView.ORIENT added, ImagePane sharing its fit.

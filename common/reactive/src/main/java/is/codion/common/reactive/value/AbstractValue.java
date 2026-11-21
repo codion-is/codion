@@ -30,8 +30,9 @@ import java.util.function.UnaryOperator;
  * are final here, delegating to the package private base class that implements them. That is not ceremony: it
  * is what guarantees every value reaches the one ordering that makes the core tame - equality, then the lock,
  * then the validators, then the write, then the notification - since a subclass overriding {@link #set(Object)}
- * could otherwise put a step of its own in front of any of them. The framework's own collection values, which
- * do need to widen that path, extend the base class directly instead.
+ * could otherwise put a step of its own in front of any of them. A set or list value extends
+ * {@link AbstractValueSet} or {@link AbstractValueList} instead, which hold the collection themselves and widen
+ * that path with the collection mutators, each as final.
  * <p>The constructor parameter {@code notify} specifies whether this {@link AbstractValue} instance should call
  * {@link #notifyObserver()} each time the value is set ({@link Notify#SET}) or only when it changes
  * ({@link Notify#CHANGED}), which is determined using {@link java.util.Objects#deepEquals(Object, Object)}.
