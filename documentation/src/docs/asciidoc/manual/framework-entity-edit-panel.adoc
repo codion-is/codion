@@ -161,7 +161,7 @@ A pin following the caption of the component's label shows the state, dimmed whi
 Clicking the pin toggles it, as does Alt-P while the component has the focus.
 The pin shows only while the panel can insert, since a persisted value applies when a new entity is started.
 The choices are stored with the panel preferences.
-Setting {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.html#PERSIST_TOGGLE[EditorComponents.PERSIST_TOGGLE] gives every field a toggle, removing an attribute from the set opting its field out.
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.PersistToggle.html#all()[all()] gives every field a toggle, removing an attribute from the set opting its field out, and setting {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.html#PERSIST_TOGGLE[EditorComponents.PERSIST_TOGGLE] does the same for every panel.
 
 [source,java]
 ----

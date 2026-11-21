@@ -24,6 +24,7 @@ Codion Change Log
 - EntityEditPanel, the last focused component is now held weakly, no longer keeping a removed component, or a closed window, from being garbage collected until the focus moves on.
 - EditorComponents.persistToggle() added, the attributes which components have a persist toggle, those of a detail editor in its own instance, letting the user choose which values persist after an insert or clear, a pin following the caption of the label, dimmed while off, toggled by clicking it, or by ControlKeys.PERSIST, Alt-P, while the component has the focus, the choices stored with the edit panel preferences, FrameworkIcons.PIN added.
 - EditorComponents.PERSIST_TOGGLE added, giving every field a persist toggle, persistToggle().remove() opting one out, the persist toggles now shown and enabled only while the edit panel can insert.
+- EditorComponents.PersistToggle added, returned by persistToggle(), its all() giving every field of a single panel a persist toggle.
 
 ## 0.18.94
 ### is.codion.common.reactive

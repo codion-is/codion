@@ -51,7 +51,7 @@ import static javax.swing.SwingConstants.LEADING;
  * component, dimmed while the value does not persist, and toggled by a key stroke while the component has the focus,
  * or by clicking the pin. Hidden and disabled while not enabled, the edit panel unable to insert.
  */
-final class PersistToggle {
+final class PersistPin {
 
 	private static final String LABELED_BY = "labeledBy";
 	private static final float DIMMED_ALPHA = 0.3f;
@@ -64,7 +64,7 @@ final class PersistToggle {
 	private final Icon pin = FrameworkIcons.instance().get(FrameworkIcons.PIN).small();
 	private final Icon dimmedPin = new DimmedIcon(pin);
 
-	private PersistToggle(JLabel label, State persist, ObservableState enabled, @Nullable KeyStroke keyStroke, String caption) {
+	private PersistPin(JLabel label, State persist, ObservableState enabled, @Nullable KeyStroke keyStroke, String caption) {
 		this.label = label;
 		this.persist = persist;
 		this.enabled = enabled;
@@ -104,7 +104,7 @@ final class PersistToggle {
 		}
 		JLabel label = (JLabel) component.getClientProperty(LABELED_BY);
 		if (label != null) {
-			new PersistToggle(label, persist, enabled, keyStroke, caption);
+			new PersistPin(label, persist, enabled, keyStroke, caption);
 		}
 	}
 

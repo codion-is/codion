@@ -64,7 +64,7 @@ final class PersistToggles {
 		components.persistToggle().get().forEach(attribute -> {
 			State persist = persist(attribute);
 			defaults.put(attribute, persist.is());
-			PersistToggle.enable(components.component(attribute).get(), persist, enabled, keyStroke, caption);
+			PersistPin.enable(components.component(attribute).get(), persist, enabled, keyStroke, caption);
 		});
 		components.detail().components().forEach(detail ->
 						details.put(detail.name(), new PersistToggles(detail.components(), enabled, keyStroke, caption)));

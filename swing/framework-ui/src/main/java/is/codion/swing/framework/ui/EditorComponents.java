@@ -20,8 +20,8 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.AbstractValueSet;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
@@ -120,7 +120,7 @@ public final class EditorComponents {
 	/**
 	 * Specifies whether every field gets a persist toggle by default, the {@link #persistToggle()} set of each
 	 * instance, detail instances included, then containing every attribute it accepts when the instance is created,
-	 * an attribute removed opting its field out.
+	 * as by {@link PersistToggle#all()}, an attribute removed opting its field out.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
@@ -133,8 +133,7 @@ public final class EditorComponents {
 	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final DetailEditorComponents detail = new DetailEditorComponents();
-	private final ValueSet<Attribute<?>> persistToggle = ValueSet.valueSet();
-	private final Set<Attribute<?>> persistToggleAll = new HashSet<>();
+	private final DefaultPersistToggle persistToggle;
 
 	private final ComponentDefaults defaults;
 	private final ComponentFactory create;
@@ -153,14 +152,9 @@ public final class EditorComponents {
 		this.editor = requireNonNull(editor);
 		this.defaults = defaults;
 		this.create = new ComponentFactory(this);
-		PersistToggleValidator persistToggleValidator = new PersistToggleValidator(linkForeignKey);
-		this.persistToggle.addValidator(persistToggleValidator);
+		this.persistToggle = new DefaultPersistToggle(linkForeignKey);
 		if (PERSIST_TOGGLE.getOrThrow()) {
-			editor.entityDefinition().attributes().definitions().stream()
-							.map(AttributeDefinition::attribute)
-							.filter(persistToggleValidator::accepts)
-							.forEach(persistToggleAll::add);
-			this.persistToggle.addAll(persistToggleAll);
+			this.persistToggle.all();
 		}
 	}
 
@@ -219,28 +213,28 @@ public final class EditorComponents {
 	 * <p>The {@link EntityEditPanel} applies the persist toggles of its {@link EditorComponents}, and of their
 	 * {@link #detail()} instances, when initialized, locking this set. The states the user changes are stored with
 	 * the edit panel preferences.
-	 * <p>With {@link #PERSIST_TOGGLE} set, this set contains every attribute it accepts when the instance is created,
-	 * an attribute removed opting its field out, and those without a component being skipped on initialization.
-	 * An attribute added explicitly must have a component.
+	 * <p>{@link PersistToggle#all()} adds every attribute this set accepts, an attribute removed opting its field out,
+	 * and those without a component being skipped on initialization. With {@link #PERSIST_TOGGLE} set, the set
+	 * contains them when the instance is created. An attribute added otherwise must have a component.
 	 * <p>Adding an attribute throws {@link IllegalArgumentException} in case it is not found in the underlying entity,
 	 * is derived, or is a read-only column or a foreign key based on read-only columns, having no value for the user
 	 * to set, or, for a detail instance, in case it is the foreign key linking the detail editor to its master.
-	 * @return the {@link ValueSet} specifying the attributes which components have a persist toggle
+	 * @return the {@link PersistToggle} specifying the attributes which components have a persist toggle
 	 * @see EntityEditor.EditorValue#persist()
 	 * @see EntityEditPanel#store(java.util.prefs.Preferences)
 	 * @see EntityEditPanel#restore(java.util.prefs.Preferences)
 	 */
-	public ValueSet<Attribute<?>> persistToggle() {
+	public PersistToggle persistToggle() {
 		return persistToggle;
 	}
 
 	/**
 	 * @param attribute the attribute
-	 * @return true in case {@link #PERSIST_TOGGLE} put the attribute in the persist toggle set when this instance was
-	 * created, rather than it being added explicitly
+	 * @return true in case {@link PersistToggle#all()} put the attribute in the persist toggle set, rather than it
+	 * being added explicitly
 	 */
 	boolean persistToggleAll(Attribute<?> attribute) {
-		return persistToggleAll.contains(attribute);
+		return persistToggle.addedByAll(attribute);
 	}
 
 	/**
@@ -476,6 +470,19 @@ public final class EditorComponents {
 		EditorComponent<?> component() {
 			return component;
 		}
+	}
+
+	/**
+	 * The attributes which components have a persist toggle, see {@link EditorComponents#persistToggle()}.
+	 */
+	public interface PersistToggle extends ValueSet<Attribute<?>> {
+
+		/**
+		 * Adds every attribute this set accepts, giving every field a persist toggle, an attribute removed then opting
+		 * its field out, and those without a component being skipped on initialization, as {@link #PERSIST_TOGGLE}
+		 * does when the instance is created. An attribute removed and added back must have a component.
+		 */
+		void all();
 	}
 
 	/**
@@ -1194,17 +1201,31 @@ public final class EditorComponents {
 		}
 	}
 
-	private class PersistToggleValidator implements Validator<Set<Attribute<?>>> {
+	private final class DefaultPersistToggle extends AbstractValueSet<Attribute<?>> implements PersistToggle {
 
+		// The attributes all() added, those without a component skipped on initialization rather than throwing. One
+		// leaving the set leaves this too, so that added back explicitly it must have a component.
+		private final Set<Attribute<?>> addedByAll = new HashSet<>();
 		private final @Nullable ForeignKey linkForeignKey;
 
-		private PersistToggleValidator(@Nullable ForeignKey linkForeignKey) {
+		private DefaultPersistToggle(@Nullable ForeignKey linkForeignKey) {
 			this.linkForeignKey = linkForeignKey;
+			addValidator(attributes -> requireNonNull(attributes).forEach(this::validatePersistToggle));
+			addConsumer(addedByAll::retainAll);
 		}
 
 		@Override
-		public void validate(@Nullable Set<Attribute<?>> attributes) {
-			requireNonNull(attributes).forEach(attribute -> validatePersistToggle(attribute, linkForeignKey));
+		public void all() {
+			List<Attribute<?>> accepted = editor.entityDefinition().attributes().definitions().stream()
+							.map(AttributeDefinition::attribute)
+							.filter(this::accepts)
+							.collect(toList());
+			addAll(accepted);
+			addedByAll.addAll(accepted);
+		}
+
+		private boolean addedByAll(Attribute<?> attribute) {
+			return addedByAll.contains(attribute);
 		}
 
 		// One of the entity's own attributes, which the validator accepts
@@ -1215,7 +1236,7 @@ public final class EditorComponents {
 			return !attributeDefinition.derived() && !readOnly(attributeDefinition, entityDefinition) && !attribute.equals(linkForeignKey);
 		}
 
-		private void validatePersistToggle(Attribute<?> attribute, @Nullable ForeignKey linkForeignKey) {
+		private void validatePersistToggle(Attribute<?> attribute) {
 			EntityDefinition entityDefinition = editor.entityDefinition();
 			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
 			if (attributeDefinition.derived() || readOnly(attributeDefinition, entityDefinition)) {
@@ -1225,14 +1246,14 @@ public final class EditorComponents {
 				throw new IllegalArgumentException("The foreign key linking a detail editor to its master can not have a persist toggle: " + attribute);
 			}
 		}
+	}
 
-		private static boolean readOnly(AttributeDefinition<?> attributeDefinition, EntityDefinition entityDefinition) {
-			if (attributeDefinition.attribute() instanceof ForeignKey) {
-				return ((ForeignKey) attributeDefinition.attribute()).references().stream()
-								.allMatch(reference -> entityDefinition.columns().definition(reference.column()).readOnly());
-			}
-
-			return attributeDefinition instanceof ColumnDefinition<?> && ((ColumnDefinition<?>) attributeDefinition).readOnly();
+	private static boolean readOnly(AttributeDefinition<?> attributeDefinition, EntityDefinition entityDefinition) {
+		if (attributeDefinition.attribute() instanceof ForeignKey) {
+			return ((ForeignKey) attributeDefinition.attribute()).references().stream()
+							.allMatch(reference -> entityDefinition.columns().definition(reference.column()).readOnly());
 		}
+
+		return attributeDefinition instanceof ColumnDefinition<?> && ((ColumnDefinition<?>) attributeDefinition).readOnly();
 	}
 }

@@ -274,6 +274,39 @@ public final class EntityEditPanelTest {
 	}
 
 	@Test
+	void persistToggleAllPerPanel() {
+		EntityEditPanel editPanel = new EntityEditPanel(departmentWithEmployees()) {
+			@Override
+			protected void initializeUI() {
+				//every field of this panel, the location opted out, and of the detail
+				components().persistToggle().all();
+				components().persistToggle().remove(Department.LOCATION);
+				EditorComponents employees = components().detail().get(Employee.DEPARTMENT_FK);
+				employees.persistToggle().all();
+				create().textField(Department.NAME);
+				create().textField(Department.LOCATION);
+				employees.create().textField(Employee.NAME);
+			}
+		};
+		editPanel.initialize();
+		assertEquals(singleton(Department.NAME), editPanel.components().persistToggle().get());
+		assertEquals(singleton(Employee.NAME),
+						editPanel.components().detail().get(Employee.DEPARTMENT_FK).persistToggle().get());
+
+		//an attribute removed and added back counts as added explicitly, and must have a component
+		EntityEditPanel addedBack = new EntityEditPanel(new SwingEntityEditModel(Employee.TYPE, CONNECTION)) {
+			@Override
+			protected void initializeUI() {
+				components().persistToggle().all();
+				components().persistToggle().remove(Employee.JOB);
+				components().persistToggle().add(Employee.JOB);
+				create().textField(Employee.NAME);
+			}
+		};
+		assertThrows(IllegalStateException.class, addedBack::initialize);
+	}
+
+	@Test
 	void persistToggleInsertable() throws Exception {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
 		PersistEditPanel editPanel = new PersistEditPanel(editModel);
