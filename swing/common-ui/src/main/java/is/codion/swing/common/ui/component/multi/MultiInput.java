@@ -48,6 +48,7 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Insets;
@@ -78,6 +79,7 @@ import static is.codion.common.i18n.Messages.clearMnemonic;
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.emptyList;
@@ -99,6 +101,8 @@ import static javax.swing.SwingUtilities.updateComponentTreeUI;
  * the ones selected added at once, see {@link Builder#selector(Supplier)}.
  * <li>{@link KeyEvent#VK_DOWN} with Alt held, or the button, opens the dialog, the list in it focused, or moves the focus
  * to the list in case the dialog is already open. {@link KeyEvent#VK_UP} with Alt held, or the button, closes it.
+ * Opened by the button, the field takes the focus first, as a combo box does when its arrow button is clicked, so that
+ * the focus returns to the field when the dialog closes, unless it has moved elsewhere in the window meanwhile.
  * <li>In the dialog {@link KeyEvent#VK_DELETE} removes the selected values, the Clear button clears the set,
  * {@link KeyEvent#VK_UP} with Alt held moves the focus back to the field, leaving the dialog open, for adding further
  * values, and {@link KeyEvent#VK_ESCAPE} or {@link KeyEvent#VK_ENTER} closes it. Alt held, Down and Up thereby step
@@ -530,6 +534,13 @@ public final class MultiInput<C extends JComponent, T> extends JPanel {
 	}
 
 	private void showMembers() {
+		// Opened by the members button, the focus elsewhere: the field takes it first, as a combo box does when
+		// its arrow button is clicked, its window then returning the focus to the field when the list closes,
+		// rather than to the component focused when the button was clicked
+		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
+		if (focusOwner == null || !SwingUtilities.isDescendingFrom(focusOwner, componentValue.component())) {
+			componentValue.component().requestFocusInWindow();
+		}
 		list = createList();
 		JPanel content = borderLayoutPanel()
 						.center(scrollPane()
