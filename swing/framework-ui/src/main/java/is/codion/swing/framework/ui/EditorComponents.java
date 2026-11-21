@@ -80,6 +80,7 @@ import java.math.BigInteger;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
@@ -115,10 +117,24 @@ public final class EditorComponents {
 	public static final PropertyValue<Integer> TEXT_FIELD_COLUMNS =
 					integerValue(EditorComponents.class.getName() + ".textFieldColumns", 12);
 
+	/**
+	 * Specifies whether every field gets a persist toggle by default, the {@link #persistToggle()} set of each
+	 * instance, detail instances included, then containing every attribute it accepts when the instance is created,
+	 * an attribute removed opting its field out.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see #persistToggle()
+	 */
+	public static final PropertyValue<Boolean> PERSIST_TOGGLE =
+					booleanValue(EditorComponents.class.getName() + ".persistToggle", false);
+
 	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final DetailEditorComponents detail = new DetailEditorComponents();
 	private final ValueSet<Attribute<?>> persistToggle = ValueSet.valueSet();
+	private final Set<Attribute<?>> persistToggleAll = new HashSet<>();
 
 	private final ComponentDefaults defaults;
 	private final ComponentFactory create;
@@ -137,7 +153,15 @@ public final class EditorComponents {
 		this.editor = requireNonNull(editor);
 		this.defaults = defaults;
 		this.create = new ComponentFactory(this);
-		this.persistToggle.addValidator(new PersistToggleValidator(linkForeignKey));
+		PersistToggleValidator persistToggleValidator = new PersistToggleValidator(linkForeignKey);
+		this.persistToggle.addValidator(persistToggleValidator);
+		if (PERSIST_TOGGLE.getOrThrow()) {
+			editor.entityDefinition().attributes().definitions().stream()
+							.map(AttributeDefinition::attribute)
+							.filter(persistToggleValidator::accepts)
+							.forEach(persistToggleAll::add);
+			this.persistToggle.addAll(persistToggleAll);
+		}
 	}
 
 	/**
@@ -190,9 +214,14 @@ public final class EditorComponents {
 	 * <p>A pin following the caption of the component's label shows the state, dimmed while the value does not
 	 * persist. Clicking the pin toggles it, as does the {@link EntityEditPanel.ControlKeys#PERSIST} key stroke while
 	 * the component has the focus. A component without a label gets the key stroke alone.
+	 * <p>The pin shows, and the toggle is enabled, only while the edit panel can insert, its editor being neither
+	 * read-only nor insert disabled, a persisted value applying when a new entity is started.
 	 * <p>The {@link EntityEditPanel} applies the persist toggles of its {@link EditorComponents}, and of their
 	 * {@link #detail()} instances, when initialized, locking this set. The states the user changes are stored with
 	 * the edit panel preferences.
+	 * <p>With {@link #PERSIST_TOGGLE} set, this set contains every attribute it accepts when the instance is created,
+	 * an attribute removed opting its field out, and those without a component being skipped on initialization.
+	 * An attribute added explicitly must have a component.
 	 * <p>Adding an attribute throws {@link IllegalArgumentException} in case it is not found in the underlying entity,
 	 * is derived, or is a read-only column or a foreign key based on read-only columns, having no value for the user
 	 * to set, or, for a detail instance, in case it is the foreign key linking the detail editor to its master.
@@ -203,6 +232,15 @@ public final class EditorComponents {
 	 */
 	public ValueSet<Attribute<?>> persistToggle() {
 		return persistToggle;
+	}
+
+	/**
+	 * @param attribute the attribute
+	 * @return true in case {@link #PERSIST_TOGGLE} put the attribute in the persist toggle set when this instance was
+	 * created, rather than it being added explicitly
+	 */
+	boolean persistToggleAll(Attribute<?> attribute) {
+		return persistToggleAll.contains(attribute);
 	}
 
 	/**
@@ -1167,6 +1205,14 @@ public final class EditorComponents {
 		@Override
 		public void validate(@Nullable Set<Attribute<?>> attributes) {
 			requireNonNull(attributes).forEach(attribute -> validatePersistToggle(attribute, linkForeignKey));
+		}
+
+		// One of the entity's own attributes, which the validator accepts
+		private boolean accepts(Attribute<?> attribute) {
+			EntityDefinition entityDefinition = editor.entityDefinition();
+			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
+
+			return !attributeDefinition.derived() && !readOnly(attributeDefinition, entityDefinition) && !attribute.equals(linkForeignKey);
 		}
 
 		private void validatePersistToggle(Attribute<?> attribute, @Nullable ForeignKey linkForeignKey) {

@@ -21,6 +21,7 @@ Codion Change Log
 - EntityEditPanel.InputFocus bug fixed, a disabled component no longer receives the focus, where requesting the focus for one, a field disabled while the entity exists for example, by request() or on a validation error or modified warning, left the focus on it, out of reach of the keyboard, the initial focus now falling back to the default component of the focus traversal policy, and the focus after insert to the initial focus, in case the component specified is disabled, where the focus stayed where it was.
 - EntityEditPanel, the last focused component is now held weakly, no longer keeping a removed component, or a closed window, from being garbage collected until the focus moves on.
 - EditorComponents.persistToggle() added, the attributes which components have a persist toggle, those of a detail editor in its own instance, letting the user choose which values persist after an insert or clear, a pin following the caption of the label, dimmed while off, toggled by clicking it, or by ControlKeys.PERSIST, Alt-P, while the component has the focus, the choices stored with the edit panel preferences, FrameworkIcons.PIN added.
+- EditorComponents.PERSIST_TOGGLE added, giving every field a persist toggle, persistToggle().remove() opting one out, the persist toggles now shown and enabled only while the edit panel can insert.
 
 ## 0.18.94
 ### is.codion.common.reactive

@@ -48,6 +48,7 @@ import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
@@ -59,6 +60,7 @@ import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.VK_A;
 import static java.awt.event.KeyEvent.VK_P;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -243,6 +245,61 @@ public final class EntityEditPanelTest {
 		assertFalse(restoredPanel.editor().value(Department.LOCATION).persist().is());
 	}
 
+	@Test
+	void persistToggleAll() {
+		EditorComponents.PERSIST_TOGGLE.set(true);
+		try {
+			DepartmentPersistAllPanel editPanel = new DepartmentPersistAllPanel(departmentWithEmployees());
+			editPanel.initialize();
+			EditorComponents employees = editPanel.components().detail().get(Employee.DEPARTMENT_FK);
+			//every field, the location opted out, the attributes without a component skipped,
+			//the detail's link foreign key and derived attributes never in the set
+			assertEquals(singleton(Department.NAME), editPanel.components().persistToggle().get());
+			assertEquals(new HashSet<>(asList(Employee.NAME, Employee.JOB)), employees.persistToggle().get());
+			assertNotNull(editPanel.component(Department.NAME).label().getIcon());
+			assertNull(editPanel.component(Department.LOCATION).label().getIcon());
+			assertNotNull(employees.component(Employee.JOB).label().getIcon());
+		}
+		finally {
+			EditorComponents.PERSIST_TOGGLE.set(false);
+		}
+		//an attribute added explicitly must have a component
+		EntityEditPanel editPanel = new EntityEditPanel(new SwingEntityEditModel(Employee.TYPE, CONNECTION)) {
+			@Override
+			protected void initializeUI() {
+				components().persistToggle().add(Employee.JOB);
+			}
+		};
+		assertThrows(IllegalStateException.class, editPanel::initialize);
+	}
+
+	@Test
+	void persistToggleInsertable() throws Exception {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		PersistEditPanel editPanel = new PersistEditPanel(editModel);
+		editPanel.initialize();
+		JComponent component = editPanel.component(Employee.NAME).get();
+		JLabel label = editPanel.component(Employee.NAME).label();
+		Object actionKey = component.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.get(KeyStroke.getKeyStroke(VK_P, ALT_DOWN_MASK));
+		assertTrue(component.getActionMap().get(actionKey).isEnabled());
+		assertNotNull(label.getIcon());
+		//hidden and disabled while the panel can not insert
+		editModel.editor().settings().insertEnabled().set(false);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertNull(label.getIcon());
+		assertNull(label.getToolTipText());
+		assertFalse(component.getActionMap().get(actionKey).isEnabled());
+		editModel.editor().settings().insertEnabled().set(true);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertNotNull(label.getIcon());
+		assertTrue(component.getActionMap().get(actionKey).isEnabled());
+		editModel.editor().settings().readOnly().set(true);
+		SwingUtilities.invokeAndWait(() -> {});
+		assertNull(label.getIcon());
+		assertFalse(component.getActionMap().get(actionKey).isEnabled());
+	}
+
 	private static SwingEntityEditModel departmentWithEmployees() {
 		SwingEntityEditModel departmentEditModel = new SwingEntityEditModel(Department.TYPE, CONNECTION);
 		departmentEditModel.editor().detail().add(EditorLink.builder()
@@ -393,6 +450,28 @@ public final class EntityEditPanelTest {
 			setLayout(Layouts.flexibleGridLayout(1, 2));
 			addInputPanel(Department.LOCATION);
 			add(employees.create().inputPanel(Employee.NAME).build());
+		}
+	}
+
+	private static final class DepartmentPersistAllPanel extends EntityEditPanel {
+
+		private DepartmentPersistAllPanel(SwingEntityEditModel editModel) {
+			super(editModel);
+		}
+
+		@Override
+		protected void initializeUI() {
+			components().persistToggle().remove(Department.LOCATION);
+			EditorComponents employees = components().detail().get(Employee.DEPARTMENT_FK);
+			create().textField(Department.NAME);
+			create().textField(Department.LOCATION);
+			employees.create().textField(Employee.NAME);
+			employees.create().itemComboBox(Employee.JOB);
+			setLayout(Layouts.flexibleGridLayout(1, 4));
+			addInputPanel(Department.NAME);
+			addInputPanel(Department.LOCATION);
+			add(employees.create().inputPanel(Employee.NAME).build());
+			add(employees.create().inputPanel(Employee.JOB).build());
 		}
 	}
 

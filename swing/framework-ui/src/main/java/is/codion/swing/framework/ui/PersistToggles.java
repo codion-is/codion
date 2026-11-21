@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.attribute.Attribute;
 
@@ -32,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * The persist toggles of an {@link EditorComponents} instance and of its detail instances, recursively,
@@ -52,29 +54,34 @@ final class PersistToggles {
 	private final Map<Attribute<?>, Boolean> defaults = new LinkedHashMap<>();
 	private final Map<String, PersistToggles> details = new LinkedHashMap<>();
 
-	private PersistToggles(EditorComponents components, @Nullable KeyStroke keyStroke, String caption) {
+	private PersistToggles(EditorComponents components, ObservableState enabled, @Nullable KeyStroke keyStroke, String caption) {
 		this.components = components;
+		// Those PERSIST_TOGGLE put in the set without a component removed, the set then holding the toggles enabled
+		components.persistToggle().removeAll(components.persistToggle().get().stream()
+						.filter(attribute -> components.persistToggleAll(attribute) && !components.component(attribute).optional().isPresent())
+						.collect(toList()));
 		components.persistToggle().locked().set(true);
 		components.persistToggle().get().forEach(attribute -> {
 			State persist = persist(attribute);
 			defaults.put(attribute, persist.is());
-			PersistToggle.enable(components.component(attribute).get(), persist, keyStroke, caption);
+			PersistToggle.enable(components.component(attribute).get(), persist, enabled, keyStroke, caption);
 		});
 		components.detail().components().forEach(detail ->
-						details.put(detail.name(), new PersistToggles(detail.components(), keyStroke, caption)));
+						details.put(detail.name(), new PersistToggles(detail.components(), enabled, keyStroke, caption)));
 	}
 
 	/**
 	 * Enables the persist toggles of the given instance and of its detail instances, recursively, locking their
 	 * persist toggle sets.
 	 * @param components the {@link EditorComponents} instance
+	 * @param enabled the state controlling whether the toggles are shown and enabled
 	 * @param keyStroke the key stroke toggling a state while its component has the focus, null for none
 	 * @param caption the caption of the toggles
 	 * @return the enabled persist toggles
-	 * @throws IllegalStateException in case an attribute with a persist toggle has no component
+	 * @throws IllegalStateException in case an attribute added to a persist toggle set explicitly has no component
 	 */
-	static PersistToggles enable(EditorComponents components, @Nullable KeyStroke keyStroke, String caption) {
-		return new PersistToggles(requireNonNull(components), keyStroke, requireNonNull(caption));
+	static PersistToggles enable(EditorComponents components, ObservableState enabled, @Nullable KeyStroke keyStroke, String caption) {
+		return new PersistToggles(requireNonNull(components), requireNonNull(enabled), keyStroke, requireNonNull(caption));
 	}
 
 	/**

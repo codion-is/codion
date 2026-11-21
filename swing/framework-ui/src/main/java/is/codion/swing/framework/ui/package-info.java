@@ -20,6 +20,7 @@
  * Package configuration values:
  * <ul>
  * <li>{@link is.codion.swing.framework.ui.EditorComponents#TEXT_FIELD_COLUMNS}
+ * <li>{@link is.codion.swing.framework.ui.EditorComponents#PERSIST_TOGGLE}
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#USER}
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#SAVE_DEFAULT_USERNAME}
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#STARTUP_DIALOG}

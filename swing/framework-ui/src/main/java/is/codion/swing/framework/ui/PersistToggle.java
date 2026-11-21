@@ -18,7 +18,9 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -40,7 +42,6 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.SwingConstants.LEADING;
@@ -48,7 +49,7 @@ import static javax.swing.SwingConstants.LEADING;
 /**
  * Lets the user toggle whether an editor value persists, shown as a pin following the caption of the label of its
  * component, dimmed while the value does not persist, and toggled by a key stroke while the component has the focus,
- * or by clicking the pin.
+ * or by clicking the pin. Hidden and disabled while not enabled, the edit panel unable to insert.
  */
 final class PersistToggle {
 
@@ -58,18 +59,22 @@ final class PersistToggle {
 
 	private final JLabel label;
 	private final State persist;
+	private final ObservableState enabled;
+	private final String toolTipText;
 	private final Icon pin = FrameworkIcons.instance().get(FrameworkIcons.PIN).small();
 	private final Icon dimmedPin = new DimmedIcon(pin);
 
-	private PersistToggle(JLabel label, State persist, @Nullable KeyStroke keyStroke, String caption) {
+	private PersistToggle(JLabel label, State persist, ObservableState enabled, @Nullable KeyStroke keyStroke, String caption) {
 		this.label = label;
 		this.persist = persist;
+		this.enabled = enabled;
+		this.toolTipText = keyStroke == null ? caption : caption + " (" + KeyboardShortcutsPanel.text(keyStroke) + ")";
 		label.setHorizontalTextPosition(LEADING);
-		label.setToolTipText(keyStroke == null ? caption : caption + " (" + KeyboardShortcutsPanel.text(keyStroke) + ")");
 		PinMouseListener mouseListener = new PinMouseListener();
 		label.addMouseListener(mouseListener);
 		label.addMouseMotionListener(mouseListener);
 		persist.addListener(() -> SwingUtilities.invokeLater(this::update));
+		enabled.addListener(() -> SwingUtilities.invokeLater(this::update));
 		update();
 	}
 
@@ -77,31 +82,48 @@ final class PersistToggle {
 	 * Enables a persist toggle for the given component, the pin shown on the label associated with it, if any.
 	 * @param component the component
 	 * @param persist the persist state of its value
+	 * @param enabled the state controlling whether the toggle is shown and enabled
 	 * @param keyStroke the key stroke toggling the state while the component has the focus, null for none
 	 * @param caption the caption of the toggle
 	 */
-	static void enable(JComponent component, State persist, @Nullable KeyStroke keyStroke, String caption) {
+	static void enable(JComponent component, State persist, ObservableState enabled, @Nullable KeyStroke keyStroke, String caption) {
 		requireNonNull(component);
 		requireNonNull(persist);
+		requireNonNull(enabled);
 		requireNonNull(caption);
 		if (keyStroke != null) {
+			// A disabled action does not consume the key stroke, leaving it to a mnemonic for one
 			KeyEvents.builder()
 							.keyStroke(keyStroke)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-							.action(command(persist::toggle))
+							.action(Control.builder()
+											.command(persist::toggle)
+											.enabled(enabled)
+											.build())
 							.enable(component);
 		}
 		JLabel label = (JLabel) component.getClientProperty(LABELED_BY);
 		if (label != null) {
-			new PersistToggle(label, persist, keyStroke, caption);
+			new PersistToggle(label, persist, enabled, keyStroke, caption);
 		}
 	}
 
 	private void update() {
-		label.setIcon(persist.is() ? pin : dimmedPin);
+		if (enabled.is()) {
+			label.setIcon(persist.is() ? pin : dimmedPin);
+			label.setToolTipText(toolTipText);
+		}
+		else {
+			label.setIcon(null);
+			label.setToolTipText(null);
+			label.setCursor(null);
+		}
 	}
 
 	private boolean onPin(Point point) {
+		if (label.getIcon() == null) {
+			return false;
+		}
 		Insets insets = label.getInsets();
 		Rectangle view = new Rectangle(insets.left, insets.top,
 						label.getWidth() - insets.left - insets.right, label.getHeight() - insets.top - insets.bottom);

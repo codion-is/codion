@@ -876,7 +876,9 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	private void setupPersistToggles() {
-		persistToggles = PersistToggles.enable(components,
+		// Shown and enabled only while a new entity can be inserted, which is when a persisted value applies
+		ObservableState insertable = State.and(editor().settings().insertEnabled(), editor().settings().readOnly().not());
+		persistToggles = PersistToggles.enable(components, insertable,
 						configuration.controlMap.keyStroke(PERSIST).get(), MESSAGES.getString("persist_value"));
 		if (restoredPersist != null) {
 			persistToggles.restore(restoredPersist);
