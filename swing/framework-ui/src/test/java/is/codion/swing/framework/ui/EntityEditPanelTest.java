@@ -307,6 +307,33 @@ public final class EntityEditPanelTest {
 	}
 
 	@Test
+	void persistKeyStrokeOnly() {
+		AtomicInteger performed = new AtomicInteger();
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		EntityEditPanel editPanel = new EntityEditPanel(editModel) {
+			@Override
+			protected void setupControls() {
+				control(PERSIST).set(Control.builder().command(performed::incrementAndGet).build());
+			}
+
+			@Override
+			protected void initializeUI() {
+				components().persistToggle().add(Employee.NAME);
+				create().textField(Employee.NAME);
+			}
+		};
+		editPanel.initialize();
+		KeyStroke keyStroke = KeyStroke.getKeyStroke(VK_P, ALT_DOWN_MASK);
+		//a control set for PERSIST is not bound on the panel, its key stroke being bound on each toggle's component
+		assertNull(editPanel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(keyStroke));
+		JComponent component = editPanel.component(Employee.NAME).get();
+		Object actionKey = component.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(keyStroke);
+		component.getActionMap().get(actionKey).actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, ""));
+		assertTrue(editModel.editor().value(Employee.NAME).persist().is());
+		assertEquals(0, performed.get());
+	}
+
+	@Test
 	void persistToggleInsertable() throws Exception {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
 		PersistEditPanel editPanel = new PersistEditPanel(editModel);

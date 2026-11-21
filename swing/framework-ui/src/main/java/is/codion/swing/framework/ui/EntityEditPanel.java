@@ -207,7 +207,8 @@ public abstract class EntityEditPanel extends JPanel {
 		/**
 		 * Toggles whether the value of the component with the focus persists when the editor is reset to its defaults,
 		 * for the attributes given a persist toggle. Unlike the other controls, available only while one of those
-		 * components has the focus, so the key stroke may also serve as a label mnemonic elsewhere in the panel.<br>
+		 * components has the focus, so the key stroke may also serve as a label mnemonic elsewhere in the panel.
+		 * Only the key stroke is used, bound on each of those components, a control set for this key not being bound.<br>
 		 * Default key stroke: ALT-P
 		 * @see EditorComponents#persistToggle()
 		 */
@@ -903,9 +904,12 @@ public abstract class EntityEditPanel extends JPanel {
 	private void setupKeyboardActions() {
 		ControlMap controlMap = configuration.controlMap;
 		ControlKeyBindings bindings = new ControlKeyBindings();
-		controlMap.keys().forEach(controlKey -> bindings.bind(controlMap, controlKey, keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(this)));
+		// PERSIST's key stroke is bound on each component with a persist toggle, see setupPersistToggles()
+		controlMap.keys().stream()
+						.filter(controlKey -> controlKey != PERSIST)
+						.forEach(controlKey -> bindings.bind(controlMap, controlKey, keyEvent ->
+										keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+														.enable(this)));
 	}
 
 	private void viewEntity() {
