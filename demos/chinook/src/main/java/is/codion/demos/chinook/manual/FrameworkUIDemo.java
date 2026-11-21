@@ -58,6 +58,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
@@ -269,6 +270,24 @@ final class FrameworkUIDemo {
 			}
 		}
 		// end::editPanelMergeModified[]
+	}
+
+	void editPanelPersistToggle() {
+		// tag::editPanelPersistToggle[]
+		class TrackEditPanel extends EntityEditPanel {
+			public TrackEditPanel(SwingEntityEditModel editModel) {
+				super(editModel);
+			}
+
+			@Override
+			protected void initializeUI() {
+				// Let the user choose whether the genre, media type
+				// and unit price carry over to the next track
+				components().persistToggle().set(List.of(Track.GENRE_FK, Track.MEDIATYPE_FK, Track.UNITPRICE));
+				// UI setup
+			}
+		}
+		// end::editPanelPersistToggle[]
 	}
 
 	void entityMerge(Entity mine, Entity theirs, Entity base) {

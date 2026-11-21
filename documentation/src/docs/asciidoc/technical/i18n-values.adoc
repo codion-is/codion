@@ -773,6 +773,7 @@ is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
 |merge|Merge|Sameina
 |merge_mnemonic|M|S
 |modified|Modified by someone else|Breytt af öðrum
+|persist_value|Remember value|Muna gildi
 |refreshing|Refreshing|Endurhleð
 |updating|Updating|Uppfæri
 |use_theirs|Use theirs|Nota þeirra
@@ -976,6 +977,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |print|Print (if printing is available)|Prenta (ef prentun er til staðar)
 |refresh|Refresh|Endurhlaða
 |refresh_table_data|Refresh table data|Endurhlaða gögnum
+|remember_value|Remember value, in a field with a pin|Muna gildi, í reit með pinna
 |remove_columns|Remove columns|Fjarlægja dálka
 |resize_left_right|Resize left/right|Stækka/minnka
 |resize_selected_column|Resize selected column|Breyta stærð á völdum dálk

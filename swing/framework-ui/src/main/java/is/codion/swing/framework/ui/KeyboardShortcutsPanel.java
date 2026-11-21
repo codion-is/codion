@@ -114,6 +114,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.row(message("update"), mnemonic(FrameworkMessages.updateMnemonic(), EntityEditPanel.ControlKeys.UPDATE))
 						.row(message("delete"), mnemonic(FrameworkMessages.deleteMnemonic(), EntityEditPanel.ControlKeys.DELETE))
 						.row(Messages.clear(), mnemonic(Messages.clearMnemonic(), EntityEditPanel.ControlKeys.CLEAR))
+						.keys(message("remember_value"), EntityEditPanel.ControlKeys.PERSIST)
 						.row(message("refresh"), mnemonic(Messages.refreshMnemonic(), EntityPanel.ControlKeys.REFRESH));
 	}
 

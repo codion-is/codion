@@ -163,6 +163,11 @@ public interface FrameworkIcons {
 	String EXPORT = "export";
 
 	/**
+	 * Identifies the pin icon.
+	 */
+	String PIN = "pin";
+
+	/**
 	 * Identifies the logo icon.
 	 */
 	String LOGO = "logo";

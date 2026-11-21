@@ -68,6 +68,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		addIcon(EDIT_TEXT);
 		addIcon(COLUMNS);
 		addIcon(EXPORT);
+		addIcon(PIN);
 		addLogo();
 	}
 

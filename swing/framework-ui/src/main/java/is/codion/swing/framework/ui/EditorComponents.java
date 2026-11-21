@@ -21,11 +21,15 @@ package is.codion.swing.framework.ui;
 import is.codion.common.reactive.observable.Observable;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.Value.Validator;
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorValue;
@@ -81,6 +85,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -113,19 +118,26 @@ public final class EditorComponents {
 	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final DetailEditorComponents detail = new DetailEditorComponents();
+	private final ValueSet<Attribute<?>> persistToggle = ValueSet.valueSet();
 
 	private final ComponentDefaults defaults;
 	private final ComponentFactory create;
 	private final SwingEntityEditor editor;
 
 	private EditorComponents(SwingEntityEditor editor) {
-		this(editor, new ComponentDefaults());
+		this(editor, new ComponentDefaults(), null);
 	}
 
-	private EditorComponents(SwingEntityEditor editor, ComponentDefaults defaults) {
+	/**
+	 * @param editor the editor
+	 * @param defaults the component defaults
+	 * @param linkForeignKey the foreign key linking a detail editor to its master, null for the master and non-foreign key links
+	 */
+	private EditorComponents(SwingEntityEditor editor, ComponentDefaults defaults, @Nullable ForeignKey linkForeignKey) {
 		this.editor = requireNonNull(editor);
 		this.defaults = defaults;
 		this.create = new ComponentFactory(this);
+		this.persistToggle.addValidator(new PersistToggleValidator(linkForeignKey));
 	}
 
 	/**
@@ -170,6 +182,27 @@ public final class EditorComponents {
 	 */
 	public DetailEditorComponents detail() {
 		return detail;
+	}
+
+	/**
+	 * Specifies the attributes which components have a persist toggle, letting the user choose whether their values
+	 * persist when the editor is reset to its defaults, after an insert or on clear.
+	 * <p>A pin following the caption of the component's label shows the state, dimmed while the value does not
+	 * persist. Clicking the pin toggles it, as does the {@link EntityEditPanel.ControlKeys#PERSIST} key stroke while
+	 * the component has the focus. A component without a label gets the key stroke alone.
+	 * <p>The {@link EntityEditPanel} applies the persist toggles of its {@link EditorComponents}, and of their
+	 * {@link #detail()} instances, when initialized, locking this set. The states the user changes are stored with
+	 * the edit panel preferences.
+	 * <p>Adding an attribute throws {@link IllegalArgumentException} in case it is not found in the underlying entity,
+	 * is derived, or is a read-only column or a foreign key based on read-only columns, having no value for the user
+	 * to set, or, for a detail instance, in case it is the foreign key linking the detail editor to its master.
+	 * @return the {@link ValueSet} specifying the attributes which components have a persist toggle
+	 * @see EntityEditor.EditorValue#persist()
+	 * @see EntityEditPanel#store(java.util.prefs.Preferences)
+	 * @see EntityEditPanel#restore(java.util.prefs.Preferences)
+	 */
+	public ValueSet<Attribute<?>> persistToggle() {
+		return persistToggle;
 	}
 
 	/**
@@ -238,9 +271,11 @@ public final class EditorComponents {
 		 */
 		public EditorComponents get(ForeignKey foreignKey) {
 			SwingEntityEditor detailEditor = editor.detail().get(requireNonNull(foreignKey));
+			String name = editor.detail().name(foreignKey);
 
-			return components.computeIfAbsent(new LinkKey(foreignKey, editor.detail().name(foreignKey)),
-							k -> new DetailComponents(new EditorComponents(detailEditor, defaults), editor.detail().caption(foreignKey))).components;
+			return components.computeIfAbsent(new LinkKey(foreignKey, name),
+							k -> new DetailComponents(new EditorComponents(detailEditor, defaults, foreignKey),
+											name, editor.detail().caption(foreignKey))).components;
 		}
 
 		/**
@@ -251,9 +286,11 @@ public final class EditorComponents {
 		 */
 		public EditorComponents get(String name) {
 			SwingEntityEditor detailEditor = editor.detail().get(requireNonNull(name));
+			ForeignKey foreignKey = editor.detail().foreignKey(name);
 
-			return components.computeIfAbsent(new LinkKey(editor.detail().foreignKey(name), name),
-							k -> new DetailComponents(new EditorComponents(detailEditor, defaults), editor.detail().caption(name))).components;
+			return components.computeIfAbsent(new LinkKey(foreignKey, name),
+							k -> new DetailComponents(new EditorComponents(detailEditor, defaults, foreignKey),
+											name, editor.detail().caption(name))).components;
 		}
 
 		/**
@@ -335,23 +372,32 @@ public final class EditorComponents {
 	}
 
 	/**
-	 * A detail registration: the caption (taken from the link at registration time) and the
-	 * {@link EditorComponents} that manages the detail editor's components. Caption is a property
-	 * of the parent-child relationship, not of the child instance, so it lives here rather than on
+	 * A detail registration: the link name and caption (taken from the link at registration time) and the
+	 * {@link EditorComponents} that manages the detail editor's components. These are properties
+	 * of the parent-child relationship, not of the child instance, so they live here rather than on
 	 * {@link EditorComponents} itself.
 	 */
 	static final class DetailComponents {
 
 		private final EditorComponents components;
+		private final String name;
 		private final String caption;
 
-		private DetailComponents(EditorComponents components, String caption) {
+		private DetailComponents(EditorComponents components, String name, String caption) {
 			this.components = components;
+			this.name = name;
 			this.caption = caption;
 		}
 
 		EditorComponents components() {
 			return components;
+		}
+
+		/**
+		 * @return the link name, unique among the detail editors of the master
+		 */
+		String name() {
+			return name;
 		}
 
 		String caption() {
@@ -370,7 +416,7 @@ public final class EditorComponents {
 		private final EditorComponent<?> component;
 
 		private ComponentEntry(EditorComponents source, @Nullable String detailCaption,
-		                       Attribute<?> attribute, EditorComponent<?> component) {
+													 Attribute<?> attribute, EditorComponent<?> component) {
 			this.source = source;
 			this.detailCaption = detailCaption;
 			this.attribute = attribute;
@@ -582,9 +628,9 @@ public final class EditorComponents {
 			}
 
 			return editor.entities().definition(value.attribute().entityType())
-						.attributes()
-						.definition(value.attribute())
-						.caption();
+							.attributes()
+							.definition(value.attribute())
+							.caption();
 		}
 
 		private boolean present() {
@@ -1107,6 +1153,40 @@ public final class EditorComponents {
 					comboBoxModel.items().refresh();
 				}
 			}
+		}
+	}
+
+	private class PersistToggleValidator implements Validator<Set<Attribute<?>>> {
+
+		private final @Nullable ForeignKey linkForeignKey;
+
+		private PersistToggleValidator(@Nullable ForeignKey linkForeignKey) {
+			this.linkForeignKey = linkForeignKey;
+		}
+
+		@Override
+		public void validate(@Nullable Set<Attribute<?>> attributes) {
+			requireNonNull(attributes).forEach(attribute -> validatePersistToggle(attribute, linkForeignKey));
+		}
+
+		private void validatePersistToggle(Attribute<?> attribute, @Nullable ForeignKey linkForeignKey) {
+			EntityDefinition entityDefinition = editor.entityDefinition();
+			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
+			if (attributeDefinition.derived() || readOnly(attributeDefinition, entityDefinition)) {
+				throw new IllegalArgumentException("A persist toggle requires a value the user can set: " + attribute);
+			}
+			if (attribute.equals(linkForeignKey)) {
+				throw new IllegalArgumentException("The foreign key linking a detail editor to its master can not have a persist toggle: " + attribute);
+			}
+		}
+
+		private static boolean readOnly(AttributeDefinition<?> attributeDefinition, EntityDefinition entityDefinition) {
+			if (attributeDefinition.attribute() instanceof ForeignKey) {
+				return ((ForeignKey) attributeDefinition.attribute()).references().stream()
+								.allMatch(reference -> entityDefinition.columns().definition(reference.column()).readOnly());
+			}
+
+			return attributeDefinition instanceof ColumnDefinition<?> && ((ColumnDefinition<?>) attributeDefinition).readOnly();
 		}
 	}
 }

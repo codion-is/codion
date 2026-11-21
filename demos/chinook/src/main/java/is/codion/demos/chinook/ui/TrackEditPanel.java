@@ -57,6 +57,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
+		components().persistToggle().add(Track.UNITPRICE);
+
 		create().searchField(Track.ALBUM_FK)
 						.columns(20);
 		create().textField(Track.NAME)

@@ -152,6 +152,20 @@ EntityEditPanel supports configuration via a lambda in the constructor:
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelConfiguration]
 ----
 
+=== Persist Toggles
+
+Which values carry over to the next entity, their {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#persist()[persist()] state, can depend on how the user enters the data, grouped by a date one day and by some other value the next.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.html#persistToggle()[persistToggle()] set of the edit panel components lets the user choose, for the attributes it contains.
+A detail editor's attributes go in the set of its own components, *components().detail().get()*.
+A pin following the caption of the component's label shows the state, dimmed while the value does not persist.
+Clicking the pin toggles it, as does Alt-P while the component has the focus.
+The choices are stored with the panel preferences.
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelPersistToggle]
+----
+
 === Focus Management
 
 Configure the focus behaviour:

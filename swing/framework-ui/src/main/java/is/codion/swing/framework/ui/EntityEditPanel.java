@@ -61,6 +61,7 @@ import is.codion.swing.framework.ui.EditorComponents.ComponentFactory;
 import is.codion.swing.framework.ui.EditorComponents.EditorComponent;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,6 +160,7 @@ public abstract class EntityEditPanel extends JPanel {
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
 	private static final String FOCUS_OWNER = "focusOwner";
+	private static final String PERSIST_KEY = "persist";
 
 	/**
 	 * The controls available for {@link EntityEditPanel}s.
@@ -202,6 +204,14 @@ public abstract class EntityEditPanel extends JPanel {
 		 * Default key stroke: CTRL-ALT-R
 		 */
 		public static final ControlKey<CommandControl> INSPECT_EDITOR = CommandControl.key("inspectEditor", keyStroke(VK_R, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		/**
+		 * Toggles whether the value of the component with the focus persists when the editor is reset to its defaults,
+		 * for the attributes given a persist toggle. Unlike the other controls, available only while one of those
+		 * components has the focus, so the key stroke may also serve as a label mnemonic elsewhere in the panel.<br>
+		 * Default key stroke: ALT-P
+		 * @see EditorComponents#persistToggle()
+		 */
+		public static final ControlKey<CommandControl> PERSIST = CommandControl.key("persist", keyStroke(VK_P, ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
@@ -233,6 +243,8 @@ public abstract class EntityEditPanel extends JPanel {
 	private final State active;
 
 	private @Nullable EditorInspector inspector;
+	private @Nullable PersistToggles persistToggles;
+	private @Nullable JSONObject restoredPersist;
 
 	final Config configuration;
 
@@ -348,6 +360,7 @@ public abstract class EntityEditPanel extends JPanel {
 			try {
 				setupControls();
 				initializeUI();
+				setupPersistToggles();
 				setupKeyboardActions();
 			}
 			finally {
@@ -361,22 +374,33 @@ public abstract class EntityEditPanel extends JPanel {
 
 	/**
 	 * Restores preferences for this panel. Override to restore panel specific preferences.
+	 * <p>Restores the persist states the user changed via the persist toggles, the attributes
+	 * not stored returning to their defaults, once the panel has been initialized, in case it has not.
 	 * <p>Remember to call {@code super.restore(preferences)} when overriding.
 	 * @param preferences the preferences instance from which to restore
+	 * @see EditorComponents#persistToggle()
 	 */
 	public void restore(Preferences preferences) {
 		requireNonNull(preferences);
+		restoredPersist = PersistToggles.parse(preferences.get(PERSIST_KEY, "{}"));
+		if (persistToggles != null) {
+			persistToggles.restore(restoredPersist);
+		}
 	}
 
 	/**
 	 * Stores preferences for this panel.
 	 * Override to store panel specific preferences.
+	 * <p>Stores the persist states the user changed via the persist toggles, under the key {@code persist}, which
+	 * custom preferences must therefore not use.
 	 * <p>Remember to call {@code super.store(preferences)} when overriding.
 	 * <p>The given node is reserved for the edit panel, nothing else is stored in it.
 	 * @param preferences the preferences instance to write to
+	 * @see EditorComponents#persistToggle()
 	 */
 	public void store(Preferences preferences) {
 		requireNonNull(preferences);
+		storePersist(preferences);
 	}
 
 	/**
@@ -848,6 +872,29 @@ public abstract class EntityEditPanel extends JPanel {
 		super.removeNotify();
 		if (configuration.focusActivation) {
 			ACTIVE_STATE_GROUP.remove(active);
+		}
+	}
+
+	private void setupPersistToggles() {
+		persistToggles = PersistToggles.enable(components,
+						configuration.controlMap.keyStroke(PERSIST).get(), MESSAGES.getString("persist_value"));
+		if (restoredPersist != null) {
+			persistToggles.restore(restoredPersist);
+		}
+	}
+
+	// Only the states differing from their defaults, so that an untouched panel stores nothing and a later change to
+	// a default isn't held back by a stored copy of it. A panel not yet initialized, its persist toggles not yet
+	// specified, stores what it restored, leaving the preferences as they were in case it restored nothing.
+	private void storePersist(Preferences preferences) {
+		JSONObject changed = persistToggles == null ? restoredPersist : persistToggles.changed();
+		if (changed != null) {
+			if (changed.isEmpty()) {
+				preferences.remove(PERSIST_KEY);
+			}
+			else {
+				preferences.put(PERSIST_KEY, changed.toString());
+			}
 		}
 	}
 
@@ -1409,6 +1456,7 @@ public abstract class EntityEditPanel extends JPanel {
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(excludeFromSelection));
 			return this;
 		}
+
 
 		/**
 		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
