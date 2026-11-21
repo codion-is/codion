@@ -36,7 +36,9 @@ public interface TextComponentBuilder<C extends JTextComponent, T, B extends Tex
 				extends ComponentValueBuilder<C, T, B> {
 
 	/**
-	 * Specifies the possible initial caret positions in case text component has an initial value.
+	 * The caret positions.
+	 * @see #caretPosition(CaretPosition)
+	 * @see #caretPositionOnFocusGained(CaretPosition)
 	 */
 	enum CaretPosition {
 		/**
@@ -121,23 +123,25 @@ public interface TextComponentBuilder<C extends JTextComponent, T, B extends Tex
 	B selectionColor(@Nullable Color selectionColor);
 
 	/**
-	 * Makes the text component select all when it gains focus
+	 * <p>Makes the text component select all when it gains focus, taking precedence over
+	 * {@link #caretPositionOnFocusGained(CaretPosition)}.
+	 * <p>Whether a component selects all on focus gained is up to this builder, a look and feel doing so on its own,
+	 * as FlatLaf does for a formatted text field, is disabled.
 	 * @param selectAllOnFocusGained if true the component will select contents on focus gained
 	 * @return this builder instance
 	 */
 	B selectAllOnFocusGained(boolean selectAllOnFocusGained);
 
 	/**
-	 * @param moveCaretToEndOnFocusGained true if the caret should be moved to the end on focus gained
+	 * <p>Positions the caret when the component gains the focus, unless by a mouse press, which leaves the caret
+	 * where pressed, or after a temporary loss, the window deactivated or a modal dialog shown for example,
+	 * which leaves it where it was.
+	 * <p>Ignored in case the component selects all on focus gained, see {@link #selectAllOnFocusGained(boolean)}.
+	 * <p>Default null, {@link CaretPosition#START} for a {@link TemporalField}.
+	 * @param caretPositionOnFocusGained the caret position on focus gained, null to leave the caret where it is
 	 * @return this builder instance
 	 */
-	B moveCaretToEndOnFocusGained(boolean moveCaretToEndOnFocusGained);
-
-	/**
-	 * @param moveCaretToStartOnFocusGained true if the caret should be moved to the start on focus gained
-	 * @return this builder instance
-	 */
-	B moveCaretToStartOnFocusGained(boolean moveCaretToStartOnFocusGained);
+	B caretPositionOnFocusGained(@Nullable CaretPosition caretPositionOnFocusGained);
 
 	/**
 	 * @param caretListener the caret listener to add

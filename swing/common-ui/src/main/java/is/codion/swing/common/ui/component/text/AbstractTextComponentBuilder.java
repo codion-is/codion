@@ -58,8 +58,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	private @Nullable Color selectedTextColor;
 	private @Nullable Color selectionColor;
 	private boolean selectAllOnFocusGained;
-	private boolean moveCaretToEndOnFocusGained;
-	private boolean moveCaretToStartOnFocusGained;
+	private @Nullable CaretPosition caretPositionOnFocusGained;
 	private @Nullable Boolean dragEnabled;
 	private @Nullable Character focusAcceleratorKey;
 	private CaretPosition caretPosition = CaretPosition.START;
@@ -143,20 +142,8 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	}
 
 	@Override
-	public final B moveCaretToEndOnFocusGained(boolean moveCaretToEndOnFocusGained) {
-		if (moveCaretToStartOnFocusGained) {
-			throw new IllegalArgumentException("Caret is already set to move to start on focus gained");
-		}
-		this.moveCaretToEndOnFocusGained = moveCaretToEndOnFocusGained;
-		return self();
-	}
-
-	@Override
-	public final B moveCaretToStartOnFocusGained(boolean moveCaretToStartOnFocusGained) {
-		if (moveCaretToEndOnFocusGained) {
-			throw new IllegalArgumentException("Caret is already set to move to end on focus gained");
-		}
-		this.moveCaretToStartOnFocusGained = moveCaretToStartOnFocusGained;
+	public final B caretPositionOnFocusGained(@Nullable CaretPosition caretPositionOnFocusGained) {
+		this.caretPositionOnFocusGained = caretPositionOnFocusGained;
 		return self();
 	}
 
@@ -247,14 +234,12 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 		if (selectionColor != null) {
 			textComponent.setSelectionColor(selectionColor);
 		}
+		SelectAllFocusListener.disableLookAndFeelSelectAll(textComponent);
 		if (selectAllOnFocusGained) {
 			textComponent.addFocusListener(new SelectAllFocusListener(textComponent));
 		}
-		if (moveCaretToStartOnFocusGained) {
-			textComponent.addFocusListener(new MoveCaretToStartListener(textComponent));
-		}
-		if (moveCaretToEndOnFocusGained) {
-			textComponent.addFocusListener(new MoveCaretToEndListener(textComponent));
+		else if (caretPositionOnFocusGained != null) {
+			CaretPositionFocusListener.enable(textComponent, caretPositionOnFocusGained);
 		}
 
 		return textComponent;

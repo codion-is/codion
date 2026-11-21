@@ -433,6 +433,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 			this.type = requireNonNull(type);
 			this.dateTimeParser = createDateTimeParser(type);
 			dateTimePattern(defaultDateTimePattern());
+			// The mask overwrites, typing from the start replaces the value, or only the part typed
+			caretPositionOnFocusGained(CaretPosition.START);
 		}
 
 		@Override

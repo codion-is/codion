@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.indicator.ValidationIndicator;
+import is.codion.swing.common.ui.component.text.TextComponentBuilder.CaretPosition;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -299,7 +300,7 @@ public final class TextInput extends JPanel {
 						.lineWrap(true)
 						.wrapStyleWord(true)
 						.editable(textField.isEditable())
-						.moveCaretToEndOnFocusGained(true)
+						.caretPositionOnFocusGained(CaretPosition.END)
 						.build();
 		Dialogs.okCancel()
 						.component(new JScrollPane(textArea))

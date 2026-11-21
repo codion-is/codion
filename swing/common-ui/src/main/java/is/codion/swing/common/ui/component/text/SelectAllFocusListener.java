@@ -24,10 +24,26 @@ import java.awt.event.FocusEvent;
 
 final class SelectAllFocusListener extends FocusAdapter {
 
+	/**
+	 * FlatClientProperties.SELECT_ALL_ON_FOCUS_POLICY, FlatLaf's policy, which by default selects all
+	 * each time a formatted text field gains the focus other than by a mouse press, after any focus listener has run.
+	 */
+	private static final String FLATLAF_SELECT_ALL_ON_FOCUS_POLICY = "JTextField.selectAllOnFocusPolicy";
+	private static final String NEVER = "never";
+
 	private final JTextComponent textComponent;
 
 	SelectAllFocusListener(JTextComponent textComponent) {
 		this.textComponent = textComponent;
+	}
+
+	/**
+	 * Keeps the look and feel from selecting all on focus gained, leaving it to the builder, FlatLaf being the one
+	 * known to, the client property inert elsewhere.
+	 * @param textComponent the text component
+	 */
+	static void disableLookAndFeelSelectAll(JTextComponent textComponent) {
+		textComponent.putClientProperty(FLATLAF_SELECT_ALL_ON_FOCUS_POLICY, NEVER);
 	}
 
 	@Override

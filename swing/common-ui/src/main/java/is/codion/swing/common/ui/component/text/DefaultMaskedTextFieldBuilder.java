@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.text.TextComponentBuilder.CaretPosition;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JFormattedTextField;
@@ -118,6 +119,8 @@ final class DefaultMaskedTextFieldBuilder
 		try {
 			JFormattedTextField textField = new JFormattedTextField(maskFormatterBuilder.build());
 			textField.setFocusLostBehavior(focusLostBehaviour);
+			SelectAllFocusListener.disableLookAndFeelSelectAll(textField);
+			CaretPositionFocusListener.enable(textField, CaretPosition.START);
 			if (columns != -1) {
 				textField.setColumns(columns);
 			}

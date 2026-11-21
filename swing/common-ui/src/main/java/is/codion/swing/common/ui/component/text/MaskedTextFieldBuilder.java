@@ -23,7 +23,9 @@ import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import javax.swing.JFormattedTextField;
 
 /**
- * Builds a formatted text field.
+ * <p>Builds a formatted text field.
+ * <p>The field moves the caret to the start when it gains the focus, as described in
+ * {@link TextComponentBuilder#caretPositionOnFocusGained(TextComponentBuilder.CaretPosition)}.
  */
 public interface MaskedTextFieldBuilder extends ComponentValueBuilder<JFormattedTextField, String, MaskedTextFieldBuilder> {
 
