@@ -33,17 +33,32 @@ import is.codion.framework.domain.report.ReportType;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
 import static is.codion.framework.domain.TestDomain.DOMAIN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DomainTest {
 
 	private final TestDomain domain = new TestDomain();
+
+	@Test
+	void r8RulesKeepDomainTypeClasses() throws IOException {
+		//domainType(Class) names the domain type for the class, the module's R8 rules keeping the names of the classes
+		//declaring a static DomainType field, which a rule naming another type would leave renamed
+		String rules;
+		try (InputStream input = DomainType.class.getResourceAsStream("/META-INF/proguard/codion-framework-domain.pro")) {
+			rules = new String(requireNonNull(input).readAllBytes(), UTF_8).replaceAll("\\s+", " ");
+		}
+		assertTrue(rules.contains("-keepclasseswithmembers,allowshrinking,allowoptimization class * { static "
+						+ DomainType.class.getName() + " *; }"));
+	}
 
 	@Test
 	void keyWithSameIndex() {

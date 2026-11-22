@@ -44,6 +44,9 @@ public sealed interface DomainType permits DefaultDomainType {
 	/**
 	 * Instantiates a {@link EntityType} associated with this domain type.
 	 * If this entity type has been defined previously that instance is returned.
+	 * <p>The bundle's base name is the class's name, read at runtime, so in an application minified by R8 or ProGuard,
+	 * an Android release for example, the class must keep its name, by a rule of the application's own, or the bundle
+	 * is not found.
 	 * @param name the entity type name
 	 * @param resourceBundleClass the class to use as base name of the resource bundle to use for captions
 	 * @return a {@link EntityType} with the given name
@@ -67,6 +70,12 @@ public sealed interface DomainType permits DefaultDomainType {
 
 	/**
 	 * Returns a new {@link DomainType} using {@code domainClass.getSimpleName()} as domain name.
+	 * <p>The name is read from the class at runtime, so in an application minified by R8 or ProGuard, an Android
+	 * release for example, the class must keep its name, or the domain type is named for whatever the class was renamed
+	 * to, and a remote connection, sending the name to the server, finds no such domain. This module's R8 rules keep the
+	 * name of a class declaring a static {@link DomainType} field, as {@code DomainType DOMAIN = domainType(Chinook.class)}
+	 * in a domain's API does. A domain type named for any other class needs a rule of the application's own keeping its
+	 * name, or a name given by {@link #domainType(String)}.
 	 * @param domainClass the domain class
 	 * @return a {@link DomainType}
 	 */

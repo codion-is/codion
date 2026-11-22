@@ -30,6 +30,9 @@ number_of_albums=Number of albums
 ----
 
 Adding a language is then a matter of providing the locale-suffixed sibling — *Chinook$Artist_is_IS.properties* — for each entity, as the Chinook demo does for Icelandic.
+
+NOTE: Since the bundle is found by the class name, read at runtime, an application minified by R8, an Android release for example, must keep the names of the classes its bundles are named for, with a rule of its own, or the bundles are not found.
+Codion's own classes are kept by the rules its modules ship.
 A caption found in the resource bundle takes precedence over one defined in code via *.caption()*; with neither, the attribute name serves as the caption.
 
 == Overriding

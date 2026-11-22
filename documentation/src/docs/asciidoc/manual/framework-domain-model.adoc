@@ -102,6 +102,10 @@ include::{dir-source}/is/codion/manual/framework/domain/DomainModelDemo.java[tag
 <1> The *DomainType* instance serves as a factory for *EntityTypes* associated with that domain.
 <2> Each *EntityType* instance serves as a factory for *Columns* and *ForeignKeys* associated with that entity.
 
+NOTE: A *DomainType* can also be named for a class, *domainType(Store.class)*, by the class's simple name, read at runtime, which a remote connection sends to the server to identify the domain.
+In an application minified by R8, an Android release for example, that class must therefore keep its name.
+Codion's R8 rules keep the name of a class declaring a static *DomainType* field, the usual place for it, but a domain type named for any other class needs a rule of the application's own keeping that name.
+
 Typically, the underlying table name is used as the *EntityType* name, but you can use whatever identifying string you want and specify the table name via the *table()* builder method when defining the entity.
 
 The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *name()* method when creating the associated *ColumnDefinition*.
