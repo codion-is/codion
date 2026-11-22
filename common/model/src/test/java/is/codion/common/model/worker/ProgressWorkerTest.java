@@ -440,6 +440,31 @@ public final class ProgressWorkerTest {
 			assertEquals(asList("builder failed"), calls);
 			assertTrue(dispatcher.uncaught.isEmpty());
 
+			// an override calling the default does not handle it either, as R8 adds one to an implementation not declaring it
+			calls.clear();
+			CountDownLatch forwardingLatch = new CountDownLatch(1);
+			dispatcher.execute(ProgressWorker.builder()
+							.task(new TaskHandler() {
+								@Override
+								public void execute() {
+									throw new IllegalStateException("failed");
+								}
+
+								@Override
+								public void onException(Exception exception) {
+									TaskHandler.super.onException(exception);
+								}
+							})
+							.dispatcher(dispatcher)
+							.onException(exception -> {
+								calls.add("builder " + exception.getMessage());
+								forwardingLatch.countDown();
+							}));
+			assertTrue(forwardingLatch.await(5, SECONDS));
+			dispatcher.flush();
+			assertEquals(asList("builder failed"), calls);
+			assertTrue(dispatcher.uncaught.isEmpty());
+
 			// an override is called before the builder handler
 			calls.clear();
 			CountDownLatch overridingLatch = new CountDownLatch(1);

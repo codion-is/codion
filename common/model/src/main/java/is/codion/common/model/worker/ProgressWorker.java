@@ -24,6 +24,7 @@ import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -312,8 +313,7 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 	/**
 	 * <p>Provides builders for a given task type.
 	 * <p>If the task also implements the corresponding handler interface (e.g. {@link TaskHandler},
-	 * {@link ResultTaskHandler}), the handler methods are automatically wired first,
-	 * {@link Handler#onException(Exception)} only when overridden.
+	 * {@link ResultTaskHandler}), the handler methods are automatically wired first.
 	 * Additional handlers can then be added via the returned {@link Builder},
 	 * and are called after the handler interface methods, in the order they were added.
 	 */
@@ -467,15 +467,15 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 		default void onSuccess() {}
 
 		/**
-		 * Called using the {@link Dispatcher} if an exception occurred during the background task.
-		 * <p>Only wired when overridden, and then called before any {@code onException} handlers added via the builder.
-		 * An exception without any {@code onException} handler is rethrown on the dispatch thread.
-		 * <p>The default implementation rethrows the exception as a {@link RuntimeException}.
-		 * Override to handle the exception, for example by displaying it.
+		 * Called using the {@link Dispatcher} if an exception occurred during the background task, before any
+		 * {@code onException} handlers added via the builder.
+		 * <p>The default implementation rethrows the exception as a {@link RuntimeException}, which the worker takes as
+		 * leaving the exception to the {@code onException} handlers added via the builder, an exception without any
+		 * rethrown on the dispatch thread. Override to handle the exception, for example by displaying it.
 		 * @param exception the exception
 		 */
 		default void onException(Exception exception) {
-			throw Exceptions.runtime(exception);
+			throw new Unhandled(exception);
 		}
 
 		/**
@@ -722,8 +722,8 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 								.onDone(handler::onDone)
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
-								.onCancelled(handler::onCancelled);
-				addOnException(builder, handler);
+								.onCancelled(handler::onCancelled)
+								.onException(handler::onException);
 			}
 
 			return builder;
@@ -739,8 +739,8 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
-								.onCancelled(handler::onCancelled);
-				addOnException(builder, handler);
+								.onCancelled(handler::onCancelled)
+								.onException(handler::onException);
 			}
 
 			return builder;
@@ -757,8 +757,8 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 								.onDone(handler::onDone)
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
-								.onCancelled(handler::onCancelled);
-				addOnException(builder, handler);
+								.onCancelled(handler::onCancelled)
+								.onException(handler::onException);
 			}
 
 			return builder;
@@ -776,26 +776,11 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 								.onWorking(handler::onWorking)
 								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
-								.onCancelled(handler::onCancelled);
-				addOnException(builder, handler);
+								.onCancelled(handler::onCancelled)
+								.onException(handler::onException);
 			}
 
 			return builder;
-		}
-
-		/**
-		 * Wires {@link Handler#onException(Exception)} only when the handler overrides it, since the default,
-		 * called first, would rethrow before any {@code onException} handlers added via the builder were called.
-		 */
-		private static void addOnException(Builder<?, ?> builder, Handler handler) {
-			try {
-				if (handler.getClass().getMethod("onException", Exception.class).getDeclaringClass() != Handler.class) {
-					builder.onException(handler::onException);
-				}
-			}
-			catch (NoSuchMethodException e) {
-				throw new IllegalStateException(e);
-			}
 		}
 	}
 
@@ -954,6 +939,21 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 	}
 
 	/**
+	 * Thrown by the default {@link Handler#onException(Exception)}, leaving the exception to the other handlers. Telling
+	 * the default from an override this way, rather than by reflection, holds in an application minified by R8 as well,
+	 * which renames the method, and adds it to an implementation not declaring it.
+	 */
+	private static final class Unhandled extends RuntimeException {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		private Unhandled(Exception exception) {
+			super(exception);
+		}
+	}
+
+	/**
 	 * Runs handlers, each one even if another throws, collecting the exceptions thrown,
 	 * to be rethrown once all handlers have run.
 	 */
@@ -985,12 +985,30 @@ public final class ProgressWorker<T extends @Nullable Object, V> {
 			}
 		}
 
+		/**
+		 * Calls the handlers, the exception unhandled when there are none, or when the only ones are
+		 * the default {@link Handler#onException(Exception)}, which leaves it to the others.
+		 */
 		private void failed(List<Consumer<Exception>> handlers, Exception exception) {
-			if (handlers.isEmpty()) {
-				unhandled = exception;
+			boolean handled = false;
+			for (Consumer<Exception> handler : handlers) {
+				try {
+					handler.accept(exception);
+					handled = true;
+				}
+				catch (Unhandled e) {
+					if (e.getCause() != exception) {
+						exceptions.add(e);
+						handled = true;
+					}
+				}
+				catch (Throwable e) {
+					exceptions.add(e);
+					handled = true;
+				}
 			}
-			else {
-				accept(handlers, exception);
+			if (!handled) {
+				unhandled = exception;
 			}
 		}
 
