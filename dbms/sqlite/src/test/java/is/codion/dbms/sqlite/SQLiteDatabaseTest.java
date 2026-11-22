@@ -35,6 +35,7 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import static is.codion.common.db.exception.Operation.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -133,5 +134,17 @@ public class SQLiteDatabaseTest {
 		assertEquals(OffsetTime.of(13, 45, 0, 0, offset), database.getter(Types.TIME_WITH_TIMEZONE).get(resultSet, 3));
 		assertNull(database.getter(Types.TIMESTAMP_WITH_TIMEZONE).get(resultSet, 4));
 		assertNull(database.getter(Types.TIME_WITH_TIMEZONE).get(resultSet, 4));
+	}
+
+	@Test
+	void uuidParsed() throws SQLException {
+		// the driver does not support getObject(index, UUID.class), nor returns a UUID from getObject(index), it stores them as text
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
+		UUID uuid = UUID.randomUUID();
+		ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+						.method("getString", int.class, parameters -> (int) parameters.arguments().get(0) == 1 ? uuid.toString() : null)
+						.build();
+		assertEquals(uuid, database.getter(UUID.class).get(resultSet, 1));
+		assertNull(database.getter(UUID.class).get(resultSet, 2));
 	}
 }

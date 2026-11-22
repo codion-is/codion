@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
+import java.util.UUID;
 
 /**
  * A SQLite embedded database implementation, quite experimental, based on the xerial/sqlite-jdbc driver.
@@ -38,6 +39,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
 	private static final GetValue<OffsetDateTime> GET_OFFSET_DATE_TIME = new GetOffsetDateTime();
 	private static final GetValue<OffsetTime> GET_OFFSET_TIME = new GetOffsetTime();
+	private static final GetValue<UUID> GET_UUID = new GetUUID();
 	// the driver reports the primary result code only, SQLITE_CONSTRAINT for all constraints,
 	// the extended one being available as the name the message starts with
 	private static final String UNIQUE = "[SQLITE_CONSTRAINT_UNIQUE]";
@@ -99,6 +101,20 @@ final class SQLiteDatabase extends AbstractDatabase {
 		}
 	}
 
+	/**
+	 * The driver neither supports reading a {@link UUID} via {@code getObject(index, UUID.class)}, nor returns one from
+	 * {@code getObject(index)}, with {@link #LEGACY_JDBC}. A {@link UUID} is therefore parsed from the text the driver
+	 * stores it as, its {@link UUID#toString()}, written via {@code setObject()}.
+	 */
+	@Override
+	public <T> GetValue<T> getter(Class<T> type) {
+		if (type == UUID.class) {
+			return (GetValue<T>) GET_UUID;
+		}
+
+		return super.getter(type);
+	}
+
 	@Override
 	protected @Nullable ErrorType errorType(SQLException exception) {
 		String message = exception.getMessage();
@@ -156,6 +172,16 @@ final class SQLiteDatabase extends AbstractDatabase {
 			String value = resultSet.getString(index);
 
 			return value == null ? null : OffsetDateTime.parse(value.replace(' ', 'T'));
+		}
+	}
+
+	private static final class GetUUID implements GetValue<UUID> {
+
+		@Override
+		public @Nullable UUID get(ResultSet resultSet, int index) throws SQLException {
+			String value = resultSet.getString(index);
+
+			return value == null ? null : UUID.fromString(value);
 		}
 	}
 
