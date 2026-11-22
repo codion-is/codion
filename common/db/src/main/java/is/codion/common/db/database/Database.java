@@ -64,7 +64,35 @@ public interface Database extends ConnectionFactory {
 	PropertyValue<Boolean> URL_SCOPED_INSTANCE = booleanValue("codion.db.urlScopedInstance", false);
 
 	/**
-	 * A comma separated list of paths to scripts to run when initializing the database, implementation specific
+	 * A comma separated list of paths to scripts initializing the database, run by an embedded database's dialect,
+	 * H2's, when an instance is created for it, see {@code H2DatabaseFactory}, and ignored by the others. A script's path is
+	 * a file's, or a {@code classpath:} resource's. Each script runs once in the database's life:
+	 * <ul>
+	 *   <li>a new database runs them all, in the order listed;
+	 *   <li>an existing database runs those it has not yet run, in the order listed, so a script added to the list
+	 *   brings it up to date;
+	 *   <li>each script run is recorded by the database, by its path as listed, with a SHA-256 checksum of its content,
+	 *   line endings aside;
+	 *   <li>a script moved, listed by another path, with the content of one recorded but no longer listed, does not run
+	 *   again, its record taking the new path.
+	 * </ul>
+	 * The database is refused with a {@link is.codion.common.db.exception.DatabaseException}, and left as it was, where a
+	 * script has changed since it ran, where a script has run but is no longer listed, or where a script not yet run is
+	 * listed before one that has. A script that fails is not recorded, and runs again the next time.
+	 * <p>
+	 * An existing database without the record, created before the scripts were recorded, or with none listed, ran none
+	 * since its creation, so the first time it records every script listed as run, running none, and only scripts added to
+	 * the list later run. It is taken to hold what the list says, so:
+	 * <ul>
+	 *   <li>a script added in the same release as the upgrade to recorded scripts, or as the first scripts listed, is
+	 *   recorded without having run: add it in a later release;
+	 *   <li>a database restored from a copy taken before the upgrade, into a release whose list has grown since, records
+	 *   the scripts added since without having run them: restore such a copy only into a release listing the same scripts.
+	 * </ul>
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
 	 */
 	PropertyValue<String> INIT_SCRIPTS = stringValue("codion.db.initScripts");
 

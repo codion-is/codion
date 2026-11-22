@@ -756,22 +756,8 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	/**
-	 * The init scripts of a database, {@link Database#INIT_SCRIPTS}, each run once in the database's life, for a dialect
-	 * running them to provide the record of the scripts run and how a script runs.
-	 * <ul>
-	 *   <li>a new database runs them all, in the order listed;
-	 *   <li>an existing database runs those it has not yet run, in the order listed, so a script added to the list
-	 *   brings it up to date;
-	 *   <li>each script run is recorded in the {@link #table()}, by its path as listed, with a SHA-256 checksum of its
-	 *   content, line endings aside;
-	 *   <li>a script moved, listed by another path, with the content of one recorded but no longer listed, does not run
-	 *   again, its record taking the new path.
-	 * </ul>
-	 * The database is refused with a {@link DatabaseException}, and left as it was, where a script has changed since it ran,
-	 * where a script has run but is no longer listed, or where a script not yet run is listed before one that has.
-	 * <p>
-	 * An existing database without the record, created before the scripts were recorded, or with none listed, ran none
-	 * since its creation, so the first time it records every script listed as run, running none.
+	 * The init scripts of a database, each run once in the database's life, as {@link Database#INIT_SCRIPTS} describes,
+	 * for a dialect running them to provide the record of the scripts run, {@link #table()}, and how a script runs.
 	 */
 	protected abstract static class InitScripts {
 
