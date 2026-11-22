@@ -20,10 +20,12 @@ package is.codion.dbms.sqlite;
 
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.GetValue;
+import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.ErrorType;
 
 import org.jspecify.annotations.Nullable;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -32,6 +34,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import java.util.UUID;
 
 /**
@@ -40,6 +46,19 @@ import java.util.UUID;
 final class SQLiteDatabase extends AbstractDatabase {
 
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
+	// SQLite's own format, as its date and time functions write it, a fraction of a second only where there is one
+	private static final DateTimeFormatter TIME_FORMAT = new DateTimeFormatterBuilder()
+					.appendPattern("HH:mm:ss")
+					.appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+					.toFormatter();
+	private static final DateTimeFormatter DATE_TIME_FORMAT = new DateTimeFormatterBuilder()
+					.append(DateTimeFormatter.ISO_LOCAL_DATE)
+					.appendLiteral(' ')
+					.append(TIME_FORMAT)
+					.toFormatter();
+	private static final SetValue<LocalDate> SET_LOCAL_DATE = new SetTemporal<>(Types.DATE, DateTimeFormatter.ISO_LOCAL_DATE);
+	private static final SetValue<LocalTime> SET_LOCAL_TIME = new SetTemporal<>(Types.TIME, TIME_FORMAT);
+	private static final SetValue<LocalDateTime> SET_LOCAL_DATE_TIME = new SetTemporal<>(Types.TIMESTAMP, DATE_TIME_FORMAT);
 	private static final GetValue<LocalDate> GET_LOCAL_DATE = new GetLocalDate();
 	private static final GetValue<LocalTime> GET_LOCAL_TIME = new GetLocalTime();
 	private static final GetValue<LocalDateTime> GET_LOCAL_DATE_TIME = new GetLocalDateTime();
@@ -91,8 +110,9 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	/**
-	 * Temporal values are parsed from the ISO text the driver stores them as, written via {@code setObject()}, SQLite's
-	 * own format with a space separating the date and time accepted as well, with or without {@link #LEGACY_JDBC}.
+	 * Temporal values are parsed from the text they are stored as, ISO or SQLite's own format with a space separating
+	 * the date and time, the one {@link #setter(int)} writes {@link LocalDate}, {@link LocalTime} and
+	 * {@link LocalDateTime} values in, with or without {@link #LEGACY_JDBC}.
 	 * The driver does not support reading {@link OffsetDateTime} and {@link OffsetTime} via {@code getObject(index, type)},
 	 * and its {@code getDate()}, {@code getTime()} and {@code getTimestamp()}, which {@link #LEGACY_JDBC} reads
 	 * {@link LocalDate}, {@link LocalTime} and {@link LocalDateTime} with, parse its own format only, not ISO text.
@@ -112,6 +132,28 @@ final class SQLiteDatabase extends AbstractDatabase {
 				return GET_OFFSET_TIME;
 			default:
 				return super.getter(sqlType);
+		}
+	}
+
+	/**
+	 * {@link LocalDate}, {@link LocalTime} and {@link LocalDateTime} values are written as text in SQLite's own format,
+	 * as its date and time functions write them, {@code current_timestamp} for example: {@code yyyy-MM-dd},
+	 * {@code HH:mm:ss} and {@code yyyy-MM-dd HH:mm:ss}, a fraction of a second following where there is one, without
+	 * trailing zeros. A value is then always the same text, which orders as the values do, so that conditions,
+	 * comparing the text in SQL, compare the values, those written by SQLite's functions or in a script in the same
+	 * format included.
+	 */
+	@Override
+	public SetValue<?> setter(int sqlType) {
+		switch (sqlType) {
+			case Types.DATE:
+				return SET_LOCAL_DATE;
+			case Types.TIME:
+				return SET_LOCAL_TIME;
+			case Types.TIMESTAMP:
+				return SET_LOCAL_DATE_TIME;
+			default:
+				return super.setter(sqlType);
 		}
 	}
 
@@ -186,6 +228,27 @@ final class SQLiteDatabase extends AbstractDatabase {
 			String value = resultSet.getString(index);
 
 			return value == null ? null : OffsetDateTime.parse(value.replace(' ', 'T'));
+		}
+	}
+
+	private static final class SetTemporal<T extends TemporalAccessor> implements SetValue<T> {
+
+		private final int sqlType;
+		private final DateTimeFormatter formatter;
+
+		private SetTemporal(int sqlType, DateTimeFormatter formatter) {
+			this.sqlType = sqlType;
+			this.formatter = formatter;
+		}
+
+		@Override
+		public void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException {
+			if (value == null) {
+				statement.setNull(index, sqlType);
+			}
+			else {
+				statement.setString(index, formatter.format(value));
+			}
 		}
 	}
 

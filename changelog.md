@@ -20,6 +20,7 @@ Codion Change Log
 ### is.codion.dbms.sqlite
 - SQLiteDatabase bug fixed, a UUID now read by parsing the text the driver stores it as, where reading one failed, the driver neither supporting getObject(index, UUID.class) nor, with LEGACY_JDBC, returning a UUID from getObject(index).
 - SQLiteDatabase bug fixed, LocalDate, LocalTime and LocalDateTime values now read by parsing the text the driver stores them as, with or without LEGACY_JDBC, where with it reading one failed, the driver's getDate(), getTime() and getTimestamp() parsing its own format only, not the ISO text.
+- SQLiteDatabase now writes LocalDate, LocalTime and LocalDateTime values as text in SQLite's own format, as its date and time functions write them, yyyy-MM-dd, HH:mm:ss and yyyy-MM-dd HH:mm:ss, a fraction of a second following without trailing zeros, where it wrote their toString(), seconds left out when zero and a T before the time, so that values written by SQLite's functions, current_timestamp for example, or by a script, compare with them in conditions.
 ### is.codion.framework.domain
 - Column.Generator.preserving() and Column.Generator.Preserving added, a generator inserting a value the entity holds as it is, the given generator making one where it holds none, a row copied from another database keeping its key.
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.

@@ -19,6 +19,7 @@
 package is.codion.dbms.sqlite;
 
 import is.codion.common.db.database.Database.Lock;
+import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -27,6 +28,7 @@ import is.codion.common.utilities.proxy.ProxyBuilder;
 
 import org.junit.jupiter.api.Test;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
@@ -37,6 +39,8 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -181,5 +185,58 @@ public class SQLiteDatabaseTest {
 		assertNull(database.getter(Types.DATE).get(resultSet, 6));
 		assertNull(database.getter(Types.TIME).get(resultSet, 6));
 		assertNull(database.getter(Types.TIMESTAMP).get(resultSet, 6));
+	}
+
+	@Test
+	void localValuesWrittenInSQLitesFormat() throws SQLException {
+		// as SQLite's date and time functions write them, current_timestamp for example
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
+		List<String> calls = new ArrayList<>();
+		PreparedStatement statement = ProxyBuilder.of(PreparedStatement.class)
+						.method("setString", List.of(int.class, String.class), parameters -> {
+							calls.add(parameters.arguments().get(0) + " " + parameters.arguments().get(1));
+							return null;
+						})
+						.method("setNull", List.of(int.class, int.class), parameters -> {
+							calls.add(parameters.arguments().get(0) + " null " + parameters.arguments().get(1));
+							return null;
+						})
+						.build();
+		set(database, statement, 1, Types.DATE, LocalDate.of(2026, 9, 26));
+		set(database, statement, 2, Types.TIME, LocalTime.of(13, 45));
+		set(database, statement, 3, Types.TIME, LocalTime.of(13, 45, 30, 500_000_000));
+		set(database, statement, 4, Types.TIME, LocalTime.of(13, 45, 30, 123_456_000));
+		set(database, statement, 5, Types.TIMESTAMP, LocalDateTime.of(2026, 9, 26, 13, 45));
+		set(database, statement, 6, Types.TIMESTAMP, LocalDateTime.of(2000, 1, 1, 0, 0, 0, 1_000));
+		set(database, statement, 7, Types.TIMESTAMP, LocalDateTime.of(2000, 1, 1, 0, 0, 0, 1));
+		set(database, statement, 8, Types.DATE, null);
+		set(database, statement, 9, Types.TIME, null);
+		set(database, statement, 10, Types.TIMESTAMP, null);
+		assertEquals(List.of("1 2026-09-26", "2 13:45:00", "3 13:45:30.5", "4 13:45:30.123456", "5 2026-09-26 13:45:00",
+						"6 2000-01-01 00:00:00.000001", "7 2000-01-01 00:00:00.000000001",
+						"8 null " + Types.DATE, "9 null " + Types.TIME, "10 null " + Types.TIMESTAMP), calls);
+		// and read back as written
+		int[] sqlTypes = {Types.DATE, Types.TIME, Types.TIME, Types.TIME, Types.TIMESTAMP, Types.TIMESTAMP, Types.TIMESTAMP};
+		for (int i = 0; i < sqlTypes.length; i++) {
+			String text = calls.get(i).substring(calls.get(i).indexOf(' ') + 1);
+			ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+							.method("getString", int.class, parameters -> text)
+							.build();
+			assertEquals(text, format(database, sqlTypes[i], database.getter(sqlTypes[i]).get(resultSet, 1)));
+		}
+	}
+
+	private static void set(SQLiteDatabase database, PreparedStatement statement, int index, int sqlType, Object value) throws SQLException {
+		((SetValue<Object>) database.setter(sqlType)).set(statement, index, value);
+	}
+
+	private static String format(SQLiteDatabase database, int sqlType, Object value) throws SQLException {
+		List<String> written = new ArrayList<>();
+		PreparedStatement statement = ProxyBuilder.of(PreparedStatement.class)
+						.method("setString", List.of(int.class, String.class), parameters -> written.add((String) parameters.arguments().get(1)))
+						.build();
+		set(database, statement, 1, sqlType, value);
+
+		return written.get(0);
 	}
 }
