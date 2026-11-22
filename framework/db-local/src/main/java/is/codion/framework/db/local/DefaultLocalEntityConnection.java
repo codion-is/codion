@@ -722,9 +722,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<Object> statementValues = statementValues(combinedCondition, select.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(combinedCondition, select.having());
 		synchronized (session) {
-			try (PreparedStatement statement = prepareStatement(selectQuery);
-					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
-				List<T> result = packResult(columnDefinition, resultSet);
+			try {
+				List<T> result;
+				try (PreparedStatement statement = prepareStatement(selectQuery);
+						 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
+					result = packResult(columnDefinition, resultSet);
+				}
+				// committed once the statement is closed, see count()
 				commitIfTransactionIsNotOpen();
 
 				return result;
@@ -747,12 +751,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<Object> statementValues = statementValues(count.where(), count.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(count.where(), count.having());
 		synchronized (session) {
-			try (PreparedStatement statement = prepareStatement(selectQuery);
-					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
-				if (!resultSet.next()) {
-					throw new SQLException("Row count query returned no value", SQL_STATE_NO_DATA);
+			try {
+				int result;
+				try (PreparedStatement statement = prepareStatement(selectQuery);
+						 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
+					if (!resultSet.next()) {
+						throw new SQLException("Row count query returned no value", SQL_STATE_NO_DATA);
+					}
+					result = resultSet.getInt(1);
 				}
-				int result = resultSet.getInt(1);
+				// committed once the statement is closed, SQLite otherwise keeping the read lock of a statement still open,
+				// in the transaction its driver begins at once
 				commitIfTransactionIsNotOpen();
 
 				return result;

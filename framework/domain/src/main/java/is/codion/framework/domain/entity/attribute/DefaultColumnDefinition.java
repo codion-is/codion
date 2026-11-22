@@ -80,8 +80,12 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	private final transient @Nullable Generator<T> generator;
 	private final transient @Nullable Class<?> objectType;// The class of the raw column value when read as an object
 
-	private transient @Nullable GetValue<Object> getValue;
-	private transient @Nullable SetValue<Object> setValue;
+	// Given, or null to resolve them from the database, the one a value is read from or written to, a domain possibly
+	// used with more than one, such as a row copied from one to another
+	private final transient @Nullable GetValue<Object> getValue;
+	private final transient @Nullable SetValue<Object> setValue;
+	private transient volatile @Nullable Resolved<GetValue<Object>> resolvedGetValue;
+	private transient volatile @Nullable Resolved<SetValue<Object>> resolvedSetValue;
 
 	private DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
 		super(builder);
@@ -205,10 +209,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	@Override
 	public @Nullable T get(ResultSet resultSet, int index, Database database) throws SQLException {
 		requireLocal("result set getter");
-		if (getValue == null) {
-			getValue = (GetValue<Object>) (objectType == null ? database.getter(sqlType) : database.getter(objectType));
-		}
-		Object value = getValue.get(resultSet, index);
+		Object value = (getValue == null ? getValue(database) : getValue).get(resultSet, index);
 		if (value != null || converter.handlesNull()) {
 			return converter.fromColumn(value);
 		}
@@ -226,10 +227,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	@Override
 	public void set(PreparedStatement statement, int index, @Nullable T value, Database database) throws SQLException {
 		requireLocal("statement parameter setter");
-		if (setValue == null) {
-			setValue = (SetValue<Object>) database.setter(sqlType);
-		}
-		setValue.set(statement, index, columnValue(value, statement));
+		(setValue == null ? setValue(database) : setValue).set(statement, index, columnValue(value, statement));
 	}
 
 	private void requireLocal(String description) {
@@ -300,6 +298,38 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		return name;
+	}
+
+	private GetValue<Object> getValue(Database database) {
+		Resolved<GetValue<Object>> resolved = resolvedGetValue;
+		if (resolved == null || resolved.database != database) {
+			resolved = new Resolved<>(database, (GetValue<Object>) (objectType == null ? database.getter(sqlType) : database.getter(objectType)));
+			resolvedGetValue = resolved;
+		}
+
+		return resolved.value;
+	}
+
+	private SetValue<Object> setValue(Database database) {
+		Resolved<SetValue<Object>> resolved = resolvedSetValue;
+		if (resolved == null || resolved.database != database) {
+			resolved = new Resolved<>(database, (SetValue<Object>) database.setter(sqlType));
+			resolvedSetValue = resolved;
+		}
+
+		return resolved.value;
+	}
+
+	// A getter or setter with the database it was resolved from, together, so a thread never takes another's pair apart
+	private static final class Resolved<V> {
+
+		private final Database database;
+		private final V value;
+
+		private Resolved(Database database, V value) {
+			this.database = database;
+			this.value = value;
+		}
 	}
 
 	private static Map<Class<?>, Integer> createTypeMap() {
