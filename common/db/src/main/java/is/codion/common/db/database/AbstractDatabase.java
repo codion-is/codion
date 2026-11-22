@@ -34,17 +34,31 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serial;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -738,6 +752,295 @@ public abstract class AbstractDatabase implements Database {
 		@Override
 		public long timestamp() {
 			return timestamp;
+		}
+	}
+
+	/**
+	 * The init scripts of a database, {@link Database#INIT_SCRIPTS}, each run once in the database's life, for a dialect
+	 * running them to provide the record of the scripts run and how a script runs.
+	 * <ul>
+	 *   <li>a new database runs them all, in the order listed;
+	 *   <li>an existing database runs those it has not yet run, in the order listed, so a script added to the list
+	 *   brings it up to date;
+	 *   <li>each script run is recorded in the {@link #table()}, by its path as listed, with a SHA-256 checksum of its
+	 *   content, line endings aside;
+	 *   <li>a script moved, listed by another path, with the content of one recorded but no longer listed, does not run
+	 *   again, its record taking the new path.
+	 * </ul>
+	 * The database is refused with a {@link DatabaseException}, and left as it was, where a script has changed since it ran,
+	 * where a script has run but is no longer listed, or where a script not yet run is listed before one that has.
+	 * <p>
+	 * An existing database without the record, created before the scripts were recorded, or with none listed, ran none
+	 * since its creation, so the first time it records every script listed as run, running none.
+	 */
+	protected abstract static class InitScripts {
+
+		private static final String INIT_SCRIPT = "Init script ";
+		private static final String CHECKSUM_ALGORITHM = "SHA-256";
+		private static final int READ_BUFFER_SIZE = 8192;
+
+		private final String table;
+		private final String selectScripts;
+		private final String insertScript;
+		private final String updatePath;
+
+		/**
+		 * @param table the table recording the scripts run, with the columns {@code path}, a varchar primary key,
+		 * {@code checksum}, 32 bytes, and {@code run_at}, a timestamp defaulting to the current one
+		 */
+		protected InitScripts(String table) {
+			this.table = requireNonNull(table);
+			this.selectScripts = "select path, checksum from " + table;
+			this.insertScript = "insert into " + table + " (path, checksum) values (?, ?)";
+			this.updatePath = "update " + table + " set path = ? where path = ?";
+		}
+
+		/**
+		 * @return the table recording the scripts run
+		 */
+		public final String table() {
+			return table;
+		}
+
+		/**
+		 * Runs the scripts not yet run, in the order listed, each recorded with a checksum of its content once run, after
+		 * checking that each one run is unchanged and still listed, and that none not yet run is listed before one that has,
+		 * so that a database brought up to date one list at a time ends up as one created from the last. A database refused
+		 * is left as it was, a moved script's record included.
+		 * @param connection the connection, its auto-commit disabled by this method
+		 * @param scriptPaths the scripts, in the order to run
+		 * @param existing true in case the database existed before, false in case it is being created
+		 * @throws DatabaseException in case the database is refused, a script can not be read or fails
+		 * @throws SQLException in case of an exception
+		 */
+		public final void run(Connection connection, List<String> scriptPaths, boolean existing) throws SQLException {
+			List<String> sanitizedPaths = sanitize(scriptPaths);
+			connection.setAutoCommit(false);
+			// An existing database without the record was created before the scripts were recorded, or with none listed,
+			// and has run none since, so those listed are recorded as run, leaving it as it was, those added later then
+			// running. The checksums before the table, whose creation may commit, so a script missing leaves no empty
+			// record behind.
+			Map<String, byte[]> baseline = new LinkedHashMap<>();
+			if (existing && !exists(connection)) {
+				for (String scriptPath : sanitizedPaths) {
+					baseline.put(scriptPath, checksum(scriptPath));
+				}
+			}
+			try (Statement statement = connection.createStatement()) {
+				create(statement);
+			}
+			for (Map.Entry<String, byte[]> script : baseline.entrySet()) {
+				record(connection, script.getKey(), script.getValue());
+			}
+			connection.commit();
+			Map<String, byte[]> run = scriptsRun(connection);
+			Map<String, String> moved = followMovedScripts(sanitizedPaths, run);
+			List<String> pending = pendingScripts(sanitizedPaths, run);
+			for (Map.Entry<String, String> script : moved.entrySet()) {
+				updatePath(connection, script.getKey(), script.getValue());
+			}
+			connection.commit();
+			for (String scriptPath : pending) {
+				run(connection, scriptPath);
+			}
+		}
+
+		/**
+		 * Validates a database against the init scripts it would be opened with, refusing it as {@link #run(Connection, List, boolean)}
+		 * would, changing nothing, so the connection may be read only. A database without the record of its scripts is
+		 * never refused, nor one opened with none listed.
+		 * @param connection a connection to the database
+		 * @param scriptPaths the init scripts it would be opened with
+		 * @throws DatabaseException in case the database would be refused, or a script listed can not be read
+		 * @throws SQLException in case the record of the scripts run can not be read
+		 */
+		public final void validate(Connection connection, List<String> scriptPaths) throws SQLException {
+			List<String> sanitizedPaths = sanitize(scriptPaths);
+			if (!sanitizedPaths.isEmpty() && exists(connection)) {
+				Map<String, byte[]> run = scriptsRun(connection);
+				followMovedScripts(sanitizedPaths, run);
+				pendingScripts(sanitizedPaths, run);
+			}
+		}
+
+		/**
+		 * Creates the table recording the scripts run, see {@link #table()}, in case it does not exist.
+		 * @param statement the statement to use
+		 * @throws SQLException in case of an exception
+		 */
+		protected abstract void create(Statement statement) throws SQLException;
+
+		/**
+		 * @param connection the connection
+		 * @return true if the table recording the scripts run exists
+		 * @throws SQLException in case of an exception
+		 */
+		protected abstract boolean exists(Connection connection) throws SQLException;
+
+		/**
+		 * Opens a script for reading, its path as listed.
+		 * @param scriptPath the script path
+		 * @return a stream reading the script
+		 * @throws IOException in case the script can not be read
+		 */
+		protected abstract InputStream open(String scriptPath) throws IOException;
+
+		/**
+		 * Runs a script, within the transaction recording it.
+		 * @param statement the statement to use
+		 * @param scriptPath the script path, as listed
+		 * @param script the script, as {@link #open(String)} reads it
+		 * @throws SQLException in case the script fails
+		 */
+		protected abstract void run(Statement statement, String scriptPath, String script) throws SQLException;
+
+		// A script listed but not recorded, with the content of one recorded but no longer listed, is that one moved, which
+		// has run, so its record follows it, in run, the path it was recorded by mapped to the one listed being returned.
+		// One to one, so identical scripts move alike. One moved and changed is not found
+		private Map<String, String> followMovedScripts(List<String> scriptPaths, Map<String, byte[]> run) {
+			Map<String, byte[]> unlisted = new HashMap<>(run);
+			unlisted.keySet().removeAll(scriptPaths);
+			Map<String, String> moved = new HashMap<>();
+			for (String scriptPath : scriptPaths) {
+				if (!unlisted.isEmpty() && !run.containsKey(scriptPath)) {
+					byte[] checksum = checksum(scriptPath);
+					Optional<String> recorded = unlisted.keySet().stream()
+									.filter(path -> Arrays.equals(unlisted.get(path), checksum))
+									.findFirst();
+					if (recorded.isPresent()) {
+						moved.put(recorded.get(), scriptPath);
+						run.remove(recorded.get());
+						run.put(scriptPath, unlisted.remove(recorded.get()));
+					}
+				}
+			}
+
+			return moved;
+		}
+
+		// The scripts not yet run, in the order listed, consuming run, refusing the database
+		private List<String> pendingScripts(List<String> scriptPaths, Map<String, byte[]> run) {
+			List<String> pending = new ArrayList<>();
+			for (String scriptPath : scriptPaths) {
+				byte[] checksum = run.remove(scriptPath);
+				if (checksum == null) {
+					pending.add(scriptPath);
+				}
+				else if (!pending.isEmpty()) {
+					throw new DatabaseException(INIT_SCRIPT + pending.get(0) + " has not been run, but " + scriptPath + ", listed after it, has");
+				}
+				else if (!Arrays.equals(checksum, checksum(scriptPath))) {
+					throw new DatabaseException(INIT_SCRIPT + scriptPath + " has changed since it was run");
+				}
+			}
+			if (!run.isEmpty()) {
+				throw new DatabaseException("Init scripts run, but no longer listed: " + String.join(", ", run.keySet()));
+			}
+
+			return pending;
+		}
+
+		private void updatePath(Connection connection, String scriptPath, String newScriptPath) throws SQLException {
+			try (PreparedStatement update = connection.prepareStatement(updatePath)) {
+				update.setString(1, newScriptPath);
+				update.setString(2, scriptPath);
+				update.executeUpdate();
+			}
+		}
+
+		// Where a dialect's DDL commits, a script failing may leave part of its work behind, not recorded, to run again
+		private void run(Connection connection, String scriptPath) throws SQLException {
+			try (Statement statement = connection.createStatement()) {
+				String script = read(scriptPath);
+				run(statement, scriptPath, script);
+				record(connection, scriptPath, digest(script));
+				connection.commit();
+			}
+			catch (SQLException e) {
+				connection.rollback();
+				throw new DatabaseException(e, INIT_SCRIPT + scriptPath + " failed: " + e.getMessage());
+			}
+		}
+
+		private void record(Connection connection, String scriptPath, byte[] checksum) throws SQLException {
+			try (PreparedStatement insert = connection.prepareStatement(insertScript)) {
+				insert.setString(1, scriptPath);
+				insert.setBytes(2, checksum);
+				insert.executeUpdate();
+			}
+		}
+
+		private Map<String, byte[]> scriptsRun(Connection connection) throws SQLException {
+			Map<String, byte[]> run = new TreeMap<>();
+			try (Statement statement = connection.createStatement();
+					 ResultSet resultSet = statement.executeQuery(selectScripts)) {
+				while (resultSet.next()) {
+					run.put(resultSet.getString(1), resultSet.getBytes(2));
+				}
+			}
+
+			return run;
+		}
+
+		private byte[] checksum(String scriptPath) {
+			return digest(read(scriptPath));
+		}
+
+		// The carriage returns removed, so the line endings of a checkout, on Windows say, do not change it
+		private String read(String scriptPath) {
+			try (InputStream input = open(scriptPath)) {
+				return new String(readAll(input), StandardCharsets.UTF_8).replace("\r", "");
+			}
+			catch (IOException e) {
+				throw new DatabaseException(INIT_SCRIPT + scriptPath + " can not be read: " + e);
+			}
+		}
+
+		private static byte[] digest(String script) {
+			try {
+				return MessageDigest.getInstance(CHECKSUM_ALGORITHM).digest(script.getBytes(StandardCharsets.UTF_8));
+			}
+			catch (NoSuchAlgorithmException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+
+		private static byte[] readAll(InputStream input) throws IOException {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			byte[] buffer = new byte[READ_BUFFER_SIZE];
+			int read;
+			while ((read = input.read(buffer)) != -1) {
+				output.write(buffer, 0, read);
+			}
+
+			return output.toByteArray();
+		}
+
+		/**
+		 * Sanitizes script paths, a dialect possibly running a script by its path in a statement of its own, for a dialect
+		 * to refuse them before opening the database, {@link #run(Connection, List, boolean)} and
+		 * {@link #validate(Connection, List)} sanitizing them as well.
+		 * @param scriptPaths the script paths
+		 * @return the paths, trimmed, their separators forward slashes
+		 * @throws SecurityException if a script path is empty or contains potential injection attempts
+		 */
+		protected static List<String> sanitize(List<String> scriptPaths) {
+			List<String> sanitizedPaths = new ArrayList<>(scriptPaths.size());
+			for (String scriptPath : scriptPaths) {
+				if (scriptPath == null || scriptPath.trim().isEmpty()) {
+					throw new SecurityException("Script path cannot be null or empty");
+				}
+				String trimmedPath = scriptPath.trim();
+				if (trimmedPath.contains("'") || trimmedPath.contains("\"") ||
+								trimmedPath.contains(";") || trimmedPath.contains("--") ||
+								trimmedPath.contains("/*") || trimmedPath.contains("*/")) {
+					throw new SecurityException("Script path contains potentially dangerous characters: " + scriptPath);
+				}
+				// Normalize path separators for consistency
+				sanitizedPaths.add(trimmedPath.replace("\\", "/"));
+			}
+
+			return sanitizedPaths;
 		}
 	}
 }

@@ -24,33 +24,23 @@ import is.codion.common.db.exception.ErrorType;
 
 import org.jspecify.annotations.Nullable;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import static is.codion.common.utilities.user.User.user;
@@ -78,21 +68,7 @@ final class H2Database extends AbstractDatabase {
 	private static final String USER_HOME_DIRECTORY = "~";
 	private static final String SHUTDOWN = "SHUTDOWN";
 
-	// In a schema of its own, out of the way of an application keeping its tables in PUBLIC
-	private static final String INIT_SCRIPT_TABLE = "codion.init_script";
-	private static final String CREATE_INIT_SCRIPT_SCHEMA = "create schema if not exists codion";
-	private static final String CREATE_INIT_SCRIPT_TABLE = "create table if not exists " + INIT_SCRIPT_TABLE + " (" +
-					"path varchar(1000) primary key, " +
-					"checksum varbinary(32) not null, " +
-					"run_at timestamp default current_timestamp not null)";
-	private static final String SELECT_INIT_SCRIPT_TABLE =
-					"select 1 from information_schema.tables where table_schema = 'CODION' and table_name = 'INIT_SCRIPT'";
-	private static final String SELECT_INIT_SCRIPTS = "select path, checksum from " + INIT_SCRIPT_TABLE;
-	private static final String INSERT_INIT_SCRIPT = "insert into " + INIT_SCRIPT_TABLE + " (path, checksum) values (?, ?)";
-	private static final String UPDATE_INIT_SCRIPT_PATH = "update " + INIT_SCRIPT_TABLE + " set path = ? where path = ?";
-	private static final String FILE_UTILS_CLASS_NAME = "org.h2.store.fs.FileUtils";
-	private static final String CHECKSUM_ALGORITHM = "SHA-256";
-	private static final int READ_BUFFER_SIZE = 8192;
+	private static final InitScripts INIT_SCRIPTS = new H2InitScripts();
 
 	static final String SEQUENCE_VALUE_QUERY = "select next value for ";
 	static final String SYSADMIN_USERNAME = "sa";
@@ -100,7 +76,6 @@ final class H2Database extends AbstractDatabase {
 	private static final String COLUMN = "column \"";
 	private static final String CONSTRAINT_VIOLATION = "constraint violation: \"";
 	private static final String SQL_STATEMENT = "; SQL statement:";
-	private static final String INIT_SCRIPT = "Init script ";
 
 	private static final Map<Integer, ErrorType> ERROR_TYPES = new HashMap<>();
 
@@ -251,41 +226,9 @@ final class H2Database extends AbstractDatabase {
 		return FILE_SYSTEM_PREFIXES.matcher(removeUrlPrefixOptionsAndParameters(url, JDBC_URL_PREFIX)).replaceFirst("");
 	}
 
-	/**
-	 * Sanitizes script paths to prevent SQL injection in H2 INIT parameters.
-	 * @param scriptPath the script path to sanitize
-	 * @return sanitized script path safe for use in H2 URL parameters
-	 * @throws SecurityException if the script path contains potential injection attempts
-	 */
-	private static String sanitizeScriptPath(String scriptPath) {
-		if (scriptPath == null || scriptPath.trim().isEmpty()) {
-			throw new SecurityException("Script path cannot be null or empty");
-		}
-
-		String trimmedPath = scriptPath.trim();
-
-		// Check for SQL injection attempts
-		if (trimmedPath.contains("'") || trimmedPath.contains("\"") ||
-						trimmedPath.contains(";") || trimmedPath.contains("--") ||
-						trimmedPath.contains("/*") || trimmedPath.contains("*/")) {
-			throw new SecurityException("Script path contains potentially dangerous characters: " + scriptPath);
-		}
-
-		// Normalize path separators for consistency
-		return trimmedPath.replace("\\", "/");
-	}
-
-	private static List<String> sanitizeScriptPaths(List<String> scriptPaths) {
-		List<String> sanitizedPaths = new ArrayList<>(scriptPaths.size());
-		for (String scriptPath : scriptPaths) {
-			sanitizedPaths.add(sanitizeScriptPath(scriptPath));
-		}
-
-		return sanitizedPaths;
-	}
-
 	private void initializeEmbeddedDatabase(List<String> scriptPaths) {
-		List<String> sanitizedPaths = sanitizeScriptPaths(scriptPaths);
+		// refused before the database is opened, a file database not created then
+		List<String> sanitizedPaths = H2InitScripts.sanitized(scriptPaths);
 		boolean create = isEmbeddedInMemory() || !databaseFileExists();
 		if (create || !sanitizedPaths.isEmpty()) {
 			Properties properties = new Properties();
@@ -295,7 +238,7 @@ final class H2Database extends AbstractDatabase {
 			// once its last connection closes, in every later process too
 			try (Connection connection = DriverManager.getConnection(url() + (isEmbeddedInMemory() ? ";DB_CLOSE_DELAY=-1" : ""), properties)) {
 				if (!sanitizedPaths.isEmpty()) {
-					runInitScripts(connection, sanitizedPaths, !create);
+					INIT_SCRIPTS.run(connection, sanitizedPaths, !create);
 				}
 			}
 			catch (SQLException e) {
@@ -310,175 +253,7 @@ final class H2Database extends AbstractDatabase {
 	}
 
 	static void validateInitScripts(Connection connection, List<String> scriptPaths) throws SQLException {
-		List<String> sanitizedPaths = sanitizeScriptPaths(scriptPaths);
-		if (!sanitizedPaths.isEmpty() && initScriptTableExists(connection)) {
-			Map<String, byte[]> run = initScriptsRun(connection);
-			followMovedScripts(sanitizedPaths, run);
-			pendingScripts(sanitizedPaths, run);
-		}
-	}
-
-	// Runs the scripts not yet run, in the order listed, each recorded with a checksum of its content once run, after
-	// checking that each one run is unchanged and still listed, and that none not yet run is listed before one that has,
-	// so that a database brought up to date one list at a time ends up as one created from the last. A database refused
-	// is left as it was, a moved script's record included
-	private static void runInitScripts(Connection connection, List<String> scriptPaths, boolean existing) throws SQLException {
-		connection.setAutoCommit(false);
-		// An existing database without the record was created before the scripts were recorded, or with none listed, and
-		// has run none since, so those listed are recorded as run, leaving it as it was, those added later then running.
-		// The checksums before the table, whose creation commits, so a script missing leaves no empty record behind.
-		Map<String, byte[]> baseline = new LinkedHashMap<>();
-		if (existing && !initScriptTableExists(connection)) {
-			for (String scriptPath : scriptPaths) {
-				baseline.put(scriptPath, checksum(scriptPath));
-			}
-		}
-		try (Statement statement = connection.createStatement()) {
-			statement.execute(CREATE_INIT_SCRIPT_SCHEMA);
-			statement.execute(CREATE_INIT_SCRIPT_TABLE);
-		}
-		for (Map.Entry<String, byte[]> script : baseline.entrySet()) {
-			record(connection, script.getKey(), script.getValue());
-		}
-		connection.commit();
-		Map<String, byte[]> run = initScriptsRun(connection);
-		Map<String, String> moved = followMovedScripts(scriptPaths, run);
-		List<String> pending = pendingScripts(scriptPaths, run);
-		for (Map.Entry<String, String> script : moved.entrySet()) {
-			updatePath(connection, script.getKey(), script.getValue());
-		}
-		connection.commit();
-		for (String scriptPath : pending) {
-			runInitScript(connection, scriptPath);
-		}
-	}
-
-	// A script listed but not recorded, with the content of one recorded but no longer listed, is that one moved, which
-	// has run, so its record follows it, in run, the path it was recorded by mapped to the one listed being returned.
-	// One to one, so identical scripts move alike. One moved and changed is not found
-	private static Map<String, String> followMovedScripts(List<String> scriptPaths, Map<String, byte[]> run) {
-		Map<String, byte[]> unlisted = new HashMap<>(run);
-		unlisted.keySet().removeAll(scriptPaths);
-		Map<String, String> moved = new HashMap<>();
-		for (String scriptPath : scriptPaths) {
-			if (!unlisted.isEmpty() && !run.containsKey(scriptPath)) {
-				byte[] checksum = checksum(scriptPath);
-				Optional<String> recorded = unlisted.keySet().stream()
-								.filter(path -> Arrays.equals(unlisted.get(path), checksum))
-								.findFirst();
-				if (recorded.isPresent()) {
-					moved.put(recorded.get(), scriptPath);
-					run.remove(recorded.get());
-					run.put(scriptPath, unlisted.remove(recorded.get()));
-				}
-			}
-		}
-
-		return moved;
-	}
-
-	// The scripts not yet run, in the order listed, consuming run. Refuses the database, see H2DatabaseFactory
-	private static List<String> pendingScripts(List<String> scriptPaths, Map<String, byte[]> run) {
-		List<String> pending = new ArrayList<>();
-		for (String scriptPath : scriptPaths) {
-			byte[] checksum = run.remove(scriptPath);
-			if (checksum == null) {
-				pending.add(scriptPath);
-			}
-			else if (!pending.isEmpty()) {
-				throw new DatabaseException(INIT_SCRIPT + pending.get(0) + " has not been run, but " + scriptPath + ", listed after it, has");
-			}
-			else if (!Arrays.equals(checksum, checksum(scriptPath))) {
-				throw new DatabaseException(INIT_SCRIPT + scriptPath + " has changed since it was run");
-			}
-		}
-		if (!run.isEmpty()) {
-			throw new DatabaseException("Init scripts run, but no longer listed: " + String.join(", ", run.keySet()));
-		}
-
-		return pending;
-	}
-
-	private static void updatePath(Connection connection, String scriptPath, String newScriptPath) throws SQLException {
-		try (PreparedStatement update = connection.prepareStatement(UPDATE_INIT_SCRIPT_PATH)) {
-			update.setString(1, newScriptPath);
-			update.setString(2, scriptPath);
-			update.executeUpdate();
-		}
-	}
-
-	// H2's DDL commits, so a script failing may leave part of its work behind, not recorded, to run again
-	private static void runInitScript(Connection connection, String scriptPath) throws SQLException {
-		try (Statement statement = connection.createStatement()) {
-			byte[] checksum = checksum(scriptPath);
-			statement.execute("runscript from '" + scriptPath + "'");
-			record(connection, scriptPath, checksum);
-			connection.commit();
-		}
-		catch (SQLException e) {
-			connection.rollback();
-			throw new DatabaseException(e, INIT_SCRIPT + scriptPath + " failed: " + e.getMessage());
-		}
-	}
-
-	private static void record(Connection connection, String scriptPath, byte[] checksum) throws SQLException {
-		try (PreparedStatement insert = connection.prepareStatement(INSERT_INIT_SCRIPT)) {
-			insert.setString(1, scriptPath);
-			insert.setBytes(2, checksum);
-			insert.executeUpdate();
-		}
-	}
-
-	private static boolean initScriptTableExists(Connection connection) throws SQLException {
-		try (Statement statement = connection.createStatement();
-				 ResultSet resultSet = statement.executeQuery(SELECT_INIT_SCRIPT_TABLE)) {
-			return resultSet.next();
-		}
-	}
-
-	private static Map<String, byte[]> initScriptsRun(Connection connection) throws SQLException {
-		Map<String, byte[]> run = new TreeMap<>();
-		try (Statement statement = connection.createStatement();
-				 ResultSet resultSet = statement.executeQuery(SELECT_INIT_SCRIPTS)) {
-			while (resultSet.next()) {
-				run.put(resultSet.getString(1), resultSet.getBytes(2));
-			}
-		}
-
-		return run;
-	}
-
-	// The script as RUNSCRIPT reads it, through H2's own file resolution, classpath: included, its carriage returns
-	// removed, so the line endings of a checkout, on Windows say, do not change it. Not by H2's FILE_READ, which reads no more
-	// than the size H2 finds for the file, zero for a classpath resource it can not open as a file system, on Android for one
-	private static byte[] checksum(String scriptPath) {
-		try (InputStream input = (InputStream) Class.forName(FILE_UTILS_CLASS_NAME)
-						.getMethod("newInputStream", String.class)
-						.invoke(null, scriptPath)) {
-			String content = new String(readAll(input), StandardCharsets.UTF_8).replace("\r", "");
-
-			return MessageDigest.getInstance(CHECKSUM_ALGORITHM).digest(content.getBytes(StandardCharsets.UTF_8));
-		}
-		catch (InvocationTargetException e) {
-			throw new DatabaseException(INIT_SCRIPT + scriptPath + " can not be read: " + e.getCause());
-		}
-		catch (IOException e) {
-			throw new DatabaseException(INIT_SCRIPT + scriptPath + " can not be read: " + e);
-		}
-		catch (ReflectiveOperationException | NoSuchAlgorithmException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-	private static byte[] readAll(InputStream input) throws IOException {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		byte[] buffer = new byte[READ_BUFFER_SIZE];
-		int read;
-		while ((read = input.read(buffer)) != -1) {
-			output.write(buffer, 0, read);
-		}
-
-		return output.toByteArray();
+		INIT_SCRIPTS.validate(connection, scriptPaths);
 	}
 
 	private String initializedKey() {
@@ -498,5 +273,67 @@ final class H2Database extends AbstractDatabase {
 
 	private static boolean startsWith(String url, String prefix) {
 		return url.regionMatches(true, 0, prefix, 0, prefix.length());
+	}
+
+	private static final class H2InitScripts extends InitScripts {
+
+		// In a schema of its own, out of the way of an application keeping its tables in PUBLIC
+		private static final String CREATE_SCHEMA = "create schema if not exists codion";
+		private static final String CREATE_TABLE = "create table if not exists codion.init_script (" +
+						"path varchar(1000) primary key, " +
+						"checksum varbinary(32) not null, " +
+						"run_at timestamp default current_timestamp not null)";
+		private static final String SELECT_TABLE =
+						"select 1 from information_schema.tables where table_schema = 'CODION' and table_name = 'INIT_SCRIPT'";
+		private static final String FILE_UTILS_CLASS_NAME = "org.h2.store.fs.FileUtils";
+
+		private H2InitScripts() {
+			super("codion.init_script");
+		}
+
+		private static List<String> sanitized(List<String> scriptPaths) {
+			return sanitize(scriptPaths);
+		}
+
+		@Override
+		protected void create(Statement statement) throws SQLException {
+			statement.execute(CREATE_SCHEMA);
+			statement.execute(CREATE_TABLE);
+		}
+
+		@Override
+		protected boolean exists(Connection connection) throws SQLException {
+			try (Statement statement = connection.createStatement();
+					 ResultSet resultSet = statement.executeQuery(SELECT_TABLE)) {
+				return resultSet.next();
+			}
+		}
+
+		// The script as RUNSCRIPT reads it, through H2's own file resolution, classpath: included. Not by H2's FILE_READ,
+		// which reads no more than the size H2 finds for the file, zero for a classpath resource it can not open as a file
+		// system, on Android for one
+		@Override
+		protected InputStream open(String scriptPath) throws IOException {
+			try {
+				return (InputStream) Class.forName(FILE_UTILS_CLASS_NAME)
+								.getMethod("newInputStream", String.class)
+								.invoke(null, scriptPath);
+			}
+			catch (InvocationTargetException e) {
+				if (e.getCause() instanceof IOException) {
+					throw (IOException) e.getCause();
+				}
+				throw new IOException(String.valueOf(e.getCause()), e.getCause());
+			}
+			catch (ReflectiveOperationException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+
+		// H2's DDL commits, so a script failing may leave part of its work behind, not recorded, to run again
+		@Override
+		protected void run(Statement statement, String scriptPath, String script) throws SQLException {
+			statement.execute("runscript from '" + scriptPath + "'");
+		}
 	}
 }

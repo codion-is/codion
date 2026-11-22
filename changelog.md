@@ -10,6 +10,7 @@ Codion Change Log
 - ProgressWorker bug fixed, a worker for a task implementing a handler interface, every asynchronous refresh among them, no longer fails in an application minified by R8, which renamed Handler.onException(), looked up by name to tell whether the task overrides it, the default now telling the worker itself.
 ### is.codion.common.db
 - AbstractDatabase.configure(Connection) added, run on every connection created, for a database requiring setup per connection, the connection closed when it fails.
+- AbstractDatabase.InitScripts added, the init scripts of a database, each run once in its life, moved from the H2 module, for a dialect to provide the record of the scripts run and how a script runs.
 ### is.codion.swing.common.ui
 - ImagePane bug fixed, a pane used as a cell renderer, its parent a CellRendererPane, now decodes image bytes on the calling thread, where it painted no image, the image decoded in the background after the cell was painted.
 - ImageView added, a display only component fitting image bytes to its size, for cell renderers and thumbnails, the bytes decoded when painted and scaled smoothly, the scaled images kept by their byte array, held weakly, ImageView.ORIENT added, ImagePane sharing its fit.
