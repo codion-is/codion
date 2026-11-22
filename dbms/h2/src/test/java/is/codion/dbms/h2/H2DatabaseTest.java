@@ -32,6 +32,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.channels.FileChannel;
@@ -63,6 +64,7 @@ import java.util.concurrent.CompletableFuture;
 import static is.codion.common.db.exception.Operation.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class H2DatabaseTest {
@@ -109,6 +111,17 @@ public class H2DatabaseTest {
 		// neither a colon in a path nor a host taken for one
 		assertEquals("/data/a:b/sample", H2Database.databaseName("jdbc:h2:/data/a:b/sample"));
 		assertEquals("localhost:9092/db", H2Database.databaseName("jdbc:h2:tcp://localhost:9092/db"));
+	}
+
+	@Test
+	void r8RulesKeepH2() throws Exception {
+		// H2 kept whole, the driver's package, which a rule naming another would leave unprotected
+		String rules;
+		try (InputStream input = H2Database.class.getResourceAsStream("/META-INF/proguard/codion-dbms-h2.pro")) {
+			rules = new String(requireNonNull(input).readAllBytes(), StandardCharsets.UTF_8);
+		}
+		String h2 = DriverManager.getDriver("jdbc:h2:mem:").getClass().getPackageName();
+		assertTrue(rules.contains("-keep class " + h2 + ".** { *; }"));
 	}
 
 	@Test
