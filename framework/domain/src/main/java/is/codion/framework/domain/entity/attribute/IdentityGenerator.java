@@ -52,7 +52,7 @@ final class IdentityGenerator<T> implements Identity<T> {
 			entity.set(columnDefinition.attribute(), generatedKeys.getMetaData().getColumnCount() == 1 ?
 							// a single column is the key, whatever the driver names it, SQLite's last_insert_rowid() for example
 							columnDefinition.get(generatedKeys, 1, database) :
-							// by name otherwise, since some databases (PostgreSQL for example), return all columns, not just generated ones
+							// by name otherwise, the insert asking for several generated columns
 							columnDefinition.get(generatedKeys, database));
 		}
 	}

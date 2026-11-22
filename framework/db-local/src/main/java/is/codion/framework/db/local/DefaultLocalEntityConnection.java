@@ -56,10 +56,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +70,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalInt;
@@ -112,6 +113,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	private static final String ENTITY = "entity may not be null";
 	private static final String SELECT_MAY_NOT_BE_NULL = "select may not be null";
 	private static final String PACK_RESULT = "packResult";
+	private static final String[] NO_GENERATED_KEYS = new String[0];
 	private static final String EXECUTE = "execute";
 	private static final String REPORT = "report";
 	private static final String CONNECTION_IS_CLOSED = "Connection is closed";
@@ -125,7 +127,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	//the connection a joined connection calls the transaction methods of, null for one not joined
 	private final @Nullable LocalEntityConnection parent;
 	private final SelectQueries selectQueries;
-	private final Map<EntityType, Boolean> generatedKeysCache = new HashMap<>();
+	private final Map<EntityType, String[]> generatedKeysCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> generatedColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> insertableColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> updatableColumnsCache = new HashMap<>();
@@ -1106,9 +1108,51 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		column.generator().afterInsert(entity, column.attribute(), database, statement);
 	}
 
-	private boolean generatedKeys(EntityDefinition entityDefinition, List<ColumnDefinition<?>> generated) {
-		return generatedKeysCache.computeIfAbsent(entityDefinition.type(), k ->
-						generated.stream().anyMatch(column -> column.generator().generatedKeys()));
+	private String[] generatedKeys(EntityDefinition entityDefinition, List<ColumnDefinition<?>> generated) throws SQLException {
+		String[] generatedKeys = generatedKeysCache.get(entityDefinition.type());
+		if (generatedKeys == null) {
+			generatedKeys = generatedKeys(generated);
+			generatedKeysCache.put(entityDefinition.type(), generatedKeys);
+		}
+
+		return generatedKeys;
+	}
+
+	/**
+	 * The generated columns are asked for by name, Oracle otherwise returning the row's ROWID, in the case the database
+	 * stores an unquoted name in, as a driver may quote them, PostgreSQL's for example, a quoted name as it is.
+	 * @param generated the generated columns
+	 * @return the names of the columns the insert returns the values of
+	 */
+	private String[] generatedKeys(List<ColumnDefinition<?>> generated) throws SQLException {
+		List<String> names = generated.stream()
+						.filter(column -> column.generator().generatedKeys())
+						.map(ColumnDefinition::name)
+						.collect(toList());
+		if (names.isEmpty()) {
+			return NO_GENERATED_KEYS;
+		}
+		DatabaseMetaData metaData = verifyOpenConnection().getMetaData();
+		boolean upperCase = metaData.storesUpperCaseIdentifiers();
+		boolean lowerCase = metaData.storesLowerCaseIdentifiers();
+
+		return names.stream()
+						.map(name -> storedName(name, upperCase, lowerCase))
+						.toArray(String[]::new);
+	}
+
+	private static String storedName(String name, boolean upperCase, boolean lowerCase) {
+		if (name.length() > 1 && name.startsWith("\"") && name.endsWith("\"")) {
+			return name.substring(1, name.length() - 1);
+		}
+		if (upperCase) {
+			return name.toUpperCase(Locale.ROOT);
+		}
+		if (lowerCase) {
+			return name.toLowerCase(Locale.ROOT);
+		}
+
+		return name;
 	}
 
 	private void update(Collection<Entity> entities, @Nullable Collection<Entity> updatedEntities) {
@@ -1427,7 +1471,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		List<Object> statementValues = statementValues(select.where(), select.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(select.where(), select.having());
 		try {
-			statement = prepareStatement(selectQuery, false, select.timeout().orElse(queryTimeout));
+			statement = prepareStatement(selectQuery, NO_GENERATED_KEYS, select.timeout().orElse(queryTimeout));
 			resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues);
 
 			return new DefaultEntityResultIterator(statement, resultSet,
@@ -1520,19 +1564,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 	}
 
 	private PreparedStatement prepareStatement(String query) throws SQLException {
-		return prepareStatement(query, false);
+		return prepareStatement(query, NO_GENERATED_KEYS);
 	}
 
-	private PreparedStatement prepareStatement(String query, boolean generatedKeys) throws SQLException {
+	private PreparedStatement prepareStatement(String query, String[] generatedKeys) throws SQLException {
 		return prepareStatement(query, generatedKeys, queryTimeout);
 	}
 
-	private PreparedStatement prepareStatement(String query, boolean generatedKeys, int queryTimeout) throws SQLException {
+	private PreparedStatement prepareStatement(String query, String[] generatedKeys, int queryTimeout) throws SQLException {
 		session.tracer.enter("prepareStatement", query);
 		SQLException exception = null;
 		try {
-			PreparedStatement statement = generatedKeys ?
-							verifyOpenConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
+			PreparedStatement statement = generatedKeys.length > 0 ?
+							verifyOpenConnection().prepareStatement(query, generatedKeys) :
 							verifyOpenConnection().prepareStatement(query);
 			// H2 holds the timeout per session, setting it running a command which clears every session's statement cache
 			if (statement.getQueryTimeout() != queryTimeout) {

@@ -320,12 +320,11 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		/**
 		 * Specifies whether this {@link Generator} relies on the insert statement to return the generated column values via the resulting
 		 * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, Column, Database, Statement)}.
+		 * The insert asks for the columns of such generators by name, in the case the database stores an unquoted name in.
 		 * The default implementation returns false.
 		 * @return true if the generated column values should be returned via the insert statement resultSet
 		 * @see Statement#getGeneratedKeys()
-		 * @see Statement#RETURN_GENERATED_KEYS
-		 * @see Statement#NO_GENERATED_KEYS
-		 * @see java.sql.Connection#prepareStatement(String, int)
+		 * @see java.sql.Connection#prepareStatement(String, String[])
 		 */
 		default boolean generatedKeys() {
 			return false;
