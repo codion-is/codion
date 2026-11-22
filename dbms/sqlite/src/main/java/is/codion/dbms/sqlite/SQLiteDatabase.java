@@ -21,11 +21,17 @@ package is.codion.dbms.sqlite;
 import is.codion.common.db.database.AbstractDatabase;
 import is.codion.common.db.database.GetValue;
 import is.codion.common.db.database.SetValue;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ErrorType;
 
 import org.jspecify.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -42,14 +48,21 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A SQLite embedded database implementation, quite experimental, based on the xerial/sqlite-jdbc driver.
  */
 final class SQLiteDatabase extends AbstractDatabase {
+
+	private static final Set<String> INITIALIZED_DATABASES = new HashSet<>();
+	private static final InitScripts INIT_SCRIPTS = new SQLiteInitScripts();
 
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
 	// SQLite's own format, as its date and time functions write it, a fraction of a second only where there is one
@@ -103,8 +116,26 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	SQLiteDatabase(String url, @Nullable String schemas) {
+		this(url, schemas, emptyList());
+	}
+
+	SQLiteDatabase(String url, @Nullable String schemas, List<String> initScripts) {
 		super(url);
 		this.schemas = schemas(url, schemas);
+		// refused before the database is opened, a file not created then
+		List<String> scriptPaths = SQLiteInitScripts.sanitized(initScripts);
+		if (!scriptPaths.isEmpty()) {
+			synchronized (INITIALIZED_DATABASES) {
+				if (!INITIALIZED_DATABASES.contains(url)) {
+					initialize(scriptPaths);
+					INITIALIZED_DATABASES.add(url);
+				}
+			}
+		}
+	}
+
+	static void validateInitScripts(Connection connection, List<String> scriptPaths) throws SQLException {
+		INIT_SCRIPTS.validate(connection, scriptPaths);
 	}
 
 	@Override
@@ -258,6 +289,13 @@ final class SQLiteDatabase extends AbstractDatabase {
 		}
 	}
 
+	@Override
+	protected void closeDatabase() {
+		synchronized (INITIALIZED_DATABASES) {
+			INITIALIZED_DATABASES.remove(url());
+		}
+	}
+
 	private static final class GetOffsetDateTime implements GetValue<OffsetDateTime> {
 
 		@Override
@@ -283,16 +321,40 @@ final class SQLiteDatabase extends AbstractDatabase {
 		return mainFile + "-" + schema;
 	}
 
-	private static List<Schema> schemas(String url, @Nullable String schemas) {
-		List<Schema> attached = new ArrayList<>();
-		if (schemas == null || schemas.trim().isEmpty()) {
-			return attached;
+	private void initialize(List<String> scriptPaths) {
+		String mainFile = mainFile(url());
+		boolean existing = mainFile != null && Files.exists(Paths.get(mainFile));
+		try (Connection connection = createConnection()) {
+			INIT_SCRIPTS.run(connection, scriptPaths, existing);
 		}
+		catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+	}
+
+	/**
+	 * @param url the url
+	 * @return the main database file, null for a database without one, in memory or temporary
+	 */
+	private static @Nullable String mainFile(String url) {
 		String mainFile = removeUrlPrefixOptionsAndParameters(url, JDBC_URL_PREFIX);
 		if (mainFile.startsWith(FILE_PREFIX)) {
 			mainFile = mainFile.substring(FILE_PREFIX.length());
 		}
 		if (mainFile.isEmpty() || mainFile.startsWith(":memory:") || url.contains("mode=memory")) {
+			return null;
+		}
+
+		return mainFile;
+	}
+
+	private static List<Schema> schemas(String url, @Nullable String schemas) {
+		List<Schema> attached = new ArrayList<>();
+		if (schemas == null || schemas.trim().isEmpty()) {
+			return attached;
+		}
+		String mainFile = mainFile(url);
+		if (mainFile == null) {
 			throw new IllegalArgumentException("Schemas can only be attached to a database file: " + url);
 		}
 		for (String name : schemas.split(",")) {
@@ -322,6 +384,71 @@ final class SQLiteDatabase extends AbstractDatabase {
 		private Schema(String name, String file) {
 			this.name = name;
 			this.file = file;
+		}
+	}
+
+	private static final class SQLiteInitScripts extends InitScripts {
+
+		// In the main database, its schemas attached
+		private static final String CREATE_TABLE = "create table if not exists main.codion_init_script (" +
+						"path text primary key, " +
+						"checksum blob not null, " +
+						"run_at text default current_timestamp not null)";
+		private static final String SELECT_TABLE =
+						"select 1 from main.sqlite_schema where type = 'table' and name = 'codion_init_script'";
+		private static final String CLASSPATH_PREFIX = "classpath:";
+
+		private SQLiteInitScripts() {
+			super("main.codion_init_script");
+		}
+
+		private static List<String> sanitized(List<String> scriptPaths) {
+			return sanitize(scriptPaths);
+		}
+
+		@Override
+		protected void create(Statement statement) throws SQLException {
+			statement.execute(CREATE_TABLE);
+		}
+
+		@Override
+		protected boolean exists(Connection connection) throws SQLException {
+			try (Statement statement = connection.createStatement();
+					 ResultSet resultSet = statement.executeQuery(SELECT_TABLE)) {
+				return resultSet.next();
+			}
+		}
+
+		// A classpath: resource via the context class loader, an application's, and this one's
+		@Override
+		protected InputStream open(String scriptPath) throws IOException {
+			if (scriptPath.startsWith(CLASSPATH_PREFIX)) {
+				String resource = scriptPath.substring(CLASSPATH_PREFIX.length());
+				if (resource.startsWith("/")) {
+					resource = resource.substring(1);
+				}
+				ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+				InputStream input = contextClassLoader == null ? null : contextClassLoader.getResourceAsStream(resource);
+				if (input == null) {
+					input = SQLiteDatabase.class.getClassLoader().getResourceAsStream(resource);
+				}
+				if (input == null) {
+					throw new FileNotFoundException(scriptPath);
+				}
+
+				return input;
+			}
+
+			return Files.newInputStream(Paths.get(scriptPath));
+		}
+
+		// The statements one by one, the driver running only the first of several, in the transaction recording the
+		// script, SQLite's DDL included, so a script failing leaves nothing behind
+		@Override
+		protected void run(Statement statement, String scriptPath, String script) throws SQLException {
+			for (String sql : Statements.split(script)) {
+				statement.execute(sql);
+			}
 		}
 	}
 

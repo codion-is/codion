@@ -20,13 +20,31 @@ package is.codion.dbms.sqlite;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.utilities.Text;
 import is.codion.common.utilities.property.PropertyValue;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import static is.codion.common.utilities.Configuration.stringValue;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides sqlite database implementations
+ * Provides sqlite database implementations.
+ * <p>
+ * A database in a file runs its init scripts, {@link Database#INIT_SCRIPTS}, each once in its life, when an instance is
+ * created for it, once per JVM until the database is closed, its schemas attached, see {@link #SCHEMAS}. They are
+ * recorded in the table {@code codion_init_script} of the main database. {@link #validateInitScripts(Connection, String...)}
+ * tells whether a database would be refused, without opening it, for a copy of a database, say.
+ * <p>
+ * A script runs in the transaction recording it, SQLite's DDL being transactional, so a script that fails leaves nothing
+ * behind. Its statements, the driver running only the first of several, are split at the semicolons ending them, those
+ * within quotes, comments and a trigger's body left alone, a trigger ending with {@code END} and a semicolon. A
+ * {@code CASE} expression in a trigger's body, its {@code END} followed by a semicolon, ends the trigger early. A statement
+ * that can not run in a transaction, {@code ATTACH} or {@code VACUUM}, or has no effect in one, {@code PRAGMA foreign_keys},
+ * does not belong in a script.
  */
 public final class SQLiteDatabaseFactory implements DatabaseFactory {
 
@@ -54,6 +72,19 @@ public final class SQLiteDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public Database create(String url) {
-		return new SQLiteDatabase(url, SCHEMAS.get());
+		return new SQLiteDatabase(url, SCHEMAS.get(), Text.parseCSV(Database.INIT_SCRIPTS.get()));
+	}
+
+	/**
+	 * Validates a database against the init scripts it would be opened with, refusing it as opening it would, see
+	 * {@link Database#INIT_SCRIPTS}, changing nothing, so the connection may be read only. A database without the record of
+	 * its scripts is never refused, nor one opened with none listed.
+	 * @param connection a connection to the database
+	 * @param initScripts the init scripts it would be opened with
+	 * @throws DatabaseException in case the database would be refused, or a script listed can not be read
+	 * @throws SQLException in case the record of the scripts run can not be read
+	 */
+	public static void validateInitScripts(Connection connection, String... initScripts) throws SQLException {
+		SQLiteDatabase.validateInitScripts(requireNonNull(connection), asList(requireNonNull(initScripts)));
 	}
 }

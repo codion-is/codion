@@ -65,7 +65,8 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * A comma separated list of paths to scripts initializing the database, run by an embedded database's dialect,
-	 * H2's, when an instance is created for it, see {@code H2DatabaseFactory}, and ignored by the others. A script's path is
+	 * H2's and SQLite's, when an instance is created for it, see {@code H2DatabaseFactory} and {@code SQLiteDatabaseFactory},
+	 * and ignored by the others. A script's path is
 	 * a file's, or a {@code classpath:} resource's. Each script runs once in the database's life:
 	 * <ul>
 	 *   <li>a new database runs them all, in the order listed;
