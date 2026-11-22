@@ -108,12 +108,7 @@ public abstract class AbstractDatabase implements Database {
 	@Override
 	public final Connection createConnection() {
 		try {
-			Connection connection = connectionProvider.connection(url);
-			if (transactionIsolation != null) {
-				connection.setTransactionIsolation(transactionIsolation);
-			}
-
-			return connection;
+			return configured(connectionProvider.connection(url));
 		}
 		catch (SQLException e) {
 			throw exception(e, Operation.OTHER);
@@ -123,15 +118,30 @@ public abstract class AbstractDatabase implements Database {
 	@Override
 	public final Connection createConnection(User user) {
 		try {
-			Connection connection = connectionProvider.connection(user, url);
-			if (transactionIsolation != null) {
-				connection.setTransactionIsolation(transactionIsolation);
-			}
-
-			return connection;
+			return configured(connectionProvider.connection(user, url));
 		}
 		catch (SQLException e) {
 			throw exception(e, Operation.OTHER);
+		}
+	}
+
+	private Connection configured(Connection connection) throws SQLException {
+		try {
+			if (transactionIsolation != null) {
+				connection.setTransactionIsolation(transactionIsolation);
+			}
+			configure(connection);
+
+			return connection;
+		}
+		catch (SQLException | RuntimeException e) {
+			try {
+				connection.close();
+			}
+			catch (SQLException closing) {
+				e.addSuppressed(closing);
+			}
+			throw e;
 		}
 	}
 
@@ -382,6 +392,15 @@ public abstract class AbstractDatabase implements Database {
 	 * @throws SQLException in case of an exception
 	 */
 	protected void closeDatabase() throws SQLException {}
+
+	/**
+	 * Configures a connection once created, before {@link #createConnection()} or {@link #createConnection(User)}
+	 * returns it, for a database requiring setup per connection, SQLite attaching its schemas for example.
+	 * The default implementation does nothing.
+	 * @param connection the connection, created by the {@link ConnectionProvider}
+	 * @throws SQLException in case of an exception, the connection then closed
+	 */
+	protected void configure(Connection connection) throws SQLException {/*for overriding*/}
 
 	/**
 	 * <p>Sets a single client info property, swallowing the exception a driver throws for a property it does

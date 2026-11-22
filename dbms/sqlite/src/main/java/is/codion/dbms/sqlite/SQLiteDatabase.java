@@ -25,9 +25,12 @@ import is.codion.common.db.exception.ErrorType;
 
 import org.jspecify.annotations.Nullable;
 
+import java.io.File;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,7 +41,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * A SQLite embedded database implementation, quite experimental, based on the xerial/sqlite-jdbc driver.
@@ -87,9 +93,18 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final String NO_LIMIT = "-1";
 
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlite:";
+	private static final String FILE_PREFIX = "file:";
+	private static final Pattern SCHEMA_NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
+
+	private final List<Schema> schemas;
 
 	SQLiteDatabase(String url) {
+		this(url, null);
+	}
+
+	SQLiteDatabase(String url, @Nullable String schemas) {
 		super(url);
+		this.schemas = schemas(url, schemas);
 	}
 
 	@Override
@@ -224,6 +239,25 @@ final class SQLiteDatabase extends AbstractDatabase {
 		return null;
 	}
 
+	/**
+	 * Attaches the schemas, see {@link SQLiteDatabaseFactory#SCHEMAS}, with the main database's journal mode and
+	 * synchronous setting.
+	 */
+	@Override
+	protected void configure(Connection connection) throws SQLException {
+		if (!schemas.isEmpty()) {
+			try (Statement statement = connection.createStatement()) {
+				String journalMode = pragma(statement, "main.journal_mode");
+				String synchronous = pragma(statement, "main.synchronous");
+				for (Schema schema : schemas) {
+					statement.execute("ATTACH DATABASE '" + schema.file.replace("'", "''") + "' AS " + schema.name);
+					statement.execute("PRAGMA " + schema.name + ".journal_mode = " + journalMode);
+					statement.execute("PRAGMA " + schema.name + ".synchronous = " + synchronous);
+				}
+			}
+		}
+	}
+
 	private static final class GetOffsetDateTime implements GetValue<OffsetDateTime> {
 
 		@Override
@@ -231,6 +265,63 @@ final class SQLiteDatabase extends AbstractDatabase {
 			String value = resultSet.getString(index);
 
 			return value == null ? null : OffsetDateTime.parse(value.replace(' ', 'T'));
+		}
+	}
+
+	/**
+	 * @param mainFile the main database file
+	 * @param schema the schema name
+	 * @return the file of the given schema, beside the main one, named after it and the schema
+	 */
+	static String schemaFile(String mainFile, String schema) {
+		int separator = Math.max(mainFile.lastIndexOf('/'), mainFile.lastIndexOf(File.separatorChar));
+		int extension = mainFile.lastIndexOf('.');
+		if (extension > separator + 1) {
+			return mainFile.substring(0, extension) + "-" + schema + mainFile.substring(extension);
+		}
+
+		return mainFile + "-" + schema;
+	}
+
+	private static List<Schema> schemas(String url, @Nullable String schemas) {
+		List<Schema> attached = new ArrayList<>();
+		if (schemas == null || schemas.trim().isEmpty()) {
+			return attached;
+		}
+		String mainFile = removeUrlPrefixOptionsAndParameters(url, JDBC_URL_PREFIX);
+		if (mainFile.startsWith(FILE_PREFIX)) {
+			mainFile = mainFile.substring(FILE_PREFIX.length());
+		}
+		if (mainFile.isEmpty() || mainFile.startsWith(":memory:") || url.contains("mode=memory")) {
+			throw new IllegalArgumentException("Schemas can only be attached to a database file: " + url);
+		}
+		for (String name : schemas.split(",")) {
+			String schema = name.trim();
+			if (!SCHEMA_NAME.matcher(schema).matches() || schema.equalsIgnoreCase("main") || schema.equalsIgnoreCase("temp")) {
+				throw new IllegalArgumentException("Invalid schema name: '" + schema + "'");
+			}
+			attached.add(new Schema(schema, schemaFile(mainFile, schema)));
+		}
+
+		return attached;
+	}
+
+	private static String pragma(Statement statement, String pragma) throws SQLException {
+		try (ResultSet resultSet = statement.executeQuery("PRAGMA " + pragma)) {
+			resultSet.next();
+
+			return resultSet.getString(1);
+		}
+	}
+
+	private static final class Schema {
+
+		private final String name;
+		private final String file;
+
+		private Schema(String name, String file) {
+			this.name = name;
+			this.file = file;
 		}
 	}
 

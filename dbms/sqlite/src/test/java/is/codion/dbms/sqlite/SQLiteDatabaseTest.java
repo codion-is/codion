@@ -27,11 +27,16 @@ import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -247,5 +252,53 @@ public class SQLiteDatabaseTest {
 		set(database, statement, 1, sqlType, value);
 
 		return written.get(0);
+	}
+
+	@Test
+	void schemaFile() {
+		// beside the main file, named after it and the schema
+		assertEquals("/dir/fieldbook-sync.db", SQLiteDatabase.schemaFile("/dir/fieldbook.db", "sync"));
+		assertEquals("/dir/fieldbook-sync", SQLiteDatabase.schemaFile("/dir/fieldbook", "sync"));
+		assertEquals("/dir.d/fieldbook-sync", SQLiteDatabase.schemaFile("/dir.d/fieldbook", "sync"));
+		assertEquals("/dir/.fieldbook-sync", SQLiteDatabase.schemaFile("/dir/.fieldbook", "sync"));
+	}
+
+	@Test
+	void schemasRefused() {
+		// a database without a file of its own
+		assertThrows(IllegalArgumentException.class, () -> new SQLiteDatabase("jdbc:sqlite::memory:", "sync"));
+		assertThrows(IllegalArgumentException.class, () -> new SQLiteDatabase("jdbc:sqlite:", "sync"));
+		assertThrows(IllegalArgumentException.class, () -> new SQLiteDatabase("jdbc:sqlite:file:x?mode=memory", "sync"));
+		// a name SQLite reserves, one not an identifier, and an empty one
+		assertThrows(IllegalArgumentException.class, () -> new SQLiteDatabase("jdbc:sqlite:/dir/x.db", "main"));
+		assertThrows(IllegalArgumentException.class, () -> new SQLiteDatabase("jdbc:sqlite:/dir/x.db", "sync-ledger"));
+		assertThrows(IllegalArgumentException.class, () -> new SQLiteDatabase("jdbc:sqlite:/dir/x.db", "sync,,fieldbook"));
+	}
+
+	@Test
+	void schemasAttached(@TempDir Path directory) throws SQLException {
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("fieldbook.db") + "?synchronous=EXTRA", "fieldbook, sync");
+		try (Connection connection = database.createConnection(); Statement statement = connection.createStatement()) {
+			statement.execute("create table fieldbook.observation (id integer primary key)");
+			statement.execute("create table sync.row_state (id integer primary key)");
+			// with the main database's journal mode and synchronous setting
+			assertEquals("delete", pragma(statement, "fieldbook.journal_mode"));
+			assertEquals("3", pragma(statement, "sync.synchronous"));
+		}
+		assertTrue(Files.exists(directory.resolve("fieldbook-fieldbook.db")));
+		assertTrue(Files.exists(directory.resolve("fieldbook-sync.db")));
+		// on every connection
+		try (Connection connection = database.createConnection(); Statement statement = connection.createStatement()) {
+			assertEquals(1, statement.executeUpdate("insert into fieldbook.observation values (1)"));
+			assertEquals(1, statement.executeUpdate("insert into sync.row_state values (1)"));
+		}
+	}
+
+	private static String pragma(Statement statement, String pragma) throws SQLException {
+		try (ResultSet resultSet = statement.executeQuery("pragma " + pragma)) {
+			resultSet.next();
+
+			return resultSet.getString(1);
+		}
 	}
 }

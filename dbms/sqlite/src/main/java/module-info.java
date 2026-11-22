@@ -19,7 +19,8 @@
 /**
  * {@link is.codion.common.db.database.DatabaseFactory} implementation for SQLite.
  * <p>
- * {@link is.codion.dbms.sqlite.SQLiteDatabaseFactory}
+ * {@link is.codion.dbms.sqlite.SQLiteDatabaseFactory}, its schemas attached to every connection configured by
+ * {@link is.codion.dbms.sqlite.SQLiteDatabaseFactory#SCHEMAS}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
 @org.jspecify.annotations.NullMarked

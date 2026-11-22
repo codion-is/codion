@@ -218,6 +218,7 @@ dependencyResolutionManagement {
             version("slf4j.api", "2.0.20")
             version("logback", "1.6.7")
             version("h2", "2.5.252")
+            version("sqlite", "3.54.1.0")
             version("json", "20260814")
 
             version("jfreechart", "1.5.6")
@@ -241,6 +242,7 @@ dependencyResolutionManagement {
             library("logback-core", "ch.qos.logback", "logback-core").versionRef("logback")
             library("logback-classic", "ch.qos.logback", "logback-classic").versionRef("logback")
             library("h2", "com.h2database", "h2").versionRef("h2")
+            library("sqlite", "org.xerial", "sqlite-jdbc").versionRef("sqlite")
             library("json", "org.json", "json").versionRef("json")
 
             library("jfreechart", "org.jfree", "jfreechart").versionRef("jfreechart")

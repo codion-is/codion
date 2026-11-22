@@ -20,13 +20,30 @@ package is.codion.dbms.sqlite;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.utilities.property.PropertyValue;
 
+import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Provides sqlite database implementations
  */
 public final class SQLiteDatabaseFactory implements DatabaseFactory {
+
+	/**
+	 * The schemas attached to every connection, a comma separated list of names, each a database file of its own beside
+	 * the main one, named after it and the schema, {@code fieldbook-sync.db} for the schema {@code sync} of
+	 * {@code fieldbook.db}, created where it does not exist. Tables are then named by schema, {@code sync.row_state} for
+	 * example, as on a database with schemas.
+	 * <p>
+	 * A schema is attached with the main database's journal mode and synchronous setting. A transaction writing to
+	 * several files is atomic across them in a rollback journal mode only, not in WAL mode.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null, no schemas attached
+	 * </ul>
+	 */
+	public static final PropertyValue<String> SCHEMAS = stringValue("is.codion.dbms.sqlite.SQLiteDatabaseFactory.schemas");
 
 	private static final String DRIVER_PACKAGE = "org.sqlite";
 
@@ -37,6 +54,6 @@ public final class SQLiteDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public Database create(String url) {
-		return new SQLiteDatabase(url);
+		return new SQLiteDatabase(url, SCHEMAS.get());
 	}
 }

@@ -8,6 +8,8 @@ Codion Change Log
 - AbstractValueSet and AbstractValueList added, public extension bases holding the set or list themselves, every method final, so a set or list value with operations of its own needs to implement nothing.
 ### is.codion.common.model
 - ProgressWorker bug fixed, a worker for a task implementing a handler interface, every asynchronous refresh among them, no longer fails in an application minified by R8, which renamed Handler.onException(), looked up by name to tell whether the task overrides it, the default now telling the worker itself.
+### is.codion.common.db
+- AbstractDatabase.configure(Connection) added, run on every connection created, for a database requiring setup per connection, the connection closed when it fails.
 ### is.codion.swing.common.ui
 - ImagePane bug fixed, a pane used as a cell renderer, its parent a CellRendererPane, now decodes image bytes on the calling thread, where it painted no image, the image decoded in the background after the cell was painted.
 - ImageView added, a display only component fitting image bytes to its size, for cell renderers and thumbnails, the bytes decoded when painted and scaled smoothly, the scaled images kept by their byte array, held weakly, ImageView.ORIENT added, ImagePane sharing its fit.
@@ -22,6 +24,7 @@ Codion Change Log
 - SQLiteDatabase bug fixed, LocalDate, LocalTime and LocalDateTime values now read by parsing the text the driver stores them as, with or without LEGACY_JDBC, where with it reading one failed, the driver's getDate(), getTime() and getTimestamp() parsing its own format only, not the ISO text.
 - SQLiteDatabase now writes LocalDate, LocalTime and LocalDateTime values as text in SQLite's own format, as its date and time functions write them, yyyy-MM-dd, HH:mm:ss and yyyy-MM-dd HH:mm:ss, a fraction of a second following without trailing zeros, where it wrote their toString(), seconds left out when zero and a T before the time, so that values written by SQLite's functions, current_timestamp for example, or by a script, compare with them in conditions.
 - SQLiteDatabase bug fixed, a delete refused by ON DELETE RESTRICT now recognized as a referential integrity error, a ReferentialIntegrityException, where it went unrecognized, the driver reporting it as raised by a trigger, SQLITE_CONSTRAINT_TRIGGER, a delete refused by NO ACTION being reported as SQLITE_CONSTRAINT_FOREIGNKEY.
+- SQLiteDatabaseFactory.SCHEMAS added, the schemas attached to every connection, each a database file of its own beside the main one, fieldbook-sync.db for the schema sync of fieldbook.db, with the main database's journal mode and synchronous setting, so that tables named by schema, sync.row_state for example, work as on a database with schemas.
 ### is.codion.framework.domain
 - Column.Generator.preserving() and Column.Generator.Preserving added, a generator inserting a value the entity holds as it is, the given generator making one where it holds none, a row copied from another database keeping its key.
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.
