@@ -32,6 +32,7 @@ Codion Change Log
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.
 - is.codion.framework.domain now ships an R8 rule keeping the names of the classes declaring a static DomainType field in an application minified by R8, where a domain type named for its class by domainType(Class) was otherwise named for the renamed class, a remote connection then finding no such domain.
 - Column.Generator.identity() bug fixed, the key now read from the one column a driver returns in the generated keys, whatever its name, SQLite's last_insert_rowid() for example, where it was looked up by the column's name, an insert then failing with no such column, by name still where there are several, PostgreSQL returning every column.
+- Column.Generator.uuid() added, a generator making a random UUID before insert, for a database without a function making one, SQLite for example, preserving(uuid()) inserting a value given.
 ### is.codion.framework.db.local
 - LocalEntityConnection bug fixed, an insert now asks for the generated columns by name, in the case the database stores an unquoted name in, where it asked for the generated keys as such, Oracle then returning the row's ROWID, Column.Generator.identity() failing there.
 ### is.codion.framework.db.http

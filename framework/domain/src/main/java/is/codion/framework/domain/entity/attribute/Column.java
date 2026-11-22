@@ -29,6 +29,7 @@ import org.jspecify.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.UUID;
 
 
 /**
@@ -475,6 +476,18 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 */
 		static <T> Generator<T> columnDefault() {
 			return new ColumnDefaultGenerator<>();
+		}
+
+		/**
+		 * Returns a generator making a random UUID, {@link UUID#randomUUID()}, before insert, for a database without a
+		 * function making one, SQLite for example, or where the value is wanted without reading it back.
+		 * Each insert gets a new one, replacing a value the entity holds, as {@link #sequence(String)} does, and
+		 * {@link #preserving(Generator) preserving(uuid())} inserts a value given, as a row copied from another database
+		 * keeping its UUID.
+		 * @return a random UUID generator
+		 */
+		static Generator<UUID> uuid() {
+			return new UuidGenerator();
 		}
 	}
 }
