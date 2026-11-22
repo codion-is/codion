@@ -27,6 +27,9 @@ import org.jspecify.annotations.Nullable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.UUID;
@@ -37,6 +40,9 @@ import java.util.UUID;
 final class SQLiteDatabase extends AbstractDatabase {
 
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
+	private static final GetValue<LocalDate> GET_LOCAL_DATE = new GetLocalDate();
+	private static final GetValue<LocalTime> GET_LOCAL_TIME = new GetLocalTime();
+	private static final GetValue<LocalDateTime> GET_LOCAL_DATE_TIME = new GetLocalDateTime();
 	private static final GetValue<OffsetDateTime> GET_OFFSET_DATE_TIME = new GetOffsetDateTime();
 	private static final GetValue<OffsetTime> GET_OFFSET_TIME = new GetOffsetTime();
 	private static final GetValue<UUID> GET_UUID = new GetUUID();
@@ -85,13 +91,21 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	/**
+	 * Temporal values are parsed from the ISO text the driver stores them as, written via {@code setObject()}, SQLite's
+	 * own format with a space separating the date and time accepted as well, with or without {@link #LEGACY_JDBC}.
 	 * The driver does not support reading {@link OffsetDateTime} and {@link OffsetTime} via {@code getObject(index, type)},
-	 * these are therefore parsed from the ISO text the driver stores them as, SQLite's own format with a space separating
-	 * the date and time accepted as well.
+	 * and its {@code getDate()}, {@code getTime()} and {@code getTimestamp()}, which {@link #LEGACY_JDBC} reads
+	 * {@link LocalDate}, {@link LocalTime} and {@link LocalDateTime} with, parse its own format only, not ISO text.
 	 */
 	@Override
 	public GetValue<?> getter(int sqlType) {
 		switch (sqlType) {
+			case Types.DATE:
+				return GET_LOCAL_DATE;
+			case Types.TIME:
+				return GET_LOCAL_TIME;
+			case Types.TIMESTAMP:
+				return GET_LOCAL_DATE_TIME;
 			case Types.TIMESTAMP_WITH_TIMEZONE:
 				return GET_OFFSET_DATE_TIME;
 			case Types.TIME_WITH_TIMEZONE:
@@ -172,6 +186,36 @@ final class SQLiteDatabase extends AbstractDatabase {
 			String value = resultSet.getString(index);
 
 			return value == null ? null : OffsetDateTime.parse(value.replace(' ', 'T'));
+		}
+	}
+
+	private static final class GetLocalDate implements GetValue<LocalDate> {
+
+		@Override
+		public @Nullable LocalDate get(ResultSet resultSet, int index) throws SQLException {
+			String value = resultSet.getString(index);
+
+			return value == null ? null : LocalDate.parse(value);
+		}
+	}
+
+	private static final class GetLocalTime implements GetValue<LocalTime> {
+
+		@Override
+		public @Nullable LocalTime get(ResultSet resultSet, int index) throws SQLException {
+			String value = resultSet.getString(index);
+
+			return value == null ? null : LocalTime.parse(value);
+		}
+	}
+
+	private static final class GetLocalDateTime implements GetValue<LocalDateTime> {
+
+		@Override
+		public @Nullable LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
+			String value = resultSet.getString(index);
+
+			return value == null ? null : LocalDateTime.parse(value.replace(' ', 'T'));
 		}
 	}
 

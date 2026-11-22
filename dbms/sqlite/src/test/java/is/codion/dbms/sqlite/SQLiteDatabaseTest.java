@@ -31,6 +31,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
@@ -146,5 +149,37 @@ public class SQLiteDatabaseTest {
 						.build();
 		assertEquals(uuid, database.getter(UUID.class).get(resultSet, 1));
 		assertNull(database.getter(UUID.class).get(resultSet, 2));
+	}
+
+	@Test
+	void localValuesParsed() throws SQLException {
+		// the driver's getDate(), getTime() and getTimestamp(), read with LEGACY_JDBC, parse its own format only, not ISO text
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
+		ResultSet resultSet = ProxyBuilder.of(ResultSet.class)
+						.method("getString", int.class, parameters -> {
+							switch ((int) parameters.arguments().get(0)) {
+								case 1:
+									return "2026-09-26";
+								case 2:
+									return "13:45:30.123456";
+								case 3:
+									return "13:45";// the zero seconds omitted by toString()
+								case 4:
+									return "2026-09-26T13:45:30.123456";
+								case 5:
+									return "2026-09-26 13:45:30";// SQLite's own format
+								default:
+									return null;
+							}
+						})
+						.build();
+		assertEquals(LocalDate.of(2026, 9, 26), database.getter(Types.DATE).get(resultSet, 1));
+		assertEquals(LocalTime.of(13, 45, 30, 123_456_000), database.getter(Types.TIME).get(resultSet, 2));
+		assertEquals(LocalTime.of(13, 45), database.getter(Types.TIME).get(resultSet, 3));
+		assertEquals(LocalDateTime.of(2026, 9, 26, 13, 45, 30, 123_456_000), database.getter(Types.TIMESTAMP).get(resultSet, 4));
+		assertEquals(LocalDateTime.of(2026, 9, 26, 13, 45, 30), database.getter(Types.TIMESTAMP).get(resultSet, 5));
+		assertNull(database.getter(Types.DATE).get(resultSet, 6));
+		assertNull(database.getter(Types.TIME).get(resultSet, 6));
+		assertNull(database.getter(Types.TIMESTAMP).get(resultSet, 6));
 	}
 }
