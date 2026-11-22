@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.95
+### is.codion
+- Every module's jar now ships R8 rules, META-INF/proguard, keeping the names of the module's classes in an application minified by R8, an Android release for example, whose message bundles, found by the names of their classes, were otherwise missing, one rule per package of the module's own.
 ### is.codion.common.reactive
 - AbstractValueSet and AbstractValueList added, public extension bases holding the set or list themselves, every method final, so a set or list value with operations of its own needs to implement nothing.
 ### is.codion.common.model
