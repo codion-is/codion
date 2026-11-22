@@ -70,6 +70,9 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final String UNIQUE = "[SQLITE_CONSTRAINT_UNIQUE]";
 	private static final String PRIMARY_KEY = "[SQLITE_CONSTRAINT_PRIMARYKEY]";
 	private static final String FOREIGN_KEY = "[SQLITE_CONSTRAINT_FOREIGNKEY]";
+	// a delete refused by ON DELETE RESTRICT is reported as raised by a trigger
+	private static final String TRIGGER = "[SQLITE_CONSTRAINT_TRIGGER]";
+	private static final String FOREIGN_KEY_FAILED = "(FOREIGN KEY constraint failed)";
 	private static final String NOT_NULL = "[SQLITE_CONSTRAINT_NOTNULL]";
 	private static final String CHECK = "[SQLITE_CONSTRAINT_CHECK]";
 	private static final String BUSY = "[SQLITE_BUSY";// along with its extended codes
@@ -180,7 +183,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 		if (message.startsWith(UNIQUE) || message.startsWith(PRIMARY_KEY)) {
 			return ErrorType.UNIQUE_CONSTRAINT;
 		}
-		if (message.startsWith(FOREIGN_KEY)) {
+		if (message.startsWith(FOREIGN_KEY) || message.startsWith(TRIGGER) && message.endsWith(FOREIGN_KEY_FAILED)) {
 			// which way is not reported
 			return ErrorType.REFERENTIAL_INTEGRITY;
 		}

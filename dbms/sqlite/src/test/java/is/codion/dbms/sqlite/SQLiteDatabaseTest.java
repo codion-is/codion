@@ -93,6 +93,15 @@ public class SQLiteDatabaseTest {
 		assertEquals(message("parent_missing"), database.exception(foreignKey, INSERT).getMessage());
 		assertEquals(message("child_exists"), database.exception(foreignKey, DELETE).getMessage());
 		assertEquals(message("referential_integrity"), database.exception(foreignKey, UPDATE).getMessage());
+		// a delete refused by ON DELETE RESTRICT, as reported by sqlite-jdbc 3.54, raised by a trigger
+		SQLException restrict = new SQLException("[SQLITE_CONSTRAINT_TRIGGER] A RAISE function within a trigger fired, "
+						+ "causing the SQL statement to abort (FOREIGN KEY constraint failed)", null, 19);
+		assertInstanceOf(ReferentialIntegrityException.class, database.exception(restrict, DELETE));
+		assertEquals(message("child_exists"), database.exception(restrict, DELETE).getMessage());
+		// a trigger's own RAISE is not a foreign key failing
+		SQLException raised = new SQLException("[SQLITE_CONSTRAINT_TRIGGER] A RAISE function within a trigger fired, "
+						+ "causing the SQL statement to abort (no deletes on weekends)", null, 19);
+		assertSame(DatabaseException.class, database.exception(raised, DELETE).getClass());
 		assertEquals(message("null_value") + ": name", database.exception(new SQLException(
 						"[SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: parent.name)", null, 19), INSERT).getMessage());
 		assertEquals(message("null_value"), database.exception(new SQLException("[SQLITE_CONSTRAINT_NOTNULL] unexpected", null, 19), INSERT).getMessage());
