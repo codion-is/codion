@@ -49,8 +49,11 @@ final class IdentityGenerator<T> implements Identity<T> {
 			}
 			ColumnDefinition<T> columnDefinition = entity.definition().columns().definition(column);
 			entity.remove(columnDefinition.attribute());
-			// must fetch value by column name, since some databases (PostgreSQL for example), return all columns, not just generated ones
-			entity.set(columnDefinition.attribute(), columnDefinition.get(generatedKeys, database));
+			entity.set(columnDefinition.attribute(), generatedKeys.getMetaData().getColumnCount() == 1 ?
+							// a single column is the key, whatever the driver names it, SQLite's last_insert_rowid() for example
+							columnDefinition.get(generatedKeys, 1, database) :
+							// by name otherwise, since some databases (PostgreSQL for example), return all columns, not just generated ones
+							columnDefinition.get(generatedKeys, database));
 		}
 	}
 }

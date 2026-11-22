@@ -21,6 +21,7 @@ Codion Change Log
 - Column.Generator.preserving() and Column.Generator.Preserving added, a generator inserting a value the entity holds as it is, the given generator making one where it holds none, a row copied from another database keeping its key.
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.
 - is.codion.framework.domain now ships an R8 rule keeping the names of the classes declaring a static DomainType field in an application minified by R8, where a domain type named for its class by domainType(Class) was otherwise named for the renamed class, a remote connection then finding no such domain.
+- Column.Generator.identity() bug fixed, the key now read from the one column a driver returns in the generated keys, whatever its name, SQLite's last_insert_rowid() for example, where it was looked up by the column's name, an insert then failing with no such column, by name still where there are several, PostgreSQL returning every column.
 ### is.codion.framework.db.http
 - JdkHttpTransport now asks for a gzip compressed response, which the EntityService provides when asked, and decompresses it, where java.net.http does neither, a response of entities in JSON a tenth the size.
 - is.codion.framework.db.http now ships an R8 rule not warning of java.net.http, absent on Android, where JdkHttpTransport is never loaded, R8 otherwise refusing to build an application using the module.

@@ -429,6 +429,9 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 *
 		 * Entity.Key key = connection.insert(customer);
 		 * Long generatedId = key.get(Customer.ID); // @end}
+		 * The value is read from the insert's {@link Statement#getGeneratedKeys()}, by the column's name, or the one
+		 * column there is, whatever the driver names it, SQLite's {@code last_insert_rowid()} for an
+		 * {@code INTEGER PRIMARY KEY} for example.
 		 * @param <T> the generated column type
 		 * @return an identity based generated column value generator
 		 * @see Statement#getGeneratedKeys()
