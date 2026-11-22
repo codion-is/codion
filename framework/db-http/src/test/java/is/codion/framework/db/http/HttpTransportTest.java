@@ -25,14 +25,17 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+import java.net.http.HttpClient;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.GZIPOutputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class HttpTransportTest {
@@ -40,6 +43,16 @@ public final class HttpTransportTest {
 	private static final int TIMEOUT = 200;
 	private static final int SERVER_TIMEOUT = 10_000;
 	private static final String[] HEADERS = {"Content-Type", "text/plain"};
+
+	@Test
+	void r8RulesIgnoreHttpClient() throws IOException {
+		//java.net.http is absent on Android, where JdkHttpTransport is never loaded, the module's R8 rules not warning of it
+		String rules;
+		try (InputStream input = HttpTransport.class.getResourceAsStream("/META-INF/proguard/codion-framework-db-http.pro")) {
+			rules = new String(requireNonNull(input).readAllBytes(), UTF_8);
+		}
+		assertTrue(rules.contains("-dontwarn " + HttpClient.class.getPackageName() + ".**\n"));
+	}
 
 	@Test
 	void timeout_jdk() throws IOException {

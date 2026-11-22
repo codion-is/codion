@@ -32,6 +32,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,14 +48,27 @@ import java.util.Random;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityObjectMapperTest {
 
 	private final Entities entities = new TestDomain().entities();
 	private final EntityObjectMapper mapper = new EntityObjectMapper(entities);
+
+	@Test
+	void r8RulesKeepTypeReferences() throws IOException {
+		//Jackson reads a TypeReference's type argument from its subclass's generic signature, kept by the module's R8 rules
+		String rules;
+		try (InputStream input = EntityObjectMapper.class.getResourceAsStream("/META-INF/proguard/codion-framework-json-domain.pro")) {
+			rules = new String(requireNonNull(input).readAllBytes(), UTF_8);
+		}
+		assertTrue(rules.contains("-keep,allowobfuscation,allowshrinking class " + TypeReference.class.getName() + "\n"));
+		assertTrue(rules.contains("-keep,allowobfuscation,allowshrinking class * extends " + TypeReference.class.getName() + "\n"));
+	}
 
 	@Test
 	void entity() throws JsonProcessingException {

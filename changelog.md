@@ -22,6 +22,11 @@ Codion Change Log
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.
 ### is.codion.framework.db.http
 - JdkHttpTransport now asks for a gzip compressed response, which the EntityService provides when asked, and decompresses it, where java.net.http does neither, a response of entities in JSON a tenth the size.
+- is.codion.framework.db.http now ships an R8 rule not warning of java.net.http, absent on Android, where JdkHttpTransport is never loaded, R8 otherwise refusing to build an application using the module.
+### is.codion.framework.json.domain
+- is.codion.framework.json.domain now ships R8 rules keeping Jackson's TypeReference subclasses, EntityObjectMapper's entity and key list references among them, whose generic signatures R8 would otherwise strip in an application it minifies.
+### is.codion.framework.json.db
+- is.codion.framework.json.db now ships R8 rules keeping ErrorEnvelope's Jackson creator and accessors, which R8 would otherwise remove in an application it minifies, an error response then unreadable.
 ### is.codion.framework.model
 - EntityEditor.EditorTasks.insert(), an existing active entity is now inserted as a new row whatever its generators, its generated values left out where unmodified so that the generators make them, a value changed, a key typed in for example, inserted as it is.
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() bug fixed, the columns the foreign key references now selected along with those it includes, where a referenced column other than the primary key was left out, the entity selected setting the foreign key column to null.

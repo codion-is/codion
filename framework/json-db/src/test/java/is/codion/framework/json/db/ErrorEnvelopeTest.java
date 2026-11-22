@@ -19,17 +19,21 @@
 package is.codion.framework.json.db;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.stream;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ErrorEnvelopeTest {
@@ -53,6 +57,21 @@ public final class ErrorEnvelopeTest {
 		assertEquals("DELETE", parsed.detail().get(ErrorEnvelope.OPERATION).asText());
 		assertEquals("CHILD_EXISTS", parsed.errorType());
 		assertEquals("EMP_DEPT_FK", parsed.errorDetail());
+	}
+
+	@Test
+	void r8RulesKeepJacksonMembers() throws IOException {
+		//Jackson finds the creator and the accessors by reflection, the module's R8 rules keeping them by their
+		//annotations, which a rule naming another package or annotation would leave unprotected
+		String rules;
+		try (InputStream input = ErrorEnvelope.class.getResourceAsStream("/META-INF/proguard/codion-framework-json-db.pro")) {
+			rules = new String(requireNonNull(input).readAllBytes(), UTF_8).replaceAll("\\s+", " ");
+		}
+		assertTrue(rules.contains("-keepclassmembers class " + ErrorEnvelope.class.getPackageName() + ".** { "
+						+ "@" + JsonCreator.class.getName() + " <init>(...); "
+						+ "@" + JsonProperty.class.getName() + " <methods>; }"));
+		assertTrue(stream(ErrorEnvelope.class.getConstructors()).anyMatch(constructor -> constructor.isAnnotationPresent(JsonCreator.class)));
+		assertTrue(stream(ErrorEnvelope.class.getMethods()).anyMatch(method -> method.isAnnotationPresent(JsonProperty.class)));
 	}
 
 	@Test
