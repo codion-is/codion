@@ -280,7 +280,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				if (session.transactionOpen) {
 					throw new IllegalStateException("Transaction already open");
 				}
-				verifyOpenConnection();
+				database.startTransaction(verifyOpenConnection());
 				session.transactionOpen = true;
 			}
 			catch (SQLException e) {
@@ -520,6 +520,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		String updateQuery = createUpdateQuery(update, statementColumns, statementValues);
 		synchronized (session) {
 			try (PreparedStatement statement = prepareStatement(updateQuery)) {
+				startIfTransactionIsNotOpen();
 				int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
 				commitIfTransactionIsNotOpen();
 
@@ -543,6 +544,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		String deleteQuery = deleteQuery(entityDefinition.table(), condition.string(entityDefinition));
 		synchronized (session) {
 			try (PreparedStatement statement = prepareStatement(deleteQuery)) {
+				startIfTransactionIsNotOpen();
 				int deleteCount = executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
 				commitIfTransactionIsNotOpen();
 
@@ -576,6 +578,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		String deleteQuery = null;
 		synchronized (session) {
 			try {
+				startIfTransactionIsNotOpen();
 				int deleteCount = 0;
 				for (Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
 					EntityDefinition entityDefinition = definition(entityTypeKeys.getKey());
@@ -1048,6 +1051,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		String insertQuery = null;
 		synchronized (session) {
 			try {
+				startIfTransactionIsNotOpen();
 				for (Entity entity : entities) {
 					EntityDefinition entityDefinition = definition(entity.type());
 					List<ColumnDefinition<?>> generatedColumns = generatedColumns(entityDefinition);
@@ -1164,6 +1168,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		String updateQuery = null;
 		synchronized (session) {
 			try {
+				startIfTransactionIsNotOpen();
 				if (optimisticLocking) {
 					performOptimisticLocking(entitiesByEntityType);
 				}
@@ -1701,6 +1706,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		}
 		finally {
 			session.tracer.exit("rollback", exception);
+		}
+	}
+
+	// a write outside a transaction starts one as a transaction does, SQLite's taking its write lock before anything is read
+	private void startIfTransactionIsNotOpen() throws SQLException {
+		if (!session.transactionOpen) {
+			database.startTransaction(verifyOpenConnection());
 		}
 	}
 

@@ -307,6 +307,16 @@ public interface Database extends ConnectionFactory {
 	default void clientInfo(Connection connection, ClientInfo clientInfo) {}
 
 	/**
+	 * Starts a transaction on a connection, its auto-commit disabled, called by a connection before a transaction is
+	 * started on it and before a write outside of one. The default implementation does nothing, a transaction being open
+	 * whenever auto-commit is disabled.
+	 * @param connection the connection, its auto-commit disabled
+	 * @throws DatabaseException in case the transaction can not be started, another
+	 * writer not finishing in time, for example
+	 */
+	default void startTransaction(Connection connection) {}
+
+	/**
 	 * @return the {@link QueryCounter} for collecting query statistics
 	 */
 	QueryCounter queryCounter();

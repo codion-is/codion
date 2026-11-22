@@ -23,6 +23,7 @@ import is.codion.common.db.database.GetValue;
 import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ErrorType;
+import is.codion.common.db.exception.Operation;
 
 import org.jspecify.annotations.Nullable;
 
@@ -218,6 +219,34 @@ final class SQLiteDatabase extends AbstractDatabase {
 		}
 
 		return super.getter(type);
+	}
+
+	/**
+	 * Begins a transaction taking the write lock at once, {@code BEGIN IMMEDIATE}, ending the empty one the driver begins
+	 * whenever auto-commit is disabled, so that a transaction reading before it writes waits for another writer, within
+	 * the busy timeout, rather than failing or deadlocking. The driver's own commit and rollback end it, beginning its own
+	 * again. Another writer not finishing in time fails it as {@link ErrorType#ROW_LOCKED}.
+	 */
+	@Override
+	public void startTransaction(Connection connection) {
+		try {
+			if (!connection.getAutoCommit()) {
+				try (Statement statement = connection.createStatement()) {
+					statement.execute("commit");
+					try {
+						statement.execute("begin immediate");
+					}
+					catch (SQLException e) {
+						// the driver's own begun again, which it expects open
+						statement.execute("begin");
+						throw e;
+					}
+				}
+			}
+		}
+		catch (SQLException e) {
+			throw exception(e, Operation.OTHER);
+		}
 	}
 
 	@Override

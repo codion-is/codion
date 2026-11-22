@@ -21,6 +21,7 @@ package is.codion.dbms.sqlite;
 import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ErrorType;
 import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
@@ -299,6 +300,57 @@ public class SQLiteDatabaseTest {
 			resultSet.next();
 
 			return resultSet.getString(1);
+		}
+	}
+
+	@Test
+	void startTransaction(@TempDir Path directory) throws Exception {
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("device.db") + "?busy_timeout=5000", "fieldbook, sync");
+		try (Connection first = database.createConnection(); Connection second = database.createConnection();
+				 Statement firstStatement = first.createStatement(); Statement secondStatement = second.createStatement()) {
+			first.setAutoCommit(false);
+			second.setAutoCommit(false);
+			firstStatement.execute("create table fieldbook.area (id integer primary key)");
+			firstStatement.execute("create table sync.row_state (id integer primary key)");
+			first.commit();
+
+			database.startTransaction(first);
+			firstStatement.execute("insert into fieldbook.area values (1)");
+			// the second waits for the first, holding the write lock, to commit
+			long[] started = new long[1];
+			Thread thread = new Thread(() -> {
+				database.startTransaction(second);
+				started[0] = System.nanoTime();
+			});
+			thread.start();
+			Thread.sleep(300);
+			long committed = System.nanoTime();
+			first.commit();
+			thread.join();
+			assertTrue(started[0] >= committed);
+			// reading before it writes, in another file
+			try (ResultSet resultSet = secondStatement.executeQuery("select count(*) from fieldbook.area")) {
+				resultSet.next();
+				assertEquals(1, resultSet.getInt(1));
+			}
+			secondStatement.execute("insert into sync.row_state values (1)");
+			second.commit();
+		}
+		// another writer not finishing in time, the connection left as the driver expects it
+		SQLiteDatabase impatient = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("device.db") + "?busy_timeout=100", "fieldbook, sync");
+		try (Connection first = impatient.createConnection(); Connection second = impatient.createConnection();
+				 Statement firstStatement = first.createStatement(); Statement secondStatement = second.createStatement()) {
+			first.setAutoCommit(false);
+			second.setAutoCommit(false);
+			impatient.startTransaction(first);
+			firstStatement.execute("insert into fieldbook.area values (2)");
+			DatabaseException locked = assertThrows(DatabaseException.class, () -> impatient.startTransaction(second));
+			assertEquals(ErrorType.ROW_LOCKED, locked.errorType().orElse(null));
+			second.rollback();
+			first.commit();
+			impatient.startTransaction(second);
+			secondStatement.execute("insert into fieldbook.area values (3)");
+			second.commit();
 		}
 	}
 }

@@ -11,6 +11,7 @@ Codion Change Log
 ### is.codion.common.db
 - AbstractDatabase.configure(Connection) added, run on every connection created, for a database requiring setup per connection, the connection closed when it fails.
 - AbstractDatabase.InitScripts added, the init scripts of a database, each run once in its life, moved from the H2 module, for a dialect to provide the record of the scripts run and how a script runs.
+- Database.startTransaction(Connection) added, called by a connection before a transaction is started on it and before a write outside of one, doing nothing by default.
 ### is.codion.swing.common.ui
 - ImagePane bug fixed, a pane used as a cell renderer, its parent a CellRendererPane, now decodes image bytes on the calling thread, where it painted no image, the image decoded in the background after the cell was painted.
 - ImageView added, a display only component fitting image bytes to its size, for cell renderers and thumbnails, the bytes decoded when painted and scaled smoothly, the scaled images kept by their byte array, held weakly, ImageView.ORIENT added, ImagePane sharing its fit.
@@ -27,6 +28,7 @@ Codion Change Log
 - SQLiteDatabase bug fixed, a delete refused by ON DELETE RESTRICT now recognized as a referential integrity error, a ReferentialIntegrityException, where it went unrecognized, the driver reporting it as raised by a trigger, SQLITE_CONSTRAINT_TRIGGER, a delete refused by NO ACTION being reported as SQLITE_CONSTRAINT_FOREIGNKEY.
 - SQLiteDatabaseFactory.SCHEMAS added, the schemas attached to every connection, each a database file of its own beside the main one, fieldbook-sync.db for the schema sync of fieldbook.db, with the main database's journal mode and synchronous setting, so that tables named by schema, sync.row_state for example, work as on a database with schemas.
 - SQLiteDatabase now runs the init scripts, Database.INIT_SCRIPTS, of a database in a file, each once in its life, recorded in the main database's codion_init_script, a script and its record in one transaction, SQLite's DDL being transactional, so that a script failing leaves nothing behind, its statements split at the semicolons ending them, SQLiteDatabaseFactory.validateInitScripts() added.
+- SQLiteDatabase now begins a transaction taking the write lock at once, BEGIN IMMEDIATE, so that a transaction reading before it writes waits for another writer, within the busy timeout, rather than failing or deadlocking, another writer not finishing in time failing it as ROW_LOCKED.
 ### is.codion.framework.domain
 - Column.Generator.preserving() and Column.Generator.Preserving added, a generator inserting a value the entity holds as it is, the given generator making one where it holds none, a row copied from another database keeping its key.
 - Column.Generator.columnDefault() added, a generator leaving the column out of the insert so that its default makes the value, a UUID by default random_uuid() for example, a key read back from the generated keys.
@@ -35,6 +37,7 @@ Codion Change Log
 - Column.Generator.uuid() added, a generator making a random UUID before insert, for a database without a function making one, SQLite for example, preserving(uuid()) inserting a value given.
 ### is.codion.framework.db.local
 - LocalEntityConnection bug fixed, an insert now asks for the generated columns by name, in the case the database stores an unquoted name in, where it asked for the generated keys as such, Oracle then returning the row's ROWID, Column.Generator.identity() failing there.
+- LocalEntityConnection now calls Database.startTransaction() when a transaction is started, and before an insert, update or delete outside of one.
 ### is.codion.framework.db.http
 - JdkHttpTransport now asks for a gzip compressed response, which the EntityService provides when asked, and decompresses it, where java.net.http does neither, a response of entities in JSON a tenth the size.
 - is.codion.framework.db.http now ships an R8 rule not warning of java.net.http, absent on Android, where JdkHttpTransport is never loaded, R8 otherwise refusing to build an application using the module.
