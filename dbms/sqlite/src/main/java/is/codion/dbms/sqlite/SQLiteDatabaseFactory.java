@@ -24,6 +24,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.property.PropertyValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -78,6 +80,20 @@ public final class SQLiteDatabaseFactory implements DatabaseFactory {
 	@Override
 	public Database create(String url) {
 		return new SQLiteDatabase(url, SCHEMAS.get(), Text.parseCSV(Database.INIT_SCRIPTS.get()));
+	}
+
+	/**
+	 * Creates a SQLite Database instance with the given schemas and init scripts, rather than those of {@link #SCHEMAS}
+	 * and {@link Database#INIT_SCRIPTS}, which {@link #create(String)} takes.
+	 * @param url the jdbc url
+	 * @param schemas the schemas attached to every connection, as {@link #SCHEMAS} takes them, null for none
+	 * @param initScripts the init scripts, each run once in the database's life, see {@link Database#INIT_SCRIPTS}
+	 * @return a SQLite Database instance
+	 * @throws IllegalArgumentException in case a schema is not a valid name, or schemas are given for a database without a
+	 * file, in memory or temporary
+	 */
+	public static Database database(String url, @Nullable String schemas, String... initScripts) {
+		return new SQLiteDatabase(requireNonNull(url), schemas, asList(requireNonNull(initScripts)));
 	}
 
 	/**

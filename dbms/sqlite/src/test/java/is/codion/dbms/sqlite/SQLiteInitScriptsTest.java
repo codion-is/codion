@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.sqlite;
 
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 
 import org.junit.jupiter.api.Test;
@@ -129,7 +130,7 @@ public final class SQLiteInitScriptsTest {
 	@Test
 	void classpathAndBaseline(@TempDir Path directory) throws Exception {
 		String url = url(directory);
-		SQLiteDatabase database = new SQLiteDatabase(url, "fieldbook, sync", singletonList("classpath:init_scripts/schema.sql"));
+		Database database = SQLiteDatabaseFactory.database(url, "fieldbook, sync", "classpath:init_scripts/schema.sql");
 		assertEquals(List.of("classpath:init_scripts/schema.sql"), recorded(database));
 		assertEquals(List.of("area"), query(database, "select name from fieldbook.sqlite_schema where type = 'table'"));
 		database.close();
@@ -157,11 +158,11 @@ public final class SQLiteInitScriptsTest {
 		return new SQLiteDatabase(url, "fieldbook, sync", paths);
 	}
 
-	private static List<String> recorded(SQLiteDatabase database) throws SQLException {
+	private static List<String> recorded(Database database) throws SQLException {
 		return query(database, "select path from main.codion_init_script order by path");
 	}
 
-	private static List<String> query(SQLiteDatabase database, String query) throws SQLException {
+	private static List<String> query(Database database, String query) throws SQLException {
 		List<String> values = new ArrayList<>();
 		try (Connection connection = database.createConnection(); Statement statement = connection.createStatement();
 				 ResultSet resultSet = statement.executeQuery(query)) {
