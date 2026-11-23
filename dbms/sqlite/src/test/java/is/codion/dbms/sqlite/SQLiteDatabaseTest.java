@@ -228,9 +228,14 @@ public class SQLiteDatabaseTest {
 		set(database, statement, 8, Types.DATE, null);
 		set(database, statement, 9, Types.TIME, null);
 		set(database, statement, 10, Types.TIMESTAMP, null);
+		// to the microsecond, what is past it left out, not rounded
+		set(database, statement, 11, Types.TIME, LocalTime.of(13, 45, 30, 123_456_789));
+		set(database, statement, 12, Types.TIME, LocalTime.of(23, 59, 59, 999_999_999));
+		set(database, statement, 13, Types.TIMESTAMP, LocalDateTime.of(2026, 12, 31, 23, 59, 59, 999_999_500));
 		assertEquals(List.of("1 2026-09-26", "2 13:45:00", "3 13:45:30.5", "4 13:45:30.123456", "5 2026-09-26 13:45:00",
-						"6 2000-01-01 00:00:00.000001", "7 2000-01-01 00:00:00.000000001",
-						"8 null " + Types.DATE, "9 null " + Types.TIME, "10 null " + Types.TIMESTAMP), calls);
+						"6 2000-01-01 00:00:00.000001", "7 2000-01-01 00:00:00",
+						"8 null " + Types.DATE, "9 null " + Types.TIME, "10 null " + Types.TIMESTAMP,
+						"11 13:45:30.123456", "12 23:59:59.999999", "13 2026-12-31 23:59:59.999999"), calls);
 		// and read back as written
 		int[] sqlTypes = {Types.DATE, Types.TIME, Types.TIME, Types.TIME, Types.TIMESTAMP, Types.TIMESTAMP, Types.TIMESTAMP};
 		for (int i = 0; i < sqlTypes.length; i++) {
@@ -239,6 +244,38 @@ public class SQLiteDatabaseTest {
 							.method("getString", int.class, parameters -> text)
 							.build();
 			assertEquals(text, format(database, sqlTypes[i], database.getter(sqlTypes[i]).get(resultSet, 1)));
+		}
+	}
+
+	@Test
+	void offsetValuesWrittenToTheMicrosecond(@TempDir Path directory) throws SQLException {
+		// as the driver stores them, their ISO text, what is past the microsecond left out, as with the local values
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("device.db"));
+		OffsetDateTime dateTime = OffsetDateTime.of(2026, 11, 4, 7, 0, 15, 123_456_789, ZoneOffset.ofHours(1));
+		OffsetTime time = OffsetTime.of(7, 0, 15, 999_999_999, ZoneOffset.UTC);
+		try (Connection connection = database.createConnection(); Statement statement = connection.createStatement()) {
+			statement.execute("create table reading (id integer primary key, taken text, taken_time text)");
+			try (PreparedStatement insert = connection.prepareStatement("insert into reading (id, taken, taken_time) values (?, ?, ?)")) {
+				for (int id = 1; id <= 4; id++) {
+					insert.setInt(1, id);
+					set(database, insert, 2, Types.TIMESTAMP_WITH_TIMEZONE, id == 1 ? dateTime : id == 2 ? dateTime.withNano(500_000_000) : id == 3 ? dateTime.withNano(0).withSecond(0) : null);
+					set(database, insert, 3, Types.TIME_WITH_TIMEZONE, id == 1 ? time : id == 2 ? time.withNano(0) : null);
+					insert.executeUpdate();
+				}
+			}
+			List<String> stored = new ArrayList<>();
+			try (ResultSet resultSet = statement.executeQuery("select taken, taken_time from reading order by id")) {
+				while (resultSet.next()) {
+					stored.add(resultSet.getString(1) + " " + resultSet.getString(2));
+					if (resultSet.getRow() == 1) {
+						// read back as stored
+						assertEquals(dateTime.withNano(123_456_000), database.getter(Types.TIMESTAMP_WITH_TIMEZONE).get(resultSet, 1));
+						assertEquals(time.withNano(999_999_000), database.getter(Types.TIME_WITH_TIMEZONE).get(resultSet, 2));
+					}
+				}
+			}
+			assertEquals(List.of("2026-11-04T07:00:15.123456+01:00 07:00:15.999999Z", "2026-11-04T07:00:15.500+01:00 07:00:15Z",
+							"2026-11-04T07:00+01:00 null", "null null"), stored);
 		}
 	}
 

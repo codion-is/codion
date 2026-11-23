@@ -67,6 +67,15 @@ import static java.util.Objects.requireNonNull;
  * connections read while it writes, however much, a large one taking that much memory, where SQLite would otherwise
  * write the database file once its page cache, 2 MB by default, is full, locking readers out until the transaction ends.
  * <p>
+ * A date or time is stored as text, a column of SQLite's having no such type: {@code LocalDate}, {@code LocalTime} and
+ * {@code LocalDateTime} values in SQLite's own format, as its date and time functions write them, {@code yyyy-MM-dd},
+ * {@code HH:mm:ss} and {@code yyyy-MM-dd HH:mm:ss}, a fraction of a second following where there is one, which a script
+ * writes its literals in, for conditions to compare them, and {@code OffsetDateTime} and {@code OffsetTime} values as
+ * their ISO text. A time is written to the microsecond, what is past it left out, where a column without a precision
+ * would keep every digit a value has, nine from a clock counting nanoseconds, a database with a precision, a server
+ * the database is synced with say, keeping six by default, the two then differing. A value written to a database
+ * keeping fewer digits still, a time without a fraction for example, is the application's to shorten.
+ * <p>
  * A decimal is stored as SQLite's {@code NUMERIC} affinity has it, in a column declared {@code DECIMAL} or
  * {@code NUMERIC} for example: a whole number as an integer, exactly within the range of a {@code long}, and a number
  * with a fraction as a double, which keeps 15 significant digits, a value with more possibly read back changed. A column

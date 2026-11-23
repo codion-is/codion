@@ -47,6 +47,7 @@ import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.emptyList;
@@ -67,19 +69,23 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final InitScripts INIT_SCRIPTS = new SQLiteInitScripts(false);
 
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
-	// SQLite's own format, as its date and time functions write it, a fraction of a second only where there is one
+	// SQLite's own format, as its date and time functions write it, a fraction of a second only where there is one,
+	// to the microsecond, what is past it left out
+	private static final int FRACTION_DIGITS = 6;
 	private static final DateTimeFormatter TIME_FORMAT = new DateTimeFormatterBuilder()
 					.appendPattern("HH:mm:ss")
-					.appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+					.appendFraction(ChronoField.NANO_OF_SECOND, 0, FRACTION_DIGITS, true)
 					.toFormatter();
 	private static final DateTimeFormatter DATE_TIME_FORMAT = new DateTimeFormatterBuilder()
 					.append(DateTimeFormatter.ISO_LOCAL_DATE)
 					.appendLiteral(' ')
 					.append(TIME_FORMAT)
 					.toFormatter();
-	private static final SetValue<LocalDate> SET_LOCAL_DATE = new SetTemporal<>(Types.DATE, DateTimeFormatter.ISO_LOCAL_DATE);
-	private static final SetValue<LocalTime> SET_LOCAL_TIME = new SetTemporal<>(Types.TIME, TIME_FORMAT);
-	private static final SetValue<LocalDateTime> SET_LOCAL_DATE_TIME = new SetTemporal<>(Types.TIMESTAMP, DATE_TIME_FORMAT);
+	private static final SetValue<LocalDate> SET_LOCAL_DATE = new SetTemporal<>(Types.DATE, DateTimeFormatter.ISO_LOCAL_DATE, date -> date);
+	private static final SetValue<LocalTime> SET_LOCAL_TIME = new SetTemporal<>(Types.TIME, TIME_FORMAT,
+					time -> time.truncatedTo(ChronoUnit.MICROS));
+	private static final SetValue<LocalDateTime> SET_LOCAL_DATE_TIME = new SetTemporal<>(Types.TIMESTAMP, DATE_TIME_FORMAT,
+					dateTime -> dateTime.truncatedTo(ChronoUnit.MICROS));
 	private static final GetValue<LocalDate> GET_LOCAL_DATE = new GetLocalDate();
 	private static final GetValue<LocalTime> GET_LOCAL_TIME = new GetLocalTime();
 	private static final GetValue<LocalDateTime> GET_LOCAL_DATE_TIME = new GetLocalDateTime();
@@ -196,6 +202,11 @@ final class SQLiteDatabase extends AbstractDatabase {
 	 * trailing zeros. A value is then always the same text, which orders as the values do, so that conditions,
 	 * comparing the text in SQL, compare the values, those written by SQLite's functions or in a script in the same
 	 * format included.
+	 * <p>
+	 * A time is written to the microsecond, what is past it left out, {@link OffsetDateTime} and {@link OffsetTime}
+	 * values, which the driver stores as their ISO text, included: a column of SQLite's has no precision, so that a value
+	 * would otherwise be stored with every digit it has, nine from a clock counting nanoseconds, where a database with a
+	 * precision, a server the database is synced with say, keeps six, the two then differing.
 	 */
 	@Override
 	public SetValue<?> setter(int sqlType) {
@@ -206,6 +217,10 @@ final class SQLiteDatabase extends AbstractDatabase {
 				return SET_LOCAL_TIME;
 			case Types.TIMESTAMP:
 				return SET_LOCAL_DATE_TIME;
+			case Types.TIMESTAMP_WITH_TIMEZONE:
+				return new SetOffsetDateTime((SetValue<OffsetDateTime>) super.setter(sqlType));
+			case Types.TIME_WITH_TIMEZONE:
+				return new SetOffsetTime((SetValue<OffsetTime>) super.setter(sqlType));
 			default:
 				return super.setter(sqlType);
 		}
@@ -588,10 +603,14 @@ final class SQLiteDatabase extends AbstractDatabase {
 
 		private final int sqlType;
 		private final DateTimeFormatter formatter;
+		// what the format leaves out removed first, a value with nothing but that past the second otherwise written
+		// with a fraction of zeros, unlike the same value without
+		private final UnaryOperator<T> truncate;
 
-		private SetTemporal(int sqlType, DateTimeFormatter formatter) {
+		private SetTemporal(int sqlType, DateTimeFormatter formatter, UnaryOperator<T> truncate) {
 			this.sqlType = sqlType;
 			this.formatter = formatter;
+			this.truncate = truncate;
 		}
 
 		@Override
@@ -600,8 +619,38 @@ final class SQLiteDatabase extends AbstractDatabase {
 				statement.setNull(index, sqlType);
 			}
 			else {
-				statement.setString(index, formatter.format(value));
+				statement.setString(index, formatter.format(truncate.apply(value)));
 			}
+		}
+	}
+
+	// As the driver stores it, to the microsecond
+	private static final class SetOffsetDateTime implements SetValue<OffsetDateTime> {
+
+		private final SetValue<OffsetDateTime> setter;
+
+		private SetOffsetDateTime(SetValue<OffsetDateTime> setter) {
+			this.setter = setter;
+		}
+
+		@Override
+		public void set(PreparedStatement statement, int index, @Nullable OffsetDateTime value) throws SQLException {
+			setter.set(statement, index, value == null ? null : value.truncatedTo(ChronoUnit.MICROS));
+		}
+	}
+
+	// As the driver stores it, to the microsecond
+	private static final class SetOffsetTime implements SetValue<OffsetTime> {
+
+		private final SetValue<OffsetTime> setter;
+
+		private SetOffsetTime(SetValue<OffsetTime> setter) {
+			this.setter = setter;
+		}
+
+		@Override
+		public void set(PreparedStatement statement, int index, @Nullable OffsetTime value) throws SQLException {
+			setter.set(statement, index, value == null ? null : value.truncatedTo(ChronoUnit.MICROS));
 		}
 	}
 
