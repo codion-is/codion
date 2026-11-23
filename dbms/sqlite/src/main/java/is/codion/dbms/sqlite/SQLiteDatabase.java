@@ -504,10 +504,18 @@ final class SQLiteDatabase extends AbstractDatabase {
 		}
 
 		// The statements one by one, the driver running only the first of several, in the transaction recording the
-		// script, SQLite's DDL included, so a script failing leaves nothing behind
+		// script, SQLite's DDL included, so a script failing leaves nothing behind. A script beginning or ending a
+		// transaction is refused before any of it runs, its commit otherwise ending the one recording it
 		@Override
 		protected void run(Statement statement, String scriptPath, String script) throws SQLException {
-			for (String sql : Statements.split(script)) {
+			List<String> statements;
+			try {
+				statements = Statements.split(script);
+			}
+			catch (IllegalArgumentException e) {
+				throw new SQLException(e.getMessage(), e);
+			}
+			for (String sql : statements) {
 				statement.execute(sql);
 			}
 		}

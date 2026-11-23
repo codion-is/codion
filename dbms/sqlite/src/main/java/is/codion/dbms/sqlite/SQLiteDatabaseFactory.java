@@ -48,7 +48,9 @@ import static java.util.Objects.requireNonNull;
  * within quotes, comments and a trigger's body left alone, a trigger ending with {@code END} and a semicolon. A
  * {@code CASE} expression in a trigger's body, its {@code END} followed by a semicolon, ends the trigger early. A statement
  * that can not run in a transaction, {@code ATTACH} or {@code VACUUM}, or has no effect in one, {@code PRAGMA foreign_keys},
- * does not belong in a script.
+ * does not belong in a script. A script holding a statement beginning or ending a transaction, {@code BEGIN},
+ * {@code COMMIT}, {@code END} or {@code ROLLBACK}, as one written for another database may end with, is refused, none of
+ * it run; a savepoint, and a rollback to one, are within the script's transaction.
  * <p>
  * A transaction takes the database's write lock as it starts, {@code BEGIN IMMEDIATE}, as does a write outside of one,
  * waiting for another writer within the connection's busy timeout, so that one reading before it writes can not fail

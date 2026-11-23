@@ -128,6 +128,35 @@ public final class SQLiteInitScriptsTest {
 	}
 
 	@Test
+	void transactionStatementRefused(@TempDir Path directory) throws Exception {
+		Path schema = script(directory, "schema.sql", SCHEMA);
+		String url = url(directory);
+		// a script ending its own transaction, as one written for another database may: refused before any of it runs,
+		// where its commit left what came before it committed and the rest outside the transaction recording the script
+		for (String statement : asList("commit", "end", "rollback", "begin")) {
+			Path committing = script(directory, "committing.sql", "create table fieldbook.observation (id integer primary key);\n" +
+							statement + ";\n" +
+							"create table fieldbook.visit (id integer primary key);\n");
+			DatabaseException exception = assertThrows(DatabaseException.class, () -> database(url, schema, committing));
+			assertTrue(exception.getMessage().startsWith("Init script " + path(committing) + " failed: "), exception.getMessage());
+			assertTrue(exception.getMessage().toLowerCase().contains(statement), exception.getMessage());
+			SQLiteDatabase database = database(url, schema);
+			assertEquals(List.of(path(schema)), recorded(database));
+			assertEquals(List.of(), query(database, "select name from fieldbook.sqlite_schema where name in ('observation', 'visit')"));
+			database.close();
+		}
+		// a savepoint is within the script's transaction
+		Path savepoint = script(directory, "savepoint.sql", "savepoint added;\n" +
+						"insert into fieldbook.area (name) values ('Askja');\n" +
+						"rollback to added;\n" +
+						"insert into fieldbook.area (name) values ('Hekla');\n" +
+						"release added;\n");
+		SQLiteDatabase database = database(url, schema, savepoint);
+		assertEquals(List.of("Hekla"), query(database, "select name from fieldbook.area"));
+		database.close();
+	}
+
+	@Test
 	void classpathAndBaseline(@TempDir Path directory) throws Exception {
 		String url = url(directory);
 		Database database = SQLiteDatabaseFactory.database(url, "fieldbook, sync", "classpath:init_scripts/schema.sql");

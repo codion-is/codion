@@ -35,6 +35,10 @@ final class Statements {
 	private static final String TEMPORARY = "TEMPORARY";
 	private static final String BEGIN = "BEGIN";
 	private static final String END = "END";
+	private static final String COMMIT = "COMMIT";
+	private static final String ROLLBACK = "ROLLBACK";
+	private static final String TRANSACTION = "TRANSACTION";
+	private static final String TO = "TO";
 
 	private final String script;
 	private final List<String> statements = new ArrayList<>();
@@ -54,8 +58,13 @@ final class Statements {
 	 * Splits a script into its statements, at the semicolons ending them, those within quotes, comments or a trigger's
 	 * body left alone, a trigger ending with {@code END} and a semicolon. A statement of comments alone is left out.
 	 * A {@code CASE} expression in a trigger's body, its {@code END} followed by a semicolon, ends the trigger early.
+	 * <p>
+	 * A script runs in a transaction of its own, the one recording it, so a statement beginning or ending a transaction,
+	 * {@code BEGIN}, {@code COMMIT}, {@code END} or {@code ROLLBACK}, is refused, a savepoint, and a rollback to one,
+	 * being within the transaction.
 	 * @param script the script
 	 * @return the statements
+	 * @throws IllegalArgumentException in case a statement begins or ends a transaction
 	 */
 	static List<String> split(String script) {
 		return new Statements(script).split();
@@ -128,6 +137,7 @@ final class Statements {
 
 	private void addStatement() {
 		if (content) {
+			refuseTransaction();
 			statements.add(statement.toString().trim());
 		}
 		statement.setLength(0);
@@ -135,6 +145,23 @@ final class Statements {
 		content = false;
 		body = false;
 		lastWord = null;
+	}
+
+	// By the statement's first word, the comments before it aside
+	private void refuseTransaction() {
+		if (!words.isEmpty()) {
+			String first = words.get(0);
+			if (first.equals(BEGIN) || first.equals(COMMIT) || first.equals(END) || first.equals(ROLLBACK) && !rollbackToSavepoint()) {
+				throw new IllegalArgumentException(first + " begins or ends a transaction, which a statement of a script may not, " +
+								"the script running in a transaction of its own");
+			}
+		}
+	}
+
+	// ROLLBACK [TRANSACTION] TO
+	private boolean rollbackToSavepoint() {
+		return words.size() > 1 && (words.get(1).equals(TO) ||
+						words.size() > 2 && words.get(1).equals(TRANSACTION) && words.get(2).equals(TO));
 	}
 
 	private boolean trigger() {

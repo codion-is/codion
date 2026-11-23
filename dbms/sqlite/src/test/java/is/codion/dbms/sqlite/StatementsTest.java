@@ -24,6 +24,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class StatementsTest {
 
@@ -57,5 +58,21 @@ public final class StatementsTest {
 		assertEquals(List.of(temporary, "select 1"), Statements.split(temporary + "; select 1;"));
 		// begin and end as words of a statement other than a trigger
 		assertEquals(List.of("select 'begin' as begin_at", "select 1"), Statements.split("select 'begin' as begin_at; select 1;"));
+	}
+
+	@Test
+	void transactionStatementsRefused() {
+		// a statement beginning or ending a transaction, whatever its case or the comments before it
+		for (String statement : new String[] {"begin", "BEGIN TRANSACTION", "begin immediate", "commit", "Commit Transaction",
+						"end", "end transaction", "rollback", "rollback transaction", "-- done\ncommit", "/* done */ COMMIT"}) {
+			assertThrows(IllegalArgumentException.class, () -> Statements.split("create table a (id integer);\n" + statement + ";\nselect 1;"), statement);
+		}
+		// a savepoint is within the transaction, as rolling back to one is
+		List<String> savepoint = List.of("savepoint s", "insert into a values (1)", "rollback to s",
+						"rollback transaction to savepoint s", "release s");
+		assertEquals(savepoint, Statements.split(String.join(";\n", savepoint) + ";"));
+		// a trigger's begin and end are its own, as is a commit elsewhere than at the start
+		assertEquals(List.of("create trigger a_b after insert on a begin select 1; end", "select 'commit' as commit_at"),
+						Statements.split("create trigger a_b after insert on a begin select 1; end; select 'commit' as commit_at;"));
 	}
 }
