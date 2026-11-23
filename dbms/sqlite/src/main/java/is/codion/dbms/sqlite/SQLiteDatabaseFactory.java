@@ -45,6 +45,11 @@ import static java.util.Objects.requireNonNull;
  * {@code CASE} expression in a trigger's body, its {@code END} followed by a semicolon, ends the trigger early. A statement
  * that can not run in a transaction, {@code ATTACH} or {@code VACUUM}, or has no effect in one, {@code PRAGMA foreign_keys},
  * does not belong in a script.
+ * <p>
+ * A decimal is stored as SQLite's {@code NUMERIC} affinity has it, in a column declared {@code DECIMAL} or
+ * {@code NUMERIC} for example: a whole number as an integer, exactly within the range of a {@code long}, and a number
+ * with a fraction as a double, which keeps 15 significant digits, a value with more possibly read back changed. A column
+ * declared {@code TEXT} keeps a decimal exactly, but compares and orders it as text in SQL, {@code 10} before {@code 9}.
  */
 public final class SQLiteDatabaseFactory implements DatabaseFactory {
 
