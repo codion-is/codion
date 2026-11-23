@@ -149,6 +149,27 @@ public final class SQLiteInitScriptsTest {
 		database.close();
 	}
 
+	@Test
+	void emptyFilesAreANewDatabase(@TempDir Path directory) throws Exception {
+		Path schema = script(directory, "schema.sql", SCHEMA);
+		Path seed = script(directory, "seed.sql", "insert into fieldbook.area (name) values ('Hekla');");
+		String url = url(directory);
+		// a first start killed before it committed anything: the files created by the driver, as the connection was opened
+		// and the schemas attached, and nothing in them
+		try (Connection connection = DriverManager.getConnection(url); Statement statement = connection.createStatement()) {
+			statement.execute("attach database '" + directory.resolve("device-fieldbook.db") + "' as fieldbook");
+			statement.execute("attach database '" + directory.resolve("device-sync.db") + "' as sync");
+		}
+		for (String file : asList("device.db", "device-fieldbook.db", "device-sync.db")) {
+			assertEquals(0, Files.size(directory.resolve(file)));
+		}
+		// not an existing database without the record of its scripts, which records them as run, running none
+		SQLiteDatabase database = database(url, schema, seed);
+		assertEquals(List.of(path(schema), path(seed)), recorded(database));
+		assertEquals(List.of("Hekla"), query(database, "select name from fieldbook.area"));
+		database.close();
+	}
+
 	private static SQLiteDatabase database(String url, Path... scripts) {
 		List<String> paths = new ArrayList<>();
 		for (Path script : scripts) {

@@ -360,10 +360,36 @@ final class SQLiteDatabase extends AbstractDatabase {
 		String mainFile = mainFile(url());
 		boolean existing = mainFile != null && Files.exists(Paths.get(mainFile));
 		try (Connection connection = createConnection()) {
-			INIT_SCRIPTS.run(connection, scriptPaths, existing);
+			// a database whose files hold nothing is a new one: a first start killed before it committed anything leaves
+			// them behind, empty, the driver creating a file as it opens or attaches it
+			INIT_SCRIPTS.run(connection, scriptPaths, existing && !empty(connection));
 		}
 		catch (SQLException e) {
 			throw new DatabaseException(e);
+		}
+	}
+
+	/**
+	 * @param connection the connection, its schemas attached
+	 * @return true if neither the main database nor any attached to it holds a table, or anything else
+	 */
+	private static boolean empty(Connection connection) throws SQLException {
+		try (Statement statement = connection.createStatement()) {
+			List<String> databases = new ArrayList<>();
+			try (ResultSet resultSet = statement.executeQuery("PRAGMA database_list")) {
+				while (resultSet.next()) {
+					databases.add(resultSet.getString("name"));
+				}
+			}
+			for (String database : databases) {
+				try (ResultSet resultSet = statement.executeQuery("select 1 from " + database + ".sqlite_schema limit 1")) {
+					if (resultSet.next()) {
+						return false;
+					}
+				}
+			}
+
+			return true;
 		}
 	}
 

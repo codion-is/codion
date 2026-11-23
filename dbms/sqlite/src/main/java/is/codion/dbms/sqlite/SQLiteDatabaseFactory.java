@@ -40,6 +40,8 @@ import static java.util.Objects.requireNonNull;
  * created for it, once per JVM until the database is closed, its schemas attached, see {@link #SCHEMAS}. They are
  * recorded in the table {@code codion_init_script} of the main database. {@link #validateInitScripts(Connection, String...)}
  * tells whether a database would be refused, without opening it, for a copy of a database, say.
+ * A database whose files hold nothing, neither the main one nor a schema's, is a new one, running every script, not an
+ * existing one without the record: a first start killed before it committed anything leaves such files behind.
  * <p>
  * A script runs in the transaction recording it, SQLite's DDL being transactional, so a script that fails leaves nothing
  * behind. Its statements, the driver running only the first of several, are split at the semicolons ending them, those
