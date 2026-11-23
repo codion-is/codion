@@ -39,17 +39,20 @@ final class CaseFunctions {
 	private CaseFunctions() {}
 
 	/**
-	 * Registers the functions on the given connection, the driver's own or one wrapping it, any other left as it is.
+	 * Registers the functions on the given connection, the driver's own or one wrapping it.
 	 * @param connection the connection
-	 * @throws SQLException in case a function can not be registered
+	 * @throws SQLException in case a function can not be registered, the connection being neither the driver's nor
+	 * wrapping it, for example
 	 */
 	static void register(Connection connection) throws SQLException {
-		if (connection.isWrapperFor(SQLiteConnection.class)) {
-			SQLiteConnection sqliteConnection = connection.unwrap(SQLiteConnection.class);
-			// deterministic, as SQLite's own are, so usable where those are
-			Function.create(sqliteConnection, UPPER, new Upper(), 1, Function.FLAG_DETERMINISTIC);
-			Function.create(sqliteConnection, LOWER, new Lower(), 1, Function.FLAG_DETERMINISTIC);
+		if (!connection.isWrapperFor(SQLiteConnection.class)) {
+			throw new SQLException("Not a connection of the SQLite driver's, nor wrapping one, so upper() and lower() " +
+							"can not be registered on it: " + connection.getClass().getName());
 		}
+		SQLiteConnection sqliteConnection = connection.unwrap(SQLiteConnection.class);
+		// deterministic, as SQLite's own are, so usable where those are
+		Function.create(sqliteConnection, UPPER, new Upper(), 1, Function.FLAG_DETERMINISTIC);
+		Function.create(sqliteConnection, LOWER, new Lower(), 1, Function.FLAG_DETERMINISTIC);
 	}
 
 	// The argument as text, as SQLite's own take it, null for null, the case by the root locale, whatever the default

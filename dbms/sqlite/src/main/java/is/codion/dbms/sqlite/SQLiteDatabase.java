@@ -322,6 +322,8 @@ final class SQLiteDatabase extends AbstractDatabase {
 	 * Makes {@code LIKE} case-sensitive, {@code PRAGMA case_sensitive_like = on}, where SQLite's ignores the case of an
 	 * ASCII letter, and registers {@code upper()} and {@code lower()} as Java has them, where SQLite's change the
 	 * letters of ASCII alone, so that conditions compare text as on other databases, see {@link CaseFunctions}.
+	 * A connection the functions can not be registered on is refused: one neither the driver's nor wrapping it, and any
+	 * where the driver's classes are not accessible to this module, on the class path with this module on the module path.
 	 * <p>
 	 * Keeps a transaction's changes in memory until it commits, {@code PRAGMA cache_spill = off}: one changing more than
 	 * the page cache holds, 2 MB by default, otherwise makes room by writing the database file, taking its exclusive lock,
@@ -331,14 +333,15 @@ final class SQLiteDatabase extends AbstractDatabase {
 	 * Attaches the schemas, see {@link SQLiteDatabaseFactory#SCHEMAS}, with the main database's journal mode and
 	 * synchronous setting, refusing a main database in WAL mode, in which a transaction writing several of the files is
 	 * not atomic across them, a crash committing it in some and not in others.
-	 * @throws IllegalStateException in case schemas are to be attached to a database in WAL mode
+	 * @throws IllegalStateException in case schemas are to be attached to a database in WAL mode, or the driver's classes
+	 * are not accessible to this module
 	 */
 	@Override
 	protected void configure(Connection connection) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			// before the functions are registered, being without effect after
 			statement.execute("PRAGMA case_sensitive_like = on");
-			CaseFunctions.register(connection);
+			registerCaseFunctions(connection);
 			statement.execute("PRAGMA cache_spill = off");
 			if (!schemas.isEmpty()) {
 				String journalMode = pragma(statement, "main.journal_mode");
@@ -353,6 +356,20 @@ final class SQLiteDatabase extends AbstractDatabase {
 					statement.execute("PRAGMA " + schema.name + ".synchronous = " + synchronous);
 				}
 			}
+		}
+	}
+
+	// The driver's classes are not this module's to read with this module on the module path and the driver on the class
+	// path: refused, saying so, rather than left with SQLite's own functions, conditions then meaning one thing on one
+	// installation and another on the next
+	private void registerCaseFunctions(Connection connection) throws SQLException {
+		try {
+			CaseFunctions.register(connection);
+		}
+		catch (LinkageError e) {
+			throw new IllegalStateException("The SQLite driver's classes are not accessible to the SQLite dialect, which registers " +
+							"upper() and lower() by them: with the dialect on the module path the driver belongs there as well, as the module " +
+							"org.xerial.sqlitejdbc, not on the class path: " + url(), e);
 		}
 	}
 

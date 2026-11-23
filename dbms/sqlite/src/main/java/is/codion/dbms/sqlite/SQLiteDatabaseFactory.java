@@ -70,7 +70,10 @@ import static java.util.Objects.requireNonNull;
  * Text is compared as on other databases: {@code upper()} and {@code lower()} are Java's, registered on every
  * connection in place of SQLite's own, which change the letters of ASCII alone, so that a case-insensitive condition
  * finds {@code Þingvellir} by {@code þing%}, and {@code LIKE} is case-sensitive, {@code PRAGMA case_sensitive_like = on},
- * where SQLite's ignores the case of an ASCII letter. A connection made past this dialect, another tool's or the
+ * where SQLite's ignores the case of an ASCII letter. The functions are registered by the driver's own classes, which
+ * this module reads with the driver a module as well, {@code org.xerial.sqlitejdbc}: with this module on the module
+ * path and the driver on the class path a connection is refused, an {@link IllegalStateException} saying so, rather
+ * than made with SQLite's own functions. A connection made past this dialect, another tool's or the
  * driver's own, has SQLite's, so neither {@code upper()}, {@code lower()} nor {@code LIKE} belongs in the database's
  * schema, an index on an expression, a check constraint or a generated column: an index on {@code upper(name)} written
  * by one definition is damaged to the other, {@code PRAGMA integrity_check} reporting its rows missing, and a row

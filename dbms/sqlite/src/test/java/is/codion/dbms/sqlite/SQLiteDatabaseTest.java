@@ -323,6 +323,33 @@ public class SQLiteDatabaseTest {
 		try (Connection connection = database.createConnection()) {
 			caseOfLettersBeyondAscii(connection);
 		}
+		// a connection neither the driver's nor wrapping it, which the functions can not be registered on, is refused,
+		// and closed, rather than left with SQLite's own
+		List<String> closed = new ArrayList<>();
+		database.connectionProvider(new ConnectionProvider() {
+			@Override
+			public Connection connection(String url) throws SQLException {
+				Connection connection = ConnectionProvider.super.connection(url);
+
+				return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class<?>[] {Connection.class}, (proxy, method, arguments) -> {
+					if (method.getName().equals("isWrapperFor")) {
+						return false;
+					}
+					if (method.getName().equals("close")) {
+						closed.add("closed");
+					}
+					try {
+						return method.invoke(connection, arguments);
+					}
+					catch (InvocationTargetException e) {
+						throw e.getCause();
+					}
+				});
+			}
+		});
+		DatabaseException exception = assertThrows(DatabaseException.class, database::createConnection);
+		assertTrue(exception.getMessage().contains("upper() and lower()"), exception.getMessage());
+		assertEquals(List.of("closed"), closed);
 	}
 
 	// As a case-insensitive condition is written, upper() on both sides, and a case-sensitive one
