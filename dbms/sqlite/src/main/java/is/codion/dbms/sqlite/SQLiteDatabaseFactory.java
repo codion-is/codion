@@ -73,7 +73,9 @@ public final class SQLiteDatabaseFactory implements DatabaseFactory {
 	 * example, as on a database with schemas.
 	 * <p>
 	 * A schema is attached with the main database's journal mode and synchronous setting. A transaction writing to
-	 * several files is atomic across them in a rollback journal mode only, not in WAL mode.
+	 * several files is atomic across them in a rollback journal mode only, not in WAL mode, in which a crash commits it
+	 * in some of the files and not in others, so a main database in WAL mode is refused its schemas, creating a
+	 * connection throwing an {@link IllegalStateException}.
 	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null, no schemas attached

@@ -297,6 +297,34 @@ public class SQLiteDatabaseTest {
 	}
 
 	@Test
+	void schemasRefusedInWalMode(@TempDir Path directory) throws SQLException {
+		// by the url
+		SQLiteDatabase wal = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("wal.db") + "?journal_mode=WAL", "fieldbook");
+		IllegalStateException exception = assertThrows(IllegalStateException.class, wal::createConnection);
+		assertTrue(exception.getMessage().contains("WAL"), exception.getMessage());
+		// nothing attached, so no file created for the schema
+		assertFalse(Files.exists(directory.resolve("wal-fieldbook.db")));
+		// by the file, which keeps the mode once set
+		String url = "jdbc:sqlite:" + directory.resolve("kept.db");
+		try (Connection connection = new SQLiteDatabase(url).createConnection(); Statement statement = connection.createStatement()) {
+			assertEquals("wal", pragma(statement, "journal_mode = wal"));
+			statement.execute("create table setting (id integer primary key)");
+		}
+		assertThrows(IllegalStateException.class, () -> new SQLiteDatabase(url, "fieldbook").createConnection());
+		// and with init scripts, which run on a connection
+		assertThrows(IllegalStateException.class, () -> new SQLiteDatabase(url, "fieldbook", asList("classpath:init_scripts/schema.sql")));
+		// without schemas the mode is the application's to choose
+		try (Connection connection = new SQLiteDatabase(url).createConnection(); Statement statement = connection.createStatement()) {
+			assertEquals("wal", pragma(statement, "journal_mode"));
+		}
+		// back in a rollback journal, the schemas attach
+		try (Connection connection = new SQLiteDatabase(url + "?journal_mode=DELETE", "fieldbook").createConnection();
+				 Statement statement = connection.createStatement()) {
+			assertEquals("delete", pragma(statement, "fieldbook.journal_mode"));
+		}
+	}
+
+	@Test
 	void readDuringALargeTransaction(@TempDir Path directory) throws SQLException {
 		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("device.db") + "?busy_timeout=100", "fieldbook");
 		List<String> tables = asList("main.setting", "fieldbook.area");

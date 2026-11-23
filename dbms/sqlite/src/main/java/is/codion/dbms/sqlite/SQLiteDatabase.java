@@ -108,6 +108,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlite:";
 	private static final String FILE_PREFIX = "file:";
+	private static final String WAL = "wal";
 	private static final Pattern SCHEMA_NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
 
 	private final List<Schema> schemas;
@@ -306,7 +307,9 @@ final class SQLiteDatabase extends AbstractDatabase {
 	 * leaves readers alone until it commits.
 	 * <p>
 	 * Attaches the schemas, see {@link SQLiteDatabaseFactory#SCHEMAS}, with the main database's journal mode and
-	 * synchronous setting.
+	 * synchronous setting, refusing a main database in WAL mode, in which a transaction writing several of the files is
+	 * not atomic across them, a crash committing it in some and not in others.
+	 * @throws IllegalStateException in case schemas are to be attached to a database in WAL mode
 	 */
 	@Override
 	protected void configure(Connection connection) throws SQLException {
@@ -314,6 +317,10 @@ final class SQLiteDatabase extends AbstractDatabase {
 			statement.execute("PRAGMA cache_spill = off");
 			if (!schemas.isEmpty()) {
 				String journalMode = pragma(statement, "main.journal_mode");
+				if (WAL.equalsIgnoreCase(journalMode)) {
+					throw new IllegalStateException("Schemas can not be attached to a database in WAL mode, in which a transaction " +
+									"writing several of the files is not atomic across them, use a rollback journal, journal_mode=DELETE: " + url());
+				}
 				String synchronous = pragma(statement, "main.synchronous");
 				for (Schema schema : schemas) {
 					statement.execute("ATTACH DATABASE '" + schema.file.replace("'", "''") + "' AS " + schema.name);
