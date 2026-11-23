@@ -79,6 +79,16 @@ import static java.util.Objects.requireNonNull;
  * by one definition is damaged to the other, {@code PRAGMA integrity_check} reporting its rows missing, and a row
  * written by the other is not found by it.
  * <p>
+ * A key the database generates, one read back by {@code Column.Generator.identity()}, is declared exactly
+ * {@code INTEGER PRIMARY KEY AUTOINCREMENT}: SQLite's row id, which the driver returns for an insert, never handed out
+ * twice. A key of another type, {@code INT} or {@code BIGINT PRIMARY KEY}, is no row id, the driver then returning a
+ * row id the row's own key, left null, does not hold. Without {@code AUTOINCREMENT} the next id is the one after the
+ * highest there is, so the id of the newest row, once that row is deleted, goes to the next row inserted, and an entity
+ * held from before the delete, or a reference to it about to be saved, then names that row, where a database never
+ * handing an id out twice refuses it. An init script replacing a table with such a key, as above, carries over how far
+ * its ids have come, the old table's entry in {@code sqlite_sequence} to the new table's, which otherwise starts after
+ * the highest id it was given.
+ * <p>
  * A date or time is stored as text, a column of SQLite's having no such type: {@code LocalDate}, {@code LocalTime} and
  * {@code LocalDateTime} values in SQLite's own format, as its date and time functions write them, {@code yyyy-MM-dd},
  * {@code HH:mm:ss} and {@code yyyy-MM-dd HH:mm:ss}, a fraction of a second following where there is one, which a script
