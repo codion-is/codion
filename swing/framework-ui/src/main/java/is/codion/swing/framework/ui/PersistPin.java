@@ -120,23 +120,6 @@ final class PersistPin {
 		}
 	}
 
-	private boolean onPin(Point point) {
-		if (label.getIcon() == null) {
-			return false;
-		}
-		Insets insets = label.getInsets();
-		Rectangle view = new Rectangle(insets.left, insets.top,
-						label.getWidth() - insets.left - insets.right, label.getHeight() - insets.top - insets.bottom);
-		Rectangle iconBounds = new Rectangle();
-		SwingUtilities.layoutCompoundLabel(label, label.getFontMetrics(label.getFont()), label.getText(), label.getIcon(),
-						label.getVerticalAlignment(), label.getHorizontalAlignment(),
-						label.getVerticalTextPosition(), label.getHorizontalTextPosition(),
-						view, iconBounds, new Rectangle(), label.getIconTextGap());
-		iconBounds.grow(PIN_HIT_MARGIN, PIN_HIT_MARGIN);
-
-		return iconBounds.contains(point);
-	}
-
 	private final class PinMouseListener extends MouseAdapter {
 
 		@Override
@@ -154,6 +137,23 @@ final class PersistPin {
 		@Override
 		public void mouseExited(MouseEvent event) {
 			label.setCursor(null);
+		}
+
+		private boolean onPin(Point point) {
+			if (label.getIcon() == null) {
+				return false;
+			}
+			Insets insets = label.getInsets();
+			Rectangle view = new Rectangle(insets.left, insets.top,
+							label.getWidth() - insets.left - insets.right, label.getHeight() - insets.top - insets.bottom);
+			Rectangle iconBounds = new Rectangle();
+			SwingUtilities.layoutCompoundLabel(label, label.getFontMetrics(label.getFont()), label.getText(), label.getIcon(),
+							label.getVerticalAlignment(), label.getHorizontalAlignment(),
+							label.getVerticalTextPosition(), label.getHorizontalTextPosition(),
+							view, iconBounds, new Rectangle(), label.getIconTextGap());
+			iconBounds.grow(PIN_HIT_MARGIN, PIN_HIT_MARGIN);
+
+			return iconBounds.contains(point);
 		}
 	}
 

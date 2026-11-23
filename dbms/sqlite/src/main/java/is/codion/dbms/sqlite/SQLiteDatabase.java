@@ -118,6 +118,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final String WAL = "wal";
 	private static final String FOREIGN_KEYS = "foreign_keys";
 	private static final String ON = "1";
+	private static final String PRAGMA = "PRAGMA ";
 	private static final Pattern SCHEMA_NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
 
 	private final List<Schema> schemas;
@@ -352,8 +353,8 @@ final class SQLiteDatabase extends AbstractDatabase {
 				String synchronous = pragma(statement, "main.synchronous");
 				for (Schema schema : schemas) {
 					statement.execute("ATTACH DATABASE '" + schema.file.replace("'", "''") + "' AS " + schema.name);
-					statement.execute("PRAGMA " + schema.name + ".journal_mode = " + journalMode);
-					statement.execute("PRAGMA " + schema.name + ".synchronous = " + synchronous);
+					statement.execute(PRAGMA + schema.name + ".journal_mode = " + journalMode);
+					statement.execute(PRAGMA + schema.name + ".synchronous = " + synchronous);
 				}
 			}
 		}
@@ -431,7 +432,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 			if (!ON.equals(pragma(statement, FOREIGN_KEYS))) {
 				return false;
 			}
-			statement.execute("PRAGMA " + FOREIGN_KEYS + " = off");
+			statement.execute(PRAGMA + FOREIGN_KEYS + " = off");
 
 			return !ON.equals(pragma(statement, FOREIGN_KEYS));
 		}
@@ -488,7 +489,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 		}
 		for (String name : schemas.split(",")) {
 			String schema = name.trim();
-			if (!SCHEMA_NAME.matcher(schema).matches() || schema.equalsIgnoreCase("main") || schema.equalsIgnoreCase("temp")) {
+			if (!SCHEMA_NAME.matcher(schema).matches() || "main".equalsIgnoreCase(schema) || "temp".equalsIgnoreCase(schema)) {
 				throw new IllegalArgumentException("Invalid schema name: '" + schema + "'");
 			}
 			attached.add(new Schema(schema, schemaFile(mainFile, schema)));
@@ -498,7 +499,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	private static String pragma(Statement statement, String pragma) throws SQLException {
-		try (ResultSet resultSet = statement.executeQuery("PRAGMA " + pragma)) {
+		try (ResultSet resultSet = statement.executeQuery(PRAGMA + pragma)) {
 			resultSet.next();
 
 			return resultSet.getString(1);
@@ -611,7 +612,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 			}
 			Set<String> violations = new LinkedHashSet<>();
 			for (String database : databases) {
-				try (ResultSet resultSet = statement.executeQuery("PRAGMA " + database + ".foreign_key_check")) {
+				try (ResultSet resultSet = statement.executeQuery(PRAGMA + database + ".foreign_key_check")) {
 					while (resultSet.next()) {
 						violations.add(database + "." + resultSet.getString(1) + " row " + resultSet.getString(2) +
 										" referencing " + resultSet.getString(3));
