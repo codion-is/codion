@@ -18,6 +18,7 @@
  */
 package is.codion.dbms.sqlite;
 
+import is.codion.common.db.database.ConnectionProvider;
 import is.codion.common.db.database.Database.Lock;
 import is.codion.common.db.database.SetValue;
 import is.codion.common.db.exception.DatabaseException;
@@ -30,6 +31,8 @@ import is.codion.common.utilities.proxy.ProxyBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -291,6 +294,71 @@ public class SQLiteDatabaseTest {
 		set(database, statement, 1, sqlType, value);
 
 		return written.get(0);
+	}
+
+	@Test
+	void caseOfLettersBeyondAscii(@TempDir Path directory) throws SQLException {
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("device.db"));
+		try (Connection connection = database.createConnection(); Statement statement = connection.createStatement()) {
+			statement.execute("create table area (name text)");
+			statement.execute("insert into area values ('Heath'), ('heiði'), ('Þingvellir'), ('þórsmörk'), ('Ásbyrgi'), (null)");
+			caseOfLettersBeyondAscii(connection);
+		}
+		// a connection a connection provider wraps
+		database.connectionProvider(new ConnectionProvider() {
+			@Override
+			public Connection connection(String url) throws SQLException {
+				Connection connection = ConnectionProvider.super.connection(url);
+
+				return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class<?>[] {Connection.class}, (proxy, method, arguments) -> {
+					try {
+						return method.invoke(connection, arguments);
+					}
+					catch (InvocationTargetException e) {
+						throw e.getCause();
+					}
+				});
+			}
+		});
+		try (Connection connection = database.createConnection()) {
+			caseOfLettersBeyondAscii(connection);
+		}
+	}
+
+	// As a case-insensitive condition is written, upper() on both sides, and a case-sensitive one
+	private static void caseOfLettersBeyondAscii(Connection connection) throws SQLException {
+		assertEquals(List.of("Þingvellir", "þórsmörk"), names(connection, "upper(name) like upper(?)", "þ%"));
+		assertEquals(List.of("Ásbyrgi"), names(connection, "upper(name) like upper(?)", "ás%"));
+		assertEquals(List.of("Þingvellir"), names(connection, "upper(name) = upper(?)", "þingvellir"));
+		assertEquals(List.of("Þingvellir"), names(connection, "lower(name) = lower(?)", "ÞINGVELLIR"));
+		assertEquals(List.of("Heath", "heiði"), names(connection, "upper(name) like upper(?)", "h%"));
+		// case-sensitive, the case of an ASCII letter included, which SQLite's LIKE otherwise ignores
+		assertEquals(List.of("heiði"), names(connection, "name like ?", "h%"));
+		assertEquals(List.of("Heath"), names(connection, "name like ?", "H%"));
+		assertEquals(List.of("þórsmörk"), names(connection, "name like ?", "þ%"));
+		// null, and a value not text, as SQLite's own have them
+		try (Statement statement = connection.createStatement();
+				 ResultSet resultSet = statement.executeQuery("select upper(null), lower(null), upper(12), lower(1.5)")) {
+			resultSet.next();
+			assertNull(resultSet.getString(1));
+			assertNull(resultSet.getString(2));
+			assertEquals("12", resultSet.getString(3));
+			assertEquals("1.5", resultSet.getString(4));
+		}
+	}
+
+	private static List<String> names(Connection connection, String condition, String value) throws SQLException {
+		List<String> names = new ArrayList<>();
+		try (PreparedStatement statement = connection.prepareStatement("select name from area where " + condition + " order by name")) {
+			statement.setString(1, value);
+			try (ResultSet resultSet = statement.executeQuery()) {
+				while (resultSet.next()) {
+					names.add(resultSet.getString(1));
+				}
+			}
+		}
+
+		return names;
 	}
 
 	@Test

@@ -319,6 +319,10 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	/**
+	 * Makes {@code LIKE} case-sensitive, {@code PRAGMA case_sensitive_like = on}, where SQLite's ignores the case of an
+	 * ASCII letter, and registers {@code upper()} and {@code lower()} as Java has them, where SQLite's change the
+	 * letters of ASCII alone, so that conditions compare text as on other databases, see {@link CaseFunctions}.
+	 * <p>
 	 * Keeps a transaction's changes in memory until it commits, {@code PRAGMA cache_spill = off}: one changing more than
 	 * the page cache holds, 2 MB by default, otherwise makes room by writing the database file, taking its exclusive lock,
 	 * which it keeps until it ends, so that no other connection reads the file meanwhile, where one fitting the cache
@@ -332,6 +336,9 @@ final class SQLiteDatabase extends AbstractDatabase {
 	@Override
 	protected void configure(Connection connection) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
+			// before the functions are registered, being without effect after
+			statement.execute("PRAGMA case_sensitive_like = on");
+			CaseFunctions.register(connection);
 			statement.execute("PRAGMA cache_spill = off");
 			if (!schemas.isEmpty()) {
 				String journalMode = pragma(statement, "main.journal_mode");

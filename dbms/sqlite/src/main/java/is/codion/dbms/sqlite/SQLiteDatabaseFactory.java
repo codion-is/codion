@@ -67,6 +67,15 @@ import static java.util.Objects.requireNonNull;
  * connections read while it writes, however much, a large one taking that much memory, where SQLite would otherwise
  * write the database file once its page cache, 2 MB by default, is full, locking readers out until the transaction ends.
  * <p>
+ * Text is compared as on other databases: {@code upper()} and {@code lower()} are Java's, registered on every
+ * connection in place of SQLite's own, which change the letters of ASCII alone, so that a case-insensitive condition
+ * finds {@code Þingvellir} by {@code þing%}, and {@code LIKE} is case-sensitive, {@code PRAGMA case_sensitive_like = on},
+ * where SQLite's ignores the case of an ASCII letter. A connection made past this dialect, another tool's or the
+ * driver's own, has SQLite's, so neither {@code upper()}, {@code lower()} nor {@code LIKE} belongs in the database's
+ * schema, an index on an expression, a check constraint or a generated column: an index on {@code upper(name)} written
+ * by one definition is damaged to the other, {@code PRAGMA integrity_check} reporting its rows missing, and a row
+ * written by the other is not found by it.
+ * <p>
  * A date or time is stored as text, a column of SQLite's having no such type: {@code LocalDate}, {@code LocalTime} and
  * {@code LocalDateTime} values in SQLite's own format, as its date and time functions write them, {@code yyyy-MM-dd},
  * {@code HH:mm:ss} and {@code yyyy-MM-dd HH:mm:ss}, a fraction of a second following where there is one, which a script

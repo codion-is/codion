@@ -26,6 +26,7 @@
 @org.jspecify.annotations.NullMarked
 module is.codion.dbms.sqlite {
 	requires transitive is.codion.common.db;
+	requires static org.xerial.sqlitejdbc;
 
 	exports is.codion.dbms.sqlite;
 
