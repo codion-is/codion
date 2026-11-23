@@ -50,6 +50,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -63,7 +64,7 @@ import static java.util.Collections.emptyList;
 final class SQLiteDatabase extends AbstractDatabase {
 
 	private static final Set<String> INITIALIZED_DATABASES = new HashSet<>();
-	private static final InitScripts INIT_SCRIPTS = new SQLiteInitScripts();
+	private static final InitScripts INIT_SCRIPTS = new SQLiteInitScripts(false);
 
 	private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
 	// SQLite's own format, as its date and time functions write it, a fraction of a second only where there is one
@@ -109,6 +110,8 @@ final class SQLiteDatabase extends AbstractDatabase {
 	private static final String JDBC_URL_PREFIX = "jdbc:sqlite:";
 	private static final String FILE_PREFIX = "file:";
 	private static final String WAL = "wal";
+	private static final String FOREIGN_KEYS = "foreign_keys";
+	private static final String ON = "1";
 	private static final Pattern SCHEMA_NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
 
 	private final List<Schema> schemas;
@@ -369,10 +372,29 @@ final class SQLiteDatabase extends AbstractDatabase {
 		try (Connection connection = createConnection()) {
 			// a database whose files hold nothing is a new one: a first start killed before it committed anything leaves
 			// them behind, empty, the driver creating a file as it opens or attaches it
-			INIT_SCRIPTS.run(connection, scriptPaths, existing && !empty(connection));
+			// the foreign keys, where enforced, off while the scripts run, each script's checked before it is committed
+			new SQLiteInitScripts(foreignKeysOff(connection)).run(connection, scriptPaths, existing && !empty(connection));
 		}
 		catch (SQLException e) {
 			throw new DatabaseException(e);
+		}
+	}
+
+	/**
+	 * Turns the enforcing of foreign keys off on a connection enforcing them, so that a script can replace a table other
+	 * tables reference, as SQLite documents a change of a table {@code ALTER TABLE} can not make, which is refused while
+	 * they are enforced, and they can not be turned off within the transaction a script runs in.
+	 * @param connection the connection running the init scripts, not in a transaction
+	 * @return true if the foreign keys were enforced and no longer are
+	 */
+	private static boolean foreignKeysOff(Connection connection) throws SQLException {
+		try (Statement statement = connection.createStatement()) {
+			if (!ON.equals(pragma(statement, FOREIGN_KEYS))) {
+				return false;
+			}
+			statement.execute("PRAGMA " + FOREIGN_KEYS + " = off");
+
+			return !ON.equals(pragma(statement, FOREIGN_KEYS));
 		}
 	}
 
@@ -466,8 +488,12 @@ final class SQLiteDatabase extends AbstractDatabase {
 						"select 1 from main.sqlite_schema where type = 'table' and name = 'codion_init_script'";
 		private static final String CLASSPATH_PREFIX = "classpath:";
 
-		private SQLiteInitScripts() {
+		// true where the scripts run with the enforcing of foreign keys turned off, each then checked before it is committed
+		private final boolean checkForeignKeys;
+
+		private SQLiteInitScripts(boolean checkForeignKeys) {
 			super("main.codion_init_script");
+			this.checkForeignKeys = checkForeignKeys;
 		}
 
 		private static List<String> sanitized(List<String> scriptPaths) {
@@ -522,9 +548,39 @@ final class SQLiteDatabase extends AbstractDatabase {
 			catch (IllegalArgumentException e) {
 				throw new SQLException(e.getMessage(), e);
 			}
+			// the rows referencing none from before, written while the foreign keys were not enforced, are not the script's
+			Set<String> violationsBefore = checkForeignKeys ? foreignKeyViolations(statement) : new HashSet<>();
 			for (String sql : statements) {
 				statement.execute(sql);
 			}
+			if (checkForeignKeys) {
+				Set<String> violations = foreignKeyViolations(statement);
+				violations.removeAll(violationsBefore);
+				if (!violations.isEmpty()) {
+					throw new SQLException("FOREIGN KEY constraint failed, a row left referencing none: " + String.join(", ", violations));
+				}
+			}
+		}
+
+		// The rows referencing a row that does not exist, in the main database and those attached, by PRAGMA foreign_key_check
+		private static Set<String> foreignKeyViolations(Statement statement) throws SQLException {
+			List<String> databases = new ArrayList<>();
+			try (ResultSet resultSet = statement.executeQuery("PRAGMA database_list")) {
+				while (resultSet.next()) {
+					databases.add(resultSet.getString("name"));
+				}
+			}
+			Set<String> violations = new LinkedHashSet<>();
+			for (String database : databases) {
+				try (ResultSet resultSet = statement.executeQuery("PRAGMA " + database + ".foreign_key_check")) {
+					while (resultSet.next()) {
+						violations.add(database + "." + resultSet.getString(1) + " row " + resultSet.getString(2) +
+										" referencing " + resultSet.getString(3));
+					}
+				}
+			}
+
+			return violations;
 		}
 	}
 

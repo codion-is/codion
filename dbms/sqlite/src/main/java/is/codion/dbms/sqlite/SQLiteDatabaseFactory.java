@@ -52,6 +52,14 @@ import static java.util.Objects.requireNonNull;
  * {@code COMMIT}, {@code END} or {@code ROLLBACK}, as one written for another database may end with, is refused, none of
  * it run; a savepoint, and a rollback to one, are within the script's transaction.
  * <p>
+ * The scripts of a database whose connections enforce foreign keys, {@code foreign_keys=true} in its URL, run with the
+ * foreign keys not enforced, so that a script can replace a table other tables reference, as SQLite documents a change
+ * {@code ALTER TABLE} can not make: a new table created and filled, the old one dropped and the new one renamed, which
+ * is refused while they are enforced, and they can not be turned off within a transaction. Each script's foreign keys
+ * are checked before it is committed, {@code PRAGMA foreign_key_check}, and a script leaving a row referencing none is
+ * refused, nothing of it left. A delete in a script therefore neither cascades nor sets null, an action of a foreign key
+ * being part of its enforcing.
+ * <p>
  * A transaction takes the database's write lock as it starts, {@code BEGIN IMMEDIATE}, as does a write outside of one,
  * waiting for another writer within the connection's busy timeout, so that one reading before it writes can not fail
  * for another having written meanwhile; a transaction that only reads waits for a writer as well. A transaction's

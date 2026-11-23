@@ -157,6 +157,64 @@ public final class SQLiteInitScriptsTest {
 	}
 
 	@Test
+	void referencedTableReplaced(@TempDir Path directory) throws Exception {
+		Path schema = script(directory, "schema.sql", "create table fieldbook.area (id integer primary key, name text not null);\n" +
+						"create table fieldbook.visit (id integer primary key, area_id integer not null references area (id) on delete restrict);\n" +
+						"insert into fieldbook.area (id, name) values (1, 'Hekla');\n" +
+						"insert into fieldbook.visit (id, area_id) values (1, 1);");
+		String url = url(directory) + "?foreign_keys=true";
+		database(url, schema).close();
+		// a table other rows reference replaced, as SQLite documents a change ALTER TABLE can not make, which a connection
+		// enforcing foreign keys refuses, in a transaction, where they can not be turned off
+		Path replace = script(directory, "replace.sql", "create table fieldbook.area_new (id integer primary key, name text not null, code text);\n" +
+						"insert into fieldbook.area_new (id, name) select id, name from fieldbook.area;\n" +
+						"drop table fieldbook.area;\n" +
+						"alter table fieldbook.area_new rename to area;");
+		SQLiteDatabase database = database(url, schema, replace);
+		assertEquals(List.of("id", "name", "code"), query(database, "select name from fieldbook.pragma_table_info('area')"));
+		// the row referencing it kept, its foreign key as it was, and enforced on the database's connections
+		assertEquals(List.of("1"), query(database, "select area_id from fieldbook.visit"));
+		assertEquals(List.of("area RESTRICT"), query(database, "select \"table\" || ' ' || on_delete from fieldbook.pragma_foreign_key_list('visit')"));
+		assertEquals(List.of("1"), query(database, "pragma foreign_keys"));
+		assertThrows(SQLException.class, () -> query(database, "insert into fieldbook.visit (id, area_id) values (2, 99) returning id"));
+		assertThrows(SQLException.class, () -> query(database, "delete from fieldbook.area where id = 1 returning id"));
+		database.close();
+
+		// a script leaving a row without the one it references is refused, nothing of it left
+		Path orphaning = script(directory, "orphaning.sql", "create table fieldbook.observation (id integer primary key);\n" +
+						"insert into fieldbook.visit (id, area_id) values (3, 99);");
+		DatabaseException exception = assertThrows(DatabaseException.class, () -> database(url, schema, replace, orphaning));
+		assertTrue(exception.getMessage().startsWith("Init script " + path(orphaning) + " failed: "), exception.getMessage());
+		assertTrue(exception.getMessage().contains("visit"), exception.getMessage());
+		SQLiteDatabase after = database(url, schema, replace);
+		assertEquals(List.of(path(replace), path(schema)), recorded(after));
+		assertEquals(List.of(), query(after, "select name from fieldbook.sqlite_schema where name = 'observation'"));
+		assertEquals(List.of("1"), query(after, "select id from fieldbook.visit"));
+		after.close();
+
+		// a row without its parent from before, written past the foreign keys, is not the script's
+		try (Connection connection = DriverManager.getConnection(url(directory)); Statement statement = connection.createStatement()) {
+			statement.execute("attach database '" + directory.resolve("device-fieldbook.db") + "' as fieldbook");
+			statement.execute("insert into fieldbook.visit (id, area_id) values (4, 98)");
+		}
+		Path added = script(directory, "added.sql", "create table fieldbook.observation (id integer primary key);");
+		SQLiteDatabase before = database(url, schema, replace, added);
+		assertEquals(3, recorded(before).size());
+		before.close();
+	}
+
+	@Test
+	void foreignKeysNotEnforcedNotChecked(@TempDir Path directory) throws Exception {
+		// a database whose connections do not enforce foreign keys has its scripts run as they are
+		Path schema = script(directory, "schema.sql", "create table fieldbook.area (id integer primary key);\n" +
+						"create table fieldbook.visit (id integer primary key, area_id integer not null references area (id));\n" +
+						"insert into fieldbook.visit (id, area_id) values (1, 99);");
+		SQLiteDatabase database = database(url(directory), schema);
+		assertEquals(List.of("99"), query(database, "select area_id from fieldbook.visit"));
+		database.close();
+	}
+
+	@Test
 	void classpathAndBaseline(@TempDir Path directory) throws Exception {
 		String url = url(directory);
 		Database database = SQLiteDatabaseFactory.database(url, "fieldbook, sync", "classpath:init_scripts/schema.sql");
