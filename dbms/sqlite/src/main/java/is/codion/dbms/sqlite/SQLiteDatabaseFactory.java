@@ -48,6 +48,13 @@ import static java.util.Objects.requireNonNull;
  * that can not run in a transaction, {@code ATTACH} or {@code VACUUM}, or has no effect in one, {@code PRAGMA foreign_keys},
  * does not belong in a script.
  * <p>
+ * A transaction takes the database's write lock as it starts, {@code BEGIN IMMEDIATE}, as does a write outside of one,
+ * waiting for another writer within the connection's busy timeout, so that one reading before it writes can not fail
+ * for another having written meanwhile; a transaction that only reads waits for a writer as well. A transaction's
+ * changes are kept in memory until it commits, {@code PRAGMA cache_spill = off} on every connection, so that other
+ * connections read while it writes, however much, a large one taking that much memory, where SQLite would otherwise
+ * write the database file once its page cache, 2 MB by default, is full, locking readers out until the transaction ends.
+ * <p>
  * A decimal is stored as SQLite's {@code NUMERIC} affinity has it, in a column declared {@code DECIMAL} or
  * {@code NUMERIC} for example: a whole number as an integer, exactly within the range of a {@code long}, and a number
  * with a fraction as a double, which keeps 15 significant digits, a value with more possibly read back changed. A column

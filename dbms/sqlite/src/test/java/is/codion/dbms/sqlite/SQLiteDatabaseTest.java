@@ -51,6 +51,7 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 
 import static is.codion.common.db.exception.Operation.*;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLiteDatabaseTest {
@@ -292,6 +293,42 @@ public class SQLiteDatabaseTest {
 		try (Connection connection = database.createConnection(); Statement statement = connection.createStatement()) {
 			assertEquals(1, statement.executeUpdate("insert into fieldbook.observation values (1)"));
 			assertEquals(1, statement.executeUpdate("insert into sync.row_state values (1)"));
+		}
+	}
+
+	@Test
+	void readDuringALargeTransaction(@TempDir Path directory) throws SQLException {
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("device.db") + "?busy_timeout=100", "fieldbook");
+		List<String> tables = asList("main.setting", "fieldbook.area");
+		try (Connection writer = database.createConnection(); Connection reader = database.createConnection();
+				 Statement write = writer.createStatement(); Statement read = reader.createStatement()) {
+			for (String table : tables) {
+				write.execute("create table " + table + " (id integer primary key, name text)");
+			}
+			writer.setAutoCommit(false);
+			database.startTransaction(writer);
+			// 8 MB in each file, four times what SQLite's page cache holds by default, which it would otherwise make room
+			// for by writing the file, under its exclusive lock, kept until the transaction ends
+			for (String table : tables) {
+				write.execute("with recursive x(n) as (select 1 union all select n + 1 from x where n < 8000) " +
+								"insert into " + table + " (name) select printf('%1000s', n) from x");
+			}
+			// a reader on another connection is not locked out, and sees the transaction once it is committed
+			for (String table : tables) {
+				assertEquals("0", query(read, "select count(*) from " + table));
+			}
+			writer.commit();
+			for (String table : tables) {
+				assertEquals("8000", query(read, "select count(*) from " + table));
+			}
+		}
+	}
+
+	private static String query(Statement statement, String query) throws SQLException {
+		try (ResultSet resultSet = statement.executeQuery(query)) {
+			resultSet.next();
+
+			return resultSet.getString(1);
 		}
 	}
 

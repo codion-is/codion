@@ -300,13 +300,19 @@ final class SQLiteDatabase extends AbstractDatabase {
 	}
 
 	/**
+	 * Keeps a transaction's changes in memory until it commits, {@code PRAGMA cache_spill = off}: one changing more than
+	 * the page cache holds, 2 MB by default, otherwise makes room by writing the database file, taking its exclusive lock,
+	 * which it keeps until it ends, so that no other connection reads the file meanwhile, where one fitting the cache
+	 * leaves readers alone until it commits.
+	 * <p>
 	 * Attaches the schemas, see {@link SQLiteDatabaseFactory#SCHEMAS}, with the main database's journal mode and
 	 * synchronous setting.
 	 */
 	@Override
 	protected void configure(Connection connection) throws SQLException {
-		if (!schemas.isEmpty()) {
-			try (Statement statement = connection.createStatement()) {
+		try (Statement statement = connection.createStatement()) {
+			statement.execute("PRAGMA cache_spill = off");
+			if (!schemas.isEmpty()) {
 				String journalMode = pragma(statement, "main.journal_mode");
 				String synchronous = pragma(statement, "main.synchronous");
 				for (Schema schema : schemas) {
