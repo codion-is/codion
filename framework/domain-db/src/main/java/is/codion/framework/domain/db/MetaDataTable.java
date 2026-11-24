@@ -175,7 +175,7 @@ final class MetaDataTable {
 		private static List<MetaDataForeignKeyColumn> foreignKeyColumns(MetaDataSchema schema, DatabaseMetaData metaData,
 																																		String tableName) throws SQLException {
 			try (ResultSet resultSet = metaData.getImportedKeys(schema.catalog(), schema.schemaPattern(), tableName)) {
-				return new ForeignKeyColumnPacker().pack(resultSet);
+				return new ForeignKeyColumnPacker(schema).pack(resultSet);
 			}
 		}
 

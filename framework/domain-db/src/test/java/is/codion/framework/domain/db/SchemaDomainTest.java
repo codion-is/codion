@@ -35,8 +35,12 @@ import is.codion.framework.domain.test.AbstractEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -186,6 +190,28 @@ public final class SchemaDomainTest {
 			column(upperCaseOccurrence, "REMARKS");
 			column(upperCaseOccurrence, "verbatimLocality");
 			assertEquals("datasetID_FK", foreignKey(upperCaseOccurrence, "GBIF.DATASET").attribute().name());
+		}
+	}
+
+	@Test
+	void sqlite(@TempDir Path directory) throws Exception {
+		// SQLite has neither schemas nor catalogs, its driver reporting neither for the table a foreign key references
+		try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("library.db"));
+				 Statement statement = connection.createStatement()) {
+			statement.execute("create table artist (id integer primary key autoincrement, name text not null)");
+			statement.execute("create table album (id integer primary key autoincrement, " +
+							"artist_id integer not null references artist (id), title text not null)");
+			// the referenced column left out, the primary key
+			statement.execute("create table track (id integer primary key autoincrement, " +
+							"album_id integer not null references album (id), artist_id integer references artist, title text not null)");
+			SchemaDomain library = SchemaDomain.schemaDomain(connection.getMetaData(), MetaDataSchema.NO_SCHEMA.name());
+
+			EntityDefinition album = library.entities().definition("album");
+			assertEquals("album", album.table());
+			assertEquals("artist_id_fk", foreignKey(album, "artist").attribute().name());
+			EntityDefinition track = library.entities().definition("track");
+			assertEquals("album_id_fk", foreignKey(track, "album").attribute().name());
+			assertEquals("artist_id_fk", foreignKey(track, "artist").attribute().name());
 		}
 	}
 

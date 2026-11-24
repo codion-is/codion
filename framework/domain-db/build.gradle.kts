@@ -6,4 +6,5 @@ dependencies {
     testImplementation(project(":codion-framework-domain-test"))
     testRuntimeOnly(project(":codion-dbms-h2"))
     testRuntimeOnly(libs.h2)
+    testRuntimeOnly(libs.sqlite)
 }

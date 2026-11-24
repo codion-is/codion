@@ -75,23 +75,35 @@ final class MetaDataForeignKeyColumn {
 
 	static final class ForeignKeyColumnPacker implements ResultPacker<MetaDataForeignKeyColumn> {
 
+		private final MetaDataSchema schema;
+
+		/**
+		 * @param schema the schema of the table whose foreign keys are packed
+		 */
+		ForeignKeyColumnPacker(MetaDataSchema schema) {
+			this.schema = schema;
+		}
+
 		@Override
 		public MetaDataForeignKeyColumn get(ResultSet resultSet) throws SQLException {
-			String pktableSchem = resultSet.getString("PKTABLE_SCHEM");
-			if (pktableSchem == null) {
-				pktableSchem = resultSet.getString("PKTABLE_CAT");
-			}
-			String fktableSchem = resultSet.getString("FKTABLE_SCHEM");
-			if (fktableSchem == null) {
-				fktableSchem = resultSet.getString("FKTABLE_CAT");
-			}
-			return new MetaDataForeignKeyColumn(pktableSchem,
+			return new MetaDataForeignKeyColumn(schemaName(resultSet, "PKTABLE_SCHEM", "PKTABLE_CAT"),
 							resultSet.getString("PKTABLE_NAME"),
 							resultSet.getString("PKCOLUMN_NAME"),
 							resultSet.getString("FKTABLE_NAME"),
-							fktableSchem,
+							schemaName(resultSet, "FKTABLE_SCHEM", "FKTABLE_CAT"),
 							resultSet.getString("FKCOLUMN_NAME"),
 							resultSet.getInt("KEY_SEQ"));
+		}
+
+		// the catalog for a database reporting catalogs instead of schemas, MySQL and MariaDB, and the schema of the
+		// table itself for a database reporting neither, SQLite, a foreign key there referencing a table in its own
+		private String schemaName(ResultSet resultSet, String schemaColumn, String catalogColumn) throws SQLException {
+			String schemaName = resultSet.getString(schemaColumn);
+			if (schemaName == null) {
+				schemaName = resultSet.getString(catalogColumn);
+			}
+
+			return schemaName == null ? schema.name() : schemaName;
 		}
 	}
 }
