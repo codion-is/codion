@@ -28,6 +28,8 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -52,6 +54,11 @@ import static java.util.stream.Collectors.*;
  * {@link is.codion.framework.domain.entity.EntityDefinition} per table and foreign keys derived
  * from the schema's referential constraints. The basis for the domain generator tooling.
  * For instances use the available factory methods.
+ * <p>
+ * The domain is named after the schema. A database reporting neither schemas nor catalogs, SQLite, has its tables in the
+ * schema {@code NO_SCHEMA}, the domain then named after the database file, without its extension, {@code library} for
+ * {@code jdbc:sqlite:/data/library.db}, a character not valid in a java name replaced by an underscore, or after the
+ * schema for a database without a file, in memory or temporary.
  * @see #schemaDomain(DatabaseMetaData, String)
  * @see #schemaDomain(DatabaseMetaData, String, SchemaSettings)
  */
@@ -65,17 +72,17 @@ public final class SchemaDomain extends DomainModel {
 	private final Identifiers identifiers;
 
 	private SchemaDomain(DatabaseMetaData metaData, String schemaName, SchemaSettings settings) throws SQLException {
-		this(metaData, schemaName, settings, new Identifiers(metaData, settings.lowerCaseIdentifiers()));
+		this(metaData, new MetaDataModel(metaData, schemaName).schema(), settings,
+						new Identifiers(metaData, settings.lowerCaseIdentifiers()));
 	}
 
-	private SchemaDomain(DatabaseMetaData metaData, String schemaName, SchemaSettings settings,
+	private SchemaDomain(DatabaseMetaData metaData, MetaDataSchema schema, SchemaSettings settings,
 											 Identifiers identifiers) throws SQLException {
-		super(domainType(identifiers.name(schemaName)));
+		super(domainType(domainName(metaData, schema, identifiers)));
 		this.settings = settings;
 		this.identifiers = identifiers;
 		validateForeignKeys(false);
-		new MetaDataModel(metaData, schemaName)
-						.schema().tables().values().forEach(this::defineEntity);
+		schema.tables().values().forEach(this::defineEntity);
 	}
 
 	/**
@@ -328,6 +335,45 @@ public final class SchemaDomain extends DomainModel {
 	private static String removePrefix(String name, String prefix) {
 		return name.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT)) ?
 						name.substring(prefix.length()) : name;
+	}
+
+	// the schema name, or for a database without schemas the name of its file, see databaseName()
+	private static String domainName(DatabaseMetaData metaData, MetaDataSchema schema, Identifiers identifiers) throws SQLException {
+		if (schema.none()) {
+			String url = metaData.getURL();
+			String databaseName = url == null ? null : databaseName(url);
+			if (databaseName != null) {
+				return databaseName;
+			}
+		}
+
+		return identifiers.name(schema.name());
+	}
+
+	/**
+	 * @param url the database url
+	 * @return the name of the database file, without its extension and any parameters, a character not valid in a java
+	 * name replaced by an underscore, {@code jdbc:sqlite:/data/fieldbook-sync.db?mode=ro} being {@code fieldbook_sync},
+	 * null for a database without a file, in memory or temporary, or a name not starting as a java name does
+	 */
+	static @Nullable String databaseName(String url) {
+		String path = url;
+		int parameters = path.indexOf('?');
+		if (parameters >= 0) {
+			path = path.substring(0, parameters);
+		}
+		String name = path.substring(Math.max(path.lastIndexOf(':'), Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'))) + 1);
+		int extension = name.lastIndexOf('.');
+		if (extension > 0) {
+			name = name.substring(0, extension);
+		}
+		if (name.isEmpty() || !Character.isJavaIdentifierStart(name.charAt(0))) {
+			return null;
+		}
+		StringBuilder builder = new StringBuilder(name.length());
+		name.chars().forEach(character -> builder.append(Character.isJavaIdentifierPart(character) ? (char) character : '_'));
+
+		return builder.toString();
 	}
 
 	/**

@@ -205,6 +205,8 @@ public final class SchemaDomainTest {
 			statement.execute("create table track (id integer primary key autoincrement, " +
 							"album_id integer not null references album (id), artist_id integer references artist, title text not null)");
 			SchemaDomain library = SchemaDomain.schemaDomain(connection.getMetaData(), MetaDataSchema.NO_SCHEMA.name());
+			// named after the database file
+			assertEquals("library", library.type().name());
 
 			EntityDefinition album = library.entities().definition("album");
 			assertEquals("album", album.table());
@@ -213,6 +215,23 @@ public final class SchemaDomainTest {
 			assertEquals("album_id_fk", foreignKey(track, "album").attribute().name());
 			assertEquals("artist_id_fk", foreignKey(track, "artist").attribute().name());
 		}
+	}
+
+	@Test
+	void databaseName() {
+		assertEquals("library", SchemaDomain.databaseName("jdbc:sqlite:/data/library.db"));
+		assertEquals("library", SchemaDomain.databaseName("jdbc:sqlite:library.db"));
+		assertEquals("library", SchemaDomain.databaseName("jdbc:sqlite:C:\\data\\library.db"));
+		assertEquals("library", SchemaDomain.databaseName("jdbc:sqlite:/data/library"));
+		assertEquals("MusicLibrary", SchemaDomain.databaseName("jdbc:sqlite:/data/MusicLibrary.sqlite3?journal_mode=WAL"));
+		// not valid in a java name
+		assertEquals("fieldbook_sync", SchemaDomain.databaseName("jdbc:sqlite:file:/data/fieldbook-sync.db?mode=ro"));
+		// in memory or temporary
+		assertNull(SchemaDomain.databaseName("jdbc:sqlite::memory:"));
+		assertNull(SchemaDomain.databaseName("jdbc:sqlite:file::memory:?cache=shared"));
+		assertNull(SchemaDomain.databaseName("jdbc:sqlite:"));
+		// not starting as a java name
+		assertNull(SchemaDomain.databaseName("jdbc:sqlite:/data/2024.db"));
 	}
 
 	private static ForeignKeyDefinition foreignKey(EntityDefinition definition, String referencedType) {
