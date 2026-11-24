@@ -64,7 +64,7 @@ final class MetaDataModel {
 			}
 		}
 		if (schemas.isEmpty()) {
-			schemas.put(MetaDataSchema.NO_SCHEMA.name(), MetaDataSchema.NO_SCHEMA);
+			schemas.put(MetaDataSchema.NO_SCHEMA, MetaDataSchema.noSchema());
 		}
 
 		return schemas;

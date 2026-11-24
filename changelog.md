@@ -8,6 +8,7 @@ Codion Change Log
 - SchemaDomain bug fixed, a foreign key on a database without schemas or catalogs, SQLite, now references a table in the schema of its own, where it failed with a NullPointerException, the driver reporting neither for the table referenced.
 - SchemaDomain, a database without schemas or catalogs, SQLite, now has its domain named after the database file, library for jdbc:sqlite:/data/library.db, where it was named after the placeholder schema, NO_SCHEMA, the generated domain class then NoSchema.
 - SchemaDomain, a SQLite text column without a declared length no longer has a maximum length, where it had one of 2,000,000,000, the size the driver reports for a column without a declared one.
+- SchemaDomain bug fixed, each database without schemas or catalogs, SQLite, now has its tables in a schema of its own, where all shared a single one, reading one database replacing the tables of another read at the same time.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, a column or foreign key named type now has its constant prefixed by the name of its entity, PROGRESS_TYPE, where its constant TYPE collided with the entity type's own, the source not compiling.
 - DomainSource bug fixed, entities are now ordered by the longest chain of foreign keys from each, by table within the same, so that an entity follows the ones it references, where a larger domain could have an entity added before one it references, the domain failing to load.

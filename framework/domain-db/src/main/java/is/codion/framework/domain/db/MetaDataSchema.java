@@ -36,10 +36,14 @@ import static java.util.stream.Collectors.toMap;
 
 final class MetaDataSchema {
 
-	static final MetaDataSchema NO_SCHEMA = new MetaDataSchema("NO_SCHEMA", false);
+	/**
+	 * The name of the schema holding the tables of a database reporting neither schemas nor catalogs, SQLite
+	 */
+	static final String NO_SCHEMA = "NO_SCHEMA";
 
 	private final String name;
 	private final boolean catalog;
+	private final boolean none;
 	private final Map<String, MetaDataTable> tables = new HashMap<>();
 
 	/**
@@ -47,8 +51,13 @@ final class MetaDataSchema {
 	 * @param catalog true if this is a catalog, for databases reporting catalogs instead of schemas, MySQL and MariaDB
 	 */
 	MetaDataSchema(String name, boolean catalog) {
+		this(name, catalog, false);
+	}
+
+	private MetaDataSchema(String name, boolean catalog, boolean none) {
 		this.name = requireNonNull(name);
 		this.catalog = catalog;
+		this.none = none;
 	}
 
 	String name() {
@@ -69,8 +78,11 @@ final class MetaDataSchema {
 		return catalog || none() ? null : name;
 	}
 
+	/**
+	 * @return true if this schema holds the tables of a database reporting neither schemas nor catalogs
+	 */
 	boolean none() {
-		return this == NO_SCHEMA;
+		return none;
 	}
 
 	Map<String, MetaDataTable> tables() {
@@ -98,6 +110,14 @@ final class MetaDataSchema {
 				throw new DatabaseException(e);
 			}
 		}
+	}
+
+	/**
+	 * @return a schema holding the tables of a database reporting neither schemas nor catalogs, one per database
+	 * @see #NO_SCHEMA
+	 */
+	static MetaDataSchema noSchema() {
+		return new MetaDataSchema(NO_SCHEMA, false, true);
 	}
 
 	@Override

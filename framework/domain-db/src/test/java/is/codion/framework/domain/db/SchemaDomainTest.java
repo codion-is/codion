@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -204,7 +205,7 @@ public final class SchemaDomainTest {
 			// the referenced column left out, the primary key
 			statement.execute("create table track (id integer primary key autoincrement, " +
 							"album_id integer not null references album (id), artist_id integer references artist, title text not null)");
-			SchemaDomain library = SchemaDomain.schemaDomain(connection.getMetaData(), MetaDataSchema.NO_SCHEMA.name());
+			SchemaDomain library = SchemaDomain.schemaDomain(connection.getMetaData(), MetaDataSchema.NO_SCHEMA);
 			// named after the database file
 			assertEquals("library", library.type().name());
 
@@ -219,6 +220,21 @@ public final class SchemaDomainTest {
 			EntityDefinition artist = library.entities().definition("artist");
 			assertEquals(-1, artist.columns().definition(column(artist, "name")).maximumLength());
 			assertEquals(40, artist.columns().definition(column(artist, "country")).maximumLength());
+		}
+	}
+
+	@Test
+	void schemaPerDatabase(@TempDir Path directory) throws Exception {
+		// a database without schemas has its tables in a schema of its own, not shared with another
+		try (Connection first = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("first.db"));
+				 Connection second = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("second.db"));
+				 Statement firstStatement = first.createStatement(); Statement secondStatement = second.createStatement()) {
+			firstStatement.execute("create table artist (id integer primary key)");
+			secondStatement.execute("create table genre (id integer primary key)");
+			MetaDataSchema firstSchema = new MetaDataModel(first.getMetaData(), MetaDataSchema.NO_SCHEMA).schema();
+			MetaDataSchema secondSchema = new MetaDataModel(second.getMetaData(), MetaDataSchema.NO_SCHEMA).schema();
+			assertEquals(singleton("artist"), firstSchema.tables().keySet());
+			assertEquals(singleton("genre"), secondSchema.tables().keySet());
 		}
 	}
 
