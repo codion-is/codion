@@ -613,14 +613,14 @@ public final class DomainSource {
 		attributes.forEach(attribute -> {
 			if (attribute instanceof Column<?>) {
 				builder.append("\t.with(")
-								.append(constantName(attribute.name()))
+								.append(constantName(attribute))
 								.append(", ")
 								.append(memberName(attribute.name()))
 								.append(")\n");
 			}
 			else if (attribute instanceof ForeignKey) {
 				builder.append("\t.with(")
-								.append(constantName(attribute.name()))
+								.append(constantName(attribute))
 								.append(", ")
 								.append(foreignKeyMemberName(attribute.name()))
 								.append("." + ENTITY_METHOD_NAME + "(" + ENTITIES_PARAM_NAME + ")")
@@ -644,12 +644,12 @@ public final class DomainSource {
 		List<String> arguments = new ArrayList<>();
 		attributes.forEach(attribute -> {
 			if (attribute instanceof Column<?>) {
-				arguments.add(parameter + ".get(" + constantName(attribute.name()) + ")");
+				arguments.add(parameter + ".get(" + constantName(attribute) + ")");
 			}
 			else if (attribute instanceof ForeignKey) {
 				EntityDefinition referenced = referencedDefinition((ForeignKey) attribute);
 				arguments.add(interfaceName(referenced, true)
-								+ "." + DTO_METHOD_NAME + "(" + parameter + ".get(" + constantName(attribute.name()) + "))");
+								+ "." + DTO_METHOD_NAME + "(" + parameter + ".get(" + constantName(attribute) + "))");
 			}
 		});
 
@@ -759,7 +759,7 @@ public final class DomainSource {
 			Column<?> column = (Column<?>) attribute;
 			FieldSpec.Builder columnBuilder = FieldSpec.builder(ParameterizedTypeName.get(Column.class,
 															column.type().get()),
-											constantName(column.name()))
+											constantName(column))
 							.addModifiers(PUBLIC, STATIC, FINAL);
 			addInitializer(columnBuilder, column);
 			interfaceBuilder.addField(columnBuilder.build());
@@ -768,7 +768,7 @@ public final class DomainSource {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			//todo wrap references if more than four
 			interfaceBuilder.addField(FieldSpec.builder(ForeignKey.class,
-											constantName(attribute.name()))
+											constantName(attribute))
 							.addModifiers(PUBLIC, STATIC, FINAL)
 							.initializer("TYPE.foreignKey($S, $L)",
 											attribute.name(),
@@ -794,9 +794,9 @@ public final class DomainSource {
 	private static String createReferences(ForeignKey foreignKey) {
 		return foreignKey.references().stream()
 						.map(reference -> new StringBuilder()
-										.append(constantName(reference.column().name())).append(", ")
+										.append(constantName(reference.column())).append(", ")
 										.append(interfaceName(reference.referenced().entityType().name(), true))
-										.append(".").append(constantName(reference.referenced().name()))
+										.append(".").append(constantName(reference.referenced()))
 										.toString())
 						.collect(joining(", "));
 	}
@@ -925,6 +925,16 @@ public final class DomainSource {
 
 	private static boolean identityGenerated(ColumnDefinition<?> column) {
 		return column.generated() && column.generator() instanceof Identity<?>;
+	}
+
+	// a column or foreign key named type prefixed by the name of its entity, PROGRESS_TYPE, TYPE being the entity type
+	private static String constantName(Attribute<?> attribute) {
+		String constantName = constantName(attribute.name());
+		if (TYPE_FIELD_NAME.equals(constantName)) {
+			return constantName(interfaceName(attribute.entityType().name(), true)) + "_" + constantName;
+		}
+
+		return constantName;
 	}
 
 	// verbatimLocality -> VERBATIM_LOCALITY, occurrenceID -> OCCURRENCE_ID, COUNTRY_CITY as it is
@@ -1140,7 +1150,7 @@ public final class DomainSource {
 		private String formatColumn(ColumnDefinition<?> column, ColumnContext context) {
 			List<String> calls = columnCalls(column, context, captionStrategy);
 			StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
-							.append(interfaceName).append(".").append(constantName(column.attribute().name()));
+							.append(interfaceName).append(".").append(constantName(column.attribute()));
 			Template template = templates.template(column.attribute());
 			if (template == null) {
 				builder.append(".as()");
@@ -1155,7 +1165,7 @@ public final class DomainSource {
 		}
 
 		private String formatForeignKey(ForeignKeyDefinition definition) {
-			String foreignKeyName = constantName(definition.attribute().name());
+			String foreignKeyName = constantName(definition.attribute());
 			StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
 							.append(interfaceName).append(".").append(foreignKeyName).append(".as()\n")
 							.append(TRIPLE_INDENT).append(".foreignKey()");
@@ -1165,7 +1175,7 @@ public final class DomainSource {
 			definition.references().stream()
 							.filter(reference -> definition.readOnly(reference.column()))
 							.forEach(reference -> builder.append("\n").append(TRIPLE_INDENT).append(".readOnly(")
-											.append(interfaceName).append(".").append(constantName(reference.column().name())).append(")"));
+											.append(interfaceName).append(".").append(constantName(reference.column())).append(")"));
 
 			return builder.toString();
 		}

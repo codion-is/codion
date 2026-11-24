@@ -6,6 +6,8 @@ Codion Change Log
 - SQLiteDatabase now turns cache spill off in a rollback journal mode only, PRAGMA cache_spill, a large transaction on a database in WAL mode writing the log as its cache fills, which readers ignore until it commits, rather than held in memory.
 ### is.codion.framework.domain.db
 - SchemaDomain bug fixed, a foreign key on a database without schemas or catalogs, SQLite, now references a table in the schema of its own, where it failed with a NullPointerException, the driver reporting neither for the table referenced.
+### is.codion.tools.generator.domain
+- DomainSource bug fixed, a column or foreign key named type now has its constant prefixed by the name of its entity, PROGRESS_TYPE, where its constant TYPE collided with the entity type's own, the source not compiling.
 
 ## 0.18.95
 ### is.codion

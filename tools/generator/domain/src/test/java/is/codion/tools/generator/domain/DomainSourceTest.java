@@ -27,6 +27,7 @@ import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -319,6 +320,57 @@ public final class DomainSourceTest {
 											FIFTH_ID.as()
 															.primaryKey()
 															.generator(identity()))
+							.build());
+		}
+	}
+
+	@Test
+	void typeColumns() {
+		// TYPE being the entity type, a column or foreign key named type is prefixed by the name of its entity
+		String source = DomainSource.builder()
+						.domain(new TypeDomain())
+						.domainPackage("is.codion.types.domain")
+						.dtos(Set.of(TypeDomain.KIND, TypeDomain.PROGRESS))
+						.build()
+						.combined();
+		assertTrue(source.contains("Column<String> KIND_TYPE = TYPE.stringColumn(\"type\");"), source);
+		assertTrue(source.contains("Column<String> PROGRESS_TYPE = TYPE.stringColumn(\"type\");"), source);
+		// both ends of a reference
+		assertTrue(source.contains("ForeignKey TYPE_FK = TYPE.foreignKey(\"type_fk\", PROGRESS_TYPE, Kind.KIND_TYPE);"), source);
+		assertTrue(source.contains("Progress.PROGRESS_TYPE.as()"), source);
+		// the dtos, the foreign key's columns left out of its entity's
+		assertTrue(source.contains("new Dto(kind.get(KIND_TYPE))"), source);
+		assertTrue(source.contains(".with(KIND_TYPE, type)"), source);
+		assertFalse(source.contains(" TYPE = TYPE."), source);
+	}
+
+	private static final class TypeDomain extends DomainModel {
+
+		private static final DomainType DOMAIN = domainType("types");
+
+		private static final EntityType KIND = DOMAIN.entityType("kind");
+		private static final Column<String> KIND_TYPE = KIND.stringColumn("type");
+
+		private static final EntityType PROGRESS = DOMAIN.entityType("progress");
+		private static final Column<Integer> PROGRESS_ID = PROGRESS.integerColumn("id");
+		private static final Column<String> PROGRESS_TYPE = PROGRESS.stringColumn("type");
+		private static final ForeignKey PROGRESS_TYPE_FK = PROGRESS.foreignKey("type_fk", PROGRESS_TYPE, KIND_TYPE);
+
+		private TypeDomain() {
+			super(DOMAIN);
+			add(KIND.as()
+							.attributes(
+											KIND_TYPE.as()
+															.primaryKey())
+							.build());
+			add(PROGRESS.as()
+							.attributes(
+											PROGRESS_ID.as()
+															.primaryKey(),
+											PROGRESS_TYPE.as()
+															.column(),
+											PROGRESS_TYPE_FK.as()
+															.foreignKey())
 							.build());
 		}
 	}
