@@ -92,43 +92,6 @@ public interface World {
 		}
 	}
 
-	interface City {
-		EntityType TYPE = DOMAIN.entityType("world.city");
-
-		Column<Integer> ID = TYPE.integerColumn("id");
-		Column<String> NAME = TYPE.stringColumn("name");
-		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
-		Column<String> DISTRICT = TYPE.stringColumn("district");
-		Column<Integer> POPULATION = TYPE.integerColumn("population");
-		Column<Object> LOCATION = TYPE.column("location", Object.class);
-
-		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
-
-		static Dto dto(Entity city) {
-			return city == null ? null :
-				new Dto(city.get(ID),
-					city.get(NAME),
-					Country.dto(city.get(COUNTRYCODE_FK)),
-					city.get(DISTRICT),
-					city.get(POPULATION),
-					city.get(LOCATION));
-		}
-
-		record Dto(Integer id, String name, Country.Dto countrycode, String district, Integer population,
-				Object location) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(ID, id)
-					.with(NAME, name)
-					.with(COUNTRYCODE_FK, countrycode.entity(entities))
-					.with(DISTRICT, district)
-					.with(POPULATION, population)
-					.with(LOCATION, location)
-					.build();
-			}
-		}
-	}
-
 	interface Country {
 		EntityType TYPE = DOMAIN.entityType("world.country");
 
@@ -193,6 +156,43 @@ public interface World {
 					.with(CAPITAL_FK, capital.entity(entities))
 					.with(CODE2, code2)
 					.with(FLAG, flag)
+					.build();
+			}
+		}
+	}
+
+	interface City {
+		EntityType TYPE = DOMAIN.entityType("world.city");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<String> NAME = TYPE.stringColumn("name");
+		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
+		Column<String> DISTRICT = TYPE.stringColumn("district");
+		Column<Integer> POPULATION = TYPE.integerColumn("population");
+		Column<Object> LOCATION = TYPE.column("location", Object.class);
+
+		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
+
+		static Dto dto(Entity city) {
+			return city == null ? null :
+				new Dto(city.get(ID),
+					city.get(NAME),
+					Country.dto(city.get(COUNTRYCODE_FK)),
+					city.get(DISTRICT),
+					city.get(POPULATION),
+					city.get(LOCATION));
+		}
+
+		record Dto(Integer id, String name, Country.Dto countrycode, String district, Integer population,
+				Object location) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(ID, id)
+					.with(NAME, name)
+					.with(COUNTRYCODE_FK, countrycode.entity(entities))
+					.with(DISTRICT, district)
+					.with(POPULATION, population)
+					.with(LOCATION, location)
 					.build();
 			}
 		}

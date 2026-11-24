@@ -26,6 +26,7 @@ import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -38,6 +39,7 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -372,6 +374,62 @@ public final class DomainSourceTest {
 											PROGRESS_TYPE_FK.as()
 															.foreignKey())
 							.build());
+		}
+	}
+
+	@Test
+	void dependencyOrder() {
+		// an entity after the ones it references, eleven of them referencing others, where the order once failed
+		LibraryDomain domain = new LibraryDomain();
+		String source = DomainSource.builder()
+						.domain(domain)
+						.domainPackage("is.codion.library.domain")
+						.build()
+						.combined();
+		for (EntityDefinition definition : domain.entities().definitions()) {
+			int index = source.indexOf(DomainSource.apiSearchString(definition));
+			definition.foreignKeys().get().forEach(foreignKey -> {
+				EntityDefinition referenced = domain.entities().definition(foreignKey.referencedType());
+				assertTrue(source.indexOf(DomainSource.apiSearchString(referenced)) < index,
+								referenced.type() + " after " + definition.type() + ", which references it");
+			});
+		}
+	}
+
+	private static final class LibraryDomain extends DomainModel {
+
+		private static final DomainType DOMAIN = domainType("library");
+
+		private LibraryDomain() {
+			super(DOMAIN);
+			validateForeignKeys(false);
+			entity("albums");
+			entity("contributors");
+			entity("genres");
+			entity("comments", "tracks");
+			entity("contributor_album", "contributors", "albums");
+			entity("contributor_track", "contributors", "tracks");
+			entity("genre_track", "genres", "tracks");
+			entity("library_album", "albums");
+			entity("library_contributor", "contributors");
+			entity("library_genre", "genres");
+			entity("library_track", "tracks");
+			entity("playlist_track", "tracks");
+			entity("tracks", "albums");
+			entity("works", "contributors");
+		}
+
+		private void entity(String name, String... referencedNames) {
+			EntityType entityType = DOMAIN.entityType(name);
+			List<AttributeDefinition.Builder<?, ?>> attributes = new ArrayList<>();
+			attributes.add(entityType.integerColumn("id").as().primaryKey());
+			for (String referencedName : referencedNames) {
+				Column<Integer> column = entityType.integerColumn(referencedName + "_id");
+				attributes.add(column.as().column());
+				attributes.add(entityType.foreignKey(referencedName + "_fk", column,
+								DOMAIN.entityType(referencedName).integerColumn("id")).as().foreignKey());
+			}
+			add(entityType.as().attributes(attributes).build());
 		}
 	}
 

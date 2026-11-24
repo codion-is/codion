@@ -13,7 +13,7 @@ public final class WorldImpl extends DomainModel {
 	public WorldImpl() {
 		super(DOMAIN);
 		validateForeignKeys(false);
-		add(countryCityView(), city(), country(),
+		add(countryCityView(), country(), city(),
 				countrylanguage());
 	}
 
@@ -82,39 +82,6 @@ public final class WorldImpl extends DomainModel {
 					.caption("Citypopulation"))
 			.caption("Country city")
 			.readOnly(true)
-			.build();
-	}
-
-	EntityDefinition city() {
-		return City.TYPE.as()
-			.attributes(
-				City.ID.as()
-					.primaryKey(),
-				City.NAME.as()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(35),
-				City.COUNTRYCODE.as()
-					.column()
-					.nullable(false)
-					.maximumLength(3),
-				City.COUNTRYCODE_FK.as()
-					.foreignKey()
-					.caption("Country"),
-				City.DISTRICT.as()
-					.column()
-					.caption("District")
-					.nullable(false)
-					.maximumLength(20),
-				City.POPULATION.as()
-					.column()
-					.caption("Population")
-					.nullable(false),
-				City.LOCATION.as()
-					.column()
-					.caption("Location"))
-			.caption("City")
 			.build();
 	}
 
@@ -187,6 +154,39 @@ public final class WorldImpl extends DomainModel {
 					.column()
 					.caption("Flag"))
 			.caption("Country")
+			.build();
+	}
+
+	EntityDefinition city() {
+		return City.TYPE.as()
+			.attributes(
+				City.ID.as()
+					.primaryKey(),
+				City.NAME.as()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(35),
+				City.COUNTRYCODE.as()
+					.column()
+					.nullable(false)
+					.maximumLength(3),
+				City.COUNTRYCODE_FK.as()
+					.foreignKey()
+					.caption("Country"),
+				City.DISTRICT.as()
+					.column()
+					.caption("District")
+					.nullable(false)
+					.maximumLength(20),
+				City.POPULATION.as()
+					.column()
+					.caption("Population")
+					.nullable(false),
+				City.LOCATION.as()
+					.column()
+					.caption("Location"))
+			.caption("City")
 			.build();
 	}
 

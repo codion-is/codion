@@ -54,7 +54,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -76,7 +75,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
-import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
 /**
@@ -861,18 +859,43 @@ public final class DomainSource {
 	// Dependency Analysis
 	// ========================================
 
+	// an entity after the ones it references, ordered by the longest chain of foreign keys from it, by table within the same
 	private static List<EntityDefinition> sortDefinitions(Domain domain) {
-		Map<EntityType, Set<EntityType>> dependencies = dependencies(domain);
-		Collection<EntityDefinition> definitions = domain.entities().definitions();
-
-		return concat(definitions.stream()
-										.filter(definition -> dependencies.get(definition.type()).isEmpty())
-										.sorted(comparing(EntityDefinition::table)),
-						definitions.stream()
-										.filter(definition -> !dependencies.get(definition.type()).isEmpty())
-										.sorted(comparing(EntityDefinition::table))
-										.sorted(new DependencyOrder(dependencies)))
+		List<EntityDefinition> definitions = domain.entities().definitions().stream()
+						.sorted(comparing(EntityDefinition::table))
 						.collect(toList());
+		Map<EntityType, EntityDefinition> definitionMap = definitions.stream()
+						.collect(toMap(EntityDefinition::type, identity()));
+		Map<EntityType, Integer> depths = new HashMap<>();
+		definitions.forEach(definition -> depth(definition.type(), definitionMap, depths, new HashSet<>()));
+
+		return definitions.stream()
+						.sorted(comparing(definition -> depths.get(definition.type())))
+						.collect(toList());
+	}
+
+	// the length of the longest chain of foreign keys from the given entity, a self reference left out, a cycle ending
+	// a chain, the order then not mattering, the foreign keys not validated, see cyclicalDependencies()
+	private static int depth(EntityType entityType, Map<EntityType, EntityDefinition> definitions,
+													 Map<EntityType, Integer> depths, Set<EntityType> visiting) {
+		Integer depth = depths.get(entityType);
+		if (depth != null) {
+			return depth;
+		}
+		EntityDefinition definition = definitions.get(entityType);
+		if (definition == null || !visiting.add(entityType)) {
+			return 0;
+		}
+		int maximum = 0;
+		for (ForeignKey foreignKey : definition.foreignKeys().get()) {
+			if (!foreignKey.referencedType().equals(entityType)) {
+				maximum = Math.max(maximum, depth(foreignKey.referencedType(), definitions, depths, visiting) + 1);
+			}
+		}
+		visiting.remove(entityType);
+		depths.put(entityType, maximum);
+
+		return maximum;
 	}
 
 	private static boolean cyclicalDependencies(Collection<EntityDefinition> definitions) {
@@ -886,20 +909,6 @@ public final class DomainSource {
 		}
 
 		return false;
-	}
-
-	private static Map<EntityType, Set<EntityType>> dependencies(Domain domain) {
-		Map<EntityType, EntityDefinition> definitions = domain.entities().definitions().stream()
-						.collect(toMap(EntityDefinition::type, identity()));
-
-		return domain.entities().definitions().stream()
-						.collect(toMap(EntityDefinition::type,
-										definition -> dependencies(definition, definitions)));
-	}
-
-	private static Set<EntityType> dependencies(EntityDefinition definition,
-																							Map<EntityType, EntityDefinition> definitions) {
-		return dependencies(definition.foreignKeys().get(), new HashSet<>(), definitions);
 	}
 
 	private static Set<EntityType> dependencies(Collection<ForeignKey> foreignKeys,
@@ -1359,27 +1368,6 @@ public final class DomainSource {
 		private TemplateColumn(EntityDefinition definition, ColumnDefinition<?> column, CaptionStrategy captionStrategy) {
 			this.column = column.attribute();
 			this.calls = AttributeDefinitionFormatter.columnCalls(column, ColumnContext.of(definition, column), captionStrategy);
-		}
-	}
-
-	private static final class DependencyOrder implements Comparator<EntityDefinition> {
-
-		private final Map<EntityType, Set<EntityType>> dependencies;
-
-		private DependencyOrder(Map<EntityType, Set<EntityType>> dependencies) {
-			this.dependencies = dependencies;
-		}
-
-		@Override
-		public int compare(EntityDefinition definition1, EntityDefinition definition2) {
-			if (dependencies.get(definition1.type()).contains(definition2.type())) {
-				return 1;
-			}
-			else if (dependencies.get(definition2.type()).contains(definition1.type())) {
-				return -1;
-			}
-
-			return 0;
 		}
 	}
 

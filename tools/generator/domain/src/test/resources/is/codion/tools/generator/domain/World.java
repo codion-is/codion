@@ -22,7 +22,7 @@ public final class World extends DomainModel {
 	public World() {
 		super(DOMAIN);
 		validateForeignKeys(false);
-		add(countryCityView(), city(), country(),
+		add(countryCityView(), country(), city(),
 				countrylanguage());
 	}
 
@@ -174,76 +174,6 @@ public final class World extends DomainModel {
 			.build();
 	}
 
-	public interface City {
-		EntityType TYPE = DOMAIN.entityType("world.city");
-
-		Column<Integer> ID = TYPE.integerColumn("id");
-		Column<String> NAME = TYPE.stringColumn("name");
-		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
-		Column<String> DISTRICT = TYPE.stringColumn("district");
-		Column<Integer> POPULATION = TYPE.integerColumn("population");
-		Column<Object> LOCATION = TYPE.column("location", Object.class);
-
-		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
-
-		static Dto dto(Entity city) {
-			return city == null ? null :
-				new Dto(city.get(ID),
-					city.get(NAME),
-					Country.dto(city.get(COUNTRYCODE_FK)),
-					city.get(DISTRICT),
-					city.get(POPULATION),
-					city.get(LOCATION));
-		}
-
-		record Dto(Integer id, String name, Country.Dto countrycode, String district, Integer population,
-				Object location) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(ID, id)
-					.with(NAME, name)
-					.with(COUNTRYCODE_FK, countrycode.entity(entities))
-					.with(DISTRICT, district)
-					.with(POPULATION, population)
-					.with(LOCATION, location)
-					.build();
-			}
-		}
-	}
-
-	EntityDefinition city() {
-		return City.TYPE.as()
-			.attributes(
-				City.ID.as()
-					.primaryKey(),
-				City.NAME.as()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(35),
-				City.COUNTRYCODE.as()
-					.column()
-					.nullable(false)
-					.maximumLength(3),
-				City.COUNTRYCODE_FK.as()
-					.foreignKey()
-					.caption("Country"),
-				City.DISTRICT.as()
-					.column()
-					.caption("District")
-					.nullable(false)
-					.maximumLength(20),
-				City.POPULATION.as()
-					.column()
-					.caption("Population")
-					.nullable(false),
-				City.LOCATION.as()
-					.column()
-					.caption("Location"))
-			.caption("City")
-			.build();
-	}
-
 	public interface Country {
 		EntityType TYPE = DOMAIN.entityType("world.country");
 
@@ -382,6 +312,76 @@ public final class World extends DomainModel {
 					.column()
 					.caption("Flag"))
 			.caption("Country")
+			.build();
+	}
+
+	public interface City {
+		EntityType TYPE = DOMAIN.entityType("world.city");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<String> NAME = TYPE.stringColumn("name");
+		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
+		Column<String> DISTRICT = TYPE.stringColumn("district");
+		Column<Integer> POPULATION = TYPE.integerColumn("population");
+		Column<Object> LOCATION = TYPE.column("location", Object.class);
+
+		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
+
+		static Dto dto(Entity city) {
+			return city == null ? null :
+				new Dto(city.get(ID),
+					city.get(NAME),
+					Country.dto(city.get(COUNTRYCODE_FK)),
+					city.get(DISTRICT),
+					city.get(POPULATION),
+					city.get(LOCATION));
+		}
+
+		record Dto(Integer id, String name, Country.Dto countrycode, String district, Integer population,
+				Object location) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(ID, id)
+					.with(NAME, name)
+					.with(COUNTRYCODE_FK, countrycode.entity(entities))
+					.with(DISTRICT, district)
+					.with(POPULATION, population)
+					.with(LOCATION, location)
+					.build();
+			}
+		}
+	}
+
+	EntityDefinition city() {
+		return City.TYPE.as()
+			.attributes(
+				City.ID.as()
+					.primaryKey(),
+				City.NAME.as()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(35),
+				City.COUNTRYCODE.as()
+					.column()
+					.nullable(false)
+					.maximumLength(3),
+				City.COUNTRYCODE_FK.as()
+					.foreignKey()
+					.caption("Country"),
+				City.DISTRICT.as()
+					.column()
+					.caption("District")
+					.nullable(false)
+					.maximumLength(20),
+				City.POPULATION.as()
+					.column()
+					.caption("Population")
+					.nullable(false),
+				City.LOCATION.as()
+					.column()
+					.caption("Location"))
+			.caption("City")
 			.build();
 	}
 
