@@ -275,6 +275,8 @@ final class MetaDataColumn {
 
 		private static final String YES = "YES";
 		private static final String IS_GENERATEDCOLUMN = "IS_GENERATEDCOLUMN";
+		// the size the SQLite driver reports for a column without a declared one, of any type
+		private static final int SQLITE_NO_SIZE = 2_000_000_000;
 
 		private final Collection<MetaDataPrimaryKeyColumn> primaryKeyColumns;
 		private final List<MetaDataForeignKeyColumn> foreignKeyColumns;
@@ -296,7 +298,7 @@ final class MetaDataColumn {
 			if (resultSet.wasNull()) {
 				decimalDigits = -1;
 			}
-			int columnSize = resultSet.getInt("COLUMN_SIZE");
+			int columnSize = columnSize(resultSet.getInt("COLUMN_SIZE"));
 			String columnName = resultSet.getString("COLUMN_NAME");
 			String typeName = resultSet.getString("TYPE_NAME");
 			Class<?> columnType = columnType(dataType, typeName, columnSize, decimalDigits, declaredTypes);
@@ -316,6 +318,12 @@ final class MetaDataColumn {
 				System.err.println("Exception fetching column: " + columnName + ", " + e.getMessage());
 				throw e;
 			}
+		}
+
+		// none for a SQLite column without a declared size, one declared as large being indistinguishable, the length of a
+		// SQLite column not enforced in any case
+		private int columnSize(int columnSize) {
+			return declaredTypes && columnSize == SQLITE_NO_SIZE ? 0 : columnSize;
 		}
 
 		// IS_GENERATEDCOLUMN was added in JDBC 4.1, older drivers do not report it, mssql-jdbc 6.4 for one

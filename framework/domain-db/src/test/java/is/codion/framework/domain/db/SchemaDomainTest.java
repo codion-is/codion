@@ -198,7 +198,7 @@ public final class SchemaDomainTest {
 		// SQLite has neither schemas nor catalogs, its driver reporting neither for the table a foreign key references
 		try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("library.db"));
 				 Statement statement = connection.createStatement()) {
-			statement.execute("create table artist (id integer primary key autoincrement, name text not null)");
+			statement.execute("create table artist (id integer primary key autoincrement, name text not null, country varchar(40))");
 			statement.execute("create table album (id integer primary key autoincrement, " +
 							"artist_id integer not null references artist (id), title text not null)");
 			// the referenced column left out, the primary key
@@ -214,6 +214,11 @@ public final class SchemaDomainTest {
 			EntityDefinition track = library.entities().definition("track");
 			assertEquals("album_id_fk", foreignKey(track, "album").attribute().name());
 			assertEquals("artist_id_fk", foreignKey(track, "artist").attribute().name());
+
+			// a maximum length where declared, the driver reporting one of 2,000,000,000 where not
+			EntityDefinition artist = library.entities().definition("artist");
+			assertEquals(-1, artist.columns().definition(column(artist, "name")).maximumLength());
+			assertEquals(40, artist.columns().definition(column(artist, "country")).maximumLength());
 		}
 	}
 
