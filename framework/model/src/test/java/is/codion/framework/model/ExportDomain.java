@@ -138,7 +138,8 @@ public final class ExportDomain extends DomainModel {
 										Employee.HIREDATE.as()
 														.column()
 														.caption("Hiredate")
-														.nullable(false),
+														.nullable(false)
+														.dateTimePattern("MM-dd-yyyy"),
 										Employee.DEPARTMENT_LOCATION.as()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
