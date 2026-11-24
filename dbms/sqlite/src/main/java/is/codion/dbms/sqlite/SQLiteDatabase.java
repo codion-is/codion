@@ -326,10 +326,11 @@ final class SQLiteDatabase extends AbstractDatabase {
 	 * A connection the functions can not be registered on is refused: one neither the driver's nor wrapping it, and any
 	 * where the driver's classes are not accessible to this module, on the class path with this module on the module path.
 	 * <p>
-	 * Keeps a transaction's changes in memory until it commits, {@code PRAGMA cache_spill = off}: one changing more than
-	 * the page cache holds, 2 MB by default, otherwise makes room by writing the database file, taking its exclusive lock,
-	 * which it keeps until it ends, so that no other connection reads the file meanwhile, where one fitting the cache
-	 * leaves readers alone until it commits.
+	 * Keeps a transaction's changes in memory until it commits, {@code PRAGMA cache_spill = off}, in a rollback journal
+	 * mode: one changing more than the page cache holds, 2 MB by default, otherwise makes room by writing the database
+	 * file, taking its exclusive lock, which it keeps until it ends, so that no other connection reads the file meanwhile,
+	 * where one fitting the cache leaves readers alone until it commits. In WAL mode it makes room by writing the log,
+	 * which readers ignore until it commits, so there the setting is left as it is, a large transaction not held in memory.
 	 * <p>
 	 * Attaches the schemas, see {@link SQLiteDatabaseFactory#SCHEMAS}, with the main database's journal mode and
 	 * synchronous setting, refusing a main database in WAL mode, in which a transaction writing several of the files is
@@ -343,10 +344,14 @@ final class SQLiteDatabase extends AbstractDatabase {
 			// before the functions are registered, being without effect after
 			statement.execute("PRAGMA case_sensitive_like = on");
 			registerCaseFunctions(connection);
-			statement.execute("PRAGMA cache_spill = off");
+			String journalMode = pragma(statement, "main.journal_mode");
+			boolean wal = WAL.equalsIgnoreCase(journalMode);
+			if (!wal) {
+				// in WAL mode a transaction makes room by writing the log, which readers ignore until it commits
+				statement.execute("PRAGMA cache_spill = off");
+			}
 			if (!schemas.isEmpty()) {
-				String journalMode = pragma(statement, "main.journal_mode");
-				if (WAL.equalsIgnoreCase(journalMode)) {
+				if (wal) {
 					throw new IllegalStateException("Schemas can not be attached to a database in WAL mode, in which a transaction " +
 									"writing several of the files is not atomic across them, use a rollback journal, journal_mode=DELETE: " + url());
 				}

@@ -62,10 +62,12 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * A transaction takes the database's write lock as it starts, {@code BEGIN IMMEDIATE}, as does a write outside of one,
  * waiting for another writer within the connection's busy timeout, so that one reading before it writes can not fail
- * for another having written meanwhile; a transaction that only reads waits for a writer as well. A transaction's
- * changes are kept in memory until it commits, {@code PRAGMA cache_spill = off} on every connection, so that other
- * connections read while it writes, however much, a large one taking that much memory, where SQLite would otherwise
- * write the database file once its page cache, 2 MB by default, is full, locking readers out until the transaction ends.
+ * for another having written meanwhile; a transaction that only reads waits for a writer as well. In a rollback journal
+ * mode, the default, a transaction's changes are kept in memory until it commits, {@code PRAGMA cache_spill = off} on
+ * every connection, so that other connections read while it writes, however much, a large one taking that much memory,
+ * where SQLite would otherwise write the database file once its page cache, 2 MB by default, is full, locking readers
+ * out until the transaction ends. In WAL mode, {@code journal_mode=WAL}, SQLite writes what does not fit to the log
+ * instead, which readers ignore until the transaction commits, so there the changes are not held in memory.
  * <p>
  * Text is compared as on other databases: {@code upper()} and {@code lower()} are Java's, registered on every
  * connection in place of SQLite's own, which change the letters of ASCII alone, so that a case-insensitive condition

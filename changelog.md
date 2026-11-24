@@ -1,6 +1,10 @@
 Codion Change Log
 =================
 
+## 0.18.96
+### is.codion.dbms.sqlite
+- SQLiteDatabase now turns cache spill off in a rollback journal mode only, PRAGMA cache_spill, a large transaction on a database in WAL mode writing the log as its cache fills, which readers ignore until it commits, rather than held in memory.
+
 ## 0.18.95
 ### is.codion
 - Every module's jar now ships R8 rules, META-INF/proguard, keeping the names of the module's classes in an application minified by R8, an Android release for example, whose message bundles, found by the names of their classes, were otherwise missing, one rule per package of the module's own.

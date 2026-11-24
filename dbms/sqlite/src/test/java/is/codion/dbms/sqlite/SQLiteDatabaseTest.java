@@ -484,6 +484,28 @@ public class SQLiteDatabaseTest {
 		}
 	}
 
+	@Test
+	void readDuringALargeTransactionInWalMode(@TempDir Path directory) throws Exception {
+		SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:" + directory.resolve("app.db") + "?journal_mode=WAL&busy_timeout=100");
+		Path log = directory.resolve("app.db-wal");
+		try (Connection writer = database.createConnection(); Connection reader = database.createConnection();
+				 Statement write = writer.createStatement(); Statement read = reader.createStatement()) {
+			write.execute("create table setting (id integer primary key, name text)");
+			long logSize = Files.size(log);
+			writer.setAutoCommit(false);
+			database.startTransaction(writer);
+			// 8 MB, four times what SQLite's page cache holds by default, which it makes room for by writing the log,
+			// rather than holding the transaction in memory
+			write.execute("with recursive x(n) as (select 1 union all select n + 1 from x where n < 8000) " +
+							"insert into setting (name) select printf('%1000s', n) from x");
+			assertTrue(Files.size(log) - logSize > 2_000_000, "Written to the log before the commit: " + (Files.size(log) - logSize));
+			// a reader on another connection is not locked out, and sees the transaction once it is committed
+			assertEquals("0", query(read, "select count(*) from setting"));
+			writer.commit();
+			assertEquals("8000", query(read, "select count(*) from setting"));
+		}
+	}
+
 	private static String query(Statement statement, String query) throws SQLException {
 		try (ResultSet resultSet = statement.executeQuery(query)) {
 			resultSet.next();
