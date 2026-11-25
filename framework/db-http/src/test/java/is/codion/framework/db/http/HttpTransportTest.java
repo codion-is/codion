@@ -51,7 +51,8 @@ public final class HttpTransportTest {
 		try (InputStream input = HttpTransport.class.getResourceAsStream("/META-INF/proguard/codion-framework-db-http.pro")) {
 			rules = new String(requireNonNull(input).readAllBytes(), UTF_8);
 		}
-		assertTrue(rules.contains("-dontwarn " + HttpClient.class.getPackageName() + ".**\n"));
+		// a whole line, the file checked out with Windows line endings on Windows
+		assertTrue(rules.lines().anyMatch(line -> line.equals("-dontwarn " + HttpClient.class.getPackageName() + ".**")));
 	}
 
 	@Test

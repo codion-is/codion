@@ -20,6 +20,8 @@ package is.codion.common.model.preferences;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -204,7 +206,11 @@ public final class ConcurrentPreferencesTest {
 	}
 
 	@Test
+	@DisabledOnOs(value = OS.WINDOWS, disabledReason = "a file open for reading can not be replaced on Windows")
 	void testAtomicWrites() throws Exception {
+		// The reader reads without pause, which is what catches a save writing the file in place, in every run,
+		// where pausing for a millisecond between reads caught it in one run of five. On Windows a file open for
+		// reading can not be replaced, so there it keeps the saves from replacing the file, until they give up.
 		Path prefsPath = tempDir.resolve("atomic-test.json");
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsPath);
 

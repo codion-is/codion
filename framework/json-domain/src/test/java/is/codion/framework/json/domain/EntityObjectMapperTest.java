@@ -66,8 +66,9 @@ public final class EntityObjectMapperTest {
 		try (InputStream input = EntityObjectMapper.class.getResourceAsStream("/META-INF/proguard/codion-framework-json-domain.pro")) {
 			rules = new String(requireNonNull(input).readAllBytes(), UTF_8);
 		}
-		assertTrue(rules.contains("-keep,allowobfuscation,allowshrinking class " + TypeReference.class.getName() + "\n"));
-		assertTrue(rules.contains("-keep,allowobfuscation,allowshrinking class * extends " + TypeReference.class.getName() + "\n"));
+		// whole lines, the file checked out with Windows line endings on Windows
+		assertTrue(rules.lines().anyMatch(line -> line.equals("-keep,allowobfuscation,allowshrinking class " + TypeReference.class.getName())));
+		assertTrue(rules.lines().anyMatch(line -> line.equals("-keep,allowobfuscation,allowshrinking class * extends " + TypeReference.class.getName())));
 	}
 
 	@Test
